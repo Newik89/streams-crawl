@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Сломанные — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Сломанные <span class="muted">({{ rows|length }})</span></h1>
+<p class="muted">Ссылка не открылась три обхода подряд. Сайт может быть жив —
+  чаще всего у него просто сменился адрес. Поправьте ссылку прямо в строке:
+  <b>✎</b> сохраняет адрес, <b>В обход</b> — сохраняет и снимает клеймо
+  «сломан», чтобы ближайший обход снова туда зашёл.</p>
+
+<table>
+  <tr><th>Сайт</th><th>Ссылка</th><th>Что не так</th><th>Последний раз ответил</th><th></th></tr>
+  {% for s in rows %}
+  <tr>
+    <td><a href="{{ url_for('source_edit', source_id=s.id) }}"><b>{{ s.domain }}</b></a>
+      <div class="muted">{{ s.country or '' }}</div></td>
+    <td style="max-width:340px">
+      <form method="post" action="{{ url_for('source_fix', source_id=s.id) }}"
+            style="display:flex; gap:6px; align-items:center">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.path }}">
+        <input type="url" name="base_url" value="{{ s.base_url }}" required
+               style="flex:1; min-width:180px; padding:4px 6px; font-size:12px;
+                      border:1px solid var(--line); border-radius:6px">
+        <button class="btn" type="submit" name="action" value="save"
+                title="Сохранить адрес">✎</button>
+        <button class="btn" type="submit" name="action" value="revive"
+                title="Сохранить адрес и вернуть сайт в обход">В обход</button>
+      </form>
+      <a class="muted" style="font-size:12px" href="{{ s.base_url }}"
+         target="_blank" rel="noopener">открыть страницу ↗</a></td>
+    <td>
+      {% if s.protection %}<span class="tag bad">{{ s.protection }}</span>{% endif %}
+      <span class="tag bad">сбоев подряд: {{ s.fail_count }}</span>
+      <div class="muted">{{ (s.notes or '')[:90] }}</div>
+    </td>
+    <td class="muted">{{ s.last_success or 'ни разу' }}</td>
+    <td style="width:1%; white-space:nowrap">
+      <form method="post" action="{{ url_for('source_toggle', source_id=s.id) }}"
+            style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.path }}">
+        <button type="submit">{{ 'Выключить' if s.enabled else 'Включить' }}</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="muted">Пусто — и хорошо.</td></tr>
+  {% endfor %}
+</table>
+
+<h2 style="margin-top:26px">Молчат <span class="muted">({{ silent|length }})</span></h2>
+<p class="muted">Сайт отвечает, но матчей с него давно не было: {{ silent_days }}
+  суток и больше. Обычно это значит, что сайт поменял разметку и разбор
+  перестал что-то находить, — а «сломанным» он не считается, потому что
+  страница открывается.</p>
+
+<table>
+  <tr><th>Сайт</th><th>Последний раз давал матчи</th><th>Заходили</th>
+      <th>Что про него известно</th><th>Ссылка</th></tr>
+  {% for s in silent %}
+  <tr>
+    <td><a href="{{ url_for('source_edit', source_id=s.id) }}"><b>{{ s.domain }}</b></a>
+      <div class="muted">{{ s.country or '' }}</div></td>
+    <td class="muted">{{ s.last_success or 'ни разу' }}</td>
+    <td class="muted">{{ s.last_run or '—' }}</td>
+    <td class="muted">{{ (s.notes or '')[:110] }}</td>
+    <td style="max-width:320px">
+      <form method="post" action="{{ url_for('source_fix', source_id=s.id) }}"
+            style="display:flex; gap:6px; align-items:center">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.path }}">
+        <input type="url" name="base_url" value="{{ s.base_url }}" required
+               style="flex:1; min-width:170px; padding:4px 6px; font-size:12px;
+                      border:1px solid var(--line); border-radius:6px">
+        <button class="btn" type="submit" name="action" value="save"
+                title="Сохранить адрес">✎</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="muted">Все источники недавно давали матчи.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

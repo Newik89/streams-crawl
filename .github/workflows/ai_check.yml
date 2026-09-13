@@ -1,0 +1,25 @@
+# Проверка AI-слоя (этап 6д): связь с бесплатной моделью.
+# Запускается кнопкой на вкладке Actions; ежедневная работа AI-слоя живёт
+# внутри обхода (crawl.yml), этот workflow — только диагностика.
+
+name: AI-слой — проверка
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read         # без этого checkout не видит приватный репозиторий
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Спросить модель
+        env:
+          AI_API_KEY: ${{ secrets.STREAMS_AI_KEY }}
+        run: python scripts/ai_repair.py --selftest

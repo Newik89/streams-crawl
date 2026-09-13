@@ -1,0 +1,45 @@
+# Личное и большое — в GitHub не уезжает.
+
+venv/
+__pycache__/
+*.pyc
+
+# Клон соседнего проекта: только для чтения, чужой репозиторий
+reference/
+
+# Скачанные страницы: тяжёлые, восстанавливаются обходом
+recon/raw_browser/
+recon/raw_deep/
+recon/raw_quick/
+recon/raw_api/
+recon/raw_manual/
+recon/raw_live/
+recon/raw_server/
+recon/probe_*/
+recon/raw_5day/
+recon/raw_6e*/
+recon/raw_lstv/
+data/pages/
+
+# Копии базы
+backup_*/
+
+# В папке data наружу едут только два файла: списки слов и план обхода.
+# Остальное — база, ключ сессий и выгрузки закладок владельца — личное.
+data/*
+!data/markers.json
+!data/crawl_plan.json
+!data/aliases.json
+!data/dictionaries.json
+
+# служебное для Claude Code
+.claude/
+
+# установщики и прочий крупняк, случайно попавший в папку
+*.exe
+*.msi
+*.zip
+recon/vsetv_channels.json
+
+# память серверного обхода (scripts/server_crawl.py): живёт только на сервере
+results/server_crawl.json

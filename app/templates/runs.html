@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Прогоны — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Прогоны</h1>
+<p class="muted">Строка появляется при каждом вливании обхода в базу
+  (<code>games_import</code>). «Сайтов ок / сбои» — по отчёту обхода.</p>
+{% if rows %}
+<table>
+  <tr><th>Когда</th><th>Что собирали</th><th>Сайтов ок</th><th>Сбои</th>
+      <th>Строк с сайтов</th><th>Игр в базу</th><th>Подробности</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td>{{ r.finished_at }}</td>
+    <td>
+      {%- set log = r.log | from_json -%}
+      {%- set mode = (log.get('режим') or '') if log else '' -%}
+      {%- if 'скан даты' in mode %}дата {{ mode.replace('скан даты', '') | trim }}
+      {%- elif r.window_days %}{{ r.window_days }} сут.
+      {%- elif mode %}{{ mode }}
+      {%- else %}<span class="muted">—</span>{% endif %}
+    </td>
+    <td>{{ r.sources_ok }}</td>
+    <td {% if r.sources_failed %}style="color:var(--err)"{% endif %}>{{ r.sources_failed }}</td>
+    <td>{{ r.rows_found }}</td>
+    <td>{{ r.events_upserted }}</td>
+    <td class="muted"><code style="font-size:12px">{{ r.log }}</code></td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">Пока пусто — появится после первого импорта.</p>
+{% endif %}
+{% endblock %}

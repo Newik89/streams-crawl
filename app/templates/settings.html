@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Настройки — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Настройки</h1>
+
+<div class="card">
+  <h2>Сколько игра живёт после начала</h2>
+  <p class="muted">Минуты. Прошло столько после начала — игра уходит со
+    страницы (ТЗ разд. 10). У отдельной игры может быть своё значение.</p>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>⚽ Футбол <input name="grace_F" value="{{ graces['F'] }}" size="5"></label>
+    <label>🏀 Баскетбол <input name="grace_B" value="{{ graces['B'] }}" size="5"></label>
+    <label>🎾 Теннис <input name="grace_T" value="{{ graces['T'] }}" size="5"></label>
+    <button type="submit">Сохранить</button>
+  </form>
+</div>
+
+<div class="card" style="margin-top:18px">
+  <h2>Ключи API</h2>
+  {% if api_open %}
+  <p class="muted">Отдача наружу <b>включена</b>. Ключ ходит в заголовке
+    <code>X-API-Key</code> к <code>/api/v1/…</code>. Отозванный перестаёт
+    работать сразу.</p>
+  {% else %}
+  <p class="muted"><b>API закрыто</b> — чужие сайты расписание не получают:
+    любой запрос к <code>/api/v1/…</code> отвечает «403». Ключи ниже никуда
+    не делись и заработают, когда откроем (переменная
+    <code>STREAMS_API=on</code>).</p>
+  {% endif %}
+  <form method="post" action="{{ url_for('apikey_action') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input name="note" placeholder="для какого сайта ключ" size="30">
+    <button type="submit">Выдать новый ключ</button>
+  </form>
+  {% if keys %}
+  <table style="margin-top:10px">
+    <tr><th>Ключ</th><th>Для кого</th><th>Выдан</th><th></th></tr>
+    {% for k in keys %}
+    <tr {% if k.revoked %}style="opacity:.5"{% endif %}>
+      <td><code>{{ k.key }}</code></td>
+      <td>{{ k.note or "—" }}</td>
+      <td>{{ k.created_at }}</td>
+      <td>
+        {% if not k.revoked %}
+        <form method="post" action="{{ url_for('apikey_action') }}" style="display:inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="action" value="revoke">
+          <input type="hidden" name="id" value="{{ k.id }}">
+          <button type="submit">Отозвать</button>
+        </form>
+        {% else %}отозван{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</div>
+{% endblock %}

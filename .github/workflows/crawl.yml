@@ -1,0 +1,308 @@
+# Обход телесайтов не с домашнего компьютера, а из GitHub.
+#
+# Решение владельца от 29.08.2026: домашний IP-адрес не светим, и **ручной
+# работы быть не должно**. Поэтому обход ходит сам, каждое утро, и сам же
+# кладёт результат в папку `results/` этого репозитория. Кнопка на вкладке
+# Actions остаётся — для внеочередного запуска.
+#
+# Что делает: качает страницы по плану `data/crawl_plan.json`, сразу же их
+# разбирает и кладёт результат в артефакт. Итог виден прямо на странице
+# запуска — сколько матчей нашлось и не подсунул ли какой-то сайт заглушку
+# «подтвердите, что вы человек». Именно это и надо проверить: серверу сайты
+# верят хуже, чем домашнему компьютеру.
+
+name: Обход телесайтов
+
+on:
+  # ~04:17 UTC = ~07:17 по Киеву: к утру расписание на сегодня уже полное
+  # (важно — nova.bg отдаёт только остаток текущего дня). Минута нарочно
+  # некруглая: в :00 у GitHub толпа, такие запуски он чаще пропускает —
+  # 31.08 прогон в 04:00 просто не состоялся.
+  schedule:
+    - cron: "17 4 * * *"
+    # Запасное время: GitHub нередко просто пропускает запуск по расписанию
+    # (31.08 — в 04:00, 01.09 — в 04:17). Второй заход в 07:43 UTC ходит
+    # только если первый не состоялся: шаг «Не ходили ли уже сегодня»
+    # проверяет свежесть results/report.md и тихо выходит, если всё есть.
+    - cron: "43 7 * * *"
+    # Третье время (6е, C): 01–03.09 GitHub пропускал ОБА захода. Тот же
+    # guard: если результат дня уже свежий, заход тихо выходит.
+    - cron: "11 11 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "proba — по одному адресу на сайт (4 запроса). full — весь план (62 адреса при окне 2 суток)"
+        type: choice
+        default: "proba"
+        options: ["proba", "full"]
+      days:
+        description: "Окно, суток вперёд (для полного обхода): 2 — дозаправка, 6 — «сегодня + 6» целиком"
+        type: choice
+        default: "2"
+        options: ["2", "5", "6"]
+      delay:
+        description: "Пауза между запросами к одному сайту, секунд"
+        default: "3"
+      only:
+        description: "Только эти сайты, через запятую (пусто — все)"
+        default: ""
+      urls:
+        description: "Проверить сторонние адреса вместо плана, через запятую (для поиска замены закрытому сайту)"
+        default: ""
+      post:
+        description: "Поля формы k=v&k2=v2 — тогда адреса из urls запрашиваются POST-ом (sport1tv.cz, tvr.ro)"
+        default: ""
+      readers:
+        description: "Проверить читалки (нужны сайтам, закрытым для серверов) и обновить data/readers.json"
+        type: choice
+        default: "no"
+        options: ["no", "yes"]
+      warmup:
+        description: "Сперва открыть эту страницу той же сессией — для сайтов, которые отдают данные только по куке"
+        default: ""
+      browser:
+        description: "Сразу браузером (для сайтов, где расписание рисует скрипт: sport5.co.il, rtcg.me)"
+        type: choice
+        default: "no"
+        options: ["no", "yes"]
+      date:
+        description: "Скан одной даты ГГГГ-ММ-ДД (календарь владельца): дневные сетки качаются только за этот день, итог кладётся в results/day/"
+        default: ""
+
+permissions:
+  contents: write        # чтобы обход мог сам положить результат в results/
+  issues: write          # провал обхода → issue с меткой «обход-упал» (письмо владельцу)
+
+# Кнопка сайта поверх планового обхода встаёт в очередь, а не идёт рядом
+# (аудит 07.09, A2): два обхода разом — двойная нагрузка на сайты и гонка
+# за results/. Идущий прогон не обрывается.
+concurrency:
+  group: crawl-sites
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    # 02.09: окно 5 суток — это ~970 адресов и ~50 минут ходьбы с паузами;
+    # запас, чтобы кнопка «Collect 5 days» не обрывалась на середине
+    # окно 6 суток — это ~1160 адресов с паузой 3 с на хост плюс второй
+    # заход по упавшим; 90 минут перестало хватать (аудит 07.09, A8)
+    timeout-minutes: 150
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Поставить, что нужно
+        run: |
+          pip install requests brotli selectolax tzdata playwright rapidfuzz
+          playwright install --with-deps chromium
+
+      - name: Не ходили ли уже сегодня
+        id: guard
+        run: |
+          # По расписанию обход нужен один раз в сутки: результат уже свежий
+          # (поле «собрано» в results/games.json моложе 10 ч) — заход
+          # пропускаем, он запасной. Раньше смотрели на дату коммита
+          # results/report.md, но клон без истории показывал время ЛЮБОГО
+          # последнего коммита, и правка документов отменяла обход (аудит
+          # 07.09, A2). «Собрано» пишет parse_live.py по часам GitHub (UTC).
+          RUN=1
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            AGE=$(python scripts/crawl_fetch.py --age results/games.json)
+            echo "последний результат собран $AGE ч назад"
+            if [ "$AGE" -lt 10 ]; then RUN=0; fi
+          fi
+          echo "run=$RUN" >> $GITHUB_OUTPUT
+          if [ "$RUN" = "0" ]; then echo "Обход уже был сегодня — пропускаем."; fi
+
+      - name: Что запускаем
+        if: steps.guard.outputs.run == '1'
+        id: what
+        run: |
+          # По расписанию — всегда полный обход. Руками — как выбрали в форме.
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "mode=full" >> $GITHUB_OUTPUT
+            # окно планового обхода: 6 суток. Глубина одна на все каналы
+            # (владелец 09.09), поэтому окно и решает, на сколько дней
+            # видно витрину; при 2 сутках субботние матчи оставались без
+            # каналов, хотя сайты их уже показывали (#1348, #1349)
+            echo "days=6"    >> $GITHUB_OUTPUT
+            echo "delay=3"   >> $GITHUB_OUTPUT
+            echo "only="     >> $GITHUB_OUTPUT
+            echo "urls="     >> $GITHUB_OUTPUT
+            echo "post="     >> $GITHUB_OUTPUT
+            echo "warmup="   >> $GITHUB_OUTPUT
+            echo "browser=no" >> $GITHUB_OUTPUT
+            echo "date="     >> $GITHUB_OUTPUT
+          else
+            echo "mode=${{ inputs.mode }}"   >> $GITHUB_OUTPUT
+            echo "days=${{ inputs.days }}"   >> $GITHUB_OUTPUT
+            echo "delay=${{ inputs.delay }}" >> $GITHUB_OUTPUT
+            echo "only=${{ inputs.only }}"   >> $GITHUB_OUTPUT
+            echo "urls=${{ inputs.urls }}"   >> $GITHUB_OUTPUT
+            echo "post=${{ inputs.post }}"   >> $GITHUB_OUTPUT
+            echo "warmup=${{ inputs.warmup }}" >> $GITHUB_OUTPUT
+            echo "browser=${{ inputs.browser }}" >> $GITHUB_OUTPUT
+            echo "date=${{ inputs.date }}"   >> $GITHUB_OUTPUT
+          fi
+
+      - name: Проверка читалок
+        if: github.event_name == 'schedule' || inputs.readers == 'yes'
+        continue-on-error: true
+        run: python scripts/check_readers.py
+
+      - name: Обход
+        if: steps.guard.outputs.run == '1'
+        run: |
+          ONLY=""
+          if [ -n "${{ steps.what.outputs.only }}" ]; then ONLY="--only ${{ steps.what.outputs.only }}"; fi
+          BROWSER=""
+          if [ "${{ steps.what.outputs.browser }}" = "yes" ]; then BROWSER="--browser"; fi
+          POST=""
+          if [ -n "${{ steps.what.outputs.post }}" ]; then POST="--post ${{ steps.what.outputs.post }}"; fi
+          WARMUP=""
+          if [ -n "${{ steps.what.outputs.warmup }}" ]; then WARMUP="--warmup ${{ steps.what.outputs.warmup }}"; fi
+          # обход по расписанию: сайты с пометкой «только по кнопке» в него не
+          # идут (решение владельца 10.09 по случаю mojtv.hr — сайт закрылся
+          # после того, как заходов стало больше)
+          PLANNED=""
+          if [ "${{ github.event_name }}" = "schedule" ]; then PLANNED="--scheduled"; fi
+          if [ -n "${{ steps.what.outputs.urls }}" ]; then
+            python scripts/crawl_fetch.py --urls "${{ steps.what.outputs.urls }}" --delay ${{ steps.what.outputs.delay }} $POST $WARMUP $BROWSER
+            exit 0
+          fi
+          if [ -n "${{ steps.what.outputs.date }}" ]; then
+            python scripts/crawl_fetch.py --full --date ${{ steps.what.outputs.date }} --delay ${{ steps.what.outputs.delay }} $ONLY $BROWSER $PLANNED
+          elif [ "${{ steps.what.outputs.mode }}" = "full" ]; then
+            python scripts/crawl_fetch.py --full --days ${{ steps.what.outputs.days }} --delay ${{ steps.what.outputs.delay }} $ONLY $BROWSER $PLANNED
+          else
+            python scripts/crawl_fetch.py --probe --delay ${{ steps.what.outputs.delay }} $ONLY $BROWSER $PLANNED
+          fi
+
+      - name: Разобрать скачанное
+        # `always()`: и после красного обхода разбор нужен — итог и артефакт
+        # покажут, что успело прийти. В репозиторий это уже не поедет (ниже).
+        # `--strict` (игр меньше порога — красный) — только полному обходу без
+        # фильтров, как и оценка в самом crawl_fetch.py
+        if: always() && steps.guard.outputs.run == '1'
+        run: |
+          STRICT=""
+          if [ "${{ steps.what.outputs.mode }}" = "full" ] && [ -z "${{ steps.what.outputs.only }}${{ steps.what.outputs.urls }}${{ steps.what.outputs.date }}" ]; then
+            STRICT="--strict"
+          fi
+          if [ -n "${{ steps.what.outputs.date }}" ]; then
+            python scripts/parse_live.py --date ${{ steps.what.outputs.date }}
+          else
+            python scripts/parse_live.py --days ${{ steps.what.outputs.days }} $STRICT
+          fi
+
+      - name: AI-слой — самопочинка и запасной разбор (рубильник STREAMS_AI)
+        # бесплатная модель GitHub чинит несложные поломки разметки сама и
+        # достаёт матчи со страниц, которые парсер не осилил; выключается
+        # переменной репозитория STREAMS_AI (решение владельца 02.09)
+        if: always() && steps.guard.outputs.run == '1' && vars.STREAMS_AI == 'on'
+        env:
+          STREAMS_AI: "on"
+          AI_API_KEY: ${{ secrets.STREAMS_AI_KEY }}
+          AI_DAYS: ${{ steps.what.outputs.days }}
+        run: |
+          python scripts/ai_repair.py --auto || true
+          python scripts/ai_fallback.py --run --merge || true
+
+      - name: Показать итог прямо здесь
+        if: always() && steps.guard.outputs.run == '1'
+        run: |
+          cat recon/raw_live/report.md   >> $GITHUB_STEP_SUMMARY || true
+          echo ""                        >> $GITHUB_STEP_SUMMARY
+          cat recon/raw_live/matches.md  >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Положить скан даты в репозиторий
+        # календарь владельца (05.09): итог одного дня едет отдельной папкой
+        # results/day/ и полного не затирает; сервер вливает его вдобавок.
+        # Без `always()`: упал обход или разбор — старый итог остаётся (A4)
+        if: steps.guard.outputs.run == '1' && steps.what.outputs.date != ''
+        run: |
+          mkdir -p results/day
+          cp recon/raw_live/games.json  results/day/ 2>/dev/null || true
+          cp recon/raw_live/report.json results/day/ 2>/dev/null || true
+          git config user.name  "Обход телесайтов"
+          git config user.email "actions@github.com"
+          git add results/day/
+          git diff --cached --quiet || git commit -m "Скан даты ${{ steps.what.outputs.date }} — $(date -u +%d.%m.%Y\ %H:%M) UTC"
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase origin main
+          done
+          echo "::error::скан даты не запушился за 3 попытки"
+          exit 1
+
+      - name: Положить результат в репозиторий
+        # только ПОЛНЫЙ обход без фильтров: проба (--urls, proba) и точечный
+        # `--only` не должны затирать results/ полного дня своим маленьким
+        # games.json (02.09 затирали дважды — проба и обкатка flashscore).
+        # И только УДАЧНЫЙ: без `always()` шаг не идёт после красного обхода,
+        # красного разбора или таймаута — урезанный результат больше не
+        # ложится поверх хорошего (аудит 07.09, A4)
+        if: steps.guard.outputs.run == '1' && steps.what.outputs.mode == 'full' && steps.what.outputs.only == '' && steps.what.outputs.urls == '' && steps.what.outputs.date == ''
+        run: |
+          # Сами страницы не храним — они тяжёлые и живут в артефакте.
+          # В репозиторий кладём только два отчёта: что ответили сайты и
+          # какие матчи нашлись. Так свежий список всегда под рукой.
+          mkdir -p results
+          cp recon/raw_live/report.md  results/  2>/dev/null || true
+          cp recon/raw_live/matches.md results/  2>/dev/null || true
+          cp recon/raw_live/report.json results/ 2>/dev/null || true
+          cp recon/raw_live/games.json  results/ 2>/dev/null || true
+          git config user.name  "Обход телесайтов"
+          git config user.email "actions@github.com"
+          git add results/
+          # список живых читалок обновляет шаг «Проверка читалок» — он тоже
+          # едет в репозиторий, иначе следующий обход о нём не узнает
+          git add data/readers.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Обход $(date -u +%d.%m.%Y\ %H:%M) UTC"
+          # Пока обход шёл, в main могли запушить с компьютера (02.09 так
+          # пропал итог полного обхода: push отбило, «|| true» смолчал).
+          # Поэтому: подтянуть чужие коммиты ребейзом и попробовать ещё раз,
+          # а не вышло — упасть громко, чтобы пропажу результата было видно.
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase origin main
+          done
+          echo "::error::результат обхода не запушился за 3 попытки"
+          exit 1
+
+      - name: Забрать страницы и отчёты
+        if: always() && steps.guard.outputs.run == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: obhod-${{ github.run_number }}
+          path: recon/raw_live/
+          retention-days: 7
+
+      - name: Дозор — сайт снова пускает
+        # закрытый сайт стоит в обходе одним заходом в сутки; ответил
+        # расписанием — владельцу уходит письмо (решение владельца 09.09)
+        if: success() && steps.guard.outputs.run == '1'
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          python scripts/crawl_alarm.py --watch
+          --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Провал — issue владельцу
+        # Письмо GitHub о красном прогоне приходит не всегда: запуск от бота
+        # queue.yml (кнопки сайта) — никому. Issue с меткой «обход-упал»
+        # доходит письмом всегда; открытая уже есть — туда комментарий.
+        # `cancelled()` — таймаут job'а тоже провал (аудит 07.09, A4)
+        if: (failure() || cancelled()) && steps.guard.outputs.run == '1'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          python scripts/crawl_alarm.py
+          --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          --mode "${{ steps.what.outputs.mode }}, окно ${{ steps.what.outputs.days }} сут., only=${{ steps.what.outputs.only }}, date=${{ steps.what.outputs.date }}, запуск: ${{ github.event_name }}"

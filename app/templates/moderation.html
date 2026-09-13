@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Названия — Streams Schedule{% endblock %}
+
+{% block body %}
+<style>
+  /* строка, на которую привели с витрины: её видно сразу */
+  tr.focus > td { background:#fff3e0; }
+  tr.focus > td:first-child { box-shadow:inset 3px 0 0 #f59e0b; }
+  @media (prefers-color-scheme: dark) { tr.focus > td { background:#2e2415; } }
+</style>
+<h1>Названия{% if back %}
+  <a class="btn" style="float:right;font-weight:400"
+     href="{{ url_for('schedule') }}#{{ back }}">← к расписанию, на ту же игру</a>
+{% endif %}</h1>
+
+<div class="card">
+  <p class="muted" style="margin:0">
+    Здесь то, что система не смогла опознать сама. Слева — как написано на
+    сайте, справа — как это должно называться у нас. Подтверждённое
+    закрепляется навсегда и на следующем обходе уже не спросится.
+  </p>
+</div>
+
+<div class="row" style="margin-bottom:14px">
+  <div style="flex:0 0 auto">
+    <a class="btn" href="{{ url_for('moderation_list') }}">Все</a>
+    {% for k, title in [('team','Команды'), ('league','Лиги'),
+                        ('channel','Каналы'), ('sport','Вид спорта')] %}
+      <a class="btn" href="{{ url_for('moderation_list', kind=k) }}"
+         {% if kind == k and not later %}style="border-color:var(--accent);color:var(--accent)"{% endif %}>
+        {{ title }}{% if counts.get(k) %} · {{ counts[k] }}{% endif %}
+      </a>
+    {% endfor %}
+    {# «Не знаю» не удаляет запись: она ждёт здесь, пока не будет ответа #}
+    <a class="btn" href="{{ url_for('moderation_list', later=1) }}"
+       {% if later %}style="border-color:var(--accent);color:var(--accent)"{% endif %}
+       title="То, на что нажали «Не знаю»: не удалено, ждёт ответа">
+      Отложенные{% if later_count %} · {{ later_count }}{% endif %}
+    </a>
+  </div>
+</div>
+
+{% if not rows %}
+  <div class="card">
+    <b>Разбирать нечего.</b>
+    <p class="muted" style="margin:6px 0 0">
+      Либо всё опознано, либо очередь ещё не наполнялась:
+      <code>scripts\fill_moderation.py</code> после обхода.
+    </p>
+  </div>
+{% else %}
+<table>
+  <tr>
+    <th style="width:22%">Как на сайте</th>
+    <th style="width:10%">Что это</th>
+    <th style="width:14%">Сайт</th>
+    <th>Как назвать у нас</th>
+  </tr>
+  {% for r in rows %}
+  <tr id="item-{{ r.id }}"{% if focus and focus == r.id %} class="focus"{% endif %}>
+    <td><b>{{ r.raw_value }}</b></td>
+    <td><span class="tag">{{ {'team':'команда','league':'лига',
+                              'channel':'канал','sport':'вид спорта'}
+                             .get(r.kind, r.kind) }}</span></td>
+    <td class="muted">{{ r.domain or '—' }}</td>
+    <td>
+      <form method="post" action="{{ url_for('moderation_resolve', item_id=r.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="row">
+          {% if r.kind == 'sport' %}
+          {# тут спрашивается не название, а вид спорта: сайт о нём молчит,
+             и без ответа строка на витрину не попадёт #}
+          <div style="flex:2 1 240px" class="muted">
+            {% if r.suggestion %}{{ r.suggestion }}<br>{% endif %}
+            Какой это спорт?
+          </div>
+          <div style="flex:0 0 auto">
+            <button class="primary" type="submit" name="canonical" value="F">Футбол</button>
+            <button class="primary" type="submit" name="canonical" value="B">Баскетбол</button>
+            <button class="primary" type="submit" name="canonical" value="T">Теннис</button>
+          </div>
+          {% else %}
+          <div style="flex:2 1 240px">
+            <input type="text" name="canonical" value="{{ r.suggestion or '' }}"
+                   placeholder="каноническое название">
+          </div>
+          {% endif %}
+          {% if r.kind == 'channel' %}
+          <div style="flex:0 1 110px">
+            <input type="text" name="country" value="{{ r.source_country or '' }}"
+                   placeholder="страна"
+                   title="Обязательно: Nova Sport 1 бывает греческий и чешский —
+                          это разные каналы. Подставлена страна сайта, поправьте,
+                          если канал иностранный">
+          </div>
+          {% endif %}
+          <div style="flex:0 0 auto">
+            {% if r.kind != 'sport' %}
+            <button class="primary" type="submit">Закрепить</button>
+            {% endif %}
+            <button type="submit" name="action" value="skip"
+                    title="{% if r.kind == 'sport' %}Это не матч — студия, обзор, повтор{% else %}Это не название — например заголовок турнира{% endif %}">
+              {% if r.kind == 'sport' %}Не матч{% else %}Не название{% endif %}
+            </button>
+            {% if later %}
+            <button type="submit" name="action" value="reopen"
+                    title="Вернуть в основной список">Вернуть</button>
+            {% else %}
+            <button type="submit" name="action" value="later"
+                    title="Не знаю ответа: запись не удалится, а уйдёт во вкладку «Отложенные»">
+              Не знаю
+            </button>
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<p class="muted" style="margin-top:10px">
+  Женские команды пишем с ` W` на конце, возраст (`U19`) не убираем —
+  без этого они склеятся со взрослой основой.
+</p>
+{% endif %}
+{% endblock %}

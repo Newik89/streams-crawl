@@ -1,0 +1,3830 @@
+{
+ "days": 2,
+ "built": "2026-09-10",
+ "note": "дата в адресах — метка, подставляется в день обхода",
+ "sources": [
+  {
+   "domain": "allente.no",
+   "timezone": "Europe/Oslo",
+   "grid": false,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.allente.no/tv-guide#!/channel/event/0188201709060535?selected=20170920",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.allente.no/api/epg/refetch-epg-data?Start={YYYY}-{MM}-{DD}&Genre=Sport"
+    }
+   ]
+  },
+  {
+   "domain": "aspor.com.tr",
+   "timezone": "Europe/Istanbul",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "A Spor"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.aspor.com.tr/yayin-akisi",
+   "channels": [
+    {
+     "name": "A Spor",
+     "pattern": "https://www.aspor.com.tr/yayin-akisi"
+    }
+   ]
+  },
+  {
+   "domain": "atv.com.tr",
+   "timezone": "Europe/Istanbul",
+   "grid": false,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.atv.com.tr/yayin-akisi",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.atv.com.tr/streaming/jsondatehtml?dt={D.MM.YYYY}&isajax=true"
+    }
+   ]
+  },
+  {
+   "domain": "bbc.co.uk",
+   "timezone": "Europe/London",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "BBC ALBA",
+    "BBC Four",
+    "BBC News UK",
+    "BBC One London",
+    "BBC Parliament",
+    "BBC Scotland",
+    "BBC Three",
+    "BBC Two England",
+    "CBBC",
+    "CBeebies",
+    "S4C"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.bbc.co.uk/schedules/p00fzl6p/2024/11/19",
+   "channels": [
+    {
+     "name": "BBC ALBA",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl67/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "BBC Four",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl6b/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "BBC News UK",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl6g/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "BBC One London",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl6p/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "BBC Parliament",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl73/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "BBC Scotland",
+     "pattern": "https://www.bbc.co.uk/schedules/p06kvypx/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "BBC Three",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl95/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "BBC Two England",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl97/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "CBBC",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl9r/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "CBeebies",
+     "pattern": "https://www.bbc.co.uk/schedules/p00fzl9s/{YYYY}/{MM}/{DD}"
+    },
+    {
+     "name": "S4C",
+     "pattern": "https://www.bbc.co.uk/schedules/p020dmkf/{YYYY}/{MM}/{DD}"
+    }
+   ]
+  },
+  {
+   "domain": "beinsports.com.tr",
+   "timezone": "Europe/Istanbul",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "beIN SPORTS 1",
+    "beIN SPORTS 2",
+    "beIN SPORTS 3",
+    "beIN SPORTS 4",
+    "beIN SPORTS HABER"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://beinsports.com.tr/yayin-akisi/beinsports-2/pazar",
+   "channels": [
+    {
+     "name": "beIN SPORTS 1",
+     "pattern": "https://beinsports.com.tr/yayin-akisi/beinsports/{WEEKDAY_TR}"
+    },
+    {
+     "name": "beIN SPORTS 2",
+     "pattern": "https://beinsports.com.tr/yayin-akisi/beinsports-2/{WEEKDAY_TR}"
+    },
+    {
+     "name": "beIN SPORTS 3",
+     "pattern": "https://beinsports.com.tr/yayin-akisi/beinsports-3/{WEEKDAY_TR}"
+    },
+    {
+     "name": "beIN SPORTS 4",
+     "pattern": "https://beinsports.com.tr/yayin-akisi/beinsports-4/{WEEKDAY_TR}"
+    },
+    {
+     "name": "beIN SPORTS HABER",
+     "pattern": "https://beinsports.com.tr/yayin-akisi/bein-sports-haber/{WEEKDAY_TR}"
+    }
+   ]
+  },
+  {
+   "domain": "bnt.bg",
+   "timezone": "Europe/Sofia",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://bnt.bg/program/bnt1",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://bnt.bg/program/bnt3"
+    }
+   ]
+  },
+  {
+   "domain": "canal11.pt",
+   "timezone": "Europe/Lisbon",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": {
+    "page": 0,
+    "size": 50,
+    "next": true,
+    "count": true,
+    "filters": {
+     "status": "upcoming"
+    }
+   },
+   "headers": {
+    "Origin": "https://www.canal11.pt",
+    "Referer": "https://www.canal11.pt/"
+   },
+   "base_url": "https://www.canal11.pt/info/programa%C3%A7%C3%A3o/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://fpf.watch.pixellot.tv/api/event/list"
+    }
+   ]
+  },
+  {
+   "domain": "ceskatelevize.cz",
+   "timezone": "Europe/Prague",
+   "grid": false,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.ceskatelevize.cz/tv-program/11.02.2026/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.ceskatelevize.cz/tv-program/{DD}.{MM}.{YYYY}/"
+    }
+   ]
+  },
+  {
+   "domain": "cosmotetv.gr",
+   "timezone": "Europe/Athens",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Magenta Sport 1",
+    "Magenta Sport 2",
+    "Magenta Sport 3",
+    "Magenta Sport 4",
+    "Magenta Sport 5",
+    "Magenta Sport 6",
+    "Magenta Sport 7",
+    "Magenta Sport 8",
+    "Magenta Sport 9",
+    "Magenta Sport 4K",
+    "Magenta Sport 1 League",
+    "Magenta Sport 2 League",
+    "Magenta Sport 3 League",
+    "Magenta Sport 4 League",
+    "Magenta Sport Start",
+    "Magenta Sport Highlights"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.cosmotetv.gr/portal/program#genre=%CE%91%CE%B8%CE%BB%CE%B7%CF%84%CE%B9%CE%BA%CE%AC#date=1771797600-1771883999",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from={UNIXDAY}&to={UNIXDAYEND}&endingIncludedInRange=false"
+    }
+   ]
+  },
+  {
+   "domain": "dagenstv.com",
+   "timezone": "Europe/Stockholm",
+   "grid": false,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://dagenstv.com/kanal/svt2?day=6&week=2",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.kolla.tv/api/es/channels/listWithPrograms?dat={YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "diemaxtra.nova.bg",
+   "timezone": "Europe/Sofia",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Diema Sport",
+    "Diema Sport 2",
+    "Diema Sport 3",
+    "Diema Xtra"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://diemaxtra.nova.bg/diemasport3/schedule",
+   "channels": [
+    {
+     "name": "Diema Sport",
+     "pattern": "https://diemaxtra.nova.bg/diemasport/schedule"
+    },
+    {
+     "name": "Diema Sport 2",
+     "pattern": "https://diemaxtra.nova.bg/diemasport2/schedule"
+    },
+    {
+     "name": "Diema Sport 3",
+     "pattern": "https://diemaxtra.nova.bg/diemasport3/schedule"
+    },
+    {
+     "name": "Diema Xtra",
+     "pattern": "https://diemaxtra.nova.bg/schedule"
+    }
+   ]
+  },
+  {
+   "domain": "digisport.ro",
+   "timezone": "Europe/Bucharest",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Digi Sport 1",
+    "Digi Sport 2",
+    "Digi Sport 3",
+    "Digi Sport 4"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.digisport.ro/program-tv/digisport-1",
+   "channels": [
+    {
+     "name": "Digi Sport 1",
+     "pattern": "https://www.digisport.ro/program-tv/digisport-1"
+    },
+    {
+     "name": "Digi Sport 2",
+     "pattern": "https://www.digisport.ro/program-tv/digisport-2"
+    },
+    {
+     "name": "Digi Sport 3",
+     "pattern": "https://www.digisport.ro/program-tv/digisport-3"
+    },
+    {
+     "name": "Digi Sport 4",
+     "pattern": "https://www.digisport.ro/program-tv/digisport-4"
+    }
+   ]
+  },
+  {
+   "domain": "dr.dk",
+   "timezone": "Europe/Copenhagen",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "DR1",
+    "DR2"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.dr.dk/drtv/tv-guide",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://prod95.dr-massive.com/api/schedules?channels=20875,20876&date={YYYY-MM-DD}&hour=0&duration=24&device=web_browser&sub=Anonymous"
+    }
+   ]
+  },
+  {
+   "domain": "epg.cyta.com.cy",
+   "timezone": "Asia/Nicosia",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "CVSPORTS 4K1",
+    "CVSPORTS 4K2",
+    "CVSPORTS Multiview",
+    "Cablenet Sports 1 HD",
+    "Cablenet Sports 2 HD",
+    "Cablenet Sports 3 HD",
+    "Cytavision Sports1 HD",
+    "Cytavision Sports2 HD",
+    "Cytavision Sports3 HD",
+    "Cytavision Sports4 HD",
+    "Cytavision Sports5 HD",
+    "Cytavision Sports6 HD",
+    "Cytavision Sports7 HD",
+    "Cytavision Sports8 HD",
+    "Eurosport 1 HD",
+    "Eurosport 2 HD",
+    "Novasports 2HD",
+    "Novasports 3 HD",
+    "Novasports 4 HD",
+    "Novasports 5 HD",
+    "Novasports 6 HD",
+    "Novasports PrimeHD",
+    "Novasports Start HD",
+    "Novasportsextra1HD",
+    "Novasportsextra2HD",
+    "Novasportsextra3HD",
+    "Novasportsextra4HD",
+    "OMONOIA TV",
+    "PPV1",
+    "PPV2",
+    "PPV3",
+    "PPV4",
+    "PPV5",
+    "PPV6"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://epg.cyta.com.cy/tv-guide/en",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200"
+    }
+   ]
+  },
+  {
+   "domain": "ert.gr",
+   "timezone": "Europe/Athens",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "ERT Cosmos",
+    "ERT Cosmos Cyprus",
+    "ΒΟΥΛΗ TV",
+    "ΕΡΤ NEWS",
+    "ΕΡΤ Sports 1",
+    "ΕΡΤ Sports 2",
+    "ΕΡΤ1",
+    "ΕΡΤ2 ΣΠΟΡ",
+    "ΕΡΤ3"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.ert.gr/tv/program/?dt=2026-02-17",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.ert.gr/tv/program/?dt={YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "football-tv.ru",
+   "timezone": "Europe/Moscow",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.football-tv.ru/#d9573c1d0e7d45c39c926c8d8c241982",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.football-tv.ru/"
+    }
+   ]
+  },
+  {
+   "domain": "jupiter.err.ee",
+   "timezone": "Europe/Tallinn",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "ETV",
+    "ETV+",
+    "ETV2"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://jupiter.err.ee/1608080980",
+   "channels": [
+    {
+     "name": "ETV",
+     "pattern": "https://services.err.ee/api/tvSchedule/getTimelineSchedule?day={D}&month={M}&year={YYYY}&channel=etv"
+    },
+    {
+     "name": "ETV+",
+     "pattern": "https://services.err.ee/api/tvSchedule/getTimelineSchedule?day={D}&month={M}&year={YYYY}&channel=etvpluss"
+    },
+    {
+     "name": "ETV2",
+     "pattern": "https://services.err.ee/api/tvSchedule/getTimelineSchedule?day={D}&month={M}&year={YYYY}&channel=etv2"
+    }
+   ]
+  },
+  {
+   "domain": "liveonsat.com",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "SuperSport 1 Albania",
+    "SuperSport 1 Albania HD",
+    "SuperSport 2 Albania",
+    "SuperSport 2 Albania HD",
+    "SuperSport 3 Albania",
+    "SuperSport 3 Albania HD",
+    "SuperSport 4 Albania",
+    "SuperSport 4 Albania HD",
+    "SuperSport 5 Albania",
+    "SuperSport 5 Albania HD",
+    "SuperSport 6 Albania",
+    "SuperSport 6 Albania HD",
+    "SuperSport 7 Albania",
+    "SuperSport 7 Albania HD"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://liveonsat.com/2day.php?start_dd=04&start_mm=02&start_yyyy=2026&end_dd=04&end_mm=02&end_yyyy=2026",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://liveonsat.com/2day.php?start_dd={DD}&start_mm={MM}&start_yyyy={YYYY}&end_dd={DD}&end_mm={MM}&end_yyyy={YYYY}&postponed=0"
+    }
+   ]
+  },
+  {
+   "domain": "livesoccertv.com",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "ART Sport 1",
+    "ART Sport 2",
+    "ART Sport 3",
+    "ART Sport 4",
+    "ART Sport 5",
+    "ART Sport 6",
+    "Abu Dhabi Sports 1",
+    "Abu Dhabi Sports 2",
+    "ESPN 2 Netherlands",
+    "ESPN 3 Netherlands",
+    "ESPN 4 Netherlands",
+    "ESPN Netherlands",
+    "ON Sport 1",
+    "ON Sport 2",
+    "ON Sport Max",
+    "ON Sport Plus",
+    "SuperSport 1 Digitalb",
+    "SuperSport 2 Digitalb",
+    "SuperSport 3 Digitalb",
+    "SuperSport 4 Digitalb",
+    "SuperSport 5 Digitalb",
+    "SuperSport 6 Digitalb",
+    "Supersport 7 Digitalb"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.livesoccertv.com/ru/schedules/2026-02-24/",
+   "channels": [
+    {
+     "name": "ART Sport 1",
+     "pattern": "https://www.livesoccertv.com/channels/artsport1/"
+    },
+    {
+     "name": "ART Sport 2",
+     "pattern": "https://www.livesoccertv.com/channels/art-sport-2/"
+    },
+    {
+     "name": "ART Sport 3",
+     "pattern": "https://www.livesoccertv.com/channels/art-sport-3/"
+    },
+    {
+     "name": "ART Sport 4",
+     "pattern": "https://www.livesoccertv.com/channels/art-sport-4/"
+    },
+    {
+     "name": "ART Sport 5",
+     "pattern": "https://www.livesoccertv.com/channels/art-sport-5/"
+    },
+    {
+     "name": "ART Sport 6",
+     "pattern": "https://www.livesoccertv.com/channels/art-sport-6/"
+    },
+    {
+     "name": "Abu Dhabi Sports 1",
+     "pattern": "https://www.livesoccertv.com/channels/abu-dhabi-sports-1/"
+    },
+    {
+     "name": "Abu Dhabi Sports 2",
+     "pattern": "https://www.livesoccertv.com/channels/abu-dhabi-sports-2/"
+    },
+    {
+     "name": "ESPN 2 Netherlands",
+     "pattern": "https://www.livesoccertv.com/channels/espn-2-netherlands/"
+    },
+    {
+     "name": "ESPN 3 Netherlands",
+     "pattern": "https://www.livesoccertv.com/channels/espn-3-netherlands/"
+    },
+    {
+     "name": "ESPN 4 Netherlands",
+     "pattern": "https://www.livesoccertv.com/channels/espn-4-netherlands/"
+    },
+    {
+     "name": "ESPN Netherlands",
+     "pattern": "https://www.livesoccertv.com/channels/espn-netherlands/"
+    },
+    {
+     "name": "ON Sport 1",
+     "pattern": "https://www.livesoccertv.com/channels/on-sport-egypt/"
+    },
+    {
+     "name": "ON Sport 2",
+     "pattern": "https://www.livesoccertv.com/channels/on-sport-2-egypt/"
+    },
+    {
+     "name": "ON Sport Max",
+     "pattern": "https://www.livesoccertv.com/channels/on-sport-max/"
+    },
+    {
+     "name": "ON Sport Plus",
+     "pattern": "https://www.livesoccertv.com/channels/on-sport-plus/"
+    },
+    {
+     "name": "SuperSport 1 Digitalb",
+     "pattern": "https://www.livesoccertv.com/channels/supersport-digitalb/"
+    },
+    {
+     "name": "SuperSport 2 Digitalb",
+     "pattern": "https://www.livesoccertv.com/channels/supersport-2-digitalb/"
+    },
+    {
+     "name": "SuperSport 3 Digitalb",
+     "pattern": "https://www.livesoccertv.com/channels/supersport-3-digitalb/"
+    },
+    {
+     "name": "SuperSport 4 Digitalb",
+     "pattern": "https://www.livesoccertv.com/channels/supersport-4-digitalb/"
+    },
+    {
+     "name": "SuperSport 5 Digitalb",
+     "pattern": "https://www.livesoccertv.com/channels/supersport-5-digitalb/"
+    },
+    {
+     "name": "SuperSport 6 Digitalb",
+     "pattern": "https://www.livesoccertv.com/channels/supersport-6-digitalb/"
+    },
+    {
+     "name": "Supersport 7 Digitalb",
+     "pattern": "https://www.livesoccertv.com/channels/supersport-7-albania/"
+    }
+   ]
+  },
+  {
+   "domain": "maxsport.live",
+   "timezone": "Europe/Sofia",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://maxsport.live/tv-guide/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://maxsport.live/tv-guide/"
+    }
+   ]
+  },
+  {
+   "domain": "mediaklikk.hu",
+   "timezone": "Europe/Budapest",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "M4 Sport"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://mediaklikk.hu/musorujsag/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://mediaklikk.hu/musorujsag/"
+    }
+   ]
+  },
+  {
+   "domain": "mojtv.hr",
+   "timezone": "Europe/Zagreb",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "сетка спортканалов"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 4,
+   "manual_only": true,
+   "by_server": true,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://mojtv.hr/tv-program/-2/sportski/sutra.aspx#google_vignette",
+   "channels": [
+    {
+     "name": "сетка спортканалов",
+     "pattern": "https://mojtv.hr/tv-program/-2/sportski/{YYYY-MM-DD}.aspx"
+    }
+   ]
+  },
+  {
+   "domain": "movistarplus.es",
+   "timezone": "Europe/Madrid",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "DAZN 1",
+    "DAZN 2",
+    "DAZN 3",
+    "DAZN 4",
+    "DAZN Baloncesto",
+    "DAZN Baloncesto 2",
+    "DAZN Baloncesto 3",
+    "DAZN LaLiga",
+    "DAZN LaLiga 2",
+    "Esport 3",
+    "LaLiga TV Hypermotion",
+    "LaLiga TV Hypermotion 2",
+    "LaLiga TV Hypermotion 3",
+    "M+ Deportes",
+    "M+ Deportes 2",
+    "M+ Deportes 3",
+    "M+ Deportes 4",
+    "M+ Deportes 5",
+    "M+ Deportes 6",
+    "M+ Deportes 7",
+    "M+ LaLiga",
+    "M+ LaLiga 2",
+    "M+ LaLiga 2 HDR",
+    "M+ LaLiga 3",
+    "M+ LaLiga 4",
+    "M+ LaLiga HDR",
+    "M+ Liga de Campeones",
+    "M+ Liga de Campeones 2",
+    "M+ Liga de Campeones 3",
+    "M+ Liga de Campeones 4",
+    "M+ Liga de Campeones 5",
+    "M+ Vamos",
+    "M+ Vamos 2",
+    "M+ Vamos 3",
+    "Teledeporte"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.movistarplus.es/programacion-tv/m1sd",
+   "channels": [
+    {
+     "name": "DAZN 1",
+     "pattern": "https://www.movistarplus.es/programacion-tv/m1sd/{YYYY-MM-DD}"
+    },
+    {
+     "name": "DAZN 2",
+     "pattern": "https://www.movistarplus.es/programacion-tv/m2sd/{YYYY-MM-DD}"
+    },
+    {
+     "name": "DAZN 3",
+     "pattern": "https://www.movistarplus.es/programacion-tv/dazn3/{YYYY-MM-DD}"
+    },
+    {
+     "name": "DAZN 4",
+     "pattern": "https://www.movistarplus.es/programacion-tv/dazn4/{YYYY-MM-DD}"
+    },
+    {
+     "name": "DAZN Baloncesto",
+     "pattern": "https://www.movistarplus.es/programacion-tv/dazba/{YYYY-MM-DD}"
+    },
+    {
+     "name": "DAZN Baloncesto 2",
+     "pattern": "https://www.movistarplus.es/programacion-tv/dazb2/{YYYY-MM-DD}"
+    },
+    {
+     "name": "DAZN Baloncesto 3",
+     "pattern": "https://www.movistarplus.es/programacion-tv/dazb3/{YYYY-MM-DD}"
+    },
+    {
+     "name": "DAZN LaLiga",
+     "pattern": "https://www.movistarplus.es/programacion-tv/daznli/{YYYY-MM-DD}"
+    },
+    {
+     "name": "DAZN LaLiga 2",
+     "pattern": "https://www.movistarplus.es/programacion-tv/daznl2/{YYYY-MM-DD}"
+    },
+    {
+     "name": "Esport 3",
+     "pattern": "https://www.movistarplus.es/programacion-tv/esp3/{YYYY-MM-DD}"
+    },
+    {
+     "name": "LaLiga TV Hypermotion",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mligs/{YYYY-MM-DD}"
+    },
+    {
+     "name": "LaLiga TV Hypermotion 2",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mligs2/{YYYY-MM-DD}"
+    },
+    {
+     "name": "LaLiga TV Hypermotion 3",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mligs3/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Deportes",
+     "pattern": "https://www.movistarplus.es/programacion-tv/cpdep/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Deportes 2",
+     "pattern": "https://www.movistarplus.es/programacion-tv/arthur/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Deportes 3",
+     "pattern": "https://www.movistarplus.es/programacion-tv/usop2/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Deportes 4",
+     "pattern": "https://www.movistarplus.es/programacion-tv/usop3/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Deportes 5",
+     "pattern": "https://www.movistarplus.es/programacion-tv/usop11/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Deportes 6",
+     "pattern": "https://www.movistarplus.es/programacion-tv/multi8/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Deportes 7",
+     "pattern": "https://www.movistarplus.es/programacion-tv/multi6/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ LaLiga",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mliga/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ LaLiga 2",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mlig1/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ LaLiga 2 HDR",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mliuhd/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ LaLiga 3",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mlig2/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ LaLiga 4",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mlig3/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ LaLiga HDR",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mliguh/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Liga de Campeones",
+     "pattern": "https://www.movistarplus.es/programacion-tv/chapio/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Liga de Campeones 2",
+     "pattern": "https://www.movistarplus.es/programacion-tv/chap1/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Liga de Campeones 3",
+     "pattern": "https://www.movistarplus.es/programacion-tv/chap2/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Liga de Campeones 4",
+     "pattern": "https://www.movistarplus.es/programacion-tv/chap3/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Liga de Campeones 5",
+     "pattern": "https://www.movistarplus.es/programacion-tv/chap4/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Vamos",
+     "pattern": "https://www.movistarplus.es/programacion-tv/vamosd/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Vamos 2",
+     "pattern": "https://www.movistarplus.es/programacion-tv/vam2sd/{YYYY-MM-DD}"
+    },
+    {
+     "name": "M+ Vamos 3",
+     "pattern": "https://www.movistarplus.es/programacion-tv/mellav/{YYYY-MM-DD}"
+    },
+    {
+     "name": "Teledeporte",
+     "pattern": "https://www.movistarplus.es/programacion-tv/tdep/{YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "nova.bg",
+   "timezone": "Europe/Sofia",
+   "grid": false,
+   "marks": {
+    "channel_id": "4"
+   },
+   "include": [
+    "diemasport",
+    "diemasport 2",
+    "diemasport 3",
+    "nova sport"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://nova.bg/schedule/index/4/2026/02/23/",
+   "channels": [
+    {
+     "name": "diemasport",
+     "pattern": "https://nova.bg/schedule/index/5/{YYYY}/{MM}/{DD}/"
+    },
+    {
+     "name": "diemasport 2",
+     "pattern": "https://nova.bg/schedule/index/6/{YYYY}/{MM}/{DD}/"
+    },
+    {
+     "name": "diemasport 3",
+     "pattern": "https://nova.bg/schedule/index/8/{YYYY}/{MM}/{DD}/"
+    },
+    {
+     "name": "nova sport",
+     "pattern": "https://nova.bg/schedule/index/4/{YYYY}/{MM}/{DD}/"
+    }
+   ]
+  },
+  {
+   "domain": "npo.nl",
+   "timezone": "Europe/Amsterdam",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "NPO1",
+    "NPO2",
+    "NPO3"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://npo.nl/start/live",
+   "channels": [
+    {
+     "name": "NPO1",
+     "pattern": "https://npo.nl/start/api/domain/guide-channel?date={DD-MM-YYYY}&guid=83dc1f25-a065-496c-9418-bd5c60dfb36d"
+    },
+    {
+     "name": "NPO2",
+     "pattern": "https://npo.nl/start/api/domain/guide-channel?date={DD-MM-YYYY}&guid=316951f5-ce06-41d2-ae24-44eb25368a61"
+    },
+    {
+     "name": "NPO3",
+     "pattern": "https://npo.nl/start/api/domain/guide-channel?date={DD-MM-YYYY}&guid=2042e1ee-0e79-4766-aea2-5b300d6839b2"
+    }
+   ]
+  },
+  {
+   "domain": "poverkhnost.tv",
+   "timezone": "Europe/Kyiv",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Sport 1",
+    "Sport 2",
+    "Sport 3",
+    "Sport 4",
+    "Sport 5"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.poverkhnost.tv/pages/index.php?c=10&s=135",
+   "channels": [
+    {
+     "name": "Sport 1",
+     "pattern": "https://www.poverkhnost.tv/pages/index.php?c=10&s=135"
+    },
+    {
+     "name": "Sport 2",
+     "pattern": "https://www.poverkhnost.tv/pages/index.php?c=10&s=121"
+    },
+    {
+     "name": "Sport 3",
+     "pattern": "https://www.poverkhnost.tv/pages/index.php?c=10&s=161"
+    },
+    {
+     "name": "Sport 4",
+     "pattern": "https://www.poverkhnost.tv/pages/index.php?c=10&s=124"
+    },
+    {
+     "name": "Sport 5",
+     "pattern": "https://www.poverkhnost.tv/pages/index.php?c=10&s=168"
+    }
+   ]
+  },
+  {
+   "domain": "primaplay.ro",
+   "timezone": "Europe/Bucharest",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "AgroTV",
+    "Cinemaraton",
+    "Cinemaraton Plus",
+    "MedikaTV",
+    "Nostalgia TV",
+    "PPV1",
+    "PPV2",
+    "PPV3",
+    "PPV4",
+    "Prima Comedy",
+    "Prima History",
+    "Prima News",
+    "Prima Sport 1",
+    "Prima Sport 2",
+    "Prima Sport 3",
+    "Prima Sport 4",
+    "Prima Sport 5",
+    "Prima World & Travel",
+    "PrimaTV"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.primaplay.ro/programtv",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.primaplay.ro/programtv"
+    }
+   ]
+  },
+  {
+   "domain": "programetv.ro",
+   "timezone": "Europe/Bucharest",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Digi Sport 1",
+    "Digi Sport 2",
+    "Digi Sport 3",
+    "Digi Sport 4",
+    "M4 Sport",
+    "Prima Sport 1",
+    "Prima Sport 2",
+    "Prima Sport 3",
+    "Prima Sport 4",
+    "Pro Arena",
+    "TVR Sport HD"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.programetv.ro/program-tv/antena-1/duminica/",
+   "channels": [
+    {
+     "name": "Digi Sport 1",
+     "pattern": "https://www.programetv.ro/program-tv/digi-sport-1/"
+    },
+    {
+     "name": "Digi Sport 2",
+     "pattern": "https://www.programetv.ro/program-tv/digi-sport-2/"
+    },
+    {
+     "name": "Digi Sport 3",
+     "pattern": "https://www.programetv.ro/program-tv/digi-sport-3/"
+    },
+    {
+     "name": "Digi Sport 4",
+     "pattern": "https://www.programetv.ro/program-tv/digi-sport-4/"
+    },
+    {
+     "name": "M4 Sport",
+     "pattern": "https://www.programetv.ro/program-tv/m4-sport/"
+    },
+    {
+     "name": "Prima Sport 1",
+     "pattern": "https://www.programetv.ro/program-tv/prima-sport-1/"
+    },
+    {
+     "name": "Prima Sport 2",
+     "pattern": "https://www.programetv.ro/program-tv/prima-sport-2/"
+    },
+    {
+     "name": "Prima Sport 3",
+     "pattern": "https://www.programetv.ro/program-tv/prima-sport-3/"
+    },
+    {
+     "name": "Prima Sport 4",
+     "pattern": "https://www.programetv.ro/program-tv/prima-sport-4/"
+    },
+    {
+     "name": "Pro Arena",
+     "pattern": "https://www.programetv.ro/program-tv/pro-arena/"
+    },
+    {
+     "name": "TVR Sport HD",
+     "pattern": "https://www.programetv.ro/program-tv/tvr-sport-hd/"
+    }
+   ]
+  },
+  {
+   "domain": "programme-tv.net",
+   "timezone": "Europe/Paris",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Canal+",
+    "France 2",
+    "France 3",
+    "France 4",
+    "France 5",
+    "L'Equipe",
+    "TF1",
+    "W9"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.programme-tv.net/",
+   "channels": [
+    {
+     "name": "Canal+",
+     "pattern": "https://www.programme-tv.net/programme/chaine/{YYYY-MM-DD}/programme-canalplus-2.html"
+    },
+    {
+     "name": "France 2",
+     "pattern": "https://www.programme-tv.net/programme/chaine/{YYYY-MM-DD}/programme-france-2-6.html"
+    },
+    {
+     "name": "France 3",
+     "pattern": "https://www.programme-tv.net/programme/chaine/{YYYY-MM-DD}/programme-france-3-7.html"
+    },
+    {
+     "name": "France 4",
+     "pattern": "https://www.programme-tv.net/programme/chaine/{YYYY-MM-DD}/programme-france-4-8.html"
+    },
+    {
+     "name": "France 5",
+     "pattern": "https://www.programme-tv.net/programme/chaine/{YYYY-MM-DD}/programme-france-5-9.html"
+    },
+    {
+     "name": "L'Equipe",
+     "pattern": "https://www.programme-tv.net/programme/chaine/{YYYY-MM-DD}/programme-lequipe-204.html"
+    },
+    {
+     "name": "TF1",
+     "pattern": "https://www.programme-tv.net/programme/chaine/{YYYY-MM-DD}/programme-tf1-19.html"
+    },
+    {
+     "name": "W9",
+     "pattern": "https://www.programme-tv.net/programme/chaine/{YYYY-MM-DD}/programme-w9-24.html"
+    }
+   ]
+  },
+  {
+   "domain": "raiplay.it",
+   "timezone": "Europe/Rome",
+   "grid": false,
+   "marks": {
+    "channel": "rai-1"
+   },
+   "include": [
+    "Rai 1",
+    "Rai 2",
+    "Rai 3",
+    "Rai Sport"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.raiplay.it/guidatv/index.html?channel=raiplay&date=13-11-2025",
+   "channels": [
+    {
+     "name": "Rai 1",
+     "pattern": "https://www.raiplay.it/palinsesto/app/rai-1/{DD-MM-YYYY}.json"
+    },
+    {
+     "name": "Rai 2",
+     "pattern": "https://www.raiplay.it/palinsesto/app/rai-2/{DD-MM-YYYY}.json"
+    },
+    {
+     "name": "Rai 3",
+     "pattern": "https://www.raiplay.it/palinsesto/app/rai-3/{DD-MM-YYYY}.json"
+    },
+    {
+     "name": "Rai Sport",
+     "pattern": "https://www.raiplay.it/palinsesto/app/rai-sport/{DD-MM-YYYY}.json"
+    }
+   ]
+  },
+  {
+   "domain": "raspored.hrt.hr",
+   "timezone": "Europe/Zagreb",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "HTV 1",
+    "HTV 2",
+    "HTV 3"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://raspored.hrt.hr/?mreza=4&datum=2025-08-06",
+   "channels": [
+    {
+     "name": "HTV 1",
+     "pattern": "https://raspored.hrt.hr/format/text.xml?mreza=2&datum={YYYY-MM-DD}"
+    },
+    {
+     "name": "HTV 2",
+     "pattern": "https://raspored.hrt.hr/format/text.xml?mreza=3&datum={YYYY-MM-DD}"
+    },
+    {
+     "name": "HTV 3",
+     "pattern": "https://raspored.hrt.hr/format/text.xml?mreza=4&datum={YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "rte.ie",
+   "timezone": "Europe/Dublin",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "BBC One",
+    "BBC Two",
+    "Channel 4",
+    "E4",
+    "ITV1",
+    "ITV2",
+    "More4",
+    "Oireachtas TV",
+    "RTÉ News",
+    "RTÉ One",
+    "RTÉ2",
+    "RTÉjr",
+    "TG4",
+    "Virgin Media Four",
+    "Virgin Media One",
+    "Virgin Media Three",
+    "Virgin Media Two"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.rte.ie/entertainment/listings/television/#/rte2/2026-01-24/",
+   "channels": [
+    {
+     "name": "BBC One",
+     "pattern": "https://www.rte.ie/data-feed/pa/bbc-1.json"
+    },
+    {
+     "name": "BBC Two",
+     "pattern": "https://www.rte.ie/data-feed/pa/bbc-2.json"
+    },
+    {
+     "name": "Channel 4",
+     "pattern": "https://www.rte.ie/data-feed/pa/channel-4.json"
+    },
+    {
+     "name": "E4",
+     "pattern": "https://www.rte.ie/data-feed/pa/E4.json"
+    },
+    {
+     "name": "ITV1",
+     "pattern": "https://www.rte.ie/data-feed/pa/itv.json"
+    },
+    {
+     "name": "ITV2",
+     "pattern": "https://www.rte.ie/data-feed/pa/itv-2.json"
+    },
+    {
+     "name": "More4",
+     "pattern": "https://www.rte.ie/data-feed/pa/more-4.json"
+    },
+    {
+     "name": "Oireachtas TV",
+     "pattern": "https://www.rte.ie/data-feed/pa/oireachtas-tv.json"
+    },
+    {
+     "name": "RTÉ News",
+     "pattern": "https://www.rte.ie/data-feed/pa/rte-news.json"
+    },
+    {
+     "name": "RTÉ One",
+     "pattern": "https://www.rte.ie/data-feed/pa/rte-1.json"
+    },
+    {
+     "name": "RTÉ2",
+     "pattern": "https://www.rte.ie/data-feed/pa/rte-2.json"
+    },
+    {
+     "name": "RTÉjr",
+     "pattern": "https://www.rte.ie/data-feed/pa/rte-jr.json"
+    },
+    {
+     "name": "TG4",
+     "pattern": "https://www.rte.ie/data-feed/pa/tg4.json"
+    },
+    {
+     "name": "Virgin Media Four",
+     "pattern": "https://www.rte.ie/data-feed/pa/virgin-media-four.json"
+    },
+    {
+     "name": "Virgin Media One",
+     "pattern": "https://www.rte.ie/data-feed/pa/virgin-media-one.json"
+    },
+    {
+     "name": "Virgin Media Three",
+     "pattern": "https://www.rte.ie/data-feed/pa/virgin-media-three.json"
+    },
+    {
+     "name": "Virgin Media Two",
+     "pattern": "https://www.rte.ie/data-feed/pa/virgin-media-two.json"
+    }
+   ]
+  },
+  {
+   "domain": "rtl.de",
+   "timezone": "Europe/Berlin",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "NITRO",
+    "RTL",
+    "RTL Crime",
+    "RTL Living",
+    "RTL Passion",
+    "RTL up",
+    "VOX",
+    "VOX up"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.rtl.de/fernsehprogramm/",
+   "channels": [
+    {
+     "name": "NITRO",
+     "pattern": "https://www.rtl.de/fernsehprogramm/nitro/{YYYY-MM-DD}/"
+    },
+    {
+     "name": "RTL",
+     "pattern": "https://www.rtl.de/fernsehprogramm/{YYYY-MM-DD}/"
+    },
+    {
+     "name": "RTL Crime",
+     "pattern": "https://www.rtl.de/fernsehprogramm/rtl-crime/{YYYY-MM-DD}/"
+    },
+    {
+     "name": "RTL Living",
+     "pattern": "https://www.rtl.de/fernsehprogramm/rtl-living/{YYYY-MM-DD}/"
+    },
+    {
+     "name": "RTL Passion",
+     "pattern": "https://www.rtl.de/fernsehprogramm/rtl-passion/{YYYY-MM-DD}/"
+    },
+    {
+     "name": "RTL up",
+     "pattern": "https://www.rtl.de/fernsehprogramm/rtl-up/{YYYY-MM-DD}/"
+    },
+    {
+     "name": "VOX",
+     "pattern": "https://www.rtl.de/fernsehprogramm/vox/{YYYY-MM-DD}/"
+    },
+    {
+     "name": "VOX up",
+     "pattern": "https://www.rtl.de/fernsehprogramm/vox-up/{YYYY-MM-DD}/"
+    }
+   ]
+  },
+  {
+   "domain": "rtp.pt",
+   "timezone": "Europe/Lisbon",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "RTP Açores",
+    "RTP Madeira",
+    "RTP Mundo",
+    "RTP África",
+    "RTP1"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {
+    "RTP Açores": 3
+   },
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.rtp.pt/rtp1/#google_vignette",
+   "channels": [
+    {
+     "name": "RTP Açores",
+     "pattern": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/3/{YYYY-MM-DD}"
+    },
+    {
+     "name": "RTP Madeira",
+     "pattern": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/4/{YYYY-MM-DD}"
+    },
+    {
+     "name": "RTP Mundo",
+     "pattern": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/5/{YYYY-MM-DD}"
+    },
+    {
+     "name": "RTP África",
+     "pattern": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/6/{YYYY-MM-DD}"
+    },
+    {
+     "name": "RTP1",
+     "pattern": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/1/{YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "rts.rs",
+   "timezone": "Europe/Belgrade",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "РТС 1",
+    "РТС 2",
+    "РТС 3"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.rts.rs/tv/rts1/broadcast.html?t=&y=2025&m=10&d=12",
+   "channels": [
+    {
+     "name": "РТС 1",
+     "pattern": "https://rts.rs/tv/rts1/broadcast.html"
+    },
+    {
+     "name": "РТС 2",
+     "pattern": "https://rts.rs/tv/rts2/broadcast.html"
+    },
+    {
+     "name": "РТС 3",
+     "pattern": "https://rts.rs/tv/rts3/broadcast.html"
+    }
+   ]
+  },
+  {
+   "domain": "skysports.com",
+   "timezone": "Europe/London",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.skysports.com/watch/sport-on-sky",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.skysports.com/watch/sport-on-sky"
+    }
+   ]
+  },
+  {
+   "domain": "sport1tv.cz",
+   "timezone": "Europe/Prague",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "Sport1 CZ",
+    "Sport1 SK",
+    "Sport2"
+   ],
+   "browser": true,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.sport1tv.cz/programovy-pruvodce/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.sport1tv.cz/programovy-pruvodce/"
+    }
+   ]
+  },
+  {
+   "domain": "sport1tv.hu",
+   "timezone": "Europe/Budapest",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "Sport1 HU",
+    "Sport2 HU"
+   ],
+   "browser": true,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.sport1tv.hu/tv-musor/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.sport1tv.hu/tv-musor/"
+    }
+   ]
+  },
+  {
+   "domain": "sporteventz.com",
+   "timezone": "UTC",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "https://sporteventz.com/en/",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.sporteventz.com/en/component/magictable?Itemid=0&se_date=02/14/2026%2000:00:00&se_module=bW9kX3Nwb3J0ZXZlbnRzX2ZpbHRlcg==&se_id=U2NoZWR1bGU=&Itemid=0",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://sporteventz.com/index.php?option=com_magictable&language_code=en&table=1&accesskey={WARMKEY}&se_date=&se_module=&se_id=&Itemid=211&client_tz_offset={KYIVOFF}"
+    }
+   ]
+  },
+  {
+   "domain": "sports.kz",
+   "timezone": "Asia/Almaty",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "Телеканал «Qazsport»"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.sports.kz/tv",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.sports.kz/tv"
+    }
+   ]
+  },
+  {
+   "domain": "sporttv.pt",
+   "timezone": "Europe/Lisbon",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "SPORT.TV +",
+    "SPORT.TV1",
+    "SPORT.TV2",
+    "SPORT.TV3",
+    "SPORT.TV4",
+    "SPORT.TV5",
+    "SPORT.TV6",
+    "SPORT.TV7"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.sporttv.pt/guia",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.sporttv.pt/guia"
+    }
+   ]
+  },
+  {
+   "domain": "srf.ch",
+   "timezone": "Europe/Zurich",
+   "grid": false,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.srf.ch/play/tv/programm/2026-02-18",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://il.srgssr.ch/integrationlayer/2.0/srf/programGuide/tv/byDate/{YYYY}-{MM}-{DD}.json"
+    }
+   ]
+  },
+  {
+   "domain": "ssport.tv",
+   "timezone": "Europe/Istanbul",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "S Sport",
+    "S Sport2"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://ssport.tv/yayin-akisi",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://ssport.tv/yayin-akisi"
+    }
+   ]
+  },
+  {
+   "domain": "teleman.pl",
+   "timezone": "Europe/Warsaw",
+   "grid": false,
+   "marks": {
+    "slug": "Eleven-Sports-2"
+   },
+   "include": [
+    "CANAL+ Extra 1",
+    "CANAL+ Extra 2",
+    "CANAL+ Sport",
+    "CANAL+ Sport 2",
+    "CANAL+ Sport 3",
+    "CANAL+ Sport 4",
+    "CANAL+ Sport 5",
+    "Eleven Sports 1",
+    "Eleven Sports 2",
+    "Eleven Sports 3",
+    "Eleven Sports 4",
+    "Eurosport 1",
+    "Eurosport 2",
+    "Extreme Channel",
+    "Polonia 1",
+    "Polsat",
+    "Polsat 2",
+    "Polsat News",
+    "Polsat Sport 1",
+    "Polsat Sport 2",
+    "Polsat Sport 3",
+    "Polsat Sport Extra 1",
+    "Polsat Sport Extra 2",
+    "Polsat Sport Extra 3",
+    "Polsat Sport Extra 4",
+    "Polsat Sport Fight",
+    "Polsat Sport Premium 1",
+    "Polsat Sport Premium 2",
+    "SportKlub",
+    "TV 4",
+    "TV 6",
+    "TV Puls",
+    "TV Puls 2",
+    "TVP 1",
+    "TVP 2",
+    "TVP HD",
+    "TVP Polonia",
+    "TVP Sport"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 5,
+   "day_channels": [
+    {
+     "name": "CANAL+ Extra 1",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/CanalPlus-Extra-1?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "CANAL+ Extra 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/CanalPlus-Extra-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "CANAL+ Sport",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/CanalPlus-Sport?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "CANAL+ Sport 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/CanalPlus-Sport-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "CANAL+ Sport 3",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/CanalPlus-Sport-3?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "CANAL+ Sport 4",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/CanalPlus-Sport-4?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "CANAL+ Sport 5",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/CanalPlus-Sport-5?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Eleven Sports 1",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Eleven-Sports-1?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Eleven Sports 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Eleven-Sports-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Eleven Sports 3",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Eleven-Sports-3?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Eleven Sports 4",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Eleven-4?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Eurosport 1",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Eurosport?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Eurosport 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Eurosport-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Extreme Channel",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Extreme?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polonia 1",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polonia-1?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat News",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-News?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport 1",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport 3",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-3?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport Extra 1",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-Extra-1?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport Extra 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-Extra-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport Extra 3",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-Extra-3?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport Extra 4",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-Extra-4?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport Fight",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-Fight?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport Premium 1",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-Premium-1?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "Polsat Sport Premium 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Polsat-Sport-Premium-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "SportKlub",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/SportKlub?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TV 4",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/TV4?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TV 6",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/TV6?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TV Puls",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Puls?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TV Puls 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/Puls-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TVP 1",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/TVP-1?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TVP 2",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/TVP-2?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TVP HD",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/TVP-HD?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TVP Polonia",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/TVP-Polonia?date={YYYY-MM-DD}"
+    },
+    {
+     "name": "TVP Sport",
+     "pattern": "https://www.teleman.pl/program-tv/stacje/TVP-Sport?date={YYYY-MM-DD}"
+    }
+   ],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.teleman.pl/program-tv/stacje/Eleven-Sports-2?date=2026-02-23",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.teleman.pl/sport?live=1&stations=all&page={N}"
+    }
+   ]
+  },
+  {
+   "domain": "trt.net.tr",
+   "timezone": "Europe/Istanbul",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "TRT 1",
+    "TRT 2",
+    "TRT AVAZ",
+    "TRT BELGESEL",
+    "TRT DİYANET ÇOCUK",
+    "TRT EBA",
+    "TRT Genç",
+    "TRT HABER",
+    "TRT KURDÎ",
+    "TRT MÜZİK",
+    "TRT SPOR",
+    "TRT SPOR YILDIZ",
+    "TRT TÜRK",
+    "TRT WORLD",
+    "TRT ÇOCUK",
+    "Tabii Spor"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.trt.net.tr/yayin-akisi",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.trt.net.tr/yayin-akisi"
+    }
+   ]
+  },
+  {
+   "domain": "trtavaz.com.tr",
+   "timezone": "Europe/Istanbul",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "TRT Avaz"
+   ],
+   "browser": true,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.trtavaz.com.tr/yayin-akisi",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.trtavaz.com.tr/yayin-akisi/{YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "trtspor.com.tr",
+   "timezone": "Europe/Istanbul",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.trtspor.com.tr/yayin-akisi/trt-spor-yildiz",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.trtspor.com.tr/yayin-akisi/trt-spor"
+    }
+   ]
+  },
+  {
+   "domain": "tv-program.aktuality.sk",
+   "timezone": "Europe/Bratislava",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "EuroSport",
+    "EuroSport 2",
+    "Eurosport HD",
+    "JOJ Šport",
+    "Nova Sport",
+    "Nova Sport 2",
+    "Premier Sport",
+    "RTVS Šport",
+    "Sport1",
+    "Sport2",
+    "ČT sport"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tv-program.aktuality.sk/stanica/jednotka/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://tv-program.aktuality.sk/sportove-stanice/"
+    }
+   ]
+  },
+  {
+   "domain": "tv.orf.at",
+   "timezone": "Europe/Vienna",
+   "grid": false,
+   "marks": {
+    "channel": "orf1"
+   },
+   "include": [
+    "ORF 1",
+    "ORF 2",
+    "ORF III",
+    "ORF KIDS",
+    "ORF SPORT+"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tv.orf.at/program/orfs/index~_day-22-02-2026_-1179c4a9476fe4b591d56e5addee346eb67fc1cd.html",
+   "channels": [
+    {
+     "name": "ORF 1",
+     "pattern": "https://tv.orf.at/program/orf1/index.html"
+    },
+    {
+     "name": "ORF 2",
+     "pattern": "https://tv.orf.at/program/orf2/index.html"
+    },
+    {
+     "name": "ORF III",
+     "pattern": "https://tv.orf.at/program/orf3/index.html"
+    },
+    {
+     "name": "ORF KIDS",
+     "pattern": "https://tv.orf.at/program/kids/index.html"
+    },
+    {
+     "name": "ORF SPORT+",
+     "pattern": "https://tv.orf.at/program/orfs/index.html"
+    }
+   ]
+  },
+  {
+   "domain": "tv.sport1.de",
+   "timezone": "Europe/Berlin",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "SPORT1"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tv.sport1.de/programm#google_vignette",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://api.sport1.info/v3/de/tv/epg"
+    }
+   ]
+  },
+  {
+   "domain": "tv2.no",
+   "timezone": "Europe/Oslo",
+   "grid": false,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.tv2.no/tvguide/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://tv2no-epg-api.public.tv2.no/epg/days/{YYYY/MM/DD}"
+    }
+   ]
+  },
+  {
+   "domain": "tv8.com.tr",
+   "timezone": "Europe/Istanbul",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "TV8"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.tv8.com.tr/yayin-akisi",
+   "channels": [
+    {
+     "name": "TV8",
+     "pattern": "https://www.tv8.com.tr/yayin-akisi/{DD-MM-YYYY}"
+    }
+   ]
+  },
+  {
+   "domain": "tvarenasport.ba",
+   "timezone": "Europe/Sarajevo",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tvarenasport.ba/tv-scheme/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://tvarenaprogram.com/live/v2/ba"
+    }
+   ]
+  },
+  {
+   "domain": "tvarenasport.com",
+   "timezone": "Europe/Belgrade",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.tvarenasport.com/tv-scheme#",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.tvarenasport.com/tv-scheme"
+    }
+   ]
+  },
+  {
+   "domain": "tvarenasport.hr",
+   "timezone": "Europe/Zagreb",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tvarenasport.hr/tv-scheme/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://tvarenasport.hr/wp-content/tv-program.php"
+    }
+   ]
+  },
+  {
+   "domain": "tvarenasport.si",
+   "timezone": "Europe/Ljubljana",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.tvarenasport.si/tv-spored/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.tvarenasport.si/tv-spored/"
+    }
+   ]
+  },
+  {
+   "domain": "tvguidetonight.com.au",
+   "timezone": "Australia/Sydney",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "10 Bold Sydney",
+    "7mate HD Sydney",
+    "9Gem Sydney"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tvguidetonight.com.au/channels/10-bold-sydney",
+   "channels": [
+    {
+     "name": "10 Bold Sydney",
+     "pattern": "https://www.tvguidetonight.com.au/channels/10-bold-sydney{AU_DAYPATH}"
+    },
+    {
+     "name": "7mate HD Sydney",
+     "pattern": "https://www.tvguidetonight.com.au/channels/7mate-hd-sydney{AU_DAYPATH}"
+    },
+    {
+     "name": "9Gem Sydney",
+     "pattern": "https://www.tvguidetonight.com.au/channels/9gem-sydney{AU_DAYPATH}"
+    }
+   ]
+  },
+  {
+   "domain": "unian.tv",
+   "timezone": "Europe/Kyiv",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "УНІАН"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://unian.tv/",
+   "channels": [
+    {
+     "name": "УНІАН",
+     "pattern": "https://unian.tv/{DD.MM.YYYY}"
+    }
+   ]
+  },
+  {
+   "domain": "vsetv.com",
+   "timezone": "Europe/Kyiv",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "2+2",
+    "Суспільне Спорт"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "http://www.vsetv.com/schedule_channel_1499_day_2026-02-22.html",
+   "channels": [
+    {
+     "name": "2+2",
+     "pattern": "http://www.vsetv.com/schedule_channel_23_day_{YYYY-MM-DD}.html"
+    },
+    {
+     "name": "Суспільне Спорт",
+     "pattern": "http://www.vsetv.com/schedule_channel_1952_day_{YYYY-MM-DD}.html"
+    }
+   ]
+  },
+  {
+   "domain": "ziggosport.nl",
+   "timezone": "Europe/Amsterdam",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Ziggo Sport 1",
+    "Ziggo Sport 2",
+    "Ziggo Sport 3",
+    "Ziggo Sport 4",
+    "Ziggo Sport 5",
+    "Ziggo Sport 6",
+    "Ziggo Sport Kanaal 14"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.ziggosport.nl/programmagids/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.ziggosport.nl/cache/site/ZiggosportNL/json/epg/epg-{YYYY-MM-DD}.json"
+    }
+   ]
+  },
+  {
+   "domain": "ntvplus.tv",
+   "timezone": "Europe/Moscow",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Extreme",
+    "Fight Club",
+    "KHL HD",
+    "KHL Prime HD",
+    "MMA‑TV.com",
+    "Trace Sport Stars (HD)",
+    "UDAR",
+    "viju+ Sport HD",
+    "БОКС ТВ",
+    "Волейбол",
+    "МАТЧ ПРЕМЬЕР HD",
+    "МАТЧ! АРЕНА (HD)",
+    "МАТЧ! БОЕЦ HD",
+    "МАТЧ! ИГРА (HD)",
+    "МАТЧ! СТРАНА HD",
+    "МАТЧ! Футбол 1 (HD)",
+    "МАТЧ! Футбол 2 (HD)",
+    "МАТЧ! Футбол 3 (HD)",
+    "Матч ТВ",
+    "Мир Баскетбола",
+    "СТАРТ HD",
+    "СТАРТ ТРИУМФ HD",
+    "Старт Баскет",
+    "Телеканал «Матч ТВ»",
+    "Точка отрыва"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://ntvplus.tv/tv/sport/?date=29.08.2026",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date={DD.MM.YYYY}&tz=0&search=&channel=&offset=0"
+    }
+   ]
+  },
+  {
+   "domain": "tring.al",
+   "timezone": "Europe/Tirane",
+   "grid": true,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tring.al/kalendari-sportiv",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://tring.al/kalendari-sportiv"
+    }
+   ]
+  },
+  {
+   "domain": "rtrs.tv",
+   "timezone": "Europe/Sarajevo",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "РТРС 1"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 2,
+   "manual_only": true,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.rtrs.tv/program/raspored.php?c=1",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.rtrs.tv/program/raspored.php?c=1"
+    }
+   ]
+  },
+  {
+   "domain": "oneplaysport.cz",
+   "timezone": "Europe/Prague",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Nova Sport 1",
+    "Nova Sport 2",
+    "Nova Sport 3",
+    "Nova Sport 4",
+    "Nova Sport 5",
+    "Nova Sport 6",
+    "Oneplay Sport 1",
+    "Oneplay Sport 2",
+    "Oneplay Sport 3",
+    "Oneplay Sport 4",
+    "Premier Sport 1",
+    "Premier Sport 2"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://oneplaysport.cz/program",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://oneplaysport.cz/program?date={YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "rtcg.me",
+   "timezone": "Europe/Podgorica",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "TVCG 1",
+    "TVCG 2",
+    "TVCG 3",
+    "TVMNE"
+   ],
+   "browser": true,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://rtcg.me/tv/programska-sema.html",
+   "channels": [
+    {
+     "name": "TVCG 1",
+     "pattern": "https://rtcg.me/tv/programska-sema.html?broadcastId=177&typeId=0&day={DAYNUM}"
+    },
+    {
+     "name": "TVCG 2",
+     "pattern": "https://rtcg.me/tv/programska-sema.html?broadcastId=178&typeId=0&day={DAYNUM}"
+    },
+    {
+     "name": "TVCG 3",
+     "pattern": "https://rtcg.me/tv/programska-sema.html?broadcastId=978&typeId=0&day={DAYNUM}"
+    },
+    {
+     "name": "TVMNE",
+     "pattern": "https://rtcg.me/tv/programska-sema.html?broadcastId=179&typeId=0&day={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "sport5.co.il",
+   "timezone": "Asia/Jerusalem",
+   "grid": false,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.sport5.co.il/html/pages/broadcastsheet.html",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.sport5.co.il/Ajax/GetBroadcastSheetData.aspx?date={DD}%2F{MM}%2F{YYYY}"
+    }
+   ]
+  },
+  {
+   "domain": "sport1.maariv.co.il",
+   "timezone": "Asia/Jerusalem",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Sport1 1",
+    "Sport1 3",
+    "Sport1 4",
+    "Sport1 5",
+    "Sport1 6"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://sport1.maariv.co.il/broadcast-schedule/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://sport1.maariv.co.il/wp-json/sport1/v1/broadcast/day/{YYYY-MM-DD}/?live=1"
+    }
+   ]
+  },
+  {
+   "domain": "skai.gr",
+   "timezone": "Europe/Athens",
+   "grid": false,
+   "marks": {},
+   "include": [],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.skai.gr/tv/programma",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.skai.gr/tv/programma/{YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "kanal1sport.sk",
+   "timezone": "Europe/Bratislava",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "Kanal 1 Sport",
+    "Kanal 1 Xtra"
+   ],
+   "browser": true,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.kanal1sport.sk/tv-program/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.kanal1sport.sk/tv-program/"
+    }
+   ]
+  },
+  {
+   "domain": "port.hu",
+   "timezone": "Europe/Budapest",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Eurosport 1",
+    "Eurosport 2",
+    "M4 Sport",
+    "M4 Sport+",
+    "Match4",
+    "Sport1",
+    "Sport2",
+    "Spíler1 TV",
+    "Spíler2 TV"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://port.hu/",
+   "channels": [
+    {
+     "name": "Eurosport 1",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-94&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    },
+    {
+     "name": "Eurosport 2",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-37&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    },
+    {
+     "name": "M4 Sport",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-290&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    },
+    {
+     "name": "M4 Sport+",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-320&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    },
+    {
+     "name": "Match4",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-375&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    },
+    {
+     "name": "Sport1",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-90&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    },
+    {
+     "name": "Sport2",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-44&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    },
+    {
+     "name": "Spíler1 TV",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-305&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    },
+    {
+     "name": "Spíler2 TV",
+     "pattern": "https://port.hu/tvapi?channel_id%5B%5D=tvchannel-362&i_datetime_from={YYYY-MM-DD}&i_datetime_to={YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "webtv.sk",
+   "timezone": "Europe/Bratislava",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "JOJ Šport",
+    "JOJ Šport 2",
+    "Kanal1 Sport",
+    "Nova Sport 1",
+    "Nova Sport 2",
+    "Sport 1",
+    "Sport 2"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": {
+    "channel_id": "{channel_id}",
+    "date": "{YYYY-MM-DD}T00:00:00.000Z"
+   },
+   "headers": {
+    "content-type": "application/json"
+   },
+   "base_url": "https://www.webtv.sk/",
+   "channels": [
+    {
+     "name": "JOJ Šport",
+     "pattern": "https://api.webtv.sk/epg/channel?channel_id=joj_sport"
+    },
+    {
+     "name": "JOJ Šport 2",
+     "pattern": "https://api.webtv.sk/epg/channel?channel_id=joj_sport_2"
+    },
+    {
+     "name": "Kanal1 Sport",
+     "pattern": "https://api.webtv.sk/epg/channel?channel_id=arena_sport_1"
+    },
+    {
+     "name": "Nova Sport 1",
+     "pattern": "https://api.webtv.sk/epg/channel?channel_id=nova_sport_1_hd"
+    },
+    {
+     "name": "Nova Sport 2",
+     "pattern": "https://api.webtv.sk/epg/channel?channel_id=nova_sport_2_hd"
+    },
+    {
+     "name": "Sport 1",
+     "pattern": "https://api.webtv.sk/epg/channel?channel_id=sport_1"
+    },
+    {
+     "name": "Sport 2",
+     "pattern": "https://api.webtv.sk/epg/channel?channel_id=sport_2"
+    }
+   ]
+  },
+  {
+   "domain": "tv24.co.uk",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "TNT Sports 1",
+    "TNT Sports 2",
+    "TNT Sports 3",
+    "TNT Sports 4"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tv24.co.uk/",
+   "channels": [
+    {
+     "name": "TNT Sports 1",
+     "pattern": "https://tv24.co.uk/x/channel/tnt-sports-1-hd/0/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TNT Sports 2",
+     "pattern": "https://tv24.co.uk/x/channel/tnt-sports-2-hd/0/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TNT Sports 3",
+     "pattern": "https://tv24.co.uk/x/channel/tnt-sports-3-hd/0/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TNT Sports 4",
+     "pattern": "https://tv24.co.uk/x/channel/tnt-sports-4-hd/0/{YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "novasports.gr",
+   "timezone": "Europe/Athens",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "Cosmote Sport1",
+    "Cosmote Sport2",
+    "Cosmote Sport3",
+    "Cosmote Sport4",
+    "Cosmote Sport5",
+    "Cosmote Sport6",
+    "Cosmote Sport7",
+    "Cosmote Sport8",
+    "Cosmote Sport9",
+    "Eurosport 1 HD",
+    "Eurosport 2 HD",
+    "Novasports Extra2",
+    "Novasports Extra3",
+    "Novasports Extra4",
+    "Novasports Premier League",
+    "Novasports Prime",
+    "Novasports Εxtra1",
+    "Novasports1HD",
+    "Novasports2HD",
+    "Novasports3HD",
+    "Novasports4HD",
+    "Novasports5HD",
+    "Novasports6HD",
+    "ΝovasportsNews",
+    "ΝovasportsStart"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.novasports.gr/tv-program/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.novasports.gr/tv-program/"
+    }
+   ]
+  },
+  {
+   "domain": "news.by",
+   "timezone": "Europe/Minsk",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "Беларусь 5"
+   ],
+   "browser": true,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://news.by/programma-tv/belarus-5",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://news.by/programma-tv/belarus-5"
+    }
+   ]
+  },
+  {
+   "domain": "onesoccer.ca",
+   "timezone": "UTC",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "OneSoccer"
+   ],
+   "browser": true,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.onesoccer.ca/schedule",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.onesoccer.ca/schedule"
+    }
+   ]
+  },
+  {
+   "domain": "tvpassport.com",
+   "timezone": "America/New_York",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Fox Soccer Plus",
+    "TSN1",
+    "TSN2",
+    "TSN3",
+    "TSN4",
+    "TSN5"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.tvpassport.com/",
+   "channels": [
+    {
+     "name": "Fox Soccer Plus",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TSN1",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/tsn1-hd/2819/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TSN2",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/tsn2-hd/5920/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TSN3",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/tsn3-hd/13768/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TSN4",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/tsn4-hd/13769/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TSN5",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/tsn5-hd/13770/{YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "tvheute.at",
+   "timezone": "Europe/Vienna",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Das Erste",
+    "ZDF"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tvheute.at/",
+   "channels": [
+    {
+     "name": "Das Erste",
+     "pattern": "https://tvheute.at/part/channel-shows/partial/ard/{DD-MM-YYYY}"
+    },
+    {
+     "name": "ZDF",
+     "pattern": "https://tvheute.at/part/channel-shows/partial/zdf/{DD-MM-YYYY}"
+    }
+   ]
+  },
+  {
+   "domain": "flashscore.mobi",
+   "timezone": "Etc/GMT-2",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "basketball",
+    "football",
+    "tennis"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 7,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.flashscore.mobi/",
+   "channels": [
+    {
+     "name": "basketball",
+     "pattern": "https://www.flashscore.mobi/basketball/?d={DAYNUM}"
+    },
+    {
+     "name": "football",
+     "pattern": "https://www.flashscore.mobi/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://www.flashscore.mobi/tennis/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.gr",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "basketball",
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 7,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.gr/",
+   "channels": [
+    {
+     "name": "basketball",
+     "pattern": "https://m.flashscore.gr/basketball/?d={DAYNUM}"
+    },
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.gr/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.bg",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 7,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.bg/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.bg/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.eredmenyek.com",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 7,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.eredmenyek.com/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.eredmenyek.com/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.ro",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 1,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.ro/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.ro/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.com.tr",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "basketball",
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 1,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.com.tr/",
+   "channels": [
+    {
+     "name": "basketball",
+     "pattern": "https://m.flashscore.com.tr/basketbol/?d={DAYNUM}"
+    },
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.com.tr/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.pl",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 1,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.pl/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.pl/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.ru",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "basketball",
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 1,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.ru/",
+   "channels": [
+    {
+     "name": "basketball",
+     "pattern": "https://m.flashscore.ru/basketball/?d={DAYNUM}"
+    },
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.ru/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.ua",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 1,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.ua/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.ua/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.livesport.cz",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 1,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.livesport.cz/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.livesport.cz/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.rezultati.com",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "basketball",
+    "football"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 7,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.rezultati.com/",
+   "channels": [
+    {
+     "name": "basketball",
+     "pattern": "https://m.rezultati.com/kosarka/?d={DAYNUM}"
+    },
+    {
+     "name": "football",
+     "pattern": "https://m.rezultati.com/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "tv3.lt",
+   "timezone": "Europe/Vilnius",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "BTV",
+    "Courtside 1891 TV",
+    "Eurosport 1",
+    "Go3 Sport 1",
+    "Go3 Sport 2",
+    "Go3 Sport 3",
+    "Go3 Sport Open",
+    "LNK",
+    "LRT",
+    "LRT Plius",
+    "NBA TV",
+    "Sport 1",
+    "TV3",
+    "TV3 Plus",
+    "TV6",
+    "TV8"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.tv3.lt/programos/btv",
+   "channels": [
+    {
+     "name": "BTV",
+     "pattern": "https://www.tv3.lt/programos/btv?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "Courtside 1891 TV",
+     "pattern": "https://www.tv3.lt/programos/courtside_1891_tv?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "Eurosport 1",
+     "pattern": "https://www.tv3.lt/programos/eurosport_1?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "Go3 Sport 1",
+     "pattern": "https://www.tv3.lt/programos/go3_sport_1?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "Go3 Sport 2",
+     "pattern": "https://www.tv3.lt/programos/go3_sport_2?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "Go3 Sport 3",
+     "pattern": "https://www.tv3.lt/programos/go3_sport_3?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "Go3 Sport Open",
+     "pattern": "https://www.tv3.lt/programos/go3_sport_open?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "LNK",
+     "pattern": "https://www.tv3.lt/programos/lnk?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "LRT",
+     "pattern": "https://www.tv3.lt/programos/lrt?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "LRT Plius",
+     "pattern": "https://www.tv3.lt/programos/lrt_plius?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "NBA TV",
+     "pattern": "https://www.tv3.lt/programos/nba?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "Sport 1",
+     "pattern": "https://www.tv3.lt/programos/sport_1?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "TV3",
+     "pattern": "https://www.tv3.lt/programos/tv3?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "TV3 Plus",
+     "pattern": "https://www.tv3.lt/programos/tv3plus?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "TV6",
+     "pattern": "https://www.tv3.lt/programos/tv6?d={YYYY-MM-DD}"
+    },
+    {
+     "name": "TV8",
+     "pattern": "https://www.tv3.lt/programos/tv8?d={YYYY-MM-DD}"
+    }
+   ]
+  }
+ ]
+}

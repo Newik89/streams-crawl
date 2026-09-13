@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Источники — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Источники <span class="muted">({{ rows|length }} из {{ c.total }})</span></h1>
+
+<form class="card row" method="get">
+  <div style="flex:2 1 260px">
+    <label>Поиск по домену, названию или ссылке</label>
+    <input type="text" name="q" value="{{ f.q }}" placeholder="nova.bg или https://...">
+  </div>
+  <div>
+    <label>Роль</label>
+    <select name="role">
+      <option value="">любая</option>
+      {% for k, v in ROLES.items() %}
+      <option value="{{ k }}" {% if f.role == k %}selected{% endif %}>{{ v }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label>Доступ</label>
+    <select name="access">
+      <option value="">любой</option>
+      {% for k, v in ACCESS.items() %}
+      <option value="{{ k }}" {% if f.access == k %}selected{% endif %}>{{ v }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label>Разбор</label>
+    <select name="level">
+      <option value="">любой</option>
+      {% for lv in ['A','B','C','D'] %}
+      <option value="{{ lv }}" {% if f.level == lv %}selected{% endif %}>{{ lv }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label>Защита</label>
+    <select name="protection">
+      <option value="">любая</option>
+      <option value="yes" {% if f.protection == 'yes' %}selected{% endif %}>есть защита</option>
+      <option value="no" {% if f.protection == 'no' %}selected{% endif %}>без защиты</option>
+    </select>
+  </div>
+  <div>
+    <label>Состояние</label>
+    <select name="enabled">
+      <option value="">все</option>
+      <option value="1" {% if f.enabled == '1' %}selected{% endif %}>включённые</option>
+      <option value="0" {% if f.enabled == '0' %}selected{% endif %}>выключенные</option>
+    </select>
+  </div>
+  <div style="flex:0 0 auto">
+    <button class="primary" type="submit">Показать</button>
+    <a class="btn" href="{{ url_for('sources_list') }}">Сбросить</a>
+  </div>
+</form>
+
+<table>
+  <tr>
+    <th>Сайт</th><th>Страна</th><th>Часовой пояс</th><th>Роль</th>
+    <th>Разбор</th><th>Доступ</th><th>Состояние</th><th></th>
+  </tr>
+  {% for s in rows %}
+  <tr>
+    <td>
+      <a href="{{ url_for('source_edit', source_id=s.id) }}"><b>{{ s.domain }}</b></a>
+      {% if s.urls_count > 1 %}<span class="tag">{{ s.urls_count }} ссылки</span>{% endif %}
+      <div class="muted">{{ s.name[:70] }}</div>
+    </td>
+    <td>{{ s.country or '—' }}</td>
+    <td class="muted">{{ s.timezone or '—' }}</td>
+    <td>{{ ROLES.get(s.role, s.role) }}</td>
+    <td>
+      {% if s.parse_level %}
+        <span class="tag {{ s.parse_level|lower }}">{{ s.parse_level }}</span>
+      {% else %}—{% endif %}
+      {% if s.needs_js %}<span class="muted">браузер</span>{% endif %}
+    </td>
+    <td>
+      {% if s.access == 'open' %}<span class="tag a">открыт</span>
+      {% else %}<span class="tag bad">{{ ACCESS.get(s.access, s.access) }}</span>{% endif %}
+      {% if s.protection %}
+        <span class="tag d" title="Защита стоит, но расписание читается. Такой сайт
+          берём браузером и с паузами — обычным запросом его лучше не трогать.">защита:
+          {{ s.protection }}</span>
+      {% endif %}
+    </td>
+    <td>
+      {% if s.enabled %}{{ STATUSES.get(s.status, s.status) }}
+      {% else %}<span class="tag off">выключен</span>{% endif %}
+    </td>
+    <td>
+      <form method="post" action="{{ url_for('source_toggle', source_id=s.id) }}"
+            style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.full_path }}">
+        <button type="submit">{{ 'Выключить' if s.enabled else 'Включить' }}</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="8" class="muted">Ничего не найдено.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

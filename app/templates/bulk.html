@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Добавить пачкой — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Добавить источники пачкой</h1>
+
+<form class="card" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Вставьте список ссылок — по одной в строке</label>
+  <textarea name="urls" placeholder="https://tv.nova.cz/program&#10;https://nova.bg/schedule/&#10;..."></textarea>
+  <p class="muted">Сайт, который уже есть в базе, помечается дублем — с переходом
+    на существующую запись. Ссылки не проверяются обращением к сайтам: массовые
+    запросы ловят баны.</p>
+  <button class="primary" type="submit">Обработать</button>
+</form>
+
+{% if report %}
+<h2>Добавлено — {{ report.added|length }}</h2>
+{% if report.added %}
+<table>
+  <tr><th>Сайт</th><th>Ссылка</th><th></th></tr>
+  {% for r in report.added %}
+  <tr>
+    <td><b>{{ r.domain }}</b></td>
+    <td class="muted">{{ r.url }}</td>
+    <td><a href="{{ url_for('source_edit', source_id=r.source_id) }}">открыть</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}<p class="muted">Ничего нового.</p>{% endif %}
+
+<h2>Дубли — {{ report.duplicate|length }}</h2>
+{% if report.duplicate %}
+<p class="muted">Такой сайт уже есть. Нажмите номер, чтобы перейти на запись
+  и решить, что с ней делать.</p>
+<table>
+  <tr><th>№</th><th>Сайт</th><th>Вставленная ссылка</th><th>Что сделано</th></tr>
+  {% for r in report.duplicate %}
+  <tr>
+    <td><a href="{{ url_for('source_edit', source_id=r.source_id) }}">
+      <b>{{ r.source_id }}</b></a></td>
+    <td>{{ r.domain }}</td>
+    <td class="muted">{{ r.url }}</td>
+    <td>
+      {% if r.url_added %}<span class="tag b">ссылка добавлена к сайту</span>
+      {% else %}<span class="tag">такая ссылка уже была</span>{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}<p class="muted">Дублей нет.</p>{% endif %}
+
+{% if report.invalid %}
+<h2>Не похоже на ссылку — {{ report.invalid|length }}</h2>
+<table>
+  {% for r in report.invalid %}
+  <tr><td>{{ r.url }}</td><td class="muted">{{ r.reason }}</td></tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endif %}
+{% endblock %}

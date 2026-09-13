@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Сбои прогона — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Сайты, которые не пропустили обход</h1>
+<p class="muted">Прогон <b>{{ run.finished_at }}</b> · собирали:
+  <b>{{ run.what }}</b> · страниц с сайтов {{ run.rows_found }} ·
+  игр в базу {{ run.events_upserted }} · сайтов в норме {{ run.sources_ok }}.
+  Адрес можно поправить прямо здесь: <b>✎</b> сохраняет,
+  <b>В обход</b> ещё и снимает клеймо «сломан».</p>
+
+{% if rows %}
+<table>
+  <tr><th>Сайт</th><th>Страниц не открылось</th><th>Что известно</th>
+      <th>Последний удачный заход</th><th>Ссылка</th></tr>
+  {% for s in rows %}
+  <tr>
+    <td>
+      {% if s.id %}<a href="{{ url_for('source_edit', source_id=s.id) }}"><b>{{ s.domain }}</b></a>
+      {% else %}<b>{{ s.domain }}</b>{% endif %}
+      <div class="muted">{{ s.country or '' }}</div>
+    </td>
+    <td><span class="tag bad">{{ s.fails }}</span></td>
+    <td>
+      {% if s.status %}<span class="tag {{ 'bad' if s.status in ('broken', 'closed') else '' }}">{{ s.status }}</span>{% endif %}
+      {% if s.protection %}<span class="tag bad">{{ s.protection }}</span>{% endif %}
+      <div class="muted">{{ (s.notes or '')[:110] }}</div>
+    </td>
+    <td class="muted">{{ s.last_success or 'ни разу' }}</td>
+    <td style="max-width:340px">
+      {% if s.id %}
+      <form method="post" action="{{ url_for('source_fix', source_id=s.id) }}"
+            style="display:flex; gap:6px; align-items:center">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.full_path }}">
+        <input type="url" name="base_url" value="{{ s.base_url }}" required
+               style="flex:1; min-width:180px; padding:4px 6px; font-size:12px;
+                      border:1px solid var(--line); border-radius:6px">
+        <button class="btn" type="submit" name="action" value="save"
+                title="Сохранить адрес">✎</button>
+        <button class="btn" type="submit" name="action" value="revive"
+                title="Сохранить адрес и вернуть сайт в обход">В обход</button>
+      </form>
+      <a class="muted" style="font-size:12px" href="{{ s.base_url }}"
+         target="_blank" rel="noopener">открыть страницу ↗</a>
+      {% else %}<span class="muted">источника нет в базе</span>{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<div class="card"><b>В этом прогоне сбоев не было.</b></div>
+{% endif %}
+
+<p class="muted" style="margin-top:18px">
+  <a href="{{ url_for('runs_list') }}">Все прогоны</a> ·
+  <a href="{{ url_for('broken') }}">Сломанные</a> ·
+  <a href="{{ url_for('schedule') }}">Витрина</a>
+</p>
+{% endblock %}

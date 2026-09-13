@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% if admin %}<meta name="csrf" content="{{ csrf_token() }}">{% endif %}
+<title>Live Sport on TV</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --line:#e3e6ea; --text:#1c1f23;
+          --muted:#6b7280; --accent:#1f6feb; --live:#b3261e; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font:15px/1.45 system-ui, "Segoe UI", sans-serif; }
+  header { background:var(--card); border-bottom:1px solid var(--line);
+           padding:10px 16px; display:flex; flex-wrap:wrap; gap:10px;
+           align-items:center; position:sticky; top:0; z-index:5; }
+  header h1 { font-size:17px; margin:0 12px 0 0; white-space:nowrap; }
+  .controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  select, input[type=search] {
+      padding:6px 8px; border:1px solid var(--line); border-radius:8px;
+      background:var(--card); color:var(--text); font:inherit; max-width:180px; }
+  .pill { padding:6px 12px; border:1px solid var(--line); border-radius:999px;
+          background:var(--card); cursor:pointer; font:inherit; }
+  .pill.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+  main { max-width:1080px; margin:0 auto; padding:12px 16px 40px; }
+  h2.day { font-size:15px; color:var(--muted); margin:22px 0 8px;
+           text-transform:uppercase; letter-spacing:.04em; }
+  table { width:100%; border-collapse:collapse; background:var(--card);
+          border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  th, td { padding:8px 10px; border-top:1px solid var(--line);
+           text-align:left; vertical-align:top; }
+  th { font-size:12px; color:var(--muted); text-transform:uppercase;
+       letter-spacing:.04em; border-top:none; }
+  td.time { white-space:nowrap; font-variant-numeric:tabular-nums; width:72px; }
+  .gdate { display:block; color:var(--muted); font-size:11px; }
+  td.sport { width:36px; color:var(--muted); }
+  td.league { color:var(--muted); max-width:230px; }
+  td.match b { font-weight:600; }
+  .gid { color:var(--muted); font-size:11px; margin-left:6px;
+         font-variant-numeric:tabular-nums; cursor:copy; }
+  .copy { cursor:copy; }
+  .copy:hover { text-decoration:underline dotted; }
+  /* последнее скопированное остаётся подсвеченным, чтобы владелец видел,
+     где остановился (просьба 09.09). Подсветка одна на всю страницу и
+     переезжает на новый клик; строка тоже слегка выделяется */
+  .copied { background:#ffe08a; border-radius:4px; padding:0 3px;
+            box-shadow:0 0 0 1px #e0a800 inset; }
+  tr.game.copied-row > td { background:#fffbea; }
+  /* новая игра: впервые увидена меньше 48 часов назад (просьба 12.09).
+     Стоит выше правила ask, чтобы оранжевое «ждёт подтверждения» побеждало.
+     Страница всегда светлая (переменные :root фиксированы), поэтому тёмного
+     варианта у зелёного нет: тёмный фон в dark-браузере делал текст
+     нечитаемым — строки-то остаются на белой таблице (поймано 12.09) */
+  tr.game.fresh > td { background:#eaf6ec; }
+  tr.game.fresh > td:first-child { box-shadow:inset 3px 0 0 #2e9e44; }
+  /* канал, добавившийся к уже известной игре: плашка целиком зелёная */
+  .chan.fresh { background:#eaf6ec; border-color:#2e9e44; }
+  .newch { margin-left:4px; font-size:9px; font-weight:700;
+           text-transform:uppercase; color:#1e7c34; letter-spacing:.4px; }
+  /* игра, по которой ответ найден, но ждёт подтверждения владельца */
+  tr.game.ask > td { background:#fff3e0; }
+  tr.game.ask > td:first-child { box-shadow:inset 3px 0 0 #f59e0b; }
+  .ask-go { margin-left:6px; font-size:11px; font-weight:700; color:#b45309;
+            border:1px solid #f59e0b; border-radius:999px; padding:0 6px;
+            text-decoration:none; white-space:nowrap; }
+  @media (prefers-color-scheme: dark) {
+    .copied { background:#8a6d00; box-shadow:0 0 0 1px #d0a000 inset; }
+    tr.game.copied-row > td { background:#2b2618; }
+    tr.game.ask > td { background:#2e2415; }
+    .ask-go { color:#fbbf24; border-color:#a16207; }
+  }
+  /* окно правки канала: два поля и предпросмотр — два prompt подряд
+     владелец 10.09 назвал непонятными */
+  #chanbox { position:fixed; inset:0; background:rgba(0,0,0,.35);
+             display:flex; align-items:center; justify-content:center; z-index:50; }
+  #chanbox .card { background:var(--card); color:var(--text); padding:16px 18px;
+                   border-radius:12px; min-width:320px; max-width:92vw;
+                   box-shadow:0 10px 30px rgba(0,0,0,.25); }
+  #chanbox h3 { margin:0 0 10px; font-size:15px; }
+  #chanbox label { display:block; font-size:12px; color:var(--muted);
+                   margin:8px 0 3px; }
+  #chanbox input { width:100%; box-sizing:border-box; padding:7px 9px;
+                   border:1px solid var(--line); border-radius:7px;
+                   background:var(--bg); color:var(--text); font:inherit; }
+  #chanbox .look { margin:12px 0 4px; font-size:12px; color:var(--muted); }
+  #chanbox .look b { color:var(--text); }
+  #chanbox .row2 { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+  #chanbox button { padding:7px 14px; border-radius:7px; border:1px solid var(--line);
+                    background:var(--card); color:var(--text); cursor:pointer; font:inherit; }
+  #chanbox button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .edit, .chan-edit { border:none; background:none; padding:0 2px; margin-left:3px;
+          cursor:pointer; color:var(--muted); font-size:11px; line-height:1;
+          visibility:hidden; }
+  tr:hover .edit, tr:hover .chan-edit { visibility:visible; }
+  .edit:hover { color:var(--accent); }
+  #tip { position:fixed; background:var(--text); color:var(--card);
+         padding:3px 8px; border-radius:6px; font-size:12px; z-index:99;
+         pointer-events:none; }
+  .live { color:var(--live); font-size:11px; font-weight:700;
+          text-transform:uppercase; margin-left:6px; }
+  .chan { display:inline-block; margin:1px 4px 1px 0; padding:2px 8px;
+          border:1px solid var(--line); border-radius:999px; font-size:12.5px;
+          background:var(--bg); white-space:nowrap; color:inherit;
+          text-decoration:none; }
+  a.chan:hover { border-color:var(--muted); }
+  .chan .cc { margin-right:4px; font-size:10px; font-weight:700;
+              color:var(--muted); letter-spacing:.5px; }
+  .chan-go { margin-left:6px; padding:0 3px; color:var(--muted);
+             text-decoration:none; font-size:12px; border-left:1px solid var(--line); }
+  .newsrc { margin-left:4px; font-size:9px; font-weight:700;
+            text-transform:uppercase; color:#b26b00; letter-spacing:.4px; }
+  .chan-go:hover { color:var(--accent); }
+  .empty { color:var(--muted); padding:30px 0; text-align:center; }
+  #more { display:block; margin:18px auto; }
+  [hidden] { display:none !important; }
+  @media (max-width:640px) { td.league { display:none; } th.league { display:none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>⚽ Live Sport on TV</h1>
+  <div class="controls">
+    <button class="pill" id="p-today" type="button">Today</button>
+    <button class="pill" id="p-chan" type="button">Only with channels</button>
+    <button class="pill" id="p-live" type="button">Live now</button>
+    <button class="pill" id="p-names" type="button" title="Игры, которым ещё не найдено правильное название — правятся кнопкой ✎">Names to fix</button>
+    <select id="f-date"><option value="">All dates</option>
+      {% for day in by_date %}<option value="{{ day }}">{{ day.strftime("%d.%m (%a)") }}</option>{% endfor %}
+    </select>
+    <select id="f-sport"><option value="">All sports</option>
+      {% for s in sports %}<option value="{{ s }}">{{ {"F":"Football","B":"Basketball","T":"Tennis"}.get(s, s) }}</option>{% endfor %}
+    </select>
+    <select id="f-league"><option value="">All leagues</option>
+      {% for l in leagues %}<option>{{ l }}</option>{% endfor %}
+    </select>
+    <select id="f-channel"><option value="">All channels</option>
+      {% for c in channels %}<option>{{ c }}</option>{% endfor %}
+    </select>
+    <input type="search" id="f-q" placeholder="Search team or channel…">
+  </div>
+</header>
+
+<main>
+{% if total == 0 %}
+  <p class="empty">No upcoming games yet. The next crawl will fill this page.</p>
+{% endif %}
+{% for day, games in by_date.items() %}
+  <section class="day-block" data-date="{{ day }}">
+    <h2 class="day">{{ day.strftime("%A, %d %B") }}</h2>
+    <table>
+      <tr><th>Time (Kyiv)</th><th>Sport</th><th class="league">League</th>
+          <th>Match</th><th>Channels</th></tr>
+      {% for g in games %}
+      <tr id="g{{ g.id }}" class="game{% if g.is_new %} fresh{% endif %}{% if admin and g.pending %} ask{% endif %}" data-date="{{ day }}"
+          data-sport="{{ g.sport }}"
+          data-league="{{ g.league }}"
+          data-live="{{ 1 if g.live else 0 }}"
+          data-named="{{ 1 if g.named else 0 }}"
+          data-ask="{{ 1 if (admin and g.pending) else 0 }}"
+          data-channels="{{ g.channels | map(attribute='name') | join('||') }}"
+          data-text="{{ (g.home ~ ' ' ~ g.away ~ ' ' ~ g.league ~ ' ' ~ (g.channels | map(attribute='name') | join(' '))) | lower }}">
+        <td class="time"><span class="gdate">{{ day.strftime("%d.%m") }}</span>{{ g.time }}{% if g.live %}<span class="live">live</span>{% endif %}</td>
+        <td class="sport">{{ {"F":"⚽","B":"🏀","T":"🎾"}.get(g.sport, g.sport) }}</td>
+        <td class="league"><span class="copy">{{ g.league }}</span>{% if admin and g.league %}<button class="edit" type="button" data-kind="league" data-raw="{{ g.league_auto or g.league }}" title="Исправить название лиги">✎</button>{% endif %}</td>
+        <td class="match"><b class="copy">{{ g.home }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.home_auto or g.home }}" title="Исправить название команды">✎</button>{% endif %} vs <b class="copy">{{ g.away }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.away_auto or g.away }}" title="Исправить название команды">✎</button>{% endif %}<span class="gid copy" title="Номер игры — клик копирует">#{{ g.id }}</span>{% if admin and g.pending %}<a class="ask-go" href="{{ url_for('moderation_list') }}?focus={{ g.pending }}&amp;back=g{{ g.id }}" title="Название для этой игры уже найдено — осталось подтвердить">ждёт подтверждения →</a>{% endif %}</td>
+        <td>{% for c in g.channels %}<span class="chan{% if c.new %} fresh{% endif %}"{% if c.custom %} data-nocc="1"{% endif %}>{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span>{% if c.new_source %}<span class="newsrc" title="Канал нового источника — на обкатке">новый</span>{% endif %}{% if c.new %}<span class="newch" title="Канал добавился к этой игре недавно">new</span>{% endif %}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}{% if admin %}<button class="chan-edit" type="button" data-cid="{{ c.id }}" data-note="{{ c.country or '' }}" title="Изменить название канала и пометку перед ним">✎</button>{% endif %}</span>{% endfor %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+{% endfor %}
+<button id="more" class="pill" hidden type="button">Show more</button>
+<p class="empty" id="nothing" hidden>Nothing matches the filters.</p>
+
+<footer style="margin-top:32px; padding-top:14px; border-top:1px solid var(--line);
+               display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+               color:var(--muted); font-size:13px">
+  <span title="Когда сайты обходили и когда результат лёг в базу">
+    {% if h and h.crawl %}Last collected: <b>{{ h.crawl.strftime('%d.%m %H:%M') }}</b>
+      {%- if h.crawl_ago %} ({{ h.crawl_ago }}){% endif %}
+      {%- if h['import'] %}, loaded {{ h['import'].strftime('%d.%m %H:%M') }}{% endif %}
+      {%- if h.games %}, {{ h.games }} games ahead{% endif %}
+    {% else %}Last collected: &mdash;{% endif %}
+    {%- if h and h.stale %} <b style="color:var(--live)">&middot; data may be out of date</b>{% endif %}
+  </span>
+  {% if h and h.runs %}
+  <span style="flex-basis:100%; font-size:12px" title="Три последних сбора: когда, на сколько дней и что принёс">
+    Last 3 runs:
+    {%- for r in h.runs %}
+      <span style="margin-left:8px">{{ r.finished_at }} &middot; {{ r.what }} &middot;
+        {{ r.rows_found }} rows &middot; {{ r.events_upserted }} games
+        {%- if r.sources_failed %} &middot; <a href="{{ url_for('run_failed', run_id=r.id) }}"
+             target="_blank" rel="noopener" style="color:var(--live); font-weight:600"
+             title="Какие сайты не пропустили обход — и правка адреса">{{ r.sources_failed }} failed</a>{% endif %}</span>
+      {%- if not loop.last %} |{% endif %}
+    {%- endfor %}
+  </span>
+  {% endif %}
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, m in msgs %}<span style="{% if cat == 'error' %}color:var(--live){% endif %}">{{ m }}</span>{% endfor %}
+  {% endwith %}
+  <span class="sp" style="margin-left:auto"></span>
+  <form method="post" action="{{ url_for('schedule_run') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="2">
+    <button class="pill" type="submit" title="Fetch fresh data (once an hour)">Collect 2 days</button>
+  </form>
+  <form method="post" action="{{ url_for('schedule_run') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="5">
+    <input type="password" name="pin" placeholder="PIN" size="6"
+           style="padding:6px 8px; border:1px solid var(--line); border-radius:8px">
+    <button class="pill" type="submit" title="Extended window, PIN required">Collect 5 days</button>
+  </form>
+</footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var CHUNK = 100;                      // ленивая подгрузка: строк за раз
+  var shown = CHUNK;
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tr.game"));
+  var pills = { today: false, chan: false, live: false, names: false };
+  var todayISO = new Date().toISOString().slice(0, 10);
+
+  function el(id) { return document.getElementById(id); }
+
+  function matches(r) {
+    if (pills.today && r.dataset.date !== todayISO) return false;
+    if (pills.live && r.dataset.live !== "1") return false;
+    if (pills.chan && !r.dataset.channels) return false;
+    if (pills.names && r.dataset.named !== "0") return false;
+    var d = el("f-date").value, s = el("f-sport").value,
+        l = el("f-league").value, c = el("f-channel").value,
+        q = el("f-q").value.trim().toLowerCase();
+    if (d && r.dataset.date !== d) return false;
+    if (s && r.dataset.sport !== s) return false;
+    if (l && r.dataset.league !== l) return false;
+    if (c && r.dataset.channels.split("||").indexOf(c) === -1) return false;
+    if (q && r.dataset.text.indexOf(q) === -1) return false;
+    return true;
+  }
+
+  function apply() {
+    var fit = rows.filter(matches);
+    rows.forEach(function (r) { r.hidden = true; });
+    fit.slice(0, shown).forEach(function (r) { r.hidden = false; });
+    document.querySelectorAll(".day-block").forEach(function (b) {
+      b.hidden = !b.querySelector("tr.game:not([hidden])");
+    });
+    el("more").hidden = fit.length <= shown;
+    el("nothing").hidden = fit.length !== 0 || rows.length === 0;
+  }
+
+  ["f-date", "f-sport", "f-league", "f-channel"].forEach(function (id) {
+    el(id).addEventListener("change", function () { shown = CHUNK; apply(); });
+  });
+  el("f-q").addEventListener("input", function () { shown = CHUNK; apply(); });
+  [["p-today", "today"], ["p-chan", "chan"], ["p-live", "live"],
+   ["p-names", "names"]].forEach(function (p) {
+    el(p[0]).addEventListener("click", function () {
+      pills[p[1]] = !pills[p[1]];
+      el(p[0]).classList.toggle("on", pills[p[1]]);
+      shown = CHUNK; apply();
+    });
+  });
+  el("more").addEventListener("click", function () { shown += CHUNK; apply(); });
+  apply();
+
+  // ── возврат на ту же игру: #g1622 в адресе ────────────────────────────────
+  // Строки показываются порциями по CHUNK, и нужная игра при возврате со
+  // страницы «Названия» могла быть ещё не отрисована — браузер оставался в
+  // начале расписания (жалоба владельца 11.09). Раскрываем порции до этой
+  // строки, прокручиваем к ней и подсвечиваем.
+  function goToGame() {
+    var id = (location.hash || "").slice(1);
+    if (!/^g\d+$/.test(id)) return;
+    var row = document.getElementById(id);
+    if (!row) return;
+    var fit = rows.filter(matches);
+    var at = fit.indexOf(row);
+    if (at === -1) {
+      // строку прячет фильтр — сбрасываем фильтры, иначе её не увидеть
+      ["f-date", "f-sport", "f-league", "f-channel"].forEach(function (f) { el(f).value = ""; });
+      el("f-q").value = "";
+      Object.keys(pills).forEach(function (k) { pills[k] = false; });
+      document.querySelectorAll(".pill.on").forEach(function (b) { b.classList.remove("on"); });
+      fit = rows.filter(matches);
+      at = fit.indexOf(row);
+    }
+    if (at >= shown) shown = Math.ceil((at + 1) / CHUNK) * CHUNK;
+    apply();
+    row.scrollIntoView({ block: "center" });
+    row.classList.add("copied-row");
+    setTimeout(function () { row.classList.remove("copied-row"); }, 4000);
+  }
+  goToGame();
+  window.addEventListener("hashchange", goToGame);
+
+  // ── клик по имени, лиге или номеру — в буфер обмена ──────────────────────
+  function tip(x, y, text) {
+    var t = document.createElement("div");
+    t.id = "tip"; t.textContent = text;
+    t.style.left = (x + 10) + "px"; t.style.top = (y - 28) + "px";
+    document.body.appendChild(t);
+    setTimeout(function () { t.remove(); }, 900);
+  }
+  function copyText(text, x, y) {
+    function done() { tip(x, y, "Copied: " + text); }
+    function old() {
+      // по голому IP clipboard API спрятан — старый путь через textarea
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) {}
+      ta.remove();
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, old);
+    } else { old(); }
+  }
+  document.addEventListener("click", function (ev) {
+    var c = ev.target.closest(".copy");
+    if (c && !ev.target.closest(".edit")) {
+      var text = c.textContent.trim();
+      // канал копируется со страной: «NO| TV 2 Sport 1» (правило
+      // владельца 05.09 — после NO| ровно один пробел)
+      var chan = c.closest(".chan");
+      if (chan && !chan.dataset.nocc) {
+        // имя, которое правил владелец, копируется ровно как написано —
+        // пометка перед ним в буфер не идёт (уточнение владельца 10.09)
+        var cc = chan.querySelector(".cc");
+        if (cc) { text = cc.textContent.trim() + " " + text; }
+      }
+      copyText(text, ev.clientX, ev.clientY);
+      mark(c);
+    }
+  });
+
+  // Подсветка последнего скопированного: сняли с прежнего, поставили на
+  // новое. Держится до следующего клика — так видно, где остановились.
+  function mark(node) {
+    var was = document.querySelector(".copied");
+    if (was) { was.classList.remove("copied"); }
+    var wasRow = document.querySelector("tr.game.copied-row");
+    if (wasRow) { wasRow.classList.remove("copied-row"); }
+    node.classList.add("copied");
+    var row = node.closest("tr.game");
+    if (row) { row.classList.add("copied-row"); }
+    try { sessionStorage.setItem("copied", nodeKey(node)); } catch (e) {}
+  }
+
+  // Ключ узла: номер игры + сам текст. По нему подсветка возвращается
+  // после перезагрузки страницы — список длинный, искать заново тяжело.
+  function nodeKey(node) {
+    var row = node.closest("tr.game");
+    var gid = row ? (row.querySelector(".gid") || {}).textContent || "" : "";
+    return (gid.trim() + "|" + node.textContent.trim());
+  }
+  (function restore() {
+    var key;
+    try { key = sessionStorage.getItem("copied"); } catch (e) { return; }
+    if (!key) { return; }
+    var all = document.querySelectorAll(".copy");
+    for (var i = 0; i < all.length; i++) {
+      if (nodeKey(all[i]) === key) {
+        all[i].classList.add("copied");
+        var row = all[i].closest("tr.game");
+        if (row) { row.classList.add("copied-row"); }
+        return;
+      }
+    }
+  })();
+
+  // ── кнопка ✎ у канала: имя (его и копируем) и пометка перед ним ──────────
+  function chanEditor(box, btn) {
+    var CSRF0 = document.querySelector('meta[name="csrf"]');
+    if (!CSRF0) return;
+    var nameNow = box.querySelector(".copy").textContent.trim();
+    var noteNow = (btn.dataset.note || "").trim();
+    var wrap = document.createElement("div");
+    wrap.id = "chanbox";
+    wrap.innerHTML =
+      '<div class="card">' +
+      '<h3>Канал на витрине</h3>' +
+      '<label>Название — его копирует клик</label>' +
+      '<input id="cb-name">' +
+      '<label>Пометка перед названием — видна, но не копируется</label>' +
+      '<input id="cb-note" maxlength="16">' +
+      '<div class="look">Будет видно: <b id="cb-look"></b><br>' +
+      'Скопируется: <b id="cb-copy"></b></div>' +
+      '<div class="row2"><button type="button" id="cb-no">Отмена</button>' +
+      '<button type="button" class="primary" id="cb-ok">Сохранить</button></div></div>';
+    document.body.appendChild(wrap);
+    var iName = wrap.querySelector("#cb-name");
+    var iNote = wrap.querySelector("#cb-note");
+    iName.value = nameNow; iNote.value = noteNow;
+    function look() {
+      var n = iName.value.trim(), c = iNote.value.trim();
+      // если приставка уже вписана в название, перед ним её не повторяем
+      var same = c && n.split("|")[0].trim().toUpperCase() === c.toUpperCase();
+      wrap.querySelector("#cb-look").textContent = (c && !same ? c + "| " : "") + n;
+      wrap.querySelector("#cb-copy").textContent = n;
+    }
+    iName.addEventListener("input", look);
+    iNote.addEventListener("input", look);
+    look(); iName.focus(); iName.select();
+    function close() { wrap.remove(); }
+    wrap.querySelector("#cb-no").addEventListener("click", close);
+    wrap.addEventListener("click", function (e) { if (e.target === wrap) close(); });
+    wrap.querySelector("#cb-ok").addEventListener("click", function () {
+      var body = new URLSearchParams();
+      body.set("csrf_token", CSRF0.content);
+      body.set("id", btn.dataset.cid);
+      body.set("name", iName.value.trim());
+      body.set("note", iNote.value.trim());
+      fetch("/channel-name", { method: "POST", body: body })
+        .then(function (r) { return r.json().then(function (j) {
+          if (!r.ok || !j.ok) throw new Error(j.why || r.status); return j; }); })
+        .then(function (j) {
+          // рисуем ровно то, что вернул сервер: он мог перенести приставку
+          // из имени в пометку («NL| ESPN 3» → имя ESPN 3, пометка NL)
+          document.querySelectorAll('.chan-edit[data-cid="' + btn.dataset.cid + '"]')
+            .forEach(function (b2) {
+              var box2 = b2.closest(".chan");
+              box2.querySelector(".copy").textContent = j.name;
+              box2.dataset.nocc = "1";
+              b2.dataset.note = j.note || "";
+              var cc = box2.querySelector(".cc");
+              // приставка уже внутри названия — второй раз не рисуем
+              var dup = j.note && j.name.split("|")[0].trim().toUpperCase()
+                        === j.note.trim().toUpperCase();
+              if (j.note && !dup) {
+                if (!cc) {
+                  cc = document.createElement("span");
+                  cc.className = "cc";
+                  box2.insertBefore(cc, box2.firstChild);
+                }
+                cc.textContent = j.note + "|";
+              } else if (cc) { cc.remove(); }
+            });
+          close();
+        })
+        .catch(function (e) { alert("Не сохранилось: " + e.message); });
+    });
+  }
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest(".chan-edit");
+    if (!b) return;
+    ev.preventDefault(); ev.stopImmediatePropagation();
+    chanEditor(b.closest(".chan"), b);
+  });
+
+  // ── кнопка ✎: закрепить правильное имя (только после входа) ──────────────
+  var CSRF = document.querySelector('meta[name="csrf"]');
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest(".edit");
+    if (!b || !CSRF || ev.target.closest(".chan-edit")) return;
+    ev.preventDefault(); ev.stopPropagation();
+    var cell = b.previousElementSibling;
+    var shownName = cell ? cell.textContent.trim() : "";
+    var what = b.dataset.kind === "team" ? "команды" : "лиги";
+    var fixed = prompt("Правильное название " + what + ":", shownName);
+    if (!fixed || fixed.trim() === "" || fixed.trim() === shownName) return;
+    fixed = fixed.trim();
+    var body = new URLSearchParams();
+    body.set("csrf_token", CSRF.content);
+    body.set("kind", b.dataset.kind);
+    body.set("raw", b.dataset.raw);
+    body.set("shown", shownName);
+    body.set("canonical", fixed);
+    fetch("/rename", { method: "POST", body: body })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function () {
+        // обновить все ячейки с этим же сырым именем, не перегружая страницу
+        document.querySelectorAll(".edit").forEach(function (btn) {
+          if (btn.dataset.kind === b.dataset.kind && btn.dataset.raw === b.dataset.raw) {
+            var c2 = btn.previousElementSibling;
+            if (c2) c2.textContent = fixed;
+          }
+        });
+        tip(ev.clientX, ev.clientY, "Сохранено: " + fixed);
+      })
+      .catch(function () { tip(ev.clientX, ev.clientY, "Не сохранилось — войдите в админку"); });
+  });
+})();
+</script>
+</body>
+</html>

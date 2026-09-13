@@ -1,0 +1,9 @@
+flask
+tzdata
+requests
+brotli
+selectolax
+rapidfuzz
+openpyxl
+gunicorn
+playwright

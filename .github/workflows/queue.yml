@@ -1,0 +1,57 @@
+# Кнопки сайта без ключа GitHub на сервере (05.09.2026): сервер пушит
+# пустой тег-заявку `btn-…` своим деплой-ключом (write), этот workflow
+# ловит тег, запускает обход crawl.yml и удаляет тег. Секреты по сети не
+# ездят — тег это просто имя:
+#   btn-days-2-<ts>            → полный обход, окно 2 суток
+#   btn-days-5-<ts>            → полный обход, окно 5 дней
+#   btn-days-6-<ts>            → полный обход, «сегодня + 6» целиком (аудит 07.09)
+#   btn-date-2026-09-10-<ts>   → скан одной даты
+name: Кнопки сайта
+
+on:
+  push:
+    tags: ["btn-*"]
+
+permissions:
+  actions: write
+  contents: write   # удалить тег-заявку после запуска
+
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Разобрать тег и запустить обход
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "заявка: $TAG"
+          KIND=$(echo "$TAG" | cut -d- -f2)
+          if [ "$KIND" = "date" ]; then
+            VALUE=$(echo "$TAG" | cut -d- -f3-5)
+            INPUTS="{\"mode\":\"full\",\"days\":\"2\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"\",\"date\":\"$VALUE\"}"
+          elif [ "$KIND" = "days" ]; then
+            VALUE=$(echo "$TAG" | cut -d- -f3)
+            # список окон тот же, что у crawl.yml (days): с чужим значением
+            # GitHub отверг бы dispatch, а тег остался бы висеть
+            case "$VALUE" in
+              2|5|6) ;;
+              *) echo "окно «$VALUE» не из списка 2/5/6 — выходим"; exit 0 ;;
+            esac
+            INPUTS="{\"mode\":\"full\",\"days\":\"$VALUE\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"\"}"
+          else
+            echo "непонятная заявка — выходим"; exit 0
+          fi
+          CODE=$(curl -s -o /tmp/answer -w "%{http_code}" -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/crawl.yml/dispatches" \
+            -d "{\"ref\":\"main\",\"inputs\":$INPUTS}")
+          echo "dispatch: $CODE"; cat /tmp/answer || true
+          [ "$CODE" = "204" ] || exit 1
+
+      - name: Удалить тег-заявку
+        if: always()
+        run: |
+          curl -s -X DELETE \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/git/${GITHUB_REF}" \
+            -o /dev/null || true

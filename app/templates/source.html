@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}{{ s.domain }} — Streams Schedule{% endblock %}
+{% block body %}
+<h1>{{ s.domain }}</h1>
+<p class="muted"><a href="{{ url_for('sources_list') }}">← ко всем источникам</a></p>
+
+<form class="card" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" value="save">
+  <div class="row">
+    <div style="flex:2 1 280px">
+      <label>Название</label>
+      <input type="text" name="name" value="{{ s.name }}">
+    </div>
+    <div>
+      <label>Часовой пояс</label>
+      <input type="text" name="timezone" value="{{ s.timezone or '' }}"
+             placeholder="Europe/Sofia">
+    </div>
+    <div>
+      <label>Приоритет (вес доверия)</label>
+      <input type="number" name="priority" value="{{ s.priority }}">
+    </div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <div>
+      <label>Роль</label>
+      <select name="role">
+        {% for k, v in ROLES.items() %}
+        <option value="{{ k }}" {% if s.role == k %}selected{% endif %}>{{ v }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Доступ к расписанию</label>
+      <select name="access">
+        {% for k, v in ACCESS.items() %}
+        <option value="{{ k }}" {% if s.access == k %}selected{% endif %}>{{ v }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Состояние</label>
+      <select name="status">
+        {% for k, v in STATUSES.items() %}
+        <option value="{{ k }}" {% if s.status == k %}selected{% endif %}>{{ v }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Уровень разбора</label>
+      <select name="parse_level">
+        <option value="">не задан</option>
+        {% for lv in ['A','B','C','D'] %}
+        <option value="{{ lv }}" {% if s.parse_level == lv %}selected{% endif %}>{{ lv }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div style="margin-top:12px">
+    <label>Шаблон адреса с датой</label>
+    <input type="text" name="url_pattern" value="{{ s.url_pattern or '' }}"
+           placeholder="https://nova.bg/schedule/index/{channel_id}/{YYYY}/{MM}/{DD}/">
+  </div>
+  <div style="margin-top:12px">
+    <label>Заметки</label>
+    <textarea name="notes" style="min-height:70px">{{ s.notes or '' }}</textarea>
+  </div>
+  <div style="margin-top:12px">
+    <button class="primary" type="submit">Сохранить</button>
+  </div>
+</form>
+
+<h2>Ссылки на этот сайт ({{ urls|length }})</h2>
+<p class="muted">Дубль считается по домену: все адреса одного сайта живут здесь,
+одной записью.</p>
+<table>
+  {% for u in urls %}
+  <tr>
+    <td><a href="{{ u.url }}" target="_blank" rel="noopener">{{ u.url }}</a></td>
+    <td style="width:1%">
+      <form method="post" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="action" value="delete_url">
+        <input type="hidden" name="url_id" value="{{ u.id }}">
+        <button class="danger" type="submit">Удалить</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<form class="card row" method="post" style="margin-top:12px">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" value="add_url">
+  <div style="flex:3 1 320px">
+    <label>Добавить ещё одну ссылку на этот сайт</label>
+    <input type="text" name="url" placeholder="https://...">
+  </div>
+  <div style="flex:0 0 auto"><button type="submit">Добавить</button></div>
+</form>
+
+<h2>Удаление</h2>
+<div class="card">
+  <p class="muted">Обычно источник достаточно <b>выключить</b> — он останется в базе
+    и его можно вернуть. Удаление стирает запись насовсем.</p>
+  <form method="post" action="{{ url_for('source_toggle', source_id=s.id) }}"
+        style="display:inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="back" value="{{ url_for('source_edit', source_id=s.id) }}">
+    <button type="submit">{{ 'Выключить' if s.enabled else 'Включить' }}</button>
+  </form>
+  <form method="post" action="{{ url_for('source_delete', source_id=s.id) }}"
+        style="display:inline"
+        onsubmit="return confirm('Удалить {{ s.domain }} насовсем?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="danger" type="submit">Удалить насовсем</button>
+  </form>
+</div>
+{% endblock %}

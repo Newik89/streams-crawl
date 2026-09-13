@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Закрытые — Streams Schedule{% endblock %}
+
+{% macro table(rows, empty) %}
+<table>
+  <tr><th>Сайт</th><th>Ссылка</th><th>Что не так</th><th>Доступ</th><th></th></tr>
+  {% for s in rows %}
+  <tr>
+    <td><a href="{{ url_for('source_edit', source_id=s.id) }}"><b>{{ s.domain }}</b></a>
+      <div class="muted">{{ s.country or '' }}</div></td>
+    <td class="muted" style="max-width:300px; word-break:break-all">
+      <a href="{{ s.base_url }}" target="_blank" rel="noopener">{{ s.base_url }}</a></td>
+    <td>
+      {% if s.protection %}<span class="tag bad">{{ s.protection }}</span>{% endif %}
+      {% if s.needs_js %}<span class="tag d">нужен браузер</span>{% endif %}
+      <div class="muted">{{ (s.notes or '')[:80] }}</div>
+    </td>
+    <td>{{ ACCESS.get(s.access, s.access) }}</td>
+    <td style="width:1%; white-space:nowrap">
+      <form method="post" action="{{ url_for('source_toggle', source_id=s.id) }}"
+            style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.path }}">
+        <button type="submit">{{ 'Выключить' if s.enabled else 'Включить' }}</button>
+      </form>
+      <form method="post" action="{{ url_for('source_delete', source_id=s.id) }}"
+            style="display:inline"
+            onsubmit="return confirm('Удалить {{ s.domain }} насовсем?')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.path }}">
+        <button class="danger" type="submit">Удалить</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="muted">{{ empty }}</td></tr>
+  {% endfor %}
+</table>
+{% endmacro %}
+
+{% block body %}
+<h1>Закрытые</h1>
+<p class="muted">Сайты, с которых расписание не читается. Те, у кого защита стоит,
+  но расписание браузером читается, — рабочие: они в
+  <a href="{{ url_for('sources_list') }}">общем списке</a> с пометкой «защита».</p>
+
+<h2>Не пускают — {{ blocked|length }}</h2>
+<p class="muted">Расписание не отдаётся совсем: защита не пустила даже браузер,
+  либо нужен вход или платная подписка. Проверьте глазами: если хватит бесплатной
+  регистрации, поставьте доступ «нужна регистрация» и оставьте — заведём аккаунт.</p>
+{{ table(blocked, 'Пусто — и хорошо.') }}
+
+<h2>Доступ не проверен — {{ unchecked|length }}</h2>
+<p class="muted">Разведка не смогла прочитать расписание без браузера, поэтому
+  неизвестно, открыто оно или нет. Скорее всего просто рисуется скриптом.
+  Разберёмся на этапе, когда подключим браузер — удалять не надо.</p>
+{{ table(unchecked, 'Все проверены.') }}
+{% endblock %}

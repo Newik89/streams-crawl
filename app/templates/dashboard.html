@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Дашборд — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Дашборд</h1>
+
+<div class="stats">
+  <div class="stat"><b>{{ c.total }}</b><span class="muted">источников всего</span></div>
+  <div class="stat"><b>{{ c.enabled }}</b><span class="muted">включено</span></div>
+  <div class="stat"><b>{{ c.schedule }}</b><span class="muted">расписания</span></div>
+  <div class="stat"><b>{{ c.directory }}</b><span class="muted">справочники</span></div>
+  <div class="stat"><b>{{ c.urls }}</b><span class="muted">ссылок в базе</span></div>
+</div>
+
+<h2>Как читаются сайты</h2>
+<div class="stats">
+  <div class="stat"><b>{{ c.level_a }}</b><span class="muted">готовый JSON</span></div>
+  <div class="stat"><b>{{ c.level_b }}</b><span class="muted">видно в тексте</span></div>
+  <div class="stat"><b>{{ c.level_d }}</b><span class="muted">нужен браузер</span></div>
+</div>
+
+<h2>Здоровье сбора</h2>
+<div class="stats">
+  <div class="stat">
+    <b>{{ h.crawl.strftime('%d.%m %H:%M') if h.crawl else '—' }}</b>
+    <span class="muted">последний обход{% if h.crawl_ago %} ({{ h.crawl_ago }}){% endif %}</span>
+  </div>
+  <div class="stat">
+    <b>{{ h['import'].strftime('%d.%m %H:%M') if h['import'] else '—' }}</b>
+    <span class="muted">залито в базу{% if h.import_ago %} ({{ h.import_ago }}){% endif %}</span>
+  </div>
+  <div class="stat"><b>{{ h.games }}</b>
+    <span class="muted">игр впереди{% if h.last_day %}, по {{ h.last_day }}{% endif %}</span></div>
+  <div class="stat"><b>{{ h.ok }}</b><span class="muted">сайтов в норме</span></div>
+  <div class="stat"><b>{{ h.broken }}</b>
+    <span class="muted"><a href="{{ url_for('broken') }}">сломанных</a></span></div>
+  {% if h.server.pull %}
+  <div class="stat">
+    <b>{{ h.server.pull.strftime('%d.%m %H:%M') }}</b>
+    <span class="muted">код на сервере{% if h.server.pull_bad %} — не забран{%
+      elif h.server.pull_ago %} ({{ h.server.pull_ago }}){% endif %}</span>
+  </div>
+  {% endif %}
+</div>
+{% if h.server.bad %}
+<div class="flash error">
+  {%- if h.server.pull_bad %} Сервер не забрал новый код
+    {%- if h.server.pull_ago %} ({{ h.server.pull_ago }}){% endif %}
+    {%- if h.server.pull_why %}: {{ h.server.pull_why }}{% endif %}.
+  {%- endif %}
+  {%- if h.server.import_error %} Заливка игр упала
+    {%- if h.server.import_error_ago %} ({{ h.server.import_error_ago }}){% endif %}:
+    {{ h.server.import_error }}.
+  {%- endif %}
+  Подробности — на сервере в <code>/var/log/streams-update.log</code>.</div>
+{% elif h.stale %}
+<div class="flash error">Данные не обновлялись больше {{ h.stale_hours }} ч —
+  проверьте <a href="{{ url_for('runs_list') }}">Прогоны</a> и обход на GitHub.</div>
+{% endif %}
+{% if h.run %}
+<p class="muted">Последний прогон: {{ h.run.finished_at }} — сайтов ок
+  {{ h.run.sources_ok }}, сбоев {{ h.run.sources_failed }}, строк
+  {{ h.run.rows_found }}, игр в базу {{ h.run.events_upserted }}.</p>
+{% endif %}
+
+<h2>Требует внимания</h2>
+<div class="stats">
+  <div class="stat"><b>{{ c.closed }}</b>
+    <span class="muted"><a href="{{ url_for('closed') }}">не пускают</a></span></div>
+  <div class="stat"><b>{{ c.broken }}</b>
+    <span class="muted"><a href="{{ url_for('broken') }}">сломанные ссылки</a></span></div>
+  <div class="stat"><b>{{ c.need_review }}</b>
+    <span class="muted">доступ не подтверждён</span></div>
+</div>
+
+<div class="card" style="margin-top:22px">
+  <h2>Запустить обход</h2>
+  <p class="muted">Команда уходит в GitHub Actions; сайты обходит он, не эта
+    машина. Итог — в results/ и на странице после импорта.</p>
+  <form method="post" action="{{ url_for('crawl_run') }}" style="display:inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="2">
+    <button type="submit">Обход: 2 суток</button>
+  </form>
+  <form method="post" action="{{ url_for('crawl_run') }}" style="display:inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="5">
+    <button type="submit">Обход: 5 дней</button>
+  </form>
+  <form method="post" action="{{ url_for('crawl_run') }}" style="display:inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="6">
+    <button type="submit">Обход: 6 дней</button>
+  </form>
+  <form method="post" action="{{ url_for('crawl_day') }}"
+        style="display:inline; margin-left:14px">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="date" name="date" required>
+    <button type="submit">Скан этой даты</button>
+  </form>
+  <p class="muted" style="margin-top:6px">Скан даты пересобирает один день
+    (можно повторять). Дальше недели вперёд сетки у сайтов обычно ещё пусты —
+    соберётся то, что уже опубликовано.</p>
+  {% if req %}
+  <p class="muted" style="margin-top:6px">🔄 Последний заказ: <b>{{ req.what }}</b>
+    ({{ req.asked }}).
+    {% if req.done %}
+      ✅ <b>Выполнен</b>: обход {{ req.crawl }}, залито {{ req['import'] }}.
+    {% else %}
+      ⏳ Выполняется{% if req.waiting %} — заказан {{ req.waiting }}{% endif %};
+      обход и загрузка занимают до часа, обновите страницу позже.
+    {% endif %}
+  </p>
+  {% endif %}
+  {% if scan.request %}
+  {% set req = scan.request.split('|') %}
+  {% set res = scan.result.split('|') if scan.result else [] %}
+  <p class="muted" style="margin-top:4px">📅 Последний заказ: скан
+    <b>{{ req[0] }}</b> ({{ req[1] if req|length > 1 else '' }}).
+    {% if res|length == 3 and res[0] == req[0]
+          and (req|length < 2 or res[1] >= req[1]) %}
+      ✅ <b>Выполнен</b>: загружено {{ res[1] }}, игр в дне: {{ res[2] }}.
+    {% else %}
+      ⏳ Выполняется — обход и загрузка занимают до получаса, обновите
+      страницу позже.
+    {% endif %}
+  </p>
+  {% endif %}
+  <script>
+    (function () {
+      var d = document.querySelector('input[type=date]');
+      if (!d) return;
+      var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+      var iso = function (t) { return t.getFullYear() + "-" + pad(t.getMonth() + 1) + "-" + pad(t.getDate()); };
+      var today = new Date(); var far = new Date(today.getTime() + 13 * 864e5);
+      d.min = iso(today); d.max = iso(far); d.value = iso(today);
+    })();
+  </script>
+</div>
+
+<div class="card" style="margin-top:22px">
+  <div class="muted">База: <code>{{ db_path }}</code></div>
+  <div class="muted">Публичная страница — <a href="{{ url_for('schedule') }}">/schedule</a>;
+    игры кладёт туда <code>scripts/games_import.py</code> из свежего
+    <code>results/games.json</code> после обхода.</div>
+</div>
+{% endblock %}

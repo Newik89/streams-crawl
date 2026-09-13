@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Каналы — Streams Schedule{% endblock %}
+
+{% block body %}
+<h1>Каналы</h1>
+
+<div class="card">
+  <p class="muted" style="margin:0">
+    Все каналы словаря: как канал называется у нас, из какой он страны,
+    какие сайты его дают и под какими именами. Канал опознаётся парой
+    (имя, страна) — одинаковые имена из разных стран не склеиваются.
+    Имя и приставку страны можно поправить прямо в строке — как напишете,
+    так и будет на витрине; пустая приставка убирает «BG|» с бейджа. Имена
+    сайтов (правый столбец) остаются: по ним обход узнаёт канал.
+  </p>
+</div>
+
+<form class="row" method="get" style="margin-bottom:14px">
+  <input type="search" name="q" value="{{ q }}" placeholder="Имя, страна или сайт…">
+  <button class="btn">Искать</button>
+  {% if q %}<a class="btn" href="{{ url_for('channels_list') }}">Сбросить</a>{% endif %}
+  <span class="muted" style="margin-left:auto">каналов: {{ rows | length }}</span>
+</form>
+
+{% if not rows %}
+  <div class="card"><b>Ничего не нашлось.</b></div>
+{% else %}
+<table>
+  <tr>
+    <th style="width:24%">Канал</th>
+    <th style="width:8%">Страна</th>
+    <th style="width:30%">Сайты-источники</th>
+    <th>Имена на сайтах</th>
+    <th style="width:8%">В обходе</th>
+  </tr>
+  {% for r in rows %}
+  <tr>
+    <td>
+      <form method="post" id="ch{{ r.id }}"
+            action="{{ url_for('channel_rename', channel_id=r.id) }}"
+            style="display:flex; gap:6px; align-items:center">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="text" name="name" value="{{ r.name }}" required
+               style="flex:1; min-width:120px; padding:4px 6px;
+                      border:1px solid var(--line); border-radius:6px">
+        <button class="btn" type="submit" title="Сохранить имя и приставку">✎</button>
+      </form>
+    </td>
+    <td>
+      <input type="text" name="country" form="ch{{ r.id }}" maxlength="6"
+             value="{{ r.country or '' }}" placeholder="—" size="4"
+             title="Приставка страны на витрине. Пусто — бейдж без приставки"
+             style="width:52px; padding:4px 6px; text-transform:uppercase;
+                    border:1px solid var(--line); border-radius:6px">
+    </td>
+    <td class="muted">{{ r.sources or "—" }}</td>
+    <td class="muted">{{ r.aliases or "—" }}</td>
+    <td>{% if r.included %}✅{% else %}<span class="muted">нет</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вход — Streams Schedule</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center;
+         justify-content:center; background:#f6f7f9; color:#1c1f23;
+         font:15px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+  form { background:#fff; border:1px solid #e3e6ea; border-radius:12px;
+         padding:26px; width:320px; }
+  h1 { font-size:19px; margin:0 0 16px; }
+  input { width:100%; padding:9px 11px; border:1px solid #e3e6ea; border-radius:7px;
+          font:inherit; margin-bottom:12px; }
+  button { width:100%; padding:9px; border:0; border-radius:7px; background:#1f6feb;
+           color:#fff; font:inherit; cursor:pointer; }
+  .flash { padding:9px 12px; border-radius:7px; margin-bottom:12px; font-size:14px;
+           background:#fce8e6; color:#b3261e; }
+  .hint { font-size:13px; color:#6b7280; margin-top:12px; }
+</style>
+</head>
+<body>
+<form method="post">
+  <h1>Streams Schedule</h1>
+  {% with msgs = get_flashed_messages() %}
+    {% for m in msgs %}<div class="flash">{{ m }}</div>{% endfor %}
+  {% endwith %}
+  <input type="password" name="password" placeholder="Пароль" autofocus required>
+  <button type="submit">Войти</button>
+  {% if local_mode %}
+    <div class="hint">Локальная обкатка: пароль <b>admin</b>,
+      если не задана переменная STREAMS_ADMIN_PASSWORD.</div>
+  {% endif %}
+</form>
+</body>
+</html>
