@@ -43,3 +43,6 @@ recon/vsetv_channels.json
 
 # память серверного обхода (scripts/server_crawl.py): живёт только на сервере
 results/server_crawl.json
+
+# локальная памятка ассистента — в публичный репозиторий не едет
+CLAUDE.md
