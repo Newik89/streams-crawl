@@ -203,16 +203,19 @@ def _team_id(overrides_ids: dict[str, int], raw: str) -> int | None:
 
 
 def _team_ids(conn: sqlite3.Connection) -> dict[str, int]:
-    return {r["alias"]: r["team_id"] for r in conn.execute(
-        "SELECT alias, team_id FROM team_aliases")}
+    # только бесспорные написания: «Dinamo» трёх клубов id не ставит (14.09)
+    from . import dictionary
+    return {alias: team_id for alias, (team_id, _)
+            in dictionary.team_alias_map(conn).items()}
 
 
 def _league_ids(conn: sqlite3.Connection) -> dict[str, int]:
     # и алиасы, и сами канонические имена: игра приходит уже с каноном
+    from . import dictionary
     out = {r["canonical_name"]: r["id"] for r in conn.execute(
         "SELECT id, canonical_name FROM leagues")}
-    out.update({r["alias"]: r["league_id"] for r in conn.execute(
-        "SELECT alias, league_id FROM league_aliases")})
+    out.update({alias: league_id for alias, (league_id, _)
+                in dictionary.league_alias_map(conn).items()})
     return out
 
 
@@ -418,14 +421,13 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
     Фильтры и поиск накладывает страница — объём (сотни строк) это позволяет."""
     now = now or datetime.now()
     graces = grace_map(conn)
-    team_names = {r["alias"]: r["canonical_name"] for r in conn.execute(
-        "SELECT a.alias, t.canonical_name FROM team_aliases a "
-        "JOIN teams t ON t.id = a.team_id")}
+    # только бесспорные написания (пакет C, 14.09): «Dinamo» трёх клубов
+    # витрина по словарю не называет — имя даёт канон игры
+    from . import dictionary
+    team_names = dictionary.team_overrides(conn)
     # переименование лиги действует сразу, не дожидаясь следующего импорта:
     # событие ещё держит league_auto, а показываем уже канон из алиаса
-    league_names = {r["alias"]: r["canonical_name"] for r in conn.execute(
-        "SELECT a.alias, l.canonical_name FROM league_aliases a "
-        "JOIN leagues l ON l.id = a.league_id")}
+    league_names = dictionary.league_overrides(conn)
 
     # Что уже лежит в очереди на подтверждение (страница «Имена»): по этим
     # играм ответ найден, но ждёт вашего слова. Раньше витрина о них молчала,

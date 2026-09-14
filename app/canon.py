@@ -151,15 +151,23 @@ def il_pick(game: dict, candidates: list[dict],
     неделями (жалоба владельца 09.09). Порог тут выше обычного —
     `BRIDGE_SURE` очков и отрыв `BRIDGE_GAP` от второго."""
     def alone(pick: dict) -> tuple[dict | None, str]:
-        """Единственный кандидат. Израильскому мосту этого довольно — там
-        отбор шёл по своей лиге и своему часу. Отобранным по ТОЧНОЙ лиге
-        (`same_league`) буквы всё же обязаны не спорить: в «WORLD: Club
-        Friendly» в один час стоит десяток чужих матчей, и одиночка легко
-        оказывается не тем — `Partizan - Besiktas` цеплялся к
-        `Trapani - Manresa` (поймано прогоном 10.09)."""
-        if same_league and _pair_score(game, pick) < LONE_HE:
-            return None, ""
-        return pick, "sure"
+        """Единственный кандидат. Отобранным по ТОЧНОЙ лиге (`same_league`)
+        буквы обязаны не спорить: в «WORLD: Club Friendly» в один час стоит
+        десяток чужих матчей, и одиночка легко оказывается не тем —
+        `Partizan - Besiktas` цеплялся к `Trapani - Manresa` (10.09).
+        Израильскому мосту раньше хватало своей лиги и часа, но у футбольной
+        строки maariv стоял баскетбол, и единственным кандидатом оказывался
+        чужой матч Кубка: «הפועל ר"ג — מכבי נתניה» закрепился за Maccabi
+        Rishon — Ironi Eilat, и словарь выучил мусор (#2431, #2510, 14.09).
+        Теперь и тут буквы пары не должны спорить (`BRIDGE_FLOOR`) — либо
+        одна команда узнана твёрдо (`BRIDGE_BEST`)."""
+        if same_league:
+            return (pick, "sure") if _pair_score(game, pick) >= LONE_HE \
+                else (None, "")
+        if _pair_score(game, pick) >= BRIDGE_FLOOR \
+                or _best_side(game, pick) >= BRIDGE_BEST:
+            return pick, "sure"
+        return None, ""
 
     if len(candidates) == 1:
         return alone(candidates[0])
@@ -470,12 +478,38 @@ def align(games: list[dict], reference: list[dict],
 
 _SEPS = (" - ", " – ", " — ")
 
+#: заголовок сетки несёт лигу перед двоеточием и тур после запятой:
+#: «ליגה צרפתית: פריז - שטרסבורג, מחזור 5», «Super League 7. Runde,
+#: Grasshopper – FC Zürich». Без чистки в словарь ложились «ארצו, מחזור 3»
+#: и «ליגה לאומית בכדורגל: הפועל עכו» (пакет C, 14.09). В голове дефиса нет:
+#: «Arsenal - Chelsea: live» — это уже пара, её не режем
+_TITLE_HEAD = re.compile(r"^[^:\-–—]{2,80}:\s+")
+_ROUND_WORDS = r"(?:\d|מחזור|שלב|סיבוב|גמר|round|runde|jornada|giornata|kolo)"
+_ROUND_HEAD = re.compile(rf"^[^,\-–—]*{_ROUND_WORDS}[^,\-–—]*,\s+", re.I)
+_TITLE_TAIL = re.compile(rf"\s*,\s*[^,]*{_ROUND_WORDS}[^,]*$", re.I)
+#: весь матч в одном написании: «EVERTON X WOLVERHAMPTON» (sporttv.pt).
+#: Дефис сюда не входит — он бывает в имени клуба: «Ζλάτε Μόραφτσε -
+#: Βράμπλε» = Z. Moravce-Vrable
+_VERSUS = re.compile(r"\s(?:x|vs\.?|v)\s", re.I)
+
+
+def bare_title(title: str) -> str:
+    """Заголовок без лиги впереди и тура в конце."""
+    title = _ROUND_HEAD.sub("", _TITLE_HEAD.sub("", (title or "").strip()))
+    return _TITLE_TAIL.sub("", title).strip()
+
+
+def _one_team(mine: str, canon: str) -> bool:
+    """В написании один клуб, а не весь матч: «EVERTON X WOLVERHAMPTON»
+    ложилось алиасом Everton (пакет C, 14.09)."""
+    return not (_VERSUS.search(mine) and not _VERSUS.search(canon))
+
 
 def _entry_sides(game: dict):
     """Написания пары в сырых строках сайтов: именно они придут и завтра,
     поэтому алиасы вяжем и к ним, а не только к склеенному имени игры."""
     for e in game.get("entries", []):
-        title = (e.get("raw_title") or "").strip()
+        title = bare_title(e.get("raw_title") or "")
         for sep in _SEPS:
             if sep in title:
                 h, _, a = title.partition(sep)

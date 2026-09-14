@@ -401,18 +401,21 @@ def create_app() -> Flask:
             abort(400)
         conn = db.connect()
         try:
+            # слово владельца: написание остаётся только за этим каноном,
+            # иначе спорное имя словарь не отдаёт и правка бы не держалась
             if kind == "team":
-                dictionary.remember_team(conn, raw, canonical)
+                dictionary.remember_team(conn, raw, canonical, sole=True)
             else:
-                dictionary.remember_league(conn, raw, canonical)
+                dictionary.remember_league(conn, raw, canonical, sole=True)
             # то же имя могло прийти и в показанном виде (транслит) — свяжем
             # и его, чтобы правка держалась при любом написании
             shown = (request.form.get("shown") or "").strip()
             if shown and shown != raw:
                 if kind == "team":
-                    dictionary.remember_team(conn, shown, canonical)
+                    dictionary.remember_team(conn, shown, canonical, sole=True)
                 else:
-                    dictionary.remember_league(conn, shown, canonical)
+                    dictionary.remember_league(conn, shown, canonical,
+                                               sole=True)
         finally:
             conn.close()
         return jsonify({"ok": True, "canonical": canonical})

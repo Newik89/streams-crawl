@@ -40,11 +40,22 @@ TZ = "Asia/Jerusalem"
 _HHMM = re.compile(r"(\d{1,2}):(\d{2})")
 _DATE = re.compile(r"date=(\d{2})[/%]2?[Ff]?(\d{2})[/%]2?[Ff]?(\d{4})")
 _LIVE = "ישיר"
+#: хвост заголовка — тур или стадия: «…, מחזור 5», «…, שלב הבתים»
+_ROUND = re.compile(r"\s*,\s*[^,]*(?:\d|מחזור|שלב|סיבוב|גמר|חצי|רבע)[^,]*$")
+
+
+def _league(text: str) -> str:
+    """Лига — перед двоеточием: «ליגה צרפתית בכדורגל הנשים: מונפלייה -
+    מארסיי». В ней же вид спорта («בכדורגל») и пол («הנשים»): без лиги
+    женский матч Монпелье шёл мужским, а Paris FC — Strasbourg не сводился
+    с эталоном вовсе (#2525, #2499, владелец 14.09)."""
+    return text.split(":", 1)[0].strip()[:120] if ":" in text else ""
 
 
 def _pair(text: str) -> str:
     """Пара команд — после двоеточия, через дефис или ивритское «против»."""
     tail = text.split(":", 1)[1] if ":" in text else text
+    tail = _ROUND.sub("", tail)
     for sep in (" - ", " – ", " נגד ", " לקראת "):
         if sep in tail:
             home, _, away = tail.partition(sep)

@@ -48,18 +48,115 @@ def _unique_slug(conn: sqlite3.Connection, table: str, base: str) -> str:
 
 # ── чтение словарей ──────────────────────────────────────────────────────────
 
+#: канонические имена с таким сходством — один клуб, записанный двумя
+#: командами: `Veneza`/`Venezia` дают 66, `AC Milan`/`Milan` — 100, а разные
+#: клубы с общим словом — `Maccabi Haifa`/`Maccabi Rishon` 36, `CSKA Sofia`/
+#: `CSKA Moscow` 44, `Slavia Sofia`/`Slavia Prague` 54 (замер 14.09)
+SAME_CLUB = 60
+
+
+def _kind(text: str) -> tuple[str, bool]:
+    """Категория имени для спора: пол/возраст и пометка «3x3» (`_learnable`)."""
+    from . import names
+    return names.category(text), "3x3" in text.lower()
+
+
+def _clubs(canonicals: list[str]) -> int:
+    """Сколько РАЗНЫХ клубов среди имён: похожие сливаются в одну кучку."""
+    from . import names                      # names словарь не импортирует
+    groups: list[list[str]] = []
+    for name in canonicals:
+        for group in groups:
+            if any(names.similarity(name, other) >= SAME_CLUB
+                   for other in group):
+                group.append(name)
+                break
+        else:
+            groups.append([name])
+    return len(groups)
+
+
+def team_alias_map(conn: sqlite3.Connection) -> dict[str, tuple[int, str]]:
+    """Написание → (id команды, каноническое имя) — только бесспорные.
+
+    Одно написание бывает у нескольких команд: «Dinamo» — Загреб, Бухарест
+    и Москва, «מכבי חיפה» — Maccabi Haifa и (ошибкой сверки) Maccabi Rishon.
+    Раньше выигрывала последняя запись, и #2168 шла «Dynamo Moscow» вместо
+    Загреба. Спорное написание словарь теперь не отдаёт — такую игру
+    решает эталон flashscore (пакет C, 14.09). Не спор: команды одного
+    клуба (похожие имена) — берём последнюю запись, как раньше; владелец
+    чужой категории при своей («ASTON VILLA» и на Aston Villa U19) — его не
+    считаем, голое имя за юношами и женщинами не закрепляется (06.09)."""
+    def build() -> dict[str, tuple[int, str]]:
+        owners: dict[str, dict[int, str]] = {}
+        for r in conn.execute(
+                "SELECT a.alias, a.team_id, t.canonical_name "
+                "FROM team_aliases a JOIN teams t ON t.id = a.team_id "
+                "ORDER BY a.id"):
+            per = owners.setdefault(r["alias"], {})
+            per.pop(r["team_id"], None)      # последняя запись — в конец
+            per[r["team_id"]] = r["canonical_name"]
+        out: dict[str, tuple[int, str]] = {}
+        for alias, per in owners.items():
+            items = list(per.items())
+            if len(items) > 1:
+                kind = _kind(alias)
+                items = [(t, c) for t, c in items if _kind(c) == kind] or items
+                if len(items) > 1 and _clubs([c for _, c in items]) > 1:
+                    continue
+            out[alias] = items[-1]
+        return out
+    return _cached(conn, "team_aliases", build)
+
+
 def team_overrides(conn: sqlite3.Connection) -> dict[str, str]:
     """Сырое имя → каноническое. Отдаём готовым словарём: в разборе он
     спрашивается на каждое имя, а ходить в базу столько раз незачем."""
-    return {r["alias"]: r["canonical_name"] for r in conn.execute(
-        "SELECT a.alias, t.canonical_name FROM team_aliases a "
-        "JOIN teams t ON t.id = a.team_id")}
+    return {alias: canon for alias, (_, canon)
+            in team_alias_map(conn).items()}
+
+
+#: словари «написание → владелец» считаются заметно (у спорных имён —
+#: сходство попарно), а витрина спрашивает их на каждый заход: 0,2–0,4 с на
+#: заход (замер 14.09). Держим готовый, пока таблица не изменилась
+_CACHE: dict[tuple, dict] = {}
+
+
+def _cached(conn: sqlite3.Connection, table: str, build) -> dict:
+    main = conn.execute("PRAGMA database_list").fetchone()
+    key = (main[2], table, *conn.execute(
+        f"SELECT count(*), max(id) FROM {table}").fetchone(),
+        *conn.execute("SELECT count(*), max(id) FROM teams").fetchone(),
+        *conn.execute("SELECT count(*), max(id) FROM leagues").fetchone())
+    if key not in _CACHE:
+        if len(_CACHE) > 8:
+            _CACHE.clear()
+        _CACHE[key] = build()
+    return _CACHE[key]
+
+
+def league_alias_map(conn: sqlite3.Connection) -> dict[str, tuple[int, str]]:
+    """То же для лиг. «ליגת ווינר» у maariv — футбольная лига, а висело
+    написание ещё и на баскетбольном Кубке, и футбол уезжал в баскетбол
+    (#2431, #2510). Спор — лиги с разной основой; стадии одного турнира
+    (`… - Play Offs`) спором не считаются."""
+    def build() -> dict[str, tuple[int, str]]:
+        owners: dict[str, dict[int, str]] = {}
+        for r in conn.execute(
+                "SELECT a.alias, a.league_id, l.canonical_name "
+                "FROM league_aliases a JOIN leagues l ON l.id = a.league_id "
+                "ORDER BY a.id"):
+            per = owners.setdefault(r["alias"], {})
+            per.pop(r["league_id"], None)
+            per[r["league_id"]] = r["canonical_name"]
+        return {alias: list(per.items())[-1] for alias, per in owners.items()
+                if len({c.split(" - ")[0] for c in per.values()}) == 1}
+    return _cached(conn, "league_aliases", build)
 
 
 def league_overrides(conn: sqlite3.Connection) -> dict[str, str]:
-    return {r["alias"]: r["canonical_name"] for r in conn.execute(
-        "SELECT a.alias, l.canonical_name FROM league_aliases a "
-        "JOIN leagues l ON l.id = a.league_id")}
+    return {alias: canon for alias, (_, canon)
+            in league_alias_map(conn).items()}
 
 
 def channel_overrides(conn: sqlite3.Connection) -> dict[tuple[str, int | None], dict]:
@@ -76,8 +173,26 @@ def channel_overrides(conn: sqlite3.Connection) -> dict[tuple[str, int | None], 
 
 # ── запись подтверждённого ───────────────────────────────────────────────────
 
+def _attach(conn: sqlite3.Connection, table: str, key: str, owner: int,
+            raw: str, lang: str | None, sole: bool) -> None:
+    """Написание → владелец, без копий. У `lang=NULL` защита UNIQUE(alias,
+    lang) в SQLite не срабатывает, и каждый прогон дописывал ту же строку
+    ещё раз: к 14.09 из 223 тыс. строк алиасов команд 174 тыс. были копиями
+    (пакет C). `sole` — слово владельца (кнопка ✎): написание того же языка
+    снимается с остальных владельцев, иначе спорное имя словарь не отдаёт."""
+    if sole:
+        conn.execute(f"DELETE FROM {table} WHERE alias = ? AND lang IS ? "
+                     f"AND {key} <> ?", (raw, lang, owner))
+    if conn.execute(f"SELECT 1 FROM {table} WHERE alias = ? AND lang IS ? "
+                    f"AND {key} = ?", (raw, lang, owner)).fetchone():
+        return
+    conn.execute(f"INSERT OR IGNORE INTO {table} ({key}, alias, lang) "
+                 f"VALUES (?, ?, ?)", (owner, raw, lang))
+
+
 def remember_team(conn: sqlite3.Connection, raw: str, canonical: str,
-                  country: str | None = None, lang: str | None = None) -> int:
+                  country: str | None = None, lang: str | None = None,
+                  sole: bool = False) -> int:
     """Закрепляет «сырое имя → команда». Команда с таким каноническим именем
     уже есть — цепляем алиас к ней, а не заводим двойника."""
     row = conn.execute("SELECT id FROM teams WHERE canonical_name = ?",
@@ -90,15 +205,14 @@ def remember_team(conn: sqlite3.Connection, raw: str, canonical: str,
             (canonical, _unique_slug(conn, "teams", slugify(canonical, "team")),
              country))
         team_id = cur.lastrowid
-    conn.execute("INSERT OR IGNORE INTO team_aliases (team_id, alias, lang) "
-                 "VALUES (?, ?, ?)", (team_id, raw, lang))
+    _attach(conn, "team_aliases", "team_id", team_id, raw, lang, sole)
     conn.commit()
     return team_id
 
 
 def remember_league(conn: sqlite3.Connection, raw: str, canonical: str,
                     sport: str | None = None, country: str | None = None,
-                    lang: str | None = None) -> int:
+                    lang: str | None = None, sole: bool = False) -> int:
     row = conn.execute("SELECT id FROM leagues WHERE canonical_name = ?",
                        (canonical,)).fetchone()
     if row:

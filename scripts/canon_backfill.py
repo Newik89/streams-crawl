@@ -57,6 +57,142 @@ def main() -> int:
             print(f"по fs_id локалей выучено: команд {teams}, лиг {leagues}")
         names.set_overrides(dictionary.team_overrides(conn))
 
+        # Метка flashscore, с которой спорят буквы, — ошибка сверки, а не
+        # правда: у футбольных строк maariv стоял баскетбол, и единственным
+        # израильским кандидатом оказывался чужой матч Кубка («הפועל ר"ג —
+        # מכבי נתניה» = Maccabi Rishon — Ironi Eilat; #2431, #2510, 14.09).
+        # Метку и канон снимаем — игра сверяется заново ниже; вид спорта
+        # берём у того эталона, где пара узнаётся уверенно
+        by_flag = {f"fs:{r['fs_id']}": r for r in reference if r.get("fs_id")}
+        sports = sorted({r.get("sport", "F") for r in reference})
+        unflagged = 0
+        for r in conn.execute(
+                "SELECT id, sport, league_auto, team_home_auto, "
+                "team_away_auto, start_kyiv, flags FROM events "
+                "WHERE flags LIKE 'fs:%'").fetchall():
+            ref = by_flag.get(r["flags"])
+            if ref is None:
+                continue
+            game = {"id": r["id"], "sport": r["sport"] or "",
+                    "home": r["team_home_auto"] or "",
+                    "away": r["team_away_auto"] or "",
+                    "league": r["league_auto"] or "",
+                    "start_kyiv": r["start_kyiv"], "entries": []}
+            if canon._pair_score(game, ref) >= canon.BRIDGE_FLOOR \
+                    or canon._best_side(game, ref) >= canon.BRIDGE_BEST:
+                continue
+            sport = game["sport"]
+            for other in sports:
+                if other != sport and canon.align(
+                        [dict(game, sport=other)], reference,
+                        dictionary.league_overrides(conn))["sure"]:
+                    sport = other
+                    break
+            unflagged += 1
+            print(f"  метка снята: #{r['id']} {game['home']} — {game['away']}"
+                  f" ≠ {ref.get('home')} — {ref.get('away')}"
+                  + (f"; вид спорта {game['sport']} → {sport}"
+                     if sport != game["sport"] else ""))
+            if not args.dry_run:
+                conn.execute(
+                    "UPDATE events SET flags = NULL, team_home_id = NULL, "
+                    "team_away_id = NULL, league_id = NULL, sport = ? "
+                    "WHERE id = ?", (sport, r["id"]))
+        if unflagged and not args.dry_run:
+            conn.commit()
+
+        # Id команды у игры без метки ставил словарь по написанию. Написание
+        # оказалось чужим («מכבי ת"א» висело на Hapoel HaEmek — #2460 шла
+        # «Hapoel HaEmek — Hapoel Jerusalem»; «Olympique M» — на M. Herzliya).
+        # Словарь после чистки отвечает иначе — берём его ответ. Нет ответа,
+        # потому что написание спорное («CSKA» — и Москва, и София), а id
+        # среди его владельцев — оставляем как было (пакет C, 14.09)
+        spelled = dictionary.team_alias_map(conn)
+        owners_of: dict[str, set[int]] = {}
+        for r in conn.execute("SELECT DISTINCT alias, team_id FROM team_aliases"):
+            owners_of.setdefault(r["alias"], set()).add(r["team_id"])
+        respelled = 0
+        for r in conn.execute(
+                "SELECT id, team_home_auto, team_away_auto, team_home_id, "
+                "team_away_id FROM events WHERE flags IS NULL AND "
+                "(team_home_id IS NOT NULL OR team_away_id IS NOT NULL)"
+                ).fetchall():
+            sets = {}
+            for field, raw in (("team_home_id", r["team_home_auto"]),
+                               ("team_away_id", r["team_away_auto"])):
+                if r[field] is None:
+                    continue
+                raw = (raw or "").strip()
+                known = spelled.get(raw)
+                if known:
+                    if known[0] != r[field]:
+                        sets[field] = known[0]
+                elif r[field] not in owners_of.get(raw, set()):
+                    sets[field] = None
+            if not sets:
+                continue
+            respelled += 1
+            if respelled <= 10:
+                print(f"  канон по словарю: #{r['id']} {r['team_home_auto']} — "
+                      f"{r['team_away_auto']}: {sets}")
+            if not args.dry_run:
+                conn.execute("UPDATE events SET " +
+                             ", ".join(f"{k} = ?" for k in sets) +
+                             " WHERE id = ?", (*sets.values(), r["id"]))
+        if respelled:
+            if not args.dry_run:
+                conn.commit()
+            print(f"канон по словарю поправлен у игр без метки: {respelled}")
+
+        # Имена по эталону (#2471, владелец 14.09): у игры с меткой flashscore
+        # id команд ставил словарь ещё при заливке, а сверка дописывала только
+        # пустые. «Racing» висит и на Racing Club, и на Racing Santander, и
+        # аргентинский матч шёл «Racing Santander — Sarmiento Junin» при
+        # верной метке. Эталон прав (владелец 04.09): id берём по его именам.
+        # Не трогаем, только когда написание в словаре одно и закреплено за
+        # своей командой — так держится ручная правка владельца (кнопка ✎)
+        renamed = 0
+        for r in conn.execute(
+                "SELECT id, team_home_auto, team_away_auto, team_home_id, "
+                "team_away_id, flags FROM events WHERE flags LIKE 'fs:%'"
+                ).fetchall():
+            ref = by_flag.get(r["flags"])
+            if ref is None:
+                continue
+            sets = {}
+            for field, raw, canon_name in (
+                    ("team_home_id", r["team_home_auto"], ref.get("home")),
+                    ("team_away_id", r["team_away_auto"], ref.get("away"))):
+                canon_name = (canon_name or "").strip()
+                if not canon_name or names.is_placeholder(canon_name):
+                    continue
+                row = conn.execute("SELECT id FROM teams WHERE canonical_name = ?",
+                                   (canon_name,)).fetchone()
+                if row and row["id"] == r[field]:
+                    continue
+                if r[field] is not None \
+                        and owners_of.get((raw or "").strip()) == {r[field]}:
+                    continue          # написание твёрдо за своей командой
+                sets[field] = (row["id"] if row else None, canon_name)
+            if not sets:
+                continue
+            renamed += 1
+            if renamed <= 10:
+                print(f"  имена по эталону: #{r['id']} {r['team_home_auto']} — "
+                      f"{r['team_away_auto']} → {ref.get('home')} — {ref.get('away')}")
+            if args.dry_run:
+                continue
+            values = {field: team_id if team_id else dictionary.remember_team(
+                          conn, canon_name, canon_name)
+                      for field, (team_id, canon_name) in sets.items()}
+            conn.execute("UPDATE events SET " +
+                         ", ".join(f"{k} = ?" for k in values) +
+                         " WHERE id = ?", (*values.values(), r["id"]))
+        if renamed:
+            if not args.dry_run:
+                conn.commit()
+            print(f"имена поставлены по эталону у игр с меткой: {renamed}")
+
         rows = conn.execute(
             "SELECT id, sport, league_auto, team_home_auto, team_away_auto, "
             "start_kyiv FROM events "
@@ -103,10 +239,11 @@ def main() -> int:
                     (*sets.values(), game["id"])).rowcount
         # свежие алиасы → проставить id всем событиям, чьи сырые имена
         # словарь теперь знает (не только сопоставленным сейчас)
-        alias_ids = {r["alias"]: r["team_id"] for r in conn.execute(
-            "SELECT alias, team_id FROM team_aliases")}
-        league_ids = {r["alias"]: r["league_id"] for r in conn.execute(
-            "SELECT alias, league_id FROM league_aliases")}
+        # только бесспорные написания: «Dinamo» трёх клубов id не ставит
+        alias_ids = {alias: team_id for alias, (team_id, _)
+                     in dictionary.team_alias_map(conn).items()}
+        league_ids = {alias: league_id for alias, (league_id, _)
+                      in dictionary.league_alias_map(conn).items()}
         stamped = 0
         for r in conn.execute(
                 "SELECT id, league_auto, team_home_auto, team_away_auto "
@@ -246,6 +383,52 @@ def main() -> int:
                          .astimezone(_Z("UTC")).strftime("%Y-%m-%d %H:%M"),
                      r["id"]))
                 fs_retimed += 1
+        # Двойня по полу (14.09): разбор научился видеть пол в лиге sport5
+        # («ליגה צרפתית בכדורגל הנשים»), и старая строка «מונפלייה — מארסיי»
+        # живёт рядом с новой «מונפלייה W — מארסיי W». Один канал того же
+        # сайта в одно время двух матчей не показывает: если ВСЕ отметки
+        # строки без W есть и у женской — строка лишняя (лишний W лучше
+        # потерянного), её убираем
+        gender_twins = 0
+        for w in conn.execute(
+                "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
+                "FROM events WHERE team_home_auto LIKE '% W' "
+                "AND team_away_auto LIKE '% W'").fetchall():
+            try:
+                w_start = _dt.fromisoformat(w["start_kyiv"].replace(" ", "T"))
+            except ValueError:
+                continue
+            for m in conn.execute(
+                    "SELECT id, start_kyiv FROM events WHERE id <> ? "
+                    "AND sport = ? AND flags IS NULL AND team_home_auto = ? "
+                    "AND team_away_auto = ?",
+                    (w["id"], w["sport"], w["team_home_auto"][:-2].strip(),
+                     w["team_away_auto"][:-2].strip())).fetchall():
+                try:
+                    m_start = _dt.fromisoformat(
+                        m["start_kyiv"].replace(" ", "T"))
+                except ValueError:
+                    continue
+                if abs((m_start - w_start).total_seconds()) > 30 * 60:
+                    continue
+                marks = conn.execute(
+                    "SELECT channel_id, source_id FROM event_channels "
+                    "WHERE event_id = ?", (m["id"],)).fetchall()
+                if not marks or not all(conn.execute(
+                        "SELECT 1 FROM event_channels WHERE event_id = ? "
+                        "AND channel_id = ? AND source_id IS ?",
+                        (w["id"], x["channel_id"], x["source_id"])).fetchone()
+                        for x in marks):
+                    continue
+                gender_twins += 1
+                print(f"  двойня по полу: #{m['id']} убрана в пользу #{w['id']} "
+                      f"{w['team_home_auto']} — {w['team_away_auto']}")
+                conn.execute("DELETE FROM event_channels WHERE event_id = ?",
+                             (m["id"],))
+                conn.execute("DELETE FROM events WHERE id = ?", (m["id"],))
+        if gender_twins:
+            conn.commit()
+
         # эхо-повторы дальних дней (владелец 05.09: «10-е собрано плохо»):
         # сетки повторов ставят прошедшие матчи на будущие даты. Событие
         # без fs-метки, чья пара по эталону играла ТОЛЬКО РАНЬШЕ дня
@@ -286,6 +469,16 @@ def main() -> int:
             # (#1405, номер владельца 06.09)
             guessed_all = bool(srcs) and all(
                 d in REPEAT_GUESS_DOMAINS for d in srcs)
+            # кубок — не повтор: «הסופר קאפ החברתי: מכבי ת"א - הפועל ת"א»
+            # 17.09 — те же клубы через три дня после дерби лиги, но другой
+            # турнир; с верными именами правило снимало живую игру (#2460)
+            import re as _re
+            titles = " ".join(row["t"] or "" for row in conn.execute(
+                "SELECT raw_title t FROM event_channels WHERE event_id=?",
+                (r["id"],)))
+            if _re.search(r"קאפ|גביע|cup\b|kup|copa|coppa|coupe|pokal|puchar"
+                          r"|ta[cç]a|кубок|купа", titles, _re.I):
+                continue
             if len(srcs) <= 2 or guessed_all:
                 conn.execute("DELETE FROM event_channels WHERE event_id=?",
                              (r["id"],))

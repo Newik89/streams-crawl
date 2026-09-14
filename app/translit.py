@@ -175,6 +175,34 @@ _HE_WORDS = {
 }
 
 
+def _extra_he_words() -> dict[str, str]:
+    """Словарь автоперевода иврита, который ведёт ассистент без правки кода:
+    раздел «_иврит» в `data/aliases.json`. Появился по заданию владельца
+    14.09: «פריז — שטרסבורג» (#2499) и «סמפדוריה — קטזאנו» (#2500) буквами
+    не дотягивали до Paris FC — Strasbourg и Sampdoria — Catanzaro. Ключ —
+    слово, как пишет израильская пресса; значение — написание эталона."""
+    import json
+    from pathlib import Path
+    path = Path(__file__).resolve().parent.parent / "data" / "aliases.json"
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    out: dict[str, str] = {}
+    for key, block in raw.items():
+        if not (key.startswith("_иврит") and isinstance(block, dict)):
+            continue
+        for word, english in block.items():
+            if isinstance(english, str) and not word.startswith("_"):
+                word = word.replace("״", '"')
+                out[word] = english
+                out[word.replace("'", "׳")] = english   # гереш бывает и таким
+    return out
+
+
+_HE_WORDS.update(_extra_he_words())
+
+
 #: буквы иврита, которые читаются двояко: огласовок в письме нет, и одна
 #: буква даёт разные звуки в разных именах. «פ» — это и P (Платенсе), и F
 #: (Флуминенсе, Санта-Фе); «ב» — B и V; «ו» внутри слова — O и U. Из-за
