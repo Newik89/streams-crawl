@@ -83,7 +83,8 @@ _WOMEN_LEAGUES = re.compile(
 _YOUTH_LEAGUES = re.compile(
     r"youth league|liga m[łl]odzie[żz]owa|молод[её]жн\w*|молодіжн\w*"
     r"|юношеск\w*|юнацьк\w*|omladinsk\w*|mladežk\w*|ifjúsági|jugendliga"
-    r"|λίγκα νέων", re.I)
+    # «ליגת העל בכדורגל נוער» — юношеская высшая Израиля у sport5 (14.09)
+    r"|λίγκα νέων|(?<!\w)[לה]?נוער(?!\w)", re.I)
 
 
 def clean(raw: str) -> str:

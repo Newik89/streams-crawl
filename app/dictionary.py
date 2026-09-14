@@ -224,8 +224,8 @@ def remember_league(conn: sqlite3.Connection, raw: str, canonical: str,
             (_unique_slug(conn, "leagues", slugify(canonical, "league")),
              canonical, sport, country))
         league_id = cur.lastrowid
-    conn.execute("INSERT OR IGNORE INTO league_aliases (league_id, alias, lang) "
-                 "VALUES (?, ?, ?)", (league_id, raw, lang))
+    # без копий, как у команд: лигу sport5 мост учит на каждой заливке (14.09)
+    _attach(conn, "league_aliases", "league_id", league_id, raw, lang, False)
     conn.commit()
     return league_id
 

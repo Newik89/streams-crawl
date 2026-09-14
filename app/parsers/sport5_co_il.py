@@ -97,7 +97,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         out.append(Program(
             channel_raw=channel, title=title,
             start=datetime(d.year, d.month, d.day, hour, minute, tzinfo=zone),
-            raw_time=hm.group(0),
+            raw_time=hm.group(0), league_raw=_league(title),
             live_raw=_LIVE if live is not None else "",
             match_raw=_pair(title), source_url=url,
             extra={"day": d.isoformat()},

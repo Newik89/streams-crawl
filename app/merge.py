@@ -143,7 +143,11 @@ class Game:
         if not named:
             return ""
         exact = [x for x in named if not x.upper().endswith(": FOOTBALL")]
-        return (exact or named)[0]
+        # Лига ивритом — последней: sport5 пишет турнир ивритом, а та же игра
+        # с латинского сайта названа так, как её знают словарь и эталон
+        # (Red Star — Metz: «ליגה צרפתית שנייה» и «FRANCUSKA 2. LIGA», 14.09)
+        return sorted(exact or named,
+                      key=lambda x: any("֐" <= c <= "׿" for c in x))[0]
 
     @property
     def channels(self) -> list[str]:
