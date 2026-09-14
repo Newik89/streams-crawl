@@ -58,6 +58,12 @@
   .chan.fresh { background:#eaf6ec; border-color:#2e9e44; }
   .newch { margin-left:4px; font-size:9px; font-weight:700;
            text-transform:uppercase; color:#1e7c34; letter-spacing:.4px; }
+  /* 14.09: сайт канала пишет другое время, чем flashscore — канал прилип к
+     игре по командам; красным, «перепроверить» */
+  .chan.timeoff { background:#fdecea; border-color:#c62828; }
+  .chan.timeoff .copy { color:#b71c1c; }
+  .timeoffch { margin-left:4px; font-size:9px; font-weight:700;
+               text-transform:uppercase; color:#c62828; letter-spacing:.4px; }
   /* игра, по которой ответ найден, но ждёт подтверждения владельца */
   tr.game.ask > td { background:#fff3e0; }
   tr.game.ask > td:first-child { box-shadow:inset 3px 0 0 #f59e0b; }
@@ -164,7 +170,7 @@
         <td class="sport">{{ {"F":"⚽","B":"🏀","T":"🎾"}.get(g.sport, g.sport) }}</td>
         <td class="league"><span class="copy">{{ g.league }}</span>{% if admin and g.league %}<button class="edit" type="button" data-kind="league" data-raw="{{ g.league_auto or g.league }}" title="Исправить название лиги">✎</button>{% endif %}</td>
         <td class="match"><b class="copy">{{ g.home }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.home_auto or g.home }}" title="Исправить название команды">✎</button>{% endif %} vs <b class="copy">{{ g.away }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.away_auto or g.away }}" title="Исправить название команды">✎</button>{% endif %}<span class="gid copy" title="Номер игры — клик копирует">#{{ g.id }}</span>{% if admin and g.pending %}<a class="ask-go" href="{{ url_for('moderation_list') }}?focus={{ g.pending }}&amp;back=g{{ g.id }}" title="Название для этой игры уже найдено — осталось подтвердить">ждёт подтверждения →</a>{% endif %}</td>
-        <td>{% for c in g.channels %}<span class="chan{% if c.new %} fresh{% endif %}"{% if c.custom %} data-nocc="1"{% endif %}>{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span>{% if c.new_source %}<span class="newsrc" title="Канал нового источника — на обкатке">новый</span>{% endif %}{% if c.new %}<span class="newch" title="Канал добавился к этой игре недавно">new</span>{% endif %}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}{% if admin %}<button class="chan-edit" type="button" data-cid="{{ c.id }}" data-note="{{ c.country or '' }}" title="Изменить название канала и пометку перед ним">✎</button>{% endif %}</span>{% endfor %}</td>
+        <td>{% for c in g.channels %}<span class="chan{% if c.new %} fresh{% endif %}{% if c.time_off %} timeoff{% endif %}"{% if c.custom %} data-nocc="1"{% endif %}>{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span>{% if c.new_source %}<span class="newsrc" title="Канал нового источника — на обкатке">новый</span>{% endif %}{% if c.new %}<span class="newch" title="Канал добавился к этой игре недавно">new</span>{% endif %}{% if c.time_off %}<span class="timeoffch" title="Сайт канала пишет другое время, чем flashscore — перепроверить. Не подтвердит обход ближе к дате — канал погаснет сам">время?</span>{% endif %}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}{% if admin %}<button class="chan-edit" type="button" data-cid="{{ c.id }}" data-note="{{ c.country or '' }}" title="Изменить название канала и пометку перед ним">✎</button>{% endif %}</span>{% endfor %}</td>
       </tr>
       {% endfor %}
     </table>

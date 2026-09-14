@@ -93,6 +93,7 @@ class SaveStats:
     updated: int = 0
     channels: int = 0
     repeats: int = 0    # guess-игры, чья пара уже лежала в базе раньше
+    time_off: int = 0   # строки, прилипшие к игре flashscore вопреки времени сайта
 
 
 def _sources_by_domain(conn: sqlite3.Connection) -> dict[str, sqlite3.Row]:
@@ -130,6 +131,34 @@ def _find_event(conn: sqlite3.Connection, game: dict) -> sqlite3.Row | None:
         if merge._same_game(stored, incoming, names.SIMILAR_ENOUGH):
             return row
     return None
+
+
+def _fs_twin(conn: sqlite3.Connection, game: dict,
+             team_ids: dict[str, int]) -> sqlite3.Row | None:
+    """Игра с меткой flashscore в тот же киевский день и с теми же командами
+    по канону — даже если время у сайта вне окна склейки.
+
+    Кейс #2483/#2400 (14.09): `tvarenasport.com` написал «Dresden - Hertha
+    13:00 uzivo», эталон — 20:30; строка легла двойней на 14:00, и владелец
+    видел игру без каналов. Время игры — по flashscore (владелец 04.09),
+    поэтому канал прилипает к игре эталона, а на витрине горит красной
+    пометкой «время у сайта расходится». Не подтвердит его обход ближе к
+    дате — погаснет обычным счётчиком пропусков. Кандидат должен быть ровно
+    один: две игры тех же команд в один день (кубок + лига) — не гадаем."""
+    home = _team_id(team_ids, game["home"])
+    away = _team_id(team_ids, game["away"])
+    if not home or not away or home == away:
+        return None
+    day = _iso(_parse_dt(game["start_kyiv"]))[:10]
+    sport = game.get("sport") or ""
+    rows = [r for r in conn.execute(
+        "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv FROM events "
+        "WHERE substr(start_kyiv, 1, 10) = ? AND flags LIKE '%fs:%' AND "
+        "((team_home_id = ? AND team_away_id = ?) OR "
+        " (team_home_id = ? AND team_away_id = ?))",
+        (day, home, away, away, home))
+        if not sport or not r["sport"] or r["sport"] == sport]
+    return rows[0] if len(rows) == 1 else None
 
 
 def _earlier_show(conn: sqlite3.Connection, game: dict) -> bool:
@@ -234,6 +263,19 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 minutes=grace_for(game.get("sport", ""), None, graces)) < now:
             continue
         found = _find_event(conn, game)
+        time_off = 0
+        via_twin = False
+        if found is None:
+            found = _fs_twin(conn, game, team_ids)
+            if found is not None:
+                # по канону команд нашлась игра эталона; красная пометка —
+                # только если время сайта и правда вне окна склейки (иначе
+                # не совпали лишь написания имён: «Dresden» / «Dynamo Drezno»)
+                via_twin = True
+                gap = abs(_parse_dt(game["start_kyiv"])
+                          - _parse_dt(found["start_kyiv"]))
+                time_off = int(gap > timedelta(minutes=merge.WINDOW_MINUTES))
+                stats.time_off += time_off
         if found is None and game.get("guess") and _earlier_show(conn, game):
             stats.repeats += 1
             continue
@@ -258,6 +300,10 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             # свежий прогон точнее базы: время могло сдвинуться, лига — уточниться
             sets = {"last_seen": _iso(now), "start_utc": start_utc,
                     "start_kyiv": start_kyiv}
+            if via_twin:
+                # прилипли по канону к игре эталона: время остаётся эталонным
+                del sets["start_utc"], sets["start_kyiv"]
+                start_kyiv = found["start_kyiv"]
             # Латиница вытесняет кириллицу: игра могла попасть в базу с
             # русского сайта (`Кремонезе`), а потом прийти с испанского
             # (`Cremonese`). Без этого в витрине оставалась обратная
@@ -289,15 +335,15 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             seen_channel_ids.add(channel_id)
             conn.execute(
                 "INSERT INTO event_channels (event_id, channel_id, source_id, "
-                "source_url, raw_title, last_seen, miss_count) "
-                "VALUES (?, ?, ?, ?, ?, ?, 0) "
+                "source_url, raw_title, last_seen, miss_count, time_off) "
+                "VALUES (?, ?, ?, ?, ?, ?, 0, ?) "
                 "ON CONFLICT (event_id, channel_id, source_id) DO UPDATE SET "
                 "last_seen = excluded.last_seen, miss_count = 0, "
-                "source_url = excluded.source_url",
+                "source_url = excluded.source_url, time_off = excluded.time_off",
                 (event_id, channel_id,
                  source["id"] if source else None,
                  entry.get("url") or "", entry.get("raw_title") or "",
-                 _iso(now)))
+                 _iso(now), time_off))
             stats.channels += 1
         # каналы игры, не подтверждённые этим прогоном, — на счётчик
         # (только когда файл свежий, см. punish в шапке); сам штраф — после
@@ -444,12 +490,14 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
         for r in conn.execute(
                 "SELECT c.id, c.canonical_name AS name, c.country, "
                 "       c.custom_name, c.note, ec.first_seen AS ch_first_seen, "
-                "       ec.source_url, s.base_url, s.created_at "
+                "       ec.source_url, s.base_url, s.created_at, ec.time_off "
                 "FROM event_channels ec "
                 "JOIN channels c ON c.id = ec.channel_id "
                 "LEFT JOIN sources s ON s.id = ec.source_id "
                 "WHERE ec.event_id = ? AND ec.miss_count < ? "
-                "ORDER BY ec.id", (row["id"], MISS_LIMIT)):
+                # тот же канал от двух сайтов: первой — отметка с верным
+                # временем, красная пометка остаётся только без подтверждения
+                "ORDER BY ec.time_off, ec.id", (row["id"], MISS_LIMIT)):
             if r["id"] in seen_channels:
                 continue
             seen_channels.add(r["id"])
@@ -470,6 +518,9 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                              # правилу 05.09 «канал копируется со страной»)
                              "custom": bool(r["custom_name"] or r["note"]),
                              "url": human_url(r["source_url"], r["base_url"]),
+                             # сайт канала пишет другое время, чем flashscore
+                             # (14.09) — красным, «перепроверить»
+                             "time_off": bool(r["time_off"]),
                              "new_source": bool(r["created_at"]
                                                 and str(r["created_at"])
                                                 >= new_edge),

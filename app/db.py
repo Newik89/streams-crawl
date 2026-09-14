@@ -52,6 +52,9 @@ def init_db(conn: sqlite3.Connection | None = None) -> Path:
 _LATE_COLUMNS = {
     "channels": [("custom_name", "INTEGER NOT NULL DEFAULT 0"),
                  ("note", "TEXT")],
+    # 14.09: время у сайта разошлось с эталоном flashscore, канал прилип к
+    # игре по командам — на витрине красная пометка «перепроверить»
+    "event_channels": [("time_off", "INTEGER NOT NULL DEFAULT 0")],
 }
 
 
