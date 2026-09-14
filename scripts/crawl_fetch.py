@@ -212,13 +212,17 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
             if предел and len(окно) > предел:
                 окно = окно[:предел]
             for day in окно:
-                # {N} — номер дня окна (дневные сетки вроде polsatsport.pl:
-                # page1 — сегодня, page2 — завтра); остальным метка не мешает
+                # {N} — номер дня от СЕГОДНЯ (дневные сетки вроде polsatsport.pl:
+                # page1 — сегодня, page2 — завтра); остальным метка не мешает.
+                # Считаем от сегодня, а не от первого дня окна: в скане даты
+                # окно начинается с выбранного дня, и flashscore `?d={DAYNUM}`
+                # отдавал сегодняшний футбол вместо 19.09 — все строки
+                # «угадаек» ушли в повторы без эталона (14.09, #2364)
                 marks = {**(source["marks"] or {}),
-                         "N": str((day - first).days + 1),
+                         "N": str((day - date.today()).days + 1),
                          # {DAYNUM} — тот же номер, но 0-based: `rtcg.me`
                          # просит `day=0` за сегодня
-                         "DAYNUM": str((day - first).days)}
+                         "DAYNUM": str((day - date.today()).days)}
                 yield {
                     "domain": source["domain"],
                     "channel": channel["name"],
