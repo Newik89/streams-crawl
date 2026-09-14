@@ -27,7 +27,7 @@ from zoneinfo import ZoneInfo
 from flask import (Flask, abort, flash, jsonify, redirect, render_template, request,
                    session, url_for)
 
-from . import db, dictionary, health, sources, store, trigger
+from . import crawl_hook, db, dictionary, health, sources, store, trigger
 
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
 _ENV_PASSWORD = os.environ.get("STREAMS_ADMIN_PASSWORD")
@@ -130,7 +130,7 @@ def create_app() -> Flask:
 
     # публичное: страница расписания (ТЗ разд. 12), её кнопки сбора и
     # API по ключу (разд. 13). Всё остальное — только после входа.
-    PUBLIC = {"login", "static", "schedule", "schedule_run",
+    PUBLIC = {"login", "static", "schedule", "schedule_run", "crawl_hook_in",
               "api_events", "api_leagues", "api_channels", "api_status"}
 
     @app.before_request
@@ -419,26 +419,64 @@ def create_app() -> Flask:
 
     # ── запуск обхода кнопкой (ТЗ разд. 12 и 14) ─────────────────────────────
 
-    def _dispatch(days: int, date: str = "") -> None:
+    def _dispatch(days: int, date: str = "") -> bool:
+        # сбор уже заказан или идёт — второй не запускаем (владелец 14.09)
+        conn = db.connect()
+        try:
+            busy = crawl_hook.running(conn)
+        finally:
+            conn.close()
+        if busy:
+            flash(f"Сбор уже {busy['state']} с {busy['since']} ({busy['what']}) — "
+                  "второй не запускаю, дождитесь окончания.", "error")
+            return False
         # сперва прямой запуск (мгновенно, если есть ключ GitHub); без
         # ключа — заявка-тег: её ловит workflow и стартует обход сам
         ok, words = trigger.dispatch_crawl(days, date=date)
         if not ok:
             ok, words = trigger.push_request_tag(
                 "date" if date else "days", date or str(days))
-        if ok and not date:
-            # заказ запоминаем: дальше панель «Здоровье» сама скажет, дошёл
-            # ли он до конца — раньше надпись просто исчезала (владелец 09.09)
+        if ok:
             conn = db.connect()
             try:
-                db.set_setting(conn, "crawl_request",
-                               f"обход {days} сут.|"
-                               f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
+                crawl_hook.mark(conn, "заявка",
+                                f"date-{date}" if date else f"days-{days}")
+                if not date:
+                    # заказ запоминаем: дальше панель «Здоровье» сама скажет,
+                    # дошёл ли он до конца — раньше надпись просто исчезала
+                    # (владелец 09.09)
+                    db.set_setting(conn, "crawl_request",
+                                   f"обход {days} сут.|"
+                                   f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
             finally:
                 conn.close()
         tail = (f" — скан {date}" if date else
                 f" — окно {days} дн., результат появится после прогона")
         flash(words + (tail if ok else ""), "ok" if ok else "error")
+        return ok
+
+    @app.route("/hook/crawl", methods=["POST"])
+    def crawl_hook_in():
+        """Стук GitHub: «начал» запирает кнопки, «закончил» отпирает, а при
+        удаче сервер ещё и забирает результат (`app/crawl_hook.py`)."""
+        event = request.headers.get("X-Event", "")
+        what = request.headers.get("X-What", "")[:60]
+        conn = db.connect()
+        try:
+            ok, why = crawl_hook.verify(conn, request.headers.get("X-Stamp", ""),
+                                        event, what,
+                                        request.headers.get("X-Sign", ""))
+            if not ok:
+                print(f"стук отклонён: {why} ({request.remote_addr})")
+                return jsonify({"ok": False}), 403
+            if event == "start":
+                crawl_hook.mark(conn, "идёт", what or "обход")
+                return jsonify({"ok": True})
+            crawl_hook.clear(conn)
+        finally:
+            conn.close()
+        said = crawl_hook.start_pull() if event == "done-ok" else "забор не нужен"
+        return jsonify({"ok": True, "pull": said})
 
     @app.route("/channel-name", methods=["POST"])
     def channel_name():
@@ -513,14 +551,14 @@ def create_app() -> Flask:
         if not (today <= chosen <= today + timedelta(days=13)):
             flash("Дата должна быть от сегодня до +13 дней.", "error")
             return redirect(request.referrer or url_for("dashboard"))
-        _dispatch(2, date=chosen.isoformat())
-        conn = db.connect()
-        try:
-            db.set_setting(conn, "day_scan_request",
-                           f"{chosen.isoformat()}|"
-                           f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
-        finally:
-            conn.close()
+        if _dispatch(2, date=chosen.isoformat()):
+            conn = db.connect()
+            try:
+                db.set_setting(conn, "day_scan_request",
+                               f"{chosen.isoformat()}|"
+                               f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
+            finally:
+                conn.close()
         return redirect(request.referrer or url_for("dashboard"))
 
     @app.route("/schedule/run", methods=["POST"])       # публичная: с уздой
@@ -529,6 +567,11 @@ def create_app() -> Flask:
         days = _days_choice(request.form.get("days"))
         conn = db.connect()
         try:
+            busy = crawl_hook.running(conn)
+            if busy:                         # до узды: занятость — не попытка
+                flash(f"Collection is already {busy['state_en']} (since "
+                      f"{busy['since']}) — please wait until it finishes.", "error")
+                return redirect(url_for("schedule"))
             if days != 2:                    # длинное окно — только по PIN
                 pin = os.environ.get("STREAMS_PIN", "")
                 if not pin or not secrets.compare_digest(

@@ -110,9 +110,14 @@ jobs:
           # results/report.md, но клон без истории показывал время ЛЮБОГО
           # последнего коммита, и правка документов отменяла обход (аудит
           # 07.09, A2). «Собрано» пишет parse_live.py по часам GitHub (UTC).
+          # 14.09: опоздавший плановый заход мог простоять в очереди за ручным
+          # обходом, а клон у него взят ДО пуша results — свежесть смотрим по
+          # main на GitHub сейчас, а не по своему клону
           RUN=1
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            AGE=$(python scripts/crawl_fetch.py --age results/games.json)
+            { git fetch -q --depth=1 origin main && git show origin/main:results/games.json > /tmp/games_now.json; } 2>/dev/null \
+              || cp results/games.json /tmp/games_now.json
+            AGE=$(python scripts/crawl_fetch.py --age /tmp/games_now.json)
             echo "последний результат собран $AGE ч назад"
             if [ "$AGE" -lt 10 ]; then RUN=0; fi
           fi
@@ -149,6 +154,20 @@ jobs:
             echo "browser=${{ inputs.browser }}" >> $GITHUB_OUTPUT
             echo "date=${{ inputs.date }}"   >> $GITHUB_OUTPUT
           fi
+
+      - name: Стук серверу — начали
+        # владелец 14.09: пока сбор идёт, кнопки сайта второй не запускают.
+        # Само слово по сети не ездит — только подпись (scripts/knock.sh)
+        if: steps.guard.outputs.run == '1'
+        continue-on-error: true
+        env:
+          HOOK_SECRET: ${{ secrets.CRAWL_HOOK_SECRET }}
+          HOOK_URL: ${{ secrets.CRAWL_HOOK_URL }}
+        run: |
+          WHAT="${{ steps.what.outputs.mode }}-${{ steps.what.outputs.days }}"
+          [ -n "${{ steps.what.outputs.date }}" ] && WHAT="date-${{ steps.what.outputs.date }}"
+          export WHAT
+          sh scripts/knock.sh start
 
       - name: Проверка читалок
         if: github.event_name == 'schedule' || inputs.readers == 'yes'
@@ -306,3 +325,20 @@ jobs:
           python scripts/crawl_alarm.py
           --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           --mode "${{ steps.what.outputs.mode }}, окно ${{ steps.what.outputs.days }} сут., only=${{ steps.what.outputs.only }}, date=${{ steps.what.outputs.date }}, запуск: ${{ github.event_name }}"
+
+      - name: Стук серверу — закончили
+        # владелец 14.09: сервер по стуку сам забирает результат (заборы по
+        # часам остались страховкой). И после провала стучим — иначе кнопки
+        # остались бы запертыми до истечения замка
+        if: always() && steps.guard.outputs.run == '1'
+        continue-on-error: true
+        env:
+          HOOK_SECRET: ${{ secrets.CRAWL_HOOK_SECRET }}
+          HOOK_URL: ${{ secrets.CRAWL_HOOK_URL }}
+        run: |
+          WHAT="${{ steps.what.outputs.mode }}-${{ steps.what.outputs.days }}"
+          [ -n "${{ steps.what.outputs.date }}" ] && WHAT="date-${{ steps.what.outputs.date }}"
+          export WHAT
+          EVENT=done-fail
+          [ "${{ job.status }}" = "success" ] && EVENT=done-ok
+          sh scripts/knock.sh $EVENT
