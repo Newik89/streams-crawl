@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1158. Заняло 3759 с.
+Режим: полный обход, окно 6 суток. Запросов: 1160. Заняло 3557 с.
 
 | Сайт | Результат |
 |---|---|
@@ -8,7 +8,7 @@
 | aspor.com.tr | расписание есть — 1 |
 | atv.com.tr | расписание есть — 6 |
 | bbc.co.uk | расписание есть — 66 |
-| beinsports.com.tr | расписание есть — 30 |
+| beinsports.com.tr | расписание есть — 29, пусто — 1 |
 | bnt.bg | расписание есть — 1 |
 | canal11.pt | расписание есть — 1 |
 | ceskatelevize.cz | расписание есть — 6 |
@@ -19,10 +19,11 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 19, пусто — 2 |
+| flashscore.mobi | расписание есть — 20, пусто — 1 |
 | football-tv.ru | расписание есть — 1 |
-| jupiter.err.ee | не открылась — 18 |
+| jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
+| liveonsat.com | заглушка защиты — 1 |
 | livesoccertv.com | расписание есть — 23 |
 | m.eredmenyek.com | расписание есть — 7 |
 | m.flashscore.bg | расписание есть — 7 |
@@ -45,16 +46,17 @@
 | oneplaysport.cz | расписание есть — 6 |
 | onesoccer.ca | расписание есть — 1 |
 | port.hu | расписание есть — 54 |
-| poverkhnost.tv | заглушка защиты — 3, расписание есть — 2 |
+| poverkhnost.tv | расписание есть — 5 |
 | primaplay.ro | расписание есть — 1 |
 | programetv.ro | пусто — 11 |
 | programme-tv.net | расписание есть — 48 |
 | raiplay.it | расписание есть — 24 |
 | raspored.hrt.hr | расписание есть — 18 |
-| rtcg.me | расписание есть — 24 |
+| rtcg.me | расписание есть — 20, пусто — 4 |
 | rte.ie | расписание есть — 17 |
 | rtl.de | расписание есть — 48 |
 | rtp.pt | расписание есть — 27 |
+| rtrs.tv | расписание есть — 1 |
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
@@ -78,7 +80,7 @@
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 1, пусто — 5 |
+| tv8.com.tr | пусто — 6 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -86,37 +88,17 @@
 | tvguidetonight.com.au | расписание есть — 18 |
 | tvheute.at | расписание есть — 12 |
 | tvpassport.com | расписание есть — 36 |
-| unian.tv | расписание есть — 1, пусто — 5 |
+| unian.tv | расписание есть — 6 |
 | vsetv.com | расписание есть — 12 |
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 21
+## Не открылись — 1
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| jupiter.err.ee | ETV | HTTP 403; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=13&month=9&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=14&month=9&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=15&month=9&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=16&month=9&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=17&month=9&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=18&month=9&year=2026&channel=etv |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=13&month=9&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=14&month=9&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=15&month=9&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=16&month=9&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=17&month=9&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=18&month=9&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=13&month=9&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=14&month=9&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=15&month=9&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=16&month=9&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=17&month=9&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=18&month=9&year=2026&channel=etv2 |
-| poverkhnost.tv | Sport 1 | не опознана | https://www.poverkhnost.tv/pages/index.php?c=10&s=135 |
-| poverkhnost.tv | Sport 3 | не опознана | https://www.poverkhnost.tv/pages/index.php?c=10&s=161 |
-| poverkhnost.tv | Sport 4 | не опознана | https://www.poverkhnost.tv/pages/index.php?c=10&s=124 |
+| liveonsat.com | сетка | cloudflare turnstile | https://liveonsat.com/2day.php?start_dd=14&start_mm=09&start_yyyy=2026&end_dd=14&end_mm=09&end_yyyy=2026&postponed=0 |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 21 из 1158 страниц (2%), сайтов без удачи 1 из 86 (1%)
+- ✅ обход в норме: не открылись 0 из 1159 страниц (0%), сайтов без удачи 0 из 87 (0%)
