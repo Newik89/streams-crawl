@@ -218,6 +218,10 @@ CREATE TABLE IF NOT EXISTS api_keys (
 CREATE TABLE IF NOT EXISTS sport_hints (
     pair       TEXT PRIMARY KEY,        -- пара команд, как на сайте
     sport      TEXT NOT NULL,           -- F | B | T
+    -- день матча: ответ действует вокруг этой даты, а не вечно — та же
+    -- пара в другом туре может играть другой спорт (владелец 15.09).
+    -- NULL — бессрочная подсказка (записи до этой правки)
+    match_day  TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -227,7 +231,7 @@ CREATE TABLE IF NOT EXISTS moderation (
     raw_value  TEXT NOT NULL,
     source_id  INTEGER REFERENCES sources(id) ON DELETE SET NULL,
     suggestion TEXT,
-    status     TEXT NOT NULL DEFAULT 'open',   -- open | done | skipped
+    status     TEXT NOT NULL DEFAULT 'open',   -- open | done | skipped | later
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

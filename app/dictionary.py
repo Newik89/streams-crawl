@@ -257,20 +257,34 @@ def remember_channel(conn: sqlite3.Connection, raw: str, canonical: str,
     return channel_id
 
 
+def norm_pair(raw_label: str) -> str:
+    """Пара команд из строки очереди: часть до первого « | », схлопнутые
+    пробелы. Порядок команд не трогаем — так ключи совместимы с уже
+    накопленными подсказками. «Kocaelispor - Samsunspor | beIN SPORTS 1
+    (beinsports.com.tr)» → «Kocaelispor - Samsunspor»."""
+    return " ".join((raw_label or "").split("|")[0].split())
+
+
 def remember_sport(conn: sqlite3.Connection, raw_value: str,
-                   letter: str) -> None:
+                   letter: str, match_day: str = "") -> None:
     """Владелец сказал, какой это спорт. Ключ — пара команд, как её написал
-    сайт: «Kocaelispor - Samsunspor | beIN SPORTS 1 (beinsports.com.tr)» →
-    помним «Kocaelispor - Samsunspor». Канал и домен отбрасываем: та же
-    пара приходит и с других каналов.
+    сайт (канал и домен отбрасываем: та же пара приходит и с других каналов).
+
+    `match_day` — день матча из подсказки очереди: ответ действует только
+    вокруг этой даты, а не вечно. Тель-авивское дерби бывает теннисным
+    сегодня и футбольным через месяц — вечная буква делала бы будущий
+    футбол теннисом (жалоба владельца 15.09, кейс «מכבי ת"א - הפועל ת"א»).
+    Пустой день — подсказка без срока (старые записи живут как раньше).
     """
-    пара = (raw_value or "").split("|")[0].strip()
+    пара = norm_pair(raw_value)
     letter = (letter or "").strip().upper()[:1]
     if not пара or letter not in ("F", "B", "T"):
         raise ValueError("нужен вид спорта: F, B или T")
-    conn.execute("INSERT INTO sport_hints (pair, sport) VALUES (?, ?) "
-                 "ON CONFLICT (pair) DO UPDATE SET sport = excluded.sport",
-                 (пара, letter))
+    conn.execute("INSERT INTO sport_hints (pair, sport, match_day) "
+                 "VALUES (?, ?, ?) "
+                 "ON CONFLICT (pair) DO UPDATE SET sport = excluded.sport, "
+                 "match_day = excluded.match_day",
+                 (пара, letter, (match_day or "").strip() or None))
     conn.commit()
 
 
@@ -295,6 +309,8 @@ def enqueue(conn: sqlite3.Connection, kind: str, raw_value: str,
     raw_value = (raw_value or "").strip()
     if not raw_value:
         return False
+    if kind == "sport":
+        return _enqueue_sport(conn, raw_value, suggestion)
     exists = conn.execute(
         "SELECT 1 FROM moderation WHERE kind = ? AND raw_value = ? "
         "AND (source_id IS ? OR source_id = ?) AND status IN ('open', 'later')",
@@ -312,6 +328,55 @@ def enqueue(conn: sqlite3.Connection, kind: str, raw_value: str,
                  "VALUES (?, ?, ?, ?)", (kind, raw_value, source_id, suggestion))
     conn.commit()
     return True
+
+
+def _enqueue_sport(conn: sqlite3.Connection, raw_value: str,
+                   suggestion: str) -> bool:
+    """Очередь «вид спорта» — одна строка на ПАРУ команд, а не на канал.
+
+    Тот же матч приходит с нескольких каналов, и раньше каждый канал заводил
+    свою строку — на «סופר קאפ» отвечали, а копия с соседнего канала висела
+    дальше (жалоба владельца 15.09). Пары сличаем в Python: открытых строк
+    единицы сотен, а LIKE потребовал бы экранировать имена команд.
+    """
+    пара = norm_pair(raw_value)
+    if not пара:
+        return False
+    for r in conn.execute("SELECT id, raw_value, suggestion FROM moderation "
+                          "WHERE kind = 'sport' "
+                          "AND status IN ('open', 'later')"):
+        if norm_pair(r["raw_value"]) != пара:
+            continue
+        # та же пара уже ждёт ответа: строку не плодим, но если пришёл более
+        # поздний матч — освежаем дату в подсказке, чтобы чистка «прошло»
+        # не закрыла вопрос по старому времени
+        if (suggestion or "")[:16] > (r["suggestion"] or "")[:16]:
+            conn.execute("UPDATE moderation SET suggestion = ? WHERE id = ?",
+                         (suggestion, r["id"]))
+            conn.commit()
+        return False
+    # «Не матч» (skipped) молчит навсегда — MotoGP футболом не станет.
+    # А вот ответ Ф/Б/Т (done) держит паузу только 7 дней: вид спорта теперь
+    # привязан к дате матча, и ту же пару в новом туре надо спросить заново.
+    for r in conn.execute("SELECT raw_value, status FROM moderation "
+                          "WHERE kind = 'sport' AND (status = 'skipped' OR "
+                          "(status = 'done' AND created_at >= "
+                          "datetime('now', '-7 days')))"):
+        if norm_pair(r["raw_value"]) == пара:
+            return False
+    conn.execute("INSERT INTO moderation (kind, raw_value, suggestion) "
+                 "VALUES ('sport', ?, ?)", (raw_value, suggestion))
+    conn.commit()
+    return True
+
+
+def _sport_siblings(conn: sqlite3.Connection, raw_value: str) -> list[int]:
+    """Номера всех открытых/отложенных строк той же пары команд."""
+    пара = norm_pair(raw_value)
+    return [r["id"] for r in conn.execute(
+        "SELECT id, raw_value FROM moderation WHERE kind = 'sport' "
+        "AND status IN ('open', 'later')")
+        if norm_pair(r["raw_value"]) == пара]
 
 
 def open_items(conn: sqlite3.Connection, kind: str = "",
@@ -364,10 +429,17 @@ def resolve(conn: sqlite3.Connection, item_id: int, canonical: str,
         raise ValueError("пустое название")
 
     if item["kind"] == "sport":
-        # тут закрепляется не название, а вид спорта: «F», «B» или «T»
-        remember_sport(conn, item["raw_value"], canonical)
-        conn.execute("UPDATE moderation SET status = 'done', suggestion = ? "
-                     "WHERE id = ?", (canonical, item_id))
+        # тут закрепляется не название, а вид спорта: «F», «B» или «T».
+        # День матча вынимаем из подсказки ДО того, как перезапишем её буквой:
+        # ответ действует вокруг этой даты, а не вечно (владелец 15.09)
+        день = re.search(r"\d{4}-\d{2}-\d{2}", item["suggestion"] or "")
+        remember_sport(conn, item["raw_value"], canonical,
+                       день.group(0) if день else "")
+        # один ответ закрывает ту же пару со всех каналов
+        ids = _sport_siblings(conn, item["raw_value"]) or [item_id]
+        conn.executemany("UPDATE moderation SET status = 'done', "
+                         "suggestion = ? WHERE id = ?",
+                         [(canonical, i) for i in ids])
         conn.commit()
         return
     if item["kind"] == "channel":
@@ -384,19 +456,31 @@ def resolve(conn: sqlite3.Connection, item_id: int, canonical: str,
     conn.commit()
 
 
+def _spread_sport(conn: sqlite3.Connection, item_id: int,
+                  status: str) -> list[int]:
+    """У вида спорта статус ставится всей паре: тот же матч висит копиями с
+    разных каналов, и решать его дважды незачем (владелец 15.09)."""
+    item = conn.execute("SELECT kind, raw_value FROM moderation WHERE id = ?",
+                        (item_id,)).fetchone()
+    ids = ([item_id] if item is None or item["kind"] != "sport"
+           else _sport_siblings(conn, item["raw_value"]) or [item_id])
+    conn.executemany(f"UPDATE moderation SET status = '{status}' "
+                     "WHERE id = ?", [(i,) for i in ids])
+    return ids
+
+
 def later(conn: sqlite3.Connection, item_id: int) -> None:
     """«Не знаю» — отложить: запись не удаляется и не считается решённой,
     просто уходит из основного списка во вкладку «Отложенные», откуда её
     можно достать и ответить позже (просьба владельца 11.09)."""
-    conn.execute("UPDATE moderation SET status = 'later' WHERE id = ?",
-                 (item_id,))
+    _spread_sport(conn, item_id, "later")
     conn.commit()
 
 
 def back_to_open(conn: sqlite3.Connection, item_id: int) -> None:
-    """Вернуть отложенную запись в основной список."""
+    """Вернуть отложенную или отсеянную запись в основной список."""
     conn.execute("UPDATE moderation SET status = 'open' WHERE id = ? "
-                 "AND status = 'later'", (item_id,))
+                 "AND status IN ('later', 'skipped')", (item_id,))
     conn.commit()
 
 
@@ -406,8 +490,38 @@ def later_count(conn: sqlite3.Connection) -> int:
 
 
 def skip(conn: sqlite3.Connection, item_id: int) -> None:
-    """«Это не команда» — например заголовок турнира вместо пары клубов.
-    Строку не удаляем: иначе она вернётся следующим же обходом."""
-    conn.execute("UPDATE moderation SET status = 'skipped' WHERE id = ?",
-                 (item_id,))
+    """«Это не команда» / «не матч» — например заголовок турнира вместо пары
+    клубов. Строку не удаляем: иначе она вернётся следующим же обходом."""
+    _spread_sport(conn, item_id, "skipped")
     conn.commit()
+
+
+def skipped_items(conn: sqlite3.Connection, kind: str = "sport",
+                  limit: int = 100) -> list[sqlite3.Row]:
+    """Вкладка «Отсеянные»: что закрыто без ответа — рукой («Не матч») или
+    автоматической чисткой. Всё видно и возвращается кнопкой «Вернуть» —
+    условие владельца 15.09 к любому автоотсеву."""
+    return conn.execute(
+        "SELECT m.*, s.domain, s.country AS source_country FROM moderation m "
+        "LEFT JOIN sources s ON s.id = m.source_id "
+        "WHERE m.status = 'skipped' AND m.kind = ? "
+        "ORDER BY m.id DESC LIMIT ?", (kind, limit)).fetchall()
+
+
+def skipped_count(conn: sqlite3.Connection, kind: str = "sport") -> int:
+    return conn.execute("SELECT COUNT(*) FROM moderation "
+                        "WHERE status = 'skipped' AND kind = ?",
+                        (kind,)).fetchone()[0]
+
+
+def clear_open(conn: sqlite3.Connection, kind: str = "sport") -> int:
+    """Кнопка «Очистить список»: СТЕРЕТЬ открытые строки вкладки.
+
+    Именно удалить, а не пометить (уточнение владельца 15.09): ничего не
+    запоминается и никакая игра не блокируется — если матч ещё в сетке и
+    всё ещё непонятен, следующий обход принесёт строку заново. Отложенные
+    («Не знаю») не трогаем."""
+    cur = conn.execute("DELETE FROM moderation "
+                       "WHERE kind = ? AND status = 'open'", (kind,))
+    conn.commit()
+    return cur.rowcount

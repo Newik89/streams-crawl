@@ -73,7 +73,16 @@
 </div>
 
 <div class="card" style="margin-top:22px">
-  <h2>Запустить обход</h2>
+  <h2 style="display:flex;flex-wrap:wrap;align-items:baseline;gap:12px">
+    Запустить обход
+    {# расписание живёт в cron сервера (/etc/cron.d/streams-schedule);
+       поменяется там — поправить и эту строку (просьба владельца 15.09) #}
+    <span class="muted" style="font-size:.6em;font-weight:400">
+      сам по себе: сервер заказывает GitHub обход в 06:15 (6 суток)
+      и 16:15 (2 суток) по Киеву; результат забирается по стуку сразу,
+      страховочные заборы — 09:45, 13:00, 16:30, 20:20
+    </span>
+  </h2>
   <p class="muted">Команда уходит в GitHub Actions; сайты обходит он, не эта
     машина. Итог — в results/ и на странице после импорта.</p>
   <form method="post" action="{{ url_for('crawl_run') }}" style="display:inline">

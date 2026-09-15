@@ -550,7 +550,12 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             "sport": row["sport"],
             "league": (row["league_canon"]
                        or league_names.get((row["league_auto"] or "").strip())
-                       or row["league_auto"] or ""),
+                       # лига не переведена и написана не латиницей — хотя бы
+                       # транслит, а не иврит как есть (владелец 15.09);
+                       # латинскую не трогаем, чтобы не менять регистр
+                       or (names.suggest_canonical(row["league_auto"])
+                           if any(ord(c) > 0x2FF for c in row["league_auto"] or "")
+                           else row["league_auto"] or "")),
             "league_id": row["league_id"],
             "league_slug": row["league_slug"] or "",
             "league_auto": row["league_auto"] or "",

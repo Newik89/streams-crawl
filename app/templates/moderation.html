@@ -37,7 +37,28 @@
        title="То, на что нажали «Не знаю»: не удалено, ждёт ответа">
       Отложенные{% if later_count %} · {{ later_count }}{% endif %}
     </a>
+    {# закрытое без ответа — рукой («Не матч») или автоматической чисткой.
+       Всё видно и возвращается кнопкой «Вернуть» — ничего не пропадает #}
+    <a class="btn" href="{{ url_for('moderation_list', rejected=1) }}"
+       {% if rejected %}style="border-color:var(--accent);color:var(--accent)"{% endif %}
+       title="Закрытые без ответа строки «Вид спорта»: «Не матч» и автоотсев. Можно вернуть">
+      Отсеянные{% if rejected_count %} · {{ rejected_count }}{% endif %}
+    </a>
   </div>
+  {% if kind == 'sport' and not later and not rejected and rows %}
+  <div style="flex:0 0 auto;margin-left:auto">
+    {# просто стирает строки: ничего не блокирует, непонятные матчи
+       вернутся со следующим обходом (уточнение владельца 15.09) #}
+    <form method="post" action="{{ url_for('moderation_clear') }}"
+          onsubmit="return confirm('Стереть все открытые строки списка? Игры не блокируются: непонятное вернётся со следующим обходом.')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit"
+              title="Стереть открытые строки. Это не «Не матч»: ничего не запоминается">
+        Очистить список
+      </button>
+    </form>
+  </div>
+  {% endif %}
 </div>
 
 {% if not rows %}
@@ -71,14 +92,19 @@
           {# тут спрашивается не название, а вид спорта: сайт о нём молчит,
              и без ответа строка на витрину не попадёт #}
           <div style="flex:2 1 240px" class="muted">
+            {% if r.preview %}{# перевод: словарь имён, незнакомое — транслит #}
+              <b style="color:var(--fg,inherit)">≈ {{ r.preview }}</b><br>
+            {% endif %}
             {% if r.suggestion %}{{ r.suggestion }}<br>{% endif %}
-            Какой это спорт?
+            {% if not rejected %}Какой это спорт?{% endif %}
           </div>
+          {% if not rejected %}
           <div style="flex:0 0 auto">
             <button class="primary" type="submit" name="canonical" value="F">Футбол</button>
             <button class="primary" type="submit" name="canonical" value="B">Баскетбол</button>
             <button class="primary" type="submit" name="canonical" value="T">Теннис</button>
           </div>
+          {% endif %}
           {% else %}
           <div style="flex:2 1 240px">
             <input type="text" name="canonical" value="{{ r.suggestion or '' }}"
@@ -95,6 +121,10 @@
           </div>
           {% endif %}
           <div style="flex:0 0 auto">
+            {% if rejected %}
+            <button type="submit" name="action" value="reopen"
+                    title="Вернуть в основной список">Вернуть</button>
+            {% else %}
             {% if r.kind != 'sport' %}
             <button class="primary" type="submit">Закрепить</button>
             {% endif %}
@@ -110,6 +140,7 @@
                     title="Не знаю ответа: запись не удалится, а уйдёт во вкладку «Отложенные»">
               Не знаю
             </button>
+            {% endif %}
             {% endif %}
           </div>
         </div>

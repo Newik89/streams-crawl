@@ -154,9 +154,14 @@ def team_sports(path=None) -> dict[str, str]:
     return data.get("team_sports") or {}
 
 
-def pair_sports(path=None) -> dict[str, str]:
-    """Пара команд → вид спорта, как сказал владелец. Лежит в том же
-    `data/dictionaries.json`, поэтому доступно и обходу на GitHub."""
+def pair_sports(path=None) -> dict[str, tuple[str, str | None]]:
+    """Пара команд → (вид спорта, день матча), как сказал владелец. Лежит в
+    том же `data/dictionaries.json`, поэтому доступно и обходу на GitHub.
+
+    День ограничивает срок подсказки (владелец 15.09): та же пара в другом
+    туре может играть другой спорт. `None` — бессрочная запись. Файл бывает
+    двух форматов: старый `{пара: "F"}` и новый `{пара: {"sport": "F",
+    "day": "2026-09-17"}}` — читаем оба."""
     import json
     from pathlib import Path
     file = Path(path) if path else Path(__file__).resolve().parent.parent         / "data" / "dictionaries.json"
@@ -164,8 +169,14 @@ def pair_sports(path=None) -> dict[str, str]:
         data = json.loads(file.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
-    подсказки = data.get("sport_hints") or {}
-    return {" ".join(k.split()): v for k, v in подсказки.items() if v}
+    out: dict[str, tuple[str, str | None]] = {}
+    for k, v in (data.get("sport_hints") or {}).items():
+        ключ = " ".join(k.split())
+        if isinstance(v, str) and v:
+            out[ключ] = (v, None)
+        elif isinstance(v, dict) and v.get("sport"):
+            out[ключ] = (v["sport"], v.get("day") or None)
+    return out
 
 
 def sports_map(path=None) -> dict[str, str]:

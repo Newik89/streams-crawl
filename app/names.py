@@ -395,7 +395,16 @@ def suggest_canonical(name: str) -> str:
     # превращается в `CHerno`, и по нему уже не понять, был ли это капс.
     for source_word in raw.split():
         cyrillic = _CYRILLIC_RE.search(source_word)
-        word = to_english(_bulgarian(source_word)) if cyrillic else source_word
+        if cyrillic:
+            word = to_english(_bulgarian(source_word))
+        elif any(ord(c) > 0x2FF for c in source_word):
+            # иврит, греческий, арабский… — до 15.09 такие слова доходили
+            # до страниц как есть (а греческий ещё и капсом), хотя
+            # `translit.to_english` умеет их все; латиницу с диакритикой
+            # (Górnik, Beşiktaş) порог 0x2FF не задевает
+            word = to_english(source_word)
+        else:
+            word = source_word
         upper = word.upper()
         if upper in _CLUB_FORMS:
             continue
@@ -412,8 +421,11 @@ def suggest_canonical(name: str) -> str:
             out.append(upper)                       # PAOK, PSV, GKS
         elif out and upper in _LOWER_IN_NAME:
             out.append(word.lower())                # Estrela da Amadora
-        elif source_word.isupper() or cyrillic or known:
-            out.append(word.capitalize())           # BRAGA → Braga, Черно → Cherno
+        elif source_word.isupper() or cyrillic or known \
+                or (word != source_word and word.islower()):
+            # BRAGA → Braga, Черно → Cherno; транслит без словаря отдаёт
+            # строчные («ολυμπιακος» → «olympiakos») — поднимаем первую
+            out.append(word.capitalize())
         else:
             out.append(word)                        # Górnik, Widzew — как есть
     return " ".join(out).replace(_COMBINING_DOT, "").strip() or raw

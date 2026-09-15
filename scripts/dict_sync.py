@@ -42,11 +42,20 @@ def export(conn, path: Path) -> dict[str, int]:
         # уходила бы в очередь заново (10.09)
         "sport_hints": {},
     }
-    try:
-        data["sport_hints"] = {r["pair"]: r["sport"] for r in conn.execute(
-            "SELECT pair, sport FROM sport_hints ORDER BY pair")}
-    except Exception:                       # старая база без таблицы
-        pass
+    # с 15.09 у подсказки есть день матча: {"sport": "F", "day": "…"}.
+    # День NULL — бессрочная запись, обход понимает оба формата
+    for запрос in ("SELECT pair, sport, match_day FROM sport_hints ORDER BY pair",
+                   # база ещё без колонки (миграцию делает init_db) — не терять
+                   # подсказки молча, как случилось на пробе 15.09
+                   "SELECT pair, sport, NULL AS match_day FROM sport_hints "
+                   "ORDER BY pair"):
+        try:
+            data["sport_hints"] = {
+                r["pair"]: {"sport": r["sport"], "day": r["match_day"]}
+                for r in conn.execute(запрос)}
+            break
+        except Exception:                   # совсем старая база без таблицы
+            continue
     # Вид спорта по командам НАШЕЙ базы: клуб играет в одном виде, и раз
     # «Arsenal» и «Manchester City» у нас футбольные, то и строка чешского
     # сайта про них — футбол (владелец 10.09: «сопоставь с нашим

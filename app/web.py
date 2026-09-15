@@ -27,7 +27,7 @@ from zoneinfo import ZoneInfo
 from flask import (Flask, abort, flash, jsonify, redirect, render_template, request,
                    session, url_for)
 
-from . import crawl_hook, db, dictionary, health, sources, store, trigger
+from . import crawl_hook, db, dictionary, health, names, sources, store, trigger
 
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
 _ENV_PASSWORD = os.environ.get("STREAMS_ADMIN_PASSWORD")
@@ -914,6 +914,41 @@ def create_app() -> Flask:
             conn.close()
         return redirect(back)
 
+    def _sport_previews(conn, rows) -> list[dict]:
+        """Английская подпись к строкам «Вид спорта»: иврит и греческий
+        владелец читать не обязан (жалоба 15.09). Команды и лигу переводит
+        словарь подтверждённых имён, незнакомое — транслит."""
+        teams = dictionary.team_overrides(conn)
+        лиги = dictionary.league_overrides(conn)
+
+        def по_английски(текст: str, словарь: dict) -> str:
+            текст = (текст or "").strip()
+            if not текст:
+                return ""
+            if текст in словарь:
+                return словарь[текст]
+            if any(ord(c) > 0x2FF for c in текст):
+                return names.suggest_canonical(текст)
+            return текст
+
+        out = []
+        for r in rows:
+            d = dict(r)
+            if d.get("kind") == "sport":
+                части = [x.strip() for x in (d["raw_value"] or "").split("|")]
+                пара = части[0]
+                лига = части[1] if len(части) > 2 else ""
+                home, _, away = пара.partition(" - ")
+                перевод = (f"{по_английски(home, teams)} - "
+                           f"{по_английски(away, teams)}" if away
+                           else по_английски(пара, teams))
+                перевод_лиги = по_английски(лига, лиги)
+                if перевод != пара or перевод_лиги != лига:
+                    d["preview"] = " | ".join(
+                        x for x in (перевод, перевод_лиги) if x)
+            out.append(d)
+        return out
+
     @app.route("/names")
     def moderation_list():
         conn = db.connect()
@@ -923,12 +958,20 @@ def create_app() -> Flask:
             # эта запись идёт первой и подсвечивается (просьба владельца 10.09)
             focus = request.args.get("focus", type=int) or 0
             отложенные = request.args.get("later") == "1"
+            # вкладка «Отсеянные»: закрытое без ответа — рукой или чисткой;
+            # всё видно и возвращается кнопкой (условие владельца 15.09)
+            отсеянные = request.args.get("rejected") == "1"
+            if отсеянные:
+                rows = dictionary.skipped_items(conn, kind or "sport")
+            else:
+                rows = dictionary.open_items(conn, kind, first=focus,
+                                             later=отложенные)
             return render_template("moderation.html",
-                                   rows=dictionary.open_items(conn, kind,
-                                                              first=focus,
-                                                              later=отложенные),
-                                   later=отложенные,
+                                   rows=_sport_previews(conn, rows),
+                                   later=отложенные, rejected=отсеянные,
                                    later_count=dictionary.later_count(conn),
+                                   rejected_count=dictionary.skipped_count(
+                                       conn, kind or "sport"),
                                    counts=dictionary.counts(conn), kind=kind,
                                    focus=focus,
                                    # куда вернуться: якорь строки витрины,
@@ -937,6 +980,24 @@ def create_app() -> Flask:
                                                request.args.get("back", ""))[:16])
         finally:
             conn.close()
+
+    @app.route("/names/clear", methods=["POST"])
+    def moderation_clear():
+        """Кнопка «Очистить список»: стереть открытые строки «Вид спорта».
+
+        Именно стереть, а не заблокировать (владелец 15.09): игры не
+        запоминаются, и если матч ещё в сетке и всё ещё непонятен —
+        следующий обход принесёт строку заново."""
+        verify_csrf()
+        conn = db.connect()
+        try:
+            стёрто = dictionary.clear_open(conn, "sport")
+            flash(f"Список очищен: убрано строк — {стёрто}. Ничего не "
+                  "заблокировано: непонятные матчи вернутся со следующим "
+                  "обходом.", "ok")
+        finally:
+            conn.close()
+        return redirect(url_for("moderation_list", kind="sport"))
 
     @app.route("/names/<int:item_id>", methods=["POST"])
     def moderation_resolve(item_id: int):

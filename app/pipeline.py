@@ -22,7 +22,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from . import daytime, leagues, live, sport
 from .parsers import Program
@@ -47,6 +47,24 @@ class Row:
     @property
     def when(self) -> str:
         return self.start_kyiv.strftime("%d.%m %H:%M") if self.start_kyiv else "—:—"
+
+
+def hint_fresh(day: str | None, start_kyiv: datetime | None) -> bool:
+    """Действует ли подсказка владельца на матч с этим временем.
+
+    Подсказка привязана к дню матча и живёт ±36 часов вокруг него: та же
+    пара в другом туре может играть другой спорт — теннисное дерби
+    Тель-Авива не должно делать теннисом будущий футбол (владелец 15.09).
+    Подсказка без дня — бессрочная (записи до этой правки)."""
+    if not day:
+        return True
+    if start_kyiv is None:
+        return False
+    try:
+        полдень = datetime.strptime(day, "%Y-%m-%d").replace(hour=12)
+    except ValueError:
+        return True                      # кривую дату считаем бессрочной
+    return abs(start_kyiv.replace(tzinfo=None) - полдень) <= timedelta(hours=36)
 
 
 def classify(program: Program, markers: live.Markers, sports: sport.Sports,
@@ -93,8 +111,9 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         # владелец сам сказал, какой это спорт, для такой пары команд
         # (страница «Названия», раздел «Вид спорта»): сайт о нём молчит
         ключ = f"{row.home} - {row.away}".strip()
-        letter = pair_sports.get(ключ)
-        if letter:
+        hint = pair_sports.get(ключ)
+        if hint and hint_fresh(hint[1], row.start_kyiv):
+            letter = hint[0]
             row.sport_word = "подсказка владельца"
 
     if letter is None:
