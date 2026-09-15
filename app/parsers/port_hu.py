@@ -50,6 +50,11 @@ NAMES = {"305": "Spíler1 TV", "362": "Spíler2 TV", "375": "Match4",
 #: это обзор тура, а не матч, и парой команд его считать нельзя
 _NOT_MATCH = re.compile(r"összefoglaló|magazin|stúdió|híradó|hírek", re.I)
 
+#: хвост венгерского анонса у гостей: «ZTE FC mérkőzés» («матч»), как у
+#: `mediaklikk.hu`. С хвостом «ZTE FC mérkőzés» не сводилось с эталоном,
+#: и M4 Sport терял матчи тура (владелец 15.09)
+_TAIL = re.compile(r"\s+(mérkőzés\w*|közvetítés\w*|élőben|ismétlés\w*)\s*$", re.I)
+
 
 def _pair(text: str) -> str:
     if _NOT_MATCH.search(text):
@@ -58,8 +63,9 @@ def _pair(text: str) -> str:
         if sep in text:
             home, _, away = text.partition(sep)
             home = home.split(":")[-1]
-            if home.strip() and away.strip():
-                return f"{home.strip()} - {away.strip()}"
+            away = _TAIL.sub("", away.strip()).strip()
+            if home.strip() and away:
+                return f"{home.strip()} - {away}"
     return " "
 
 
@@ -97,7 +103,11 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 out.append(Program(
                     channel_raw=channel, title=full, start=start,
                     raw_time=show.get("start_time") or start.strftime("%H:%M"),
-                    description=about[:300], league_raw=episode[:120],
+                    # лига — заголовок передачи («OTP Bank Liga»), а не
+                    # эпизод: там пара команд, и она копилась в словаре
+                    # лигой («Ferencvárosi TC - Újpest FC mérkőzés», 15.09)
+                    description=about[:300],
+                    league_raw=(title if episode else "")[:120],
                     match_raw=_pair(full) if _pair(full).strip() else _pair(about),
                     source_url=url,
                     extra={"day": start.date().isoformat()},

@@ -347,6 +347,28 @@ def main() -> int:
                 conn.execute("UPDATE events SET league_id=? WHERE id=?",
                              (row["id"], r["id"]))
                 leagued += 1
+        # Лига из эталона и при УЖЕ стоящей лиге, если сырое написание
+        # спорное — висит в словаре сразу на нескольких лигах: «efbet Лига»
+        # числилась и за первой, и за второй лигой Болгарии, и #2545 шла
+        # второй лигой при верной метке flashscore (владелец 15.09).
+        # Бесспорное написание не трогаем: так его закрепляет ✎ владельца
+        спорные = {r["alias"] for r in conn.execute(
+            "SELECT alias FROM league_aliases GROUP BY alias "
+            "HAVING COUNT(DISTINCT league_id) > 1")}
+        for r in conn.execute(
+                "SELECT e.id, e.flags, e.league_auto, l.canonical_name "
+                "FROM events e JOIN leagues l ON l.id = e.league_id "
+                "WHERE e.flags LIKE 'fs:%'").fetchall():
+            canon_league = league_by_flag.get(r["flags"])
+            if not canon_league or canon_league == r["canonical_name"] \
+                    or (r["league_auto"] or "").strip() not in спорные:
+                continue
+            row = conn.execute("SELECT id FROM leagues WHERE canonical_name = ?",
+                               (canon_league,)).fetchone()
+            if row:
+                conn.execute("UPDATE events SET league_id=? WHERE id=?",
+                             (row["id"], r["id"]))
+                leagued += 1
         # время из эталона — всем событиям с fs-меткой: заливка перетирает
         # его временем сеток, а правило владельца — «время по flashscore»
         # (кейсы #88, #629, #106; закреплено в CLAUDE.md)
