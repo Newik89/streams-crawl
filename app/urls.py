@@ -78,6 +78,17 @@ def resolve(url_pattern: str | None, base_url: str = "",
             # to={UNIXDAYEND}` и окна шире суток не принимает
             return str(int(datetime(d.year, d.month, d.day,
                                     tzinfo=timezone.utc).timestamp()) + 86399)
+        if name == "UNIXMSDAY":
+            # начало суток в миллисекундах: ручка United Cloud (`sportklub.hr`)
+            # просит fromTime/toTime в мс
+            return str(int(datetime(d.year, d.month, d.day,
+                                    tzinfo=timezone.utc).timestamp()) * 1000)
+        if name == "UNIXMSWEEK":
+            # конец окна через неделю, в мс: одним запросом на канал та же
+            # ручка отдаёт всю опубликованную сетку (у Sport Klub ~4 дня, 16.09)
+            return str((int(datetime(d.year, d.month, d.day,
+                                     tzinfo=timezone.utc).timestamp())
+                        + 7 * 86400) * 1000 - 1)
         if name == "KYIVOFF":
             # полдень — чтобы не попасть в ночной час перевода стрелок
             off = datetime(d.year, d.month, d.day, 12,

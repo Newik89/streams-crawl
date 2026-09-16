@@ -57,6 +57,9 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           "beinsports.com.tr", "raspored.hrt.hr", "tv8.com.tr",
           # девятая проба 01.09: болгарский пакет Diema — неделя на канал
           "diemaxtra.nova.bg",
+          # 16.09: Sport Klub (SK 1–12 и др.) — ручка United Cloud с гостевым
+          # ключом (app/fetch.py TOKEN_HOSTS), канал на запрос, окно неделя
+          "sportklub.hr",
           # десятая проба 01.09: немецкий SPORT1 через api.sport1.info и
           # нидерландский Ziggo Sport через дневной файл кэша
           "tv.sport1.de", "ziggosport.nl",

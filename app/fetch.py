@@ -118,6 +118,26 @@ WARMKEY_PATTERNS = {
     "sporteventz.com": r"accesskey=(\d+)",
 }
 
+#: Ручки, которые пускают только с гостевым ключом. Сайт выдаёт его своему же
+#: виджету по «логину гостя», зашитому в скрипт виджета: `sportklub.hr`
+#: (United Cloud) — `POST /oauth/token?grant_type=client_credentials` с этим
+#: логином, дальше `Bearer`-ключ и заголовок `X-UCP-TIME-FORMAT: timestamp`,
+#: без которого ручка расписания отвечает 400 (разбор 16.09). Логин в
+#: публичный репозиторий не кладём — достаём из скрипта при каждом обходе,
+#: ключ живёт одну сессию обхода.
+TOKEN_HOSTS = {
+    "api-web.ug-be.cdn.united.cloud": {
+        "script": "https://web-apps.ug.cdn.united.cloud/epg/bundle.js",
+        "login": r"(Basic [A-Za-z0-9+/=]{20,})",
+        "token": "https://api-web.ug-be.cdn.united.cloud/oauth/token"
+                 "?grant_type=client_credentials",
+        "headers": {"X-UCP-TIME-FORMAT": "timestamp",
+                    "Accept": "application/json, text/plain, */*",
+                    "Origin": "https://sportklub.hr",
+                    "Referer": "https://sportklub.hr/tv-program/"},
+    },
+}
+
 #: Сайты, закрытые для дата-центров. `cosmotetv.gr` у владельца в браузере
 #: открывается и показывает всё расписание, а любому серверу — и раннеру
 #: GitHub, и нашему DigitalOcean — отвечает заглушкой Imperva. Капчу мы не
@@ -382,6 +402,36 @@ class Fetcher:
         # (`sporteventz.com` с токеном Joomla, `dagenstv.com` с петлёй
         # редиректов). Для остальных сессия ничего не меняет
         self._session: dict[str, object] = {}
+        # гостевые ключи ручек из TOKEN_HOSTS: берутся один раз за обход
+        self._tokens: dict[str, dict[str, str]] = {}
+
+    def _token_headers(self, host: str, agent: str, verify: bool) -> dict[str, str]:
+        """Заголовки ручки с гостевым ключом (`TOKEN_HOSTS`); прочим — пусто.
+        Ключ не получен — отдаём одни заголовки: ручка ответит 401, и в отчёте
+        обхода будет видно, что сломался именно ключ."""
+        config = TOKEN_HOSTS.get(host)
+        if not config:
+            return {}
+        if host not in self._tokens:
+            import requests
+            got: dict[str, str] = {}
+            try:
+                script = requests.get(config["script"], timeout=TIMEOUT,
+                                      verify=verify, headers=headers(agent)).text
+                login = re.search(config["login"], script)
+                if login:
+                    answer = requests.post(
+                        config["token"], timeout=TIMEOUT, verify=verify,
+                        headers={"User-Agent": agent,
+                                 "Authorization": login.group(1),
+                                 **config["headers"]})
+                    key = answer.json().get("access_token") if answer.ok else ""
+                    if key:
+                        got = {"Authorization": f"Bearer {key}"}
+            except Exception:           # сеть или разметка скрипта сменилась
+                pass
+            self._tokens[host] = got
+        return {**config["headers"], **self._tokens[host]}
 
     def _wait(self, host: str) -> None:
         was = self._last.get(host)
@@ -455,6 +505,9 @@ class Fetcher:
                 pass
             self._wait(host)
         caller = keeper if keeper is not None else requests
+        # ручки с гостевым ключом (`sportklub.hr`): ключ и их заголовки
+        if host in TOKEN_HOSTS:
+            extra = {**self._token_headers(host, agent, verify), **(extra or {})}
 
         try:
             if post_json is not None:

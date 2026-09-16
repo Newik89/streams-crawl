@@ -3825,6 +3825,110 @@
      "pattern": "https://www.tv3.lt/programos/tv8?d={YYYY-MM-DD}"
     }
    ]
+  },
+  {
+   "domain": "sportklub.hr",
+   "timezone": "Europe/Zagreb",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Sport Klub 1",
+    "Sport Klub 10",
+    "Sport Klub 11",
+    "Sport Klub 12",
+    "Sport Klub 2",
+    "Sport Klub 3",
+    "Sport Klub 4",
+    "Sport Klub 4K",
+    "Sport Klub 5",
+    "Sport Klub 6",
+    "Sport Klub 7",
+    "Sport Klub 8",
+    "Sport Klub 9",
+    "Sport Klub Esports",
+    "Sport Klub Fight",
+    "Sport Klub Golf"
+   ],
+   "browser": false,
+   "days_inline": true,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://sportklub.hr/tv-program/",
+   "channels": [
+    {
+     "name": "Sport Klub 1",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 10",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 11",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=925&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 12",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=926&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 2",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 3",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 4",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 4K",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=644&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 5",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 6",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 7",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 8",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub 9",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub Esports",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=929&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub Fight",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=72&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    },
+    {
+     "name": "Sport Klub Golf",
+     "pattern": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=73&fromTime={UNIXMSDAY}&toTime={UNIXMSWEEK}&communityIdentifier=sk_hr&languageId=181"
+    }
+   ]
   }
  ]
 }

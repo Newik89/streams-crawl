@@ -93,7 +93,10 @@ CHANNEL_GRID_DOMAINS = {"programetv.ro", "poverkhnost.tv",
                         # не ставим — там месяц с нуля (`ГРАБЛИ.md`)
                         "rts.rs",
                         # страницы каналов SuperSport (этап 6в)
-                        "livesoccertv.com"}
+                        "livesoccertv.com",
+                        # Sport Klub: ручка United Cloud на канал, окно на
+                        # неделю одним запросом ({UNIXMSDAY}–{UNIXMSWEEK})
+                        "sportklub.hr"}
 
 #: «дневные сетки»: один адрес на день, в ответе сразу все каналы.
 #: в шаблоне адреса метка `{N}` — номер дня окна, 1-based
