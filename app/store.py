@@ -601,20 +601,40 @@ def _bare(domain: str) -> str:
     return (domain or "").strip().lower().removeprefix("www.")
 
 
-def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats) -> None:
+def _kyiv_from_utc(text: str) -> str:
+    """Метка «собрано» из games.json (часы GitHub, UTC) → киевское время
+    `ГГГГ-ММ-ДД ЧЧ:ММ`. Не разобрали — пусто."""
+    from zoneinfo import ZoneInfo
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+        try:
+            made = datetime.strptime((text or "").strip(), fmt)
+        except ValueError:
+            continue
+        return _iso(made.replace(tzinfo=timezone.utc)
+                    .astimezone(ZoneInfo("Europe/Kyiv")))
+    return ""
+
+
+def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
+            crawled: str = "", who: str = "") -> None:
     """Строка в `runs` и здоровье источников (ТЗ разд. 14): каждый импорт
     отмечает, кто из сайтов отработал, а кто нет. Отчёта нет — не беда,
-    запишем только счётчики игр."""
+    запишем только счётчики игр.
+
+    `crawled` — метка «собрано» обхода (UTC). В отчёте обхода есть только
+    дата, и на витрине три сбора за день выглядели одинаково: владелец
+    просил видеть, какой сбор во сколько был (18.09). `who` — чей сбор,
+    если не плановый GitHub: «сервер mojtv.hr»."""
     ok_by: dict[str, int] = {}          # страниц с расписанием
     empty_by: dict[str, int] = {}       # открылись, но матчей нет
     fail_by: dict[str, int] = {}        # не открылись вовсе
     rows_found = 0
-    when = ""
+    when = _kyiv_from_utc(crawled)
     mode = ""
     days = None
     try:
         report = json.loads(report_path.read_text(encoding="utf-8"))
-        when = report.get("когда", "")
+        when = when or report.get("когда", "")
         # «полный обход, окно 6 суток» / «скан даты 2026-09-13»: владелец
         # просил видеть в отчёте глубину и дату скана (09.09)
         mode = report.get("режим", "") or ""
@@ -651,7 +671,7 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats) -> None:
         (when or _iso(datetime.now()), days,
          len(worked), len(set(fail_by) - answered), rows_found,
          stats.new + stats.updated,
-         json.dumps({"режим": mode, "новых": stats.new,
+         json.dumps({"режим": mode, "кто": who, "новых": stats.new,
                      "обновлено": stats.updated,
                      "сбои": fail_by,
                      "молчат": sorted(silent)}, ensure_ascii=False)))

@@ -41,17 +41,32 @@ def _from_utc(text: str | None) -> datetime | None:
 
 
 def _what(run: dict) -> str:
-    """Что собирал прогон, словами: «6 сут.» или «дата 2026-09-13»."""
+    """Что собирал прогон, словами: «6 сут.», «дата 2026-09-13»,
+    «сервер mojtv.hr, 4 сут.»."""
     import json
     try:
-        mode = (json.loads(run.get("log") or "{}") or {}).get("режим") or ""
+        log = json.loads(run.get("log") or "{}") or {}
     except (ValueError, TypeError):
-        mode = ""
+        log = {}
+    mode = log.get("режим") or ""
+    who = log.get("кто") or ""
     if "скан даты" in mode:
-        return "дата " + mode.replace("скан даты", "").strip()
-    if run.get("window_days"):
-        return f"{run['window_days']} сут."
-    return mode or "—"
+        what = "дата " + mode.replace("скан даты", "").strip()
+    elif run.get("window_days"):
+        what = f"{run['window_days']} сут."
+    else:
+        what = mode or "—"
+    return f"{who}, {what}" if who else what
+
+
+def _when(run: dict) -> str:
+    """Когда был сбор, коротко: «18.09 16:45» по киевским часам.
+
+    С 18.09 `finished_at` — время самого обхода; раньше там лежала только
+    дата, и тогда берём время заливки `started_at` (SQLite пишет его в UTC),
+    она идёт через минуты после обхода."""
+    made = _parse(run.get("finished_at")) or _from_utc(run.get("started_at"))
+    return made.strftime("%d.%m %H:%M") if made else (run.get("finished_at") or "—")
 
 
 def _ago(when: datetime | None, now: datetime) -> str:
@@ -136,10 +151,12 @@ def summary(conn: sqlite3.Connection, now: datetime | None = None) -> dict:
     статусы = {row[0] or "": row[1] for row in conn.execute(
         "SELECT status, COUNT(*) FROM sources WHERE enabled = 1 GROUP BY status")}
     runs = [dict(r) for r in conn.execute(
-        "SELECT id, finished_at, window_days, sources_ok, sources_failed, "
-        "rows_found, events_upserted, log FROM runs ORDER BY id DESC LIMIT 3")]
+        "SELECT id, started_at, finished_at, window_days, sources_ok, "
+        "sources_failed, rows_found, events_upserted, log FROM runs "
+        "ORDER BY id DESC LIMIT 3")]
     for r in runs:
         r["what"] = _what(r)
+        r["when"] = _when(r)
     run = runs[0] if runs else None
     server = _server(conn, now)
     # несвежесть — это не только «давно не заливали»: сервер мог не забрать

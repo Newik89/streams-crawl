@@ -194,7 +194,7 @@
   <span style="flex-basis:100%; font-size:12px" title="Три последних сбора: когда, на сколько дней и что принёс">
     Last 3 runs:
     {%- for r in h.runs %}
-      <span style="margin-left:8px">{{ r.finished_at }} &middot; {{ r.what }} &middot;
+      <span style="margin-left:8px"><b>{{ r.when }}</b> &middot; {{ r.what }} &middot;
         {{ r.rows_found }} rows &middot; {{ r.events_upserted }} games
         {%- if r.sources_failed %} &middot; <a href="{{ url_for('run_failed', run_id=r.id) }}"
              target="_blank" rel="noopener" style="color:var(--live); font-weight:600"

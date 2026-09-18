@@ -71,6 +71,8 @@ def main() -> int:
                          "вернуться — запускать осознанно")
     ap.add_argument("--purge-only", action="store_true",
                     help="не вливать, только убрать отжившие игры")
+    ap.add_argument("--who", default="",
+                    help="чей сбор — подпись на витрине («сервер mojtv.hr»)")
     args = ap.parse_args()
 
     conn = db.connect()
@@ -175,7 +177,8 @@ def main() -> int:
         # доехал ли заказанный кнопкой обход (просьба владельца 09.09)
         if stamp:
             db.set_setting(conn, "last_crawl", stamp)
-        store.log_run(conn, path.parent / "report.json", stats)
+        store.log_run(conn, path.parent / "report.json", stats,
+                      crawled=stamp, who=args.who)
         print(f"в файле игр: {len(games)}; новых: {stats.new}, "
               f"обновлено: {stats.updated}, отметок каналов: {stats.channels}, "
               f"повторов не пущено: {stats.repeats}, "

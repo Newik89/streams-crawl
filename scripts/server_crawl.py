@@ -132,7 +132,8 @@ def main() -> int:
                      "разбираю")
         if ок:
             ок = шаг([PY, "scripts/games_import.py", "--file",
-                      str(куда / "games.json")], "вливаю в базу")
+                      str(куда / "games.json"), "--who", f"сервер {домен}"],
+                     "вливаю в базу")
         запомнить(домен, "ок" if ок else "сбой")
         print(f"{домен}: {'готово' if ок else 'НЕ ВЫШЛО'}")
     return 0
