@@ -5,8 +5,10 @@ r"""Канонические имена каналов — правки влад
 Алиасы (как сайты пишут канал) остаются и продолжают попадать в тот же
 канал; слаг не трогаем. Повторный запуск ничего не меняет.
 
-Правила накапливаются в RULES: (страна, регулярка, замена). Канал
-опознаётся парой (имя, страна) — правило без страны не пишем.
+Правила живут в `app/channel_rules.py` (применяются и при рождении
+канала); здесь — только прогон по уже заведённым. С 19.09 сервер гоняет
+этот скрипт после каждой заливки (`/root/streams-update.sh`), поэтому
+правило, добавленное позже канала, доезжает без ручного запуска.
 
 Гонять на ОБЕИХ базах:
     venv\Scripts\python.exe scripts/channel_names.py
@@ -15,7 +17,6 @@ r"""Канонические имена каналов — правки влад
 
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
@@ -23,35 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import db  # noqa: E402
-
-RULES = [
-    # владелец 03.09: «Cytavision Sports4 HD» → «Cytavision Sports 4»
-    ("CY", re.compile(r"^Cytavision Sports(\d+) HD$"), r"Cytavision Sports \1"),
-    # B4: вся линейка sporttv.pt — точку на пробел
-    ("PT", re.compile(r"^SPORT\.TV(\d+)$"), r"SPORT TV \1"),
-    ("PT", re.compile(r"^SPORT\.TV \+$"), "SPORT TV +"),
-    # владелец 04.09: страну у ВСЕХ каналов рисует витрина префиксом
-    # «BG| …» — свой префикс из имени MAX Sport убираем (был с 03.09),
-    # иначе задвоится
-    ("BG", re.compile(r"^bg\| MAX Sport (\d+)$"), r"MAX Sport \1"),
-    # B10: канонические имена sport5.co.il — латиницей, вся линейка.
-    # Правила без групп: подстановка \1 однажды превратилась в мусорный
-    # байт (см. журнал 03.09), поэтому каждое имя — явной парой
-    ("IL", re.compile(r"^ספורט 5 Live$"), "Sport 5 Live"),
-    ("IL", re.compile(r"^ספורט 5 Stars$"), "Sport 5 Stars"),
-    ("IL", re.compile(r"^ספורט 5 Gold$"), "Sport 5 Gold"),
-    ("IL", re.compile(r"^ספורט 5\+$"), "Sport 5 Plus"),
-    ("IL", re.compile(r"^ספורט 5$"), "Sport 5"),
-    # обломок бага 03.09: в шаблоне лежал мусорный байт вместо ``,
-    # сработать он не мог ни разу — снят 10.09, ивритское написание
-    # уже покрыто строкой выше
-    # владелец 04.09: голландская линейка ESPN — «ESPN» без номера значит
-    # первый канал; на источнике второй пишут «ESPN 2», так и на витрине
-    ("INT", re.compile(r"^ESPN Netherlands$"), "ESPN 1"),
-    ("INT", re.compile(r"^ESPN (\d) Netherlands$"), r"ESPN \1"),
-    # владелец 05.09: OneSoccer -> One Soccer
-    ("CA", re.compile(r"^OneSoccer$"), "One Soccer"),
-]
+from app.channel_rules import RULES  # noqa: E402
 
 
 def main() -> int:

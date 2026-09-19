@@ -194,8 +194,12 @@ def _channel_id(conn: sqlite3.Connection, raw: str,
     if row:
         return row["channel_id"]
     country = (source["country"] if source else "") or "??"
-    from . import dictionary
-    return dictionary.remember_channel(conn, raw, raw, country, source_id)
+    from . import channel_rules, dictionary
+    # каноническое имя — сразу по правилам владельца (`app/channel_rules.py`):
+    # раньше новый канал рождался с сырым именем и до ручного прогона
+    # `channel_names.py` висел на витрине как есть — ивритом (#3039, 19.09)
+    return dictionary.remember_channel(conn, raw, channel_rules.apply(raw, country),
+                                       country, source_id)
 
 
 def _team_id(overrides_ids: dict[str, int], raw: str) -> int | None:
