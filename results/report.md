@@ -1,30 +1,29 @@
 # Итог обхода
 
-Режим: полный обход, окно 2 суток. Запросов: 513. Заняло 1674 с.
+Режим: полный обход, окно 6 суток. Запросов: 1169. Заняло 3575 с.
 
 | Сайт | Результат |
 |---|---|
-| allente.no | расписание есть — 2 |
+| allente.no | расписание есть — 6 |
 | aspor.com.tr | расписание есть — 1 |
-| atv.com.tr | расписание есть — 2 |
-| bbc.co.uk | расписание есть — 22 |
-| beinsports.com.tr | расписание есть — 10 |
+| atv.com.tr | расписание есть — 6 |
+| bbc.co.uk | расписание есть — 66 |
+| beinsports.com.tr | расписание есть — 29, пусто — 1 |
 | bnt.bg | расписание есть — 1 |
 | canal11.pt | расписание есть — 1 |
-| ceskatelevize.cz | расписание есть — 2 |
-| cosmotetv.gr | расписание есть — 2 |
-| dagenstv.com | расписание есть — 2 |
+| ceskatelevize.cz | расписание есть — 6 |
+| cosmotetv.gr | расписание есть — 6 |
+| dagenstv.com | расписание есть — 6 |
 | diemaxtra.nova.bg | расписание есть — 4 |
 | digisport.ro | расписание есть — 4 |
-| dr.dk | расписание есть — 2 |
+| dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
-| ert.gr | расписание есть — 2 |
+| ert.gr | расписание есть — 6 |
 | flashscore.mobi | расписание есть — 21 |
 | football-tv.ru | расписание есть — 1 |
-| jupiter.err.ee | расписание есть — 6 |
-| kanal1sport.sk | не открылась — 1 |
-| liveonsat.com | заглушка защиты — 1 |
-| livesoccertv.com | расписание есть — 23 |
+| jupiter.err.ee | расписание есть — 18 |
+| kanal1sport.sk | расписание есть — 1 |
+| livesoccertv.com | расписание есть — 16, заглушка защиты — 7 |
 | m.eredmenyek.com | расписание есть — 7 |
 | m.flashscore.bg | расписание есть — 7 |
 | m.flashscore.com.tr | расписание есть — 2 |
@@ -37,72 +36,75 @@
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 1 |
-| movistarplus.es | расписание есть — 70 |
+| movistarplus.es | расписание есть — 210 |
 | news.by | расписание есть — 1 |
-| nova.bg | расписание есть — 8 |
+| nova.bg | расписание есть — 24 |
 | novasports.gr | расписание есть — 1 |
-| npo.nl | расписание есть — 6 |
-| ntvplus.tv | расписание есть — 2 |
-| oneplaysport.cz | расписание есть — 2 |
+| npo.nl | расписание есть — 18 |
+| ntvplus.tv | расписание есть — 6 |
+| oneplaysport.cz | расписание есть — 6 |
 | onesoccer.ca | расписание есть — 1 |
-| port.hu | расписание есть — 18 |
+| port.hu | расписание есть — 54 |
 | poverkhnost.tv | расписание есть — 5 |
 | primaplay.ro | расписание есть — 1 |
 | programetv.ro | пусто — 11 |
-| programme-tv.net | расписание есть — 16 |
-| raiplay.it | расписание есть — 8 |
-| raspored.hrt.hr | расписание есть — 6 |
-| rtcg.me | расписание есть — 8 |
+| programme-tv.net | расписание есть — 48 |
+| raiplay.it | расписание есть — 24 |
+| raspored.hrt.hr | расписание есть — 18 |
+| rtcg.me | расписание есть — 24 |
 | rte.ie | расписание есть — 17 |
-| rtl.de | расписание есть — 16 |
-| rtp.pt | расписание есть — 10 |
+| rtl.de | расписание есть — 48 |
+| rtp.pt | расписание есть — 27 |
 | rtrs.tv | расписание есть — 1 |
 | rts.rs | расписание есть — 3 |
-| skai.gr | расписание есть — 2 |
+| skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | расписание есть — 2 |
+| sport1.maariv.co.il | расписание есть — 2, пусто — 4 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
-| sport5.co.il | расписание есть — 2 |
+| sport5.co.il | расписание есть — 6 |
 | sporteventz.com | расписание есть — 1 |
 | sportklub.hr | расписание есть — 10 |
 | sports.kz | расписание есть — 1 |
 | sporttv.pt | расписание есть — 1 |
-| srf.ch | расписание есть — 2 |
+| srf.ch | расписание есть — 6 |
 | ssport.tv | расписание есть — 1 |
-| teleman.pl | расписание есть — 10 |
+| teleman.pl | расписание есть — 30 |
 | tring.al | расписание есть — 1 |
 | trt.net.tr | расписание есть — 1 |
-| trtavaz.com.tr | расписание есть — 2 |
+| trtavaz.com.tr | расписание есть — 6 |
 | trtspor.com.tr | расписание есть — 1 |
 | tv-program.aktuality.sk | расписание есть — 1 |
 | tv.orf.at | расписание есть — 5 |
 | tv.sport1.de | расписание есть — 1 |
-| tv2.no | расписание есть — 2 |
-| tv24.co.uk | расписание есть — 8 |
-| tv3.lt | расписание есть — 30, пусто — 2 |
-| tv8.com.tr | расписание есть — 2 |
+| tv2.no | расписание есть — 6 |
+| tv24.co.uk | расписание есть — 24 |
+| tv3.lt | расписание есть — 90, пусто — 6 |
+| tv8.com.tr | расписание есть — 2, пусто — 4 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
 | tvarenasport.si | расписание есть — 1 |
-| tvguidetonight.com.au | расписание есть — 6 |
-| tvheute.at | расписание есть — 4 |
-| tvpassport.com | расписание есть — 12 |
-| unian.tv | расписание есть — 2 |
-| vsetv.com | расписание есть — 4 |
-| webtv.sk | расписание есть — 14 |
-| ziggosport.nl | расписание есть — 2 |
+| tvguidetonight.com.au | расписание есть — 18 |
+| tvheute.at | расписание есть — 12 |
+| tvpassport.com | расписание есть — 36 |
+| unian.tv | расписание есть — 2, пусто — 4 |
+| vsetv.com | расписание есть — 12 |
+| webtv.sk | расписание есть — 42 |
+| ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 2
+## Не открылись — 7
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| liveonsat.com | сетка | cloudflare turnstile | https://liveonsat.com/2day.php?start_dd=19&start_mm=09&start_yyyy=2026&end_dd=19&end_mm=09&end_yyyy=2026&postponed=0 |
-| kanal1sport.sk | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
-Call log:
-  - navigating to "https://www.kanal1sport.sk/tv-program/", waiting until "domcontentloade | https://www.kanal1sport.sk/tv-program/ |
+| livesoccertv.com | ART Sport 6 | cloudflare | https://www.livesoccertv.com/channels/art-sport-6/ |
+| livesoccertv.com | ON Sport 1 | cloudflare | https://www.livesoccertv.com/channels/on-sport-egypt/ |
+| livesoccertv.com | ON Sport 2 | cloudflare | https://www.livesoccertv.com/channels/on-sport-2-egypt/ |
+| livesoccertv.com | ON Sport Max | cloudflare | https://www.livesoccertv.com/channels/on-sport-max/ |
+| livesoccertv.com | ON Sport Plus | cloudflare | https://www.livesoccertv.com/channels/on-sport-plus/ |
+| livesoccertv.com | SuperSport 6 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-6-digitalb/ |
+| livesoccertv.com | Supersport 7 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-7-albania/ |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 1 из 512 страниц (0%), сайтов без удачи 1 из 88 (1%)
+- ✅ обход в норме: не открылись 7 из 1169 страниц (1%), сайтов без удачи 0 из 88 (0%)
