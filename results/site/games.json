@@ -1,15 +1,1047 @@
 {
- "собрано": "2026-09-20 18:52",
- "игр": 0,
+ "собрано": "2026-09-20 18:55",
+ "игр": 55,
  "окно": 6,
  "по_окнам": {
   "2": 311,
   "5": 528,
-  "6": 0
+  "6": 55
  },
  "оценка": "",
  "эталон": [],
- "разобрано": {},
- "на_разбор": [],
- "games": []
+ "разобрано": {
+  "sporttv.pt": 1642
+ },
+ "на_разбор": [
+  {
+   "домен": "sporttv.pt",
+   "канал": "SPORT.TV2",
+   "home": "CAROLINA HURRICANES",
+   "away": "FLORIDA PANTHERS",
+   "league": "NHL - HOQUEI NO GELO",
+   "start_kyiv": "2026-09-30T00:00",
+   "raw_title": "CAROLINA HURRICANES X FLORIDA PANTHERS"
+  }
+ ],
+ "games": [
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "TAÇA DAVIS",
+   "home": "CANADÁ",
+   "away": "FRANÇA",
+   "start_kyiv": "2026-09-20T00:30",
+   "start_utc": "2026-09-19T21:30",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV6",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "CANADÁ X FRANÇA - 2ª ELIMINATÓRIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "CAMPEONATO DA ARGENTINA",
+   "home": "RIVER PLATE",
+   "away": "HURACÁN",
+   "start_kyiv": "2026-09-20T00:52",
+   "start_utc": "2026-09-19T21:52",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "RIVER PLATE X HURACÁN"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "SERIE A",
+   "home": "FIORENTINA",
+   "away": "NÁPOLES",
+   "start_kyiv": "2026-09-20T13:24",
+   "start_utc": "2026-09-20T10:24",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FIORENTINA X NÁPOLES"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA ESCOCESA",
+   "home": "CELTIC",
+   "away": "RANGERS",
+   "start_kyiv": "2026-09-20T13:49",
+   "start_utc": "2026-09-20T10:49",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "CELTIC X RANGERS"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "EFL CHAMPIONSHIP",
+   "home": "WOLVERHAMPTON",
+   "away": "WEST BROMWICH",
+   "start_kyiv": "2026-09-20T13:52",
+   "start_utc": "2026-09-20T10:52",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV6",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "WOLVERHAMPTON X WEST BROMWICH"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "SERIE A",
+   "home": "PARMA",
+   "away": "GÉNOVA",
+   "start_kyiv": "2026-09-20T15:54",
+   "start_utc": "2026-09-20T12:54",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV +",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "PARMA X GÉNOVA"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV +",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "PARMA X GÉNOVA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "SERIE A",
+   "home": "FROSINONE",
+   "away": "COMO",
+   "start_kyiv": "2026-09-20T15:54",
+   "start_utc": "2026-09-20T12:54",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FROSINONE X COMO"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA FRANCESA",
+   "home": "AUXERRE",
+   "away": "BREST",
+   "start_kyiv": "2026-09-20T15:56",
+   "start_utc": "2026-09-20T12:56",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV6",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "AUXERRE X BREST"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "SUPERLIGA TURCA",
+   "home": "FENERBAHÇE",
+   "away": "EYUPSPOR",
+   "start_kyiv": "2026-09-20T16:49",
+   "start_utc": "2026-09-20T13:49",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FENERBAHÇE X EYUPSPOR"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA PORTUGAL BETCLIC",
+   "home": "VITÓRIA SC",
+   "away": "MOREIRENSE FC",
+   "start_kyiv": "2026-09-20T17:17",
+   "start_utc": "2026-09-20T14:17",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "VITÓRIA SC X MOREIRENSE FC"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA PORTUGAL BETCLIC",
+   "home": "ESTRELA DA AMADORA",
+   "away": "ACADÉMICO",
+   "start_kyiv": "2026-09-20T17:18",
+   "start_utc": "2026-09-20T14:18",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ESTRELA DA AMADORA X ACADÉMICO"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA FRANCESA",
+   "home": "NICE",
+   "away": "LILLE",
+   "start_kyiv": "2026-09-20T18:09",
+   "start_utc": "2026-09-20T15:09",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV6",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "NICE X LILLE"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "SERIE A",
+   "home": "JUVENTUS",
+   "away": "ATALANTA",
+   "start_kyiv": "2026-09-20T18:56",
+   "start_utc": "2026-09-20T15:56",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "JUVENTUS X ATALANTA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA PORTUGAL BETCLIC",
+   "home": "SANTA CLARA",
+   "away": "SC BRAGA",
+   "start_kyiv": "2026-09-20T19:47",
+   "start_utc": "2026-09-20T16:47",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "SANTA CLARA X SC BRAGA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA PORTUGAL BETCLIC",
+   "home": "ESTORIL PRAIA",
+   "away": "CASA PIA AC",
+   "start_kyiv": "2026-09-20T19:48",
+   "start_utc": "2026-09-20T16:48",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ESTORIL PRAIA X CASA PIA AC"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "CAMPEONATO DA ARGENTINA",
+   "home": "SAN LORENZO",
+   "away": "BOCA JUNIORS",
+   "start_kyiv": "2026-09-20T20:39",
+   "start_utc": "2026-09-20T17:39",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV5",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "SAN LORENZO X BOCA JUNIORS"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA FRANCESA",
+   "home": "MARSELHA",
+   "away": "PARIS SAINT-GERMAIN",
+   "start_kyiv": "2026-09-20T21:31",
+   "start_utc": "2026-09-20T18:31",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV6",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "MARSELHA X PARIS SAINT-GERMAIN"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "SERIE A",
+   "home": "AC MILAN",
+   "away": "LECCE",
+   "start_kyiv": "2026-09-20T21:34",
+   "start_utc": "2026-09-20T18:34",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "AC MILAN X LECCE"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LIGA PORTUGAL BETCLIC",
+   "home": "FC PORTO",
+   "away": "SL BENFICA",
+   "start_kyiv": "2026-09-20T22:17",
+   "start_utc": "2026-09-20T19:17",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FC PORTO X SL BENFICA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "CAMPEONATO DA ARGENTINA",
+   "home": "ROSARIO CENTRAL",
+   "away": "ARGENTINOS JUNIORS",
+   "start_kyiv": "2026-09-20T22:52",
+   "start_utc": "2026-09-20T19:52",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ROSARIO CENTRAL X ARGENTINOS JUNIORS"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "BILLIE JEAN KING CUP",
+   "home": "FINAIS 2026 - CHÉQUIA",
+   "away": "GRÃ-BRETANHA",
+   "start_kyiv": "2026-09-22T11:59",
+   "start_utc": "2026-09-22T08:59",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - CHÉQUIA X GRÃ-BRETANHA"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - CHÉQUIA X GRÃ-BRETANHA"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - CHÉQUIA X GRÃ-BRETANHA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "BILLIE JEAN KING CUP",
+   "home": "FINAIS 2026 - ESPANHA",
+   "away": "CAZAQUISTÃO",
+   "start_kyiv": "2026-09-23T12:00",
+   "start_utc": "2026-09-23T09:00",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - ESPANHA X CAZAQUISTÃO"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - ESPANHA X CAZAQUISTÃO"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - ESPANHA X CAZAQUISTÃO"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "JOGOS DE PREPARAÇÃO",
+   "home": "GIBRALTAR",
+   "away": "SÃO TOMÉ E PRÍNCIPE",
+   "start_kyiv": "2026-09-23T18:50",
+   "start_utc": "2026-09-23T15:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "GIBRALTAR X SÃO TOMÉ E PRÍNCIPE"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "BILLIE JEAN KING CUP",
+   "home": "FINAIS 2026 - UCRÂNIA",
+   "away": "BÉLGICA",
+   "start_kyiv": "2026-09-24T03:00",
+   "start_utc": "2026-09-24T00:00",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - UCRÂNIA X BÉLGICA"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - UCRÂNIA X BÉLGICA"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - UCRÂNIA X BÉLGICA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "BILLIE JEAN KING CUP",
+   "home": "FINAIS 2026 - CHINA",
+   "away": "ITÁLIA",
+   "start_kyiv": "2026-09-24T12:00",
+   "start_utc": "2026-09-24T09:00",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - CHINA X ITÁLIA"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - CHINA X ITÁLIA"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - CHINA X ITÁLIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "ANDORRA",
+   "away": "MALTA",
+   "start_kyiv": "2026-09-24T18:50",
+   "start_utc": "2026-09-24T15:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ANDORRA X MALTA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "EUROLIGA",
+   "home": "BASKONIA VITORIA-GASTEIZ",
+   "away": "OLYMPIACOS",
+   "start_kyiv": "2026-09-24T21:25",
+   "start_utc": "2026-09-24T18:25",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV7",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "BASKONIA VITORIA-GASTEIZ X OLYMPIACOS"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "KOSOVO",
+   "away": "REPÚBLICA DA IRLANDA",
+   "start_kyiv": "2026-09-24T21:35",
+   "start_utc": "2026-09-24T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV6",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "KOSOVO X REPÚBLICA DA IRLANDA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "PORTUGAL",
+   "away": "PAÍS DE GALES",
+   "start_kyiv": "2026-09-24T21:35",
+   "start_utc": "2026-09-24T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "PORTUGAL X PAÍS DE GALES"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "NORUEGA",
+   "away": "DINAMARCA",
+   "start_kyiv": "2026-09-24T21:35",
+   "start_utc": "2026-09-24T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "NORUEGA X DINAMARCA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "SÉRVIA",
+   "away": "GRÉCIA",
+   "start_kyiv": "2026-09-24T21:35",
+   "start_utc": "2026-09-24T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "SÉRVIA X GRÉCIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "PAÍSES BAIXOS",
+   "away": "ALEMANHA",
+   "start_kyiv": "2026-09-24T21:35",
+   "start_utc": "2026-09-24T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "PAÍSES BAIXOS X ALEMANHA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "TAÇA NAÇÕES AFRICANAS - QUALIFICAÇÃO",
+   "home": "COSTA DO MARFIM",
+   "away": "GANA",
+   "start_kyiv": "2026-09-24T21:50",
+   "start_utc": "2026-09-24T18:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV5",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "COSTA DO MARFIM X GANA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "BILLIE JEAN KING CUP",
+   "home": "FINAIS 2026",
+   "away": "MEIA-FINAL 1",
+   "start_kyiv": "2026-09-25T12:00",
+   "start_utc": "2026-09-25T09:00",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - MEIA-FINAL 1"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - MEIA-FINAL 1"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - MEIA-FINAL 1"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "TAÇA NAÇÕES AFRICANAS - QUALIFICAÇÃO",
+   "home": "TANZÂNIA",
+   "away": "GUINÉ-BISSAU",
+   "start_kyiv": "2026-09-25T15:50",
+   "start_utc": "2026-09-25T12:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "TANZÂNIA X GUINÉ-BISSAU"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "GEÓRGIA",
+   "away": "IRLANDA DO NORTE",
+   "start_kyiv": "2026-09-25T18:50",
+   "start_utc": "2026-09-25T15:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "GEÓRGIA X IRLANDA DO NORTE"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "ARMÉNIA",
+   "away": "LETÓNIA",
+   "start_kyiv": "2026-09-25T18:50",
+   "start_utc": "2026-09-25T15:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ARMÉNIA X LETÓNIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "JOGOS DE PREPARAÇÃO",
+   "home": "FC PENAFIEL",
+   "away": "DEP. CORUNHA",
+   "start_kyiv": "2026-09-25T20:55",
+   "start_utc": "2026-09-25T17:55",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV +",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FC PENAFIEL X DEP. CORUNHA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "ITÁLIA",
+   "away": "BÉLGICA",
+   "start_kyiv": "2026-09-25T21:35",
+   "start_utc": "2026-09-25T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ITÁLIA X BÉLGICA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "SUÉCIA",
+   "away": "ROMÉNIA",
+   "start_kyiv": "2026-09-25T21:35",
+   "start_utc": "2026-09-25T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "SUÉCIA X ROMÉNIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "TURQUIA",
+   "away": "FRANÇA",
+   "start_kyiv": "2026-09-25T21:35",
+   "start_utc": "2026-09-25T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "TURQUIA X FRANÇA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "POLÓNIA",
+   "away": "BÓSNIA-HERZEGOVINA",
+   "start_kyiv": "2026-09-25T21:35",
+   "start_utc": "2026-09-25T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV5",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "POLÓNIA X BÓSNIA-HERZEGOVINA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "TAÇA NAÇÕES AFRICANAS - QUALIFICAÇÃO",
+   "home": "EGIPTO",
+   "away": "ANGOLA",
+   "start_kyiv": "2026-09-25T21:50",
+   "start_utc": "2026-09-25T18:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV6",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "EGIPTO X ANGOLA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "TAÇA NAÇÕES AFRICANAS - QUALIFICAÇÃO",
+   "home": "SENEGAL",
+   "away": "MOÇAMBIQUE",
+   "start_kyiv": "2026-09-25T21:50",
+   "start_utc": "2026-09-25T18:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV7",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "SENEGAL X MOÇAMBIQUE"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "TAÇA NAÇÕES AFRICANAS - QUALIFICAÇÃO",
+   "home": "MALI",
+   "away": "CABO VERDE",
+   "start_kyiv": "2026-09-25T21:50",
+   "start_utc": "2026-09-25T18:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "MALI X CABO VERDE"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "BILLIE JEAN KING CUP",
+   "home": "FINAIS 2026",
+   "away": "MEIA-FINAL 2",
+   "start_kyiv": "2026-09-26T12:00",
+   "start_utc": "2026-09-26T09:00",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - MEIA-FINAL 2"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - MEIA-FINAL 2"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "FINAIS 2026 - MEIA-FINAL 2"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA TOUR",
+   "home": "WTA 125 PORTO OPEN",
+   "away": "MEIA-FINAL",
+   "start_kyiv": "2026-09-26T13:00",
+   "start_utc": "2026-09-26T10:00",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "WTA 125 PORTO OPEN - MEIA-FINAL"
+    },
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "WTA 125 PORTO OPEN - MEIA-FINAL"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "ESLOVÉNIA",
+   "away": "ESCÓCIA",
+   "start_kyiv": "2026-09-26T15:50",
+   "start_utc": "2026-09-26T12:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ESLOVÉNIA X ESCÓCIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "SÃO MARINO",
+   "away": "FINLÂNDIA",
+   "start_kyiv": "2026-09-26T18:50",
+   "start_utc": "2026-09-26T15:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "SÃO MARINO X FINLÂNDIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "ISLÂNDIA",
+   "away": "ESTÓNIA",
+   "start_kyiv": "2026-09-26T18:50",
+   "start_utc": "2026-09-26T15:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ISLÂNDIA X ESTÓNIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "BULGÁRIA",
+   "away": "LUXEMBURGO",
+   "start_kyiv": "2026-09-26T18:50",
+   "start_utc": "2026-09-26T15:50",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "BULGÁRIA X LUXEMBURGO"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "CHÉQUIA",
+   "away": "CROÁCIA",
+   "start_kyiv": "2026-09-26T21:35",
+   "start_utc": "2026-09-26T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV2",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "CHÉQUIA X CROÁCIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "MACEDÓNIA DO NORTE",
+   "away": "SUÍÇA",
+   "start_kyiv": "2026-09-26T21:35",
+   "start_utc": "2026-09-26T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV3",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "MACEDÓNIA DO NORTE X SUÍÇA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "ESLOVÁQUIA",
+   "away": "MOLDÁVIA",
+   "start_kyiv": "2026-09-26T21:35",
+   "start_utc": "2026-09-26T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV4",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "ESLOVÁQUIA X MOLDÁVIA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA NATIONS LEAGUE",
+   "home": "INGLATERRA",
+   "away": "ESPANHA",
+   "start_kyiv": "2026-09-26T21:35",
+   "start_utc": "2026-09-26T18:35",
+   "entries": [
+    {
+     "source": "sporttv.pt",
+     "channel": "SPORT.TV1",
+     "url": "https://www.sporttv.pt/guia",
+     "raw_title": "INGLATERRA X ESPANHA"
+    }
+   ]
+  }
+ ]
 }

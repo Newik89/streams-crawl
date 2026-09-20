@@ -3,21 +3,22 @@
  "режим": "полный обход, окно 6 суток",
  "строки": [
   {
-   "domain": "kanal1sport.sk",
+   "domain": "sporttv.pt",
    "channel": "",
    "day": "",
-   "locale": "en-GB",
-   "url": "https://www.kanal1sport.sk/tv-program/",
-   "browser": true,
+   "locale": "pt-PT",
+   "url": "https://www.sporttv.pt/guia",
+   "browser": false,
    "post": null,
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "не открылась",
-   "почему": "браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"https://www.kanal1sport.sk/tv-program/\", waiting until \"domcontentloaded\"\n",
-   "байт": 0,
-   "меток времени": 0,
-   "чем": "requests"
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1663716,
+   "меток времени": 26,
+   "чем": "requests",
+   "файл": "www.sporttv.pt__guia.html"
   }
  ],
  "дозор": {
