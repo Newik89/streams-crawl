@@ -642,7 +642,7 @@
      "pattern": "https://services.err.ee/api/tvSchedule/getTimelineSchedule?day={D}&month={M}&year={YYYY}&channel=etv2"
     }
    ],
-   "by_server": true
+   "by_server": false
   },
   {
    "domain": "liveonsat.com",
@@ -2557,7 +2557,7 @@
      "pattern": "https://tvarenasport.hr/wp-content/tv-program.php"
     }
    ],
-   "by_server": true
+   "by_server": false
   },
   {
    "domain": "tvarenasport.si",
