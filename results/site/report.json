@@ -1,0 +1,34 @@
+{
+ "когда": "2026-09-20",
+ "режим": "полный обход, окно 6 суток",
+ "строки": [
+  {
+   "domain": "kanal1sport.sk",
+   "channel": "",
+   "day": "",
+   "locale": "en-GB",
+   "url": "https://www.kanal1sport.sk/tv-program/",
+   "browser": true,
+   "post": null,
+   "warmup": "",
+   "post_json": null,
+   "headers": null,
+   "итог": "не открылась",
+   "почему": "браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"https://www.kanal1sport.sk/tv-program/\", waiting until \"domcontentloaded\"\n",
+   "байт": 0,
+   "меток времени": 0,
+   "чем": "requests"
+  }
+ ],
+ "дозор": {
+  "liveonsat.com": {
+   "когда": "2026-09-20 13:44",
+   "итог": "заглушка защиты"
+  }
+ },
+ "оценка": {
+  "код": 0,
+  "строки": [],
+  "строгая": false
+ }
+}
