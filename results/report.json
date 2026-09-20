@@ -15,7 +15,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 109058,
+   "байт": 105814,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.allente.no__api_epg_refetch-epg-data_Start=2026-09-20_Genre=Sport.html"
@@ -69,7 +69,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 52892,
+   "байт": 52978,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.atv.com.tr__streaming_jsondatehtml_dt=20.09.2026_isajax=true.html"
@@ -87,7 +87,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 55544,
+   "байт": 55509,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.atv.com.tr__streaming_jsondatehtml_dt=21.09.2026_isajax=true.html"
@@ -177,7 +177,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 323919,
+   "байт": 326028,
    "меток времени": 44,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p00fzl6g_2026_09_20.html"
@@ -213,7 +213,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 263943,
+   "байт": 272233,
    "меток времени": 28,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p00fzl6p_2026_09_20.html"
@@ -231,7 +231,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 267668,
+   "байт": 268242,
    "меток времени": 28,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p00fzl6p_2026_09_21.html"
@@ -249,7 +249,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 250651,
+   "байт": 253605,
    "меток времени": 24,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p00fzl73_2026_09_20.html"
@@ -285,7 +285,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 181873,
+   "байт": 182443,
    "меток времени": 8,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p06kvypx_2026_09_20.html"
@@ -357,7 +357,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 236856,
+   "байт": 240489,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p00fzl97_2026_09_20.html"
@@ -393,7 +393,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 735916,
+   "байт": 738182,
    "меток времени": 42,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p00fzl9r_2026_09_20.html"
@@ -429,7 +429,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 474465,
+   "байт": 479479,
    "меток времени": 75,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p00fzl9s_2026_09_20.html"
@@ -465,7 +465,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 280332,
+   "байт": 282776,
    "меток времени": 34,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p020dmkf_2026_09_20.html"
@@ -483,7 +483,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 365178,
+   "байт": 365781,
    "меток времени": 62,
    "чем": "requests",
    "файл": "www.bbc.co.uk__schedules_p020dmkf_2026_09_21.html"
@@ -643,11 +643,11 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "расписание есть",
-   "почему": "",
-   "байт": 62692,
-   "меток времени": 17,
-   "чем": "requests",
+   "итог": "пусто",
+   "почему": "времени на странице нет",
+   "байт": 39,
+   "меток времени": 0,
+   "чем": "browser",
    "файл": "beinsports.com.tr__yayin-akisi_bein-sports-haber_pazar.html"
   },
   {
@@ -681,8 +681,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 413633,
-   "меток времени": 452,
+   "байт": 413634,
+   "меток времени": 451,
    "чем": "requests",
    "файл": "bnt.bg__program_bnt3.html"
   },
@@ -710,7 +710,7 @@
    },
    "итог": "расписание есть",
    "почему": "",
-   "байт": 17396,
+   "байт": 15832,
    "меток времени": 0,
    "чем": "requests",
    "файл": "fpf.watch.pixellot.tv__api_event_list__post-52399f76.html"
@@ -728,8 +728,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 303710,
-   "меток времени": 277,
+   "байт": 303916,
+   "меток времени": 281,
    "чем": "requests",
    "файл": "www.ceskatelevize.cz__tv-program_20.09.2026.html"
   },
@@ -746,8 +746,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 314233,
-   "меток времени": 336,
+   "байт": 314213,
+   "меток времени": 328,
    "чем": "requests",
    "файл": "www.ceskatelevize.cz__tv-program_21.09.2026.html"
   },
@@ -764,7 +764,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 6585350,
+   "байт": 6585514,
    "меток времени": 0,
    "чем": "requests",
    "файл": "mwapi-prod.cosmotetvott.gr__api_v3.4_epg_listings_el_from=1789862400_to=1789948799_endingIncludedInRange=false.html"
@@ -782,7 +782,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 6402042,
+   "байт": 6404186,
    "меток времени": 0,
    "чем": "requests",
    "файл": "mwapi-prod.cosmotetvott.gr__api_v3.4_epg_listings_el_from=1789948800_to=1790035199_endingIncludedInRange=false.html"
@@ -800,7 +800,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 307660,
+   "байт": 307527,
    "меток времени": 792,
    "чем": "browser",
    "файл": "www.kolla.tv__api_es_channels_listWithPrograms_dat=2026-09-20.html"
@@ -818,7 +818,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 307660,
+   "байт": 307527,
    "меток времени": 792,
    "чем": "browser",
    "файл": "www.kolla.tv__api_es_channels_listWithPrograms_dat=2026-09-21.html"
@@ -836,8 +836,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 58957,
-   "меток времени": 99,
+   "байт": 59335,
+   "меток времени": 100,
    "чем": "requests",
    "файл": "diemaxtra.nova.bg__diemasport_schedule.html"
   },
@@ -854,7 +854,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 58218,
+   "байт": 58245,
    "меток времени": 97,
    "чем": "requests",
    "файл": "diemaxtra.nova.bg__diemasport2_schedule.html"
@@ -872,7 +872,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 66391,
+   "байт": 66411,
    "меток времени": 119,
    "чем": "requests",
    "файл": "diemaxtra.nova.bg__diemasport3_schedule.html"
@@ -890,8 +890,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 58957,
-   "меток времени": 99,
+   "байт": 59335,
+   "меток времени": 100,
    "чем": "requests",
    "файл": "diemaxtra.nova.bg__schedule.html"
   },
@@ -908,8 +908,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 77385,
-   "меток времени": 259,
+   "байт": 77592,
+   "меток времени": 261,
    "чем": "requests",
    "файл": "www.digisport.ro__program-tv_digisport-1.html"
   },
@@ -926,7 +926,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 56827,
+   "байт": 57173,
    "меток времени": 105,
    "чем": "requests",
    "файл": "www.digisport.ro__program-tv_digisport-2.html"
@@ -944,7 +944,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 80809,
+   "байт": 81171,
    "меток времени": 300,
    "чем": "requests",
    "файл": "www.digisport.ro__program-tv_digisport-3.html"
@@ -962,7 +962,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 58275,
+   "байт": 58567,
    "меток времени": 113,
    "чем": "requests",
    "файл": "www.digisport.ro__program-tv_digisport-4.html"
@@ -980,7 +980,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 124322,
+   "байт": 127124,
    "меток времени": 0,
    "чем": "requests",
    "файл": "prod95.dr-massive.com__api_schedules_channels=20875_20876_date=2026-09-20_hour=0_duration=24_device=web_browser_sub=Anonymous.html"
@@ -998,7 +998,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 120742,
+   "байт": 123353,
    "меток времени": 0,
    "чем": "requests",
    "файл": "prod95.dr-massive.com__api_schedules_channels=20875_20876_date=2026-09-21_hour=0_duration=24_device=web_browser_sub=Anonymous.html"
@@ -1016,7 +1016,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 122501,
+   "байт": 115603,
    "меток времени": 0,
    "чем": "requests",
    "файл": "epg.cyta.com.cy__api_mediacatalog_fetchLiveSports_language=en_offset=0_count=200.html"
@@ -1052,7 +1052,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 350952,
+   "байт": 350951,
    "меток времени": 147,
    "чем": "requests",
    "файл": "www.ert.gr__tv_program__dt=2026-09-21.html"
@@ -1086,12 +1086,12 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "не открылась",
-   "почему": "HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана",
-   "байт": 0,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 203493,
    "меток времени": 0,
-   "чем": "requests+browser",
-   "файл отказа": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=20_month=9_year=2026_channel=etv.otkaz.html"
+   "чем": "requests",
+   "файл": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=20_month=9_year=2026_channel=etv.html"
   },
   {
    "domain": "jupiter.err.ee",
@@ -1104,12 +1104,12 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "не открылась",
-   "почему": "HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана",
-   "байт": 0,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 194957,
    "меток времени": 0,
-   "чем": "requests+browser",
-   "файл отказа": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=21_month=9_year=2026_channel=etv.otkaz.html"
+   "чем": "requests",
+   "файл": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=21_month=9_year=2026_channel=etv.html"
   },
   {
    "domain": "jupiter.err.ee",
@@ -1122,12 +1122,12 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "не открылась",
-   "почему": "HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана",
-   "байт": 0,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 310551,
    "меток времени": 0,
-   "чем": "requests+browser",
-   "файл отказа": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=20_month=9_year=2026_channel=etvpluss.otkaz.html"
+   "чем": "requests",
+   "файл": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=20_month=9_year=2026_channel=etvpluss.html"
   },
   {
    "domain": "jupiter.err.ee",
@@ -1140,12 +1140,12 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "не открылась",
-   "почему": "HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана",
-   "байт": 0,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 265368,
    "меток времени": 0,
-   "чем": "requests+browser",
-   "файл отказа": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=21_month=9_year=2026_channel=etvpluss.otkaz.html"
+   "чем": "requests",
+   "файл": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=21_month=9_year=2026_channel=etvpluss.html"
   },
   {
    "domain": "jupiter.err.ee",
@@ -1158,12 +1158,12 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "не открылась",
-   "почему": "HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана",
-   "байт": 0,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 284201,
    "меток времени": 0,
-   "чем": "requests+browser",
-   "файл отказа": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=20_month=9_year=2026_channel=etv2.otkaz.html"
+   "чем": "requests",
+   "файл": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=20_month=9_year=2026_channel=etv2.html"
   },
   {
    "domain": "jupiter.err.ee",
@@ -1176,12 +1176,30 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "не открылась",
-   "почему": "HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана",
-   "байт": 0,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 392700,
    "меток времени": 0,
-   "чем": "requests+browser",
-   "файл отказа": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=21_month=9_year=2026_channel=etv2.otkaz.html"
+   "чем": "requests",
+   "файл": "services.err.ee__api_tvSchedule_getTimelineSchedule_day=21_month=9_year=2026_channel=etv2.html"
+  },
+  {
+   "domain": "liveonsat.com",
+   "channel": "",
+   "day": "2026-09-20",
+   "locale": "en-GB",
+   "url": "https://liveonsat.com/2day.php?start_dd=20&start_mm=09&start_yyyy=2026&end_dd=20&end_mm=09&end_yyyy=2026&postponed=0",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": null,
+   "headers": null,
+   "итог": "заглушка защиты",
+   "почему": "cloudflare turnstile",
+   "байт": 30617,
+   "меток времени": 0,
+   "чем": "browser",
+   "файл": "liveonsat.com__2day.php_start_dd=20_start_mm=09_start_yyyy=2026_end_dd=20_end_mm=09_end_yyyy=2026_postponed=0.html"
   },
   {
    "domain": "livesoccertv.com",
@@ -1194,10 +1212,10 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "расписание есть",
-   "почему": "",
-   "байт": 204154,
-   "меток времени": 11,
+   "итог": "заглушка защиты",
+   "почему": "cloudflare",
+   "байт": 200140,
+   "меток времени": 8,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_artsport1.html"
   },
@@ -1214,8 +1232,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 200772,
-   "меток времени": 9,
+   "байт": 198837,
+   "меток времени": 7,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_art-sport-2.html"
   },
@@ -1230,10 +1248,10 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "расписание есть",
-   "почему": "",
-   "байт": 202291,
-   "меток времени": 10,
+   "итог": "заглушка защиты",
+   "почему": "cloudflare",
+   "байт": 198744,
+   "меток времени": 7,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_art-sport-3.html"
   },
@@ -1250,8 +1268,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 200156,
-   "меток времени": 9,
+   "байт": 196607,
+   "меток времени": 6,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_art-sport-4.html"
   },
@@ -1268,8 +1286,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 197851,
-   "меток времени": 8,
+   "байт": 196093,
+   "меток времени": 6,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_art-sport-5.html"
   },
@@ -1286,8 +1304,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 196512,
-   "меток времени": 7,
+   "байт": 194754,
+   "меток времени": 5,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_art-sport-6.html"
   },
@@ -1302,10 +1320,10 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "расписание есть",
-   "почему": "",
-   "байт": 208672,
-   "меток времени": 11,
+   "итог": "заглушка защиты",
+   "почему": "cloudflare",
+   "байт": 206914,
+   "меток времени": 9,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_abu-dhabi-sports-1.html"
   },
@@ -1322,8 +1340,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 200375,
-   "меток времени": 7,
+   "байт": 198617,
+   "меток времени": 5,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_abu-dhabi-sports-2.html"
   },
@@ -1340,8 +1358,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 229014,
-   "меток времени": 30,
+   "байт": 225220,
+   "меток времени": 27,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_espn-2-netherlands.html"
   },
@@ -1358,8 +1376,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 225323,
-   "меток времени": 28,
+   "байт": 223165,
+   "меток времени": 26,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_espn-3-netherlands.html"
   },
@@ -1376,8 +1394,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 223467,
-   "меток времени": 27,
+   "байт": 221536,
+   "меток времени": 25,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_espn-4-netherlands.html"
   },
@@ -1394,8 +1412,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 239370,
-   "меток времени": 35,
+   "байт": 236614,
+   "меток времени": 33,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_espn-netherlands.html"
   },
@@ -1412,8 +1430,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 193613,
-   "меток времени": 6,
+   "байт": 191855,
+   "меток времени": 4,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_on-sport-egypt.html"
   },
@@ -1430,8 +1448,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 192106,
-   "меток времени": 6,
+   "байт": 190348,
+   "меток времени": 4,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_on-sport-2-egypt.html"
   },
@@ -1448,8 +1466,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 192054,
-   "меток времени": 6,
+   "байт": 190296,
+   "меток времени": 4,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_on-sport-max.html"
   },
@@ -1466,8 +1484,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 191999,
-   "меток времени": 6,
+   "байт": 190241,
+   "меток времени": 4,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_on-sport-plus.html"
   },
@@ -1484,8 +1502,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 202539,
-   "меток времени": 8,
+   "байт": 200578,
+   "меток времени": 6,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_supersport-digitalb.html"
   },
@@ -1500,10 +1518,10 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "расписание есть",
-   "почему": "",
-   "байт": 207874,
-   "меток времени": 11,
+   "итог": "заглушка защиты",
+   "почему": "cloudflare",
+   "байт": 204116,
+   "меток времени": 8,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_supersport-2-digitalb.html"
   },
@@ -1518,10 +1536,10 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "расписание есть",
-   "почему": "",
-   "байт": 207987,
-   "меток времени": 11,
+   "итог": "заглушка защиты",
+   "почему": "cloudflare",
+   "байт": 203988,
+   "меток времени": 8,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_supersport-3-digitalb.html"
   },
@@ -1538,8 +1556,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 204372,
-   "меток времени": 9,
+   "байт": 200457,
+   "меток времени": 6,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_supersport-4-digitalb.html"
   },
@@ -1556,8 +1574,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 200373,
-   "меток времени": 7,
+   "байт": 198162,
+   "меток времени": 5,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_supersport-5-digitalb.html"
   },
@@ -1574,8 +1592,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 199838,
-   "меток времени": 7,
+   "байт": 198080,
+   "меток времени": 5,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_supersport-6-digitalb.html"
   },
@@ -1592,8 +1610,8 @@
    "headers": null,
    "итог": "заглушка защиты",
    "почему": "cloudflare",
-   "байт": 199858,
-   "меток времени": 7,
+   "байт": 198100,
+   "меток времени": 5,
    "чем": "requests",
    "файл": "www.livesoccertv.com__channels_supersport-7-albania.html"
   },
@@ -1628,8 +1646,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 1259254,
-   "меток времени": 697,
+   "байт": 1323895,
+   "меток времени": 700,
    "чем": "requests",
    "файл": "mediaklikk.hu__musorujsag.html"
   },
@@ -1718,8 +1736,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 148379,
-   "меток времени": 8,
+   "байт": 148794,
+   "меток времени": 9,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_dazn3_2026-09-20.html"
   },
@@ -1754,7 +1772,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 148790,
+   "байт": 178031,
    "меток времени": 10,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_dazn4_2026-09-20.html"
@@ -2078,7 +2096,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 147472,
+   "байт": 176713,
    "меток времени": 7,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_mligs3_2026-09-20.html"
@@ -2150,8 +2168,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 149921,
-   "меток времени": 9,
+   "байт": 150618,
+   "меток времени": 10,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_arthur_2026-09-20.html"
   },
@@ -2348,7 +2366,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 145734,
+   "байт": 174975,
    "меток времени": 3,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_multi6_2026-09-21.html"
@@ -2366,7 +2384,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 186697,
+   "байт": 157456,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_mliga_2026-09-20.html"
@@ -2564,7 +2582,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 146299,
+   "байт": 175540,
    "меток времени": 4,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_mliguh_2026-09-21.html"
@@ -2690,7 +2708,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 175078,
+   "байт": 145837,
    "меток времени": 3,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_chap3_2026-09-20.html"
@@ -2726,7 +2744,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 145827,
+   "байт": 175068,
    "меток времени": 3,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_chap4_2026-09-20.html"
@@ -2744,7 +2762,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 145845,
+   "байт": 175086,
    "меток времени": 3,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_chap4_2026-09-21.html"
@@ -2762,8 +2780,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 157965,
-   "меток времени": 22,
+   "байт": 158661,
+   "меток времени": 23,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_vamosd_2026-09-20.html"
   },
@@ -2780,7 +2798,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 184703,
+   "байт": 155462,
    "меток времени": 18,
    "чем": "requests",
    "файл": "www.movistarplus.es__programacion-tv_vamosd_2026-09-21.html"
@@ -2906,8 +2924,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 133016,
-   "меток времени": 25,
+   "байт": 123506,
+   "меток времени": 20,
    "чем": "requests",
    "файл": "nova.bg__schedule_index_5_2026_09_20.html"
   },
@@ -2924,7 +2942,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 126316,
+   "байт": 127219,
    "меток времени": 22,
    "чем": "requests",
    "файл": "nova.bg__schedule_index_5_2026_09_21.html"
@@ -2942,8 +2960,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 132934,
-   "меток времени": 25,
+   "байт": 123445,
+   "меток времени": 20,
    "чем": "requests",
    "файл": "nova.bg__schedule_index_6_2026_09_20.html"
   },
@@ -2960,7 +2978,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 124298,
+   "байт": 125201,
    "меток времени": 21,
    "чем": "requests",
    "файл": "nova.bg__schedule_index_6_2026_09_21.html"
@@ -2978,8 +2996,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 126862,
-   "меток времени": 22,
+   "байт": 117290,
+   "меток времени": 17,
    "чем": "requests",
    "файл": "nova.bg__schedule_index_8_2026_09_20.html"
   },
@@ -2996,7 +3014,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 128548,
+   "байт": 129402,
    "меток времени": 23,
    "чем": "requests",
    "файл": "nova.bg__schedule_index_8_2026_09_21.html"
@@ -3014,8 +3032,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 126413,
-   "меток времени": 22,
+   "байт": 121539,
+   "меток времени": 19,
    "чем": "requests",
    "файл": "nova.bg__schedule_index_4_2026_09_20.html"
   },
@@ -3032,8 +3050,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 120028,
-   "меток времени": 19,
+   "байт": 118812,
+   "меток времени": 18,
    "чем": "requests",
    "файл": "nova.bg__schedule_index_4_2026_09_21.html"
   },
@@ -3050,7 +3068,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 48546,
+   "байт": 48072,
    "меток времени": 0,
    "чем": "requests",
    "файл": "npo.nl__start_api_domain_guide-channel_date=20-09-2026_guid=83dc1f25-a065-496c-9418-bd5c60dfb36d.html"
@@ -3068,7 +3086,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 89977,
+   "байт": 89771,
    "меток времени": 0,
    "чем": "requests",
    "файл": "npo.nl__start_api_domain_guide-channel_date=21-09-2026_guid=83dc1f25-a065-496c-9418-bd5c60dfb36d.html"
@@ -3086,7 +3104,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 47131,
+   "байт": 48694,
    "меток времени": 0,
    "чем": "requests",
    "файл": "npo.nl__start_api_domain_guide-channel_date=20-09-2026_guid=316951f5-ce06-41d2-ae24-44eb25368a61.html"
@@ -3104,7 +3122,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 53013,
+   "байт": 52239,
    "меток времени": 0,
    "чем": "requests",
    "файл": "npo.nl__start_api_domain_guide-channel_date=21-09-2026_guid=316951f5-ce06-41d2-ae24-44eb25368a61.html"
@@ -3122,7 +3140,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 102819,
+   "байт": 102136,
    "меток времени": 0,
    "чем": "requests",
    "файл": "npo.nl__start_api_domain_guide-channel_date=20-09-2026_guid=2042e1ee-0e79-4766-aea2-5b300d6839b2.html"
@@ -3248,8 +3266,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 3504822,
-   "меток времени": 757,
+   "байт": 3713737,
+   "меток времени": 803,
    "чем": "requests",
    "файл": "www.primaplay.ro__programtv.html"
   },
@@ -3464,7 +3482,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 337974,
+   "байт": 338996,
    "меток времени": 25,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-20_programme-canalplus-2.html.html"
@@ -3482,7 +3500,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 343213,
+   "байт": 344861,
    "меток времени": 26,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-21_programme-canalplus-2.html.html"
@@ -3500,7 +3518,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 366820,
+   "байт": 368325,
    "меток времени": 40,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-20_programme-france-2-6.html.html"
@@ -3518,7 +3536,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 397140,
+   "байт": 398239,
    "меток времени": 44,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-21_programme-france-2-6.html.html"
@@ -3536,7 +3554,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 477790,
+   "байт": 479362,
    "меток времени": 62,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-20_programme-france-3-7.html.html"
@@ -3554,7 +3572,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 400555,
+   "байт": 402520,
    "меток времени": 44,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-21_programme-france-3-7.html.html"
@@ -3572,7 +3590,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 515400,
+   "байт": 517374,
    "меток времени": 69,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-20_programme-france-4-8.html.html"
@@ -3590,7 +3608,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 582303,
+   "байт": 583880,
    "меток времени": 85,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-21_programme-france-4-8.html.html"
@@ -3608,7 +3626,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 454247,
+   "байт": 455818,
    "меток времени": 54,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-20_programme-france-5-9.html.html"
@@ -3626,7 +3644,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 487152,
+   "байт": 488901,
    "меток времени": 62,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-21_programme-france-5-9.html.html"
@@ -3644,7 +3662,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 282158,
+   "байт": 283737,
    "меток времени": 13,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-20_programme-lequipe-204.html.html"
@@ -3662,7 +3680,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 274483,
+   "байт": 276023,
    "меток времени": 11,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-21_programme-lequipe-204.html.html"
@@ -3680,7 +3698,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 322116,
+   "байт": 322822,
    "меток времени": 23,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-20_programme-tf1-19.html.html"
@@ -3698,7 +3716,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 344481,
+   "байт": 346053,
    "меток времени": 28,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-21_programme-tf1-19.html.html"
@@ -3716,7 +3734,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 289219,
+   "байт": 290766,
    "меток времени": 14,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-20_programme-w9-24.html.html"
@@ -3734,7 +3752,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 309290,
+   "байт": 309998,
    "меток времени": 19,
    "чем": "requests",
    "файл": "www.programme-tv.net__programme_chaine_2026-09-21_programme-w9-24.html.html"
@@ -3752,7 +3770,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 56101,
+   "байт": 60283,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.raiplay.it__palinsesto_app_rai-1_20-09-2026.json.html"
@@ -3788,7 +3806,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 45468,
+   "байт": 48862,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.raiplay.it__palinsesto_app_rai-2_20-09-2026.json.html"
@@ -3824,7 +3842,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 46535,
+   "байт": 48303,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.raiplay.it__palinsesto_app_rai-3_20-09-2026.json.html"
@@ -3842,7 +3860,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 53100,
+   "байт": 53118,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.raiplay.it__palinsesto_app_rai-3_21-09-2026.json.html"
@@ -3860,7 +3878,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 23234,
+   "байт": 26997,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.raiplay.it__palinsesto_app_rai-sport_20-09-2026.json.html"
@@ -4310,7 +4328,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 442181,
+   "байт": 439926,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_nitro_2026-09-20.html"
@@ -4328,7 +4346,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 491098,
+   "байт": 491892,
    "меток времени": 32,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_nitro_2026-09-21.html"
@@ -4346,7 +4364,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 447998,
+   "байт": 446278,
    "меток времени": 20,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_2026-09-20.html"
@@ -4364,7 +4382,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 439249,
+   "байт": 440409,
    "меток времени": 19,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_2026-09-21.html"
@@ -4382,7 +4400,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 508464,
+   "байт": 505028,
    "меток времени": 32,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_rtl-crime_2026-09-20.html"
@@ -4400,7 +4418,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 503506,
+   "байт": 502202,
    "меток времени": 32,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_rtl-crime_2026-09-21.html"
@@ -4418,7 +4436,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 481786,
+   "байт": 478287,
    "меток времени": 26,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_rtl-living_2026-09-20.html"
@@ -4436,7 +4454,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 494587,
+   "байт": 492901,
    "меток времени": 30,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_rtl-living_2026-09-21.html"
@@ -4454,7 +4472,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 530346,
+   "байт": 531518,
    "меток времени": 37,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_rtl-passion_2026-09-20.html"
@@ -4472,7 +4490,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 547947,
+   "байт": 547373,
    "меток времени": 40,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_rtl-passion_2026-09-21.html"
@@ -4490,7 +4508,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 487417,
+   "байт": 486945,
    "меток времени": 29,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_rtl-up_2026-09-20.html"
@@ -4508,7 +4526,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 483488,
+   "байт": 483129,
    "меток времени": 28,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_rtl-up_2026-09-21.html"
@@ -4526,7 +4544,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 451350,
+   "байт": 452599,
    "меток времени": 23,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_vox_2026-09-20.html"
@@ -4544,7 +4562,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 476409,
+   "байт": 476617,
    "меток времени": 26,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_vox_2026-09-21.html"
@@ -4562,7 +4580,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 500066,
+   "байт": 503329,
    "меток времени": 31,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_vox-up_2026-09-20.html"
@@ -4580,7 +4598,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 474279,
+   "байт": 473693,
    "меток времени": 26,
    "чем": "requests",
    "файл": "www.rtl.de__fernsehprogramm_vox-up_2026-09-21.html"
@@ -4598,7 +4616,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 24555,
+   "байт": 24670,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.rtp.pt__EPG_json_rtp-channels-page_list-grid_tv_3_2026-09-20.html"
@@ -4634,7 +4652,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 9281,
+   "байт": 9396,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.rtp.pt__EPG_json_rtp-channels-page_list-grid_tv_4_2026-09-20.html"
@@ -4670,7 +4688,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 19197,
+   "байт": 19674,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.rtp.pt__EPG_json_rtp-channels-page_list-grid_tv_5_2026-09-20.html"
@@ -4706,7 +4724,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 20062,
+   "байт": 20412,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.rtp.pt__EPG_json_rtp-channels-page_list-grid_tv_6_2026-09-20.html"
@@ -4742,7 +4760,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 17645,
+   "байт": 17995,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.rtp.pt__EPG_json_rtp-channels-page_list-grid_tv_1_2026-09-20.html"
@@ -4814,7 +4832,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 139616,
+   "байт": 140001,
    "меток времени": 7,
    "чем": "requests",
    "файл": "rts.rs__tv_rts3_broadcast.html.html"
@@ -4832,8 +4850,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 145216,
-   "меток времени": 39,
+   "байт": 140380,
+   "меток времени": 32,
    "чем": "requests",
    "файл": "www.skysports.com__watch_sport-on-sky.html"
   },
@@ -4850,7 +4868,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 276283,
+   "байт": 276906,
    "меток времени": 197,
    "чем": "browser",
    "файл": "www.sport1tv.cz__programovy-pruvodce.html"
@@ -4868,7 +4886,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 245784,
+   "байт": 245788,
    "меток времени": 155,
    "чем": "browser",
    "файл": "www.sport1tv.hu__tv-musor.html"
@@ -4886,7 +4904,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 106290,
+   "байт": 118008,
    "меток времени": 0,
    "чем": "requests",
    "файл": "sporteventz.com__index.php_option=com_magictable_language_code=en_table=1_accesskey=_WARMKEY__se_date=_se_module=_se_id=_Itemid=211_clien.html"
@@ -4904,7 +4922,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 333418,
+   "байт": 330423,
    "меток времени": 97,
    "чем": "requests",
    "файл": "www.sports.kz__tv.html"
@@ -4922,7 +4940,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 1662483,
+   "байт": 1663717,
    "меток времени": 26,
    "чем": "requests",
    "файл": "www.sporttv.pt__guia.html"
@@ -4940,7 +4958,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 170969,
+   "байт": 170722,
    "меток времени": 0,
    "чем": "requests",
    "файл": "il.srgssr.ch__integrationlayer_2.0_srf_programGuide_tv_byDate_2026-09-20.json.html"
@@ -4958,7 +4976,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 181111,
+   "байт": 180948,
    "меток времени": 0,
    "чем": "requests",
    "файл": "il.srgssr.ch__integrationlayer_2.0_srf_programGuide_tv_byDate_2026-09-21.json.html"
@@ -4976,7 +4994,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 180882,
+   "байт": 180506,
    "меток времени": 46,
    "чем": "browser",
    "файл": "ssport.tv__yayin-akisi.html"
@@ -4994,7 +5012,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32415,
+   "байт": 33293,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=1.html"
@@ -5012,7 +5030,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32550,
+   "байт": 32318,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=2.html"
@@ -5030,7 +5048,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32565,
+   "байт": 31931,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=3.html"
@@ -5048,7 +5066,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32706,
+   "байт": 32511,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=4.html"
@@ -5066,7 +5084,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32070,
+   "байт": 32432,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=5.html"
@@ -5084,7 +5102,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32292,
+   "байт": 32606,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=6.html"
@@ -5102,7 +5120,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 33130,
+   "байт": 32388,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=7.html"
@@ -5120,7 +5138,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32539,
+   "байт": 32988,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=8.html"
@@ -5138,7 +5156,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32806,
+   "байт": 32252,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=9.html"
@@ -5156,7 +5174,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32909,
+   "байт": 32412,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.teleman.pl__sport_live=1_stations=all_page=10.html"
@@ -5174,7 +5192,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 1568138,
+   "байт": 1570738,
    "меток времени": 2022,
    "чем": "requests",
    "файл": "www.trt.net.tr__yayin-akisi.html"
@@ -5192,7 +5210,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 114020,
+   "байт": 114042,
    "меток времени": 43,
    "чем": "browser",
    "файл": "www.trtavaz.com.tr__yayin-akisi_2026-09-20.html"
@@ -5210,7 +5228,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 130249,
+   "байт": 130387,
    "меток времени": 59,
    "чем": "browser",
    "файл": "www.trtavaz.com.tr__yayin-akisi_2026-09-21.html"
@@ -5228,8 +5246,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 305469,
-   "меток времени": 22,
+   "байт": 280811,
+   "меток времени": 14,
    "чем": "requests",
    "файл": "www.trtspor.com.tr__yayin-akisi_trt-spor.html"
   },
@@ -5246,8 +5264,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 532271,
-   "меток времени": 220,
+   "байт": 467035,
+   "меток времени": 153,
    "чем": "requests",
    "файл": "tv-program.aktuality.sk__sportove-stanice.html"
   },
@@ -5264,7 +5282,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 101397,
+   "байт": 101001,
    "меток времени": 40,
    "чем": "requests",
    "файл": "tv.orf.at__program_orf1_index.html.html"
@@ -5282,7 +5300,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 115283,
+   "байт": 114865,
    "меток времени": 51,
    "чем": "requests",
    "файл": "tv.orf.at__program_orf2_index.html.html"
@@ -5300,7 +5318,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 65619,
+   "байт": 65465,
    "меток времени": 20,
    "чем": "requests",
    "файл": "tv.orf.at__program_orf3_index.html.html"
@@ -5318,7 +5336,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 140395,
+   "байт": 139867,
    "меток времени": 64,
    "чем": "requests",
    "файл": "tv.orf.at__program_kids_index.html.html"
@@ -5336,7 +5354,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 83619,
+   "байт": 82398,
    "меток времени": 31,
    "чем": "requests",
    "файл": "tv.orf.at__program_orfs_index.html.html"
@@ -5354,7 +5372,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 10845,
+   "байт": 9614,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api.sport1.info__v3_de_tv_epg.html"
@@ -5372,7 +5390,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 1531530,
+   "байт": 1531391,
    "меток времени": 0,
    "чем": "requests",
    "файл": "tv2no-epg-api.public.tv2.no__epg_days_2026_09_20.html"
@@ -5390,7 +5408,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 1596751,
+   "байт": 1602786,
    "меток времени": 0,
    "чем": "requests",
    "файл": "tv2no-epg-api.public.tv2.no__epg_days_2026_09_21.html"
@@ -5408,7 +5426,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 89958,
+   "байт": 90008,
    "меток времени": 6,
    "чем": "requests",
    "файл": "www.tv8.com.tr__yayin-akisi_20-09-2026.html"
@@ -5426,7 +5444,7 @@
    "headers": null,
    "итог": "пусто",
    "почему": "времени на странице нет",
-   "байт": 85659,
+   "байт": 85686,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.tv8.com.tr__yayin-akisi_21-09-2026.html"
@@ -5462,7 +5480,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 465756,
+   "байт": 465283,
    "меток времени": 17,
    "чем": "requests",
    "файл": "www.tvarenasport.com__tv-scheme.html"
@@ -5478,11 +5496,12 @@
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "не открылась",
-   "почему": "ConnectTimeout: HTTPSConnectionPool(host='tvarenasport.hr', port=443): Max retries exceeded with url: /wp-content/tv-program.php (Caused by ConnectTimeoutError(<HTTPSConnection(host='tvarenasport.hr', port=443) at 0x7fe230a54470>, 'Connection to tvarenasport.hr timed out. (connect timeout=30)')); браузер: браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"https://tvarenasport.hr/wp-content/tv-program.php\", waiting until \"domcontentloaded\"\n",
-   "байт": 0,
-   "меток времени": 0,
-   "чем": "requests+browser"
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 289925,
+   "меток времени": 324,
+   "чем": "requests",
+   "файл": "tvarenasport.hr__wp-content_tv-program.php.html"
   },
   {
    "domain": "tvarenasport.si",
@@ -5497,7 +5516,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 120907,
+   "байт": 120911,
    "меток времени": 74,
    "чем": "requests",
    "файл": "www.tvarenasport.si__tv-spored.html"
@@ -5623,7 +5642,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 27182,
+   "байт": 27218,
    "меток времени": 10,
    "чем": "requests",
    "файл": "unian.tv__20.09.2026.html"
@@ -5659,8 +5678,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 106250,
-   "меток времени": 2,
+   "байт": 106195,
+   "меток времени": 5,
    "чем": "requests",
    "файл": "www.vsetv.com__schedule_channel_23_day_2026-09-20.html.html"
   },
@@ -5677,8 +5696,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 106250,
-   "меток времени": 2,
+   "байт": 102613,
+   "меток времени": 1,
    "чем": "requests",
    "файл": "www.vsetv.com__schedule_channel_23_day_2026-09-21.html.html"
   },
@@ -5695,8 +5714,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 105465,
-   "меток времени": 6,
+   "байт": 105130,
+   "меток времени": 16,
    "чем": "requests",
    "файл": "www.vsetv.com__schedule_channel_1952_day_2026-09-20.html.html"
   },
@@ -5713,8 +5732,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 105465,
-   "меток времени": 6,
+   "байт": 100663,
+   "меток времени": 1,
    "чем": "requests",
    "файл": "www.vsetv.com__schedule_channel_1952_day_2026-09-21.html.html"
   },
@@ -5767,8 +5786,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 162394,
-   "меток времени": 529,
+   "байт": 193538,
+   "меток времени": 525,
    "чем": "requests",
    "файл": "ntvplus.tv__tv_ajax_tv_genre=sport_date=20.09.2026_tz=0_search=_channel=_offset=0.html"
   },
@@ -5803,8 +5822,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 233958,
-   "меток времени": 20,
+   "байт": 229308,
+   "меток времени": 13,
    "чем": "requests",
    "файл": "tring.al__kalendari-sportiv.html"
   },
@@ -5821,10 +5840,112 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 148955,
-   "меток времени": 282,
+   "байт": 148570,
+   "меток времени": 281,
    "чем": "requests",
    "файл": "www.rtrs.tv__program_raspored.php_c=1.html"
+  },
+  {
+   "domain": "oneplay.cz",
+   "channel": "",
+   "day": "2026-09-20",
+   "locale": "en-GB",
+   "url": "https://http.cms.jyxo.cz/api/v1.13/epg.display?day=2026-09-20",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "deviceInfo": {
+     "deviceType": "web",
+     "appVersion": "R13.26",
+     "deviceManufacturer": "Chrome",
+     "deviceOs": "Windows"
+    },
+    "capabilities": {},
+    "payload": {
+     "criteria": {
+      "viewport": {
+       "schema": "EpgViewportAbsolute",
+       "channelRange": {
+        "from": 0,
+        "to": 52
+       },
+       "timeRange": {
+        "from": "2026-09-20T00:00:00.000Z",
+        "to": "2026-09-20T23:59:59.999Z"
+       }
+      }
+     },
+     "requestedOutput": {
+      "channelSchedule": true
+     }
+    },
+    "context": {
+     "requestId": "6f1c2a4e-3b7d-4e19-9a52-0d8e7c1b5a36",
+     "clientId": "b2d9e4f1-7a3c-4c58-8e61-2f5a9d0c7b43"
+    }
+   },
+   "headers": {
+    "Origin": "https://www.oneplay.cz",
+    "Referer": "https://www.oneplay.cz/program"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1149910,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "http.cms.jyxo.cz__api_v1.13_epg.display_day=2026-09-20__post-7263319d.html"
+  },
+  {
+   "domain": "oneplay.cz",
+   "channel": "",
+   "day": "2026-09-21",
+   "locale": "en-GB",
+   "url": "https://http.cms.jyxo.cz/api/v1.13/epg.display?day=2026-09-21",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "deviceInfo": {
+     "deviceType": "web",
+     "appVersion": "R13.26",
+     "deviceManufacturer": "Chrome",
+     "deviceOs": "Windows"
+    },
+    "capabilities": {},
+    "payload": {
+     "criteria": {
+      "viewport": {
+       "schema": "EpgViewportAbsolute",
+       "channelRange": {
+        "from": 0,
+        "to": 52
+       },
+       "timeRange": {
+        "from": "2026-09-21T00:00:00.000Z",
+        "to": "2026-09-21T23:59:59.999Z"
+       }
+      }
+     },
+     "requestedOutput": {
+      "channelSchedule": true
+     }
+    },
+    "context": {
+     "requestId": "6f1c2a4e-3b7d-4e19-9a52-0d8e7c1b5a36",
+     "clientId": "b2d9e4f1-7a3c-4c58-8e61-2f5a9d0c7b43"
+    }
+   },
+   "headers": {
+    "Origin": "https://www.oneplay.cz",
+    "Referer": "https://www.oneplay.cz/program"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1167669,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "http.cms.jyxo.cz__api_v1.13_epg.display_day=2026-09-21__post-c056759b.html"
   },
   {
    "domain": "oneplaysport.cz",
@@ -5839,8 +5960,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 149555,
-   "меток времени": 366,
+   "байт": 117236,
+   "меток времени": 220,
    "чем": "requests",
    "файл": "oneplaysport.cz__program_date=2026-09-20.html"
   },
@@ -5857,7 +5978,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 149265,
+   "байт": 149619,
    "меток времени": 366,
    "чем": "requests",
    "файл": "oneplaysport.cz__program_date=2026-09-21.html"
@@ -5875,7 +5996,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 108575,
+   "байт": 109164,
    "меток времени": 35,
    "чем": "browser",
    "файл": "rtcg.me__tv_programska-sema.html_broadcastId=177_typeId=0_day=0.html"
@@ -5893,7 +6014,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 110962,
+   "байт": 111397,
    "меток времени": 50,
    "чем": "browser",
    "файл": "rtcg.me__tv_programska-sema.html_broadcastId=177_typeId=0_day=1.html"
@@ -5911,7 +6032,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 108577,
+   "байт": 108405,
    "меток времени": 32,
    "чем": "browser",
    "файл": "rtcg.me__tv_programska-sema.html_broadcastId=178_typeId=0_day=0.html"
@@ -5929,7 +6050,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 108300,
+   "байт": 108288,
    "меток времени": 32,
    "чем": "browser",
    "файл": "rtcg.me__tv_programska-sema.html_broadcastId=178_typeId=0_day=1.html"
@@ -5947,7 +6068,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 106694,
+   "байт": 106787,
    "меток времени": 24,
    "чем": "browser",
    "файл": "rtcg.me__tv_programska-sema.html_broadcastId=978_typeId=0_day=0.html"
@@ -5965,7 +6086,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 109064,
+   "байт": 109170,
    "меток времени": 39,
    "чем": "browser",
    "файл": "rtcg.me__tv_programska-sema.html_broadcastId=978_typeId=0_day=1.html"
@@ -5983,7 +6104,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 111025,
+   "байт": 111165,
    "меток времени": 46,
    "чем": "browser",
    "файл": "rtcg.me__tv_programska-sema.html_broadcastId=179_typeId=0_day=0.html"
@@ -6001,7 +6122,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 112608,
+   "байт": 113059,
    "меток времени": 56,
    "чем": "browser",
    "файл": "rtcg.me__tv_programska-sema.html_broadcastId=179_typeId=0_day=1.html"
@@ -6019,8 +6140,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 14772,
-   "меток времени": 23,
+   "байт": 10288,
+   "меток времени": 15,
    "чем": "requests",
    "файл": "www.sport5.co.il__Ajax_GetBroadcastSheetData.aspx_date=20_2F09_2F2026.html"
   },
@@ -6091,7 +6212,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 82197,
+   "байт": 82791,
    "меток времени": 15,
    "чем": "requests",
    "файл": "www.skai.gr__tv_programma_2026-09-20.html"
@@ -6145,7 +6266,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 30150,
+   "байт": 30120,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-94_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6181,7 +6302,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 25508,
+   "байт": 25496,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-37_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6199,7 +6320,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 23319,
+   "байт": 23341,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-37_i_datetime_from=2026-09-21_i_datetime_to=2026-09-21.html"
@@ -6217,7 +6338,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 26653,
+   "байт": 26635,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-290_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6253,7 +6374,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 7018,
+   "байт": 7015,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-320_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6289,7 +6410,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 17032,
+   "байт": 17023,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-375_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6325,7 +6446,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 20095,
+   "байт": 20077,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-90_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6361,7 +6482,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 16096,
+   "байт": 16087,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-44_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6397,7 +6518,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 35113,
+   "байт": 35083,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-305_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6433,7 +6554,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 32565,
+   "байт": 32535,
    "меток времени": 0,
    "чем": "requests",
    "файл": "port.hu__tvapi_channel_id_5B_5D=tvchannel-362_i_datetime_from=2026-09-20_i_datetime_to=2026-09-20.html"
@@ -6791,7 +6912,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 5971,
+   "байт": 6172,
    "меток времени": 20,
    "чем": "requests",
    "файл": "tv24.co.uk__x_channel_tnt-sports-1-hd_0_2026-09-20.html"
@@ -6827,7 +6948,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 5353,
+   "байт": 5662,
    "меток времени": 18,
    "чем": "requests",
    "файл": "tv24.co.uk__x_channel_tnt-sports-2-hd_0_2026-09-20.html"
@@ -6863,7 +6984,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 5002,
+   "байт": 5231,
    "меток времени": 18,
    "чем": "requests",
    "файл": "tv24.co.uk__x_channel_tnt-sports-3-hd_0_2026-09-20.html"
@@ -6899,7 +7020,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 5775,
+   "байт": 5933,
    "меток времени": 18,
    "чем": "requests",
    "файл": "tv24.co.uk__x_channel_tnt-sports-4-hd_0_2026-09-20.html"
@@ -6935,7 +7056,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 1533101,
+   "байт": 1533105,
    "меток времени": 365,
    "чем": "requests",
    "файл": "www.novasports.gr__tv-program.html"
@@ -6953,7 +7074,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 294464,
+   "байт": 294833,
    "меток времени": 63,
    "чем": "browser",
    "файл": "news.by__programma-tv_belarus-5.html"
@@ -6971,8 +7092,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 141360,
-   "меток времени": 26,
+   "байт": 141911,
+   "меток времени": 23,
    "чем": "browser",
    "файл": "www.onesoccer.ca__schedule.html"
   },
@@ -6989,8 +7110,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 87718,
-   "меток времени": 14,
+   "байт": 89209,
+   "меток времени": 15,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_fox-soccer-plus_7538_2026-09-20.html"
   },
@@ -7007,8 +7128,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 88989,
-   "меток времени": 15,
+   "байт": 87461,
+   "меток времени": 14,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_fox-soccer-plus_7538_2026-09-21.html"
   },
@@ -7061,8 +7182,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 100828,
-   "меток времени": 23,
+   "байт": 98104,
+   "меток времени": 21,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_tsn2-hd_5920_2026-09-20.html"
   },
@@ -7079,7 +7200,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 115428,
+   "байт": 115392,
    "меток времени": 34,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_tsn2-hd_5920_2026-09-21.html"
@@ -7097,7 +7218,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 95116,
+   "байт": 95117,
    "меток времени": 19,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_tsn3-hd_13768_2026-09-20.html"
@@ -7115,7 +7236,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 102489,
+   "байт": 102488,
    "меток времени": 24,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_tsn3-hd_13768_2026-09-21.html"
@@ -7133,7 +7254,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 101396,
+   "байт": 101447,
    "меток времени": 23,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_tsn4-hd_13769_2026-09-20.html"
@@ -7151,7 +7272,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 96047,
+   "байт": 96049,
    "меток времени": 20,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_tsn4-hd_13769_2026-09-21.html"
@@ -7169,7 +7290,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 98009,
+   "байт": 98059,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_tsn5-hd_13770_2026-09-20.html"
@@ -7187,7 +7308,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 97443,
+   "байт": 97445,
    "меток времени": 21,
    "чем": "requests",
    "файл": "www.tvpassport.com__tv-listings_stations_tsn5-hd_13770_2026-09-21.html"
@@ -7277,8 +7398,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 19641,
-   "меток времени": 80,
+   "байт": 20631,
+   "меток времени": 83,
    "чем": "requests",
    "файл": "www.flashscore.mobi__basketball__d=0.html"
   },
@@ -7367,8 +7488,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 17925,
-   "меток времени": 66,
+   "байт": 18060,
+   "меток времени": 67,
    "чем": "requests",
    "файл": "www.flashscore.mobi__basketball__d=5.html"
   },
@@ -7385,8 +7506,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 35742,
-   "меток времени": 217,
+   "байт": 35980,
+   "меток времени": 219,
    "чем": "requests",
    "файл": "www.flashscore.mobi__basketball__d=6.html"
   },
@@ -7403,8 +7524,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 207672,
-   "меток времени": 1363,
+   "байт": 214486,
+   "меток времени": 1124,
    "чем": "requests",
    "файл": "www.flashscore.mobi___d=0.html"
   },
@@ -7421,8 +7542,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 44058,
-   "меток времени": 199,
+   "байт": 45240,
+   "меток времени": 201,
    "чем": "requests",
    "файл": "www.flashscore.mobi___d=1.html"
   },
@@ -7439,8 +7560,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 40191,
-   "меток времени": 210,
+   "байт": 40084,
+   "меток времени": 209,
    "чем": "requests",
    "файл": "www.flashscore.mobi___d=2.html"
   },
@@ -7457,7 +7578,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 45371,
+   "байт": 45401,
    "меток времени": 239,
    "чем": "requests",
    "файл": "www.flashscore.mobi___d=3.html"
@@ -7475,8 +7596,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 27346,
-   "меток времени": 113,
+   "байт": 27463,
+   "меток времени": 114,
    "чем": "requests",
    "файл": "www.flashscore.mobi___d=4.html"
   },
@@ -7493,7 +7614,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 58097,
+   "байт": 59249,
    "меток времени": 286,
    "чем": "requests",
    "файл": "www.flashscore.mobi___d=5.html"
@@ -7511,7 +7632,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 209004,
+   "байт": 209009,
    "меток времени": 1403,
    "чем": "requests",
    "файл": "www.flashscore.mobi___d=6.html"
@@ -7529,8 +7650,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 37116,
-   "меток времени": 195,
+   "байт": 39804,
+   "меток времени": 188,
    "чем": "requests",
    "файл": "www.flashscore.mobi__tennis__d=0.html"
   },
@@ -7547,8 +7668,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 21003,
-   "меток времени": 88,
+   "байт": 25125,
+   "меток времени": 113,
    "чем": "requests",
    "файл": "www.flashscore.mobi__tennis__d=1.html"
   },
@@ -7565,8 +7686,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 16497,
-   "меток времени": 49,
+   "байт": 22125,
+   "меток времени": 90,
    "чем": "requests",
    "файл": "www.flashscore.mobi__tennis__d=2.html"
   },
@@ -7655,8 +7776,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 17957,
-   "меток времени": 80,
+   "байт": 18995,
+   "меток времени": 82,
    "чем": "requests",
    "файл": "m.flashscore.gr__basketball__d=0.html"
   },
@@ -7745,8 +7866,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 16116,
-   "меток времени": 66,
+   "байт": 16254,
+   "меток времени": 67,
    "чем": "requests",
    "файл": "m.flashscore.gr__basketball__d=5.html"
   },
@@ -7763,8 +7884,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 33837,
-   "меток времени": 215,
+   "байт": 34081,
+   "меток времени": 217,
    "чем": "requests",
    "файл": "m.flashscore.gr__basketball__d=6.html"
   },
@@ -7781,8 +7902,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 210830,
-   "меток времени": 1376,
+   "байт": 211946,
+   "меток времени": 1133,
    "чем": "requests",
    "файл": "m.flashscore.gr___d=0.html"
   },
@@ -7799,8 +7920,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 45552,
-   "меток времени": 213,
+   "байт": 45970,
+   "меток времени": 215,
    "чем": "requests",
    "файл": "m.flashscore.gr___d=1.html"
   },
@@ -7817,8 +7938,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 39384,
-   "меток времени": 211,
+   "байт": 39277,
+   "меток времени": 210,
    "чем": "requests",
    "файл": "m.flashscore.gr___d=2.html"
   },
@@ -7835,7 +7956,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 42534,
+   "байт": 42559,
    "меток времени": 225,
    "чем": "requests",
    "файл": "m.flashscore.gr___d=3.html"
@@ -7853,8 +7974,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 26175,
-   "меток времени": 114,
+   "байт": 26299,
+   "меток времени": 115,
    "чем": "requests",
    "файл": "m.flashscore.gr___d=4.html"
   },
@@ -7889,7 +8010,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 208971,
+   "байт": 208968,
    "меток времени": 1392,
    "чем": "requests",
    "файл": "m.flashscore.gr___d=6.html"
@@ -7907,8 +8028,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 206108,
-   "меток времени": 1376,
+   "байт": 207175,
+   "меток времени": 1132,
    "чем": "requests",
    "файл": "m.flashscore.bg___d=0.html"
   },
@@ -7925,8 +8046,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 44629,
-   "меток времени": 213,
+   "байт": 45033,
+   "меток времени": 215,
    "чем": "requests",
    "файл": "m.flashscore.bg___d=1.html"
   },
@@ -7943,8 +8064,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 38293,
-   "меток времени": 211,
+   "байт": 38188,
+   "меток времени": 210,
    "чем": "requests",
    "файл": "m.flashscore.bg___d=2.html"
   },
@@ -7961,7 +8082,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 41673,
+   "байт": 41696,
    "меток времени": 225,
    "чем": "requests",
    "файл": "m.flashscore.bg___d=3.html"
@@ -7979,8 +8100,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 25882,
-   "меток времени": 114,
+   "байт": 26002,
+   "меток времени": 115,
    "чем": "requests",
    "файл": "m.flashscore.bg___d=4.html"
   },
@@ -8015,7 +8136,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 204239,
+   "байт": 204243,
    "меток времени": 1392,
    "чем": "requests",
    "файл": "m.flashscore.bg___d=6.html"
@@ -8033,8 +8154,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 209141,
-   "меток времени": 1363,
+   "байт": 215934,
+   "меток времени": 1121,
    "чем": "requests",
    "файл": "m.eredmenyek.com___d=0.html"
   },
@@ -8051,8 +8172,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 42554,
-   "меток времени": 199,
+   "байт": 42926,
+   "меток времени": 201,
    "чем": "requests",
    "файл": "m.eredmenyek.com___d=1.html"
   },
@@ -8069,8 +8190,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 38758,
-   "меток времени": 210,
+   "байт": 38648,
+   "меток времени": 209,
    "чем": "requests",
    "файл": "m.eredmenyek.com___d=2.html"
   },
@@ -8087,7 +8208,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 44046,
+   "байт": 44071,
    "меток времени": 239,
    "чем": "requests",
    "файл": "m.eredmenyek.com___d=3.html"
@@ -8105,8 +8226,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 25716,
-   "меток времени": 113,
+   "байт": 25836,
+   "меток времени": 114,
    "чем": "requests",
    "файл": "m.eredmenyek.com___d=4.html"
   },
@@ -8141,7 +8262,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 210724,
+   "байт": 210729,
    "меток времени": 1403,
    "чем": "requests",
    "файл": "m.eredmenyek.com___d=6.html"
@@ -8159,8 +8280,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 205878,
-   "меток времени": 1376,
+   "байт": 206941,
+   "меток времени": 1130,
    "чем": "requests",
    "файл": "m.flashscore.ro___d=0.html"
   },
@@ -8177,8 +8298,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 17305,
-   "меток времени": 80,
+   "байт": 18274,
+   "меток времени": 81,
    "чем": "requests",
    "файл": "m.flashscore.com.tr__basketbol__d=0.html"
   },
@@ -8195,8 +8316,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 205597,
-   "меток времени": 1376,
+   "байт": 212296,
+   "меток времени": 1132,
    "чем": "requests",
    "файл": "m.flashscore.com.tr___d=0.html"
   },
@@ -8213,8 +8334,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 202157,
-   "меток времени": 1363,
+   "байт": 203466,
+   "меток времени": 1119,
    "чем": "requests",
    "файл": "m.flashscore.pl___d=0.html"
   },
@@ -8231,8 +8352,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 19194,
-   "меток времени": 96,
+   "байт": 20327,
+   "меток времени": 98,
    "чем": "requests",
    "файл": "m.flashscore.ru__basketball__d=0.html"
   },
@@ -8249,8 +8370,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 219773,
-   "меток времени": 1477,
+   "байт": 221005,
+   "меток времени": 1233,
    "чем": "requests",
    "файл": "m.flashscore.ru___d=0.html"
   },
@@ -8267,8 +8388,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 205928,
-   "меток времени": 1376,
+   "байт": 206983,
+   "меток времени": 1130,
    "чем": "requests",
    "файл": "m.flashscore.ua___d=0.html"
   },
@@ -8285,8 +8406,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 203577,
-   "меток времени": 1363,
+   "байт": 204881,
+   "меток времени": 1119,
    "чем": "requests",
    "файл": "m.livesport.cz___d=0.html"
   },
@@ -8303,8 +8424,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 17869,
-   "меток времени": 80,
+   "байт": 18915,
+   "меток времени": 82,
    "чем": "requests",
    "файл": "m.rezultati.com__kosarka__d=0.html"
   },
@@ -8393,8 +8514,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 16088,
-   "меток времени": 66,
+   "байт": 16230,
+   "меток времени": 67,
    "чем": "requests",
    "файл": "m.rezultati.com__kosarka__d=5.html"
   },
@@ -8411,8 +8532,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 34329,
-   "меток времени": 217,
+   "байт": 34577,
+   "меток времени": 219,
    "чем": "requests",
    "файл": "m.rezultati.com__kosarka__d=6.html"
   },
@@ -8429,8 +8550,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 208389,
-   "меток времени": 1363,
+   "байт": 209691,
+   "меток времени": 1119,
    "чем": "requests",
    "файл": "m.rezultati.com___d=0.html"
   },
@@ -8447,8 +8568,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 42510,
-   "меток времени": 199,
+   "байт": 42890,
+   "меток времени": 201,
    "чем": "requests",
    "файл": "m.rezultati.com___d=1.html"
   },
@@ -8465,8 +8586,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 38808,
-   "меток времени": 210,
+   "байт": 38698,
+   "меток времени": 209,
    "чем": "requests",
    "файл": "m.rezultati.com___d=2.html"
   },
@@ -8483,7 +8604,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 44056,
+   "байт": 44087,
    "меток времени": 239,
    "чем": "requests",
    "файл": "m.rezultati.com___d=3.html"
@@ -8501,8 +8622,8 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 25718,
-   "меток времени": 113,
+   "байт": 25838,
+   "меток времени": 114,
    "чем": "requests",
    "файл": "m.rezultati.com___d=4.html"
   },
@@ -8537,7 +8658,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 210129,
+   "байт": 210134,
    "меток времени": 1403,
    "чем": "requests",
    "файл": "m.rezultati.com___d=6.html"
@@ -8555,7 +8676,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 254540,
+   "байт": 225283,
    "меток времени": 37,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_btv_d=2026-09-20.html"
@@ -8717,7 +8838,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 204343,
+   "байт": 233611,
    "меток времени": 24,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_go3_sport_2_d=2026-09-21.html"
@@ -8789,7 +8910,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 204073,
+   "байт": 233345,
    "меток времени": 24,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_go3_sport_open_d=2026-09-21.html"
@@ -8843,7 +8964,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 268997,
+   "байт": 298253,
    "меток времени": 62,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_lrt_d=2026-09-20.html"
@@ -8951,7 +9072,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 228598,
+   "байт": 199338,
    "меток времени": 24,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_sport_1_d=2026-09-20.html"
@@ -9005,7 +9126,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 248456,
+   "байт": 277712,
    "меток времени": 48,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_tv3_d=2026-09-21.html"
@@ -9059,7 +9180,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 253206,
+   "байт": 282462,
    "меток времени": 48,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_tv6_d=2026-09-20.html"
@@ -9095,7 +9216,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 293041,
+   "байт": 263785,
    "меток времени": 52,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_tv8_d=2026-09-20.html"
@@ -9113,7 +9234,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 272978,
+   "байт": 302234,
    "меток времени": 52,
    "чем": "requests",
    "файл": "www.tv3.lt__programos_tv8_d=2026-09-21.html"
@@ -9131,7 +9252,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 119690,
+   "байт": 134299,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=556_fromTime=1789862400000_toTime=1790467199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -9167,7 +9288,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 117232,
+   "байт": 119782,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=923_fromTime=1789862400000_toTime=1790467199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -9185,7 +9306,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 132864,
+   "байт": 142829,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=924_fromTime=1789862400000_toTime=1790467199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -9203,7 +9324,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 167535,
+   "байт": 147005,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=928_fromTime=1789862400000_toTime=1790467199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -9221,7 +9342,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 122422,
+   "байт": 122321,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=728_fromTime=1789862400000_toTime=1790467199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -9239,7 +9360,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 122239,
+   "байт": 132081,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=927_fromTime=1789862400000_toTime=1790467199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -9257,7 +9378,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 181148,
+   "байт": 175381,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1072_fromTime=1789862400000_toTime=1790467199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -9275,7 +9396,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 200624,
+   "байт": 198410,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1073_fromTime=1789862400000_toTime=1790467199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -9301,14 +9422,14 @@
  ],
  "дозор": {
   "liveonsat.com": {
-   "когда": "2026-09-19 13:43",
+   "когда": "2026-09-20 13:44",
    "итог": "заглушка защиты"
   }
  },
  "оценка": {
   "код": 0,
   "строки": [
-   "обход в норме: не открылись 21 из 512 страниц (4%), сайтов без удачи 2 из 88 (2%)"
+   "обход в норме: не открылись 19 из 514 страниц (4%), сайтов без удачи 0 из 89 (0%)"
   ],
   "строгая": true
  }

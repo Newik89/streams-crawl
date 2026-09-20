@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 2 суток. Запросов: 512. Заняло 1777 с.
+Режим: полный обход, окно 2 суток. Запросов: 515. Заняло 1747 с.
 
 | Сайт | Результат |
 |---|---|
@@ -8,7 +8,7 @@
 | aspor.com.tr | расписание есть — 1 |
 | atv.com.tr | расписание есть — 2 |
 | bbc.co.uk | расписание есть — 22 |
-| beinsports.com.tr | расписание есть — 10 |
+| beinsports.com.tr | расписание есть — 9, пусто — 1 |
 | bnt.bg | расписание есть — 1 |
 | canal11.pt | расписание есть — 1 |
 | ceskatelevize.cz | расписание есть — 2 |
@@ -21,9 +21,10 @@
 | ert.gr | расписание есть — 2 |
 | flashscore.mobi | расписание есть — 21 |
 | football-tv.ru | расписание есть — 1 |
-| jupiter.err.ee | не открылась — 6 |
+| jupiter.err.ee | расписание есть — 6 |
 | kanal1sport.sk | расписание есть — 1 |
-| livesoccertv.com | расписание есть — 9, заглушка защиты — 14 |
+| liveonsat.com | заглушка защиты — 1 |
+| livesoccertv.com | заглушка защиты — 19, расписание есть — 4 |
 | m.eredmenyek.com | расписание есть — 7 |
 | m.flashscore.bg | расписание есть — 7 |
 | m.flashscore.com.tr | расписание есть — 2 |
@@ -42,6 +43,7 @@
 | novasports.gr | расписание есть — 1 |
 | npo.nl | расписание есть — 6 |
 | ntvplus.tv | расписание есть — 2 |
+| oneplay.cz | расписание есть — 2 |
 | oneplaysport.cz | расписание есть — 2 |
 | onesoccer.ca | расписание есть — 1 |
 | port.hu | расписание есть — 18 |
@@ -83,7 +85,7 @@
 | tv8.com.tr | расписание есть — 1, пусто — 1 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
-| tvarenasport.hr | не открылась — 1 |
+| tvarenasport.hr | расписание есть — 1 |
 | tvarenasport.si | расписание есть — 1 |
 | tvguidetonight.com.au | расписание есть — 6 |
 | tvheute.at | расписание есть — 4 |
@@ -93,32 +95,31 @@
 | webtv.sk | расписание есть — 14 |
 | ziggosport.nl | расписание есть — 2 |
 
-## Не открылись — 21
+## Не открылись — 20
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=20&month=9&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=21&month=9&year=2026&channel=etv |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=20&month=9&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=21&month=9&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=20&month=9&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=21&month=9&year=2026&channel=etv2 |
+| liveonsat.com | сетка | cloudflare turnstile | https://liveonsat.com/2day.php?start_dd=20&start_mm=09&start_yyyy=2026&end_dd=20&end_mm=09&end_yyyy=2026&postponed=0 |
+| livesoccertv.com | ART Sport 1 | cloudflare | https://www.livesoccertv.com/channels/artsport1/ |
 | livesoccertv.com | ART Sport 2 | cloudflare | https://www.livesoccertv.com/channels/art-sport-2/ |
+| livesoccertv.com | ART Sport 3 | cloudflare | https://www.livesoccertv.com/channels/art-sport-3/ |
 | livesoccertv.com | ART Sport 4 | cloudflare | https://www.livesoccertv.com/channels/art-sport-4/ |
 | livesoccertv.com | ART Sport 5 | cloudflare | https://www.livesoccertv.com/channels/art-sport-5/ |
 | livesoccertv.com | ART Sport 6 | cloudflare | https://www.livesoccertv.com/channels/art-sport-6/ |
+| livesoccertv.com | Abu Dhabi Sports 1 | cloudflare | https://www.livesoccertv.com/channels/abu-dhabi-sports-1/ |
 | livesoccertv.com | Abu Dhabi Sports 2 | cloudflare | https://www.livesoccertv.com/channels/abu-dhabi-sports-2/ |
 | livesoccertv.com | ON Sport 1 | cloudflare | https://www.livesoccertv.com/channels/on-sport-egypt/ |
 | livesoccertv.com | ON Sport 2 | cloudflare | https://www.livesoccertv.com/channels/on-sport-2-egypt/ |
 | livesoccertv.com | ON Sport Max | cloudflare | https://www.livesoccertv.com/channels/on-sport-max/ |
 | livesoccertv.com | ON Sport Plus | cloudflare | https://www.livesoccertv.com/channels/on-sport-plus/ |
 | livesoccertv.com | SuperSport 1 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-digitalb/ |
+| livesoccertv.com | SuperSport 2 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-2-digitalb/ |
+| livesoccertv.com | SuperSport 3 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-3-digitalb/ |
 | livesoccertv.com | SuperSport 4 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-4-digitalb/ |
 | livesoccertv.com | SuperSport 5 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-5-digitalb/ |
 | livesoccertv.com | SuperSport 6 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-6-digitalb/ |
 | livesoccertv.com | Supersport 7 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-7-albania/ |
-| tvarenasport.hr | сетка | ConnectTimeout: HTTPSConnectionPool(host='tvarenasport.hr', port=443): Max retries exceeded with url: /wp-content/tv-program.php (Caused by ConnectTimeoutError( | https://tvarenasport.hr/wp-content/tv-program.php |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 21 из 512 страниц (4%), сайтов без удачи 2 из 88 (2%)
+- ✅ обход в норме: не открылись 19 из 514 страниц (4%), сайтов без удачи 0 из 89 (0%)
