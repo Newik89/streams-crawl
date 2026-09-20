@@ -219,6 +219,31 @@
            style="padding:6px 8px; border:1px solid var(--line); border-radius:8px">
     <button class="pill" type="submit" title="Extended window, PIN required">Collect 5 days</button>
   </form>
+  {% if admin %}
+  {# владелец 20.09: вошедшему — полный обход на 6 дней и скан одной даты
+     прямо с витрины; маршруты те же, что у дашборда (без PIN и лимитов) #}
+  <form method="post" action="{{ url_for('crawl_run') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="6">
+    <button class="pill" type="submit" title="Полный обход «сегодня + 6 дней» — только для вошедшего">Обход 6 дней</button>
+  </form>
+  <form method="post" action="{{ url_for('crawl_day') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="date" name="date" required id="scan-date"
+           style="padding:6px 8px; border:1px solid var(--line); border-radius:8px">
+    <button class="pill" type="submit" title="Пересобрать выбранный день отдельным прогоном">Скан даты</button>
+  </form>
+  <script>
+    (function () {
+      var d = document.getElementById('scan-date');
+      if (!d) return;
+      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      var iso = function (t) { return t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-' + pad(t.getDate()); };
+      var today = new Date(); var far = new Date(today.getTime() + 13 * 864e5);
+      d.min = iso(today); d.max = iso(far); d.value = iso(today);
+    })();
+  </script>
+  {% endif %}
 </footer>
 </main>
 
