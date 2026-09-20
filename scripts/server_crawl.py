@@ -137,6 +137,15 @@ def main() -> int:
                       str(куда / "games.json"), "--who", f"сервер {домен}"],
                      "вливаю в базу")
         запомнить(домен, "ок" if ок else "сбой")
+        if args.only and ок:
+            # кнопка «Обойти сайт» (20.09): строка «✅ ВЫПОЛНЕН» в админке;
+            # плановый суточный прогон (без --only) статус не трогает
+            conn = db.connect()
+            try:
+                db.set_setting(conn, "site_crawl_result",
+                               f"{домен}|{datetime.now():%Y-%m-%d %H:%M}|—")
+            finally:
+                conn.close()
         print(f"{домен}: {'готово' if ок else 'НЕ ВЫШЛО'}")
     return 0
 

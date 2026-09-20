@@ -82,6 +82,11 @@
   {% with msgs = get_flashed_messages(with_categories=true) %}
     {% for cat, msg in msgs %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
   {% endwith %}
+  {% if session.get('admin') %}
+    {% with st = site_crawl_status() %}
+      {% if st %}<div class="flash {{ st.cls }}"><b>{{ st.text }}</b></div>{% endif %}
+    {% endwith %}
+  {% endif %}
   {% block body %}{% endblock %}
 </main>
 </body>

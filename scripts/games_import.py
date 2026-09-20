@@ -144,6 +144,23 @@ def main() -> int:
                            f"{days[0] if days else ''}|"
                            f"{_dt.now().strftime('%Y-%m-%d %H:%M')}|"
                            f"{len(games)}")
+        if path.parent.name == "site":
+            # кнопка «Обойти сайт» (20.09): строка «✅ ВЫПОЛНЕН» под шапкой
+            # админки. Домен — из отчёта; сайт не открылся — worked пуст,
+            # берём первую строку отчёта
+            дом = next(iter(worked)) if worked else ""
+            if not дом:
+                try:
+                    строки = _json.loads((path.parent / "report.json")
+                                         .read_text(encoding="utf-8")) \
+                        .get("строки") or []
+                    дом = строки[0].get("domain", "") if строки else ""
+                except (OSError, ValueError):
+                    дом = ""
+            from datetime import datetime as _dt
+            db.set_setting(conn, "site_crawl_result",
+                           f"{дом}|{_dt.now().strftime('%Y-%m-%d %H:%M')}|"
+                           f"{stats.channels}")
         if aligned["sure"]:
             canon.stamp(conn, aligned)
 

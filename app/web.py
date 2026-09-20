@@ -125,6 +125,49 @@ def create_app() -> Flask:
     app.jinja_env.globals["ACCESS"] = sources.ACCESS
     app.jinja_env.globals["STATUSES"] = sources.STATUSES
 
+    def site_crawl_status() -> dict | None:
+        """Строка под шапкой админки про кнопку «Обойти сайт»: заказан →
+        идёт → ✅ ВЫПОЛНЕН (владелец 20.09: флеш пропадает при обновлении,
+        а итога рядом не видно). Живёт сутки, дальше прячется."""
+        conn = db.connect()
+        try:
+            req_raw = db.get_setting(conn, "site_crawl_request")
+            res_raw = db.get_setting(conn, "site_crawl_result")
+            run = crawl_hook.running(conn)
+        finally:
+            conn.close()
+        req = (req_raw.split("|") + ["", ""])[:2] if req_raw else None
+        res = (res_raw.split("|") + ["", "", ""])[:3] if res_raw else None
+        now = datetime.now()
+
+        def минуло(stamp: str, минут: int) -> bool:
+            try:
+                return now - datetime.strptime(stamp, "%Y-%m-%d %H:%M") \
+                    > timedelta(minutes=минут)
+            except ValueError:
+                return True
+        # заявка свежее итога — показываем ход дела
+        if req and (not res or res[1] < req[1]):
+            if минуло(req[1], 24 * 60):
+                return None
+            if run and (run["what"] == f"сайт {req[0]}"
+                        or run["what"] == f"site-{req[0]}"):
+                return {"cls": "ok",
+                        "text": f"Обход сайта {req[0]}: идёт с {run['since']}…"}
+            if минуло(req[1], 30):
+                return {"cls": "error",
+                        "text": f"Обход сайта {req[0]}: заказан в {req[1][-5:]}, "
+                                "итог так и не доехал — смотрите «Прогоны»"}
+            return {"cls": "ok",
+                    "text": f"Обход сайта {req[0]}: заказан в {req[1][-5:]}, "
+                            "ждём прогона…"}
+        if res and not минуло(res[1], 24 * 60):
+            return {"cls": "ok",
+                    "text": f"Обход сайта {res[0]}: ✅ ВЫПОЛНЕН в {res[1][-5:]}, "
+                            f"отметок каналов: {res[2]}"}
+        return None
+    app.jinja_env.globals["site_crawl_status"] = site_crawl_status
+
     def too_many_attempts(ip: str) -> bool:
         now = time.time()
         _LOGIN_ATTEMPTS[ip] = [t for t in _LOGIN_ATTEMPTS[ip] if now - t < LOGIN_WINDOW]
@@ -707,6 +750,10 @@ def create_app() -> Flask:
                     "site", trigger.encode_probe_url(domain))
             if ok:
                 crawl_hook.mark(conn, "заявка", f"сайт {domain}")
+                # для строки статуса «заказан → идёт → ВЫПОЛНЕН» (владелец
+                # 20.09: флеш пропадает, а итога рядом не видно)
+                db.set_setting(conn, "site_crawl_request",
+                               f"{domain}|{datetime.now():%Y-%m-%d %H:%M}")
                 flash(f"Обход только {domain} заказан — итог вольётся на "
                       "витрину через несколько минут после прогона.", "ok")
             else:
@@ -739,6 +786,13 @@ def create_app() -> Flask:
                   "error")
             return redirect(back)
         ok, said = crawl_hook.start_site_crawl(domain)
+        if ok:
+            conn = db.connect()
+            try:
+                db.set_setting(conn, "site_crawl_request",
+                               f"{domain}|{datetime.now():%Y-%m-%d %H:%M}")
+            finally:
+                conn.close()
         flash(f"{domain}: {said}", "ok" if ok else "error")
         return redirect(back)
 
