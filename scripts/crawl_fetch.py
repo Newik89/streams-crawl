@@ -116,8 +116,19 @@ def json_body(source: dict, day: date, url: str) -> dict | None:
     from urllib.parse import parse_qs, urlsplit
     got = parse_qs(urlsplit(url).query).get("channel_id")
     marks = {"channel_id": got[0]} if got else {}
-    return {k: urls.resolve(str(v), "", day=day, **marks) if isinstance(v, str) else v
-            for k, v in body.items()}
+
+    # метки бывают и в глубине тела: у `oneplay.cz` дата лежит в
+    # payload.criteria.viewport.timeRange (18.09)
+    def fill(value):
+        if isinstance(value, str):
+            return urls.resolve(value, "", day=day, **marks)
+        if isinstance(value, dict):
+            return {k: fill(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [fill(v) for v in value]
+        return value
+
+    return fill(body)
 
 
 def form(source: dict, day: date, marks: dict) -> dict | None:

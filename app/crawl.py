@@ -125,7 +125,10 @@ DAY_GRID_DOMAINS = {"polsatsport.pl", "allente.no", "ceskatelevize.cz",
                     # TRT Avaz: один канал, адрес на день
                     "trtavaz.com.tr",
                     # DR: открытый JSON, оба канала одним запросом на день
-                    "dr.dk"}
+                    "dr.dk",
+                    # OnePlay: ручка программы (POST), сутки по 52 каналам
+                    # разом, в описании вид спорта и «Přímý přenos»
+                    "oneplay.cz"}
 # эталон flashscore.mobi с 02.09 идёт обычным «канал × день»: три раздела
 # (football/basketball/tennis) лежат в source_channels, ?d={DAYNUM} в page_url
 

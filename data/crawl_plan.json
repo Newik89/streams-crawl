@@ -2823,7 +2823,7 @@
    ]
   },
   {
-   "domain": "oneplaysport.cz",
+   "domain": "oneplay.cz",
    "timezone": "Europe/Prague",
    "grid": false,
    "marks": {},
@@ -2839,7 +2839,77 @@
     "Oneplay Sport 3",
     "Oneplay Sport 4",
     "Premier Sport 1",
-    "Premier Sport 2"
+    "Premier Sport 2",
+    "Sport1",
+    "Sport2",
+    "ČT sport",
+    "ČT1",
+    "ČT2"
+   ],
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": {
+    "deviceInfo": {
+     "deviceType": "web",
+     "appVersion": "R13.26",
+     "deviceManufacturer": "Chrome",
+     "deviceOs": "Windows"
+    },
+    "capabilities": {},
+    "payload": {
+     "criteria": {
+      "viewport": {
+       "schema": "EpgViewportAbsolute",
+       "channelRange": {
+        "from": 0,
+        "to": 52
+       },
+       "timeRange": {
+        "from": "{YYYY-MM-DD}T00:00:00.000Z",
+        "to": "{YYYY-MM-DD}T23:59:59.999Z"
+       }
+      }
+     },
+     "requestedOutput": {
+      "channelSchedule": true
+     }
+    },
+    "context": {
+     "requestId": "6f1c2a4e-3b7d-4e19-9a52-0d8e7c1b5a36",
+     "clientId": "b2d9e4f1-7a3c-4c58-8e61-2f5a9d0c7b43"
+    }
+   },
+   "headers": {
+    "Origin": "https://www.oneplay.cz",
+    "Referer": "https://www.oneplay.cz/program"
+   },
+   "base_url": "https://www.oneplay.cz/program",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://http.cms.jyxo.cz/api/v1.13/epg.display?day={YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "oneplaysport.cz",
+   "timezone": "Europe/Prague",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Oneplay Sport 1",
+    "Oneplay Sport 2",
+    "Oneplay Sport 3",
+    "Oneplay Sport 4"
    ],
    "browser": false,
    "days_inline": false,

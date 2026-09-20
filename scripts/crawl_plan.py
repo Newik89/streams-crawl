@@ -33,6 +33,9 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # OnePlay даёт Nova Sport 1-6 в обход Cloudflare, НТВ-ПЛЮС — весь
           # пакет МАТЧ!, `rtcg.me` берётся только браузером
           "oneplaysport.cz", "ntvplus.tv", "ert.gr", "rtcg.me", "rtrs.tv",
+          # 18.09: программа OnePlay — те же Nova Sport, но с видом спорта
+          # и отметкой эфира в описании, плюс ČT1/ČT2
+          "oneplay.cz",
           "sport1.maariv.co.il",
           # пачка 01.09: румынский Digi Sport (4 канала, неделя на странице)
           # и турецкий TRT (16 каналов одним запросом)
