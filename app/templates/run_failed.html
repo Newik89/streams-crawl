@@ -1,17 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Сбои прогона — Streams Schedule{% endblock %}
 {% block body %}
-<h1>Сайты, которые не пропустили обход</h1>
+<h1>Сайты, не отдавшие расписание ({{ run.collector }})</h1>
 <p class="muted">Прогон <b>{{ run.finished_at }}</b> · собирали:
   <b>{{ run.what }}</b> · страниц с сайтов {{ run.rows_found }} ·
   игр в базу {{ run.events_upserted }} · сайтов в норме {{ run.sources_ok }}.
-  Адрес можно поправить прямо здесь: <b>✎</b> сохраняет,
+  Обход шёл через <b>{{ run.collector }}</b> — сайт из списка мог закрыться
+  только от неё: <b>Проверить с сервера</b> делает один запрос с нашего
+  сервера и говорит, жив ли сайт; если жив — <b>Качать сервером</b> переводит
+  его на серверный сбор (раз в сутки, 06:40), <b>Вернуть на GitHub</b> —
+  обратно. Адрес можно поправить здесь же: <b>✎</b> сохраняет,
   <b>В обход</b> ещё и снимает клеймо «сломан».</p>
 
 {% if rows %}
 <table>
-  <tr><th>Сайт</th><th>Страниц не открылось</th><th>Что известно</th>
-      <th>Последний удачный заход</th><th>Ссылка</th></tr>
+  <tr><th>Сайт</th><th>Страниц не открылось</th><th>Чем ответил</th>
+      <th>Что известно</th><th>Последний удачный заход</th><th>Ссылка</th></tr>
   {% for s in rows %}
   <tr>
     <td>
@@ -20,6 +24,11 @@
       <div class="muted">{{ s.country or '' }}</div>
     </td>
     <td><span class="tag bad">{{ s.fails }}</span></td>
+    <td style="max-width:220px">
+      {% if s.why %}<span class="tag bad">{{ s.why[:90] }}</span>
+      {% else %}<span class="muted">—</span>{% endif %}
+      {% if s.by_server %}<div class="muted">сейчас качает сервер</div>{% endif %}
+    </td>
     <td>
       {% if s.status %}<span class="tag {{ 'bad' if s.status in ('broken', 'closed') else '' }}">{{ s.status }}</span>{% endif %}
       {% if s.protection %}<span class="tag bad">{{ s.protection }}</span>{% endif %}
@@ -40,8 +49,27 @@
         <button class="btn" type="submit" name="action" value="revive"
                 title="Сохранить адрес и вернуть сайт в обход">В обход</button>
       </form>
-      <a class="muted" style="font-size:12px" href="{{ s.base_url }}"
-         target="_blank" rel="noopener">открыть страницу ↗</a>
+      <div style="display:flex; gap:6px; margin-top:6px; flex-wrap:wrap">
+        <form method="post" action="{{ url_for('source_probe', source_id=s.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="back" value="{{ request.full_path }}">
+          <button class="btn" type="submit"
+                  title="Один запрос с нашего сервера: жив ли сайт">Проверить с сервера</button>
+        </form>
+        <form method="post" action="{{ url_for('source_mode', source_id=s.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="back" value="{{ request.full_path }}">
+          {% if s.by_server %}
+          <button class="btn" type="submit" name="mode" value="github"
+                  title="Снова обходить с GitHub">Вернуть на GitHub</button>
+          {% else %}
+          <button class="btn" type="submit" name="mode" value="server"
+                  title="Сайт закрылся от GitHub — качать с нашего сервера">Качать сервером</button>
+          {% endif %}
+        </form>
+        <a class="muted" style="font-size:12px; align-self:center"
+           href="{{ s.base_url }}" target="_blank" rel="noopener">открыть ↗</a>
+      </div>
       {% else %}<span class="muted">источника нет в базе</span>{% endif %}
     </td>
   </tr>

@@ -632,6 +632,7 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
     ok_by: dict[str, int] = {}          # страниц с расписанием
     empty_by: dict[str, int] = {}       # открылись, но матчей нет
     fail_by: dict[str, int] = {}        # не открылись вовсе
+    why_by: dict[str, str] = {}         # чем сайт ответил: «HTTP 520», защита
     rows_found = 0
     when = _kyiv_from_utc(crawled)
     mode = ""
@@ -652,6 +653,11 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
             target = (fail_by if verdict in BROKEN_VERDICTS else
                       empty_by if verdict == EMPTY_VERDICT else ok_by)
             target[domain] = target.get(domain, 0) + 1
+            # причину держим одну на домен: владелец 20.09 — «в отчёте нет
+            # упоминания, что сайт не отдаёт расписание именно GitHub»
+            if verdict in BROKEN_VERDICTS and domain not in why_by:
+                why_by[domain] = " ".join(
+                    f"{verdict}: {row.get('почему') or ''}".split())[:160]
     except (OSError, ValueError):
         pass
     # сколько строк парсер вытащил по каждому домену: страница бывает «пустой»
@@ -678,6 +684,7 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
          json.dumps({"режим": mode, "кто": who, "новых": stats.new,
                      "обновлено": stats.updated,
                      "сбои": fail_by,
+                     "сбои_почему": why_by,
                      "молчат": sorted(silent)}, ensure_ascii=False)))
     now = _iso(datetime.now())
     for domain in worked:

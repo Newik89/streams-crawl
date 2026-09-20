@@ -284,6 +284,82 @@ def create_app() -> Flask:
             conn.close()
         return redirect(back)
 
+    @app.route("/sources/<int:source_id>/probe", methods=["POST"])
+    def source_probe(source_id: int):
+        """Кнопка «Проверить с сервера»: один запрос к сайту ОТСЮДА.
+
+        Владелец 20.09: отчёт должен прямо говорить, что сайт не отдаёт
+        расписание именно сети GitHub. Один клик — и рядом со сбоем видно,
+        жив ли сайт для нашего сервера: жив — закрылся только от GitHub,
+        и его можно кнопкой перевести на серверный сбор.
+        """
+        verify_csrf()
+        back = request.form.get("back") or url_for("broken")
+        conn = db.connect()
+        try:
+            row = conn.execute("SELECT domain FROM sources WHERE id = ?",
+                               (source_id,)).fetchone()
+            if row is None:
+                flash("Источника нет.", "error")
+                return redirect(back)
+            domain = row["domain"]
+        finally:
+            conn.close()
+        from . import plan_push
+        target = plan_push.probe_url(domain)
+        if not target:
+            flash(f"{domain}: в плане обхода нет адреса для пробы.", "error")
+            return redirect(back)
+        try:
+            import requests as _rq
+            answer = _rq.get(target, timeout=25, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                              "AppleWebKit/537.36 (KHTML, like Gecko) "
+                              "Chrome/128.0 Safari/537.36"})
+            size = len(answer.content or b"")
+            if answer.status_code == 200 and size > 2000:
+                flash(f"{domain}: серверу отвечает (HTTP 200, {size // 1024} КБ) — "
+                      "сайт жив, закрылся только от сети GitHub. Можно перевести "
+                      "на серверный сбор.", "ok")
+            else:
+                flash(f"{domain}: сервер получил HTTP {answer.status_code}, "
+                      f"{size} байт — похоже, сайт лежит или закрыт и для нас.",
+                      "error")
+        except Exception as exc:                        # noqa: BLE001
+            flash(f"{domain}: с сервера тоже не отвечает "
+                  f"({type(exc).__name__}) — лежит весь сайт, перевод на "
+                  "сервер не поможет.", "error")
+        return redirect(back)
+
+    @app.route("/sources/<int:source_id>/mode", methods=["POST"])
+    def source_mode(source_id: int):
+        """Кнопки «Качать сервером» / «Вернуть на GitHub» (владелец 20.09).
+
+        Меняет пометку в базе и те же поля в плане обхода, план уезжает на
+        GitHub сам (`app/plan_push.py`) — руками больше ничего делать не надо.
+        """
+        verify_csrf()
+        back = request.form.get("back") or url_for("broken")
+        by_server = request.form.get("mode") == "server"
+        conn = db.connect()
+        try:
+            row = conn.execute("SELECT domain FROM sources WHERE id = ?",
+                               (source_id,)).fetchone()
+            if row is None:
+                flash("Источника нет.", "error")
+                return redirect(back)
+            from . import plan_push
+            said = plan_push.set_mode(conn, row["domain"], by_server)
+            if by_server:
+                # серверный сбор ходит только к живым: клеймо «сломан» снимаем
+                conn.execute("UPDATE sources SET status = 'ok', fail_count = 0 "
+                             "WHERE id = ?", (source_id,))
+                conn.commit()
+            flash(said, "ok")
+        finally:
+            conn.close()
+        return redirect(back)
+
     @app.route("/sources/<int:source_id>/delete", methods=["POST"])
     def source_delete(source_id: int):
         verify_csrf()
@@ -745,15 +821,21 @@ def create_app() -> Flask:
             run["what"] = health._what(run)
             import json as _json
             try:
-                fails = (_json.loads(run["log"] or "{}") or {}).get("сбои") or {}
+                log = _json.loads(run["log"] or "{}") or {}
             except (ValueError, TypeError):
-                fails = {}
+                log = {}
+            fails = log.get("сбои") or {}
+            why = log.get("сбои_почему") or {}
+            # кто ходил на сайты: обычные прогоны — сеть GitHub Actions,
+            # серверный сбор подписан «сервер …» (владелец 20.09: отчёт
+            # должен прямо называть, кому сайт не отдал расписание)
+            run["collector"] = log.get("кто") or "сеть GitHub"
             rows = []
             for domain, count in sorted(fails.items(), key=lambda kv: -kv[1]):
                 # домен в логе записан без «www», в базе бывает по-разному
                 src = conn.execute(
                     "SELECT id, domain, country, base_url, status, notes, "
-                    "protection, last_success FROM sources "
+                    "protection, last_success, selector_config FROM sources "
                     "WHERE domain = ? OR domain = ?",
                     (domain, "www." + domain)).fetchone()
                 row = dict(src) if src else {"id": None, "domain": domain,
@@ -761,6 +843,10 @@ def create_app() -> Flask:
                                              "status": "", "notes": "",
                                              "protection": "",
                                              "last_success": ""}
+                config = _json.loads(row.pop("selector_config", None)
+                                     or "{}") or {}
+                row["by_server"] = bool(config.get("by_server"))
+                row["why"] = why.get(domain, "")
                 row["fails"] = count
                 rows.append(row)
             return render_template("run_failed.html", run=run, rows=rows)
