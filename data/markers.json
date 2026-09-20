@@ -322,7 +322,17 @@
    "timeline",
    "unfiltered",
    "ανασκόπηση",
-   "ανασκοπηση"
+   "ανασκοπηση",
+   "amerického fotbalu",
+   "plážového fotbalu",
+   "stolního tenisu",
+   "hokeje",
+   "hokejového",
+   "futsalu",
+   "florbalu",
+   "závod",
+   "závodu",
+   "virtual gp"
   ],
   "F": [
    "футбол",
@@ -373,7 +383,11 @@
    "לה ליגה",
    "סרייה א",
    "ליגה 1",
-   "ליגת האלופות בכדורגל"
+   "ליגת האלופות בכדורגל",
+   "fotbalového",
+   "fotbalovém",
+   "fotbalovou",
+   "fotbalu"
   ],
   "B": [
    "баскетбол",
@@ -397,7 +411,9 @@
    "ליגת ווינר סל",
    "יורוליג",
    "יורוקאפ",
-   "טורניר הכנה בכדורסל"
+   "טורניר הכנה בכדורסל",
+   "basketbalového",
+   "basketbalu"
   ],
   "T": [
    "тенис",
@@ -416,7 +432,10 @@
    "wta",
    "us open",
    "roland garros",
-   "wimbledon"
+   "wimbledon",
+   "tenisového",
+   "tenisovém",
+   "tenisu"
   ],
   "кроме": {
    "_": "Фразы, в которых слово спорта — часть чужого названия: перед проверкой буквы они вырезаются из текста. Кейс 07.09: «AFC Wimbledon» уезжал в теннис. «чужие»: «CHL:» у oneplaysport — чешская Chance Liga (футбол), а голое CHL — хоккей (12.09). Список правится без кода.",
@@ -501,7 +520,13 @@
    "לקראת",
    "אולפן",
    "סיכום היום",
-   "חגיגה אנגלית"
+   "חגיגה אנגלית",
+   "česká ulička",
+   "voorbeschouwing",
+   "nabeschouwing",
+   "wedstrijdanalyse",
+   "1e helft",
+   "2e helft"
   ],
   "из ТЗ": [
    "студия",

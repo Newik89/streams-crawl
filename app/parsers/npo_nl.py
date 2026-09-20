@@ -39,6 +39,13 @@ TZ = "Europe/Amsterdam"
 _ARRAY = re.compile(r"\[.*\]", re.S)
 _GUID = re.compile(r"guid=([0-9a-f-]{36})")
 
+#: guid ручки → имя канала у зрителя (те же, что в плане обхода)
+CHANNELS = {
+    "83dc1f25-a065-496c-9418-bd5c60dfb36d": "NPO1",
+    "316951f5-ce06-41d2-ae24-44eb25368a61": "NPO2",
+    "2042e1ee-0e79-4766-aea2-5b300d6839b2": "NPO3",
+}
+
 
 def _pair(text: str) -> str:
     tail = text.split(":", 1)[1] if ":" in text else text
@@ -64,14 +71,18 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     if not isinstance(shows, list) or not shows:
         return []
 
-    # Ответ канал не называет — он только в адресе. Имя берём из плана
-    # (`source_channels.raw_name`), а если запрос разовый — из guid.
+    # Ответ канал не называет — он только в адресе. При полном обходе в
+    # `channels` приходят ВСЕ каналы источника, поэтому имя из плана берётся
+    # лишь при разовом запросе одного канала; остальным его даёт карта guid.
+    # Заглушка из guid («NPO 2042e1ee») до 19.09 доезжала до базы и витрины —
+    # так завёлся канал-пустышка (#3046)
     channel = ""
     if channels and len(channels) == 1:
         channel = next(iter(channels))
     if not channel:
         got = _GUID.search(url or "")
-        channel = f"NPO {got.group(1)[:8]}" if got else "NPO"
+        channel = CHANNELS.get(got.group(1), f"NPO {got.group(1)[:8]}") \
+            if got else "NPO"
 
     out: list[Program] = []
     for show in shows:
