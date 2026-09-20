@@ -258,7 +258,13 @@ def create_app() -> Flask:
         verify_csrf()
         back = request.form.get("back") or url_for("broken")
         url = (request.form.get("base_url") or "").strip()
-        revive = request.form.get("action") == "revive"
+        action = request.form.get("action") or "save"
+        if action in ("probe", "probe_github"):
+            # проверка адреса из ЭТОГО поля, ничего не сохраняя (20.09)
+            return _probe_source(source_id, url,
+                                 "github" if action == "probe_github"
+                                 else "server", back)
+        revive = action == "revive"
         conn = db.connect()
         try:
             row = conn.execute("SELECT domain, base_url, status FROM sources "
@@ -284,31 +290,39 @@ def create_app() -> Flask:
             conn.close()
         return redirect(back)
 
-    @app.route("/sources/<int:source_id>/probe", methods=["POST"])
-    def source_probe(source_id: int):
-        """Кнопка «Проверить с сервера»: один запрос к сайту ОТСЮДА.
+    def _probe_source(source_id: int, typed: str, через: str, back: str):
+        """«Проверить сервером / GitHub-ом» (владелец 20.09).
 
-        Владелец 20.09: отчёт должен прямо говорить, что сайт не отдаёт
-        расписание именно сети GitHub. Один клик — и рядом со сбоем видно,
-        жив ли сайт для нашего сервера: жив — закрылся только от GitHub,
-        и его можно кнопкой перевести на серверный сбор.
+        Проверяется адрес ИЗ ПОЛЯ — вписанный туда новый пробуется, ничего
+        не сохраняя: «вставить ссылку и прогнать, прежде чем менять». Поле
+        не трогали — берётся адрес, каким ходит обход (из плана). С сервера
+        ответ мгновенный; с GitHub уходит заявка-тег, и итог появляется на
+        этой же странице через пару минут (стук обхода).
         """
-        verify_csrf()
-        back = request.form.get("back") or url_for("broken")
         conn = db.connect()
         try:
-            row = conn.execute("SELECT domain FROM sources WHERE id = ?",
-                               (source_id,)).fetchone()
+            row = conn.execute("SELECT domain, base_url FROM sources "
+                               "WHERE id = ?", (source_id,)).fetchone()
             if row is None:
                 flash("Источника нет.", "error")
                 return redirect(back)
-            domain = row["domain"]
+            domain, saved = row["domain"], row["base_url"] or ""
         finally:
             conn.close()
         from . import plan_push
-        target = plan_push.probe_url(domain)
+        # нетронутое поле держит сохранённый адрес-витрину — тогда пробуем
+        # рабочий адрес обхода; вписали новое — пробуем ровно его
+        target = typed if typed and typed != saved             else (plan_push.probe_url(domain) or saved)
         if not target:
-            flash(f"{domain}: в плане обхода нет адреса для пробы.", "error")
+            flash(f"{domain}: нет адреса для пробы.", "error")
+            return redirect(back)
+        if через == "github":
+            ok, words = trigger.push_request_tag(
+                "probeurl", trigger.encode_probe_url(target))
+            if ok:
+                words = ("проба с GitHub заказана — итог появится на этой "
+                         "странице через 2–3 минуты")
+            flash(f"{domain}: {words} ({target[:100]})", "ok" if ok else "error")
             return redirect(back)
         try:
             import requests as _rq
@@ -318,17 +332,17 @@ def create_app() -> Flask:
                               "Chrome/128.0 Safari/537.36"})
             size = len(answer.content or b"")
             if answer.status_code == 200 and size > 2000:
-                flash(f"{domain}: серверу отвечает (HTTP 200, {size // 1024} КБ) — "
-                      "сайт жив, закрылся только от сети GitHub. Можно перевести "
-                      "на серверный сбор.", "ok")
+                flash(f"{domain}: серверу отвечает (HTTP 200, {size // 1024} КБ) "
+                      f"по адресу {target[:100]} — сайт жив; если GitHub он не "
+                      "пускает, можно перевести на серверный сбор.", "ok")
             else:
                 flash(f"{domain}: сервер получил HTTP {answer.status_code}, "
-                      f"{size} байт — похоже, сайт лежит или закрыт и для нас.",
-                      "error")
+                      f"{size} байт ({target[:100]}) — похоже, сайт лежит или "
+                      "закрыт и для нас.", "error")
         except Exception as exc:                        # noqa: BLE001
-            flash(f"{domain}: с сервера тоже не отвечает "
-                  f"({type(exc).__name__}) — лежит весь сайт, перевод на "
-                  "сервер не поможет.", "error")
+            flash(f"{domain}: с сервера не отвечает ({type(exc).__name__}, "
+                  f"{target[:100]}) — лежит весь сайт либо адрес неверный.",
+                  "error")
         return redirect(back)
 
     @app.route("/sources/<int:source_id>/mode", methods=["POST"])
@@ -552,6 +566,13 @@ def create_app() -> Flask:
                 crawl_hook.mark(conn, "идёт", what or "обход")
                 return jsonify({"ok": True})
             crawl_hook.clear(conn)
+            if what.startswith("probeurl-"):
+                # итог проверки адреса кнопкой (владелец 20.09): показать на
+                # странице сбоев; результата в репо нет — забор не нужен
+                stamp = datetime.now().strftime("%d.%m %H:%M")
+                db.set_setting(conn, "url_probe_result",
+                               f"{stamp}|{what[len('probeurl-'):]}")
+                return jsonify({"ok": True, "pull": "это проба адреса"})
         finally:
             conn.close()
         said = crawl_hook.start_pull() if event == "done-ok" else "забор не нужен"
@@ -849,7 +870,10 @@ def create_app() -> Flask:
                 row["why"] = why.get(domain, "")
                 row["fails"] = count
                 rows.append(row)
-            return render_template("run_failed.html", run=run, rows=rows)
+            probe = (db.get_setting(conn, "url_probe_result") or "").split("|")
+            probe = {"when": probe[0], "what": probe[1]} if len(probe) == 2 else None
+            return render_template("run_failed.html", run=run, rows=rows,
+                                   probe=probe)
         finally:
             conn.close()
 

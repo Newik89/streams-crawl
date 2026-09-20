@@ -37,6 +37,21 @@ jobs:
               *) echo "окно «$VALUE» не из списка 2/5/6 — выходим"; exit 0 ;;
             esac
             INPUTS="{\"mode\":\"full\",\"days\":\"$VALUE\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"\"}"
+          elif [ "$KIND" = "probeurl" ]; then
+            # проверка адреса кнопкой админки (владелец 20.09): адрес зашит
+            # в тег base32-ой (слэши в имени тега жить не могут); дописываем
+            # съеденное «=» и разжимаем
+            PACKED=$(echo "$TAG" | cut -d- -f3)
+            PAD=$(( (8 - ${#PACKED} % 8) % 8 ))
+            PADDING=""
+            if [ "$PAD" -gt 0 ]; then PADDING=$(head -c "$PAD" /dev/zero | tr '\0' '='); fi
+            URL=$(printf '%s%s' "$PACKED" "$PADDING" | base32 -d 2>/dev/null || true)
+            case "$URL" in
+              http://*|https://*) ;;
+              *) echo "в заявке не адрес — выходим"; exit 0 ;;
+            esac
+            URL_JSON=$(printf '%s' "$URL" | sed 's/"/\\"/g')
+            INPUTS="{\"mode\":\"probe\",\"days\":\"2\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"$URL_JSON\"}"
           else
             echo "непонятная заявка — выходим"; exit 0
           fi

@@ -70,6 +70,14 @@ def _repo_slug() -> str:
 _BUTTON_KEY = "/root/.ssh/deploy_streams_rw"
 
 
+def encode_probe_url(url: str) -> str:
+    """Адрес → base32 без «=»: слэши в имени тега жить не могут, а base32
+    (A–Z, 2–7) — валидное имя. Разжимает его `queue.yml` (base32 -d)."""
+    import base64
+    packed = base64.b32encode(url.encode("utf-8")).decode("ascii")
+    return packed.rstrip("=")
+
+
 def push_request_tag(kind: str, value: str) -> tuple[bool, str]:
     """Заявка кнопки БЕЗ ключа GitHub: пуш пустого тега `btn-…` деплой-
     ключом сервера; workflow `queue.yml` ловит тег и сам запускает обход.

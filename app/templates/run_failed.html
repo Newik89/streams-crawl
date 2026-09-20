@@ -6,11 +6,17 @@
   <b>{{ run.what }}</b> · страниц с сайтов {{ run.rows_found }} ·
   игр в базу {{ run.events_upserted }} · сайтов в норме {{ run.sources_ok }}.
   Обход шёл через <b>{{ run.collector }}</b> — сайт из списка мог закрыться
-  только от неё: <b>Проверить с сервера</b> делает один запрос с нашего
-  сервера и говорит, жив ли сайт; если жив — <b>Качать сервером</b> переводит
-  его на серверный сбор (раз в сутки, 06:40), <b>Вернуть на GitHub</b> —
-  обратно. Адрес можно поправить здесь же: <b>✎</b> сохраняет,
-  <b>В обход</b> ещё и снимает клеймо «сломан».</p>
+  только от неё. В поле адреса можно вписать и НОВУЮ ссылку и проверить её,
+  ничего не сохраняя: <b>сервером</b> — ответ сразу, <b>GitHub-ом</b> —
+  итог придёт на эту страницу через 2–3 минуты. Поле не трогали — проверяется
+  адрес, каким ходит обход. <b>✎</b> сохраняет адрес, <b>В обход</b> ещё и
+  снимает клеймо «сломан»; <b>Качать сервером</b> / <b>Вернуть на GitHub</b>
+  переключают, кто собирает сайт.</p>
+{% if probe %}
+<div class="card" style="margin:10px 0"><b>Последняя проверка с GitHub</b>
+  ({{ probe.when }}): {{ probe.what }} — «ok-…-metok» значит страница
+  открылась и на ней есть расписание; «fail»/«blocked» — GitHub не пустили.</div>
+{% endif %}
 
 {% if rows %}
 <table>
@@ -48,14 +54,12 @@
                 title="Сохранить адрес">✎</button>
         <button class="btn" type="submit" name="action" value="revive"
                 title="Сохранить адрес и вернуть сайт в обход">В обход</button>
+        <button class="btn" type="submit" name="action" value="probe"
+                title="Проверить адрес из поля одним запросом с нашего сервера, не сохраняя">Проверить сервером</button>
+        <button class="btn" type="submit" name="action" value="probe_github"
+                title="Проверить адрес из поля с сети GitHub, не сохраняя: итог придёт сюда через 2–3 минуты">Проверить GitHub-ом</button>
       </form>
       <div style="display:flex; gap:6px; margin-top:6px; flex-wrap:wrap">
-        <form method="post" action="{{ url_for('source_probe', source_id=s.id) }}">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <input type="hidden" name="back" value="{{ request.full_path }}">
-          <button class="btn" type="submit"
-                  title="Один запрос с нашего сервера: жив ли сайт">Проверить с сервера</button>
-        </form>
         <form method="post" action="{{ url_for('source_mode', source_id=s.id) }}">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <input type="hidden" name="back" value="{{ request.full_path }}">
