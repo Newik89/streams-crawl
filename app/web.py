@@ -807,7 +807,9 @@ def create_app() -> Flask:
                 flash(f"Collection is already {busy['state_en']} (since "
                       f"{busy['since']}) — please wait until it finishes.", "error")
                 return redirect(url_for("schedule"))
-            if days != 2:                    # длинное окно — только по PIN
+            if session.get("admin"):
+                pass    # вошедший владелец: без PIN и без часовой паузы (20.09)
+            elif days != 2:                  # длинное окно гостю — только по PIN
                 pin = os.environ.get("STREAMS_PIN", "")
                 if not pin or not secrets.compare_digest(
                         request.form.get("pin", ""), pin):

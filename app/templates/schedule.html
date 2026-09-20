@@ -215,9 +215,12 @@
   <form method="post" action="{{ url_for('schedule_run') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="days" value="5">
+    {% if not admin %}
+    {# вошедшему владельцу PIN не нужен (20.09) — поле только гостям #}
     <input type="password" name="pin" placeholder="PIN" size="6"
            style="padding:6px 8px; border:1px solid var(--line); border-radius:8px">
-    <button class="pill" type="submit" title="Extended window, PIN required">Collect 5 days</button>
+    {% endif %}
+    <button class="pill" type="submit" title="{{ 'Полный обход на 5 дней — без PIN, вы вошли' if admin else 'Extended window, PIN required' }}">Collect 5 days</button>
   </form>
   {% if admin %}
   {# владелец 20.09: вошедшему — полный обход на 6 дней и скан одной даты
