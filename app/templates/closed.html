@@ -17,6 +17,13 @@
     </td>
     <td>{{ ACCESS.get(s.access, s.access) }}</td>
     <td style="width:1%; white-space:nowrap">
+      <form method="post" action="{{ url_for('crawl_site') }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.path }}">
+        <input type="hidden" name="domain" value="{{ s.domain }}">
+        <button type="submit" title="Свежий прогон только этого сайта; если сайт
+          не в плане обхода, кнопка честно скажет об этом">Обойти</button>
+      </form>
       <form method="post" action="{{ url_for('source_toggle', source_id=s.id) }}"
             style="display:inline">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

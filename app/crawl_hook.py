@@ -20,6 +20,7 @@ import hmac
 import os
 import sqlite3
 import subprocess
+import sys
 import time
 from datetime import datetime
 from pathlib import Path
@@ -37,6 +38,9 @@ MAX_SKEW = 300            # подпись старше 5 минут не при
 RUN_STALE = 3 * 3600
 #: заявка ушла, а «начал» не пришёл (тег не сработал) — кнопки снова свободны
 REQUEST_STALE = 20 * 60
+#: серверный сайт — не чаще раза в сутки («даже кнопкой», владелец 10.09).
+#: Один порог на всех: им живут и server_crawl.py, и кнопка «Обойти сайт»
+SITE_GAP_HOURS = 20
 PULL_SCRIPT = db.ROOT / "scripts" / "hook_pull.sh"
 
 
@@ -102,6 +106,24 @@ def running(conn: sqlite3.Connection) -> dict | None:
     return {"state": "заказан" if state == "заявка" else "идёт",
             "state_en": "requested" if state == "заявка" else "running",
             "since": since, "what": what}
+
+
+def start_site_crawl(domain: str) -> tuple[bool, str]:
+    """Точечный серверный сбор одного сайта (кнопка «Обойти сайт», 20.09) —
+    отдельной службой, как забор: кнопке отвечаем сразу, качает и вливает
+    фоновая служба. Сам `server_crawl.py` ещё раз проверит «не чаще раза
+    в сутки» (слово владельца 10.09) — двойная страховка.
+    Возвращает (получилось, слова для человека), как trigger.dispatch_crawl."""
+    script = db.ROOT / "scripts" / "server_crawl.py"
+    try:
+        subprocess.run(
+            ["systemd-run", "--no-block", "--collect",
+             "--unit", f"streams-site-crawl-{int(time.time())}",
+             sys.executable, str(script), "--only", domain],
+            check=True, capture_output=True, timeout=20)
+        return True, "сервер пошёл качать — итог на витрине через несколько минут"
+    except (OSError, subprocess.SubprocessError) as e:
+        return False, f"сервер не запустил сбор: {type(e).__name__}"
 
 
 def start_pull() -> str:

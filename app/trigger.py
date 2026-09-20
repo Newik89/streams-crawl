@@ -96,12 +96,13 @@ def push_request_tag(kind: str, value: str) -> tuple[bool, str]:
     return False, "заявка не прошла: " + (r.stderr or "?").strip()[:160]
 
 
-def dispatch_crawl(days: int, date: str = "") -> tuple[bool, str]:
+def dispatch_crawl(days: int, date: str = "", only: str = "") -> tuple[bool, str]:
     """Полный обход на `days` суток; `date` — скан одной даты ГГГГ-ММ-ДД
-    (календарь владельца). Возвращает (получилось, слова для человека)."""
+    (календарь владельца); `only` — точечный прогон одного сайта (кнопка
+    «Обойти сайт», 20.09). Возвращает (получилось, слова для человека)."""
     try:
         inputs = {"mode": "full", "days": str(days), "delay": str(DELAY),
-                  "only": "", "urls": ""}
+                  "only": only, "urls": ""}
         if date:
             # окно при скане даты не используется, но поле-выбор GitHub
             # принимает только «2» и «5» — шлём допустимое

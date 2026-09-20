@@ -53,7 +53,21 @@
              style="width:52px; padding:4px 6px; text-transform:uppercase;
                     border:1px solid var(--line); border-radius:6px">
     </td>
-    <td class="muted">{{ r.sources or "—" }}</td>
+    <td class="muted">
+      {% if r.sources %}
+        {% for d in r.sources.split(',') %}
+        <form method="post" action="{{ url_for('crawl_site') }}"
+              style="display:inline-flex; gap:4px; align-items:center; margin:0 8px 2px 0">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="back" value="{{ request.full_path }}">
+          <input type="hidden" name="domain" value="{{ d }}">
+          <span>{{ d }}</span>
+          <button class="btn" type="submit" style="padding:1px 6px; font-size:12px"
+                  title="Обойти только {{ d }} — свежий прогон одного сайта">⟳</button>
+        </form>
+        {% endfor %}
+      {% else %}—{% endif %}
+    </td>
     <td class="muted">{{ r.aliases or "—" }}</td>
     <td>{% if r.included %}✅{% else %}<span class="muted">нет</span>{% endif %}</td>
   </tr>

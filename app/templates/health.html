@@ -35,6 +35,13 @@
     </td>
     <td class="muted">{{ s.last_success or 'ни разу' }}</td>
     <td style="width:1%; white-space:nowrap">
+      <form method="post" action="{{ url_for('crawl_site') }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.path }}">
+        <input type="hidden" name="domain" value="{{ s.domain }}">
+        <button type="submit" title="Свежий прогон только этого сайта —
+          сразу видно, ожил он или нет">Обойти</button>
+      </form>
       <form method="post" action="{{ url_for('source_toggle', source_id=s.id) }}"
             style="display:inline">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -74,6 +81,14 @@
                       border:1px solid var(--line); border-radius:6px">
         <button class="btn" type="submit" name="action" value="save"
                 title="Сохранить адрес">✎</button>
+      </form>
+      <form method="post" action="{{ url_for('crawl_site') }}"
+            style="margin-top:6px">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.path }}">
+        <input type="hidden" name="domain" value="{{ s.domain }}">
+        <button type="submit" title="Свежий прогон только этого сайта —
+          сразу видно, даёт ли он матчи">Обойти</button>
       </form>
     </td>
   </tr>

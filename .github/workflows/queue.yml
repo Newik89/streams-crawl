@@ -6,6 +6,7 @@
 #   btn-days-5-<ts>            → полный обход, окно 5 дней
 #   btn-days-6-<ts>            → полный обход, «сегодня + 6» целиком (аудит 07.09)
 #   btn-date-2026-09-10-<ts>   → скан одной даты
+#   btn-site-<домен base32>-<ts> → точечный обход одного сайта (кнопка 20.09)
 name: Кнопки сайта
 
 on:
@@ -52,6 +53,19 @@ jobs:
             esac
             URL_JSON=$(printf '%s' "$URL" | sed 's/"/\\"/g')
             INPUTS="{\"mode\":\"proba\",\"days\":\"2\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"$URL_JSON\"}"
+          elif [ "$KIND" = "site" ]; then
+            # точечный обход одного сайта кнопкой админки (владелец 20.09):
+            # домен зашит в тег base32-ой, как адрес у probeurl
+            PACKED=$(echo "$TAG" | cut -d- -f3)
+            PAD=$(( (8 - ${#PACKED} % 8) % 8 ))
+            PADDING=""
+            if [ "$PAD" -gt 0 ]; then PADDING=$(head -c "$PAD" /dev/zero | tr '\0' '='); fi
+            SITE=$(printf '%s%s' "$PACKED" "$PADDING" | base32 -d 2>/dev/null || true)
+            case "$SITE" in
+              ""|*[!a-z0-9.-]*) echo "в заявке не домен — выходим"; exit 0 ;;
+            esac
+            # окно 6 дней: сайт пересобирается целиком, как утренним обходом
+            INPUTS="{\"mode\":\"full\",\"days\":\"6\",\"delay\":\"3\",\"only\":\"$SITE\",\"urls\":\"\"}"
           else
             echo "непонятная заявка — выходим"; exit 0
           fi

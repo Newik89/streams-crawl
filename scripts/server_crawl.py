@@ -34,11 +34,13 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import db  # noqa: E402
+from app.crawl_hook import SITE_GAP_HOURS  # noqa: E402
 
 ПАМЯТЬ = ROOT / "results" / "server_crawl.json"
 РАБОЧАЯ = Path("/var/tmp/streams-server-crawl")
-#: сколько часов ждём между заходами к одному сайту
-ЖДЁМ_ЧАСОВ = 20
+#: сколько часов ждём между заходами к одному сайту — порог общий с кнопкой
+#: «Обойти сайт» (app/crawl_hook.py), менять там
+ЖДЁМ_ЧАСОВ = SITE_GAP_HOURS
 PY = str(Path(sys.executable))
 
 

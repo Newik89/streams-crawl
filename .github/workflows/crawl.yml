@@ -166,6 +166,7 @@ jobs:
         run: |
           WHAT="${{ steps.what.outputs.mode }}-${{ steps.what.outputs.days }}"
           [ -n "${{ steps.what.outputs.date }}" ] && WHAT="date-${{ steps.what.outputs.date }}"
+          [ -n "${{ steps.what.outputs.only }}" ] && WHAT="site-${{ steps.what.outputs.only }}"
           export WHAT
           sh scripts/knock.sh start
 
@@ -259,6 +260,33 @@ jobs:
           echo "::error::скан даты не запушился за 3 попытки"
           exit 1
 
+      - name: Положить точечный обход в репозиторий
+        # кнопка «Обойти сайт» (владелец 20.09): итог одного сайта едет
+        # отдельной папкой results/site/ и полного не затирает; сервер
+        # вливает его вдобавок, чужие каналы такой прогон не гасит (A7 —
+        # заливка видит по report.json, какие домены отработали).
+        # Без `always()`: упал обход или разбор — старого итога не портим (A4)
+        if: steps.guard.outputs.run == '1' && steps.what.outputs.mode == 'full' && steps.what.outputs.only != '' && steps.what.outputs.urls == '' && steps.what.outputs.date == ''
+        run: |
+          # оба файла обязательны: games.json БЕЗ report.json заливка приняла
+          # бы со worked=None и погасила метки чужих сайтов (обход A7)
+          if [ ! -f recon/raw_live/games.json ] || [ ! -f recon/raw_live/report.json ]; then
+            echo "пары games+report нет — класть нечего"; exit 0
+          fi
+          mkdir -p results/site
+          cp recon/raw_live/games.json  results/site/
+          cp recon/raw_live/report.json results/site/
+          git config user.name  "Обход телесайтов"
+          git config user.email "actions@github.com"
+          git add results/site/
+          git diff --cached --quiet || git commit -m "Точечный обход ${{ steps.what.outputs.only }} — $(date -u +%d.%m.%Y\ %H:%M) UTC"
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase origin main
+          done
+          echo "::error::точечный обход не запушился за 3 попытки"
+          exit 1
+
       - name: Положить результат в репозиторий
         # только ПОЛНЫЙ обход без фильтров: проба (--urls, proba) и точечный
         # `--only` не должны затирать results/ полного дня своим маленьким
@@ -338,6 +366,7 @@ jobs:
         run: |
           WHAT="${{ steps.what.outputs.mode }}-${{ steps.what.outputs.days }}"
           [ -n "${{ steps.what.outputs.date }}" ] && WHAT="date-${{ steps.what.outputs.date }}"
+          [ -n "${{ steps.what.outputs.only }}" ] && WHAT="site-${{ steps.what.outputs.only }}"
           if [ -n "${{ steps.what.outputs.urls }}" ]; then
             # проверка адреса кнопкой админки (владелец 20.09): в стук кладём
             # итог пробы — сервер покажет его на странице сбоев

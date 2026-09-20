@@ -47,6 +47,8 @@ API_OPEN = os.environ.get("STREAMS_API", "").strip().lower() in {
 
 KYIV = ZoneInfo("Europe/Kyiv")
 PUBLIC_RUN_COOLDOWN = 3600   # публичная кнопка «2 days»: не чаще раза в час
+SITE_DAYS = 6                # окно кнопки «Обойти сайт»: как у утреннего,
+                             # чтобы сайт пересобрался целиком, а не на 2 дня
 
 
 def _days_choice(raw: str | None) -> int:
@@ -660,6 +662,85 @@ def create_app() -> Flask:
             finally:
                 conn.close()
         return redirect(request.referrer or url_for("dashboard"))
+
+    @app.route("/crawl/site", methods=["POST"])         # кнопка «Обойти сайт»
+    def crawl_site():
+        """Точечный прогон ОДНОГО сайта (владелец 20.09): «чтоб не гонять
+        весь план, когда нужен только один сайт». Обычный сайт качает GitHub:
+        итог едет отдельной папкой results/site/ и вливается вдобавок к
+        полному, чужие каналы не гасятся (A7 — заливка знает по report.json,
+        какие домены отработали). Сайт с пометкой «качает сервер» качает сам
+        сервер — не чаще раза в сутки (слово владельца 10.09)."""
+        verify_csrf()
+        back = (request.form.get("back") or request.referrer
+                or url_for("sources_list"))
+        domain = (request.form.get("domain") or "").strip().lower()
+        import json as _json
+        conn = db.connect()
+        try:
+            row = conn.execute(
+                "SELECT id, domain, enabled, status, selector_config "
+                "FROM sources WHERE domain = ?", (domain,)).fetchone()
+            if row is None:
+                flash("Такого сайта в источниках нет.", "error")
+                return redirect(back)
+            config = _json.loads(row["selector_config"] or "{}") or {}
+            if config.get("by_server"):
+                return _crawl_site_by_server(domain, back)
+            # закрытые/отложенные в план обхода не попадают (app/crawl.py):
+            # прогон для них скачал бы пустоту — лучше сказать честно
+            if not row["enabled"] or row["status"] in (
+                    "new", "deferred", "closed", "parked"):
+                беда = ("выключен" if not row["enabled"] else "состояние «"
+                        + sources.STATUSES.get(row["status"], row["status"]) + "»")
+                flash(f"{domain} сейчас не в плане обхода ({беда}) — "
+                      "сначала включите его и верните в обход.", "error")
+                return redirect(back)
+            busy = crawl_hook.running(conn)
+            if busy:
+                flash(f"Сбор уже {busy['state']} с {busy['since']} "
+                      f"({busy['what']}) — дождитесь окончания.", "error")
+                return redirect(back)
+            ok, words = trigger.dispatch_crawl(SITE_DAYS, only=domain)
+            if not ok:
+                ok, words = trigger.push_request_tag(
+                    "site", trigger.encode_probe_url(domain))
+            if ok:
+                crawl_hook.mark(conn, "заявка", f"сайт {domain}")
+                flash(f"Обход только {domain} заказан — итог вольётся на "
+                      "витрину через несколько минут после прогона.", "ok")
+            else:
+                flash(f"{domain}: {words}", "error")
+        finally:
+            conn.close()
+        return redirect(back)
+
+    def _crawl_site_by_server(domain: str, back: str):
+        """Серверные сайты (mojtv.hr, rtrs.tv): качает сам сервер, «даже
+        кнопкой не больше раза в сутки» (владелец 10.09). Память заходов —
+        results/server_crawl.json, порог общий — crawl_hook.SITE_GAP_HOURS."""
+        import json as _json
+        помню = {}
+        try:
+            помню = _json.loads((db.ROOT / "results" / "server_crawl.json")
+                                .read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            pass
+        было = (помню.get(domain) or {}).get("когда") or ""
+        try:
+            прошлый = datetime.strptime(было, "%Y-%m-%d %H:%M")
+            рано = (datetime.now() - прошлый
+                    < timedelta(hours=crawl_hook.SITE_GAP_HOURS))
+        except ValueError:
+            рано = False
+        if рано:
+            flash(f"{domain} качает сам сервер, и он уже ходил туда {было}. "
+                  "Чаще раза в сутки к сайту не ходим — попробуйте позже.",
+                  "error")
+            return redirect(back)
+        ok, said = crawl_hook.start_site_crawl(domain)
+        flash(f"{domain}: {said}", "ok" if ok else "error")
+        return redirect(back)
 
     @app.route("/schedule/run", methods=["POST"])       # публичная: с уздой
     def schedule_run():

@@ -2,7 +2,16 @@
 {% block title %}{{ s.domain }} — Streams Schedule{% endblock %}
 {% block body %}
 <h1>{{ s.domain }}</h1>
-<p class="muted"><a href="{{ url_for('sources_list') }}">← ко всем источникам</a></p>
+<div class="muted" style="display:flex; gap:12px; align-items:center; margin:0 0 14px">
+  <a href="{{ url_for('sources_list') }}">← ко всем источникам</a>
+  <form method="post" action="{{ url_for('crawl_site') }}" style="margin:0">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="back" value="{{ request.path }}">
+    <input type="hidden" name="domain" value="{{ s.domain }}">
+    <button type="submit" title="Свежий прогон только этого сайта —
+      остальные сайты не трогаются, итог сам вольётся на витрину">Обойти этот сайт</button>
+  </form>
+</div>
 
 <form class="card" method="post">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

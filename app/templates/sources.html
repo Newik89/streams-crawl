@@ -91,7 +91,16 @@
       {% if s.enabled %}{{ STATUSES.get(s.status, s.status) }}
       {% else %}<span class="tag off">выключен</span>{% endif %}
     </td>
-    <td>
+    <td style="white-space:nowrap">
+      {% if s.enabled %}
+      <form method="post" action="{{ url_for('crawl_site') }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="back" value="{{ request.full_path }}">
+        <input type="hidden" name="domain" value="{{ s.domain }}">
+        <button type="submit" title="Свежий прогон только этого сайта —
+          остальные сайты не трогаются, итог сам вольётся на витрину">Обойти</button>
+      </form>
+      {% endif %}
       <form method="post" action="{{ url_for('source_toggle', source_id=s.id) }}"
             style="display:inline">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
