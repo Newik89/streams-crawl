@@ -3,22 +3,33 @@
  "режим": "полный обход, окно 6 суток",
  "строки": [
   {
-   "domain": "sporttv.pt",
+   "domain": "canal11.pt",
    "channel": "",
    "day": "",
-   "locale": "pt-PT",
-   "url": "https://www.sporttv.pt/guia",
+   "locale": "en-GB",
+   "url": "https://fpf.watch.pixellot.tv/api/event/list",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
-   "headers": null,
+   "post_json": {
+    "page": 0,
+    "size": 50,
+    "next": true,
+    "count": true,
+    "filters": {
+     "status": "upcoming"
+    }
+   },
+   "headers": {
+    "Origin": "https://www.canal11.pt",
+    "Referer": "https://www.canal11.pt/"
+   },
    "итог": "расписание есть",
    "почему": "",
-   "байт": 1663716,
-   "меток времени": 26,
+   "байт": 14205,
+   "меток времени": 0,
    "чем": "requests",
-   "файл": "www.sporttv.pt__guia.html"
+   "файл": "fpf.watch.pixellot.tv__api_event_list__post-52399f76.html"
   }
  ],
  "дозор": {
