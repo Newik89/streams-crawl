@@ -51,7 +51,7 @@ jobs:
               *) echo "в заявке не адрес — выходим"; exit 0 ;;
             esac
             URL_JSON=$(printf '%s' "$URL" | sed 's/"/\\"/g')
-            INPUTS="{\"mode\":\"probe\",\"days\":\"2\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"$URL_JSON\"}"
+            INPUTS="{\"mode\":\"proba\",\"days\":\"2\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"$URL_JSON\"}"
           else
             echo "непонятная заявка — выходим"; exit 0
           fi
