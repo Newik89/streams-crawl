@@ -463,7 +463,7 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
     for row in conn.execute(
             "SELECT e.id, e.sport, e.league_auto, e.team_home_auto, "
             "e.team_away_auto, e.start_kyiv, e.grace_minutes, e.first_seen, "
-            "e.league_id, l.canonical_name AS league_canon, "
+            "e.seen, e.league_id, l.canonical_name AS league_canon, "
             "l.slug AS league_slug, "
             "th.canonical_name AS home_canon, ta.canonical_name AS away_canon "
             "FROM events e "
@@ -576,6 +576,9 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             "first_seen": row["first_seen"] or "",
             "is_new": bool(row["first_seen"]
                            and str(row["first_seen"]) >= game_edge),
+            # «непрочитанная»: висит новой, пока владелец не кликнет по строке
+            # или не нажмёт «Прочитано всё» (21.09); гостям остаётся is_new
+            "unread": not row["seen"],
             "channels": channels,
         })
     return games

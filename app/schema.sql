@@ -152,7 +152,10 @@ CREATE TABLE IF NOT EXISTS events (
     time_confidence TEXT,                      -- ok | spread — разброс между источниками
     flags           TEXT,                      -- needs_review, unmatched_teams…
     first_seen      TEXT NOT NULL DEFAULT (datetime('now')),
-    last_seen       TEXT
+    last_seen       TEXT,
+    -- 21.09: 0 — игра «новая», пока владелец не прочитал (клик по строке
+    -- или «Прочитано всё» на витрине)
+    seen            INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE INDEX IF NOT EXISTS idx_events_start ON events(start_utc);

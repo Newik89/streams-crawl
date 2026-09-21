@@ -57,6 +57,9 @@ _LATE_COLUMNS = {
     "event_channels": [("time_off", "INTEGER NOT NULL DEFAULT 0")],
     # 15.09: ответ «какой это спорт» привязан к дню матча, а не навечно
     "sport_hints": [("match_day", "TEXT")],
+    # 21.09: игра «новая», пока владелец её не прочитал — клик по строке или
+    # кнопка «Прочитано всё» (просьба владельца: новизна по часам гасла сама)
+    "events": [("seen", "INTEGER NOT NULL DEFAULT 0")],
 }
 
 
@@ -66,6 +69,10 @@ def _add_missing_columns(conn: sqlite3.Connection) -> None:
         for name, decl in columns:
             if name not in have:
                 conn.execute(f"ALTER TABLE {table} ADD COLUMN {name} {decl}")
+                if table == "events" and name == "seen":
+                    # колонка только родилась: старые игры считаем прочитанными,
+                    # иначе вся витрина разом вспыхнула бы «новой»
+                    conn.execute("UPDATE events SET seen = 1")
 
 
 def get_setting(conn: sqlite3.Connection, key: str, default: str = "") -> str:

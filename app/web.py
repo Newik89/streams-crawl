@@ -623,6 +623,37 @@ def create_app() -> Flask:
         said = crawl_hook.start_pull() if event == "done-ok" else "забор не нужен"
         return jsonify({"ok": True, "pull": said})
 
+    @app.route("/games/<int:event_id>/seen", methods=["POST"])
+    def game_seen(event_id: int):
+        """Клик по строке игры гасит её «новизну» (владелец 21.09: новая
+        висит, пока не прочитал)."""
+        verify_csrf()
+        if not session.get("admin"):
+            abort(403)
+        conn = db.connect()
+        try:
+            conn.execute("UPDATE events SET seen = 1 WHERE id = ?", (event_id,))
+            conn.commit()
+        finally:
+            conn.close()
+        return jsonify({"ok": True})
+
+    @app.route("/games/seen-all", methods=["POST"])
+    def games_seen_all():
+        """Кнопка «Прочитано всё»: снять новизну разом (владелец 21.09)."""
+        verify_csrf()
+        if not session.get("admin"):
+            abort(403)
+        conn = db.connect()
+        try:
+            n = conn.execute("UPDATE events SET seen = 1 "
+                             "WHERE seen = 0").rowcount
+            conn.commit()
+        finally:
+            conn.close()
+        flash(f"Прочитано: пометка «новая» снята с {n} игр.", "ok")
+        return redirect(url_for("schedule"))
+
     @app.route("/channel-name", methods=["POST"])
     def channel_name():
         """Правка канала прямо на витрине (просьба владельца 10.09).

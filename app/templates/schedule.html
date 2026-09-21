@@ -119,6 +119,9 @@
   .chan-go:hover { color:var(--accent); }
   .empty { color:var(--muted); padding:30px 0; text-align:center; }
   #more { display:block; margin:18px auto; }
+  /* 21.09: порядковый номер в текущем списке — считает видимые строки */
+  td.idx, th.idx { color:var(--muted); font-size:11px; white-space:nowrap;
+                   width:1%; text-align:right; padding-right:6px; }
   [hidden] { display:none !important; }
   @media (max-width:640px) { td.league { display:none; } th.league { display:none; } }
 </style>
@@ -131,6 +134,13 @@
     <button class="pill" id="p-chan" type="button">Only with channels</button>
     <button class="pill" id="p-live" type="button">Live now</button>
     <button class="pill" id="p-names" type="button" title="Игры, которым ещё не найдено правильное название — правятся кнопкой ✎">Names to fix</button>
+    <button class="pill" id="p-new" type="button" title="Только новые игры — добавились после прогона и ещё не прочитаны">New only</button>
+    {% if admin %}
+    <form method="post" action="{{ url_for('games_seen_all') }}" style="display:inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="pill" type="submit" title="Снять пометку «новая» со всех игр разом">Прочитано всё</button>
+    </form>
+    {% endif %}
     <select id="f-date"><option value="">All dates</option>
       {% for day in by_date %}<option value="{{ day }}">{{ day.strftime("%d.%m (%a)") }}</option>{% endfor %}
     </select>
@@ -155,17 +165,22 @@
   <section class="day-block" data-date="{{ day }}">
     <h2 class="day">{{ day.strftime("%A, %d %B") }}</h2>
     <table>
-      <tr><th>Time (Kyiv)</th><th>Sport</th><th class="league">League</th>
+      <tr><th class="idx" title="Порядковый номер в текущем списке">№</th>
+          <th>Time (Kyiv)</th><th>Sport</th><th class="league">League</th>
           <th>Match</th><th>Channels</th></tr>
       {% for g in games %}
-      <tr id="g{{ g.id }}" class="game{% if g.is_new %} fresh{% endif %}{% if admin and g.pending %} ask{% endif %}" data-date="{{ day }}"
+      {# новизна: админу — «пока не прочитал» (unread), гостю — по часам (is_new) #}
+      {% set свежая = (g.unread if admin else g.is_new) %}
+      <tr id="g{{ g.id }}" class="game{% if свежая %} fresh{% endif %}{% if admin and g.pending %} ask{% endif %}" data-date="{{ day }}"
           data-sport="{{ g.sport }}"
           data-league="{{ g.league }}"
           data-live="{{ 1 if g.live else 0 }}"
           data-named="{{ 1 if g.named else 0 }}"
+          data-unread="{{ 1 if свежая else 0 }}"
           data-ask="{{ 1 if (admin and g.pending) else 0 }}"
           data-channels="{{ g.channels | map(attribute='name') | join('||') }}"
           data-text="{{ (g.home ~ ' ' ~ g.away ~ ' ' ~ g.league ~ ' ' ~ (g.channels | map(attribute='name') | join(' '))) | lower }}">
+        <td class="idx"></td>
         <td class="time"><span class="gdate">{{ day.strftime("%d.%m") }}</span>{{ g.time }}{% if g.live %}<span class="live">live</span>{% endif %}</td>
         <td class="sport">{{ {"F":"⚽","B":"🏀","T":"🎾"}.get(g.sport, g.sport) }}</td>
         <td class="league"><span class="copy">{{ g.league }}</span>{% if admin and g.league %}<button class="edit" type="button" data-kind="league" data-raw="{{ g.league_auto or g.league }}" title="Исправить название лиги">✎</button>{% endif %}</td>
@@ -256,7 +271,8 @@
   var CHUNK = 100;                      // ленивая подгрузка: строк за раз
   var shown = CHUNK;
   var rows = Array.prototype.slice.call(document.querySelectorAll("tr.game"));
-  var pills = { today: false, chan: false, live: false, names: false };
+  var pills = { today: false, chan: false, live: false, names: false,
+                newonly: false };
   var todayISO = new Date().toISOString().slice(0, 10);
 
   function el(id) { return document.getElementById(id); }
@@ -266,6 +282,7 @@
     if (pills.live && r.dataset.live !== "1") return false;
     if (pills.chan && !r.dataset.channels) return false;
     if (pills.names && r.dataset.named !== "0") return false;
+    if (pills.newonly && r.dataset.unread !== "1") return false;
     var d = el("f-date").value, s = el("f-sport").value,
         l = el("f-league").value, c = el("f-channel").value,
         q = el("f-q").value.trim().toLowerCase();
@@ -280,7 +297,14 @@
   function apply() {
     var fit = rows.filter(matches);
     rows.forEach(function (r) { r.hidden = true; });
-    fit.slice(0, shown).forEach(function (r) { r.hidden = false; });
+    // порядковый номер по ТЕКУЩЕМУ списку (21.09): выбран день — счёт с 1
+    var n = 0;
+    fit.slice(0, shown).forEach(function (r) {
+      r.hidden = false;
+      n += 1;
+      var c = r.querySelector("td.idx");
+      if (c) { c.textContent = n; }
+    });
     document.querySelectorAll(".day-block").forEach(function (b) {
       b.hidden = !b.querySelector("tr.game:not([hidden])");
     });
@@ -293,7 +317,7 @@
   });
   el("f-q").addEventListener("input", function () { shown = CHUNK; apply(); });
   [["p-today", "today"], ["p-chan", "chan"], ["p-live", "live"],
-   ["p-names", "names"]].forEach(function (p) {
+   ["p-names", "names"], ["p-new", "newonly"]].forEach(function (p) {
     el(p[0]).addEventListener("click", function () {
       pills[p[1]] = !pills[p[1]];
       el(p[0]).classList.toggle("on", pills[p[1]]);
@@ -355,6 +379,22 @@
       navigator.clipboard.writeText(text).then(done, old);
     } else { old(); }
   }
+  // ── клик по новой игре гасит её «новизну» (владелец 21.09) ───────────────
+  // только в админке (у гостя нет meta csrf — его новизна гаснет по часам);
+  // строка остаётся на месте до следующей смены фильтра
+  document.addEventListener("click", function (ev) {
+    var row = ev.target.closest("tr.game");
+    if (!row || row.dataset.unread !== "1") return;
+    var meta = document.querySelector('meta[name="csrf"]');
+    if (!meta) return;
+    row.dataset.unread = "0";
+    row.classList.remove("fresh");
+    var body = new URLSearchParams();
+    body.set("csrf_token", meta.content);
+    fetch("/games/" + row.id.slice(1) + "/seen",
+          { method: "POST", body: body });
+  });
+
   document.addEventListener("click", function (ev) {
     var c = ev.target.closest(".copy");
     if (c && !ev.target.closest(".edit")) {
