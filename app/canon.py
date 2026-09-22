@@ -457,6 +457,33 @@ def align(games: list[dict], reference: list[dict],
                     else:
                         out["missed"].append(game)
                     continue
+        # Одинокий ВОЗРАСТНОЙ кандидат (владелец 22.09, #3037): сетка пишет
+        # «Srbija - Bugarska» без возраста, а эталон в ту же минуту знает
+        # единственный «Serbia U19 - Bulgaria U19» — арена возраст просто
+        # не пишет. Принимаем канон эталона ЦЕЛИКОМ (имена с возрастом,
+        # лига): потерянный возраст хуже лишнего (правило проекта, как с W).
+        # Строгости, чтобы не повторить чужую граблю «сомнительное берёт
+        # только время»: у нашей игры возраста нет, у кандидата он у ОБЕИХ
+        # команд, имена без возраста сходятся на SURE, окно узкое (сетки
+        # сборных время держат точно), кандидат такой в окне один.
+        if best_score < SURE and not names._AGE_RE.search(
+                f"{game.get('home') or ''} {game.get('away') or ''}"):
+            aged = []
+            for r, s in near:
+                if abs(start - s) > timedelta(minutes=30):
+                    continue
+                home_ref = (r.get("home") or "").strip()
+                away_ref = (r.get("away") or "").strip()
+                bare_home = " ".join(names._AGE_RE.sub(" ", home_ref).split())
+                bare_away = " ".join(names._AGE_RE.sub(" ", away_ref).split())
+                if bare_home == home_ref or bare_away == away_ref:
+                    continue          # возраст не у обеих — не наш случай
+                if _pair_score(game, dict(r, home=bare_home,
+                                          away=bare_away)) >= SURE:
+                    aged.append(r)
+            if len(aged) == 1:
+                out["sure"].append((game, aged[0], SURE))
+                continue
         if best is None:
             out["missed"].append(game)
         elif best_score >= SURE:
