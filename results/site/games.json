@@ -1,33 +1,50 @@
 {
- "собрано": "2026-09-22 06:16",
- "игр": 1,
- "окно": 2,
+ "собрано": "2026-09-22 15:36",
+ "игр": 2,
+ "окно": 6,
  "по_окнам": {
-  "2": 1,
+  "2": 260,
   "5": 528,
-  "6": 372
+  "6": 2
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "novasports.gr": 284
+  "rtp.pt": 572
  },
  "на_разбор": [],
  "games": [
   {
    "guess": 0,
-   "sport": "T",
-   "league": "Τένις: WTA 500",
-   "home": "Σάκκαρη",
-   "away": "Φρουχβίρτοβα",
-   "start_kyiv": "2026-09-22T15:30",
-   "start_utc": "2026-09-22T12:30",
+   "sport": "F",
+   "league": "Liga das Nações",
+   "home": "Portugal",
+   "away": "País de Gales",
+   "start_kyiv": "2026-09-24T21:45",
+   "start_utc": "2026-09-24T18:45",
    "entries": [
     {
-     "source": "novasports.gr",
-     "channel": "ΝovasportsStart",
-     "url": "https://www.novasports.gr/wp-admin/admin-ajax.php?action=nova_get_template&template=tv-program/broadcast&dt=2026-09-22",
-     "raw_title": "Φάση των 32: Σάκκαρη - Φρουχβίρτοβα"
+     "source": "rtp.pt",
+     "channel": "RTP1",
+     "url": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/1/2026-09-24",
+     "raw_title": "Liga das Nações: Portugal x País de Gales"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Liga das Nações",
+   "home": "Noruega",
+   "away": "Portugal",
+   "start_kyiv": "2026-09-27T21:45",
+   "start_utc": "2026-09-27T18:45",
+   "entries": [
+    {
+     "source": "rtp.pt",
+     "channel": "RTP1",
+     "url": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/1/2026-09-27",
+     "raw_title": "Liga das Nações: Noruega x Portugal"
     }
    ]
   }
