@@ -168,6 +168,47 @@ def create_app() -> Flask:
         return None
     app.jinja_env.globals["site_crawl_status"] = site_crawl_status
 
+    def full_crawl_status() -> dict | None:
+        """Та же строка для полного обхода с пульта витрины (2/5/6 дней,
+        скан даты): заказан → идёт → ✅ ВЫПОЛНЕН (владелец 22.09: со
+        страницы расписания не видно, запустился ли обход и чем он
+        кончился). Живёт сутки, дальше прячется."""
+        conn = db.connect()
+        try:
+            line = health.request_line(conn)
+            run = crawl_hook.running(conn)
+        finally:
+            conn.close()
+        if not line:
+            return None
+        try:
+            asked = datetime.strptime(line["asked"], "%Y-%m-%d %H:%M")
+        except ValueError:
+            return None
+        if datetime.now() - asked > timedelta(hours=24):
+            return None
+        name = line["what"].capitalize()
+        if line["done"]:
+            tail = f", влито {line['import']}" if line["import"] else ""
+            return {"cls": "ok",
+                    "text": f"{name}: ✅ ВЫПОЛНЕН — собрано {line['crawl']}"
+                            f"{tail}"}
+        # замок точечного обхода — не про этот заказ, его строка своя
+        if run and not run["what"].startswith(("сайт ", "site-")):
+            if run["state"] == "идёт":
+                return {"cls": "ok",
+                        "text": f"{name}: идёт с {run['since']}…"}
+            return {"cls": "ok",
+                    "text": f"{name}: заказан в {asked:%H:%M}, "
+                            "ждём прогона…"}
+        if datetime.now() - asked > timedelta(minutes=30):
+            return {"cls": "error",
+                    "text": f"{name}: заказан в {asked:%H:%M}, итог так и "
+                            "не доехал — смотрите «Прогоны»"}
+        return {"cls": "ok",
+                "text": f"{name}: заказан в {asked:%H:%M}, ждём прогона…"}
+    app.jinja_env.globals["full_crawl_status"] = full_crawl_status
+
     def too_many_attempts(ip: str) -> bool:
         now = time.time()
         _LOGIN_ATTEMPTS[ip] = [t for t in _LOGIN_ATTEMPTS[ip] if now - t < LOGIN_WINDOW]
