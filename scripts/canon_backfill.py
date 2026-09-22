@@ -172,7 +172,18 @@ def main() -> int:
                     continue
                 if r[field] is not None \
                         and owners_of.get((raw or "").strip()) == {r[field]}:
-                    continue          # написание твёрдо за своей командой
+                    # написание твёрдо за своей командой — держим ручные
+                    # правки. НО если канон эталона отличается лишь
+                    # ВОЗРАСТОМ (Serbia → Serbia U19, #3037 22.09), событию
+                    # ставим возрастную команду: словарь и закреплённое
+                    # написание не трогаются, меняется только эта игра
+                    cur = conn.execute("SELECT canonical_name FROM teams "
+                                       "WHERE id = ?", (r[field],)).fetchone()
+                    bare = " ".join(names._AGE_RE.sub(" ", canon_name).split())
+                    same_bare = (cur and bare.lower() ==
+                                 (cur["canonical_name"] or "").strip().lower())
+                    if not (same_bare and names._AGE_RE.search(canon_name)):
+                        continue
                 sets[field] = (row["id"] if row else None, canon_name)
             if not sets:
                 continue
