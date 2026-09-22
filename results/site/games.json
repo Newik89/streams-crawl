@@ -1,137 +1,17 @@
 {
- "собрано": "2026-09-20 19:46",
- "игр": 7,
- "окно": 6,
+ "собрано": "2026-09-22 05:20",
+ "игр": 0,
+ "окно": 2,
  "по_окнам": {
-  "2": 311,
+  "2": 0,
   "5": 528,
-  "6": 7
+  "6": 372
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "canal11.pt": 7
+  "ipko.tv": 652
  },
  "на_разбор": [],
- "games": [
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Liga Next Gen",
-   "home": "FC VIZELA",
-   "away": "SC FARENSE",
-   "start_kyiv": "2026-09-21T13:00",
-   "start_utc": "2026-09-21T10:00",
-   "entries": [
-    {
-     "source": "canal11.pt",
-     "channel": "Canal 11",
-     "url": "https://fpf.watch.pixellot.tv/api/event/list",
-     "raw_title": "Liga Next Gen: FC VIZELA - SC FARENSE"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Liga Next Gen",
-   "home": "U. LEIRIA",
-   "away": "GIL VICENTE",
-   "start_kyiv": "2026-09-21T18:00",
-   "start_utc": "2026-09-21T15:00",
-   "entries": [
-    {
-     "source": "canal11.pt",
-     "channel": "Canal 11",
-     "url": "https://fpf.watch.pixellot.tv/api/event/list",
-     "raw_title": "Liga Next Gen: U. LEIRIA - GIL VICENTE"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Liga BPI",
-   "home": "FC PORTO",
-   "away": "SC BRAGA",
-   "start_kyiv": "2026-09-21T20:00",
-   "start_utc": "2026-09-21T17:00",
-   "entries": [
-    {
-     "source": "canal11.pt",
-     "channel": "Canal 11",
-     "url": "https://fpf.watch.pixellot.tv/api/event/list",
-     "raw_title": "Liga BPI: FC PORTO - SC BRAGA"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Liga Next Gen",
-   "home": "SANTA CLARA",
-   "away": "PORTIMONENSE",
-   "start_kyiv": "2026-09-22T14:00",
-   "start_utc": "2026-09-22T11:00",
-   "entries": [
-    {
-     "source": "canal11.pt",
-     "channel": "Canal 11",
-     "url": "https://fpf.watch.pixellot.tv/api/event/list",
-     "raw_title": "Liga Next Gen: SANTA CLARA - PORTIMONENSE"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Liga Next Gen",
-   "home": "ACADÉMICO",
-   "away": "ESTORIL PRAIA",
-   "start_kyiv": "2026-09-22T19:00",
-   "start_utc": "2026-09-22T16:00",
-   "entries": [
-    {
-     "source": "canal11.pt",
-     "channel": "Canal 11",
-     "url": "https://fpf.watch.pixellot.tv/api/event/list",
-     "raw_title": "Liga Next Gen: ACADÉMICO - ESTORIL PRAIA"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Liga Next Gen",
-   "home": "MARÍTIMO",
-   "away": "SL BENFICA",
-   "start_kyiv": "2026-09-25T13:00",
-   "start_utc": "2026-09-25T10:00",
-   "entries": [
-    {
-     "source": "canal11.pt",
-     "channel": "Canal 11",
-     "url": "https://fpf.watch.pixellot.tv/api/event/list",
-     "raw_title": "Liga Next Gen: MARÍTIMO - SL BENFICA"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Liga Next Gen",
-   "home": "RIO AVE FC",
-   "away": "FC PENAFIEL",
-   "start_kyiv": "2026-09-25T13:00",
-   "start_utc": "2026-09-25T10:00",
-   "entries": [
-    {
-     "source": "canal11.pt",
-     "channel": "Canal 11",
-     "url": "https://fpf.watch.pixellot.tv/api/event/list",
-     "raw_title": "Liga Next Gen: RIO AVE FC - FC PENAFIEL"
-    }
-   ]
-  }
- ]
+ "games": []
 }

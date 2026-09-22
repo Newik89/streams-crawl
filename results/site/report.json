@@ -1,40 +1,1461 @@
 {
- "когда": "2026-09-20",
- "режим": "полный обход, окно 6 суток",
+ "когда": "2026-09-22",
+ "режим": "полный обход, окно 2 суток",
  "строки": [
   {
-   "domain": "canal11.pt",
-   "channel": "",
-   "day": "",
+   "domain": "ipko.tv",
+   "channel": "A Spor",
+   "day": "2026-09-22",
    "locale": "en-GB",
-   "url": "https://fpf.watch.pixellot.tv/api/event/list",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=a-spor",
    "browser": false,
    "post": null,
    "warmup": "",
    "post_json": {
-    "page": 0,
-    "size": 50,
-    "next": true,
-    "count": true,
-    "filters": {
-     "status": "upcoming"
-    }
+    "ch_ext_id": "a-spor",
+    "from": "1790035200",
+    "to": "1790121599"
    },
    "headers": {
-    "Origin": "https://www.canal11.pt",
-    "Referer": "https://www.canal11.pt/"
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
    },
    "итог": "расписание есть",
    "почему": "",
-   "байт": 14205,
+   "байт": 6368,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "fpf.watch.pixellot.tv__api_event_list__post-52399f76.html"
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=a-spor__post-5e9126f2.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "A Spor",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=a-spor",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "a-spor",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 6794,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=a-spor__post-e16639db.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "K-Sport 1",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=k-sport-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "k-sport-1",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5388,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=k-sport-1__post-eb011d3d.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "K-Sport 1",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=k-sport-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "k-sport-1",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5868,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=k-sport-1__post-b98467f4.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "K-Sport 2",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=k-sport-2",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "k-sport-2",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5388,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=k-sport-2__post-ff1107c4.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "K-Sport 2",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=k-sport-2",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "k-sport-2",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5868,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=k-sport-2__post-d83b8390.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "K-Sport 3",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=k-sport-3",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "k-sport-3",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5388,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=k-sport-3__post-dca3a5e8.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "K-Sport 3",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=k-sport-3",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "k-sport-3",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5868,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=k-sport-3__post-b38ba5bf.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "K-Sport 4",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=k-sport-4",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "k-sport-4",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 4486,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=k-sport-4__post-b6d7ea80.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "K-Sport 4",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=k-sport-4",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "k-sport-4",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 4884,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=k-sport-4__post-f104c3dc.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "KB Peja",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=kb-peja",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "kb-peja",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 9412,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=kb-peja__post-cfde874d.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "KB Peja",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=kb-peja",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "kb-peja",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 10258,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=kb-peja__post-6c21605a.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "RTK 1",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=rtk-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "rtk-1",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 19405,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=rtk-1__post-b8fcd3c4.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "RTK 1",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=rtk-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "rtk-1",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 21238,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=rtk-1__post-22605855.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 1",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-1",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5474,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-1__post-84855f39.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 1",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-1",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5962,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-1__post-2523b2ba.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 2",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-2",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-2",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5474,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-2__post-f132190c.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 2",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-2",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-2",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5962,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-2__post-4b520ff2.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 3",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-3",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-3",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5474,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-3__post-a6524673.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 3",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-3",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-3",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5962,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-3__post-c6116d1d.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 4",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-4",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-4",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 4572,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-4__post-c907123a.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 4",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-4",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-4",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 4978,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-4__post-328afdae.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 5",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-5",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-5",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 4572,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-5__post-45bb1596.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 5",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-5",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-5",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 4978,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-5__post-c3dff715.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 6",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-6",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-6",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5474,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-6__post-16da3b2a.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Sport 6",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=sport-6",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "sport-6",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5962,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=sport-6__post-49fc992e.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 1",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-1",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1327,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-1__post-25168601.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 1",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-1",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1327,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-1__post-28e51d98.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 2",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-2",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-2",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 9530,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-2__post-2929160f.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 2",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-2",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-2",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 9788,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-2__post-2782e723.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 3",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-3",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-3",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1339,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-3__post-6c357fd5.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 3",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-3",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-3",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1339,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-3__post-d190d8c5.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 4",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-4",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-4",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5578,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-4__post-bfe5ac42.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 4",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-4",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-4",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 6075,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-4__post-2dff7427.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 5",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-5",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-5",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 963,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-5__post-b813987f.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 5",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-5",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-5",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 963,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-5__post-b138e777.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 6",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-6",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-6",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 963,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-6__post-6b45524d.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 6",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-6",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-6",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 963,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-6__post-d66979f3.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 7",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-7",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-7",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 963,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-7__post-2310a2ad.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "SuperSport 7",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=supersport-7",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "supersport-7",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 963,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=supersport-7__post-eb2b2d5b.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "TRT Spor",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=trt-spor",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "trt-spor",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 14919,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=trt-spor__post-f0cad912.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "TRT Spor",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=trt-spor",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "trt-spor",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 18027,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=trt-spor__post-fa1d0461.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 1",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-1",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 6603,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-1__post-0d433b7e.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 1",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-1",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-1",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 7334,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-1__post-945dc2be.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 2",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-2",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-2",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 7284,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-2__post-7db92c56.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 2",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-2",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-2",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 10422,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-2__post-8e3cdff6.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 3",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-3",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-3",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 5298,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-3__post-f91d4824.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 3",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-3",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-3",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 7157,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-3__post-fa55b841.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 4",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-4",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-4",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1450,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-4__post-eee16d2c.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 4",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-4",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-4",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1450,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-4__post-717d7720.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 5",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-5",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-5",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1450,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-5__post-2ced4e3f.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 5",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-5",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-5",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1450,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-5__post-7f2a0601.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 6",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-6",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-6",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1510,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-6__post-94500bf5.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 6",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-6",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-6",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1510,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-6__post-7f1b58fc.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 7",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-7",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-7",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1510,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-7__post-6316e34f.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport 7",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-7",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-7",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 1510,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-7__post-9f863a13.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport News",
+   "day": "2026-09-22",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-news",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-news",
+    "from": "1790035200",
+    "to": "1790121599"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 10497,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-news__post-35bcd70c.html"
+  },
+  {
+   "domain": "ipko.tv",
+   "channel": "Tring Sport News",
+   "day": "2026-09-23",
+   "locale": "en-GB",
+   "url": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-news",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "ch_ext_id": "tring-sport-news",
+    "from": "1790121600",
+    "to": "1790207999"
+   },
+   "headers": {
+    "Origin": "https://ipko.tv",
+    "Referer": "https://ipko.tv/"
+   },
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 10497,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "stargate.ipko.tv__api_titan.tv.WebEpg_GetWebEpgData_channel_id=tring-sport-news__post-86815567.html"
   }
  ],
  "дозор": {
   "liveonsat.com": {
-   "когда": "2026-09-20 13:44",
+   "когда": "2026-09-21 13:43",
    "итог": "заглушка защиты"
   }
  },
