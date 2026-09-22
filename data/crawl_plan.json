@@ -1658,7 +1658,8 @@
     "RTP Madeira",
     "RTP Mundo",
     "RTP África",
-    "RTP1"
+    "RTP1",
+    "RTP2"
    ],
    "browser": false,
    "days_inline": false,
@@ -1696,6 +1697,10 @@
     {
      "name": "RTP1",
      "pattern": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/1/{YYYY-MM-DD}"
+    },
+    {
+     "name": "RTP2",
+     "pattern": "https://www.rtp.pt/EPG/json/rtp-channels-page/list-grid/tv/8/{YYYY-MM-DD}"
     }
    ]
   },
