@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1175. Заняло 3867 с.
+Режим: полный обход, окно 6 суток. Запросов: 1175. Заняло 3708 с.
 
 | Сайт | Результат |
 |---|---|
@@ -22,7 +22,7 @@
 | flashscore.mobi | расписание есть — 21 |
 | football-tv.ru | расписание есть — 1 |
 | jupiter.err.ee | расписание есть — 18 |
-| kanal1sport.sk | не открылась — 1 |
+| kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | заглушка защиты — 19, расписание есть — 4 |
 | m.eredmenyek.com | расписание есть — 7 |
 | m.flashscore.bg | расписание есть — 7 |
@@ -52,7 +52,7 @@
 | programme-tv.net | расписание есть — 48 |
 | raiplay.it | расписание есть — 24 |
 | raspored.hrt.hr | расписание есть — 18 |
-| rtcg.me | расписание есть — 20, пусто — 4 |
+| rtcg.me | расписание есть — 16, пусто — 8 |
 | rte.ie | расписание есть — 17 |
 | rtl.de | расписание есть — 48 |
 | rtp.pt | расписание есть — 27 |
@@ -60,10 +60,10 @@
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | пусто — 4, расписание есть — 2 |
+| sport1.maariv.co.il | пусто — 3, расписание есть — 3 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
-| sport5.co.il | пусто — 1, расписание есть — 5 |
+| sport5.co.il | расписание есть — 6 |
 | sporteventz.com | расписание есть — 1 |
 | sportklub.hr | расписание есть — 10 |
 | sports.kz | расписание есть — 1 |
@@ -94,16 +94,16 @@
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 26
+## Не открылись — 25
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-21 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-21 |
 | dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-22 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-22 |
 | dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-23 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-23 |
 | dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-24 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-24 |
 | dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-25 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-25 |
 | dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-26 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-26 |
+| dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-27 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-27 |
 | livesoccertv.com | ART Sport 1 | cloudflare | https://www.livesoccertv.com/channels/artsport1/ |
 | livesoccertv.com | ART Sport 2 | cloudflare | https://www.livesoccertv.com/channels/art-sport-2/ |
 | livesoccertv.com | ART Sport 3 | cloudflare | https://www.livesoccertv.com/channels/art-sport-3/ |
@@ -123,10 +123,7 @@
 | livesoccertv.com | SuperSport 5 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-5-digitalb/ |
 | livesoccertv.com | SuperSport 6 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-6-digitalb/ |
 | livesoccertv.com | Supersport 7 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-7-albania/ |
-| kanal1sport.sk | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
-Call log:
-  - navigating to "https://www.kanal1sport.sk/tv-program/", waiting until "domcontentloade | https://www.kanal1sport.sk/tv-program/ |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 26 из 1175 страниц (2%), сайтов без удачи 2 из 89 (2%)
+- ✅ обход в норме: не открылись 25 из 1175 страниц (2%), сайтов без удачи 1 из 89 (1%)
