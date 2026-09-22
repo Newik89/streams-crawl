@@ -52,6 +52,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     tree = HTMLParser(html)
 
     out: list[Program] = []
+    honest: list[int] = []       # карточки с настоящей пометкой (Ζ)/LIVE
     channel = ""
     offset = 0
     prev: _time | None = None
@@ -72,10 +73,18 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         hm = _TIME.match(" ".join(time_node.text().split())) if time_node else None
         if not hm:
             continue
+        # настоящая пометка эфира (владелец 22.09): «(Ζ)» в названии и
+        # плашка LIVE появляются, когда матч УЖЕ идёт — будущие карточки
+        # сайт не помечает, их страхует эталон. Застали пометку — эфир
+        # честный, угадыванию и правилу повторов его не трогать
+        live_now = bool(node.css_first("strong.live-now"))
         texts = []
         for cls_name in ("subtitle", "title"):
             for sub in node.css(f"div.{cls_name}"):
                 own = " ".join(sub.text().split())
+                if "(Ζ)" in own:
+                    live_now = True
+                    own = " ".join(own.replace("(Ζ)", " ").split())
                 if own and own not in texts:
                     texts.append(own)
         pair = ""
@@ -108,4 +117,12 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=" " if stale else (pair or " "),
             source_url=url, extra={"day": d.isoformat()},
         ))
-    return mark_first_show(out, "ζωντανά")
+        if live_now and not stale:
+            honest.append(len(out) - 1)
+    out = mark_first_show(out, "ζωντανά")
+    # пометка сайта сильнее угадывания: карточка с (Ζ)/LIVE остаётся
+    # эфиром, даже если mark_first_show счёл её повтором
+    for i in honest:
+        out[i].live_raw = "ζωντανά"
+        out[i].extra.pop("repeat_guess", None)
+    return out
