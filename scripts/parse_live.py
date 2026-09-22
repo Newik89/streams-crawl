@@ -656,6 +656,48 @@ def main() -> int:
         kind = "все лиги, эталон полный" if rich else "топ-лиги"
         print(f"повторы без эталона ({kind}): убрано {before - len(found)}")
 
+    # 22.09 (#3368/#3369/#3370): та же страховка для БАСКЕТА и ТЕННИСА —
+    # Кубок Дэвиса и «Уимблдон» с Джоковичем шли записями: сверка выше
+    # касалась только футбола, а у novasports/beIN будущий эфир не помечен
+    # ((Ζ)/LIVE сайт вешает только на идущее сейчас). Эталон B/T лежит в
+    # reference_full (flashscore.mobi, с 6б); беден эталон спорта — правило
+    # для этого спорта молчит, как футбольное до rich.
+    from datetime import datetime as _dt_kls
+    from zoneinfo import ZoneInfo as _Kyiv
+    reference_bt = []
+    for rec in reference_full:
+        if rec.get("sport") in ("B", "T"):
+            try:
+                t = _dt_kls.strptime(rec["start_kyiv"], "%Y-%m-%dT%H:%M") \
+                    .replace(tzinfo=_Kyiv("Europe/Kyiv"))
+            except (KeyError, ValueError):
+                continue
+            reference_bt.append((rec["home"], rec["away"], t, rec["sport"]))
+    rich_bt = {s: sum(1 for *_x, sp in reference_bt if sp == s) >= 40
+               for s in ("B", "T")}
+
+    def _in_reference_bt(r) -> bool:
+        for h, a, t, sp in reference_bt:
+            if sp != r.sport:
+                continue
+            if abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
+                continue
+            if (names.same_team(r.home, h) and names.same_team(r.away, a)) \
+                    or (names.same_team(r.home, a)
+                        and names.same_team(r.away, h)):
+                return True
+        return False
+
+    before = len(found)
+    found = [(domain, r) for domain, r in found
+             if _bare_domain(domain) not in REPEAT_GUESS_DOMAINS
+             or r.sport not in ("B", "T")
+             or not rich_bt.get(r.sport)
+             or _in_reference_bt(r)]
+    if before - len(found):
+        print("повторы без эталона (баскет/теннис): "
+              f"убрано {before - len(found)}")
+
     # «Грязные» минуты у угаданного эфира — признак записи: прямые
     # трансляции начинаются на :00/:05/…/:55, а повтор в сетке стартует
     # где закончился прошлый блок (`Man Utd - Ipswich` в 00:17 и
