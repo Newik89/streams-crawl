@@ -355,15 +355,21 @@
   var PILL_IDS = { today: "p-today", chan: "p-chan", live: "p-live",
                    names: "p-names", newonly: "p-new" };
   function saveFilters() {
-    var state = {
-      p: Object.keys(pills).filter(function (k) { return pills[k]; }),
-      d: el("f-date").value, s: el("f-sport").value,
-      l: el("f-league").value, c: el("f-channel").value,
-      q: el("f-q").value
-    };
+    // хвост короткий и только из выбранного (владелец 22.09: пустой
+    // закодированный JSON делал адрес «кривым и длинным» без всякой пользы);
+    // ничего не выбрано — адрес остаётся чистым
+    var bag = new URLSearchParams();
+    var on = Object.keys(pills).filter(function (k) { return pills[k]; });
+    if (on.length) bag.set("p", on.join("."));
+    [["d", "f-date"], ["s", "f-sport"], ["l", "f-league"],
+     ["c", "f-channel"], ["q", "f-q"]].forEach(function (f) {
+      var v = el(f[1]).value;
+      if (v) bag.set(f[0], v);
+    });
+    var tail = bag.toString();
     try {
-      history.replaceState(null, "",
-                           "#f=" + encodeURIComponent(JSON.stringify(state)));
+      history.replaceState(null, "", tail ? "#f=" + tail
+                           : location.pathname + location.search);
     } catch (e) {}
   }
   var reloadBtn = el("p-reload");
@@ -373,9 +379,20 @@
   });
   (function restoreFilters() {
     if (location.hash.indexOf("#f=") !== 0) return;
-    var state;
-    try { state = JSON.parse(decodeURIComponent(location.hash.slice(3))); }
-    catch (e) { return; }
+    var raw = location.hash.slice(3), state;
+    try {
+      if (decodeURIComponent(raw).charAt(0) === "{") {
+        // старый вид хвоста (JSON) — старые ссылки продолжают работать
+        state = JSON.parse(decodeURIComponent(raw));
+        state.p = state.p || [];
+      } else {
+        var bag = new URLSearchParams(raw);
+        state = { p: (bag.get("p") || "").split(".").filter(Boolean),
+                  d: bag.get("d") || "", s: bag.get("s") || "",
+                  l: bag.get("l") || "", c: bag.get("c") || "",
+                  q: bag.get("q") || "" };
+      }
+    } catch (e) { return; }
     (state.p || []).forEach(function (k) {
       if (!PILL_IDS[k]) return;
       pills[k] = true;
