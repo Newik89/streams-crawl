@@ -36,6 +36,9 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # 18.09: программа OnePlay — те же Nova Sport, но с видом спорта
           # и отметкой эфира в описании, плюс ČT1/ČT2
           "oneplay.cz",
+          # 22.09: IPKO (Косово, добавил владелец) — шлюз titan, POST на
+          # канал и день; SuperSport/Tring, которых livesoccertv не отдаёт
+          "ipko.tv",
           "sport1.maariv.co.il",
           # пачка 01.09: румынский Digi Sport (4 канала, неделя на странице)
           # и турецкий TRT (16 каналов одним запросом)

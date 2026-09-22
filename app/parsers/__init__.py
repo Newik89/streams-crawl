@@ -94,7 +94,7 @@ def get(domain: str):
                    diemaxtra_bg, digisport_ro, dr_dk, err_ee, ert_gr,
                    flashscore_mobi,
                    football_tv_ru,
-                   hrt_hr, kanal1sport_sk, kolla_tv,
+                   hrt_hr, ipko_tv, kanal1sport_sk, kolla_tv,
                    maxsport_live,
                    liveonsat_com, livesoccertv_com, mediaklikk_hu, mojtv_hr,
                    movistarplus_es, news_by, nova_bg, novasports_gr,

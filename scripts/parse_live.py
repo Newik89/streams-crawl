@@ -47,7 +47,7 @@ DROP_SHARE = 0.5
 #: пары, но каждый день выгрузки парсится отдельно и соседних дней не видит.
 #: Поздний показ той же пары из другого дня снимаем здесь.
 REPEAT_GUESS_DOMAINS = {"trtspor.com.tr", "allente.no", "programetv.ro",
-                        "oneplaysport.cz", "ert.gr", "rtrs.tv",
+                        "oneplaysport.cz", "ert.gr", "rtrs.tv", "ipko.tv",
                         "trt.net.tr", "mediaklikk.hu", "sports.kz",
                         "movistarplus.es", "tv.orf.at",
                         "programme-tv.net", "rtl.de", "bbc.co.uk",
