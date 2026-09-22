@@ -12,8 +12,10 @@
   - `schedule()` — готовые строки для публичной страницы.
 
 Свежая строка от сайта считается точнее лежащей в базе: время и лига
-обновляются, если пришли лучше. Канал, пропавший из источника, гаснет после
-трёх неподтверждений (`event_channels.miss_count`), но игру не трогает.
+обновляются, если пришли лучше. Канал, пропавший из источника, после трёх
+неподтверждений (`event_channels.miss_count`) не исчезает молча: на витрине
+он остаётся перечёркнутым «снят» (владелец 22.09, случай #3354), а в API не
+отдаётся. Вернулся в расписание — заливка сбросит счётчик, канал оживёт сам.
 """
 
 from __future__ import annotations
@@ -488,6 +490,10 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             return bool(canon or team_names.get((raw or "").strip()))
 
         channels = []
+        # канал, докапавший счётчик пропаж: не прячем, а показываем на
+        # витрине перечёркнутым «снят» (владелец 22.09, случай #3354);
+        # API этот список не отдаёт
+        gone_channels = []
         seen_channels: set[int] = set()
         # источник моложе трёх дней — канал помечается на витрине «на
         # обкатке» (просьба владельца 05.09: новое должно быть видно;
@@ -496,18 +502,24 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
         for r in conn.execute(
                 "SELECT c.id, c.canonical_name AS name, c.country, "
                 "       c.custom_name, c.note, ec.first_seen AS ch_first_seen, "
-                "       ec.source_url, s.base_url, s.created_at, ec.time_off "
+                "       ec.source_url, s.base_url, s.created_at, ec.time_off, "
+                "       ec.miss_count, ec.seen AS ch_seen "
                 "FROM event_channels ec "
                 "JOIN channels c ON c.id = ec.channel_id "
                 "LEFT JOIN sources s ON s.id = ec.source_id "
-                "WHERE ec.event_id = ? AND ec.miss_count < ? "
-                # тот же канал от двух сайтов: первой — отметка с верным
+                "WHERE ec.event_id = ? "
+                # живые отметки первыми: канал, подтверждённый хоть одним
+                # сайтом, выходит живым, а не «снятым». Дальше как раньше:
+                # тот же канал от двух сайтов — первой отметка с верным
                 # временем, красная пометка остаётся только без подтверждения
-                "ORDER BY ec.time_off, ec.id", (row["id"], MISS_LIMIT)):
+                "ORDER BY (ec.miss_count >= ?), ec.time_off, ec.id",
+                (row["id"], MISS_LIMIT)):
             if r["id"] in seen_channels:
                 continue
             seen_channels.add(r["id"])
-            channels.append({"id": r["id"], "name": r["name"],
+            gone = r["miss_count"] >= MISS_LIMIT
+            (gone_channels if gone else channels).append(
+                            {"id": r["id"], "name": r["name"],
                              # перед именем — пометка владельца, а если её
                              # нет, приставка страны у автоматических имён
                              # (правила 09.09 и 10.09). Она вне копируемого
@@ -526,16 +538,22 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                              "url": human_url(r["source_url"], r["base_url"]),
                              # сайт канала пишет другое время, чем flashscore
                              # (14.09) — красным, «перепроверить»
-                             "time_off": bool(r["time_off"]),
-                             "new_source": bool(r["created_at"]
+                             # у «снятого» канала служебные пометки гасим:
+                             # осталась одна — «снят»
+                             "time_off": bool(r["time_off"]) and not gone,
+                             "new_source": bool(not gone and r["created_at"]
                                                 and str(r["created_at"])
                                                 >= new_edge),
+                             # клик владельца по зелёному каналу — «прочитан»,
+                             # бейдж «new» ему больше не рисуем (22.09)
+                             "seen": bool(r["ch_seen"]),
                              # бейдж «new»: канал появился у игры недавно И
                              # заметно позже неё самой — то есть именно
                              # ДОБАВИЛСЯ, а не приехал вместе с игрой
                              # (правка владельца 12.09)
                              "new": bool(
-                                 r["ch_first_seen"]
+                                 not gone
+                                 and r["ch_first_seen"]
                                  and str(r["ch_first_seen"]) >= channel_edge
                                  and (ch_dt := _dt(str(r["ch_first_seen"])))
                                  and (ev_dt := _dt(str(row["first_seen"] or "")))
@@ -580,6 +598,8 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             # или не нажмёт «Прочитано всё» (21.09); гостям остаётся is_new
             "unread": not row["seen"],
             "channels": channels,
+            # перечёркнутые «снят» — только витрине; API их не отдаёт
+            "gone_channels": gone_channels,
         })
     return games
 

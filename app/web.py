@@ -679,9 +679,28 @@ def create_app() -> Flask:
             conn.close()
         return jsonify({"ok": True})
 
+    @app.route("/games/<int:event_id>/channels/<int:channel_id>/seen",
+               methods=["POST"])
+    def channel_seen(event_id: int, channel_id: int):
+        """Клик по зелёному каналу гасит его «new» насовсем (владелец 22.09:
+        «кликнул — перестал подсвечиваться», с любого устройства)."""
+        verify_csrf()
+        if not session.get("admin"):
+            abort(403)
+        conn = db.connect()
+        try:
+            conn.execute("UPDATE event_channels SET seen = 1 "
+                         "WHERE event_id = ? AND channel_id = ?",
+                         (event_id, channel_id))
+            conn.commit()
+        finally:
+            conn.close()
+        return jsonify({"ok": True})
+
     @app.route("/games/seen-all", methods=["POST"])
     def games_seen_all():
-        """Кнопка «Прочитано всё»: снять новизну разом (владелец 21.09)."""
+        """Кнопка «Прочитано всё»: снять новизну разом (владелец 21.09).
+        С 22.09 гасит и зелёные каналы — они той же природы «непрочитанного»."""
         verify_csrf()
         if not session.get("admin"):
             abort(403)
@@ -689,6 +708,7 @@ def create_app() -> Flask:
         try:
             n = conn.execute("UPDATE events SET seen = 1 "
                              "WHERE seen = 0").rowcount
+            conn.execute("UPDATE event_channels SET seen = 1 WHERE seen = 0")
             conn.commit()
         finally:
             conn.close()

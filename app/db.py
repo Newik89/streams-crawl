@@ -53,8 +53,11 @@ _LATE_COLUMNS = {
     "channels": [("custom_name", "INTEGER NOT NULL DEFAULT 0"),
                  ("note", "TEXT")],
     # 14.09: время у сайта разошлось с эталоном flashscore, канал прилип к
-    # игре по командам — на витрине красная пометка «перепроверить»
-    "event_channels": [("time_off", "INTEGER NOT NULL DEFAULT 0")],
+    # игре по командам — на витрине красная пометка «перепроверить».
+    # 22.09: клик владельца по зелёному каналу гасит его «new» насовсем,
+    # с любого устройства — как `events.seen` у игр
+    "event_channels": [("time_off", "INTEGER NOT NULL DEFAULT 0"),
+                       ("seen", "INTEGER NOT NULL DEFAULT 0")],
     # 15.09: ответ «какой это спорт» привязан к дню матча, а не навечно
     "sport_hints": [("match_day", "TEXT")],
     # 21.09: игра «новая», пока владелец её не прочитал — клик по строке или
