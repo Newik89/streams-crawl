@@ -58,9 +58,6 @@ GRID_DOMAINS = {"tv.nova.cz", "sporttv.pt", "tvarenasport.com",
                 # агрегатор матч→каналы: один JSON на текущий день, ключ
                 # одноразовый — {WARMKEY} из warmup-страницы
                 "sporteventz.com",
-                # греческий Novasports: 25 каналов текущего дня одной
-                # страницей (вся линейка + Eurosport GR + Cosmote)
-                "novasports.gr",
                 # Беларусь 5: недельные блоки в props — один заход браузером
                 "news.by",
                 # OneSoccer: одна страница ближайших трансляций
@@ -128,7 +125,11 @@ DAY_GRID_DOMAINS = {"polsatsport.pl", "allente.no", "ceskatelevize.cz",
                     "dr.dk",
                     # OnePlay: ручка программы (POST), сутки по 52 каналам
                     # разом, в описании вид спорта и «Přímý přenos»
-                    "oneplay.cz"}
+                    "oneplay.cz",
+                    # Novasports (22.09): ручка admin-ajax отдаёт ЛЮБОЙ день
+                    # всей линейкой, будущий эфир честно помечен (Ζ)/LIVE —
+                    # раньше брали одной страницей только текущий день
+                    "novasports.gr"}
 # эталон flashscore.mobi с 02.09 идёт обычным «канал × день»: три раздела
 # (football/basketball/tennis) лежат в source_channels, ?d={DAYNUM} в page_url
 

@@ -53,7 +53,9 @@ REPEAT_GUESS_DOMAINS = {"trtspor.com.tr", "allente.no", "programetv.ro",
                         "programme-tv.net", "rtl.de", "bbc.co.uk",
                         "beinsports.com.tr", "raspored.hrt.hr", "tv8.com.tr",
                         "tv.sport1.de", "raiplay.it", "trtavaz.com.tr", "tvpassport.com",
-                        "novasports.gr", "jupiter.err.ee", "tvguidetonight.com.au",
+                        # novasports.gr выведен 22.09: (Ζ)/LIVE — честные
+                        # пометки эфира и на будущих днях (ручка admin-ajax)
+                        "jupiter.err.ee", "tvguidetonight.com.au",
                         # tv2.no: флаг `live` у сайта про «идёт сейчас»,
                         # а не про прямой эфир; atv признака не ставит
                         # вовсе

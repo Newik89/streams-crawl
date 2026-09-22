@@ -14,8 +14,12 @@ Novasports 1–6, Prime, Premier League, Start, News, Extra 1–4 — плюс
                     (у передач без матча — название и подпись)
 
 Пара — узел, где есть « - » с двумя сторонами; лига — соседний узел.
-Маркера эфира нет: эфиром считаем первый показ пары (`mark_first_show`),
-домен в `REPEAT_GUESS_DOMAINS`. Ночные карточки (00:00, 02:00 в конце
+Эфир сайт помечает ЧЕСТНО, в том числе на будущих днях (нашёл владелец
+22.09): «(Ζ)» в названии и плашка LIVE (`strong.live-now`). Непомеченное —
+записи и студии, угадывания нет. Любой день отдаёт ручка
+`/wp-admin/admin-ajax.php?action=nova_get_template&template=tv-program/
+broadcast&dt={YYYY-MM-DD}` (найдена в инлайн-скрипте страницы) — домен
+живёт в `DAY_GRID_DOMAINS`. Ночные карточки (00:00, 02:00 в конце
 списка) — следующая дата, ловится по убыванию времени.
 """
 
@@ -27,7 +31,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
-from . import Program, mark_first_show, register
+from . import Program, register
 
 DOMAIN = "novasports.gr"
 TZ = "Europe/Athens"
@@ -82,9 +86,11 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         for cls_name in ("subtitle", "title"):
             for sub in node.css(f"div.{cls_name}"):
                 own = " ".join(sub.text().split())
-                if "(Ζ)" in own:
-                    live_now = True
-                    own = " ".join(own.replace("(Ζ)", " ").split())
+                # сайт пишет пометку то греческой Ζ, то латинской Z
+                for метка in ("(Ζ)", "(Z)"):
+                    if метка in own:
+                        live_now = True
+                        own = " ".join(own.replace(метка, " ").split())
                 if own and own not in texts:
                     texts.append(own)
         pair = ""
@@ -119,10 +125,10 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         ))
         if live_now and not stale:
             honest.append(len(out) - 1)
-    out = mark_first_show(out, "ζωντανά")
-    # пометка сайта сильнее угадывания: карточка с (Ζ)/LIVE остаётся
-    # эфиром, даже если mark_first_show счёл её повтором
+    # 22.09 (скрин владельца за 24.09): сайт честно размечает эфир и на
+    # БУДУЩИХ днях — (Ζ) в названии и плашка LIVE (на дневной ручке их
+    # десятки). Угадывание первым показом убрано: эфир только у помеченных
+    # карточек, всё прочее — записи и студийные передачи
     for i in honest:
         out[i].live_raw = "ζωντανά"
-        out[i].extra.pop("repeat_guess", None)
     return out
