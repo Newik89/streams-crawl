@@ -174,8 +174,7 @@
     <input type="search" id="f-q" placeholder="Search team or channel…">
   </div>
   {% if admin %}
-  {% with st = site_crawl_status() %}{% if st %}<div class="crawlnote {{ st.cls }}">{{ st.text }}</div>{% endif %}{% endwith %}
-  {% with fc = full_crawl_status() %}{% if fc %}<div class="crawlnote {{ fc.cls }}">{{ fc.text }}</div>{% endif %}{% endwith %}
+  {% for st in crawl_status_lines() %}<div class="crawlnote {{ st.cls }}">{{ st.text }}</div>{% endfor %}
   {% endif %}
 </header>
 

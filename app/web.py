@@ -168,46 +168,107 @@ def create_app() -> Flask:
         return None
     app.jinja_env.globals["site_crawl_status"] = site_crawl_status
 
-    def full_crawl_status() -> dict | None:
-        """Та же строка для полного обхода с пульта витрины (2/5/6 дней,
-        скан даты): заказан → идёт → ✅ ВЫПОЛНЕН (владелец 22.09: со
-        страницы расписания не видно, запустился ли обход и чем он
-        кончился). Живёт сутки, дальше прячется."""
+    def _run_words(what: str) -> str:
+        """`days-6` → «Обход 6 сут.», `date-2026-09-23` → «Скан даты 23.09»,
+        `сайт X`/`site-X` → «Обход сайта X», прочее — «Обход»."""
+        if what.startswith("days-"):
+            return f"Обход {what[5:]} сут."
+        if what.startswith("date-"):
+            day = what[5:]
+            try:
+                day = datetime.strptime(day, "%Y-%m-%d").strftime("%d.%m")
+            except ValueError:
+                pass
+            return f"Скан даты {day}"
+        if what.startswith("site-"):
+            return f"Обход сайта {what[5:]}"
+        if what.startswith("сайт "):
+            return f"Обход сайта {what[5:]}"
+        return "Обход"
+
+    def crawl_status_lines() -> list[dict]:
+        """Строки статуса над витриной и в админке (владелец 22.09, вторая
+        просьба того же дня): пока сбор ИДЁТ — только «идёт…», без старых
+        зелёных «✅ ВЫПОЛНЕН», чтобы не путали. Свободно — свежие итоги:
+        точечный «Обойти сайт», скан даты, полный обход. Каждый живёт сутки."""
+        now = datetime.now()
         conn = db.connect()
         try:
-            line = health.request_line(conn)
             run = crawl_hook.running(conn)
+            if run:
+                state = ("идёт" if run["state"] == "идёт"
+                         else "заказан, ждём запуска")
+                return [{"cls": "ok",
+                         "text": f"{_run_words(run['what'])}: {state} "
+                                 f"с {run['since']}…"}]
+            line = health.request_line(conn)
+            date_raw = db.get_setting(conn, "date_scan_request")
+            date_done = None
+            if date_raw and "|" in date_raw:
+                day, stamp = date_raw.split("|", 1)
+                row = conn.execute(
+                    "SELECT finished_at FROM runs WHERE finished_at >= ? "
+                    "AND log LIKE ? ORDER BY id DESC LIMIT 1",
+                    (stamp, f"%скан даты {day}%")).fetchone()
+                date_done = row["finished_at"] if row else ""
         finally:
             conn.close()
-        if not line:
-            return None
-        try:
-            asked = datetime.strptime(line["asked"], "%Y-%m-%d %H:%M")
-        except ValueError:
-            return None
-        if datetime.now() - asked > timedelta(hours=24):
-            return None
-        name = line["what"].capitalize()
-        if line["done"]:
-            tail = f", влито {line['import']}" if line["import"] else ""
-            return {"cls": "ok",
-                    "text": f"{name}: ✅ ВЫПОЛНЕН — собрано {line['crawl']}"
-                            f"{tail}"}
-        # замок точечного обхода — не про этот заказ, его строка своя
-        if run and not run["what"].startswith(("сайт ", "site-")):
-            if run["state"] == "идёт":
-                return {"cls": "ok",
-                        "text": f"{name}: идёт с {run['since']}…"}
-            return {"cls": "ok",
-                    "text": f"{name}: заказан в {asked:%H:%M}, "
-                            "ждём прогона…"}
-        if datetime.now() - asked > timedelta(minutes=30):
-            return {"cls": "error",
-                    "text": f"{name}: заказан в {asked:%H:%M}, итог так и "
-                            "не доехал — смотрите «Прогоны»"}
-        return {"cls": "ok",
-                "text": f"{name}: заказан в {asked:%H:%M}, ждём прогона…"}
-    app.jinja_env.globals["full_crawl_status"] = full_crawl_status
+        lines = []
+        site = site_crawl_status()
+        if site:
+            lines.append(site)
+
+        def чч_мм(text: str) -> str:
+            for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+                try:
+                    return datetime.strptime((text or "").strip(),
+                                             fmt).strftime("%H:%M")
+                except ValueError:
+                    continue
+            return text or "?"
+
+        def минуло(stamp: str, минут: int) -> bool:
+            try:
+                return now - datetime.strptime(stamp, "%Y-%m-%d %H:%M") \
+                    > timedelta(minutes=минут)
+            except ValueError:
+                return True
+
+        # скан даты: заказ пишет пульт (владелец 22.09 — раньше итог скана
+        # не показывался вовсе, а старые строки висели зелёными)
+        if date_raw and "|" in date_raw and not минуло(stamp, 24 * 60):
+            words = _run_words(f"date-{day}")
+            if date_done:
+                lines.append({"cls": "ok",
+                              "text": f"{words}: ✅ ВЫПОЛНЕН, влито в "
+                                      f"{чч_мм(date_done)}"})
+            elif минуло(stamp, 30):
+                lines.append({"cls": "error",
+                              "text": f"{words}: заказан в {stamp[-5:]}, итог "
+                                      "так и не доехал — смотрите «Прогоны»"})
+            else:
+                lines.append({"cls": "ok",
+                              "text": f"{words}: заказан в {stamp[-5:]}, "
+                                      "ждём прогона…"})
+        # полный обход «на N дней»
+        if line and not минуло(line["asked"], 24 * 60):
+            name = line["what"].capitalize()
+            if line["done"]:
+                tail = f", влито {line['import']}" if line["import"] else ""
+                lines.append({"cls": "ok",
+                              "text": f"{name}: ✅ ВЫПОЛНЕН — собрано "
+                                      f"{line['crawl']}{tail}"})
+            elif минуло(line["asked"], 30):
+                lines.append({"cls": "error",
+                              "text": f"{name}: заказан в {line['asked'][-5:]}, "
+                                      "итог так и не доехал — смотрите "
+                                      "«Прогоны»"})
+            else:
+                lines.append({"cls": "ok",
+                              "text": f"{name}: заказан в {line['asked'][-5:]}, "
+                                      "ждём прогона…"})
+        return lines
+    app.jinja_env.globals["crawl_status_lines"] = crawl_status_lines
 
     def too_many_attempts(ip: str) -> bool:
         now = time.time()
@@ -626,6 +687,12 @@ def create_app() -> Flask:
                     # (владелец 09.09)
                     db.set_setting(conn, "crawl_request",
                                    f"обход {days} сут.|"
+                                   f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
+                else:
+                    # заказ скана даты — своя строка статуса на витрине:
+                    # раньше его итог не показывался вовсе (владелец 22.09)
+                    db.set_setting(conn, "date_scan_request",
+                                   f"{date}|"
                                    f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
             finally:
                 conn.close()

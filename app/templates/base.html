@@ -83,9 +83,7 @@
     {% for cat, msg in msgs %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
   {% endwith %}
   {% if session.get('admin') %}
-    {% with st = site_crawl_status() %}
-      {% if st %}<div class="flash {{ st.cls }}"><b>{{ st.text }}</b></div>{% endif %}
-    {% endwith %}
+    {% for st in crawl_status_lines() %}<div class="flash {{ st.cls }}"><b>{{ st.text }}</b></div>{% endfor %}
   {% endif %}
   {% block body %}{% endblock %}
 </main>
