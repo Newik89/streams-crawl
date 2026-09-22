@@ -61,11 +61,18 @@ NAMES = {
 #: албанская пара пишется и через « - », и через « vs », и с «ndaj» (против)
 _SEPS = (" - ", " – ", " — ", " vs ", " ndaj ")
 
+#: у турецких каналов ipko (A Spor) лига приклеена к паре без двоеточия:
+#: «UEFA Kadınlar Şampiyonlar Ligi Futbol Karşılaşması Barcelona - Paris FC»
+#: — всё до слова «матч» (tr/sq) к именам не относится
+_PREFIX = re.compile(r"^.*\b(karşılaşması|karşılaşma|ndeshja|ndeshje)\s+",
+                     re.I)
+
 
 def _pair(text: str) -> str:
     """Пара команд из заголовка или описания: `Futboll: Prishtina - Drita`."""
     # лига/вид спорта до двоеточия к паре не относится
     text = text.split(":", 1)[-1] if ":" in text else text
+    text = _PREFIX.sub("", text)
     for part in text.split(","):
         part = part.strip()
         for sep in _SEPS:
