@@ -144,7 +144,9 @@
 <header>
   <h1>⚽ Live Sport on TV</h1>
   {% if admin %}<a class="admin-mark" href="{{ url_for('dashboard') }}"
-     title="Вы вошли как админ; клик ведёт в админку">admin</a>{% endif %}
+     title="Вы вошли как админ; клик ведёт в админку">admin</a>
+  <button class="pill" id="p-reload" type="button"
+     title="Перечитать расписание с сервера, не сбрасывая выбранные фильтры">⟳ Обновить</button>{% endif %}
   <div class="controls">
     <button class="pill" id="p-today" type="button">Today</button>
     <button class="pill" id="p-chan" type="button">Only with channels</button>
@@ -346,6 +348,47 @@
   });
   el("more").addEventListener("click", function () { shown += CHUNK; apply(); });
   apply();
+
+  // ── кнопка «⟳ Обновить» у админа (владелец 22.09): перечитать страницу,
+  // не сбрасывая фильтры. Состояние едет в #f=… адреса и восстанавливается
+  // при загрузке — заодно фильтры переживают и обычный F5 c этим хвостом.
+  // С «возвратом на игру» (#g1622) не спорит: хвосты разные
+  var PILL_IDS = { today: "p-today", chan: "p-chan", live: "p-live",
+                   names: "p-names", newonly: "p-new" };
+  function saveFilters() {
+    var state = {
+      p: Object.keys(pills).filter(function (k) { return pills[k]; }),
+      d: el("f-date").value, s: el("f-sport").value,
+      l: el("f-league").value, c: el("f-channel").value,
+      q: el("f-q").value
+    };
+    try {
+      history.replaceState(null, "",
+                           "#f=" + encodeURIComponent(JSON.stringify(state)));
+    } catch (e) {}
+  }
+  var reloadBtn = el("p-reload");
+  if (reloadBtn) reloadBtn.addEventListener("click", function () {
+    saveFilters();
+    location.reload();
+  });
+  (function restoreFilters() {
+    if (location.hash.indexOf("#f=") !== 0) return;
+    var state;
+    try { state = JSON.parse(decodeURIComponent(location.hash.slice(3))); }
+    catch (e) { return; }
+    (state.p || []).forEach(function (k) {
+      if (!PILL_IDS[k]) return;
+      pills[k] = true;
+      el(PILL_IDS[k]).classList.add("on");
+    });
+    el("f-date").value = state.d || "";
+    el("f-sport").value = state.s || "";
+    el("f-league").value = state.l || "";
+    el("f-channel").value = state.c || "";
+    el("f-q").value = state.q || "";
+    apply();
+  })();
 
   // ── возврат на ту же игру: #g1622 в адресе ────────────────────────────────
   // Строки показываются порциями по CHUNK, и нужная игра при возврате со
