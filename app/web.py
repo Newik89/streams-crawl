@@ -682,16 +682,22 @@ def create_app() -> Flask:
     @app.route("/games/<int:event_id>/channels/<int:channel_id>/seen",
                methods=["POST"])
     def channel_seen(event_id: int, channel_id: int):
-        """Клик по зелёному каналу гасит его «new» насовсем (владелец 22.09:
-        «кликнул — перестал подсвечиваться», с любого устройства)."""
+        """Клик по каналу на витрине (владелец 22.09, с любого устройства):
+        живой зелёный — гасит его «new» (seen=1); снятый перечёркнутый —
+        прячет отметку из списка игры насовсем (seen=2). Что именно кликнули,
+        решает база: витрина показывает живую отметку, пока есть хоть одна."""
         verify_csrf()
         if not session.get("admin"):
             abort(403)
         conn = db.connect()
         try:
-            conn.execute("UPDATE event_channels SET seen = 1 "
+            alive = conn.execute(
+                "SELECT 1 FROM event_channels WHERE event_id = ? "
+                "AND channel_id = ? AND miss_count < ? LIMIT 1",
+                (event_id, channel_id, store.MISS_LIMIT)).fetchone()
+            conn.execute("UPDATE event_channels SET seen = ? "
                          "WHERE event_id = ? AND channel_id = ?",
-                         (event_id, channel_id))
+                         (1 if alive else 2, event_id, channel_id))
             conn.commit()
         finally:
             conn.close()
@@ -708,7 +714,11 @@ def create_app() -> Flask:
         try:
             n = conn.execute("UPDATE events SET seen = 1 "
                              "WHERE seen = 0").rowcount
-            conn.execute("UPDATE event_channels SET seen = 1 WHERE seen = 0")
+            # только живые отметки: снятые «Прочитано всё» не прячет —
+            # их владелец убирает кликом поштучно
+            conn.execute("UPDATE event_channels SET seen = 1 "
+                         "WHERE seen = 0 AND miss_count < ?",
+                         (store.MISS_LIMIT,))
             conn.commit()
         finally:
             conn.close()

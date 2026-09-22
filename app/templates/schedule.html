@@ -207,7 +207,7 @@
         <td class="sport">{{ {"F":"⚽","B":"🏀","T":"🎾"}.get(g.sport, g.sport) }}</td>
         <td class="league"><span class="copy">{{ g.league }}</span>{% if admin and g.league %}<button class="edit" type="button" data-kind="league" data-raw="{{ g.league_auto or g.league }}" title="Исправить название лиги">✎</button>{% endif %}</td>
         <td class="match"><b class="copy">{{ g.home }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.home_auto or g.home }}" title="Исправить название команды">✎</button>{% endif %} vs <b class="copy">{{ g.away }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.away_auto or g.away }}" title="Исправить название команды">✎</button>{% endif %}<span class="gid copy" title="Номер игры — клик копирует">#{{ g.id }}</span>{% if admin and g.pending %}<a class="ask-go" href="{{ url_for('moderation_list') }}?focus={{ g.pending }}&amp;back=g{{ g.id }}" title="Название для этой игры уже найдено — осталось подтвердить">ждёт подтверждения →</a>{% endif %}</td>
-        <td>{% for c in g.channels %}{# админ гасит «new» кликом (22.09), гостю — прежняя новизна по часам #}{% set fresh_ch = c.new and (not admin or not c.seen) %}<span class="chan{% if fresh_ch %} fresh{% endif %}{% if c.time_off %} timeoff{% endif %}" data-cid="{{ c.id }}"{% if c.custom %} data-nocc="1"{% endif %}>{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span>{% if c.new_source %}<span class="newsrc" title="Канал нового источника — на обкатке">новый</span>{% endif %}{% if fresh_ch %}<span class="newch" title="Канал добавился к этой игре недавно">new</span>{% endif %}{% if c.time_off %}<span class="timeoffch" title="Сайт канала пишет другое время, чем flashscore — перепроверить. Не подтвердит обход ближе к дате — канал погаснет сам">время?</span>{% endif %}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}{% if admin %}<button class="chan-edit" type="button" data-cid="{{ c.id }}" data-note="{{ c.country or '' }}" title="Изменить название канала и пометку перед ним">✎</button>{% endif %}</span>{% endfor %}{% for c in g.gone_channels %}<span class="chan gone" title="Канал убрал эту игру из своего расписания — если вернёт, отметка оживёт сама">{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span><span class="gonech">снят</span>{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}</span>{% endfor %}</td>
+        <td>{% for c in g.channels %}{# админ гасит «new» кликом (22.09), гостю — прежняя новизна по часам #}{% set fresh_ch = c.new and (not admin or not c.seen) %}<span class="chan{% if fresh_ch %} fresh{% endif %}{% if c.time_off %} timeoff{% endif %}" data-cid="{{ c.id }}"{% if c.custom %} data-nocc="1"{% endif %}>{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span>{% if c.new_source %}<span class="newsrc" title="Канал нового источника — на обкатке">новый</span>{% endif %}{% if fresh_ch %}<span class="newch" title="Канал добавился к этой игре недавно">new</span>{% endif %}{% if c.time_off %}<span class="timeoffch" title="Сайт канала пишет другое время, чем flashscore — перепроверить. Не подтвердит обход ближе к дате — канал погаснет сам">время?</span>{% endif %}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}{% if admin %}<button class="chan-edit" type="button" data-cid="{{ c.id }}" data-note="{{ c.country or '' }}" title="Изменить название канала и пометку перед ним">✎</button>{% endif %}</span>{% endfor %}{% for c in g.gone_channels %}<span class="chan gone" data-cid="{{ c.id }}" title="Канал убрал эту игру из своего расписания — если вернёт, отметка оживёт сама{% if admin %}. Клик копирует имя и убирает отметку из этой игры{% endif %}">{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span><span class="gonech">снят</span>{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}</span>{% endfor %}</td>
       </tr>
       {% endfor %}
     </table>
@@ -473,6 +473,23 @@
     body.set("csrf_token", meta.content);
     fetch("/games/" + row.id.slice(1) + "/channels/" + mark.dataset.cid + "/seen",
           { method: "POST", body: body });
+  });
+
+  // ── клик по «снятому» каналу убирает его из списка игры (владелец 22.09):
+  // имя успевает скопироваться обычным путём, отметка прячется насовсем;
+  // ссылка ↗ остаётся ссылкой. У гостя клик ничего не меняет
+  document.addEventListener("click", function (ev) {
+    var mark = ev.target.closest(".chan.gone");
+    if (!mark || ev.target.closest(".chan-go")) return;
+    var row = ev.target.closest("tr.game");
+    var meta = document.querySelector('meta[name="csrf"]');
+    if (!meta || !row) return;
+    var body = new URLSearchParams();
+    body.set("csrf_token", meta.content);
+    fetch("/games/" + row.id.slice(1) + "/channels/" + mark.dataset.cid + "/seen",
+          { method: "POST", body: body });
+    // убрать после того, как обработчик копирования возьмёт имя
+    setTimeout(function () { mark.remove(); }, 0);
   });
 
   document.addEventListener("click", function (ev) {

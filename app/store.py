@@ -518,6 +518,10 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                 continue
             seen_channels.add(r["id"])
             gone = r["miss_count"] >= MISS_LIMIT
+            # снятую отметку владелец убрал кликом (seen=2) — не показываем;
+            # вернись канал в расписание, он выйдет живым как ни в чём не бывало
+            if gone and r["ch_seen"] == 2:
+                continue
             (gone_channels if gone else channels).append(
                             {"id": r["id"], "name": r["name"],
                              # перед именем — пометка владельца, а если её
