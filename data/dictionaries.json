@@ -10367,6 +10367,7 @@
         "Ausztria",
         "Avusturya",
         "Rakousko",
+        "UEFA Liga nacija (M): Austria",
         "ÁUSTRIA",
         "Αυστρία",
         "Австрия",
@@ -18492,6 +18493,7 @@
       "name": "Brzi Brod",
       "country": null,
       "aliases": [
+        "Radnicki Svilajnac",
         "Μπρζι Μπροντ",
         "Брзи Брод",
         "Брзі Брод",
@@ -20734,6 +20736,14 @@
         "Κάλτσιο Αβόλα",
         "Калчо Авола",
         "Кальчо Авола"
+      ]
+    },
+    {
+      "name": "Calcutta Customs",
+      "country": null,
+      "aliases": [
+        "Καλκούτα Κάστομς",
+        "Калкута Къстъмс"
       ]
     },
     {
@@ -40305,6 +40315,7 @@
       "country": null,
       "aliases": [
         "L. Fruhvirtova",
+        "Linda Fruhvirtová",
         "Φρουχβίρτοβα"
       ]
     },
@@ -46350,6 +46361,8 @@
         "Hapoel Beer Sheva",
         "Χαποέλ Μπίερ Σεβά",
         "Хапоэль Беер Шева",
+        "הפועל ב\"ש/דימונה",
+        "הפועל ב\"ש/דימונה, פליי-אין",
         "הפועל ב״ש/דימונה"
       ]
     },
@@ -49411,6 +49424,7 @@
       "country": null,
       "aliases": [
         "HUNGRIA",
+        "Hungary",
         "Magyarország",
         "Magyarország",
         "Mađarska",
@@ -49530,6 +49544,13 @@
       "aliases": [
         "Hunter",
         "Hunter S."
+      ]
+    },
+    {
+      "name": "Hunter S./Krawczyk D.",
+      "country": null,
+      "aliases": [
+        "Hunter/Krawczyk"
       ]
     },
     {
@@ -51680,6 +51701,7 @@
         "Irska",
         "Irska",
         "Irsko",
+        "R. Ireland",
         "REPÚBLICA DA IRLANDA",
         "Írország",
         "İrlanda",
@@ -58310,6 +58332,7 @@
         "Kosowo",
         "Koszovó",
         "Koszovó",
+        "UEFA Liga nacija (M): Kosovo",
         "Κόσοβο",
         "Косово",
         "Косово",
@@ -74606,6 +74629,13 @@
       ]
     },
     {
+      "name": "Ninomiya M./Radisic N.",
+      "country": null,
+      "aliases": [
+        "Ninomiya/Radišič"
+      ]
+    },
+    {
       "name": "Ninove",
       "country": null,
       "aliases": [
@@ -77246,6 +77276,7 @@
       "aliases": [
         " ΟΛΥΜΠΙΑΚΟΣ",
         " ΟΛΥΜΠΙΑΚΟΣ",
+        "Euroleague: Baskonia - Olympiacos",
         "Eurolygos supertaurė. \"Olympiacos",
         "FINALE: Olympiacos",
         "OLYMPIACOS",
@@ -84176,6 +84207,7 @@
         "Portugalsko",
         "Portugália",
         "Portugália",
+        "UEFA Liga nacija (M): Portugal",
         "UEFA Nemzetek Ligája: Portugália",
         "Πορτογαλία",
         "Португалия",
@@ -86935,6 +86967,8 @@
       "name": "Radnicki Svilajnac",
       "country": null,
       "aliases": [
+        "Brzi Brod",
+        "Brzi Brod",
         "Radnički Svilajnac",
         "Ραντνίτσκι Σβιλάινατς",
         "Раднички Свилайнац",
@@ -90423,6 +90457,16 @@
       ]
     },
     {
+      "name": "Russia U19",
+      "country": null,
+      "aliases": [
+        "Oroszország U19",
+        "Rusija U19",
+        "Ρωσία U19",
+        "Русия U19"
+      ]
+    },
+    {
       "name": "Rust",
       "country": null,
       "aliases": [
@@ -92107,6 +92151,7 @@
       "name": "Sakkari M.",
       "country": null,
       "aliases": [
+        "Maria Sakkari",
         "Sakkari",
         "Σάκκαρη"
       ]
@@ -112866,6 +112911,13 @@
       ]
     },
     {
+      "name": "Vekic D.",
+      "country": null,
+      "aliases": [
+        "Vekić"
+      ]
+    },
+    {
       "name": "Velarde",
       "country": null,
       "aliases": [
@@ -115757,6 +115809,13 @@
         "Вандсбекер Конкордия",
         "Вандсбекер Конкордия",
         "Вандсбекер Конкордія"
+      ]
+    },
+    {
+      "name": "Wang Xin.",
+      "country": null,
+      "aliases": [
+        "Wang"
       ]
     },
     {
@@ -120599,7 +120658,10 @@
       "country": null,
       "aliases": [
         "ASYA: Asya Oyunları - Playofflar",
+        "AZIJA: Asian Games - Playoff",
         "AZIJA: Azijske Igre - Playoff",
+        "ÁZSIA: Ázsiai Játékok - Play Off",
+        "ΑΣΙΑ: Ασιατικοί Αγώνες - Πλέι Οφς",
         "ΑΣΙΑ: Ασιατικών Αγώνων - Πλέι Οφς",
         "АЗИЯ: Азиатские игры - Плей-офф"
       ]
@@ -128340,7 +128402,8 @@
         "IZRAEL: League Cup - Playoff",
         "İSRAİL: League Cup - Playofflar",
         "ΙΣΡΑΗΛ: Λιγκ Καπ - Πλέι Οφς",
-        "ИЗРАИЛЬ: Кубок лиги - Плей-офф"
+        "ИЗРАИЛЬ: Кубок лиги - Плей-офф",
+        "גביע ווינר סל"
       ]
     },
     {
@@ -133163,6 +133226,7 @@
         "JIŽNÍ AMERIKA: Jihoamerické hry do 19 let - Play Off",
         "JUŽNA AMERIKA: South American Games U19 - Playoff",
         "ΝΟΤΙΑ ΑΜΕΡΙΚΗ: South American Games U19 - Πλέι Οφς",
+        "ΝΟΤΙΑ ΑΜΕΡΙΚΗ: Αγώνες Νοτίου Αμερικής U19 - Πλέι Οφς",
         "ПІВДЕННА АМЕРИКА: South American Games U19 - Плей-оф",
         "ЮЖНА АМЕРИКА: South American Games U19 - Плейофи",
         "ЮЖНАЯ АМЕРИКА: South American Games U19 - Плей-офф"
@@ -139709,6 +139773,13 @@
       "source": "rtp.pt"
     },
     {
+      "name": "RTP2",
+      "country": "PT",
+      "language": null,
+      "alias": "RTP2",
+      "source": "rtp.pt"
+    },
+    {
       "name": "SPORT TV +",
       "country": "PT",
       "language": null,
@@ -141539,6 +141610,10 @@
       "sport": "F",
       "day": null
     },
+    "OMAN - KUWAIT": {
+      "sport": "F",
+      "day": null
+    },
     "Olympiacos - Fenerbache": {
       "sport": "B",
       "day": null
@@ -141548,6 +141623,10 @@
       "day": null
     },
     "Olympique Lyon - Stade Rennes": {
+      "sport": "F",
+      "day": null
+    },
+    "Paderborn - Hoffenheim": {
       "sport": "F",
       "day": null
     },
@@ -141797,10 +141876,8 @@
     "Bursaspor": "B",
     "Burton": "F",
     "CS Din. Bucuresti": "F",
-    "CSC Dumbravita": "F",
     "CSKA Moscow": "B",
     "CSKA Moscow W": "F",
-    "CSM Resita": "F",
     "Cadiz CF": "F",
     "Cairns Taipans": "B",
     "Cambridge Utd": "F",
@@ -141830,6 +141907,7 @@
     "Cucuta": "F",
     "Curacao": "F",
     "Cyprus": "F",
+    "Czech Republic": "F",
     "Czech Republic U21": "F",
     "De Graafschap": "F",
     "De Graafschap W": "F",
@@ -141843,6 +141921,7 @@
     "Dziki Warszawa": "B",
     "Egypt": "F",
     "Eibar": "F",
+    "Eindhoven FC": "F",
     "Eldense": "F",
     "Elitzur Ramla W": "B",
     "England": "F",
@@ -141852,6 +141931,7 @@
     "Estoril": "F",
     "Exeter": "F",
     "FC ASA Tg. Mures": "F",
+    "FC Volendam": "F",
     "FMP Beograd": "B",
     "Faroe Islands": "F",
     "Fenerbahce": "B",
@@ -141863,7 +141943,6 @@
     "France": "F",
     "Frankfurt": "B",
     "French Guiana": "F",
-    "Friedsam A-L.": "T",
     "Fruhvirtova L.": "T",
     "Fulham U21": "F",
     "G League United": "B",
@@ -141891,6 +141970,7 @@
     "Hacken W": "F",
     "Haiti": "F",
     "Hammarby W": "F",
+    "Hapoel Beer Sheva": "B",
     "Hapoel Holon": "B",
     "Hartberg": "F",
     "Hearts W": "F",
@@ -141923,7 +142003,6 @@
     "Kosice Wolves": "B",
     "Kosovo": "F",
     "Kozara": "F",
-    "Krejcikova B.": "T",
     "LASK": "F",
     "Laktasi": "F",
     "Las Palmas": "F",
@@ -141951,6 +142030,7 @@
     "MBK Handlova": "B",
     "MK Dons": "F",
     "Maccabi Ironi Ramat Gan": "B",
+    "Maccabi Rishon": "B",
     "Maccabi Tel Aviv": "B",
     "Mali": "F",
     "Mallorca": "F",
@@ -141970,6 +142050,7 @@
     "Montserrat": "F",
     "Mozambique": "F",
     "Murcia": "B",
+    "NAC Breda": "F",
     "NK Dinamo Zagreb 2": "F",
     "NKA Pecs W": "B",
     "Nancy": "B",
@@ -141978,7 +142059,6 @@
     "Netherlands": "F",
     "Netherlands U21": "F",
     "Nevezis": "B",
-    "New Zealand Breakers": "B",
     "Newcastle Utd U21": "F",
     "Newport": "F",
     "Nicaragua": "F",
@@ -142013,7 +142093,6 @@
     "Plymouth": "F",
     "Poland": "F",
     "Port Vale": "F",
-    "Portimonense": "F",
     "Portugal": "F",
     "Prijedor": "F",
     "Proteas Voulas W": "B",
@@ -142025,6 +142104,7 @@
     "Real Sociedad B": "F",
     "Rio Ave": "F",
     "Rochdale": "F",
+    "Roda": "F",
     "Romania": "F",
     "Romania U19": "F",
     "Rosenborg W": "F",
@@ -142041,7 +142121,6 @@
     "Samobor": "B",
     "San Marino": "F",
     "San Pablo Burgos": "B",
-    "Santa Clara": "F",
     "Santa Fe": "F",
     "Sao Tome and Principe": "F",
     "Sassuolo W": "F",
@@ -142116,6 +142195,7 @@
     "Vitesse": "F",
     "Vojvodina W": "F",
     "Vrsac": "F",
+    "Waalwijk": "F",
     "Wales": "F",
     "Walsall": "F",
     "Werder Bremen W": "F",
