@@ -77,6 +77,65 @@ def mark_first_show(programs: list["Program"], marker: str) -> list["Program"]:
 #: домен → функция `parse(html, *, day, tz, url) -> list[Program]`
 REGISTRY: dict[str, object] = {}
 
+#: Сколько передач на странице считаем убедительной сеткой. Меньше — скорее
+#: случайное совпадение разметки, чем настоящее расписание.
+FIT_MIN_ROWS = 5
+
+
+def score(programs: list["Program"]) -> dict:
+    """Насколько похоже на настоящую телесетку. Для подбора разбора чужим
+    парсером: совпасть разметкой может кто угодно, а сетка — это много строк,
+    у каждой время и название, и каналы не выдуманы.
+
+    Возвращает разбор по признакам и общий балл 0…100. Балл — подсказка
+    владельцу, а не приговор: решение он принимает, глядя на примеры строк.
+    """
+    rows = len(programs)
+    if not rows:
+        return {"rows": 0, "timed": 0, "titled": 0, "pairs": 0,
+                "channels": 0, "score": 0}
+    timed = sum(1 for p in programs if p.start is not None)
+    titled = sum(1 for p in programs if (p.title or "").strip())
+    pairs = sum(1 for p in programs if " - " in (p.match_raw or ""))
+    channels = len({(p.channel_raw or "").strip()
+                    for p in programs if (p.channel_raw or "").strip()})
+    # время и название — обязательная часть сетки, пары спорта — приятный
+    # бонус: на канале общего вещания матчей может не быть вовсе
+    balls = (50 * timed / rows) + (30 * titled / rows) + min(10, pairs) \
+        + (10 if channels else 0)
+    if rows < FIT_MIN_ROWS:
+        balls /= 2            # две-три строки убедительными не считаем
+    return {"rows": rows, "timed": timed, "titled": titled, "pairs": pairs,
+            "channels": channels, "score": round(min(100, balls))}
+
+
+def try_all(html: str, *, day=None, tz: str | None = None, url: str = "",
+            skip: set[str] | None = None) -> list[tuple[str, dict, list]]:
+    """Прогнать страницу через ВСЕ готовые разборы и разложить по убыванию
+    похожести на сетку. Возвращает список `(домен-донор, оценка, передачи)`.
+
+    Упавший разбор молча пропускаем: чужая страница ему и не предназначалась,
+    исключение здесь — обычное дело, а не поломка.
+    """
+    out = []
+    for donor, parse in all_parsers().items():
+        if skip and donor in skip:
+            continue
+        try:
+            programs = parse(html, day=day, tz=tz, url=url)
+        except TypeError:
+            try:
+                programs = parse(html)
+            except Exception:                            # noqa: BLE001
+                continue
+        except Exception:                                # noqa: BLE001
+            continue
+        if not programs:
+            continue
+        out.append((donor, score(programs), programs))
+    out.sort(key=lambda row: (row[1]["score"], row[1]["rows"]), reverse=True)
+    return out
+
 
 def register(domain: str):
     def deco(fn):
@@ -85,8 +144,29 @@ def register(domain: str):
     return deco
 
 
-def get(domain: str):
-    """Парсер по домену. Нет своего — None, источник пойдёт по эвристике."""
+def get(domain: str, borrowed: str = ""):
+    """Парсер по домену. Нет своего — берём одолженный (`borrowed`): его
+    подбирает `scripts/autoparse.py` и записывает в карточку источника,
+    чтобы новый сайт поехал на чужом готовом разборе без нового модуля
+    (просьба владельца 22.09: «пусть существующие скрипты пробуют по
+    порядку, сработал — тем и работаем»). Нет и его — None."""
+    _load_all()
+    own = (REGISTRY.get(domain)
+           or REGISTRY.get((domain or "").removeprefix("www.")))
+    if own or not borrowed:
+        return own
+    return (REGISTRY.get(borrowed)
+            or REGISTRY.get(borrowed.removeprefix("www.")))
+
+
+def all_parsers() -> dict[str, object]:
+    """Весь реестр «домен → разбор» — для перебора при подборе."""
+    _load_all()
+    return dict(REGISTRY)
+
+
+def _load_all():
+    """Ленивый импорт всех модулей: они наполняют REGISTRY через `register`."""
     from . import (aktuality_sk, allente_no, aspor_com_tr,  # noqa: F401
                    atv_com_tr,
                    bbc_co_uk, beinsports_com_tr, bnt_bg,
@@ -117,4 +197,3 @@ def get(domain: str):
                    vsetv_com,
                    webtv_sk, ziggosport_nl, tvarenaprogram_com,
                    tvarenasport_com, tvheute_at, tvpassport_com)
-    return REGISTRY.get(domain) or REGISTRY.get(domain.removeprefix("www."))

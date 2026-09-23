@@ -356,6 +356,9 @@ def templates(conn, domains=None) -> list[dict]:
                 if "{" in (c["page_url"] or "")]
         out.append({"domain": row["domain"], "timezone": row["timezone"],
                     "grid": grid, "marks": marks, "include": include,
+                    # разбор, подобранный из готовых (`scripts/autoparse.py`):
+                    # у сайта своего модуля нет, он едет на чужом (23.09)
+                    "parser": config.get("parser") or "",
                     # сайт отвечает 200, а расписание рисует скриптом
                     # (`rtcg.me`): такие берём сразу браузером
                     "browser": bool(row["needs_js"]),

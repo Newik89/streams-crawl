@@ -111,7 +111,9 @@ def source_settings(plan_path: Path) -> dict[str, dict]:
         return {}
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     return {s["domain"]: {"tz": s.get("timezone"),
-                          "include": set(s.get("include") or [])}
+                          "include": set(s.get("include") or []),
+                          # разбор, одолженный у другого сайта (23.09)
+                          "parser": s.get("parser") or ""}
             for s in plan.get("sources", [])}
 
 
@@ -323,11 +325,12 @@ def main() -> int:
             problems.append(f"{row['domain']} {row.get('channel') or 'сетка'}: "
                             f"{row['итог']} — {row['почему']}")
             continue
-        parse = parser_for(row["domain"])
+        setting = settings.get(row["domain"], {})
+        # своего разбора нет — берём подобранный из готовых (`autoparse.py`)
+        parse = parser_for(row["domain"], setting.get("parser") or "")
         if parse is None:
             problems.append(f"{row['domain']}: своего парсера нет")
             continue
-        setting = settings.get(row["domain"], {})
         extra = {}
         if setting.get("include"):
             extra["channels"] = setting["include"]
