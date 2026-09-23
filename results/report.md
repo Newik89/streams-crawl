@@ -1,28 +1,28 @@
 # Итог обхода
 
-Режим: полный обход, окно 2 суток. Запросов: 572. Заняло 1952 с.
+Режим: полный обход, окно 6 суток. Запросов: 1359. Заняло 4725 с.
 
 | Сайт | Результат |
 |---|---|
-| allente.no | расписание есть — 2 |
+| allente.no | расписание есть — 6 |
 | aspor.com.tr | расписание есть — 1 |
-| atv.com.tr | расписание есть — 2 |
-| bbc.co.uk | расписание есть — 22 |
-| beinsports.com.tr | расписание есть — 10 |
+| atv.com.tr | расписание есть — 6 |
+| bbc.co.uk | расписание есть — 66 |
+| beinsports.com.tr | расписание есть — 25, пусто — 5 |
 | bnt.bg | расписание есть — 1 |
 | canal11.pt | расписание есть — 1 |
-| ceskatelevize.cz | расписание есть — 2 |
-| cosmotetv.gr | расписание есть — 2 |
-| dagenstv.com | не открылась — 2 |
+| ceskatelevize.cz | расписание есть — 6 |
+| cosmotetv.gr | расписание есть — 6 |
+| dagenstv.com | не открылась — 6 |
 | diemaxtra.nova.bg | расписание есть — 4 |
 | digisport.ro | расписание есть — 4 |
-| dr.dk | расписание есть — 2 |
+| dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
-| ert.gr | расписание есть — 2 |
-| flashscore.mobi | расписание есть — 21 |
+| ert.gr | расписание есть — 6 |
+| flashscore.mobi | расписание есть — 20, пусто — 1 |
 | football-tv.ru | расписание есть — 1 |
-| ipko.tv | расписание есть — 58 |
-| jupiter.err.ee | расписание есть — 6 |
+| ipko.tv | расписание есть — 174 |
+| jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | заглушка защиты — 19, расписание есть — 4 |
 | m.eredmenyek.com | расписание есть — 7 |
@@ -37,69 +37,73 @@
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 1 |
-| movistarplus.es | расписание есть — 70 |
+| movistarplus.es | расписание есть — 210 |
 | news.by | расписание есть — 1 |
-| nova.bg | расписание есть — 8 |
-| novasports.gr | расписание есть — 2 |
-| npo.nl | расписание есть — 6 |
-| ntvplus.tv | расписание есть — 2 |
-| oneplay.cz | расписание есть — 2 |
-| oneplaysport.cz | расписание есть — 2 |
+| nova.bg | расписание есть — 24 |
+| novasports.gr | расписание есть — 6 |
+| npo.nl | расписание есть — 18 |
+| ntvplus.tv | расписание есть — 6 |
+| oneplay.cz | расписание есть — 6 |
+| oneplaysport.cz | расписание есть — 6 |
 | onesoccer.ca | расписание есть — 1 |
-| port.hu | расписание есть — 18 |
+| port.hu | расписание есть — 54 |
 | poverkhnost.tv | расписание есть — 5 |
 | primaplay.ro | расписание есть — 1 |
 | programetv.ro | пусто — 11 |
-| programme-tv.net | расписание есть — 16 |
-| raiplay.it | расписание есть — 8 |
-| raspored.hrt.hr | расписание есть — 6 |
-| rtcg.me | расписание есть — 8 |
+| programme-tv.net | расписание есть — 48 |
+| raiplay.it | расписание есть — 24 |
+| raspored.hrt.hr | расписание есть — 18 |
+| rtcg.me | расписание есть — 24 |
 | rte.ie | расписание есть — 17 |
-| rtl.de | расписание есть — 16 |
-| rtp.pt | расписание есть — 10 |
+| rtl.de | расписание есть — 48 |
+| rtp.pt | расписание есть — 33 |
 | rts.rs | расписание есть — 3 |
-| skai.gr | расписание есть — 2 |
+| skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | пусто — 2 |
+| sport1.maariv.co.il | пусто — 2, расписание есть — 4 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
-| sport5.co.il | расписание есть — 2 |
+| sport5.co.il | расписание есть — 5, пусто — 1 |
 | sporteventz.com | расписание есть — 1 |
 | sportklub.hr | расписание есть — 10 |
 | sports.kz | расписание есть — 1 |
 | sporttv.pt | расписание есть — 1 |
-| srf.ch | расписание есть — 2 |
+| srf.ch | расписание есть — 6 |
 | ssport.tv | расписание есть — 1 |
-| teleman.pl | расписание есть — 10 |
+| teleman.pl | расписание есть — 30 |
 | tring.al | пусто — 1 |
 | trt.net.tr | расписание есть — 1 |
-| trtavaz.com.tr | расписание есть — 2 |
+| trtavaz.com.tr | расписание есть — 6 |
 | trtspor.com.tr | расписание есть — 1 |
 | tv-program.aktuality.sk | расписание есть — 1 |
 | tv.orf.at | расписание есть — 5 |
 | tv.sport1.de | расписание есть — 1 |
-| tv2.no | расписание есть — 2 |
-| tv24.co.uk | расписание есть — 8 |
-| tv3.lt | расписание есть — 30, пусто — 2 |
-| tv8.com.tr | расписание есть — 2 |
+| tv2.no | расписание есть — 6 |
+| tv24.co.uk | расписание есть — 24 |
+| tv3.lt | расписание есть — 90, пусто — 6 |
+| tv8.com.tr | расписание есть — 5, пусто — 1 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
 | tvarenasport.si | расписание есть — 1 |
-| tvguidetonight.com.au | расписание есть — 6 |
-| tvheute.at | расписание есть — 4 |
-| tvpassport.com | расписание есть — 12 |
-| unian.tv | расписание есть — 2 |
-| vsetv.com | расписание есть — 4 |
-| webtv.sk | расписание есть — 14 |
-| ziggosport.nl | расписание есть — 2 |
+| tvguidetonight.com.au | расписание есть — 18 |
+| tvheute.at | расписание есть — 12 |
+| tvpassport.com | расписание есть — 36 |
+| unian.tv | расписание есть — 5, пусто — 1 |
+| vsetv.com | расписание есть — 12 |
+| webtv.sk | расписание есть — 42 |
+| ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 21
+## Не открылись — 25
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-22 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-22 |
 | dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-23 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-23 |
+| dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-24 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-24 |
+| dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-25 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-25 |
+| dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-26 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-26 |
+| dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-27 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-27 |
+| dagenstv.com | сетка | SSLError: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?dat=2026-09-28 (Caused by SSLErro | https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-28 |
 | livesoccertv.com | ART Sport 1 | cloudflare | https://www.livesoccertv.com/channels/artsport1/ |
 | livesoccertv.com | ART Sport 2 | cloudflare | https://www.livesoccertv.com/channels/art-sport-2/ |
 | livesoccertv.com | ART Sport 3 | cloudflare | https://www.livesoccertv.com/channels/art-sport-3/ |
@@ -122,4 +126,4 @@
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 21 из 572 страниц (4%), сайтов без удачи 1 из 89 (1%)
+- ✅ обход в норме: не открылись 25 из 1359 страниц (2%), сайтов без удачи 1 из 89 (1%)
