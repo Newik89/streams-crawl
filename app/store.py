@@ -623,6 +623,10 @@ BROKEN_VERDICTS = ("не открылась", "заглушка защиты")
 #: наравне с удачной, и сайт, переставший давать игры, годами числился
 #: здоровым — «Молчат» на /broken пустовала (аудит 07.09, A6)
 EMPTY_VERDICT = "пусто"
+#: сайт публикует программу на меньший срок, чем наше окно обхода: дальние
+#: дни он не отдаёт вовсе. Не успех и не поломка — такие строки в здоровье
+#: источника не участвуют (владелец 23.09.2026, случай RTP Açores)
+SHORT_DEPTH_VERDICT = "нет на этот день"
 
 
 def _bare(domain: str) -> str:
@@ -677,6 +681,8 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
             rows_found += 1
             domain = _bare(row["domain"])
             verdict = row.get("итог")
+            if verdict == SHORT_DEPTH_VERDICT:
+                continue          # дня у сайта просто нет — судить не о чем
             target = (fail_by if verdict in BROKEN_VERDICTS else
                       empty_by if verdict == EMPTY_VERDICT else ok_by)
             target[domain] = target.get(domain, 0) + 1

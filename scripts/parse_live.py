@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import (canon, db, dictionary, leagues, live, merge, names,  # noqa: E402
-                 pipeline, sport)
+                 pipeline, sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
 
@@ -322,8 +322,11 @@ def main() -> int:
     for row in rows:
         name = row.get("файл")
         if not name or not (folder / name).exists():
-            problems.append(f"{row['domain']} {row.get('channel') or 'сетка'}: "
-                            f"{row['итог']} — {row['почему']}")
+            # дальний день, которого у сайта просто нет, — не проблема
+            # разбора, в «Не разобрано» ему не место (владелец 23.09)
+            if row.get("итог") != store.SHORT_DEPTH_VERDICT:
+                problems.append(f"{row['domain']} {row.get('channel') or 'сетка'}: "
+                                f"{row['итог']} — {row['почему']}")
             continue
         setting = settings.get(row["domain"], {})
         # своего разбора нет — берём подобранный из готовых (`autoparse.py`)
