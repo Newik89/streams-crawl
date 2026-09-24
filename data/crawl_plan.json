@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-09-22",
+ "built": "2026-09-25",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -9,6 +9,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -38,6 +39,7 @@
    "include": [
     "A Spor"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -65,6 +67,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -104,6 +107,7 @@
     "CBeebies",
     "S4C"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -177,6 +181,7 @@
     "beIN SPORTS 4",
     "beIN SPORTS HABER"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -220,6 +225,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -247,6 +253,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -285,6 +292,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -312,6 +320,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -339,6 +348,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -371,6 +381,7 @@
     "Diema Sport 3",
     "Diema Xtra"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -415,6 +426,7 @@
     "Digi Sport 3",
     "Digi Sport 4"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -457,6 +469,7 @@
     "DR1",
     "DR2"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -519,6 +532,7 @@
     "PPV5",
     "PPV6"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -556,6 +570,7 @@
     "ΕΡΤ2 ΣΠΟΡ",
     "ΕΡΤ3"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -583,6 +598,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -614,6 +630,7 @@
     "ETV+",
     "ETV2"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -673,6 +690,7 @@
     "SuperSport 6 Digitalb",
     "Supersport 7 Digitalb"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -788,6 +806,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -817,6 +836,7 @@
    "include": [
     "M4 Sport"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -846,6 +866,7 @@
    "include": [
     "сетка спортканалов"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -909,6 +930,7 @@
     "M+ Vamos 3",
     "Teledeporte"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1079,6 +1101,7 @@
     "diemasport 3",
     "nova sport"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1122,6 +1145,7 @@
     "NPO2",
     "NPO3"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1163,6 +1187,7 @@
     "Sport 4",
     "Sport 5"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -1226,6 +1251,7 @@
     "Prima World & Travel",
     "PrimaTV"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1265,6 +1291,7 @@
     "Pro Arena",
     "TVR Sport HD"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -1341,6 +1368,7 @@
     "TF1",
     "W9"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1403,6 +1431,7 @@
     "Rai 3",
     "Rai Sport"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1446,6 +1475,7 @@
     "HTV 2",
     "HTV 3"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1499,6 +1529,7 @@
     "Virgin Media Three",
     "Virgin Media Two"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -1599,6 +1630,7 @@
     "VOX",
     "VOX up"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1661,6 +1693,7 @@
     "RTP1",
     "RTP2"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1714,6 +1747,7 @@
     "РТС 2",
     "РТС 3"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -1749,6 +1783,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1780,6 +1815,7 @@
     "Sport1 SK",
     "Sport2"
    ],
+   "parser": "",
    "browser": true,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1810,6 +1846,7 @@
     "Sport1 HU",
     "Sport2 HU"
    ],
+   "parser": "",
    "browser": true,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1837,6 +1874,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1866,6 +1904,7 @@
    "include": [
     "Телеканал «Qazsport»"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1902,6 +1941,7 @@
     "SPORT.TV6",
     "SPORT.TV7"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1929,6 +1969,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -1959,6 +2000,7 @@
     "S Sport",
     "S Sport2"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2027,6 +2069,7 @@
     "TVP Polonia",
     "TVP Sport"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 5,
@@ -2224,6 +2267,7 @@
     "TRT ÇOCUK",
     "Tabii Spor"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2253,6 +2297,7 @@
    "include": [
     "TRT Avaz"
    ],
+   "parser": "",
    "browser": true,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2280,6 +2325,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2319,6 +2365,7 @@
     "Sport2",
     "ČT sport"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2354,6 +2401,7 @@
     "ORF KIDS",
     "ORF SPORT+"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -2399,6 +2447,7 @@
    "include": [
     "SPORT1"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2426,6 +2475,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2455,6 +2505,7 @@
    "include": [
     "TV8"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2482,6 +2533,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2509,6 +2561,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2536,6 +2589,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2563,6 +2617,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2594,6 +2649,7 @@
     "7mate HD Sydney",
     "9Gem Sydney"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2631,6 +2687,7 @@
    "include": [
     "УНІАН"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2661,6 +2718,7 @@
     "2+2",
     "Суспільне Спорт"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2700,6 +2758,7 @@
     "Ziggo Sport 6",
     "Ziggo Sport Kanaal 14"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2753,6 +2812,7 @@
     "Телеканал «Матч ТВ»",
     "Точка отрыва"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2791,6 +2851,7 @@
     "Sport Klub 8",
     "Sport Klub 9"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": true,
    "pages_per_day": 0,
@@ -2854,6 +2915,7 @@
    "grid": true,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2883,6 +2945,7 @@
    "include": [
     "РТРС 1"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2915,6 +2978,7 @@
     "Oneplay Sport 3",
     "Oneplay Sport 4"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2947,6 +3011,7 @@
     "TVCG 3",
     "TVMNE"
    ],
+   "parser": "",
    "browser": true,
    "days_inline": false,
    "pages_per_day": 0,
@@ -2986,6 +3051,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3019,6 +3085,7 @@
     "Sport1 5",
     "Sport1 6"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3046,6 +3113,7 @@
    "grid": false,
    "marks": {},
    "include": [],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3076,6 +3144,7 @@
     "Kanal 1 Sport",
     "Kanal 1 Xtra"
    ],
+   "parser": "",
    "browser": true,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3113,6 +3182,7 @@
     "Spíler1 TV",
     "Spíler2 TV"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3180,6 +3250,7 @@
     "Sport 1",
     "Sport 2"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3241,6 +3312,7 @@
     "TNT Sports 3",
     "TNT Sports 4"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3306,6 +3378,7 @@
     "ΝovasportsNews",
     "ΝovasportsStart"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3335,6 +3408,7 @@
    "include": [
     "Беларусь 5"
    ],
+   "parser": "",
    "browser": true,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3364,6 +3438,7 @@
    "include": [
     "OneSoccer"
    ],
+   "parser": "",
    "browser": true,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3398,6 +3473,7 @@
     "TSN4",
     "TSN5"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3448,6 +3524,7 @@
     "Das Erste",
     "ZDF"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3483,6 +3560,7 @@
     "football",
     "tennis"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3521,6 +3599,7 @@
     "basketball",
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3554,6 +3633,7 @@
    "include": [
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3583,6 +3663,7 @@
    "include": [
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3612,6 +3693,7 @@
    "include": [
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3642,6 +3724,7 @@
     "basketball",
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3675,6 +3758,7 @@
    "include": [
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3705,6 +3789,7 @@
     "basketball",
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3738,6 +3823,7 @@
    "include": [
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3767,6 +3853,7 @@
    "include": [
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3797,6 +3884,7 @@
     "basketball",
     "football"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3845,6 +3933,7 @@
     "TV6",
     "TV8"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -3950,6 +4039,7 @@
     "ČT1",
     "ČT2"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
@@ -4040,6 +4130,7 @@
     "Tring Sport 7",
     "Tring Sport News"
    ],
+   "parser": "",
    "browser": false,
    "days_inline": false,
    "pages_per_day": 0,
