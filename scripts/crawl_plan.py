@@ -152,6 +152,11 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           "m.flashscore.ro", "m.flashscore.com.tr", "m.flashscore.pl",
           "m.flashscore.ru", "m.flashscore.ua", "m.livesport.cz",
           "m.rezultati.com",
+          # 25.09: языки наших источников, которых не хватало словарю
+          # (словацких сайтов 5, немецких 4, португальских 3)
+          "m.flashscore.sk", "m.flashscore.de", "m.flashscore.pt",
+          "m.flashscore.it", "m.flashscore.fr", "m.flashscore.es",
+          "m.flashscore.nl", "m.flashscore.se", "m.flashscore.dk",
           # Литва 06.09 (вопрос владельца про BTV): телегид tv3.lt,
           # канал × день через ?d=; 16 каналов выбрал владелец —
           # спортивные все + BTV, LNK, TV3, TV6, TV8, TV3 Plus, LRT,
