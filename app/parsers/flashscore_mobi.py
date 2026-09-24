@@ -47,6 +47,14 @@ LOCALES = {
     # вторая проба 03.09: сербохорватский — арена-сетки, mojtv, rtcg, rtrs
     # пишут именно так; иврита и сербской кириллицы у livesport в mobi нет
     "m.rezultati.com": "hr",
+    # третья проба 25.09 (идея владельца: «языки источников знаем — пусть
+    # словарь заполняется сам»): проверены с сервера, все отдали расписание.
+    # Норвежского, албанского и ивритского у flashscore в mobi нет вовсе —
+    # `flashscore.co.il` уводит на международную версию, их написания
+    # по-прежнему ведём руками в `data/aliases.json`
+    "m.flashscore.sk": "sk", "m.flashscore.de": "de", "m.flashscore.pt": "pt",
+    "m.flashscore.it": "it", "m.flashscore.fr": "fr", "m.flashscore.es": "es",
+    "m.flashscore.nl": "nl", "m.flashscore.se": "sv", "m.flashscore.dk": "da",
 }
 
 _ZONE = ZoneInfo(TZ)
