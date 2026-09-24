@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1359. Заняло 4904 с.
+Режим: полный обход, окно 6 суток. Запросов: 1359. Заняло 5460 с.
 
 | Сайт | Результат |
 |---|---|
@@ -8,7 +8,7 @@
 | aspor.com.tr | расписание есть — 1 |
 | atv.com.tr | расписание есть — 6 |
 | bbc.co.uk | расписание есть — 66 |
-| beinsports.com.tr | расписание есть — 27, пусто — 3 |
+| beinsports.com.tr | расписание есть — 25, пусто — 5 |
 | bnt.bg | расписание есть — 1 |
 | canal11.pt | расписание есть — 1 |
 | ceskatelevize.cz | расписание есть — 6 |
@@ -19,7 +19,7 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 20, пусто — 1 |
+| flashscore.mobi | расписание есть — 19, пусто — 2 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
@@ -47,7 +47,7 @@
 | oneplaysport.cz | расписание есть — 6 |
 | onesoccer.ca | расписание есть — 1 |
 | port.hu | расписание есть — 54 |
-| poverkhnost.tv | расписание есть — 5 |
+| poverkhnost.tv | не открылась — 5 |
 | primaplay.ro | расписание есть — 1 |
 | programetv.ro | пусто — 11 |
 | programme-tv.net | расписание есть — 48 |
@@ -60,7 +60,7 @@
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | пусто — 2, расписание есть — 4 |
+| sport1.maariv.co.il | пусто — 1, расписание есть — 5 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
 | sport5.co.il | расписание есть — 6 |
@@ -81,7 +81,7 @@
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 5, пусто — 1 |
+| tv8.com.tr | расписание есть — 4, пусто — 2 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -89,12 +89,12 @@
 | tvguidetonight.com.au | расписание есть — 18 |
 | tvheute.at | расписание есть — 12 |
 | tvpassport.com | расписание есть — 36 |
-| unian.tv | расписание есть — 5, пусто — 1 |
+| unian.tv | расписание есть — 4, пусто — 2 |
 | vsetv.com | расписание есть — 12 |
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 20
+## Не открылись — 25
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
@@ -117,10 +117,15 @@
 | livesoccertv.com | SuperSport 5 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-5-digitalb/ |
 | livesoccertv.com | SuperSport 6 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-6-digitalb/ |
 | livesoccertv.com | Supersport 7 Digitalb | cloudflare | https://www.livesoccertv.com/channels/supersport-7-albania/ |
+| poverkhnost.tv | Sport 1 | ConnectTimeout: HTTPSConnectionPool(host='www.poverkhnost.tv', port=443): Max retries exceeded with url: /pages/index.php?c=10&s=135 (Caused by ConnectTimeoutEr | https://www.poverkhnost.tv/pages/index.php?c=10&s=135 |
+| poverkhnost.tv | Sport 2 | ConnectTimeout: HTTPSConnectionPool(host='www.poverkhnost.tv', port=443): Max retries exceeded with url: /pages/index.php?c=10&s=121 (Caused by ConnectTimeoutEr | https://www.poverkhnost.tv/pages/index.php?c=10&s=121 |
+| poverkhnost.tv | Sport 3 | ConnectTimeout: HTTPSConnectionPool(host='www.poverkhnost.tv', port=443): Max retries exceeded with url: /pages/index.php?c=10&s=161 (Caused by ConnectTimeoutEr | https://www.poverkhnost.tv/pages/index.php?c=10&s=161 |
+| poverkhnost.tv | Sport 4 | ConnectTimeout: HTTPSConnectionPool(host='www.poverkhnost.tv', port=443): Max retries exceeded with url: /pages/index.php?c=10&s=124 (Caused by ConnectTimeoutEr | https://www.poverkhnost.tv/pages/index.php?c=10&s=124 |
+| poverkhnost.tv | Sport 5 | ConnectTimeout: HTTPSConnectionPool(host='www.poverkhnost.tv', port=443): Max retries exceeded with url: /pages/index.php?c=10&s=168 (Caused by ConnectTimeoutEr | https://www.poverkhnost.tv/pages/index.php?c=10&s=168 |
 | kanal1sport.sk | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
 Call log:
   - navigating to "https://www.kanal1sport.sk/tv-program/", waiting until "domcontentloade | https://www.kanal1sport.sk/tv-program/ |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 20 из 1359 страниц (1%), сайтов без удачи 1 из 89 (1%)
+- ✅ обход в норме: не открылись 25 из 1359 страниц (2%), сайтов без удачи 2 из 89 (2%)
