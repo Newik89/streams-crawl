@@ -4270,6 +4270,276 @@
      "pattern": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-news"
     }
    ]
+  },
+  {
+   "domain": "m.flashscore.sk",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.sk/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.sk/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.de",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.de/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.de/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.pt",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.pt/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.pt/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.it",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.it/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.it/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.fr",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.fr/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.fr/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.es",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.es/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.es/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.nl",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.nl/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.nl/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.se",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.se/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.se/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "m.flashscore.dk",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "football"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://m.flashscore.dk/",
+   "channels": [
+    {
+     "name": "football",
+     "pattern": "https://m.flashscore.dk/?d={DAYNUM}"
+    }
+   ]
   }
  ]
 }
