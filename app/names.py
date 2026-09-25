@@ -84,7 +84,7 @@ _RUSSIAN = {
 _FOUNDED_RE = re.compile(r"\b(1[89]\d{2}|0[0-9]|9[0-9])\b")   # `Como 1907`
 _NUM_PREFIX_RE = re.compile(r"^\s*\d+\.\s*")                  # `1. FC Magdeburg`
 _NON_WORD_RE = re.compile(r"[^A-Z0-9 ]+")
-_AGE_RE = re.compile(r"\bU\s?-?(\d{2})\b", re.I)
+_AGE_RE = re.compile(r"\bU\s?-?(\d{2})\b|\bunder[\s-]{0,3}(\d{2})\b", re.I)
 # «женщин(ы)», «žen(y)» и одиночные буквы пола — сербская «ž», кириллическая
 # «ж» («Австралия (Ж)»), греческая «γ» («Τουρκία Γ») — женские пометки
 # источников, чьи команды шли мужскими (женский ЧМ по баскету, 06.09).
@@ -224,7 +224,7 @@ def category(name: str) -> str:
     parts = []
     m = _AGE_RE.search(name)
     if m:
-        parts.append(f"U{m.group(1)}")
+        parts.append(f"U{m.group(1) or m.group(2)}")
     if _WOMEN_RE.search(name):
         parts.append("W")
     if _RESERVE_RE.search(name.strip()) or _RESERVE_MID_RE.search(name.strip()):

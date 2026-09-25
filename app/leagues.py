@@ -49,7 +49,11 @@ _SITE_TAILS = re.compile(r"\s*[-–—]\s*(?:jogos|matches|mecze|мачове)\s
 _EMPTY_BRACKETS = re.compile(r"\(\s*\)|\[\s*\]")
 _EDGE = " -–—:.,/|"
 
-_AGE = re.compile(r"\bU-?\s?(\d{2})\b", re.I)
+#: возраст турнира: и коротко («U21», «U-21»), и словом — кипрский cyta
+#: пишет «UEFA UNDER - 21 EURO», и матч оставался без возраста, а значит
+#: не сходился с эталоном и жил двойней рядом со своей же игрой
+#: (жалоба владельца 25.09: Cyprus — Romania, каналы разъехались)
+_AGE = re.compile(r"\bU-?\s?(\d{2})\b|\bunder[\s-]{0,3}(\d{2})\b", re.I)
 _WOMEN = re.compile(
     r"\bwomen'?s?\b|\bkobiet\w*\b|\bfem[ei]nin[ao]?\b|\bжени\b|\bженск\w*\b"
     r"|\bdonne\b|\bfrauen\w*\b|\bkadınlar\b|\bžensk\w*\b|\bzensk\w*\b|\bfemminil\w*\b"
@@ -115,7 +119,7 @@ def category(raw: str) -> str:
     parts = []
     m = _AGE.search(raw or "")
     if m:
-        parts.append(f"U{m.group(1)}")
+        parts.append(f"U{m.group(1) or m.group(2)}")
     elif _YOUTH_LEAGUES.search(raw or ""):
         parts.append("U19")
     if _WOMEN.search(raw or "") or _WOMEN_LEAGUES.search(raw or ""):
@@ -132,7 +136,7 @@ def with_category(team: str, league_category: str) -> str:
     # `Moreirense U-23` и `Moreirense U23` — одно и то же: перед проверкой
     # убираем дефис после буквы возраста, иначе метка приклеится второй раз
     # (`Moreirense U-23 U23`, поймано на liveonsat 01.09)
-    have = _AGE.sub(lambda m: f"U{m.group(1)}", team.upper())
+    have = _AGE.sub(lambda m: f"U{m.group(1) or m.group(2)}", team.upper())
     for mark in league_category.split():
         if not re.search(rf"(?<!\w){re.escape(mark)}(?!\w)", have):
             team = f"{team} {mark}"
