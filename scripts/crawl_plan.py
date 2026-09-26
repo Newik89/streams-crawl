@@ -225,7 +225,10 @@ def main() -> int:
         count = sum((s.get("days_ahead") or days) * s["pages_per_day"]
                     if s["pages_per_day"]
                     else len(s["channels"])
-                    * (1 if s["grid"] or s.get("days_inline")
+                    # добор дней по ссылкам из страницы (ORF): страница на
+                    # канал и день, как у обычных дневных источников
+                    * ((s.get("days_ahead") or days) if s.get("day_links")
+                       else 1 if s["grid"] or s.get("days_inline")
                        else (s.get("days_ahead") or days))
                     for s in crawl.templates(conn, domains))
         print(f"план записан: {out}  ({count} адрес(ов), окно {days} суток)")

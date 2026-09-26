@@ -41,9 +41,15 @@ CHANNELS = {"orf1": "ORF 1", "orf2": "ORF 2", "orf3": "ORF III",
 _LIVE = "übertragung"
 #: приставка прямого эфира в заголовке ORF
 _LIVE_WORD = re.compile(r"\bLIVE\b")
+#: этап турнира перед парой: «2. Qualifikationsrunde: SK Sturm Graz - …»
+_STAGE = re.compile(r"^[^:–-]{3,60}:\s*")
+#: место съёмки хвостом: «… - VfL Wolfsburg aus Graz» (26.09, #Sturm)
+_PLACE = re.compile(r"\s+aus\s+\S.{0,30}$")
 
 
 def _pair(text: str) -> str:
+    # этап перед двоеточием — не имя команды, место съёмки «aus …» — тоже
+    text = _STAGE.sub("", _PLACE.sub("", text))
     for sep in (" - ", " – ", " vs ", " gegen "):
         home, s, away = text.partition(sep)
         if s and home.strip() and away.strip():

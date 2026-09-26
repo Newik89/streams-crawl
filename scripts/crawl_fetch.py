@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 from datetime import date, datetime, timedelta, timezone
@@ -44,7 +45,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from urllib.parse import urlsplit                   # noqa: E402
+from urllib.parse import urljoin, urlsplit          # noqa: E402
 
 from app import fetch, protection, timemarks, urls   # noqa: E402
 
@@ -237,6 +238,9 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
                 yield {
                     "domain": source["domain"],
                     "channel": channel["name"],
+                    # адреса остальных дней лежат ссылками в самой странице
+                    # (ORF: в адресе дня хеш) — их добирает day_link_jobs
+                    "day_links": bool(source.get("day_links")),
                     "day": "" if source["grid"] else day.isoformat(),
                     "locale": LOCALES.get(source["domain"], "en-GB"),
                     "url": urls.resolve(channel["pattern"], source["base_url"],
@@ -250,6 +254,33 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
                                      day=day, **marks)),
                     "headers": source.get("headers"),
                 }
+
+
+#: ссылка на день в странице канала: дата и хеш (`/program/orfs/
+#: index~_day-30-09-2026_-df68bd…html`). Хеш вычислить нельзя — только взять
+_DAY_LINK = re.compile(
+    r'href="([^"?]*?_day-(\d{2})-(\d{2})-(\d{4})_-[0-9a-f]{6,}[^"?]*?\.html)"')
+
+
+def day_link_jobs(job: dict, html: str, wanted: list[date]) -> list[dict]:
+    """Дни окна, до которых не дотянуться шаблоном адреса: их ссылки (с
+    хешем) лежат в самой странице канала — ORF, жалоба владельца 26.09
+    (игра 30.09 на ORF SPORT+ не попадала: index держит лишь сегодня).
+    Возвращает задания на недостающие дни ТОГО ЖЕ канала; повторно по
+    ссылкам из добранных страниц не ходим (`_day_from_link`)."""
+    path = urlsplit(job["url"]).path.rsplit("/", 1)[0] + "/"
+    by_day: dict[str, str] = {}
+    for m in _DAY_LINK.finditer(html):
+        href, dd, mm, yyyy = m.groups()
+        if urlsplit(href).path.startswith(path):
+            by_day.setdefault(f"{yyyy}-{mm}-{dd}", href)
+    out = []
+    for day in wanted:
+        href = by_day.get(day.isoformat())
+        if href:
+            out.append({**job, "url": urljoin(job["url"], href),
+                        "day": day.isoformat(), "_day_from_link": True})
+    return out
 
 
 def verdict(page: fetch.Page) -> dict:
@@ -487,6 +518,16 @@ def main() -> int:
     print(f"{mode}: {len(jobs)} запрос(ов), пауза {args.delay} с между "
           f"запросами к одному сайту\n")
 
+    # дни, которые у сайтов с `day_links` добираем по ссылкам из страницы
+    # (адрес дня хеширован — ORF): полному обходу — окно, скану даты — его день
+    if args.urls or args.probe:
+        link_days: list[date] = []
+    elif args.date:
+        scan = date.fromisoformat(args.date)
+        link_days = [scan] if scan != date.today() else []
+    else:
+        link_days = [date.today() + timedelta(days=i) for i in range(1, days)]
+
     report = []
     started = time.monotonic()
     #: адреса, не открывшиеся с первого раза: их повторяем в конце прогона
@@ -510,6 +551,13 @@ def main() -> int:
                                     job.get("post") or job.get("post_json")).name
             (out / name).write_text(page.html, encoding="utf-8")
             row["файл"] = name
+            if job.get("day_links") and link_days \
+                    and not job.get("_day_from_link"):
+                extra = day_link_jobs(job, page.html, link_days)
+                if extra:
+                    jobs.extend(extra)
+                    print(f"     ↳ {job['domain']}: добавлено дней "
+                          f"по ссылкам из страницы: {len(extra)}")
         elif page.body:
             # Сайт отказал, но что-то ответил — сохраняем это «что-то».
             # По нему видно, кто закрыл: сам сайт, Cloudflare или Imperva, —

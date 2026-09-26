@@ -76,7 +76,8 @@ CHANNEL_GRID_DOMAINS = {"programetv.ro", "poverkhnost.tv",
                         # разворачивается по дням окна меткой {HRDAY}
                         "digisport.ro",
                         # у ORF адрес дня хеширован и вычислить его нельзя,
-                        # зато короткий index.html держит сегодня и хвост завтра
+                        # но лежит ссылкой в самой странице — дни окна обход
+                        # добирает по ссылкам (DAY_LINK_DOMAINS, 26.09)
                         "tv.orf.at",
                         # A Spor: вкладки других дней пустые, в HTML только
                         # сегодня
@@ -94,6 +95,13 @@ CHANNEL_GRID_DOMAINS = {"programetv.ro", "poverkhnost.tv",
                         # Sport Klub: ручка United Cloud на канал, окно на
                         # неделю одним запросом ({UNIXMSDAY}–{UNIXMSWEEK})
                         "sportklub.hr"}
+
+#: адрес дня не вычислить (в нём хеш), но он лежит ссылкой в странице
+#: канала: обход качает index, находит в нём ссылки нужных дней и идёт по
+#: ним (жалоба владельца 26.09: игра 30.09 на ORF SPORT+ не попадала —
+#: index держит лишь сегодня и хвост завтра). Сайт остаётся «канальной
+#: сеткой» в плане, добор дней делает crawl_fetch по полю `day_links`
+DAY_LINK_DOMAINS = {"tv.orf.at"}
 
 #: «дневные сетки»: один адрес на день, в ответе сразу все каналы.
 #: в шаблоне адреса метка `{N}` — номер дня окна, 1-based
@@ -363,6 +371,9 @@ def templates(conn, domains=None) -> list[dict]:
                     # (`rtcg.me`): такие берём сразу браузером
                     "browser": bool(row["needs_js"]),
                     "days_inline": row["domain"] in CHANNEL_GRID_DOMAINS,
+                    # дни окна добираются по ссылкам из страницы канала
+                    # (адрес дня хеширован — ORF)
+                    "day_links": row["domain"] in DAY_LINK_DOMAINS,
                     "pages_per_day": PAGED_DOMAINS.get(row["domain"], 0),
                     "day_channels": day_channels,
                     # своя глубина в днях остаётся только у справочников
