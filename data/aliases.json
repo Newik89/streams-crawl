@@ -194,7 +194,9 @@
   "WOLVERHAMPTON WANDERERS": "WOLVES",
   "ROYALE UNION SAINT GILLOISE": "UNION SG",
   "UNION SAINT GILLOISE": "UNION SG",
-  "ROYAL UNION SAINT GILLOISE": "UNION SG"
+  "ROYAL UNION SAINT GILLOISE": "UNION SG",
+  "STAR RED BEOGRAD": "CRVENA ZVEZDA",
+  "RED STAR BEOGRAD": "CRVENA ZVEZDA"
  },
  "_сборные целиком (6е A3): экзоним = всё имя, замена только полным совпадением — SAD нельзя словом, иначе Novi Sad станет Novi USA": {
   "ABD": "USA",
@@ -1307,6 +1309,7 @@
   "ז'לגיריס": "Zalgiris",
   "אנאדולו": "Anadolu",
   "אפס": "Efes",
+  "בלגרד": "Belgrade",
   "באסקוניה": "Baskonia",
   "וירטוס": "Virtus",
   "אלבה": "Alba",
