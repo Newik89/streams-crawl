@@ -1,15 +1,86 @@
 {
- "собрано": "2026-09-23 20:14",
- "игр": 0,
+ "собрано": "2026-09-26 06:00",
+ "игр": 4,
  "окно": 6,
  "по_окнам": {
-  "2": 288,
+  "2": 336,
   "5": 528,
-  "6": 0
+  "6": 4
  },
  "оценка": "",
  "эталон": [],
- "разобрано": {},
+ "разобрано": {
+  "tv.orf.at": 878
+ },
  "на_разбор": [],
- "games": []
+ "games": [
+  {
+   "guess": 1,
+   "sport": "F",
+   "league": "LIVE Pressekonferenz Fußball",
+   "home": "ÖFB MD-1 vor Österreich",
+   "away": "Kosovo",
+   "start_kyiv": "2026-09-26T15:00",
+   "start_utc": "2026-09-26T12:00",
+   "entries": [
+    {
+     "source": "tv.orf.at",
+     "channel": "ORF SPORT+",
+     "url": "https://tv.orf.at/program/orfs/index.html",
+     "raw_title": "LIVE Pressekonferenz Fußball ÖFB MD-1 vor Österreich - Kosovo aus Wien"
+    }
+   ]
+  },
+  {
+   "guess": 1,
+   "sport": "B",
+   "league": "LIVE Basketball Herren Supercup",
+   "home": "Kapfenberg Bulls",
+   "away": "Flyers Wels",
+   "start_kyiv": "2026-09-26T15:30",
+   "start_utc": "2026-09-26T12:30",
+   "entries": [
+    {
+     "source": "tv.orf.at",
+     "channel": "ORF SPORT+",
+     "url": "https://tv.orf.at/program/orfs/index.html",
+     "raw_title": "LIVE Basketball Herren Supercup 2026/2027 1. Runde: Kapfenberg Bulls - Flyers Wels aus Kapfenberg"
+    }
+   ]
+  },
+  {
+   "guess": 1,
+   "sport": "F",
+   "league": "LIVE Fußball Nations League Herren MD2: Österreich - Kosovo, Die Analyse aus Wien",
+   "home": "Österreich",
+   "away": "Kosovo",
+   "start_kyiv": "2026-09-27T21:15",
+   "start_utc": "2026-09-27T18:15",
+   "entries": [
+    {
+     "source": "tv.orf.at",
+     "channel": "ORF SPORT+",
+     "url": "https://tv.orf.at/program/orfs/index~_day-27-09-2026_-968a617820a269a056a7f043ab5675e7ea922f58.html",
+     "raw_title": "LIVE Fußball Nations League Herren MD2: Österreich - Kosovo, Die Analyse aus Wien"
+    }
+   ]
+  },
+  {
+   "guess": 1,
+   "sport": "F",
+   "league": "LIVE Pressekonferenz Fußball",
+   "home": "ÖFB MD-1 vor Irland",
+   "away": "Österreich",
+   "start_kyiv": "2026-09-30T21:30",
+   "start_utc": "2026-09-30T18:30",
+   "entries": [
+    {
+     "source": "tv.orf.at",
+     "channel": "ORF SPORT+",
+     "url": "https://tv.orf.at/program/orfs/index~_day-30-09-2026_-df68bd623e89d92dce668422b2d15b69ce2de9d3.html",
+     "raw_title": "LIVE Pressekonferenz Fußball ÖFB MD-1 vor Irland - Österreich aus Dublin"
+    }
+   ]
+  }
+ ]
 }
