@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-09-25",
+ "built": "2026-09-26",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -2398,7 +2398,6 @@
     "ORF 1",
     "ORF 2",
     "ORF III",
-    "ORF KIDS",
     "ORF SPORT+"
    ],
    "parser": "",
@@ -2428,10 +2427,6 @@
     {
      "name": "ORF III",
      "pattern": "https://tv.orf.at/program/orf3/index.html"
-    },
-    {
-     "name": "ORF KIDS",
-     "pattern": "https://tv.orf.at/program/kids/index.html"
     },
     {
      "name": "ORF SPORT+",
