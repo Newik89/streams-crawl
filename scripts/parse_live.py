@@ -21,7 +21,7 @@ import json
 import re
 import sqlite3
 import sys
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -788,7 +788,12 @@ def main() -> int:
     previous = previous_counts()
     verdict = (too_few(len(games), window, previous)
                if args.strict and not args.date else "")
-    payload = {"собрано": datetime.now().strftime("%Y-%m-%d %H:%M"),
+    # «собрано» — ВСЕГДА в UTC: заливка (`store.log_run`) и возраст файла
+    # (`crawl_fetch.age_hours`) считают метку UTC-часами. На GitHub так и
+    # было само собой, а сервер (mojtv, киевский пояс) писал местное время —
+    # и его сборы показывались на 3 часа позже, ломая порядок «Last 3 runs»
+    # (жалоба владельца 26.09)
+    payload = {"собрано": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
                "игр": len(games),
                # окно этого прогона и память «сколько игр давало каждое
                # окно» — для порога провала следующего (A4)
