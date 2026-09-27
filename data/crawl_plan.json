@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-09-26",
+ "built": "2026-09-27",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -314,7 +314,7 @@
    "warmup_url": "",
    "post_json": null,
    "headers": null,
-   "base_url": "https://www.ceskatelevize.cz/tv-program/11.02.2026/",
+   "base_url": "https://www.ceskatelevize.cz/tv-program/26.09.2026/",
    "channels": [
     {
      "name": "",
@@ -4354,6 +4354,62 @@
     {
      "name": "Tring Sport News",
      "pattern": "https://stargate.ipko.tv/api/titan.tv.WebEpg/GetWebEpgData?channel_id=tring-sport-news"
+    }
+   ]
+  },
+  {
+   "domain": "start.sportdigital.de",
+   "timezone": "Europe/Berlin",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Sportdigital EDGE",
+    "Sportdigital FUSSBALL",
+    "Sportdigital FUSSBALL2",
+    "Sportdigital1+",
+    "eSportsONE",
+    "scooore"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": true,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://start.sportdigital.de/tvprogramm",
+   "channels": [
+    {
+     "name": "Sportdigital EDGE",
+     "pattern": "https://start.sportdigital.de/tvprogramm/edge"
+    },
+    {
+     "name": "Sportdigital FUSSBALL",
+     "pattern": "https://start.sportdigital.de/tvprogramm/sdf"
+    },
+    {
+     "name": "Sportdigital FUSSBALL2",
+     "pattern": "https://start.sportdigital.de/tvprogramm/sdf2"
+    },
+    {
+     "name": "Sportdigital1+",
+     "pattern": "https://start.sportdigital.de/tvprogramm/sd1p"
+    },
+    {
+     "name": "eSportsONE",
+     "pattern": "https://start.sportdigital.de/tvprogramm/esportsone"
+    },
+    {
+     "name": "scooore",
+     "pattern": "https://start.sportdigital.de/tvprogramm/scooorefast"
     }
    ]
   },
