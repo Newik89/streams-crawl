@@ -186,6 +186,7 @@ def _load_all():
                    raiplay_it, rtcg_me, rte_ie, rts_rs, rtl_de, rtp_pt, rtrs_tv,
                    skai_gr, skysports_com,
                    sport1_de, sport1_maariv, sport1tv_cz, sport5_co_il,
+                   sportdigital_de,
                    sporteventz_com, sportklub_hr,
                    sports_kz, sporttv_pt,
                    srf_ch, ssport_tv,

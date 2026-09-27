@@ -162,6 +162,9 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # спортивные все + BTV, LNK, TV3, TV6, TV8, TV3 Plus, LRT,
           # LRT Plius. Запасные телегиды в ОТЛОЖЕНО.md
           "tv3.lt",
+          # Sportdigital (добавил владелец; свой парсер 28.09 — автоподбор
+          # не взял): 6 каналов, страница канала держит 21 день
+          "start.sportdigital.de",
           ]
 # СПРАВОЧНИКИ, не источники: liveonsat.com (решение 01.09) и
 # sporteventz.com (решение 02.09) в ежедневный обход не входят. Оба —

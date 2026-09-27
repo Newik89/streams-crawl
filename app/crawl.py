@@ -94,7 +94,10 @@ CHANNEL_GRID_DOMAINS = {"programetv.ro", "poverkhnost.tv",
                         "livesoccertv.com",
                         # Sport Klub: ручка United Cloud на канал, окно на
                         # неделю одним запросом ({UNIXMSDAY}–{UNIXMSWEEK})
-                        "sportklub.hr"}
+                        "sportklub.hr",
+                        # Sportdigital: /tvprogramm/<код> держит 21 день
+                        # канала одной страницей (свой парсер, 28.09)
+                        "start.sportdigital.de"}
 
 #: адрес дня не вычислить (в нём хеш), но он лежит ссылкой в странице
 #: канала: обход качает index, находит в нём ссылки нужных дней и идёт по
