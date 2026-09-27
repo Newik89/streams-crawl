@@ -89,6 +89,13 @@ _YOUTH_LEAGUES = re.compile(
     r"|юношеск\w*|юнацьк\w*|omladinsk\w*|mladežk\w*|ifjúsági|jugendliga"
     # «ליגת העל בכדורגל נוער» — юношеская высшая Израиля у sport5 (14.09)
     r"|λίγκα νέων|(?<!\w)[לה]?נוער(?!\w)", re.I)
+#: «молодёжная СБОРНАЯ» — это U21, а не U19: в русской/украинской/польской
+#: традиции U19 зовут «юношеской». ntvplus пишет «Молодежные сборные» у
+#: Сербия U21 — Россия U21, и игра получала U19 (#3880, 27.09)
+_U21_NATIONAL = re.compile(
+    r"молод[её]жн\w*\s+сборн\w*|молодіжн\w*\s+збірн\w*"
+    r"|reprezentacj\w*\s+m[łl]odzie[żz]ow\w*|m[łl]odzie[żz]ow\w*\s+reprezentacj\w*",
+    re.I)
 
 
 def clean(raw: str) -> str:
@@ -120,6 +127,8 @@ def category(raw: str) -> str:
     m = _AGE.search(raw or "")
     if m:
         parts.append(f"U{m.group(1) or m.group(2)}")
+    elif _U21_NATIONAL.search(raw or ""):
+        parts.append("U21")
     elif _YOUTH_LEAGUES.search(raw or ""):
         parts.append("U19")
     if _WOMEN.search(raw or "") or _WOMEN_LEAGUES.search(raw or ""):
