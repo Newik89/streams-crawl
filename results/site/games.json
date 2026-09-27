@@ -1,84 +1,225 @@
 {
- "собрано": "2026-09-26 06:00",
- "игр": 4,
- "окно": 6,
+ "собрано": "2026-09-27 18:30",
+ "игр": 8,
+ "окно": 2,
  "по_окнам": {
-  "2": 336,
+  "2": 8,
   "5": 528,
-  "6": 4
+  "6": 350
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "tv.orf.at": 878
+  "start.sportdigital.de": 1637
  },
- "на_разбор": [],
+ "на_разбор": [
+  {
+   "домен": "start.sportdigital.de",
+   "канал": "Sportdigital FUSSBALL",
+   "home": "FC Dundee",
+   "away": "Glasgow Rangers",
+   "league": "Scottish Premiership (9. Spieltag)",
+   "start_kyiv": "2026-10-17T22:55",
+   "raw_title": "FC Dundee - Glasgow Rangers"
+  },
+  {
+   "домен": "start.sportdigital.de",
+   "канал": "eSportsONE",
+   "home": "ESL-Event",
+   "away": "Counter-Strike 2",
+   "league": "ESL Pro League S24 - Group Stage - Tag 1: ESL-Event - Counter-Strike 2",
+   "start_kyiv": "2026-10-04T14:30",
+   "raw_title": "ESL-Event - Counter-Strike 2"
+  },
+  {
+   "домен": "start.sportdigital.de",
+   "канал": "eSportsONE",
+   "home": "ESL-Event",
+   "away": "Counter-Strike 2",
+   "league": "ESL Pro League S24 - Group Stage - Tag 2: ESL-Event - Counter-Strike 2",
+   "start_kyiv": "2026-10-05T14:30",
+   "raw_title": "ESL-Event - Counter-Strike 2"
+  },
+  {
+   "домен": "start.sportdigital.de",
+   "канал": "eSportsONE",
+   "home": "ESL-Event",
+   "away": "Counter-Strike 2",
+   "league": "ESL Pro League S24 - Group Stage - Tag 3: ESL-Event - Counter-Strike 2",
+   "start_kyiv": "2026-10-06T14:30",
+   "raw_title": "ESL-Event - Counter-Strike 2"
+  },
+  {
+   "домен": "start.sportdigital.de",
+   "канал": "eSportsONE",
+   "home": "ESL-Event",
+   "away": "Counter-Strike 2",
+   "league": "ESL Pro League S24 - Group Stage - Tag 4: ESL-Event - Counter-Strike 2",
+   "start_kyiv": "2026-10-07T14:30",
+   "raw_title": "ESL-Event - Counter-Strike 2"
+  },
+  {
+   "домен": "start.sportdigital.de",
+   "канал": "eSportsONE",
+   "home": "ESL-Event",
+   "away": "Counter-Strike 2",
+   "league": "ESL Pro League S24 - Viertelfinale - Tag 5: ESL-Event - Counter-Strike 2",
+   "start_kyiv": "2026-10-09T11:00",
+   "raw_title": "ESL-Event - Counter-Strike 2"
+  },
+  {
+   "домен": "start.sportdigital.de",
+   "канал": "eSportsONE",
+   "home": "ESL-Event",
+   "away": "Counter-Strike 2",
+   "league": "ESL Pro League S24 - Halbfinale- Tag 6: ESL-Event - Counter-Strike 2",
+   "start_kyiv": "2026-10-10T16:45",
+   "raw_title": "ESL-Event - Counter-Strike 2"
+  },
+  {
+   "домен": "start.sportdigital.de",
+   "канал": "eSportsONE",
+   "home": "ESL-Event",
+   "away": "Counter-Strike 2",
+   "league": "ESL Pro League S24 - Grand Final- Tag 7: ESL-Event - Counter-Strike 2",
+   "start_kyiv": "2026-10-11T16:45",
+   "raw_title": "ESL-Event - Counter-Strike 2"
+  }
+ ],
  "games": [
   {
-   "guess": 1,
+   "guess": 0,
    "sport": "F",
-   "league": "LIVE Pressekonferenz Fußball",
-   "home": "ÖFB MD-1 vor Österreich",
-   "away": "Kosovo",
-   "start_kyiv": "2026-09-26T15:00",
-   "start_utc": "2026-09-26T12:00",
+   "league": "Women's Super League (4. Spieltag): Chelsea FC - Arsenal FC",
+   "home": "Chelsea FC W",
+   "away": "Arsenal FC W",
+   "start_kyiv": "2026-09-27T18:25",
+   "start_utc": "2026-09-27T15:25",
    "entries": [
     {
-     "source": "tv.orf.at",
-     "channel": "ORF SPORT+",
-     "url": "https://tv.orf.at/program/orfs/index.html",
-     "raw_title": "LIVE Pressekonferenz Fußball ÖFB MD-1 vor Österreich - Kosovo aus Wien"
+     "source": "start.sportdigital.de",
+     "channel": "scooore",
+     "url": "https://start.sportdigital.de/tvprogramm/scooorefast",
+     "raw_title": "Chelsea FC - Arsenal FC"
     }
    ]
   },
   {
-   "guess": 1,
-   "sport": "B",
-   "league": "LIVE Basketball Herren Supercup",
-   "home": "Kapfenberg Bulls",
-   "away": "Flyers Wels",
-   "start_kyiv": "2026-09-26T15:30",
-   "start_utc": "2026-09-26T12:30",
+   "guess": 0,
+   "sport": "F",
+   "league": "Gulf Cup (Gruppe B, 2. Spieltag)",
+   "home": "Jemen",
+   "away": "Katar",
+   "start_kyiv": "2026-09-27T18:45",
+   "start_utc": "2026-09-27T15:45",
    "entries": [
     {
-     "source": "tv.orf.at",
-     "channel": "ORF SPORT+",
-     "url": "https://tv.orf.at/program/orfs/index.html",
-     "raw_title": "LIVE Basketball Herren Supercup 2026/2027 1. Runde: Kapfenberg Bulls - Flyers Wels aus Kapfenberg"
+     "source": "start.sportdigital.de",
+     "channel": "Sportdigital FUSSBALL",
+     "url": "https://start.sportdigital.de/tvprogramm/sdf",
+     "raw_title": "Jemen - Katar"
     }
    ]
   },
   {
-   "guess": 1,
+   "guess": 0,
    "sport": "F",
-   "league": "LIVE Fußball Nations League Herren MD2: Österreich - Kosovo, Die Analyse aus Wien",
-   "home": "Österreich",
-   "away": "Kosovo",
-   "start_kyiv": "2026-09-27T21:15",
-   "start_utc": "2026-09-27T18:15",
+   "league": "Gulf Cup (Gruppe B, 2. Spieltag)",
+   "home": "Bahrain",
+   "away": "Vereinigte Arabische Emirate",
+   "start_kyiv": "2026-09-27T20:55",
+   "start_utc": "2026-09-27T17:55",
    "entries": [
     {
-     "source": "tv.orf.at",
-     "channel": "ORF SPORT+",
-     "url": "https://tv.orf.at/program/orfs/index~_day-27-09-2026_-968a617820a269a056a7f043ab5675e7ea922f58.html",
-     "raw_title": "LIVE Fußball Nations League Herren MD2: Österreich - Kosovo, Die Analyse aus Wien"
+     "source": "start.sportdigital.de",
+     "channel": "Sportdigital FUSSBALL",
+     "url": "https://start.sportdigital.de/tvprogramm/sdf",
+     "raw_title": "Bahrain - Vereinigte Arabische Emirate"
     }
    ]
   },
   {
-   "guess": 1,
+   "guess": 0,
    "sport": "F",
-   "league": "LIVE Pressekonferenz Fußball",
-   "home": "ÖFB MD-1 vor Irland",
-   "away": "Österreich",
-   "start_kyiv": "2026-09-30T21:30",
-   "start_utc": "2026-09-30T18:30",
+   "league": "Gulf Cup (Gruppe A, 3. Spieltag)",
+   "home": "Saudi-Arabien",
+   "away": "Irak",
+   "start_kyiv": "2026-09-29T20:20",
+   "start_utc": "2026-09-29T17:20",
    "entries": [
     {
-     "source": "tv.orf.at",
-     "channel": "ORF SPORT+",
-     "url": "https://tv.orf.at/program/orfs/index~_day-30-09-2026_-df68bd623e89d92dce668422b2d15b69ce2de9d3.html",
-     "raw_title": "LIVE Pressekonferenz Fußball ÖFB MD-1 vor Irland - Österreich aus Dublin"
+     "source": "start.sportdigital.de",
+     "channel": "Sportdigital FUSSBALL",
+     "url": "https://start.sportdigital.de/tvprogramm/sdf",
+     "raw_title": "Saudi-Arabien - Irak"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Gulf Cup (Gruppe A, 3. Spieltag): Oman - Kuwait",
+   "home": "Oman",
+   "away": "Kuwait",
+   "start_kyiv": "2026-09-29T20:25",
+   "start_utc": "2026-09-29T17:25",
+   "entries": [
+    {
+     "source": "start.sportdigital.de",
+     "channel": "Sportdigital FUSSBALL2",
+     "url": "https://start.sportdigital.de/tvprogramm/sdf2",
+     "raw_title": "Oman - Kuwait"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Gulf Cup (Gruppe B, 3. Spieltag)",
+   "home": "Vereinigte Arabische Emirate",
+   "away": "Katar",
+   "start_kyiv": "2026-09-30T20:20",
+   "start_utc": "2026-09-30T17:20",
+   "entries": [
+    {
+     "source": "start.sportdigital.de",
+     "channel": "Sportdigital FUSSBALL",
+     "url": "https://start.sportdigital.de/tvprogramm/sdf",
+     "raw_title": "Vereinigte Arabische Emirate - Katar"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Gulf Cup (Gruppe B, 3. Spieltag): Bahrain - Jemen",
+   "home": "Bahrain",
+   "away": "Jemen",
+   "start_kyiv": "2026-09-30T20:25",
+   "start_utc": "2026-09-30T17:25",
+   "entries": [
+    {
+     "source": "start.sportdigital.de",
+     "channel": "Sportdigital FUSSBALL2",
+     "url": "https://start.sportdigital.de/tvprogramm/sdf2",
+     "raw_title": "Bahrain - Jemen"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Campeonato Brasileiro (Nachholspiel, 21. Spieltag)",
+   "home": "FC Sao Paulo",
+   "away": "Santos FC",
+   "start_kyiv": "2026-10-03T01:55",
+   "start_utc": "2026-10-02T22:55",
+   "entries": [
+    {
+     "source": "start.sportdigital.de",
+     "channel": "Sportdigital FUSSBALL",
+     "url": "https://start.sportdigital.de/tvprogramm/sdf",
+     "raw_title": "FC Sao Paulo - Santos FC"
     }
    ]
   }
