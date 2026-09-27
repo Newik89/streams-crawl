@@ -1,225 +1,638 @@
 {
- "собрано": "2026-09-27 18:32",
- "игр": 8,
+ "собрано": "2026-09-27 20:41",
+ "игр": 33,
  "окно": 6,
  "по_окнам": {
   "2": 268,
   "5": 528,
-  "6": 8
+  "6": 33
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "start.sportdigital.de": 1637
+  "ntvplus.tv": 3121
  },
  "на_разбор": [
   {
-   "домен": "start.sportdigital.de",
-   "канал": "Sportdigital FUSSBALL",
-   "home": "FC Dundee",
-   "away": "Glasgow Rangers",
-   "league": "Scottish Premiership (9. Spieltag)",
-   "start_kyiv": "2026-10-17T22:55",
-   "raw_title": "FC Dundee - Glasgow Rangers"
+   "домен": "ntvplus.tv",
+   "канал": "Trace Sport Stars (HD)",
+   "home": "19-я серия",
+   "away": "Fise China",
+   "league": "",
+   "start_kyiv": "2026-10-01T16:00",
+   "raw_title": "Only Live Once. 19-я серия - \"Fise China\""
   },
   {
-   "домен": "start.sportdigital.de",
-   "канал": "eSportsONE",
-   "home": "ESL-Event",
-   "away": "Counter-Strike 2",
-   "league": "ESL Pro League S24 - Group Stage - Tag 1: ESL-Event - Counter-Strike 2",
-   "start_kyiv": "2026-10-04T14:30",
-   "raw_title": "ESL-Event - Counter-Strike 2"
-  },
-  {
-   "домен": "start.sportdigital.de",
-   "канал": "eSportsONE",
-   "home": "ESL-Event",
-   "away": "Counter-Strike 2",
-   "league": "ESL Pro League S24 - Group Stage - Tag 2: ESL-Event - Counter-Strike 2",
-   "start_kyiv": "2026-10-05T14:30",
-   "raw_title": "ESL-Event - Counter-Strike 2"
-  },
-  {
-   "домен": "start.sportdigital.de",
-   "канал": "eSportsONE",
-   "home": "ESL-Event",
-   "away": "Counter-Strike 2",
-   "league": "ESL Pro League S24 - Group Stage - Tag 3: ESL-Event - Counter-Strike 2",
-   "start_kyiv": "2026-10-06T14:30",
-   "raw_title": "ESL-Event - Counter-Strike 2"
-  },
-  {
-   "домен": "start.sportdigital.de",
-   "канал": "eSportsONE",
-   "home": "ESL-Event",
-   "away": "Counter-Strike 2",
-   "league": "ESL Pro League S24 - Group Stage - Tag 4: ESL-Event - Counter-Strike 2",
-   "start_kyiv": "2026-10-07T14:30",
-   "raw_title": "ESL-Event - Counter-Strike 2"
-  },
-  {
-   "домен": "start.sportdigital.de",
-   "канал": "eSportsONE",
-   "home": "ESL-Event",
-   "away": "Counter-Strike 2",
-   "league": "ESL Pro League S24 - Viertelfinale - Tag 5: ESL-Event - Counter-Strike 2",
-   "start_kyiv": "2026-10-09T11:00",
-   "raw_title": "ESL-Event - Counter-Strike 2"
-  },
-  {
-   "домен": "start.sportdigital.de",
-   "канал": "eSportsONE",
-   "home": "ESL-Event",
-   "away": "Counter-Strike 2",
-   "league": "ESL Pro League S24 - Halbfinale- Tag 6: ESL-Event - Counter-Strike 2",
-   "start_kyiv": "2026-10-10T16:45",
-   "raw_title": "ESL-Event - Counter-Strike 2"
-  },
-  {
-   "домен": "start.sportdigital.de",
-   "канал": "eSportsONE",
-   "home": "ESL-Event",
-   "away": "Counter-Strike 2",
-   "league": "ESL Pro League S24 - Grand Final- Tag 7: ESL-Event - Counter-Strike 2",
-   "start_kyiv": "2026-10-11T16:45",
-   "raw_title": "ESL-Event - Counter-Strike 2"
+   "домен": "ntvplus.tv",
+   "канал": "Trace Sport Stars (HD)",
+   "home": "19-я серия",
+   "away": "Fise China",
+   "league": "",
+   "start_kyiv": "2026-10-01T21:30",
+   "raw_title": "Only Live Once. 19-я серия - \"Fise China\""
   }
  ],
  "games": [
   {
    "guess": 0,
-   "sport": "F",
-   "league": "Women's Super League (4. Spieltag): Chelsea FC - Arsenal FC",
-   "home": "Chelsea FC W",
-   "away": "Arsenal FC W",
-   "start_kyiv": "2026-09-27T18:25",
-   "start_utc": "2026-09-27T15:25",
+   "sport": "B",
+   "league": "Чемпионат Австралии Прямая трансляция",
+   "home": "Аделаида",
+   "away": "Кэрнс Тайпанс",
+   "start_kyiv": "2026-09-27T09:00",
+   "start_utc": "2026-09-27T06:00",
    "entries": [
     {
-     "source": "start.sportdigital.de",
-     "channel": "scooore",
-     "url": "https://start.sportdigital.de/tvprogramm/scooorefast",
-     "raw_title": "Chelsea FC - Arsenal FC"
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Австралии. Прямая трансляция. Аделаида - Кэрнс Тайпанс"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Австралии Прямая трансляция",
+   "home": "Сидней Кингз",
+   "away": "Иллаварра Хокс",
+   "start_kyiv": "2026-09-27T11:00",
+   "start_utc": "2026-09-27T08:00",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Австралии. Прямая трансляция. Сидней Кингз - Иллаварра Хокс"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Испании Прямая трансляция",
+   "home": "Сан-Пабло Бургос",
+   "away": "Баскония",
+   "start_kyiv": "2026-09-27T13:25",
+   "start_utc": "2026-09-27T10:25",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Испании. Прямая трансляция. Сан-Пабло Бургос - Баскония"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Gulf Cup (Gruppe B, 2. Spieltag)",
-   "home": "Jemen",
-   "away": "Katar",
-   "start_kyiv": "2026-09-27T18:45",
-   "start_utc": "2026-09-27T15:45",
+   "league": "WINLINE СУПЕРСЕРИЯ Прямая трансляция из Китая",
+   "home": "Зенит",
+   "away": "Шанхай Шэньхуа",
+   "start_kyiv": "2026-09-27T14:55",
+   "start_utc": "2026-09-27T11:55",
    "entries": [
     {
-     "source": "start.sportdigital.de",
-     "channel": "Sportdigital FUSSBALL",
-     "url": "https://start.sportdigital.de/tvprogramm/sdf",
-     "raw_title": "Jemen - Katar"
+     "source": "ntvplus.tv",
+     "channel": "Матч ТВ",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. WINLINE СУПЕРСЕРИЯ. Прямая трансляция из Китая. \"Зенит\" (Россия) - \"Шанхай Шэньхуа\" (Китай)"
+    },
+    {
+     "source": "ntvplus.tv",
+     "channel": "Телеканал «Матч ТВ»",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. WINLINE СУПЕРСЕРИЯ. Прямая трансляция из Китая. \"Зенит\" (Россия) - \"Шанхай Шэньхуа\" (Китай)"
+    },
+    {
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ ПРЕМЬЕР HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Winline Суперсерия. Прямая трансляция из Китая. \"Зенит\" (Россия) - \"Шанхай Шэньхуа\" (Китай)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Турции Прямая трансляция",
+   "home": "Трабзонспор",
+   "away": "Бурсаспор",
+   "start_kyiv": "2026-09-27T15:25",
+   "start_utc": "2026-09-27T12:25",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Турции. Прямая трансляция. Трабзонспор - Бурсаспор"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Gulf Cup (Gruppe B, 2. Spieltag)",
-   "home": "Bahrain",
-   "away": "Vereinigte Arabische Emirate",
-   "start_kyiv": "2026-09-27T20:55",
-   "start_utc": "2026-09-27T17:55",
+   "league": "Кубок России Женщины Финал Прямая трансляция",
+   "home": "Локомотив W",
+   "away": "ЦСКА W",
+   "start_kyiv": "2026-09-27T17:00",
+   "start_utc": "2026-09-27T14:00",
    "entries": [
     {
-     "source": "start.sportdigital.de",
-     "channel": "Sportdigital FUSSBALL",
-     "url": "https://start.sportdigital.de/tvprogramm/sdf",
-     "raw_title": "Bahrain - Vereinigte Arabische Emirate"
+     "source": "ntvplus.tv",
+     "channel": "Матч ТВ",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Кубок России. Женщины. Финал. Прямая трансляция. \"Локомотив\" (Москва) - ЦСКА"
+    },
+    {
+     "source": "ntvplus.tv",
+     "channel": "Телеканал «Матч ТВ»",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Кубок России. Женщины. Финал. Прямая трансляция. \"Локомотив\" (Москва) - ЦСКА"
+    },
+    {
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ ПРЕМЬЕР HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Кубок России. Женщины. Финал. \"Локомотив\" - ЦСКА. Live"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Испании Прямая трансляция",
+   "home": "Жирона",
+   "away": "Мурсия",
+   "start_kyiv": "2026-09-27T17:55",
+   "start_utc": "2026-09-27T14:55",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Испании. Прямая трансляция. Жирона - Мурсия"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Турции Прямая трансляция",
+   "home": "Бахчешехир",
+   "away": "Фенербахче",
+   "start_kyiv": "2026-09-27T18:30",
+   "start_utc": "2026-09-27T15:30",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "СТАРТ HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Турции. Прямая трансляция. Бахчешехир - Фенербахче"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Испании Прямая трансляция",
+   "home": "Реал Мадрид",
+   "away": "Уникаха",
+   "start_kyiv": "2026-09-27T19:55",
+   "start_utc": "2026-09-27T16:55",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "СТАРТ HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Испании. Прямая трансляция. Реал Мадрид - Уникаха"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Турции Прямая трансляция",
+   "home": "Анадолу Эфес",
+   "away": "Бешикташ",
+   "start_kyiv": "2026-09-27T20:25",
+   "start_utc": "2026-09-27T17:25",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Турции. Прямая трансляция. Анадолу Эфес - Бешикташ"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Gulf Cup (Gruppe A, 3. Spieltag)",
-   "home": "Saudi-Arabien",
-   "away": "Irak",
-   "start_kyiv": "2026-09-29T20:20",
-   "start_utc": "2026-09-29T17:20",
+   "league": "Сегунда Прямая трансляция",
+   "home": "Овьедо",
+   "away": "Спортинг",
+   "start_kyiv": "2026-09-27T21:55",
+   "start_utc": "2026-09-27T18:55",
    "entries": [
     {
-     "source": "start.sportdigital.de",
-     "channel": "Sportdigital FUSSBALL",
-     "url": "https://start.sportdigital.de/tvprogramm/sdf",
-     "raw_title": "Saudi-Arabien - Irak"
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ! Футбол 2 (HD)",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Чемпионат Испании. Сегунда. Прямая трансляция. \"Овьедо\" - \"Спортинг\""
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Gulf Cup (Gruppe A, 3. Spieltag): Oman - Kuwait",
-   "home": "Oman",
-   "away": "Kuwait",
-   "start_kyiv": "2026-09-29T20:25",
-   "start_utc": "2026-09-29T17:25",
+   "league": "Колумбия Примера А Клаусура 2026 12 тур Прямая трансляция",
+   "home": "Форталеза",
+   "away": "Депортес Толима",
+   "start_kyiv": "2026-09-28T01:55",
+   "start_utc": "2026-09-27T22:55",
    "entries": [
     {
-     "source": "start.sportdigital.de",
-     "channel": "Sportdigital FUSSBALL2",
-     "url": "https://start.sportdigital.de/tvprogramm/sdf2",
-     "raw_title": "Oman - Kuwait"
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. 12 тур. Прямая трансляция. Форталеза - Депортес Толима"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Gulf Cup (Gruppe B, 3. Spieltag)",
-   "home": "Vereinigte Arabische Emirate",
-   "away": "Katar",
-   "start_kyiv": "2026-09-30T20:20",
-   "start_utc": "2026-09-30T17:20",
+   "league": "Колумбия Примера А Клаусура 2026 Перенесённый матч 3 тура Прямая трансляция",
+   "home": "Депортиво Кали",
+   "away": "Агильяс Дорадас",
+   "start_kyiv": "2026-09-28T04:00",
+   "start_utc": "2026-09-28T01:00",
    "entries": [
     {
-     "source": "start.sportdigital.de",
-     "channel": "Sportdigital FUSSBALL",
-     "url": "https://start.sportdigital.de/tvprogramm/sdf",
-     "raw_title": "Vereinigte Arabische Emirate - Katar"
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. Перенесённый матч 3 тура. Прямая трансляция. Депортиво Кали - Агильяс Дорадас"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Gulf Cup (Gruppe B, 3. Spieltag): Bahrain - Jemen",
-   "home": "Bahrain",
-   "away": "Jemen",
-   "start_kyiv": "2026-09-30T20:25",
-   "start_utc": "2026-09-30T17:25",
+   "league": "Колумбия Примера А Клаусура 2026 12 тур Прямая трансляция",
+   "home": "Жуниор Барранкилья",
+   "away": "Индепендьенте Медельин",
+   "start_kyiv": "2026-09-28T04:10",
+   "start_utc": "2026-09-28T01:10",
    "entries": [
     {
-     "source": "start.sportdigital.de",
-     "channel": "Sportdigital FUSSBALL2",
-     "url": "https://start.sportdigital.de/tvprogramm/sdf2",
-     "raw_title": "Bahrain - Jemen"
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=27.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. 12 тур. Прямая трансляция. Жуниор Барранкилья - Индепендьенте Медельин"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Campeonato Brasileiro (Nachholspiel, 21. Spieltag)",
-   "home": "FC Sao Paulo",
-   "away": "Santos FC",
-   "start_kyiv": "2026-10-03T01:55",
-   "start_utc": "2026-10-02T22:55",
+   "league": "Молодежные сборные Прямая трансляция из Северной Македонии",
+   "home": "Северная Македония U21",
+   "away": "Россия U21",
+   "start_kyiv": "2026-09-28T16:55",
+   "start_utc": "2026-09-28T13:55",
    "entries": [
     {
-     "source": "start.sportdigital.de",
-     "channel": "Sportdigital FUSSBALL",
-     "url": "https://start.sportdigital.de/tvprogramm/sdf",
-     "raw_title": "FC Sao Paulo - Santos FC"
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ ПРЕМЬЕР HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=28.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Товарищеский матч. Молодежные сборные. Прямая трансляция из Северной. Македонии. Северная Македония - Россия"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Сегунда Прямая трансляция",
+   "home": "Леганес",
+   "away": "Кастельон",
+   "start_kyiv": "2026-09-28T21:25",
+   "start_utc": "2026-09-28T18:25",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ! Футбол 2 (HD)",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=28.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Чемпионат Испании. Сегунда. Прямая трансляция. \"Леганес\" - \"Кастельон\""
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Колумбия Примера А Клаусура 2026 Перенесённый матч 3 тура Прямая трансляция",
+   "home": "Депортиво Кали",
+   "away": "Агильяс Дорадас",
+   "start_kyiv": "2026-09-29T04:00",
+   "start_utc": "2026-09-29T01:00",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=28.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. Перенесённый матч 3 тура. Прямая трансляция. Депортиво Кали - Агильяс Дорадас"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Колумбия Примера А Клаусура 2026 Перенесённый матч 4 тура Прямая трансляция",
+   "home": "Индепендьенте Медельин",
+   "away": "Мильонариос",
+   "start_kyiv": "2026-09-30T03:55",
+   "start_utc": "2026-09-30T00:55",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=29.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. Перенесённый матч 4 тура. Прямая трансляция. Индепендьенте Медельин - Мильонариос"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Австралии Прямая трансляция",
+   "home": "Нью Зиланд Брейкерс",
+   "away": "Кэрнс Тайпанс",
+   "start_kyiv": "2026-09-30T10:30",
+   "start_utc": "2026-09-30T07:30",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=30.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Австралии. Прямая трансляция. Нью Зиланд Брейкерс - Кэрнс Тайпанс"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Австралии Прямая трансляция",
+   "home": "Сидней Кингз",
+   "away": "Брисбен Буллетс",
+   "start_kyiv": "2026-09-30T12:30",
+   "start_utc": "2026-09-30T09:30",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=30.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Австралии. Прямая трансляция. Сидней Кингз - Брисбен Буллетс"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Товарищеский матч Прямая трансляция",
+   "home": "Аргентина",
+   "away": "Боливия",
+   "start_kyiv": "2026-10-01T02:55",
+   "start_utc": "2026-09-30T23:55",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Матч ТВ",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=30.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Товарищеский матч. Прямая трансляция. Аргентина - Боливия"
+    },
+    {
+     "source": "ntvplus.tv",
+     "channel": "Телеканал «Матч ТВ»",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=30.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Товарищеский матч. Прямая трансляция. Аргентина - Боливия"
+    },
+    {
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ! Футбол 3 (HD)",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=30.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Товарищеский матч. Прямая трансляция. Аргентина - Боливия"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Колумбия Примера А Клаусура 2026 Перенесённый матч 3 тура Прямая трансляция",
+   "home": "Атлетико Насьональ",
+   "away": "Жуниор Барранкилья",
+   "start_kyiv": "2026-10-01T03:50",
+   "start_utc": "2026-10-01T00:50",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=30.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. Перенесённый матч 3 тура. Прямая трансляция. Атлетико Насьональ - Жуниор Барранкилья"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Колумбия Примера А Клаусура 2026 Перенесённый матч 4 тура Прямая трансляция",
+   "home": "Индепендьенте Медельин",
+   "away": "Мильонариос",
+   "start_kyiv": "2026-10-01T03:55",
+   "start_utc": "2026-10-01T00:55",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=30.09.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. Перенесённый матч 4 тура. Прямая трансляция. Индепендьенте Медельин - Мильонариос"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Австралии Прямая трансляция",
+   "home": "Тасмания Джекджамперс",
+   "away": "Мельбурн Юнайтед",
+   "start_kyiv": "2026-10-01T12:30",
+   "start_utc": "2026-10-01T09:30",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=01.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Австралии. Прямая трансляция. Тасмания Джекджамперс - Мельбурн Юнайтед"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат России Суперлига Мужчины Прямая трансляция",
+   "home": "Динамо",
+   "away": "Барнаул",
+   "start_kyiv": "2026-10-01T16:55",
+   "start_utc": "2026-10-01T13:55",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ! ИГРА (HD)",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=01.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат России. Суперлига. Мужчины. Прямая трансляция. \"Динамо\" (Уфа) - \"Барнаул\" (Алтайский край)"
+    },
+    {
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ! СТРАНА HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=01.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат России. Суперлига. Мужчины. Прямая трансляция. \"Динамо\" (Уфа) - \"Барнаул\" (Алтайский край)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Колумбия Примера А Клаусура 2026 Перенесённый матч 3 тура Прямая трансляция",
+   "home": "Атлетико Насьональ",
+   "away": "Жуниор Барранкилья",
+   "start_kyiv": "2026-10-02T03:50",
+   "start_utc": "2026-10-02T00:50",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=01.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. Перенесённый матч 3 тура. Прямая трансляция. Атлетико Насьональ - Жуниор Барранкилья"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Колумбия Примера А Клаусура 2026 Перенесённый матч 17 тура Прямая трансляция",
+   "home": "Интер Богота",
+   "away": "Онсе Кальдас",
+   "start_kyiv": "2026-10-02T03:50",
+   "start_utc": "2026-10-02T00:50",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=01.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. Перенесённый матч 17 тура. Прямая трансляция. Интер Богота - Онсе Кальдас"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Австралии Прямая трансляция",
+   "home": "Иллаварра Хокс",
+   "away": "Аделаида",
+   "start_kyiv": "2026-10-02T12:30",
+   "start_utc": "2026-10-02T09:30",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=02.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Австралии. Прямая трансляция. Иллаварра Хокс - Аделаида"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Австралии Прямая трансляция",
+   "home": "Перт Уайлдкэтс",
+   "away": "Саут Ист Мельбурн",
+   "start_kyiv": "2026-10-02T14:30",
+   "start_utc": "2026-10-02T11:30",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=02.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Австралии. Прямая трансляция. Перт Уайлдкэтс - Саут Ист Мельбурн"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Чемпионат Турции Прямая трансляция",
+   "home": "Каршияка",
+   "away": "Галатасарай",
+   "start_kyiv": "2026-10-02T18:55",
+   "start_utc": "2026-10-02T15:55",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "Старт Баскет",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=02.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Баскетбол. Чемпионат Турции. Прямая трансляция. Каршияка - Галатасарай"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Молодежные сборные Прямая трансляция из Сербии",
+   "home": "Сербия U21",
+   "away": "Россия U21",
+   "start_kyiv": "2026-10-02T18:55",
+   "start_utc": "2026-10-02T15:55",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ ПРЕМЬЕР HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=02.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Товарищеский матч. Молодежные сборные. Прямая трансляция из Сербии. Сербия - Россия"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Сегунда Прямая трансляция",
+   "home": "Эльденсе",
+   "away": "Овьедо",
+   "start_kyiv": "2026-10-02T21:25",
+   "start_utc": "2026-10-02T18:25",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "МАТЧ! Футбол 2 (HD)",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=02.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Чемпионат Испании. Сегунда. Прямая трансляция. \"Эльденсе\" - \"Овьедо\""
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Колумбия Примера А Клаусура 2026 Перенесённый матч 17 тура Прямая трансляция",
+   "home": "Интер Богота",
+   "away": "Онсе Кальдас",
+   "start_kyiv": "2026-10-03T03:50",
+   "start_utc": "2026-10-03T00:50",
+   "entries": [
+    {
+     "source": "ntvplus.tv",
+     "channel": "viju+ Sport HD",
+     "url": "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=02.10.2026&tz=0&search=&channel=&offset=0",
+     "raw_title": "Футбол. Колумбия. Примера А. Клаусура 2026. Перенесённый матч 17 тура. Прямая трансляция. Интер Богота - Онсе Кальдас"
     }
    ]
   }
