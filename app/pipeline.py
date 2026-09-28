@@ -24,7 +24,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from . import daytime, leagues, live, sport
+from . import daytime, leagues, live, names, sport
 from .parsers import Program
 
 
@@ -91,6 +91,17 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     if row.league_category:
         row.home = leagues.with_category(row.home, row.league_category)
         row.away = leagues.with_category(row.away, row.league_category)
+    # Пол по одной стороне (владелец 28.09, #3535): женская команда с
+    # мужской не играет, и если хоть одна сторона женская — вся пара
+    # женская. Возраст так НЕ переносим: в EFL Trophy «Chelsea U21» честно
+    # играет со взрослым Wycombe
+    клуб_спорт = ""
+    if row.home and row.away:
+        клуб_спорт = leagues.women_team(row.home) or leagues.women_team(row.away)
+        женская = [("W" in names.category(x).split()) for x in (row.home, row.away)]
+        if any(женская) or клуб_спорт:
+            row.home = leagues.with_category(row.home, "W")
+            row.away = leagues.with_category(row.away, "W")
 
     text = " ".join(x for x in (program.title, program.sport_raw,
                                 program.league_raw, program.description) if x)
@@ -107,6 +118,10 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
             if letter:
                 row.sport_word = key
                 break
+    if letter is None and клуб_спорт:
+        # сугубо женский клуб играет в одном виде (`leagues._WOMEN_TEAMS`)
+        letter = клуб_спорт
+        row.sport_word = "женский клуб"
     if letter is None and pair_sports:
         # владелец сам сказал, какой это спорт, для такой пары команд
         # (страница «Названия», раздел «Вид спорта»): сайт о нём молчит
