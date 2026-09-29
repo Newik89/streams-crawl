@@ -87,10 +87,16 @@ def push_request_tag(kind: str, value: str) -> tuple[bool, str]:
     env = dict(os.environ)
     env["GIT_SSH_COMMAND"] = (f"ssh -i {_BUTTON_KEY} "
                               "-o StrictHostKeyChecking=accept-new")
-    r = subprocess.run(
-        ["git", "push", f"git@github.com:{_repo_slug()}.git",
-         f"HEAD:refs/tags/{tag}"],
-        capture_output=True, text=True, cwd=ROOT, env=env, timeout=40)
+    try:
+        # 90 с, не 40: 29.09 GitHub принял тег, но ответил позже 40 с —
+        # заявка ушла, а скрипт упал и строка «заказан» не записалась
+        r = subprocess.run(
+            ["git", "push", f"git@github.com:{_repo_slug()}.git",
+             f"HEAD:refs/tags/{tag}"],
+            capture_output=True, text=True, cwd=ROOT, env=env, timeout=90)
+    except subprocess.TimeoutExpired:
+        return False, ("GitHub не ответил за 90 с — заявка могла дойти, "
+                       "смотрите «Прогоны»")
     if r.returncode == 0:
         return True, "обход заказан — GitHub запускает его"
     return False, "заявка не прошла: " + (r.stderr or "?").strip()[:160]
