@@ -328,7 +328,9 @@ jobs:
         with:
           name: obhod-${{ github.run_number }}
           path: recon/raw_live/
-          retention-days: 7
+          # 3 дня, не 7: хранилище Actions 0,5 ГБ считается и для публичного
+          # репо — при 7 днях подходили к 90% (письмо GitHub 29.09)
+          retention-days: 3
 
       - name: Дозор — сайт снова пускает
         # закрытый сайт стоит в обходе одним заходом в сутки; ответил
