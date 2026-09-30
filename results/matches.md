@@ -1,13 +1,12 @@
 # Матчи с живого обхода
 
-Игр: **343** (строк с сайтов: 801). Время киевское.
+Игр: **359** (строк с сайтов: 840). Время киевское.
 
 | Когда | Матч | Лига | Каналы |
 |---|---|---|---|
 | 30.09 00:30 | Νιου Γιορκ Λίμπερτι — Μινεσότα Λινξ |  | Magenta Sport 4 |
 | 30.09 03:00 | Argentina — Bolivia | digisport | Digi Sport 1 |
 | 30.09 03:30 | New York Liberty — Minnesota Lynx | playoff | Sport2 |
-| 30.09 05:00 | Tenis M — ATP: Tokyo / Beijing Open |  | Prima Sport 3, PPV1, PPV2 |
 | 30.09 05:00 | Lehecka — Bergs | ATP 500 Tokyo | Sport Klub 10 |
 | 30.09 05:00 | Vacherot — Blockx | ATP 500 Tokyo | Sport Klub 2, M+ Deportes 2, Sport Klub 7 |
 | 30.09 06:00 | Elena-Gabriela Ruse — Lilli TaggerZiua 1 | tenis Tenis | Digi Sport 2 |
@@ -29,7 +28,6 @@
 | 30.09 09:45 | J.M. Cerundolo — Bu | ATP 500 Peking | Sport Klub 2, M+ Deportes 3 |
 | 30.09 09:45 | Olinykova W — Yuan W | WTA 1000 Peking | Sport Klub 8 |
 | 30.09 09:45 | Inglis W — Sonmez W | WTA 1000 Peking | Sport Klub 9 |
-| 30.09 10:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
 | 30.09 10:00 | China Open — Beijing |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
 | 30.09 10:00 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  | Ziggo Sport 5 |
 | 30.09 10:00 | Fils — Van Assche | ATP 500 Tokyo | Sport Klub 7, M+ Deportes 2 |
@@ -37,31 +35,22 @@
 | 30.09 10:30 | Miedler/Oberleitner — Blockx/Michelsen | ATP 500 Tokyo | Sport Klub 10 |
 | 30.09 11:30 | Preston W — Korpatsch W | WTA 1000 Peking | Sport Klub 5 |
 | 30.09 11:45 | Arnaldi — Sakamoto | ATP 500 Tokyo | Sport Klub 7 |
-| 30.09 12:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
 | 30.09 12:00 | Srbija U17 — Slovačka U17 | PRIJATELJSKE UTAKMICE | Arena Premium 2 |
 | 30.09 12:00 | Zhang — Gea | ATP 500 Peking | Sport Klub 2 |
 | 30.09 12:15 | Hontama W — Boulter W | WTA 1000 Peking | Sport Klub 4 |
 | 30.09 12:30 | Сидней Кингз — Брисбен Буллетс | Чемпионат Австралии Прямая трансляция | Старт Баскет |
-| 30.09 14:00 | Borges — Djokovic | ATP 500 Peking | Sport Klub 1, M+ Deportes 4 |
+| 30.09 14:00 | Djokovic — Borges | ATP 500 - Beijing | Arena Premium 5, Sport Klub 1, M+ Deportes 4 |
 | 30.09 14:00 | Jacquemot W — Frech W | WTA 1000 Peking | Sport Klub 2 |
-| 30.09 14:00 | סיבוב 1 — משחק אחד | ATP 500 | ספורט 5 Live |
 | 30.09 14:05 | China Open — Beijing |  | Ziggo Sport 4 |
-| 30.09 14:30 | Osnabruck — Herhta Berlin |  | Prima Sport 4 |
-| 30.09 15:00 | Levante — Betis |  | Prima Sport 5 |
 | 30.09 15:45 | Bondar W — Zarazua W | WTA 1000 Peking | Sport Klub 1 |
-| 30.09 16:00 | Egypt U20 — Tunisia U20 | U-20 Africa Cup of Nations | ON Sport 1 |
-| 30.09 16:00 | Morocco U20 — Algeria U20 | U-20 Africa Cup of Nations | ON Sport 1 |
-| 30.09 16:00 | Anna Bondár — Renata Zarazúa | Turniej WTA w Pekinie | CANAL+ Sport 2 |
 | 30.09 16:00 | Edas Butvilas — Michael Geerts | Tenisas. ATP Challenger 125. Porto | Sport 1 |
-| 30.09 17:00 | Mechelen — USK Prague | AΘens Cup | Novasports 5 HD, Novasports5HD |
+| 30.09 17:00 | Μέχελεν — USK Πράγας | AΘens Cup | Novasports5HD |
 | 30.09 17:50 | BKM Lučenec — BC Slovan Bratislava |  | JOJ Šport |
 | 30.09 18:20 | Šiauliai — Lions | Europos taurė | Go3 Sport 1 |
 | 30.09 18:30 | Siauliai — London | Eurocup | Arena Premium 2, Sport Klub 3 |
 | 30.09 18:45 | Lithuania — Andorra | Futbolas: UEFA tautų lyga | LRT Plius, Fox Soccer Plus, Sport Klub 4 |
 | 30.09 18:50 | Česko U21 — Bulharsko U21 | Kvalifikace EURO U21 mužů | ČT sport |
-| 30.09 18:50 | אריתראה — דרום אפריקה | מוקדמות אליפות אפריקה | ספורט 5 Stars |
-| 30.09 18:55 | Polska U21 — Szwecja U21 | Eliminacje mistrzostw Europy U-21 | TVP Sport |
-| 30.09 19:00 | Чехия — България | Квалификации за Евро 2027 за младежи | Diema Sport, Diema Xtra, diemasport |
+| 30.09 19:00 | Чехия — България | Квалификации за Евро 2027 за младежи | Diema Sport, Diema Xtra |
 | 30.09 19:00 | Romania U21 — Finlanda U21 | Fotbal U21 | Pro Arena |
 | 30.09 19:00 | Bahcesehir — Roma | Eurocup | Arena Premium 1, Sport Klub 1 |
 | 30.09 19:00 | Riga — Tortona | Eurocup | Arena Premium 5, Arena Sport 2, Sport Klub 6 |
@@ -69,30 +58,27 @@
 | 30.09 19:00 | Ulm — Balkan | Eurocup | Arena Sport 5, Arena Sport 7 |
 | 30.09 19:00 | Triglav — Ilirija | Slovenska liga | Sport Klub 9 |
 | 30.09 19:00 | Spartak Myjava W — ΠΑΟΚ W | UEFA Women’s Champions League | ΕΡΤ Sports 1 |
-| 30.09 19:20 | Lietkabelis — Bosna BHT | Europos taurė | Go3 Sport 2, Arena Sport 1, Arena Sport 3, Sport Klub 5, Novasports3HD, Novasports 3 HD |
+| 30.09 19:20 | Lietkabelis — Bosna BHT | Europos taurė | Go3 Sport 2, Arena Sport 1, Arena Sport 8, Sport Klub 5, Novasports3HD, Novasports 3 HD |
 | 30.09 19:25 | PAOK — Kids & Us Manresa | EuroCup | M+ Vamos, Sport1 1, MAX Sport 2, Arena Premium 4, Arena Premium 3, Sport Klub 8, Novasports4HD, Novasports 4 HD |
 | 30.09 19:25 | SK Sturm Graz W — VfL Wolfsburg W | LIVE Fußball Frauen Europacup | ORF SPORT+ |
 | 30.09 19:40 | Häcken W — Juventus W | Häcken - Juventus | Sjuan, Cablenet Sports 1 HD |
 | 30.09 19:45 | Paris FC W — Arsenal Women FC W |  | Cablenet Sports 3 HD |
 | 30.09 19:45 | Roma W — Barcelona W |  | Cablenet Sports 2 HD |
-| 30.09 19:45 | הפועל חולון — הפועל אילת | גביע ווינר סל | 5MAX |
 | 30.09 19:50 | Šljonsk — Budućnost | Eurokup, direktno | TVCG 2 |
-| 30.09 19:55 | WKS Śląsk Wrocław — Buducnost VOLI Podgorica | EuroCup | Polsat Sport Extra 4, Polsat Sport 2, Arena Premium 3, Arena Premium 5, Sport Klub 7 |
 | 30.09 20:00 | Athinaikos Qualco W — Rapid Bucharest W |  | Novasports 5 HD |
+| 30.09 20:00 | Slask — Budućnost | Eurocup | Arena Premium 3, Arena Premium 5, Sport Klub 7 |
 | 30.09 20:00 | Αθηναϊκός Qualco W — Ραπίντ Β W | AΘens Cup | Novasports5HD |
 | 30.09 20:20 | Vereinigte Arabische Emirate — Katar | Gulf Cup (Gruppe B, 3. Spieltag) | Sportdigital FUSSBALL |
 | 30.09 20:25 | Bahrain — Jemen | Gulf Cup (Gruppe B, 3. Spieltag): Bahrain - Jemen | Sportdigital FUSSBALL2 |
-| 30.09 20:30 | United Arab Emirates — Qatar | Arabian Gulf Cup | Abu Dhabi Sports 1 |
-| 30.09 20:30 | Bahrain — Yemen | Arabian Gulf Cup | Abu Dhabi Sports 2 |
 | 30.09 20:50 | Maccabi Tel Aviv — Besiktas | Eurolygos rungtynės | Go3 Sport 1, Arena Premium 2, S Sport, Sport Klub 3, ערוץ הספורט, ספורט מובייל, ΝovasportsStart, Novasports Start HD |
 | 30.09 20:54 | NÁPOLES — JL BOURG-EN-BRESSE | EUROCUP | SPORT.TV3, Arena Premium 5, Arena Premium 4, Sport Klub 10 |
 | 30.09 21:10 | Panathinaikos Athény — ASVEL Villeurbanne | EL | ספורט 5 Live, Oneplay Sport 1, Novasports PrimeHD, S Sport2, Arena Premium 1, Sport Klub 1, Novasports Prime |
 | 30.09 21:30 | Burgos — Cedevita Olimpija | Eurocup | Arena Sport 1, Sport Klub 6, Novasports 2HD |
 | 30.09 21:30 | Μπούργος — Τσεντεβίτα Ολίμπια | EuroCup | Novasports2HD |
-| 30.09 21:45 | Lyon W — Chelsea W | UEFA Women's Champions League | TV 2 Sport 1 HD, TV 2 Sport 1, Суспільне Спорт, Cablenet Sports 2 HD |
+| 30.09 21:30 | Bulgaria — Estonia |  | Prima Sport 2 |
+| 30.09 21:45 | Lyon W — Chelsea W | UEFA Women's Champions League | TV 2 Sport 1 HD, TV 2 Sport 1, Cablenet Sports 2 HD |
 | 30.09 21:49 | SCU TORREENSE W — FC KHARKIV W | UEFA WOMEN'S EUROPA CUP | SPORT.TV1 |
 | 30.09 21:50 | OL Lyonnes W — Chelsea FC Women W | Liga mistryň UEFA | ČT sport |
-| 30.09 21:50 | גינאה — קניה | מוקדמות אליפות אפריקה | 5MAX |
 | 30.09 21:55 | Tenerife — Turk Telekom | Eurocup | Sport1 1, Arena Premium 4, Arena Premium 3, Sport Klub 5 |
 | 30.09 21:57 | SL Benfica W — FC Bayern Munique W | UEFA Liga dos Campeões Feminina | RTP2, Cablenet Sports 3 HD |
 | 30.09 22:00 | Maxima Roma — Cluj | Eurocup | Arena Premium 3, Arena Premium 5, Sport Klub 2 |
@@ -102,24 +88,51 @@
 | 01.10 04:00 | Dallas Wings — Golden State Valkyries | WNBA - playoff | Sport2 |
 | 01.10 05:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
 | 01.10 05:00 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  | Ziggo Sport 5 |
-| 01.10 05:05 | Fritz — Munar | Torneo de Tokio | M+ Deportes 2 |
-| 01.10 05:05 | Darderi — Ruud | Torneo de Tokio | M+ Deportes 4 |
+| 01.10 05:00 | Faria — Fery | ATP 500 Tokyo | Sport Klub 2 |
+| 01.10 05:00 | Fritz — Munar | ATP 500 Tokyo | Sport Klub 4, M+ Deportes 2 |
+| 01.10 05:00 | Darderi — Ruud | ATP 500 Tokyo | Sport Klub 5, M+ Deportes 4 |
+| 01.10 05:00 | Nakashima — Humbert | ATP 500 Tokyo | Sport Klub 9 |
 | 01.10 06:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
+| 01.10 06:00 | De Minaur — Navone | ATP 500 Peking | Sport Klub 10 |
+| 01.10 06:00 | Cash/Erler — Luz/Matos | ATP 500 Peking | Sport Klub 7 |
+| 01.10 06:00 | Molcan — Rinderknech | ATP 500 Peking | Sport Klub 8 |
 | 01.10 06:00 | סיבוב 1 — משחק אחד | ATP 500 | ספורט 5 Live |
-| 01.10 07:00 | Rune — Jacquet | Torneo de Tokio | M+ Deportes 4 |
-| 01.10 07:05 | Nihikori — Tiafoe | Torneo de Tokio | M+ Deportes 2 |
-| 01.10 08:00 | סיבוב 1 — 2 משחקים | ATP 500 | ספורט 5 Live |
+| 01.10 07:00 | Tomas Martin ETCHEVERRY — Stefanos TSITSIPAS | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD, Sport Klub 9 |
+| 01.10 07:00 | Krajicek/Mektić — Nouza/Venus | ATP 500 Tokyo | Sport Klub 2 |
+| 01.10 07:00 | Nishikori — Tiafoe | ATP 500 Tokyo | Sport Klub 4, M+ Deportes 2 |
+| 01.10 07:00 | Rune — Jacquet | ATP 500 Tokyo | Sport Klub 5, M+ Deportes 4 |
+| 01.10 07:45 | Badosa W — Kasatkina W | WTA 1000 Peking | Sport Klub 10 |
+| 01.10 07:45 | Buse — Halys | ATP 500 Peking | Sport Klub 7 |
+| 01.10 07:45 | Van de Zandschulp — F. Cerundolo | ATP 500 Peking | Sport Klub 8 |
+| 01.10 08:00 | China Open — Beijing |  | Ziggo Sport 4, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
+| 01.10 08:00 | סיבוב 1 — 2 משחקים | ATP 500 | ספורט 5 Live, ספורט 5 Stars |
+| 01.10 08:45 | Safiullin — Cobolli | ATP 500 Peking | Sport Klub 4 |
+| 01.10 08:45 | Lehecka — Bergs | ATP 500 Tokyo | Sport Klub 5 |
+| 01.10 09:00 | Bolelli/Vavassori — Mochizuki/Watanabe | ATP 500 Tokyo | Sport Klub 9 |
+| 01.10 09:30 | Zhang/Zhou — Schnaitter/Wallner | ATP 500 Peking | Sport Klub 7 |
+| 01.10 09:30 | Shang — Baez | ATP 500 Peking | Sport Klub 8 |
+| 01.10 09:45 | Shao W — Zakharova W | WTA 1000 Peking | Sport Klub 10 |
 | 01.10 10:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
-| 01.10 10:00 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  | Ziggo Sport 1, Ziggo Sport 5, Ziggo Sport Kanaal 14 |
-| 01.10 10:00 | China Open — Beijing |  | Ziggo Sport 4 |
-| 01.10 10:05 | Alcaraz — Michelsen | Torneo de Tokio | M+ Deportes 2 |
-| 01.10 10:05 | Shapovalov — Shimabukuro | Torneo de Tokio | M+ Deportes 4 |
-| 01.10 12:05 | Vallejo — Jodar | Torneo de Tokio | M+ Deportes 2 |
+| 01.10 10:00 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  | Ziggo Sport 5 |
+| 01.10 10:00 | Alcaraz — Michelsen | ATP 500 Tokyo | Sport Klub 2, M+ Deportes 2 |
+| 01.10 10:00 | Zverev — Norrie | ATP 500 Peking | Sport Klub 4 |
+| 01.10 10:00 | Shapovalov — Shimabukuro | ATP 500 Tokyo | Sport Klub 5, M+ Deportes 4 |
+| 01.10 10:30 | Darderi/Etcheverry — Hijikata/Uesugi | ATP 500 Tokyo | Sport Klub 9 |
+| 01.10 11:00 | Griekspoor — Rublev | ATP 500 Peking | Sport Klub 7 |
+| 01.10 11:30 | Tararudee W — Osorio W | WTA 1000 Peking | Sport Klub 8 |
+| 01.10 11:45 | Vallejo — Jodar | ATP 500 Tokyo | Sport Klub 2, M+ Deportes 2 |
+| 01.10 12:00 | China Open — Beijing |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
+| 01.10 12:00 | Parks W — Zhu W | WTA 1000 Peking | Sport Klub 4 |
+| 01.10 12:00 | Davidovich-Fokina — Berrettini | ATP 500 Tokyo | Sport Klub 5, M+ Deportes 4 |
 | 01.10 12:30 | Тасмания Джекджамперс — Мельбурн Юнайтед | Чемпионат Австралии Прямая трансляция | Старт Баскет |
-| 01.10 13:05 | Davidovich — Berrettini | Torneo de Tokio | M+ Deportes 4 |
+| 01.10 13:00 | Doumbia/Reboul — Gonzalez/Molteni | ATP 500 Peking | Sport Klub 7 |
+| 01.10 13:30 | Gao W — Udvardy W | WTA 1000 Peking | Sport Klub 8 |
 | 01.10 14:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
-| 01.10 14:00 | China Open — Beijing |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
+| 01.10 14:00 | Tien — Hurkacz | ATP 500 Peking | Sport Klub 2 |
+| 01.10 14:00 | Lys W — X. Sun W | WTA 1000 Peking | Sport Klub 4 |
 | 01.10 14:00 | סיבוב 1 — 2 משחקים | ATP 500 | ספורט 5 Live |
+| 01.10 15:45 | Bublik — Mensik | ATP 500 Peking | Sport Klub 4 |
+| 01.10 16:00 | China Open — Beijing |  | Ziggo Sport 4 |
 | 01.10 16:55 | Динамо — Барнаул | Чемпионат России Суперлига Мужчины Прямая трансляция | МАТЧ! ИГРА (HD), МАТЧ! СТРАНА HD |
 | 01.10 17:00 | MTS Karavan 3x3 — Inđija | Arena Karavan | Arena Sport 1 |
 | 01.10 18:00 | Ελλάδα U21 — Λετονία U21 | Προκριματικά EURO U21 | Λιβαδειά | ΕΡΤ2 ΣΠΟΡ |
@@ -130,6 +143,7 @@
 | 01.10 18:45 | Azerbajdžán — Lichtenštejnsko | Liga národů | Sport1 |
 | 01.10 18:49 | Azerbeidzjan — Liechstenstein | UEFA NATIONS LEAGUE | SPORT.TV2, Ziggo Sport 1, Ziggo Sport 2, Ziggo Sport Kanaal 14, Fox Soccer Plus, Cytavision Sports4 HD, PPV4, ART Sport 1, Prima Sport 1, Sport Klub 3, Digi Sport 3 |
 | 01.10 18:50 | Sjeverna Makedonija U21 — Crna Gora U21 | U21, direktno | TVCG 2 |
+| 01.10 18:50 | גינאה — קניה | מוקדמות אליפות אפריקה | ספורט 5 Gold |
 | 01.10 18:50 | Азербайджан — Лихтенщайн | УЕФА Лига на нациите | Sport1 1, Diema Sport 2, diemasport 2 |
 | 01.10 18:53 | HAPOEL TEL AVIV — REAL MADRID | EUROLIGA | SPORT.TV5, Oneplay Sport 1, Oneplay Sport 3, MAX Sport 1, Arena Premium 1, Arena Premium 2, Sport Klub 1, ערוץ הספורט, ספורט מובייל, Novasports 4 HD |
 | 01.10 18:55 | הפועל רעננה — מ.ס. כפר קאסם | ליגה לאומית בכדורגל | אתר ערוץ הספורט |
@@ -172,14 +186,14 @@
 | 02.10 14:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
 | 02.10 16:00 | Sevilla U12 — Barcelona U12 | La Liga Futures | Sport Klub 7 |
 | 02.10 16:30 | Betis U12 — Villarreal U12 | La Liga Futures | Sport Klub 7 |
-| 02.10 16:49 | CAZAQUISTÃO — MOLDÁVIA | UEFA NATIONS LEAGUE | SPORT.TV2, Телеканал «Qazsport», Cytavision Sports4 HD, ART Sport 1, Sport Klub 3 |
+| 02.10 16:49 | CAZAQUISTÃO — MOLDÁVIA | UEFA NATIONS LEAGUE | SPORT.TV2, Телеканал «Qazsport», Cytavision Sports4 HD, PPV2, ART Sport 1, Sport Klub 3 |
 | 02.10 17:00 | Palmerias U12 — Orlando City U12 | La Liga Futures | Sport Klub 7 |
 | 02.10 17:30 | Real Madrid U12 — Getafe U12 | La Liga Futures | Sport Klub 7 |
 | 02.10 17:45 | Борисфен — Рубон | Чемпионат Беларуси | Беларусь 5 |
 | 02.10 18:00 | Atletico Madrid U12 — Elche U12 | La Liga Futures | Sport Klub 7 |
 | 02.10 18:30 | Flamengo U12 — Inter Miami U12 | La Liga Futures | Sport Klub 7 |
 | 02.10 18:50 | CHIPRE — ARMÉNIA | UEFA NATIONS LEAGUE | SPORT.TV3, Diema Sport 2, Sport Klub 3 |
-| 02.10 18:54 | LETÓNIA — MONTENEGRO | UEFA NATIONS LEAGUE | SPORT.TV2, Diema Sport 3, Cytavision Sports3 HD, ART Sport 1, Arena Premium 1, Sport Klub 2 |
+| 02.10 18:54 | LETÓNIA — MONTENEGRO | UEFA NATIONS LEAGUE | SPORT.TV2, Diema Sport 3, Cytavision Sports3 HD, PPV1, ART Sport 1, Arena Premium 1, Sport Klub 2 |
 | 02.10 18:55 | Energa Czarni Słupsk — Legia Warszawa | PGE Basket Liga | Polsat Sport Extra 4, Polsat Sport 2 |
 | 02.10 19:00 | Rapid — Genoa | digisport Fotbal Amical | Digi Sport 1 |
 | 02.10 19:00 | Slovenia U21 — Netherlands U21 | Euro U-21 Qualifying | ESPN Netherlands, Sport Klub 5 |
@@ -196,7 +210,7 @@
 | 02.10 20:00 | Real Madrid U12 — Elche U12 | La Liga Futures | Sport Klub 7 |
 | 02.10 20:45 | Fenerbahçe Tarfin — Dubai Basketball | Евролига | Novasports 5 HD, MAX Sport 1, S Sport, Arena Sport 2, Arena Premium 5, Sport Klub 4 |
 | 02.10 21:00 | Bayern Munich — Partizan | Евролига | Novasports 3 HD, MAX Sport 2, Arena Premium 2, Arena Premium 1, Sport Klub 6 |
-| 02.10 21:00 | Francuska — Italija | Live UEFA Nations League | Virgin Media Two, Polsat Sport 1, Diema Sport 3, Cytavision Sports3 HD, ART Sport 1, SuperSport 2 Digitalb, Arena Premium 1, Arena Premium 2, Sport Klub 1 |
+| 02.10 21:00 | Francuska — Italija | Live UEFA Nations League | Virgin Media Two, Polsat Sport 1, Diema Sport 3, Cytavision Sports3 HD, PPV1, ART Sport 1, SuperSport 2 Digitalb, Arena Premium 1, Arena Premium 2, Sport Klub 1 |
 | 02.10 21:00 | Lyon — Valencia | Euroliga | Arena Sport 6 |
 | 02.10 21:00 | Roanne — Nanterre | Francuska liga | Arena Sport 7, Arena Sport 9 |
 | 02.10 21:00 | ASVEL Villeurbanne — Valencia | EVROLIGA | Arena Sport 1, Novasports 6 HD |
@@ -206,10 +220,10 @@
 | 02.10 21:30 | Баскония — Олимпия Милано | Евролига | MAX Sport 4 |
 | 02.10 21:30 | Ukraine — Northern Ireland | Live International Football | BBC Two, SPORT.TV6 |
 | 02.10 21:30 | Krka — Buducnost | ABA 2.liga | Arena Sport 3, Arena Sport 2 |
-| 02.10 21:34 | POLÓNIA — Rumunija | UEFA NATIONS LEAGUE | SPORT.TV4, TVP 1, TVP Sport, Diema Sport, Diema Xtra, Cytavision Sports6 HD, SuperSport 4 Digitalb, Arena Sport 1, Arena Sport 8, Sport Klub 7, SS4 |
+| 02.10 21:34 | POLÓNIA — Rumunija | UEFA NATIONS LEAGUE | SPORT.TV4, TVP 1, TVP Sport, Diema Sport, Diema Xtra, Cytavision Sports6 HD, PPV3, SuperSport 4 Digitalb, Arena Sport 1, Arena Sport 8, Sport Klub 7, SS4 |
 | 02.10 21:34 | FRANÇA — ITÁLIA | UEFA NATIONS LEAGUE | SPORT.TV2 |
 | 02.10 21:34 | Bosnia and Herzegovina — Szwecja | UEFA NATIONS LEAGUE | SPORT.TV5, Polsat Sport Premium 1, ART Sport 3, SuperSport 5 Digitalb, Arena Sport 6, Sport Klub 3, SS5 |
-| 02.10 21:34 | BÉLGICA — TURQUIA | UEFA NATIONS LEAGUE | SPORT.TV3, Polsat Sport Extra 2, Diema Sport 2, Cytavision Sports4 HD, ART Sport 2, SuperSport 3 Digitalb, Arena Premium 3, Arena Sport 4, Sport Klub 5 |
+| 02.10 21:34 | BÉLGICA — TURQUIA | UEFA NATIONS LEAGUE | SPORT.TV3, Polsat Sport Extra 2, Diema Sport 2, Cytavision Sports4 HD, PPV2, ART Sport 2, SuperSport 3 Digitalb, Arena Premium 3, Arena Sport 4, Sport Klub 5 |
 | 02.10 21:35 | Mađarska — Gruzija | Liga Narodów | Polsat Sport Extra 1, Arena Sport 7, Sport Klub 9 |
 | 02.10 21:45 | Faroe Islands — Slovakia | UEFA Liga nacija (M) | Sport Klub 8 |
 | 02.10 21:45 | Belgjike — Turqi | Nations League | SS3 |
@@ -224,7 +238,7 @@
 | 03.10 12:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
 | 03.10 12:00 | Prva Iskra — Bežanija | SRPSKA LIGA BEOGRAD | Arena Sport 10 |
 | 03.10 12:20 | Столица — МФК Борисов-900 | Чемпионат Беларуси | Беларусь 5 |
-| 03.10 13:00 | ATP CH 125 PORTO OPEN — MEIA-FINAL | ATP CHALLENGER TOUR | SPORT.TV4 |
+| 03.10 12:59 | ATP CH 125 PORTO OPEN — MEIA-FINAL | ATP CHALLENGER TOUR | SPORT.TV4 |
 | 03.10 13:00 | Denizli — Tofas | Turska liga | Arena Sport 2, Arena Premium 2, Sport Klub 1 |
 | 03.10 13:55 | Górnik Łęczna W — GKS Katowice W | ORLEN Ekstraliga | TVP Sport |
 | 03.10 14:00 | Krumovgrad — Spartak Pleven | Sesame Купа на България | Diema Sport, Diema Xtra, Sport Klub 8 |
@@ -234,22 +248,22 @@
 | 03.10 15:15 | Manchester United W — Liverpool W | MOTD Live: Women's Super League | BBC One |
 | 03.10 15:30 | Bursaspor — Turk Telekom | Turska liga | Arena Sport 2, Arena Premium 2 |
 | 03.10 15:30 | Bursa — Turk Telekom | Turska liga | Sport Klub 1 |
-| 03.10 15:50 | FINLÂNDIA — ALBÂNIA | UEFA NATIONS LEAGUE | SPORT.TV2, Polsat Sport 2, Diema Sport 3, SuperSport 2 Digitalb, Sport Klub 5, Cytavision Sports3 HD |
+| 03.10 15:49 | FINLÂNDIA — ALBÂNIA | UEFA NATIONS LEAGUE | SPORT.TV2, Polsat Sport 2, Diema Sport 3, SuperSport 2 Digitalb, Sport Klub 5, Cytavision Sports3 HD, PPV2 |
 | 03.10 15:55 | Arriva LOTTO Twarde Pierniki Toruń — King Szczecin | PGE Basket Liga | Polsat Sport Extra 4 |
 | 03.10 16:10 | Hutnik Kraków — GKS Tychy | Betclic 2. Liga | TVP Sport |
-| 03.10 16:12 | ÍNDIA — BRASIL | JOGOS DE PREPARAÇÃO | SPORT.TV1 |
 | 03.10 16:30 | Elche U12 — Getafe U12 | La Liga Futures | Sport Klub 9 |
+| 03.10 16:49 | ÍNDIA — BRASIL | JOGOS DE PREPARAÇÃO | SPORT.TV1 |
 | 03.10 17:30 | Oss — MVV | Eerste Divisie | ESPN 2 Netherlands |
 | 03.10 17:30 | Vitesse — NAC Breda | Eerste Divisie | ESPN Netherlands |
 | 03.10 18:00 | Igokea — Slovan | ABA liga | Arena Sport 1, Arena Premium 3, Arena Sport 5 |
 | 03.10 18:00 | Cedevita Olimpija — Cibona | ABA liga | Arena Sport 2, Arena Premium 5, Arena Sport 1 |
 | 03.10 18:00 | Vienna — Cluj | ABA liga | Arena Sport 3, Arena Sport 4 |
-| 03.10 18:15 | Chorwacja — INGLATERRA | UEFA Nations League | ITV1, Virgin Media Two, SPORT.TV1, Polsat Sport 1, Diema Sport 3, Cytavision Sports4 HD, SuperSport 1 Digitalb, Arena Premium 1, Arena Premium 2 |
+| 03.10 18:15 | Chorwacja — INGLATERRA | UEFA Nations League | ITV1, Virgin Media Two, Polsat Sport 1, SPORT.TV1, Diema Sport 3, Cytavision Sports4 HD, PPV3, SuperSport 1 Digitalb, Arena Premium 1, Arena Premium 2 |
 | 03.10 18:25 | Enea Łaciate Astoria Bydgoszcz — Zastal Zielona Góra | PGE Basket Liga | Polsat Sport Extra 4, Polsat Sport 2 |
 | 03.10 18:30 | Unicaja Malaga — La Laguna Tenerife | Španska liga | Arena Premium 5, Cablenet Sports 3 HD, SportKlub |
-| 03.10 18:36 | ESTÓNIA — LUXEMBURGO | UEFA NATIONS LEAGUE | SPORT.TV3, Diema Sport 2 |
-| 03.10 18:50 | ISLÂNDIA — BULGÁRIA | UEFA NATIONS LEAGUE | SPORT.TV2, Polsat Sport Premium 1, Arena Premium 3, Arena Premium 1 |
-| 03.10 18:50 | BIELORRÚSSIA — SÃO MARINO | UEFA NATIONS LEAGUE | SPORT.TV6 |
+| 03.10 18:49 | ISLÂNDIA — BULGÁRIA | UEFA NATIONS LEAGUE | SPORT.TV2, Polsat Sport Premium 1, Arena Premium 3, Arena Premium 1 |
+| 03.10 18:49 | BIELORRÚSSIA — SÃO MARINO | UEFA NATIONS LEAGUE | SPORT.TV6 |
+| 03.10 18:54 | ESTÓNIA — LUXEMBURGO | UEFA NATIONS LEAGUE | SPORT.TV3, Diema Sport 2 |
 | 03.10 19:00 | Беларус — Сан Марино | УЕФА Лига на нациите | Diema Sport, Diema Xtra |
 | 03.10 19:00 | Joventut — Andorra | Španska liga | Arena Sport 4, Arena Sport 1 |
 | 03.10 19:30 | Cadiz — Leganes | İspanya LaLiga 2 | S Sport |
@@ -257,14 +271,14 @@
 | 03.10 20:25 | PGE Start Lublin — Tasomix Rosiek Stal Ostrów Wielkopolski | PGE Basket Liga | Polsat Sport Extra 4 |
 | 03.10 21:00 | Almere City — Volendam | Eerste Divisie | ESPN 2 Netherlands |
 | 03.10 21:00 | RKC Waalwijk — Emmen | Eerste Divisie | ESPN 3 Netherlands |
-| 03.10 21:02 | SWITZERLAND — ESLOVÉNIA | UEFA NATIONS LEAGUE | SPORT.TV3, Телеканал «Qazsport», Polsat Sport 2, Diema Sport 2, Cytavision Sports4 HD, SuperSport 3 Digitalb, Arena Premium 3, Arena Premium 4 |
-| 03.10 21:08 | Hiszpania — Czech Republic | UEFA NATIONS LEAGUE | SPORT.TV1, Virgin Media Two, Polsat Sport 1, TVP Sport, Diema Sport 3, Cytavision Sports3 HD, SuperSport 2 Digitalb, Arena Premium 1 |
-| 03.10 21:30 | MACEDÓNIA DO NORTE — Scotland | Live International Football | BBC Two, SPORT.TV2, Polsat Sport 3, Diema Sport, Diema Xtra, Cytavision Sports6 HD, SuperSport 4 Digitalb, Arena Premium 2 |
+| 03.10 21:15 | Hiszpania — Czech Republic | Live UEFA Nations League | Virgin Media Two, SPORT.TV1, Polsat Sport 1, TVP Sport, Diema Sport 3, Cytavision Sports3 HD, PPV2, SuperSport 2 Digitalb, Arena Premium 1 |
+| 03.10 21:30 | MACEDÓNIA DO NORTE — Scotland | Live International Football | BBC Two, SPORT.TV2, Polsat Sport 3, Diema Sport, Diema Xtra, Cytavision Sports6 HD, PPV4, SuperSport 4 Digitalb, Arena Premium 2 |
+| 03.10 21:34 | SWITZERLAND — ESLOVÉNIA | UEFA NATIONS LEAGUE | SPORT.TV3, Телеканал «Qazsport», Polsat Sport 2, Diema Sport 2, Cytavision Sports4 HD, PPV3, SuperSport 3 Digitalb, Arena Premium 3, Arena Premium 4 |
 | 03.10 21:45 | Sj.Makedonija — Škotska | UEFA Liga nacija | Arena Premium 2 |
 | 03.10 22:00 | Manresa — Breogan | Španska liga | Arena Premium 4, Arena Premium 3 |
 | 04.10 00:25 | Atletico Mineiro — RB Bragantino | Campeonato Brasileiro (Nachholspiel, 21. Spieltag) | Sportdigital FUSSBALL |
+| 04.10 04:59 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 | SPORT.TV2 |
 | 04.10 05:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
-| 04.10 05:00 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 | SPORT.TV2 |
 | 04.10 08:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
 | 04.10 08:00 | BEIJING 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 | SPORT.TV1 |
 | 04.10 10:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
@@ -273,7 +287,8 @@
 | 04.10 13:00 | Coruna — Bilbao | Лига Ендеса | Diema Sport 3, Arena Premium 3 |
 | 04.10 13:00 | ATP CH 125 PORTO OPEN — FINAL | ATP CHALLENGER TOUR | SPORT.TV6 |
 | 04.10 13:00 | Lleida — San Pablo Burgos | Španska liga | Arena Premium 2 |
-| 04.10 13:00 | Bandirma — Efes | Turska liga | Arena Sport 1, Arena Premium 2 |
+| 04.10 13:00 | Bandirma — Efes | Turska liga | Arena Sport 1 |
+| 04.10 13:00 | Cayirova — Bahcesehir | TURSKA LIGA | Arena Premium 2 |
 | 04.10 13:30 | Monbus Obradoiro — Real Madrid | Лига Ендеса | Diema Sport 2, Cablenet Sports 3 HD, Arena Premium 4, Arena Premium 1 |
 | 04.10 14:00 | Миньор Перник — Берое | Sesame Купа на България | Diema Sport, Diema Xtra |
 | 04.10 14:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
@@ -281,18 +296,19 @@
 | 04.10 15:00 | Vršac — Metalac | PRVA LIGA SRBIJE | Arena Sport 10 |
 | 04.10 15:30 | VVV — Roda JC | Eerste Divisie | ESPN Netherlands |
 | 04.10 15:30 | Fenerbahce — Korfez | Turska liga | Arena Premium 2 |
-| 04.10 15:50 | AZERBAIJÃO — LITHUANIA | UEFA NATIONS LEAGUE | SPORT.TV1, Diema Sport 3, Cytavision Sports3 HD |
-| 04.10 16:00 | ΑΕΛ W — ΑΤΛΑΝΤΑΣ W | 2026 ECOMMBX SUPER CUP ΓΥΝΑΙΚΩΝ | Cytavision Sports4 HD |
+| 04.10 15:50 | AZERBAIJÃO — LITHUANIA | UEFA NATIONS LEAGUE | SPORT.TV1, Diema Sport 3, Cytavision Sports3 HD, PPV2 |
+| 04.10 16:00 | ΑΕΛ W — ΑΤΛΑΝΤΑΣ W | 2026 ECOMMBX SUPER CUP ΓΥΝΑΙΚΩΝ | Cytavision Sports4 HD, PPV1 |
 | 04.10 16:00 | Бавария — Ольденбург | Чемпионат Германии | Sport 2 |
 | 04.10 16:00 | Azerbejdžan — Litvanija | UEFA Liga nacija | Arena Premium 1 |
 | 04.10 16:55 | БЧ — ВРЗ | Чемпионат Беларуси | Беларусь 5 |
 | 04.10 17:00 | Javor Matis — Borac 1926 | PRVA LIGA SRBIJE | Arena Sport 10 |
 | 04.10 17:30 | Gravelines — Asvel | Francuska liga | Arena Premium 2, Arena Sport 2 |
 | 04.10 17:45 | Feyenoord W — Ajax W | Eredivisie Women | ESPN Netherlands |
-| 04.10 18:00 | Zaragoza — Valencia | Španska liga | Arena Premium 5, Arena Premium 4 |
-| 04.10 18:00 | UNICS — Zenit | VTB LIGA | Arena Premium 2 |
-| 04.10 18:50 | KOSOVO — ÁUSTRIA | UEFA NATIONS LEAGUE | SPORT.TV2, Diema Sport 3, Cytavision Sports4 HD, SuperSport 2 Digitalb |
+| 04.10 18:00 | Zaragoza — Valencia | Španska liga | Arena Premium 5, Arena Sport 1 |
+| 04.10 18:00 | Bandirma — Efes | TURSKA LIGA | Arena Premium 2 |
+| 04.10 18:00 | UNICS — Zenit | VTB LIGA | Arena Premium 4 |
 | 04.10 18:50 | MALTA — ANDORRA | UEFA NATIONS LEAGUE | SPORT.TV4, Diema Sport 2 |
+| 04.10 18:50 | KOSOVO — ÁUSTRIA | UEFA NATIONS LEAGUE | SPORT.TV2, Diema Sport 3, Cytavision Sports4 HD, PPV1, SuperSport 2 Digitalb |
 | 04.10 19:00 | Баскония — Жирона | Лига Ендеса | Diema Sport, Diema Xtra |
 | 04.10 19:00 | FMP — Crvena Zvezda | ABA liga | Arena Premium 1, Arena Sport 3 |
 | 04.10 19:00 | Baskonia — Girona | Španska liga | Arena Premium 3 |
@@ -302,9 +318,9 @@
 | 04.10 21:00 | Ilirija — Dubai | ABA liga | Arena Sport 2, Arena Sport 3 |
 | 04.10 21:30 | PAÍS DE GALES — DINAMARCA | Match of the Day Wales | BBC Two, SPORT.TV3 |
 | 04.10 21:35 | REPÚBLICA DA IRLANDA — Israel | Live UEFA Nations League | RTÉ2, SPORT.TV6, Arena Sport 3, Arena Sport 1 |
-| 04.10 21:35 | Portugal — Norveška | Live UEFA Nations League | Virgin Media Three, SPORT.TV1, Diema Sport 2, Cytavision Sports6 HD, SuperSport 1 Digitalb, Arena Premium 2, Arena Premium 3 |
-| 04.10 21:35 | GRÉCIA — ALEMANHA | UEFA NATIONS LEAGUE | SPORT.TV2, Diema Sport 3, Cytavision Sports3 HD, SuperSport 2 Digitalb, Arena Premium 3, Arena Premium 2 |
-| 04.10 21:35 | PAÍSES BAIXOS — SÉRVIA | UEFA NATIONS LEAGUE | SPORT.TV4, Diema Sport, Diema Xtra, Cytavision Sports4 HD, SuperSport 3 Digitalb, Arena Premium 1 |
+| 04.10 21:35 | Portugal — Norveška | Live UEFA Nations League | Virgin Media Three, SPORT.TV1, Diema Sport 2, Cytavision Sports6 HD, PPV3, SuperSport 1 Digitalb, Arena Premium 2, Arena Premium 3 |
+| 04.10 21:35 | GRÉCIA — ALEMANHA | UEFA NATIONS LEAGUE | SPORT.TV2, Diema Sport 3, Cytavision Sports3 HD, PPV2, SuperSport 2 Digitalb, Arena Premium 3, Arena Premium 2 |
+| 04.10 21:35 | PAÍSES BAIXOS — SÉRVIA | UEFA NATIONS LEAGUE | SPORT.TV4, Diema Sport, Diema Xtra, Cytavision Sports4 HD, PPV1, SuperSport 3 Digitalb, Arena Premium 1 |
 | 04.10 21:45 | Waels — Danska | UEFA Liga nacija | Arena Premium 4 |
 | 04.10 22:00 | Жирона — Майорка | Ла Лига 2 | MAX Sport 4 |
 | 04.10 22:00 | Girona — Mallorca | İspanya LaLiga 2 | S Sport |
@@ -323,12 +339,12 @@
 | 05.10 19:30 | Partizan — Mega | ABA LIGA | Arena Premium 1 |
 | 05.10 21:30 | Northern Ireland — Georgia | Live International Football | BBC One |
 | 05.10 21:30 | Zadar — SC Derby | ABA LIGA | Arena Sport 2 |
-| 05.10 21:35 | Francuska — Belgium | Live UEFA Nations League | Virgin Media Two, Diema Sport 3, Cytavision Sports3 HD, Arena Premium 1 |
+| 05.10 21:35 | Francuska — Belgium | Live UEFA Nations League | Virgin Media Two, Diema Sport 3, Cytavision Sports3 HD, PPV1, Arena Premium 1 |
 | 05.10 21:35 | Ukrajina — Mađarska | UEFA NATIONS LEAGUE | SPORT.TV6, Diema Sport, Diema Xtra, Arena Sport 1 |
-| 05.10 21:35 | Rumunija — Švedska | UEFA NATIONS LEAGUE | SPORT.TV4, Cytavision Sports6 HD, Arena Premium 3 |
+| 05.10 21:35 | Rumunija — Švedska | UEFA NATIONS LEAGUE | SPORT.TV4, Cytavision Sports6 HD, PPV3, Arena Premium 3 |
 | 05.10 21:35 | FRANÇA — BÉLGICA | UEFA NATIONS LEAGUE | SPORT.TV1 |
 | 05.10 21:35 | Bosna i Hercegovina — POLÓNIA | UEFA NATIONS LEAGUE | SPORT.TV3, Arena Premium 5 |
-| 05.10 21:35 | Italija — TURQUIA | UEFA NATIONS LEAGUE | SPORT.TV2, Diema Sport 2, Cytavision Sports4 HD, Arena Premium 2 |
+| 05.10 21:35 | Italija — TURQUIA | UEFA NATIONS LEAGUE | SPORT.TV2, Diema Sport 2, Cytavision Sports4 HD, PPV2, Arena Premium 2 |
 | 05.10 21:45 | Crna Gora — Jermenija | UEFA LIGA NACIJA | Arena Premium 4 |
 | 06.10 02:00 | Argentina — Benin | digisport Fotbal Amical | Digi Sport 1 |
 | 06.10 12:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
@@ -338,13 +354,13 @@
 | 06.10 16:50 | ÍNDIA — URUGUAI | JOGOS DE PREPARAÇÃO | SPORT.TV1 |
 | 06.10 16:50 | CAZAQUISTÃO — ILHAS FAROÉ | UEFA NATIONS LEAGUE | SPORT.TV2 |
 | 06.10 17:00 | Казахстан — Фарьорски острови | УЕФА Лига на нациите | Diema Sport 3 |
-| 06.10 17:00 | KAZAKHSTAN — FAROE ISLANDS | UEFA NATIONS LEAGUE | Cytavision Sports4 HD |
+| 06.10 17:00 | KAZAKHSTAN — FAROE ISLANDS | UEFA NATIONS LEAGUE | Cytavision Sports4 HD, PPV2 |
 | 06.10 19:30 | България — Шотландия | Квалификации за Евро 2027 за младежи | Diema Sport, Diema Xtra |
 | 06.10 19:45 | Netherlands U21 — Bosnia-Herzegovina U21 | Euro U-21 Qualifying | ESPN Netherlands |
 | 06.10 20:30 | KK Bosna — PAOK |  | Novasports PrimeHD |
-| 06.10 21:00 | INGLATERRA — Czechia | UEFA Nations League | ITV1, Virgin Media Two, SPORT.TV2, Diema Sport 2, Cytavision Sports3 HD |
-| 06.10 21:30 | Scotland — ESLOVÉNIA | Live International Football | BBC Two, SPORT.TV3, Diema Sport, Diema Xtra, Cytavision Sports6 HD |
-| 06.10 21:35 | CROÁCIA — ESPANHA | UEFA NATIONS LEAGUE | SPORT.TV1, Diema Sport 3, Cytavision Sports4 HD |
+| 06.10 21:00 | INGLATERRA — Czechia | UEFA Nations League | ITV1, Virgin Media Two, SPORT.TV2, Diema Sport 2, Cytavision Sports3 HD, PPV1 |
+| 06.10 21:30 | Scotland — ESLOVÉNIA | Live International Football | BBC Two, SPORT.TV3, Diema Sport, Diema Xtra, Cytavision Sports6 HD, PPV3 |
+| 06.10 21:35 | CROÁCIA — ESPANHA | UEFA NATIONS LEAGUE | SPORT.TV1, Diema Sport 3, Cytavision Sports4 HD, PPV2 |
 | 06.10 21:35 | SUÍÇA — MACEDÓNIA DO NORTE | UEFA NATIONS LEAGUE | SPORT.TV4 |
 | 06.10 21:50 | ANGOLA — MALAWI | TAÇA NAÇÕES AFRICANAS - QUALIFICAÇÃO | SPORT.TV6 |
 
@@ -356,13 +372,10 @@
 | 30.09 03:00 | digisport.ro | Digi Sport 1 | Argentina — Bolivia | digisport |
 | 30.09 03:30 | sport1tv.cz | Sport2 | New York Liberty — Minnesota Lynx | playoff |
 | 30.09 03:30 | oneplay.cz | Sport2 | New York Liberty — Minnesota Lynx | WNBA - playoff |
-| 30.09 05:00 | primaplay.ro | Prima Sport 3 | Tenis M — ATP: Tokyo / Beijing Open |  |
-| 30.09 05:00 | primaplay.ro | PPV1 | Tenis M — ATP: Tokyo Open |  |
 | 30.09 05:00 | sportklub.hr | Sport Klub 10 | Lehecka — Bergs | ATP 500 Tokyo |
 | 30.09 05:00 | sportklub.hr | Sport Klub 2 | Vacherot — Blockx | ATP 500 Tokyo |
 | 30.09 05:05 | movistarplus.es | M+ Deportes 2 | Vacherot — Blockx | Torneo de Tokio |
 | 30.09 06:00 | digisport.ro | Digi Sport 2 | Elena-Gabriela Ruse — Lilli TaggerZiua 1 | tenis Tenis |
-| 30.09 06:00 | primaplay.ro | PPV2 | Tenis M — ATP: Beijing Open |  |
 | 30.09 06:00 | sportklub.hr | Sport Klub 2 | Khachanov — Auger-Aliassime | ATP 500 Peking |
 | 30.09 06:00 | sportklub.hr | Sport Klub 4 | Tjen W — Kalinina W | WTA 1000 Peking |
 | 30.09 06:00 | sportklub.hr | Sport Klub 5 | Ruse W — Tagger W | WTA 1000 Peking |
@@ -383,7 +396,6 @@
 | 30.09 09:45 | sportklub.hr | Sport Klub 2 | J.M. Cerundolo — Bu | ATP 500 Peking |
 | 30.09 09:45 | sportklub.hr | Sport Klub 8 | Olinykova W — Yuan W | WTA 1000 Peking |
 | 30.09 09:45 | sportklub.hr | Sport Klub 9 | Inglis W — Sonmez W | WTA 1000 Peking |
-| 30.09 10:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
 | 30.09 10:00 | ziggosport.nl | Ziggo Sport 1 | China Open — Beijing |  |
 | 30.09 10:00 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
 | 30.09 10:00 | ziggosport.nl | Ziggo Sport 5 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
@@ -395,24 +407,17 @@
 | 30.09 10:30 | sportklub.hr | Sport Klub 10 | Miedler/Oberleitner — Blockx/Michelsen | ATP 500 Tokyo |
 | 30.09 11:30 | sportklub.hr | Sport Klub 5 | Preston W — Korpatsch W | WTA 1000 Peking |
 | 30.09 11:45 | sportklub.hr | Sport Klub 7 | Arnaldi — Sakamoto | ATP 500 Tokyo |
-| 30.09 12:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
 | 30.09 12:00 | tvarenasport.com | Arena Premium 2 | Srbija U17 — Slovačka U17 | PRIJATELJSKE UTAKMICE |
 | 30.09 12:00 | sportklub.hr | Sport Klub 2 | Zhang — Gea | ATP 500 Peking |
 | 30.09 12:15 | sportklub.hr | Sport Klub 4 | Hontama W — Boulter W | WTA 1000 Peking |
 | 30.09 12:30 | ntvplus.tv | Старт Баскет | Сидней Кингз — Брисбен Буллетс | Чемпионат Австралии Прямая трансляция |
+| 30.09 14:00 | tvarenasport.com | Arena Premium 5 | Đoković — Borges | ATP 500 - Beijing |
 | 30.09 14:00 | sportklub.hr | Sport Klub 1 | Borges — Đoković | ATP 500 Peking |
 | 30.09 14:00 | sportklub.hr | Sport Klub 2 | Jacquemot W — Frech W | WTA 1000 Peking |
-| 30.09 14:00 | sport5.co.il | ספורט 5 Live | סיבוב 1 — משחק אחד | ATP 500 |
 | 30.09 14:05 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
 | 30.09 14:05 | movistarplus.es | M+ Deportes 4 | Borges — Djokovic | Torneo de Pekín |
-| 30.09 14:30 | primaplay.ro | Prima Sport 4 | Osnabruck — Herhta Berlin |  |
-| 30.09 15:00 | primaplay.ro | Prima Sport 5 | Levante — Betis |  |
 | 30.09 15:45 | sportklub.hr | Sport Klub 1 | Bondar W — Zarazua W | WTA 1000 Peking |
-| 30.09 16:00 | livesoccertv.com | ON Sport 1 | Egypt U20 — Tunisia U20 | U-20 Africa Cup of Nations |
-| 30.09 16:00 | livesoccertv.com | ON Sport 1 | Morocco U20 — Algeria U20 | U-20 Africa Cup of Nations |
-| 30.09 16:00 | teleman.pl | CANAL+ Sport 2 | Anna Bondár — Renata Zarazúa | Turniej WTA w Pekinie |
 | 30.09 16:00 | tv3.lt | Sport 1 | Edas Butvilas — Michael Geerts | Tenisas. ATP Challenger 125. Porto |
-| 30.09 17:00 | epg.cyta.com.cy | Novasports 5 HD | Mechelen — USK Prague |  |
 | 30.09 17:00 | novasports.gr | Novasports5HD | Μέχελεν — USK Πράγας | AΘens Cup |
 | 30.09 17:50 | webtv.sk | JOJ Šport | BKM Lučenec — BC Slovan Bratislava |  |
 | 30.09 18:20 | tv3.lt | Go3 Sport 1 | Šiauliai — Lions | Europos taurė |
@@ -421,13 +426,10 @@
 | 30.09 18:30 | sportklub.hr | Sport Klub 3 | Siauliai — London | Eurocup |
 | 30.09 18:45 | tv3.lt | LRT Plius | Lietuva — Andora | Futbolas: UEFA tautų lyga |
 | 30.09 18:50 | ceskatelevize.cz | ČT sport | Česko U21 — Bulharsko U21 | Kvalifikace EURO U21 mužů |
-| 30.09 18:50 | sport5.co.il | ספורט 5 Stars | אריתראה — דרום אפריקה | מוקדמות אליפות אפריקה |
 | 30.09 18:50 | tvpassport.com | Fox Soccer Plus | Lithuania — Andorra | Men's International Soccer Friendlies |
 | 30.09 18:50 | oneplay.cz | ČT sport | Česko U21 — Bulharsko U21 | Kvalifikace EURO U21 mužů |
-| 30.09 18:55 | teleman.pl | TVP Sport | Polska U21 — Szwecja U21 | Eliminacje mistrzostw Europy U-21 |
 | 30.09 19:00 | diemaxtra.nova.bg | Diema Sport | Чехия — България | Квалификации за Евро 2027 за младежи |
 | 30.09 19:00 | diemaxtra.nova.bg | Diema Xtra | Чехия — България | Квалификации за Евро 2027 за младежи |
-| 30.09 19:00 | nova.bg | diemasport | Чехия — България | Квалификации за Евро 2027 за младежи |
 | 30.09 19:00 | programetv.ro | Pro Arena | Romania U21 — Finlanda U21 | Fotbal U21 |
 | 30.09 19:00 | tvarenasport.ba | Arena Premium 1 | Bahcesehir — Roma | Eurocup |
 | 30.09 19:00 | tvarenasport.ba | Arena Premium 5 | Riga — Tortona | Eurocup |
@@ -449,7 +451,7 @@
 | 30.09 19:30 | tvarenasport.ba | Arena Premium 4 | PAOK — Manresa | Eurocup |
 | 30.09 19:30 | tvarenasport.ba | Arena Sport 1 | Lietkabelis — Bosna BHT | Eurocup |
 | 30.09 19:30 | tvarenasport.com | Arena Premium 3 | PAOK — Manresa | EVROKUP |
-| 30.09 19:30 | tvarenasport.com | Arena Sport 3 | Lietkabelis — Bosna | EVROKUP |
+| 30.09 19:30 | tvarenasport.com | Arena Sport 8 | Lietkabelis — Bosna | EVROKUP |
 | 30.09 19:30 | sportklub.hr | Sport Klub 5 | Lietkabelis — Bosna | Eurocup |
 | 30.09 19:30 | sportklub.hr | Sport Klub 8 | PAOK — Manresa | Eurocup |
 | 30.09 19:30 | novasports.gr | Novasports3HD | Λιετκαμπέλις — Μπόσνα | EuroCup |
@@ -461,10 +463,7 @@
 | 30.09 19:45 | epg.cyta.com.cy | Cablenet Sports 3 HD | Paris FC W — Arsenal Women FC W |  |
 | 30.09 19:45 | epg.cyta.com.cy | Cablenet Sports 2 HD | Roma W — Barcelona W |  |
 | 30.09 19:45 | epg.cyta.com.cy | Cablenet Sports 1 HD | Hacken W — Juventus W |  |
-| 30.09 19:45 | sport5.co.il | 5MAX | הפועל חולון — הפועל אילת | גביע ווינר סל |
 | 30.09 19:50 | rtcg.me | TVCG 2 | Šljonsk — Budućnost | Eurokup, direktno |
-| 30.09 19:55 | teleman.pl | Polsat Sport Extra 4 | WKS Śląsk Wrocław — Buducnost VOLI Podgorica | EuroCup |
-| 30.09 19:55 | teleman.pl | Polsat Sport 2 | WKS Śląsk Wrocław — Buducnost VOLI Podgorica | EuroCup |
 | 30.09 20:00 | epg.cyta.com.cy | Novasports 5 HD | Athinaikos Qualco W — Rapid Bucharest W |  |
 | 30.09 20:00 | tvarenasport.ba | Arena Premium 3 | Slask — Budućnost | Eurocup |
 | 30.09 20:00 | tvarenasport.com | Arena Premium 5 | Slask — Budućnost | EVROKUP |
@@ -473,8 +472,6 @@
 | 30.09 20:00 | novasports.gr | Novasports5HD | Αθηναϊκός Qualco W — Ραπίντ Β W | AΘens Cup |
 | 30.09 20:20 | start.sportdigital.de | Sportdigital FUSSBALL | Vereinigte Arabische Emirate — Katar | Gulf Cup (Gruppe B, 3. Spieltag) |
 | 30.09 20:25 | start.sportdigital.de | Sportdigital FUSSBALL2 | Bahrain — Jemen | Gulf Cup (Gruppe B, 3. Spieltag): Bahrain - Jemen |
-| 30.09 20:30 | livesoccertv.com | Abu Dhabi Sports 1 | United Arab Emirates — Qatar | Arabian Gulf Cup |
-| 30.09 20:30 | livesoccertv.com | Abu Dhabi Sports 2 | Bahrain — Yemen | Arabian Gulf Cup |
 | 30.09 20:50 | tv3.lt | Go3 Sport 1 | Maccabi — Besiktas | Eurolygos rungtynės |
 | 30.09 20:54 | sporttv.pt | SPORT.TV3 | NÁPOLES — JL BOURG-EN-BRESSE | EUROCUP |
 | 30.09 21:00 | tvarenasport.ba | Arena Premium 2 | Maccabi Tel Aviv — Besiktas | Euroliga |
@@ -500,13 +497,11 @@
 | 30.09 21:30 | sportklub.hr | Sport Klub 6 | Burgos — Cedevita Olimpija | Eurocup |
 | 30.09 21:30 | novasports.gr | Novasports2HD | Μπούργος — Τσεντεβίτα Ολίμπια | EuroCup |
 | 30.09 21:30 | epg.cyta.com.cy | Novasports 2HD | Burgos — Cedevita Olimpija |  |
+| 30.09 21:30 | primaplay.ro | Prima Sport 2 | Bulgaria — Estonia |  |
 | 30.09 21:30 | novasports.gr | Novasports4HD | ΠΑΟΚ — Μανρέσα | Post Game Show |
 | 30.09 21:45 | allente.no | TV 2 Sport 1 HD | Lyon W — Chelsea W | UEFA Women's Champions League |
 | 30.09 21:45 | tv2.no | TV 2 Sport 1 | Lyon W — Chelsea W | UEFA Women's Champions League |
 | 30.09 21:49 | sporttv.pt | SPORT.TV1 | SCU TORREENSE W — FC KHARKIV W | UEFA WOMEN'S EUROPA CUP |
-| 30.09 21:50 | ceskatelevize.cz | ČT sport | OL Lyonnes W — Chelsea FC Women W | Liga mistryň UEFA |
-| 30.09 21:50 | vsetv.com | Суспільне Спорт | Лион W — Челси W | Лига чемпионов. Женщины. Лион (Франция) - Челси (Англия). Прямая трансляция |
-| 30.09 21:50 | sport5.co.il | 5MAX | גינאה — קניה | מוקדמות אליפות אפריקה |
 | 30.09 21:50 | oneplay.cz | ČT sport | OL Lyonnes W — Chelsea FC Women W | Liga mistryň UEFA |
 | 30.09 21:55 | sport1.maariv.co.il | Sport1 1 | טנריפה — טורק טלקום | היורוקאפ |
 | 30.09 21:57 | rtp.pt | RTP2 | SL Benfica W — FC Bayern Munique W | UEFA Liga dos Campeões Feminina |
@@ -529,29 +524,66 @@
 | 01.10 04:00 | oneplay.cz | Sport2 | Dallas Wings — Golden State Valkyries | WNBA - playoff |
 | 01.10 05:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
 | 01.10 05:00 | ziggosport.nl | Ziggo Sport 5 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
+| 01.10 05:00 | sportklub.hr | Sport Klub 2 | Faria — Fery | ATP 500 Tokyo |
+| 01.10 05:00 | sportklub.hr | Sport Klub 4 | Fritz — Munar | ATP 500 Tokyo |
+| 01.10 05:00 | sportklub.hr | Sport Klub 5 | Darderi — Ruud | ATP 500 Tokyo |
+| 01.10 05:00 | sportklub.hr | Sport Klub 9 | Nakashima — Humbert | ATP 500 Tokyo |
 | 01.10 05:05 | movistarplus.es | M+ Deportes 2 | Fritz — Munar | Torneo de Tokio |
 | 01.10 05:05 | movistarplus.es | M+ Deportes 2 | Fritz — Munar | Torneo de Tokio |
 | 01.10 05:05 | movistarplus.es | M+ Deportes 4 | Darderi — Ruud | Torneo de Tokio |
 | 01.10 06:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
+| 01.10 06:00 | sportklub.hr | Sport Klub 10 | De Minaur — Navone | ATP 500 Peking |
+| 01.10 06:00 | sportklub.hr | Sport Klub 7 | Cash/Erler — Luz/Matos | ATP 500 Peking |
+| 01.10 06:00 | sportklub.hr | Sport Klub 8 | Molcan — Rinderknech | ATP 500 Peking |
 | 01.10 06:00 | sport5.co.il | ספורט 5 Live | סיבוב 1 — משחק אחד | ATP 500 |
+| 01.10 07:00 | epg.cyta.com.cy | Cytavision Sports8 HD | Tomas Martin ETCHEVERRY — Stefanos TSITSIPAS | 2026 ATP 500 - TOKYO |
+| 01.10 07:00 | sportklub.hr | Sport Klub 2 | Krajicek/Mektić — Nouza/Venus | ATP 500 Tokyo |
+| 01.10 07:00 | sportklub.hr | Sport Klub 4 | Nishikori — Tiafoe | ATP 500 Tokyo |
+| 01.10 07:00 | sportklub.hr | Sport Klub 5 | Rune — Jacquet | ATP 500 Tokyo |
+| 01.10 07:00 | sportklub.hr | Sport Klub 9 | Etcheverry — Tsitsipas | ATP 500 Tokyo |
 | 01.10 07:00 | movistarplus.es | M+ Deportes 4 | Rune — Jacquet | Torneo de Tokio |
 | 01.10 07:05 | movistarplus.es | M+ Deportes 2 | Nihikori — Tiafoe | Torneo de Tokio |
+| 01.10 07:45 | sportklub.hr | Sport Klub 10 | Badosa W — Kasatkina W | WTA 1000 Peking |
+| 01.10 07:45 | sportklub.hr | Sport Klub 7 | Buse — Halys | ATP 500 Peking |
+| 01.10 07:45 | sportklub.hr | Sport Klub 8 | Van de Zandschulp — F. Cerundolo | ATP 500 Peking |
+| 01.10 08:00 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
 | 01.10 08:00 | sport5.co.il | ספורט 5 Live | סיבוב 1 — 2 משחקים | ATP 500 |
+| 01.10 08:01 | ziggosport.nl | Ziggo Sport 1 | China Open — Beijing |  |
+| 01.10 08:01 | ziggosport.nl | Ziggo Sport Kanaal 14 | China Open — Beijing |  |
+| 01.10 08:45 | sportklub.hr | Sport Klub 4 | Safiullin — Cobolli | ATP 500 Peking |
+| 01.10 08:45 | sportklub.hr | Sport Klub 5 | Lehecka — Bergs | ATP 500 Tokyo |
+| 01.10 09:00 | sportklub.hr | Sport Klub 9 | Bolelli/Vavassori — Mochizuki/Watanabe | ATP 500 Tokyo |
+| 01.10 09:00 | sport5.co.il | ספורט 5 Stars | סיבוב 1 — 2 משחקים | ATP 500 |
+| 01.10 09:30 | sportklub.hr | Sport Klub 7 | Zhang/Zhou — Schnaitter/Wallner | ATP 500 Peking |
+| 01.10 09:30 | sportklub.hr | Sport Klub 8 | Shang — Baez | ATP 500 Peking |
+| 01.10 09:45 | sportklub.hr | Sport Klub 10 | Shao W — Zakharova W | WTA 1000 Peking |
 | 01.10 10:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
-| 01.10 10:00 | ziggosport.nl | Ziggo Sport 1 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 01.10 10:00 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
 | 01.10 10:00 | ziggosport.nl | Ziggo Sport 5 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 01.10 10:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
+| 01.10 10:00 | sportklub.hr | Sport Klub 2 | Alcaraz — Michelsen | ATP 500 Tokyo |
+| 01.10 10:00 | sportklub.hr | Sport Klub 4 | Zverev — Norrie | ATP 500 Peking |
+| 01.10 10:00 | sportklub.hr | Sport Klub 5 | Shapovalov — Shimabukuro | ATP 500 Tokyo |
 | 01.10 10:05 | movistarplus.es | M+ Deportes 2 | Alcaraz — Michelsen | Torneo de Tokio |
 | 01.10 10:05 | movistarplus.es | M+ Deportes 4 | Shapovalov — Shimabukuro | Torneo de Tokio |
+| 01.10 10:30 | sportklub.hr | Sport Klub 9 | Darderi/Etcheverry — Hijikata/Uesugi | ATP 500 Tokyo |
+| 01.10 11:00 | sportklub.hr | Sport Klub 7 | Griekspoor — Rublev | ATP 500 Peking |
+| 01.10 11:30 | sportklub.hr | Sport Klub 8 | Tararudee W — Osorio W | WTA 1000 Peking |
+| 01.10 11:45 | sportklub.hr | Sport Klub 2 | Vallejo — Jodar | ATP 500 Tokyo |
+| 01.10 12:00 | ziggosport.nl | Ziggo Sport 1 | China Open — Beijing |  |
+| 01.10 12:00 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
+| 01.10 12:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | China Open — Beijing |  |
+| 01.10 12:00 | sportklub.hr | Sport Klub 4 | Parks W — Zhu W | WTA 1000 Peking |
+| 01.10 12:00 | sportklub.hr | Sport Klub 5 | Davidovich-Fokina — Berrettini | ATP 500 Tokyo |
 | 01.10 12:05 | movistarplus.es | M+ Deportes 2 | Vallejo — Jodar | Torneo de Tokio |
 | 01.10 12:30 | ntvplus.tv | Старт Баскет | Тасмания Джекджамперс — Мельбурн Юнайтед | Чемпионат Австралии Прямая трансляция |
+| 01.10 13:00 | sportklub.hr | Sport Klub 7 | Doumbia/Reboul — Gonzalez/Molteni | ATP 500 Peking |
 | 01.10 13:05 | movistarplus.es | M+ Deportes 4 | Davidovich — Berrettini | Torneo de Tokio |
+| 01.10 13:30 | sportklub.hr | Sport Klub 8 | Gao W — Udvardy W | WTA 1000 Peking |
 | 01.10 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
-| 01.10 14:00 | ziggosport.nl | Ziggo Sport 1 | China Open — Beijing |  |
-| 01.10 14:00 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
-| 01.10 14:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | China Open — Beijing |  |
+| 01.10 14:00 | sportklub.hr | Sport Klub 2 | Tien — Hurkacz | ATP 500 Peking |
+| 01.10 14:00 | sportklub.hr | Sport Klub 4 | Lys W — X. Sun W | WTA 1000 Peking |
 | 01.10 14:00 | sport5.co.il | ספורט 5 Live | סיבוב 1 — 2 משחקים | ATP 500 |
+| 01.10 15:45 | sportklub.hr | Sport Klub 4 | Bublik — Mensik | ATP 500 Peking |
+| 01.10 16:00 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
 | 01.10 16:55 | ntvplus.tv | МАТЧ! ИГРА (HD) | Динамо — Барнаул | Чемпионат России Суперлига Мужчины Прямая трансляция |
 | 01.10 16:55 | ntvplus.tv | МАТЧ! СТРАНА HD | Динамо — Барнаул | Чемпионат России Суперлига Мужчины Прямая трансляция |
 | 01.10 17:00 | tvarenasport.com | Arena Sport 1 | MTS Karavan 3x3 — Inđija | Arena Karavan |
@@ -566,6 +598,7 @@
 | 01.10 18:50 | ziggosport.nl | Ziggo Sport 2 | Azerbeidzjan — Liechtenstein |  |
 | 01.10 18:50 | ziggosport.nl | Ziggo Sport Kanaal 14 | Azerbeidzjan — Liechtenstein |  |
 | 01.10 18:50 | rtcg.me | TVCG 2 | Sjeverna Makedonija U21 — Crna Gora U21 | U21, direktno |
+| 01.10 18:50 | sport5.co.il | ספורט 5 Gold | גינאה — קניה | מוקדמות אליפות אפריקה |
 | 01.10 18:50 | sport1.maariv.co.il | Sport1 1 | אזרבייג'אן — ליכטנשטיין | ליגת האומות |
 | 01.10 18:50 | tvpassport.com | Fox Soccer Plus | Azerbaijan — Liechtenstein | UEFA Nations League Soccer |
 | 01.10 18:53 | sporttv.pt | SPORT.TV5 | HAPOEL TEL AVIV — REAL MADRID | EUROLIGA |
@@ -739,6 +772,7 @@
 | 02.10 16:50 | sports.kz | Телеканал «Qazsport» | УЕФА Ұлттар Лигасы Қазақстан — Молдова | УЕФА Ұлттар Лигасы Қазақстан — Молдова |
 | 02.10 16:50 | sports.kz | Телеканал «Qazsport» | УЕФА Ұлттар Лигасы Қазақстан — Молдова | УЕФА Ұлттар Лигасы Қазақстан — Молдова |
 | 02.10 17:00 | epg.cyta.com.cy | Cytavision Sports4 HD | KAZAKHSTAN — MOLDOVA | UEFA NATIONS LEAGUE |
+| 02.10 17:00 | epg.cyta.com.cy | PPV2 | KAZAKHSTAN — MOLDOVA | UEFA NATIONS LEAGUE |
 | 02.10 17:00 | livesoccertv.com | ART Sport 1 | Kazakhstan — Moldova | UEFA Nations League |
 | 02.10 17:00 | sportklub.hr | Sport Klub 3 | Kazakhstan — Moldova | UEFA Liga nacija (M) |
 | 02.10 17:00 | sportklub.hr | Sport Klub 7 | Palmerias U12 — Orlando City U12 | La Liga Futures |
@@ -754,6 +788,7 @@
 | 02.10 19:00 | diemaxtra.nova.bg | Diema Sport 3 | Латвия — Черна гора | УЕФА Лига на нациите |
 | 02.10 19:00 | digisport.ro | Digi Sport 1 | Rapid — Genoa | digisport Fotbal Amical |
 | 02.10 19:00 | epg.cyta.com.cy | Cytavision Sports3 HD | LATVIA — MONTENEGRO | UEFA NATIONS LEAGUE |
+| 02.10 19:00 | epg.cyta.com.cy | PPV1 | LATVIA — MONTENEGRO | UEFA NATIONS LEAGUE |
 | 02.10 19:00 | livesoccertv.com | ART Sport 1 | Latvia — Montenegro | UEFA Nations League |
 | 02.10 19:00 | livesoccertv.com | ESPN Netherlands | Slovenia U21 — Netherlands U21 | Euro U-21 Qualifying |
 | 02.10 19:00 | tvarenasport.ba | Arena Premium 1 | Latvija — Crna Gora | UEFA Liga nacija |
@@ -828,9 +863,12 @@
 | 02.10 21:45 | diemaxtra.nova.bg | Diema Sport 2 | Белгия — Турция | УЕФА Лига на нациите |
 | 02.10 21:45 | diemaxtra.nova.bg | Diema Sport 3 | Франция — Италия | УЕФА Лига на нациите |
 | 02.10 21:45 | diemaxtra.nova.bg | Diema Xtra | Полша — Румъния | УЕФА Лига на нациите |
-| 02.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | BELGIUM — TÜRKIYE | UEFA NATIONS LEAGUE |
-| 02.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | FRANCE — ITALY | UEFA NATIONS LEAGUE |
 | 02.10 21:45 | epg.cyta.com.cy | Cytavision Sports6 HD | POLAND — ROMANIA | UEFA NATIONS LEAGUE |
+| 02.10 21:45 | epg.cyta.com.cy | PPV3 | POLAND — ROMANIA | UEFA NATIONS LEAGUE |
+| 02.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | FRANCE — ITALY | UEFA NATIONS LEAGUE |
+| 02.10 21:45 | epg.cyta.com.cy | PPV1 | FRANCE — ITALY | UEFA NATIONS LEAGUE |
+| 02.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | BELGIUM — TÜRKIYE | UEFA NATIONS LEAGUE |
+| 02.10 21:45 | epg.cyta.com.cy | PPV2 | BELGIUM — TÜRKIYE | UEFA NATIONS LEAGUE |
 | 02.10 21:45 | livesoccertv.com | ART Sport 1 | France — Italy | UEFA Nations League |
 | 02.10 21:45 | livesoccertv.com | ART Sport 2 | Belgium — Turkey | UEFA Nations League |
 | 02.10 21:45 | livesoccertv.com | ART Sport 3 | Bosnia and Herzegovina — Sweden | UEFA Nations League |
@@ -872,7 +910,7 @@
 | 03.10 12:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
 | 03.10 12:00 | tvarenasport.com | Arena Sport 10 | Prva Iskra — Bežanija | SRPSKA LIGA BEOGRAD |
 | 03.10 12:20 | news.by | Беларусь 5 | Столица — МФК Борисов-900 | Чемпионат Беларуси |
-| 03.10 13:00 | sporttv.pt | SPORT.TV4 | ATP CH 125 PORTO OPEN — MEIA-FINAL | ATP CHALLENGER TOUR |
+| 03.10 12:59 | sporttv.pt | SPORT.TV4 | ATP CH 125 PORTO OPEN — MEIA-FINAL | ATP CHALLENGER TOUR |
 | 03.10 13:00 | tvarenasport.ba | Arena Sport 2 | Denizli — Tofas | Turska liga |
 | 03.10 13:00 | tvarenasport.com | Arena Premium 2 | Denizli — Tofas | TURSKA LIGA |
 | 03.10 13:00 | sportklub.hr | Sport Klub 1 | Denizli — Tofas | Turska liga |
@@ -885,21 +923,22 @@
 | 03.10 14:30 | tvarenasport.ba | Arena Premium 1 | Chesterfield — Tranmere Rovers | LEAGUE TWO |
 | 03.10 14:30 | tvarenasport.com | Arena 1X2 | Chesterfield — Tranmere Rovers | LEAGUE TWO |
 | 03.10 14:30 | tvarenasport.hr | Arena Sport 1 | CHESTERFIELD — TRANMERE | LEAGUE TWO |
-| 03.10 15:00 | sporttv.pt | SPORT.TV4 | ATP CH 125 PORTO OPEN — MEIA-FINAL | ATP CHALLENGER TOUR |
+| 03.10 14:59 | sporttv.pt | SPORT.TV4 | ATP CH 125 PORTO OPEN — MEIA-FINAL | ATP CHALLENGER TOUR |
 | 03.10 15:15 | rte.ie | BBC One | Manchester United W — Liverpool W | MOTD Live: Women's Super League |
 | 03.10 15:30 | tvarenasport.ba | Arena Sport 2 | Bursaspor — Turk Telekom | Turska liga |
 | 03.10 15:30 | tvarenasport.com | Arena Premium 2 | Bursaspor — Turk Telekom | TURSKA LIGA |
 | 03.10 15:30 | sportklub.hr | Sport Klub 1 | Bursa — Turk Telekom | Turska liga |
-| 03.10 15:50 | sporttv.pt | SPORT.TV2 | FINLÂNDIA — ALBÂNIA | UEFA NATIONS LEAGUE |
+| 03.10 15:49 | sporttv.pt | SPORT.TV2 | FINLÂNDIA — ALBÂNIA | UEFA NATIONS LEAGUE |
 | 03.10 15:50 | teleman.pl | Polsat Sport 2 | Finlandia — Albania | Liga Narodów |
 | 03.10 15:55 | teleman.pl | Polsat Sport Extra 4 | Arriva LOTTO Twarde Pierniki Toruń — King Szczecin | PGE Basket Liga |
 | 03.10 16:00 | diemaxtra.nova.bg | Diema Sport 3 | Финландия — Албания | УЕФА Лига на нациите |
 | 03.10 16:00 | livesoccertv.com | SuperSport 2 Digitalb | Finland — Albania | UEFA Nations League |
 | 03.10 16:00 | sportklub.hr | Sport Klub 5 | Finland — Albania | UEFA Liga nacija (M) |
 | 03.10 16:10 | teleman.pl | TVP Sport | Hutnik Kraków — GKS Tychy | Betclic 2. Liga |
-| 03.10 16:12 | sporttv.pt | SPORT.TV1 | ÍNDIA — BRASIL | JOGOS DE PREPARAÇÃO |
 | 03.10 16:30 | sportklub.hr | Sport Klub 9 | Elche U12 — Getafe U12 | La Liga Futures |
+| 03.10 16:49 | sporttv.pt | SPORT.TV1 | ÍNDIA — BRASIL | JOGOS DE PREPARAÇÃO |
 | 03.10 17:00 | epg.cyta.com.cy | Cytavision Sports3 HD | FINLAND — ALBANIA | UEFA NATIONS LEAGUE |
+| 03.10 17:00 | epg.cyta.com.cy | PPV2 | FINLAND — ALBANIA | UEFA NATIONS LEAGUE |
 | 03.10 17:30 | livesoccertv.com | ESPN 2 Netherlands | Oss — MVV | Eerste Divisie |
 | 03.10 17:30 | livesoccertv.com | ESPN Netherlands | Vitesse — NAC Breda | Eerste Divisie |
 | 03.10 18:00 | tvarenasport.ba | Arena Sport 1 | Igokea — Slovan | ABA liga |
@@ -916,17 +955,18 @@
 | 03.10 18:25 | teleman.pl | Polsat Sport 2 | Enea Łaciate Astoria Bydgoszcz — Zastal Zielona Góra | PGE Basket Liga |
 | 03.10 18:30 | rte.ie | Virgin Media Two | Croatia — England | Live UEFA Nations League |
 | 03.10 18:30 | tvarenasport.ba | Arena Premium 5 | Unicaja — Tenerife | Španska liga |
-| 03.10 18:36 | sporttv.pt | SPORT.TV3 | ESTÓNIA — LUXEMBURGO | UEFA NATIONS LEAGUE |
-| 03.10 18:49 | sporttv.pt | SPORT.TV1 | CROÁCIA — INGLATERRA | UEFA NATIONS LEAGUE |
-| 03.10 18:50 | sporttv.pt | SPORT.TV2 | ISLÂNDIA — BULGÁRIA | UEFA NATIONS LEAGUE |
-| 03.10 18:50 | sporttv.pt | SPORT.TV6 | BIELORRÚSSIA — SÃO MARINO | UEFA NATIONS LEAGUE |
+| 03.10 18:49 | sporttv.pt | SPORT.TV2 | ISLÂNDIA — BULGÁRIA | UEFA NATIONS LEAGUE |
+| 03.10 18:49 | sporttv.pt | SPORT.TV6 | BIELORRÚSSIA — SÃO MARINO | UEFA NATIONS LEAGUE |
 | 03.10 18:50 | teleman.pl | Polsat Sport Premium 1 | Islandia — Bułgaria | Liga Narodów |
 | 03.10 18:50 | teleman.pl | Polsat Sport 1 | Chorwacja — Anglia | Liga Narodów |
+| 03.10 18:54 | sporttv.pt | SPORT.TV1 | CROÁCIA — INGLATERRA | UEFA NATIONS LEAGUE |
+| 03.10 18:54 | sporttv.pt | SPORT.TV3 | ESTÓNIA — LUXEMBURGO | UEFA NATIONS LEAGUE |
 | 03.10 19:00 | diemaxtra.nova.bg | Diema Sport | Беларус — Сан Марино | УЕФА Лига на нациите |
 | 03.10 19:00 | diemaxtra.nova.bg | Diema Sport 2 | Естония — Люксембург | УЕФА Лига на нациите |
 | 03.10 19:00 | diemaxtra.nova.bg | Diema Sport 3 | Хърватия — Англия | УЕФА Лига на нациите |
 | 03.10 19:00 | diemaxtra.nova.bg | Diema Xtra | Беларус — Сан Марино | УЕФА Лига на нациите |
 | 03.10 19:00 | epg.cyta.com.cy | Cytavision Sports4 HD | CROATIA — ENGLAND | UEFA NATIONS LEAGUE |
+| 03.10 19:00 | epg.cyta.com.cy | PPV3 | CROATIA — ENGLAND | UEFA NATIONS LEAGUE |
 | 03.10 19:00 | livesoccertv.com | SuperSport 1 Digitalb | Croatia — England | UEFA Nations League |
 | 03.10 19:00 | tvarenasport.ba | Arena Premium 1 | Hrvatska — Engleska | UEFA Liga nacija |
 | 03.10 19:00 | tvarenasport.ba | Arena Premium 3 | Island — Bugarska | UEFA Liga nacija |
@@ -945,13 +985,13 @@
 | 03.10 21:00 | livesoccertv.com | ESPN 2 Netherlands | Almere City — Volendam | Eerste Divisie |
 | 03.10 21:00 | livesoccertv.com | ESPN 3 Netherlands | RKC Waalwijk — Emmen | Eerste Divisie |
 | 03.10 21:00 | tvarenasport.ba | Arena Sport 2 | Lokomotiv — MBA | VTB liga |
-| 03.10 21:02 | sporttv.pt | SPORT.TV3 | SUÍÇA — ESLOVÉNIA | UEFA NATIONS LEAGUE |
-| 03.10 21:08 | sporttv.pt | SPORT.TV1 | ESPANHA — CHÉQUIA | UEFA NATIONS LEAGUE |
 | 03.10 21:15 | rte.ie | Virgin Media Two | Spain — Czechia | Live UEFA Nations League |
 | 03.10 21:30 | rte.ie | BBC Two | North Macedonia — Scotland | Live International Football |
+| 03.10 21:34 | sporttv.pt | SPORT.TV1 | ESPANHA — CHÉQUIA | UEFA NATIONS LEAGUE |
+| 03.10 21:34 | sporttv.pt | SPORT.TV2 | MACEDÓNIA DO NORTE — ESCÓCIA | UEFA NATIONS LEAGUE |
+| 03.10 21:34 | sporttv.pt | SPORT.TV3 | SUÍÇA — ESLOVÉNIA | UEFA NATIONS LEAGUE |
 | 03.10 21:35 | sports.kz | Телеканал «Qazsport» | Швейцария — Словения | УЕФА Ұлттар Лигасы |
 | 03.10 21:35 | sports.kz | Телеканал «Qazsport» | Швейцария — Словения | УЕФА Ұлттар Лигасы |
-| 03.10 21:35 | sporttv.pt | SPORT.TV2 | MACEDÓNIA DO NORTE — ESCÓCIA | UEFA NATIONS LEAGUE |
 | 03.10 21:35 | teleman.pl | Polsat Sport 1 | Hiszpania — Czechy | Liga Narodów |
 | 03.10 21:35 | teleman.pl | Polsat Sport 3 | Macedonia Północna — Szkocja | Liga Narodów |
 | 03.10 21:35 | teleman.pl | Polsat Sport 2 | Szwajcaria — Słowenia | Liga Narodów |
@@ -961,8 +1001,11 @@
 | 03.10 21:45 | diemaxtra.nova.bg | Diema Sport 3 | Испания — Чехия | УЕФА Лига на нациите |
 | 03.10 21:45 | diemaxtra.nova.bg | Diema Xtra | Северна Македония — Шотландия | УЕФА Лига на нациите |
 | 03.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | SWITZERLAND — SLOVENIA | UEFA NATIONS LEAGUE |
-| 03.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | SPAIN — CZECHIA | UEFA NATIONS LEAGUE |
+| 03.10 21:45 | epg.cyta.com.cy | PPV3 | SWITZERLAND — SLOVENIA | UEFA NATIONS LEAGUE |
 | 03.10 21:45 | epg.cyta.com.cy | Cytavision Sports6 HD | NORTH MACEDONIA — SCOTLAND | UEFA NATIONS LEAGUE |
+| 03.10 21:45 | epg.cyta.com.cy | PPV4 | NORTH MACEDONIA — SCOTLAND | UEFA NATIONS LEAGUE |
+| 03.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | SPAIN — CZECHIA | UEFA NATIONS LEAGUE |
+| 03.10 21:45 | epg.cyta.com.cy | PPV2 | SPAIN — CZECHIA | UEFA NATIONS LEAGUE |
 | 03.10 21:45 | livesoccertv.com | SuperSport 2 Digitalb | Spain — Czech Republic | UEFA Nations League |
 | 03.10 21:45 | livesoccertv.com | SuperSport 3 Digitalb | Switzerland — Slovenia | UEFA Nations League |
 | 03.10 21:45 | livesoccertv.com | SuperSport 4 Digitalb | North Macedonia — Scotland | UEFA Nations League |
@@ -976,10 +1019,10 @@
 | 03.10 22:00 | tvarenasport.com | Arena Premium 3 | Manresa — Breogan | ŠPANSKA LIGA |
 | 04.10 00:25 | start.sportdigital.de | Sportdigital FUSSBALL | Atletico Mineiro — RB Bragantino | Campeonato Brasileiro (Nachholspiel, 21. Spieltag) |
 | 04.10 00:25 | start.sportdigital.de | Sportdigital FUSSBALL | Atletico Mineiro — RB Bragantino | Campeonato Brasileiro (Nachholspiel, 21. Spieltag) |
+| 04.10 04:59 | sporttv.pt | SPORT.TV2 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
 | 04.10 05:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
-| 04.10 05:00 | sporttv.pt | SPORT.TV2 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
+| 04.10 06:59 | sporttv.pt | SPORT.TV2 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
 | 04.10 07:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
-| 04.10 07:00 | sporttv.pt | SPORT.TV2 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
 | 04.10 08:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
 | 04.10 08:00 | sporttv.pt | SPORT.TV1 | BEIJING 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
 | 04.10 10:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
@@ -994,8 +1037,7 @@
 | 04.10 13:00 | tvarenasport.ba | Arena Premium 2 | Lleida — San Pablo Burgos | Španska liga |
 | 04.10 13:00 | tvarenasport.ba | Arena Premium 3 | Coruna — Bilbao | Španska liga |
 | 04.10 13:00 | tvarenasport.ba | Arena Sport 1 | Bandirma — Efes | Turska liga |
-| 04.10 13:00 | tvarenasport.com | Arena Premium 2 | Bandirma — Efes | TURSKA LIGA |
-| 04.10 13:00 | tvarenasport.com | Arena Premium 3 | Coruna — Bilbao | ŠPANSKA LIGA |
+| 04.10 13:00 | tvarenasport.com | Arena Premium 2 | Cayirova — Bahcesehir | TURSKA LIGA |
 | 04.10 13:30 | diemaxtra.nova.bg | Diema Sport 2 | Обрадойро — Реал Мадрид | Лига Ендеса |
 | 04.10 13:30 | epg.cyta.com.cy | Cablenet Sports 3 HD | Monbus Obradoiro — Real Madrid |  |
 | 04.10 13:30 | tvarenasport.ba | Arena Premium 4 | Obradoiro — Real Madrid | Španska liga |
@@ -1011,29 +1053,32 @@
 | 04.10 15:50 | sporttv.pt | SPORT.TV1 | AZERBAIJÃO — LITUÂNIA | UEFA NATIONS LEAGUE |
 | 04.10 16:00 | diemaxtra.nova.bg | Diema Sport 3 | Азербайджан — Литва | УЕФА Лига на нациите |
 | 04.10 16:00 | epg.cyta.com.cy | Cytavision Sports4 HD | ΑΕΛ W — ΑΤΛΑΝΤΑΣ W | 2026 ECOMMBX SUPER CUP ΓΥΝΑΙΚΩΝ |
-| 04.10 16:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
+| 04.10 16:00 | epg.cyta.com.cy | PPV1 | ΑΕΛ W — ΑΤΛΑΝΤΑΣ W | 2026 ECOMMBX SUPER CUP ΓΥΝΑΙΚΩΝ |
 | 04.10 16:00 | epg.cyta.com.cy | Cytavision Sports3 HD | AZERBAIJAN — LITHUANIA | UEFA NATIONS LEAGUE |
+| 04.10 16:00 | epg.cyta.com.cy | PPV2 | AZERBAIJAN — LITHUANIA | UEFA NATIONS LEAGUE |
+| 04.10 16:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
 | 04.10 16:00 | poverkhnost.tv | Sport 2 | Бавария — Ольденбург | Чемпионат Германии |
 | 04.10 16:00 | sporttv.pt | SPORT.TV2 | BEIJING 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
 | 04.10 16:00 | tvarenasport.ba | Arena Premium 1 | Azerbejdžan — Litvanija | UEFA Liga nacija |
+| 04.10 16:00 | tvarenasport.com | Arena Premium 1 | Azerbejdžan — Litvanija | UEFA LIGA NACIJA |
 | 04.10 16:55 | news.by | Беларусь 5 | БЧ — ВРЗ | Чемпионат Беларуси |
-| 04.10 17:00 | tvarenasport.com | Arena Premium 1 | Azerbejdžan — Litvanija | UEFA LIGA NACIJA |
 | 04.10 17:00 | tvarenasport.com | Arena Sport 10 | Javor Matis — Borac 1926 | PRVA LIGA SRBIJE |
 | 04.10 17:30 | tvarenasport.ba | Arena Premium 2 | Gravelines — Asvel | Francuska liga |
 | 04.10 17:30 | tvarenasport.com | Arena Sport 2 | Gravelines — Asvel | FRANCUSKA LIGA |
 | 04.10 17:45 | livesoccertv.com | ESPN Netherlands | Feyenoord W — Ajax W | Eredivisie Women |
 | 04.10 18:00 | tvarenasport.ba | Arena Premium 4 | Cayirova — Bahcesehir | Tursk liga |
 | 04.10 18:00 | tvarenasport.ba | Arena Premium 5 | Zaragoza — Valencia | Španska liga |
-| 04.10 18:00 | tvarenasport.com | Arena Premium 2 | UNICS — Zenit | VTB LIGA |
-| 04.10 18:00 | tvarenasport.com | Arena Premium 4 | Zaragoza — Valencia | ŠPANSKA LIGA |
-| 04.10 18:00 | tvarenasport.com | Arena Sport 1 | Cayirova — Bahcesehir | TURSKA LIGA |
-| 04.10 18:50 | sporttv.pt | SPORT.TV2 | KOSOVO — ÁUSTRIA | UEFA NATIONS LEAGUE |
+| 04.10 18:00 | tvarenasport.com | Arena Premium 2 | Bandirma — Efes | TURSKA LIGA |
+| 04.10 18:00 | tvarenasport.com | Arena Premium 4 | UNICS — Zenit | VTB LIGA |
+| 04.10 18:00 | tvarenasport.com | Arena Sport 1 | Zaragoza — Valencia | ŠPANSKA LIGA |
 | 04.10 18:50 | sporttv.pt | SPORT.TV4 | MALTA — ANDORRA | UEFA NATIONS LEAGUE |
+| 04.10 18:50 | sporttv.pt | SPORT.TV2 | KOSOVO — ÁUSTRIA | UEFA NATIONS LEAGUE |
 | 04.10 19:00 | diemaxtra.nova.bg | Diema Sport | Баскония — Жирона | Лига Ендеса |
 | 04.10 19:00 | diemaxtra.nova.bg | Diema Sport 2 | Малта — Андора | УЕФА Лига на нациите |
 | 04.10 19:00 | diemaxtra.nova.bg | Diema Sport 3 | Косово — Австрия | УЕФА Лига на нациите |
 | 04.10 19:00 | diemaxtra.nova.bg | Diema Xtra | Баскония — Жирона | Лига Ендеса |
 | 04.10 19:00 | epg.cyta.com.cy | Cytavision Sports4 HD | KOSOVO — AUSTRIA | UEFA NATIONS LEAGUE |
+| 04.10 19:00 | epg.cyta.com.cy | PPV1 | KOSOVO — AUSTRIA | UEFA NATIONS LEAGUE |
 | 04.10 19:00 | livesoccertv.com | SuperSport 2 Digitalb | Kosovo — Austria | UEFA Nations League |
 | 04.10 19:00 | tvarenasport.ba | Arena Premium 1 | FMP — Crvena Zvezda | ABA liga |
 | 04.10 19:00 | tvarenasport.ba | Arena Premium 2 | Sutjeska Foča — Zvijezda 09 | Prva liga RS |
@@ -1050,22 +1095,26 @@
 | 04.10 21:00 | livesoccertv.com | ON Sport 1 | Egypt — South Africa | Friendly |
 | 04.10 21:00 | tvarenasport.ba | Arena Sport 2 | Ilirija — Dubai | ABA liga |
 | 04.10 21:00 | tvarenasport.com | Arena Sport 3 | Ilirija — Dubai | ABA LIGA |
+| 04.10 21:00 | tvarenasport.com | Arena Sport 10 | Vojvodina — Mladost | KLS |
 | 04.10 21:00 | tvarenasport.hr | Arena Sport 3 | ILIRIJA — DUBAI | ABA LIGA |
 | 04.10 21:30 | rte.ie | BBC Two | Wales — Denmark | Match of the Day Wales |
 | 04.10 21:35 | rte.ie | RTÉ2 | Republic of Ireland — Israel | Live UEFA Nations League |
 | 04.10 21:35 | rte.ie | Virgin Media Three | Portugal — Norway | Live UEFA Nations League |
 | 04.10 21:35 | sporttv.pt | SPORT.TV3 | PAÍS DE GALES — DINAMARCA | UEFA NATIONS LEAGUE |
 | 04.10 21:35 | sporttv.pt | SPORT.TV1 | PORTUGAL — NORUEGA | UEFA NATIONS LEAGUE |
-| 04.10 21:35 | sporttv.pt | SPORT.TV2 | GRÉCIA — ALEMANHA | UEFA NATIONS LEAGUE |
 | 04.10 21:35 | sporttv.pt | SPORT.TV6 | REPÚBLICA DA IRLANDA — ISRAEL | UEFA NATIONS LEAGUE |
+| 04.10 21:35 | sporttv.pt | SPORT.TV2 | GRÉCIA — ALEMANHA | UEFA NATIONS LEAGUE |
 | 04.10 21:35 | sporttv.pt | SPORT.TV4 | PAÍSES BAIXOS — SÉRVIA | UEFA NATIONS LEAGUE |
 | 04.10 21:45 | diemaxtra.nova.bg | Diema Sport | Нидерландия — Сърбия | УЕФА Лига на нациите |
 | 04.10 21:45 | diemaxtra.nova.bg | Diema Sport 2 | Португалия — Норвегия | УЕФА Лига на нациите |
 | 04.10 21:45 | diemaxtra.nova.bg | Diema Sport 3 | Гърция — Германия | УЕФА Лига на нациите |
 | 04.10 21:45 | diemaxtra.nova.bg | Diema Xtra | Нидерландия — Сърбия | УЕФА Лига на нациите |
-| 04.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | NETHERLANDS — SERBIA | UEFA NATIONS LEAGUE |
-| 04.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | GREECE — GERMANY | UEFA NATIONS LEAGUE |
 | 04.10 21:45 | epg.cyta.com.cy | Cytavision Sports6 HD | PORTUGAL — NORWAY | UEFA NATIONS LEAGUE |
+| 04.10 21:45 | epg.cyta.com.cy | PPV3 | PORTUGAL — NORWAY | UEFA NATIONS LEAGUE |
+| 04.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | NETHERLANDS — SERBIA | UEFA NATIONS LEAGUE |
+| 04.10 21:45 | epg.cyta.com.cy | PPV1 | NETHERLANDS — SERBIA | UEFA NATIONS LEAGUE |
+| 04.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | GREECE — GERMANY | UEFA NATIONS LEAGUE |
+| 04.10 21:45 | epg.cyta.com.cy | PPV2 | GREECE — GERMANY | UEFA NATIONS LEAGUE |
 | 04.10 21:45 | livesoccertv.com | SuperSport 1 Digitalb | Portugal — Norway | UEFA Nations League |
 | 04.10 21:45 | livesoccertv.com | SuperSport 2 Digitalb | Greece — Germany | UEFA Nations League |
 | 04.10 21:45 | livesoccertv.com | SuperSport 3 Digitalb | Netherlands — Serbia | UEFA Nations League |
@@ -1100,7 +1149,6 @@
 | 05.10 19:00 | diemaxtra.nova.bg | Diema Sport 3 | Кипър — Латвия | УЕФА Лига на нациите |
 | 05.10 19:00 | tvarenasport.com | Arena Premium 2 | Srbija U21 — Rusija U21 | PRIJATELJSKE UTAKMICE |
 | 05.10 19:00 | tvarenasport.com | Arena Premium 3 | Beiktas — Trabzonspor | TURSKA LIGA |
-| 05.10 19:00 | tvarenasport.com | Arena Premium 4 | Vojvodina — Mladost | KLS |
 | 05.10 19:00 | tvarenasport.com | Arena Sport 10 | TSC — Grafičar | PRVA LIGA SRBIJE |
 | 05.10 19:30 | tvarenasport.com | Arena Premium 1 | Partizan — Mega | ABA LIGA |
 | 05.10 21:30 | rte.ie | BBC One | Northern Ireland — Georgia | Live International Football |
@@ -1115,9 +1163,12 @@
 | 05.10 21:45 | diemaxtra.nova.bg | Diema Sport 2 | Италия — Турция | УЕФА Лига на нациите |
 | 05.10 21:45 | diemaxtra.nova.bg | Diema Sport 3 | Франция — Белгия | УЕФА Лига на нациите |
 | 05.10 21:45 | diemaxtra.nova.bg | Diema Xtra | Украйна — Унгария | УЕФА Лига на нациите |
-| 05.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | ITALY — TÜRKIYE | UEFA NATIONS LEAGUE |
-| 05.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | FRANCE — BELGIUM | UEFA NATIONS LEAGUE |
 | 05.10 21:45 | epg.cyta.com.cy | Cytavision Sports6 HD | ROMANIA — SWEDEN | UEFA NATIONS LEAGUE |
+| 05.10 21:45 | epg.cyta.com.cy | PPV3 | ROMANIA — SWEDEN | UEFA NATIONS LEAGUE |
+| 05.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | FRANCE — BELGIUM | UEFA NATIONS LEAGUE |
+| 05.10 21:45 | epg.cyta.com.cy | PPV1 | FRANCE — BELGIUM | UEFA NATIONS LEAGUE |
+| 05.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | ITALY — TÜRKIYE | UEFA NATIONS LEAGUE |
+| 05.10 21:45 | epg.cyta.com.cy | PPV2 | ITALY — TÜRKIYE | UEFA NATIONS LEAGUE |
 | 05.10 21:45 | tvarenasport.com | Arena Premium 1 | Francuska — Belgija | UEFA LIGA NACIJA |
 | 05.10 21:45 | tvarenasport.com | Arena Premium 2 | Italija — Turska | UEFA LIGA NACIJA |
 | 05.10 21:45 | tvarenasport.com | Arena Premium 3 | Rumunija — Švedska | UEFA LIGA NACIJA |
@@ -1134,6 +1185,7 @@
 | 06.10 16:50 | sporttv.pt | SPORT.TV2 | CAZAQUISTÃO — ILHAS FAROÉ | UEFA NATIONS LEAGUE |
 | 06.10 17:00 | diemaxtra.nova.bg | Diema Sport 3 | Казахстан — Фарьорски острови | УЕФА Лига на нациите |
 | 06.10 17:00 | epg.cyta.com.cy | Cytavision Sports4 HD | KAZAKHSTAN — FAROE ISLANDS | UEFA NATIONS LEAGUE |
+| 06.10 17:00 | epg.cyta.com.cy | PPV2 | KAZAKHSTAN — FAROE ISLANDS | UEFA NATIONS LEAGUE |
 | 06.10 19:30 | diemaxtra.nova.bg | Diema Sport | България — Шотландия | Квалификации за Евро 2027 за младежи |
 | 06.10 19:30 | diemaxtra.nova.bg | Diema Xtra | България — Шотландия | Квалификации за Евро 2027 за младежи |
 | 06.10 19:45 | livesoccertv.com | ESPN Netherlands | Netherlands U21 — Bosnia-Herzegovina U21 | Euro U-21 Qualifying |
@@ -1149,13 +1201,17 @@
 | 06.10 21:40 | diemaxtra.nova.bg | Diema Xtra | Шотландия — Словения | УЕФА Лига на нациите |
 | 06.10 21:45 | diemaxtra.nova.bg | Diema Sport 2 | Англия — Чехия | УЕФА Лига на нациите |
 | 06.10 21:45 | diemaxtra.nova.bg | Diema Sport 3 | Хърватия — Испания | УЕФА Лига на нациите |
-| 06.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | CROATIA — SPAIN | UEFA NATIONS LEAGUE |
-| 06.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | ENGLAND — CZECHIA | UEFA NATIONS LEAGUE |
 | 06.10 21:45 | epg.cyta.com.cy | Cytavision Sports6 HD | SCOTLAND — SLOVENIA | UEFA NATIONS LEAGUE |
+| 06.10 21:45 | epg.cyta.com.cy | PPV3 | SCOTLAND — SLOVENIA | UEFA NATIONS LEAGUE |
+| 06.10 21:45 | epg.cyta.com.cy | Cytavision Sports3 HD | ENGLAND — CZECHIA | UEFA NATIONS LEAGUE |
+| 06.10 21:45 | epg.cyta.com.cy | PPV1 | ENGLAND — CZECHIA | UEFA NATIONS LEAGUE |
+| 06.10 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | CROATIA — SPAIN | UEFA NATIONS LEAGUE |
+| 06.10 21:45 | epg.cyta.com.cy | PPV2 | CROATIA — SPAIN | UEFA NATIONS LEAGUE |
 | 06.10 21:50 | sporttv.pt | SPORT.TV6 | ANGOLA — MALAWI | TAÇA NAÇÕES AFRICANAS - QUALIFICAÇÃO |
 
 ## Не разобрано
 
+- football-tv.ru сетка: не открылась — HTTP 403; браузер: HTTP 403 (браузер)
 - kanal1sport.sk сетка: не открылась — браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
 Call log:
   - navigating to "https://www.kanal1sport.sk/tv-program/", waiting until "domcontentloaded"
