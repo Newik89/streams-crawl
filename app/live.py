@@ -198,6 +198,16 @@ def check(program, markers: Markers) -> Verdict:
     bad = markers.found(markers.not_live, signals)
     if bad:
         return Verdict(False, f"запись или студия: {bad}")
+    # Стоп-слово или слово записи бывает и в самой строке пары: у ČT sport
+    # заголовок — турнир («Liga národů UEFA mužů»), а подзаголовок —
+    # «Studio Španělsko - Česko», и студия до и после матча шла на витрину
+    # двумя лишними играми Испания — Чехия (регресс 02.10). Слово ищется
+    # целиком (`_pattern`), «Estudiantes» не пострадает
+    pair_text = program.match_raw or ""
+    bad = markers.found(markers.stop_title, pair_text) \
+        or markers.found(markers.not_live, pair_text)
+    if bad:
+        return Verdict(False, f"стоп-слово или запись в паре: {bad}")
 
     live = markers.found(markers.live, program.live_raw) \
         or markers.found(markers.live, signals)
