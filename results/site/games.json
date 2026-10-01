@@ -1,1102 +1,646 @@
 {
- "собрано": "2026-09-28 17:44",
- "игр": 58,
+ "собрано": "2026-10-01 20:02",
+ "игр": 36,
  "окно": 6,
  "по_окнам": {
-  "2": 273,
+  "2": 314,
   "5": 528,
-  "6": 58
+  "6": 36
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "epg.cyta.com.cy": 92
+  "livesoccertv.com": 122
  },
- "на_разбор": [
-  {
-   "домен": "epg.cyta.com.cy",
-   "канал": "Novasports 2HD",
-   "home": "Burgos",
-   "away": "Cedevita Olimpija",
-   "league": "",
-   "start_kyiv": "2026-09-30T21:30",
-   "raw_title": "Burgos - Cedevita Olimpija"
-  },
-  {
-   "домен": "epg.cyta.com.cy",
-   "канал": "Novasports 5 HD",
-   "home": "Crvena Zvezda",
-   "away": "Anadolu Efes",
-   "league": "",
-   "start_kyiv": "2026-10-01T21:00",
-   "raw_title": "Crvena Zvezda - Anadolu Efes"
-  },
-  {
-   "домен": "epg.cyta.com.cy",
-   "канал": "Novasports 6 HD",
-   "home": "ASVEL Villeurbanne",
-   "away": "Valencia",
-   "league": "",
-   "start_kyiv": "2026-10-02T21:00",
-   "raw_title": "ASVEL Villeurbanne - Valencia"
-  }
- ],
+ "на_разбор": [],
  "games": [
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "ARMENIA",
-   "away": "MONTENEGRO",
-   "start_kyiv": "2026-09-28T19:00",
-   "start_utc": "2026-09-28T16:00",
+   "league": "UAE League Cup",
+   "home": "Al Ain",
+   "away": "Ajman",
+   "start_kyiv": "2026-10-02T16:15",
+   "start_utc": "2026-10-02T13:15",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ARMENIA - MONTENEGRO"
+     "source": "livesoccertv.com",
+     "channel": "Abu Dhabi Sports 1",
+     "url": "https://www.livesoccertv.com/channels/abu-dhabi-sports-1/",
+     "raw_title": "Al Ain vs Ajman"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UAE League Cup",
+   "home": "Al Wasl",
+   "away": "Al Ittihad Kalba",
+   "start_kyiv": "2026-10-02T16:15",
+   "start_utc": "2026-10-02T13:15",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "Abu Dhabi Sports 2",
+     "url": "https://www.livesoccertv.com/channels/abu-dhabi-sports-2/",
+     "raw_title": "Al Wasl vs Al Ittihad Kalba"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "Kazakhstan",
+   "away": "Moldova",
+   "start_kyiv": "2026-10-02T17:00",
+   "start_utc": "2026-10-02T14:00",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "ART Sport 1",
+     "url": "https://www.livesoccertv.com/channels/artsport1/",
+     "raw_title": "Kazakhstan vs Moldova"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UAE League Cup",
+   "home": "Shabab Al Ahli",
+   "away": "Al Nasr",
+   "start_kyiv": "2026-10-02T18:45",
+   "start_utc": "2026-10-02T15:45",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "Abu Dhabi Sports 1",
+     "url": "https://www.livesoccertv.com/channels/abu-dhabi-sports-1/",
+     "raw_title": "Shabab Al Ahli vs Al Nasr"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UAE League Cup",
+   "home": "Khor Fakkan",
+   "away": "Al Jazira",
+   "start_kyiv": "2026-10-02T18:45",
+   "start_utc": "2026-10-02T15:45",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "Abu Dhabi Sports 2",
+     "url": "https://www.livesoccertv.com/channels/abu-dhabi-sports-2/",
+     "raw_title": "Khor Fakkan vs Al Jazira"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "Latvia",
+   "away": "Montenegro",
+   "start_kyiv": "2026-10-02T19:00",
+   "start_utc": "2026-10-02T16:00",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "ART Sport 1",
+     "url": "https://www.livesoccertv.com/channels/artsport1/",
+     "raw_title": "Latvia vs Montenegro"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Euro U-21 Qualifying",
+   "home": "Slovenia U21",
+   "away": "Netherlands U21",
+   "start_kyiv": "2026-10-02T19:00",
+   "start_utc": "2026-10-02T16:00",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "ESPN Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
+     "raw_title": "Slovenia U21 vs Netherlands U21"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "France",
+   "away": "Italy",
+   "start_kyiv": "2026-10-02T21:45",
+   "start_utc": "2026-10-02T18:45",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "ART Sport 1",
+     "url": "https://www.livesoccertv.com/channels/artsport1/",
+     "raw_title": "France vs Italy"
     },
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV2",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ARMENIA - MONTENEGRO"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Rapid Bucharest",
-   "away": "USK Prague",
-   "start_kyiv": "2026-09-28T20:00",
-   "start_utc": "2026-09-28T17:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Rapid Bucharest - USK Prague"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 2 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
+     "raw_title": "France vs Italy"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "SWEDEN",
-   "away": "POLAND",
-   "start_kyiv": "2026-09-28T21:35",
-   "start_utc": "2026-09-28T18:35",
+   "league": "UEFA Nations League",
+   "home": "Belgium",
+   "away": "Turkey",
+   "start_kyiv": "2026-10-02T21:45",
+   "start_utc": "2026-10-02T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV3",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "SWEDEN - POLAND"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "BELGIUM",
-   "away": "FRANCE",
-   "start_kyiv": "2026-09-28T21:45",
-   "start_utc": "2026-09-28T18:45",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "BELGIUM - FRANCE"
+     "source": "livesoccertv.com",
+     "channel": "ART Sport 2",
+     "url": "https://www.livesoccertv.com/channels/art-sport-2/",
+     "raw_title": "Belgium vs Turkey"
     },
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV1",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "BELGIUM - FRANCE"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 3 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
+     "raw_title": "Belgium vs Turkey"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "TÜRKIYE",
-   "away": "ITALY",
-   "start_kyiv": "2026-09-28T21:45",
-   "start_utc": "2026-09-28T18:45",
+   "league": "UEFA Nations League",
+   "home": "Bosnia and Herzegovina",
+   "away": "Sweden",
+   "start_kyiv": "2026-10-02T21:45",
+   "start_utc": "2026-10-02T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "TÜRKIYE - ITALY"
+     "source": "livesoccertv.com",
+     "channel": "ART Sport 3",
+     "url": "https://www.livesoccertv.com/channels/art-sport-3/",
+     "raw_title": "Bosnia and Herzegovina vs Sweden"
     },
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV2",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "TÜRKIYE - ITALY"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 250 - CHENGDU",
-   "home": "ATP 250",
-   "away": "CHENGDU",
-   "start_kyiv": "2026-09-29T14:00",
-   "start_utc": "2026-09-29T11:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 250 - CHENGDU (FINAL)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 250 - HANGZHOU",
-   "home": "ATP 250",
-   "away": "HANGZHOU",
-   "start_kyiv": "2026-09-29T14:30",
-   "start_utc": "2026-09-29T11:30",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports6 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 250 - HANGZHOU (FINAL)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "USK Prague W",
-   "away": "Athinaikos Qualco W",
-   "start_kyiv": "2026-09-29T17:00",
-   "start_utc": "2026-09-29T14:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "USK Prague - Athinaikos Qualco"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 5 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-5-digitalb/",
+     "raw_title": "Bosnia and Herzegovina vs Sweden"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "FINLAND",
-   "away": "BELARUS",
-   "start_kyiv": "2026-09-29T19:00",
-   "start_utc": "2026-09-29T16:00",
+   "league": "UEFA Nations League",
+   "home": "Poland",
+   "away": "Romania",
+   "start_kyiv": "2026-10-02T21:45",
+   "start_utc": "2026-10-02T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "FINLAND - BELARUS"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV1",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "FINLAND - BELARUS"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Dubai Basketball",
-   "away": "Barcelona",
-   "start_kyiv": "2026-09-29T19:00",
-   "start_utc": "2026-09-29T16:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports Start HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Dubai Basketball - Barcelona"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Anadolu Efes",
-   "away": "Real Madrid",
-   "start_kyiv": "2026-09-29T20:00",
-   "start_utc": "2026-09-29T17:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Anadolu Efes - Real Madrid"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Zalgiris Kaunas",
-   "away": "Olympiacos",
-   "start_kyiv": "2026-09-29T20:00",
-   "start_utc": "2026-09-29T17:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports PrimeHD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Zalgiris Kaunas - Olympiacos"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 4 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-4-digitalb/",
+     "raw_title": "Poland vs Romania"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Fenerbahce",
-   "away": "Bayern Munich",
-   "start_kyiv": "2026-09-29T20:45",
-   "start_utc": "2026-09-29T17:45",
+   "league": "Eerste Divisie",
+   "home": "Helmond Sport",
+   "away": "Heracles",
+   "start_kyiv": "2026-10-02T22:00",
+   "start_utc": "2026-10-02T19:00",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 6 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Fenerbahce - Bayern Munich"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Crvena Zvezda",
-   "away": "Hapoel Tel Aviv",
-   "start_kyiv": "2026-09-29T21:00",
-   "start_utc": "2026-09-29T18:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 2HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Crvena Zvezda - Hapoel Tel Aviv"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Armani Milano",
-   "away": "Virtus Bologna",
-   "start_kyiv": "2026-09-29T21:30",
-   "start_utc": "2026-09-29T18:30",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasportsextra4HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Armani Milano - Virtus Bologna"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Valencia",
-   "away": "Baskonia",
-   "start_kyiv": "2026-09-29T21:30",
-   "start_utc": "2026-09-29T18:30",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Valencia - Baskonia"
+     "source": "livesoccertv.com",
+     "channel": "ESPN Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
+     "raw_title": "Helmond Sport vs Heracles"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "SCOTLAND",
-   "away": "SWITZERLAND",
-   "start_kyiv": "2026-09-29T21:45",
-   "start_utc": "2026-09-29T18:45",
+   "league": "UEFA Nations League",
+   "home": "Finland",
+   "away": "Albania",
+   "start_kyiv": "2026-10-03T16:00",
+   "start_utc": "2026-10-03T13:00",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports6 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "SCOTLAND - SWITZERLAND"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV3",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "SCOTLAND - SWITZERLAND"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 2 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
+     "raw_title": "Finland vs Albania"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "CZECHIA",
-   "away": "ENGLAND",
-   "start_kyiv": "2026-09-29T21:45",
-   "start_utc": "2026-09-29T18:45",
+   "league": "Eerste Divisie",
+   "home": "Oss",
+   "away": "MVV",
+   "start_kyiv": "2026-10-03T17:30",
+   "start_utc": "2026-10-03T14:30",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "CZECHIA - ENGLAND"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV1",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "CZECHIA - ENGLAND"
+     "source": "livesoccertv.com",
+     "channel": "ESPN 2 Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-2-netherlands/",
+     "raw_title": "Oss vs MVV"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "SPAIN",
-   "away": "CROATIA",
-   "start_kyiv": "2026-09-29T21:45",
-   "start_utc": "2026-09-29T18:45",
+   "league": "Eerste Divisie",
+   "home": "Vitesse",
+   "away": "NAC Breda",
+   "start_kyiv": "2026-10-03T17:30",
+   "start_utc": "2026-10-03T14:30",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "SPAIN - CROATIA"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV2",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "SPAIN - CROATIA"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Paris Basketball",
-   "away": "Partizan",
-   "start_kyiv": "2026-09-29T21:45",
-   "start_utc": "2026-09-29T18:45",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Paris Basketball - Partizan"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 500 - TOKYO",
-   "home": "ATP 500",
-   "away": "TOKYO",
-   "start_kyiv": "2026-09-30T05:00",
-   "start_utc": "2026-09-30T02:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports8 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 500 - TOKYO (MD 1a)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 500 - BEIJING",
-   "home": "ATP 500",
-   "away": "BEIJING",
-   "start_kyiv": "2026-09-30T06:00",
-   "start_utc": "2026-09-30T03:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 500 - BEIJING (MD 1)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 500 - TOKYO",
-   "home": "ATP 500",
-   "away": "TOKYO",
-   "start_kyiv": "2026-09-30T10:00",
-   "start_utc": "2026-09-30T07:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports8 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 500 - TOKYO (MD 1b)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Mechelen",
-   "away": "USK Prague",
-   "start_kyiv": "2026-09-30T17:00",
-   "start_utc": "2026-09-30T14:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Mechelen - USK Prague"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "PAOK",
-   "away": "Manresa",
-   "start_kyiv": "2026-09-30T19:30",
-   "start_utc": "2026-09-30T16:30",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "PAOK - Manresa"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Lietkabelis",
-   "away": "KK Bosna",
-   "start_kyiv": "2026-09-30T19:30",
-   "start_utc": "2026-09-30T16:30",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Lietkabelis - KK Bosna"
+     "source": "livesoccertv.com",
+     "channel": "ESPN Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
+     "raw_title": "Vitesse vs NAC Breda"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Paris FC W",
-   "away": "Arsenal Women FC W",
-   "start_kyiv": "2026-09-30T19:45",
-   "start_utc": "2026-09-30T16:45",
+   "league": "UEFA Nations League",
+   "home": "Croatia",
+   "away": "England",
+   "start_kyiv": "2026-10-03T19:00",
+   "start_utc": "2026-10-03T16:00",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Paris FC - Arsenal Women FC"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 1 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-digitalb/",
+     "raw_title": "Croatia vs England"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Roma W",
-   "away": "Barcelona W",
-   "start_kyiv": "2026-09-30T19:45",
-   "start_utc": "2026-09-30T16:45",
+   "league": "Eerste Divisie",
+   "home": "Almere City",
+   "away": "Volendam",
+   "start_kyiv": "2026-10-03T21:00",
+   "start_utc": "2026-10-03T18:00",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 2 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Roma - Barcelona"
+     "source": "livesoccertv.com",
+     "channel": "ESPN 2 Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-2-netherlands/",
+     "raw_title": "Almere City vs Volendam"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Hacken W",
-   "away": "Juventus W",
-   "start_kyiv": "2026-09-30T19:45",
-   "start_utc": "2026-09-30T16:45",
+   "league": "Eerste Divisie",
+   "home": "RKC Waalwijk",
+   "away": "Emmen",
+   "start_kyiv": "2026-10-03T21:00",
+   "start_utc": "2026-10-03T18:00",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 1 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Hacken - Juventus"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Athinaikos Qualco W",
-   "away": "Rapid Bucharest W",
-   "start_kyiv": "2026-09-30T20:00",
-   "start_utc": "2026-09-30T17:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Athinaikos Qualco - Rapid Bucharest"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Maccabi Tel Aviv",
-   "away": "Besiktas",
-   "start_kyiv": "2026-09-30T21:05",
-   "start_utc": "2026-09-30T18:05",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports Start HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Maccabi Tel Aviv - Besiktas"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Panathinaikos",
-   "away": "ASVEL Villeurbanne",
-   "start_kyiv": "2026-09-30T21:15",
-   "start_utc": "2026-09-30T18:15",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports PrimeHD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Panathinaikos - ASVEL Villeurbanne"
+     "source": "livesoccertv.com",
+     "channel": "ESPN 3 Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-3-netherlands/",
+     "raw_title": "RKC Waalwijk vs Emmen"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Benfica W",
-   "away": "Bayern W",
-   "start_kyiv": "2026-09-30T22:00",
-   "start_utc": "2026-09-30T19:00",
+   "league": "UEFA Nations League",
+   "home": "Spain",
+   "away": "Czech Republic",
+   "start_kyiv": "2026-10-03T21:45",
+   "start_utc": "2026-10-03T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Benfica - Bayern"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 2 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
+     "raw_title": "Spain vs Czech Republic"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Lyon W",
-   "away": "Chelsea W",
-   "start_kyiv": "2026-09-30T22:00",
-   "start_utc": "2026-09-30T19:00",
+   "league": "UEFA Nations League",
+   "home": "Switzerland",
+   "away": "Slovenia",
+   "start_kyiv": "2026-10-03T21:45",
+   "start_utc": "2026-10-03T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 2 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Lyon - Chelsea"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 500 - TOKYO",
-   "home": "ATP 500",
-   "away": "TOKYO",
-   "start_kyiv": "2026-10-01T05:00",
-   "start_utc": "2026-10-01T02:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports8 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 500 - TOKYO (MD 2a)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 500 - BEIJING",
-   "home": "ATP 500",
-   "away": "BEIJING",
-   "start_kyiv": "2026-10-01T06:00",
-   "start_utc": "2026-10-01T03:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 500 - BEIJING (MD 2a)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 500 - TOKYO",
-   "home": "ATP 500",
-   "away": "TOKYO",
-   "start_kyiv": "2026-10-01T10:00",
-   "start_utc": "2026-10-01T07:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports8 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 500 - TOKYO (MD 2b)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "2026 ATP 500 - BEIJING",
-   "home": "ATP 500",
-   "away": "BEIJING",
-   "start_kyiv": "2026-10-01T14:00",
-   "start_utc": "2026-10-01T11:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ATP 500 - BEIJING (MD 2b)"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 3 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
+     "raw_title": "Switzerland vs Slovenia"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "AZERBAIJAN",
-   "away": "LIECHTENSTEIN",
-   "start_kyiv": "2026-10-01T19:00",
-   "start_utc": "2026-10-01T16:00",
+   "league": "UEFA Nations League",
+   "home": "North Macedonia",
+   "away": "Scotland",
+   "start_kyiv": "2026-10-03T21:45",
+   "start_utc": "2026-10-03T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "AZERBAIJAN - LIECHTENSTEIN"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV4",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "AZERBAIJAN - LIECHTENSTEIN"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Hapoel Tel Aviv",
-   "away": "Real Madrid",
-   "start_kyiv": "2026-10-01T19:00",
-   "start_utc": "2026-10-01T16:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Hapoel Tel Aviv - Real Madrid"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 4 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-4-digitalb/",
+     "raw_title": "North Macedonia vs Scotland"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "HB Koge Women W",
-   "away": "Servette FCCF W",
-   "start_kyiv": "2026-10-01T19:45",
-   "start_utc": "2026-10-01T16:45",
+   "league": "Eerste Divisie",
+   "home": "VVV",
+   "away": "Roda JC",
+   "start_kyiv": "2026-10-04T15:30",
+   "start_utc": "2026-10-04T12:30",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "HB Koge Women - Servette FCCF"
+     "source": "livesoccertv.com",
+     "channel": "ESPN Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
+     "raw_title": "VVV vs Roda JC"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Austria Wien W",
-   "away": "Inter W",
-   "start_kyiv": "2026-10-01T19:45",
-   "start_utc": "2026-10-01T16:45",
+   "league": "Eredivisie Women",
+   "home": "Feyenoord W",
+   "away": "Ajax W",
+   "start_kyiv": "2026-10-04T17:45",
+   "start_utc": "2026-10-04T14:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 2 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Austria Wien - Inter"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "2026 ECOMMBX SUPER CUP",
-   "home": "ΑΕΚ",
-   "away": "ΑΕΛ",
-   "start_kyiv": "2026-10-01T20:00",
-   "start_utc": "2026-10-01T17:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports8 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ΑΕΚ - ΑΕΛ"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV2",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "ΑΕΚ - ΑΕΛ"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Virtus Bologna",
-   "away": "Olympiacos",
-   "start_kyiv": "2026-10-01T21:30",
-   "start_utc": "2026-10-01T18:30",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports PrimeHD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Virtus Bologna - Olympiacos"
+     "source": "livesoccertv.com",
+     "channel": "ESPN Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
+     "raw_title": "Feyenoord vs Ajax"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "GERMANY",
-   "away": "SERBIA",
-   "start_kyiv": "2026-10-01T21:45",
-   "start_utc": "2026-10-01T18:45",
+   "league": "UEFA Nations League",
+   "home": "Kosovo",
+   "away": "Austria",
+   "start_kyiv": "2026-10-04T19:00",
+   "start_utc": "2026-10-04T16:00",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "GERMANY - SERBIA"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV4",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "GERMANY - SERBIA"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 2 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
+     "raw_title": "Kosovo vs Austria"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "GREECE",
-   "away": "NETHERLANDS",
-   "start_kyiv": "2026-10-01T21:45",
-   "start_utc": "2026-10-01T18:45",
+   "league": "Friendly",
+   "home": "Egypt",
+   "away": "South Africa",
+   "start_kyiv": "2026-10-04T21:00",
+   "start_utc": "2026-10-04T18:00",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "GREECE - NETHERLANDS"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV3",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "GREECE - NETHERLANDS"
+     "source": "livesoccertv.com",
+     "channel": "ON Sport 1",
+     "url": "https://www.livesoccertv.com/channels/on-sport-egypt/",
+     "raw_title": "Egypt vs South Africa"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA NATIONS LEAGUE",
-   "home": "DENMARK",
-   "away": "PORTUGAL",
-   "start_kyiv": "2026-10-01T21:45",
-   "start_utc": "2026-10-01T18:45",
+   "league": "UEFA Nations League",
+   "home": "Portugal",
+   "away": "Norway",
+   "start_kyiv": "2026-10-04T21:45",
+   "start_utc": "2026-10-04T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cytavision Sports6 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "DENMARK - PORTUGAL"
-    },
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "PPV5",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "DENMARK - PORTUGAL"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Paris Basketball",
-   "away": "Zalgiris Kaunas",
-   "start_kyiv": "2026-10-01T21:45",
-   "start_utc": "2026-10-01T18:45",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Paris Basketball - Zalgiris Kaunas"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 1 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-digitalb/",
+     "raw_title": "Portugal vs Norway"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Paris Saint-Germain W",
-   "away": "OH Leuven W",
-   "start_kyiv": "2026-10-01T22:00",
-   "start_utc": "2026-10-01T19:00",
+   "league": "UEFA Nations League",
+   "home": "Greece",
+   "away": "Germany",
+   "start_kyiv": "2026-10-04T21:45",
+   "start_utc": "2026-10-04T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Paris Saint-Germain - OH Leuven"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 2 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
+     "raw_title": "Greece vs Germany"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Manchester City W",
-   "away": "Real Madrid W",
-   "start_kyiv": "2026-10-01T22:00",
-   "start_utc": "2026-10-01T19:00",
+   "league": "UEFA Nations League",
+   "home": "Netherlands",
+   "away": "Serbia",
+   "start_kyiv": "2026-10-04T21:45",
+   "start_utc": "2026-10-04T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 2 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Manchester City - Real Madrid"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Besiktas",
-   "away": "Barcelona",
-   "start_kyiv": "2026-10-02T20:00",
-   "start_utc": "2026-10-02T17:00",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 4 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Besiktas - Barcelona"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Fenerbahce",
-   "away": "Dubai Basketball",
-   "start_kyiv": "2026-10-02T20:45",
-   "start_utc": "2026-10-02T17:45",
-   "entries": [
-    {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 5 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Fenerbahce - Dubai Basketball"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 3 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
+     "raw_title": "Netherlands vs Serbia"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Bayern Munich",
-   "away": "Partizan",
-   "start_kyiv": "2026-10-02T21:00",
-   "start_utc": "2026-10-02T18:00",
+   "league": "UEFA Nations League",
+   "home": "France",
+   "away": "Belgium",
+   "start_kyiv": "2026-10-05T21:45",
+   "start_utc": "2026-10-05T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Bayern Munich - Partizan"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 2 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
+     "raw_title": "France vs Belgium"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Panathinaikos",
-   "away": "Maccabi Tel Aviv",
-   "start_kyiv": "2026-10-02T21:15",
-   "start_utc": "2026-10-02T18:15",
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "Italy",
+   "away": "Turkey",
+   "start_kyiv": "2026-10-05T21:45",
+   "start_utc": "2026-10-05T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports PrimeHD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Panathinaikos - Maccabi Tel Aviv"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 3 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
+     "raw_title": "Italy vs Turkey"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Baskonia",
-   "away": "Armani Milano",
-   "start_kyiv": "2026-10-02T21:30",
-   "start_utc": "2026-10-02T18:30",
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "Bosnia and Herzegovina",
+   "away": "Poland",
+   "start_kyiv": "2026-10-05T21:45",
+   "start_utc": "2026-10-05T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Novasports Start HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Baskonia - Armani Milano"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 4 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-4-digitalb/",
+     "raw_title": "Bosnia and Herzegovina vs Poland"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Unicaja",
-   "away": "La Laguna Tenerife",
-   "start_kyiv": "2026-10-03T20:30",
-   "start_utc": "2026-10-03T17:30",
+   "sport": "F",
+   "league": "Euro U-21 Qualifying",
+   "home": "Netherlands U21",
+   "away": "Bosnia-Herzegovina U21",
+   "start_kyiv": "2026-10-06T19:45",
+   "start_utc": "2026-10-06T16:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Unicaja - La Laguna Tenerife"
+     "source": "livesoccertv.com",
+     "channel": "ESPN Netherlands",
+     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
+     "raw_title": "Netherlands U21 vs Bosnia-Herzegovina U21"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Monbus Obradoiro",
-   "away": "Real Madrid",
-   "start_kyiv": "2026-10-04T13:30",
-   "start_utc": "2026-10-04T10:30",
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "Albania",
+   "away": "San Marino",
+   "start_kyiv": "2026-10-06T21:45",
+   "start_utc": "2026-10-06T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Monbus Obradoiro - Real Madrid"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 2 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
+     "raw_title": "Albania vs San Marino"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Ισπανικό Πρωτάθλημα Καλαθόσφαιρας 2026-27 UCAM Murcia",
-   "away": "Barcelona",
-   "start_kyiv": "2026-10-04T20:00",
-   "start_utc": "2026-10-04T17:00",
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "Croatia",
+   "away": "Spain",
+   "start_kyiv": "2026-10-06T21:45",
+   "start_utc": "2026-10-06T18:45",
    "entries": [
     {
-     "source": "epg.cyta.com.cy",
-     "channel": "Cablenet Sports 3 HD",
-     "url": "https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200",
-     "raw_title": "Ισπανικό Πρωτάθλημα Καλαθόσφαιρας 2026-27 UCAM Murcia - Barcelona"
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 3 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
+     "raw_title": "Croatia vs Spain"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "England",
+   "away": "Czech Republic",
+   "start_kyiv": "2026-10-06T21:45",
+   "start_utc": "2026-10-06T18:45",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 4 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-4-digitalb/",
+     "raw_title": "England vs Czech Republic"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "Switzerland",
+   "away": "North Macedonia",
+   "start_kyiv": "2026-10-06T21:45",
+   "start_utc": "2026-10-06T18:45",
+   "entries": [
+    {
+     "source": "livesoccertv.com",
+     "channel": "SuperSport 5 Digitalb",
+     "url": "https://www.livesoccertv.com/channels/supersport-5-digitalb/",
+     "raw_title": "Switzerland vs North Macedonia"
     }
    ]
   }
