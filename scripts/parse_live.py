@@ -634,10 +634,46 @@ def main() -> int:
     # всегда есть в справочнике sporteventz; нишевые лиги (кубок Греции на
     # ERT) правило не трогает — их повторы днём не гоняют, а в справочнике
     # их может не быть.
+    # местные написания эталона той же письменности (как `canon._sides`):
+    # угадайку ERT «Β. Ιρλανδία – Ελλάδα» английские имена не узнавали, и
+    # честный live U21 снимался как «повтор без эталона» (01.10). Греческое
+    # сравниваем с греческим flashscore, иврит/кириллицу — со своими
+    from app.canon import _script as _script_of, _SCRIPT_OF_LANG
+    from datetime import datetime as _dt_ref
+    from zoneinfo import ZoneInfo as _Kyiv_ref
+    reference_local: list = []
+    for rec in reference_full:
+        if rec.get("sport", "F") != "F":
+            continue
+        try:
+            t_ref = _dt_ref.strptime(rec["start_kyiv"], "%Y-%m-%dT%H:%M") \
+                .replace(tzinfo=_Kyiv_ref("Europe/Kyiv"))
+        except (KeyError, ValueError):
+            continue
+        for lang, pair in (rec.get("names") or {}).items():
+            if isinstance(pair, (list, tuple)) and len(pair) == 2 \
+                    and pair[0] and pair[1]:
+                reference_local.append((str(pair[0]), str(pair[1]), t_ref,
+                                        _SCRIPT_OF_LANG.get(lang, "lat")))
+
+    def _in_reference_local(r) -> bool:
+        script = _script_of(f"{r.home} {r.away}")
+        if script == "lat":
+            return False
+        for h, a, t, sc in reference_local:
+            if sc != script or abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
+                continue
+            if (names.same_team(r.home, h) and names.same_team(r.away, a)) \
+                    or (names.same_team(r.home, a) and names.same_team(r.away, h)):
+                return True
+        return False
+
     def _in_reference(r) -> bool:
         # пословно, а не побуквенно: «Millwall FC - Newcastle United» у
         # oneplaysport — тот же матч, что «Millwall - Newcastle» эталона,
         # а точное сравнение убивало живую строку как запись (#728, 03.09)
+        if _in_reference_local(r):
+            return True
         for h, a, t in reference:
             if abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
                 continue

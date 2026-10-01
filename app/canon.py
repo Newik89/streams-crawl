@@ -162,6 +162,12 @@ def il_pick(game: dict, candidates: list[dict],
         Теперь и тут буквы пары не должны спорить (`BRIDGE_FLOOR`) — либо
         одна команда узнана твёрдо (`BRIDGE_BEST`)."""
         if same_league:
+            # одна сторона узнана твёрдо (`BRIDGE_BEST`), пол/возраст те же:
+            # клуб не играет два матча в один час, вторая сторона просто не
+            # читается — «הפועל חולון — שולה באסקט» = Hapoel Holon — Cholet
+            # (#4306, 01.10). Так вторая сторона и выучивается сама
+            if _one_side_enough(game, pick):
+                return pick, "sure"
             return (pick, "sure") if _pair_score(game, pick) >= LONE_HE \
                 else (None, "")
         if _pair_score(game, pick) >= BRIDGE_FLOOR \
@@ -184,8 +190,18 @@ def il_pick(game: dict, candidates: list[dict],
     perfect = [r for r, s in sided if s >= 100]
     if len(perfect) == 1 \
             and all(s <= BRIDGE_BEST for r, s in sided if r is not perfect[0]) \
-            and _pair_score(game, perfect[0]) >= BRIDGE_FLOOR:
+            and (_pair_score(game, perfect[0]) >= BRIDGE_FLOOR
+                 # сторона на 100 и только у него: вторая не читается, но
+                 # команда в один час два матча не играет (01.10)
+                 or (same_league and _one_side_enough(game, perfect[0]))):
         return perfect[0], "sure"
+    # одна сторона узнана твёрдо (не обязательно на 100) ровно у одного
+    # кандидата той же лиги — это он: «הפועל חולון» = Hapoel Holon на 92,
+    # а «שולה באסקט» (Cholet) не читается вовсе (#4306, 01.10)
+    if same_league:
+        strong = [r for r in candidates if _one_side_enough(game, r)]
+        if len(strong) == 1:
+            return strong[0], "sure"
     scored = sorted(((_pair_score(game, r), r) for r in candidates),
                     key=lambda x: -x[0])
     # порог LONE и маржа: честные пары после словаря _HE_WORDS набирают
@@ -218,6 +234,45 @@ def _script(text: str) -> str:
         if 0x0590 <= o <= 0x05FF:
             return "he"
     return "lat"
+
+
+_TIER_RE = re.compile(
+    r"\s+-\s+(League [A-D]|Group [A-Z0-9]+|Division \d|Play ?Offs?|"
+    r"League phase|Qualification|Promotion.*|Relegation.*)$", re.I)
+
+
+def _one_side_enough(game: dict, ref: dict) -> bool:
+    """Твёрдо узнанная одна сторона решает матч: пол/возраст те же, и это не
+    теннис — там игрок в один день стоит и в одиночке, и в паре
+    («Etcheverry» на 100 совпал с «Darderi/Etcheverry», регресс 01.10)."""
+    if (game.get("sport") or "") == "T" or "/" in (ref.get("home") or "") \
+            or "/" in (ref.get("away") or ""):
+        return False
+    return _best_side(game, ref) >= BRIDGE_BEST and _same_category(game, ref)
+
+
+def _league_core(label: str) -> str:
+    """Лига без стадии и дивизиона: «EUROPE: UEFA Nations League - League C»
+    → «EUROPE: UEFA Nations League». Родовой ярлык сайта («ליגת האומות»)
+    словарь привязывает к одному дивизиону (последнему выученному), и мост
+    искал Швейцарию — Сев. Македонию только в League C, а матч стоял в
+    League B (#4320, 01.10). Сравниваем основы — дивизион решают буквы."""
+    # режем только дивизион/группу/стадию: у тенниса «ATP - SINGLES: Tokyo»
+    # и «ATP - DOUBLES: Tokyo» общей основой «ATP» слились, и одиночка
+    # Этчеверри прицепилась к его же парному матчу (регресс 01.10)
+    return _TIER_RE.sub("", (label or "").strip()).strip()
+
+
+def _same_category(game: dict, ref: dict) -> bool:
+    """Пол и возраст пары совпадают с кандидатом (та же стена, что в
+    `_pair_score`, но без счёта по буквам)."""
+    из_лиги = [m for m in names.category(game.get("league") or "").split()
+               if m != "B"]
+    моя = names.category(f"{game.get('home') or ''} {game.get('away') or ''}")
+    моя = sorted(set((моя + " " + " ".join(из_лиги)).split()))
+    его = sorted(set(names.category(
+        f"{ref.get('home') or ''} {ref.get('away') or ''}").split()))
+    return моя == его
 
 
 def _sides(ref: dict, script: str = "lat") -> list[tuple[str, str]]:
@@ -400,7 +455,15 @@ def align(games: list[dict], reference: list[dict],
             # ТОЛЬКО среди израильских матчей эталона, к иностранным буквы
             # иврита не подпускаем. Эталон матч не знает — игра уходит в
             # missed, а не к ложному соседу по времени.
-            if looks_israeli(game):
+            # израильский клуб в ЕВРОКУБКЕ — не израильская игра: «הפועל חולון
+            # — שולה באסקט» (Лига чемпионов по баскетболу) уходила в
+            # израильский мост, там кандидатов нет — и в missed, не дойдя до
+            # общего моста по лиге (#4306, 01.10). Лигу переводит словарь:
+            # перевелась и не израильская — идём общим путём
+            known = (league_names or {}).get(
+                (game.get("league") or "").strip(), "")
+            foreign = bool(known) and not known.upper().startswith("ISRAEL")
+            if looks_israeli(game) and not foreign:
                 il = [r for r, _ in near
                       if (r.get("league") or "").upper().startswith("ISRAEL")]
                 if il:
@@ -437,8 +500,9 @@ def align(games: list[dict], reference: list[dict],
             if in_league:
                 cat = names.category(f"{game.get('home') or ''} "
                                      f"{game.get('away') or ''} {in_league}")
+                core = _league_core(in_league)
                 same = [r for r, _ in near
-                        if (r.get("league") or "").strip() == in_league
+                        if _league_core(r.get("league")) == core
                         and names.category(f"{r.get('home') or ''} "
                                            f"{r.get('away') or ''}") == cat]
                 if same:
@@ -448,7 +512,8 @@ def align(games: list[dict], reference: list[dict],
                     # может стоять единственный, но ЧУЖОЙ матч («Санта Фе -
                     # Васко» клеился к Santos - Atletico-MG, 06.09) — буквы
                     # обязаны хотя бы не спорить
-                    if pick is not None and _pair_score(game, pick) < BRIDGE_FLOOR:
+                    if pick is not None and _pair_score(game, pick) < BRIDGE_FLOOR \
+                            and not _one_side_enough(game, pick):
                         pick, verdict = None, ""
                     if verdict == "sure":
                         out["sure"].append((game, pick, SURE))

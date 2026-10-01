@@ -39,6 +39,12 @@ DEEP = {"el", "hu", "bg", "hr"}    # 7 дней; остальные — 1
 #: /basketball/ у tr и hr отдал 404
 BASKET = {"el": "basketball", "tr": "basketbol", "ru": "basketball",
           "hr": "kosarka"}
+#: теннис — у языков, чьи сайты пишут игроков по-своему (teleman:
+#: «Miedwiediew», sport5 ивритом через мост): словарь учит написания по
+#: fs_id, как у футбола. Проба 01.10: все 9 страниц отдали 200–390 меток
+TENNIS = {"pl": "tenis", "ru": "tennis", "el": "tennis", "tr": "tenis",
+          "cs": "tenis", "sk": "tenis", "hu": "tenisz", "ro": "tenis",
+          "uk": "tennis"}
 
 NOTE = ("языковая версия эталона flashscore (6е, A2): те же fs_id, имена "
         "по-местному; на витрину не идёт — parse_live прикладывает имена к "
@@ -48,11 +54,14 @@ NOTE = ("языковая версия эталона flashscore (6е, A2): те
 
 def _channels(conn, source_id: int, domain: str, lang: str) -> None:
     """Разделы-страницы локали. Футбол — у всех; баскетбол — языкам из
-    BASKET. Повторный запуск ничего не дублирует."""
+    BASKET, теннис — из TENNIS. Повторный запуск ничего не дублирует."""
     sections = [("football", f"https://{domain}/?d={{DAYNUM}}")]
     if lang in BASKET:
         sections.append(("basketball",
                          f"https://{domain}/{BASKET[lang]}/?d={{DAYNUM}}"))
+    if lang in TENNIS:
+        sections.append(("tennis",
+                         f"https://{domain}/{TENNIS[lang]}/?d={{DAYNUM}}"))
     for raw_name, page_url in sections:
         row = conn.execute(
             "SELECT id, page_url FROM source_channels "
