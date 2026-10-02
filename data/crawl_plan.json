@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-09-27",
+ "built": "2026-10-02",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -3670,7 +3670,8 @@
    "marks": {},
    "include": [
     "basketball",
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -3696,6 +3697,10 @@
     {
      "name": "football",
      "pattern": "https://m.flashscore.gr/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.flashscore.gr/tennis/?d={DAYNUM}"
     }
    ]
   },
@@ -3736,7 +3741,8 @@
    "grid": false,
    "marks": {},
    "include": [
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -3758,6 +3764,10 @@
     {
      "name": "football",
      "pattern": "https://m.eredmenyek.com/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.eredmenyek.com/tenisz/?d={DAYNUM}"
     }
    ]
   },
@@ -3767,7 +3777,8 @@
    "grid": false,
    "marks": {},
    "include": [
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -3789,6 +3800,10 @@
     {
      "name": "football",
      "pattern": "https://m.flashscore.ro/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.flashscore.ro/tenis/?d={DAYNUM}"
     }
    ]
   },
@@ -3799,7 +3814,8 @@
    "marks": {},
    "include": [
     "basketball",
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -3825,6 +3841,10 @@
     {
      "name": "football",
      "pattern": "https://m.flashscore.com.tr/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.flashscore.com.tr/tenis/?d={DAYNUM}"
     }
    ]
   },
@@ -3834,7 +3854,8 @@
    "grid": false,
    "marks": {},
    "include": [
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -3856,6 +3877,10 @@
     {
      "name": "football",
      "pattern": "https://m.flashscore.pl/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.flashscore.pl/tenis/?d={DAYNUM}"
     }
    ]
   },
@@ -3866,7 +3891,8 @@
    "marks": {},
    "include": [
     "basketball",
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -3892,6 +3918,10 @@
     {
      "name": "football",
      "pattern": "https://m.flashscore.ru/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.flashscore.ru/tennis/?d={DAYNUM}"
     }
    ]
   },
@@ -3901,7 +3931,8 @@
    "grid": false,
    "marks": {},
    "include": [
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -3923,6 +3954,10 @@
     {
      "name": "football",
      "pattern": "https://m.flashscore.ua/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.flashscore.ua/tennis/?d={DAYNUM}"
     }
    ]
   },
@@ -3932,7 +3967,8 @@
    "grid": false,
    "marks": {},
    "include": [
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -3954,6 +3990,10 @@
     {
      "name": "football",
      "pattern": "https://m.livesport.cz/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.livesport.cz/tenis/?d={DAYNUM}"
     }
    ]
   },
@@ -4419,7 +4459,8 @@
    "grid": false,
    "marks": {},
    "include": [
-    "football"
+    "football",
+    "tennis"
    ],
    "parser": "",
    "browser": false,
@@ -4441,6 +4482,10 @@
     {
      "name": "football",
      "pattern": "https://m.flashscore.sk/?d={DAYNUM}"
+    },
+    {
+     "name": "tennis",
+     "pattern": "https://m.flashscore.sk/tenis/?d={DAYNUM}"
     }
    ]
   },
