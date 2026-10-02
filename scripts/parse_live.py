@@ -268,6 +268,26 @@ def _looks_repeat(earlier, later) -> bool:
     return max(direct, swapped) >= names.SIMILAR_ENOUGH
 
 
+def ref_sport_of(r, reference_full: list, floor: int | None = None) -> str:
+    """Вид спорта по эталону flashscore для строки: пара сошлась (с местными
+    написаниями, ≥ `floor`, по умолчанию SIMILAR_ENOUGH) в ±3 ч. Пусто —
+    эталон пару не знает."""
+    floor = names.SIMILAR_ENOUGH if floor is None else floor
+    ours = r.start_kyiv.replace(tzinfo=None)
+    for ref in reference_full:
+        if not ref.get("start_kyiv"):
+            continue
+        try:
+            ref_start = datetime.fromisoformat(ref["start_kyiv"])
+        except ValueError:
+            continue
+        if abs((ours - ref_start).total_seconds()) > 3 * 3600:
+            continue
+        if canon._pair_score({"home": r.home, "away": r.away}, ref) >= floor:
+            return ref.get("sport", "F")
+    return ""
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
@@ -428,6 +448,25 @@ def main() -> int:
         print(f"локали эталона: имена у {len(locale_names)} матчей, "
               f"приложены к {attached} записям эталона")
 
+    # Эталон главнее КОСВЕННЫХ источников вида спорта (владелец 02.10,
+    # #4335/#4336/#4328): подсказка пары и лига из словаря умеют врать —
+    # авто-«знаем» по одной стороне записал футбол баскетбольному Еврокубку,
+    # у лиги «WORLD: Friendly International» в словаре стоял баскетбол, и
+    # футбольный товарищеский Колумбия — Перу уехал в баскет. Слово вида
+    # спорта на самом сайте не трогаем; пара сошлась с эталоном почти точно
+    # (≥ 95) в ±3 ч — берём букву матча
+    by_ref_fixed = 0
+    for domain, r in found:
+        if getattr(r, "sport_source", "") in ("league", "hint"):
+            by_ref = ref_sport_of(r, reference_full, floor=95)
+            if by_ref and by_ref != r.sport:
+                r.sport_word = f"эталон flashscore поверх «{r.sport_word}»"
+                r.sport, r.sport_source = by_ref, "ref"
+                by_ref_fixed += 1
+    if by_ref_fixed:
+        print(f"вид спорта поправлен эталоном (подсказка/лига врали): "
+              f"{by_ref_fixed} строк(и)")
+
     # Кандидаты без вида спорта: оставляем тех, кто сошёлся с настоящей игрой.
     # Сравнивает `app/merge.py` — там и допуск по времени (±150 минут, сетка
     # ставит блок раньше матча), и пословное сравнение имён. Часовые пояса
@@ -437,24 +476,6 @@ def main() -> int:
         known = [merge.Entry(source=d, channel=r.program.channel_raw,
                              home=r.home, away=r.away, start=r.start_kyiv,
                              sport=r.sport, payload=r) for d, r in found]
-        def _ref_sport(r) -> str:
-            """Вид спорта по эталону flashscore: пара сошлась (с местными
-            написаниями, ≥ SIMILAR_ENOUGH) в ±3 ч. Пусто — эталон пару не знает."""
-            ours = r.start_kyiv.replace(tzinfo=None)
-            for ref in reference_full:
-                if not ref.get("start_kyiv"):
-                    continue
-                try:
-                    ref_start = datetime.fromisoformat(ref["start_kyiv"])
-                except ValueError:
-                    continue
-                if abs((ours - ref_start).total_seconds()) > 3 * 3600:
-                    continue
-                if canon._pair_score({"home": r.home, "away": r.away},
-                                     ref) >= names.SIMILAR_ENOUGH:
-                    return ref.get("sport", "F")
-            return ""
-
         taken = 0
         for domain, r in maybe:
             probe = merge.Entry(source=domain, channel=r.program.channel_raw,
@@ -468,7 +489,7 @@ def main() -> int:
                     # эталона), а flashscore знает товарищеский матч сборных —
                     # ивритская строка sport5 уезжала в баскет (регресс
                     # 02.10). Эталон знает пару — его слово главнее донора
-                    ref_sport = _ref_sport(r)
+                    ref_sport = ref_sport_of(r, reference_full)
                     if ref_sport and ref_sport != other.sport:
                         r.sport = ref_sport
                         r.sport_word = ("по эталону flashscore "

@@ -41,6 +41,8 @@ class Row:
     league_category: str = ""      # `W`, `U19` — из названия турнира
     sport: str = ""                # F | B | T
     sport_word: str = ""           # слово, по которому определили
+    sport_source: str = ""         # откуда буква: word (слово на сайте) |
+                                   # league (лига в словаре) | women | hint
     start_utc: datetime | None = None
     start_kyiv: datetime | None = None
 
@@ -107,6 +109,7 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
                                 program.league_raw, program.description) if x)
     letter, word = sports.detect(text)
     row.sport_word = word
+    row.sport_source = "word" if letter else ""
     if letter == "-":
         row.reason = f"другой вид спорта: {word}"
         return row
@@ -117,11 +120,13 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
             letter = league_sports.get(" ".join(key.lower().split()))
             if letter:
                 row.sport_word = key
+                row.sport_source = "league"
                 break
     if letter is None and клуб_спорт:
         # сугубо женский клуб играет в одном виде (`leagues._WOMEN_TEAMS`)
         letter = клуб_спорт
         row.sport_word = "женский клуб"
+        row.sport_source = "women"
     if letter is None and pair_sports:
         # владелец сам сказал, какой это спорт, для такой пары команд
         # (страница «Названия», раздел «Вид спорта»): сайт о нём молчит
@@ -130,6 +135,7 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         if hint and hint_fresh(hint[1], row.start_kyiv):
             letter = hint[0]
             row.sport_word = "подсказка владельца"
+            row.sport_source = "hint"
 
     if letter is None:
         # ТЗ разд. 6: не определился — не в мусор, а владельцу на проверку

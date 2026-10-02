@@ -220,6 +220,39 @@ def main() -> int:
         print(f"сопоставлено уверенно {len(aligned['sure'])}, "
               f"на подтверждение {len(aligned['ask'])}, "
               f"не нашлось в эталоне {len(aligned['missed'])}")
+        # Вид спорта у игры стоит чужой (владелец 02.10: #4335/#4336 —
+        # баскетбольный Еврокубок записан футболом по авто-подсказке, #4328 —
+        # футбольный товарищеский баскетболом по лиге словаря): в СВОЁМ виде
+        # эталон пару не знает вовсе, а в другом знает почти точно (≥ 95) в
+        # тот же час. Меняем вид спорта и канон берём оттуда. Заливка
+        # (`store`) вид спорта у существующей игры не трогает — чиним здесь
+        overrides = dictionary.league_overrides(conn)
+        resported = 0
+        for game in list(aligned["missed"]):
+            for other in sports:
+                if other == (game["sport"] or ""):
+                    continue
+                res = canon.align([dict(game, sport=other)], reference, overrides)
+                hit = [(g, ref, s) for g, ref, s in res["sure"] if s >= 95]
+                if not hit:
+                    continue
+                g, ref, s = hit[0]
+                resported += 1
+                if resported <= 10:
+                    print(f"  вид спорта по эталону: #{game['id']} {game['home']} — "
+                          f"{game['away']} {game['sport'] or '?'} → {other} "
+                          f"({ref['home']} — {ref['away']}, {ref.get('league')})")
+                if not args.dry_run:
+                    conn.execute("UPDATE events SET sport=? WHERE id=?",
+                                 (other, game["id"]))
+                game["sport"] = other
+                aligned["sure"].append((game, ref, s))
+                aligned["missed"].remove(game)
+                break
+        if resported:
+            if not args.dry_run:
+                conn.commit()
+            print(f"вид спорта исправлен по эталону: {resported}")
         if args.dry_run:
             for game, ref, score in aligned["sure"][:15]:
                 print(f"  {score:3}  {game['home']} - {game['away']}  →  "
