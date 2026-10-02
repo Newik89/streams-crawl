@@ -324,6 +324,10 @@ jobs:
 
       - name: Забрать страницы и отчёты
         if: always() && steps.guard.outputs.run == '1'
+        # архив страниц нужен только для отладки: переполнилось хранилище
+        # Actions (02.10 — 582 МБ при лимите 500) — обход не должен из-за
+        # этого краснеть, стучать «провал» и заставлять сторожа перезаказывать
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: obhod-${{ github.run_number }}
