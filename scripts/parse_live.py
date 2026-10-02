@@ -437,6 +437,24 @@ def main() -> int:
         known = [merge.Entry(source=d, channel=r.program.channel_raw,
                              home=r.home, away=r.away, start=r.start_kyiv,
                              sport=r.sport, payload=r) for d, r in found]
+        def _ref_sport(r) -> str:
+            """Вид спорта по эталону flashscore: пара сошлась (с местными
+            написаниями, ≥ SIMILAR_ENOUGH) в ±3 ч. Пусто — эталон пару не знает."""
+            ours = r.start_kyiv.replace(tzinfo=None)
+            for ref in reference_full:
+                if not ref.get("start_kyiv"):
+                    continue
+                try:
+                    ref_start = datetime.fromisoformat(ref["start_kyiv"])
+                except ValueError:
+                    continue
+                if abs((ours - ref_start).total_seconds()) > 3 * 3600:
+                    continue
+                if canon._pair_score({"home": r.home, "away": r.away},
+                                     ref) >= names.SIMILAR_ENOUGH:
+                    return ref.get("sport", "F")
+            return ""
+
         taken = 0
         for domain, r in maybe:
             probe = merge.Entry(source=domain, channel=r.program.channel_raw,
@@ -445,8 +463,19 @@ def main() -> int:
             for other in known:
                 if other.sport and merge._same_game(probe, other,
                                                     names.SIMILAR_ENOUGH):
-                    r.sport = other.sport
-                    r.sport_word = f"по совпадению с {other.source}"
+                    # донор и сам может ошибаться: movistar держал «India —
+                    # Uruguay» баскетболом (строку потом сняли как повтор без
+                    # эталона), а flashscore знает товарищеский матч сборных —
+                    # ивритская строка sport5 уезжала в баскет (регресс
+                    # 02.10). Эталон знает пару — его слово главнее донора
+                    ref_sport = _ref_sport(r)
+                    if ref_sport and ref_sport != other.sport:
+                        r.sport = ref_sport
+                        r.sport_word = ("по эталону flashscore "
+                                        f"(донор {other.source} спорил)")
+                    else:
+                        r.sport = other.sport
+                        r.sport_word = f"по совпадению с {other.source}"
                     r.ok, r.needs_review = True, False
                     found.append((domain, r))
                     taken += 1
