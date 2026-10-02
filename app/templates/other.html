@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Other Sport — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Other Sport</h1>
+<p class="muted">Всё, что сайты показывают в прямом эфире, но это не футбол, баскетбол
+  или теннис. Отдельный список: с матчами не смешивается, на сайт не идёт.
+  Вид спорта — по словарю (<code>markers.json</code> → «другие»), слово в скобках —
+  по чему решили. Прошедшие дни убираются сами.</p>
+<p>
+  <a href="{{ url_for('other_list') }}"{% if not group %} style="font-weight:700"{% endif %}>Все ({{ total }})</a>
+  {%- for g in groups %} · <a href="{{ url_for('other_list', sport=g.sport_group) }}"{% if group == g.sport_group %} style="font-weight:700"{% endif %}>{{ g.sport_group }} ({{ g.n }})</a>{% endfor %}
+</p>
+{% if days %}
+{% for day, rows in days.items() %}
+<h2>{{ day }}</h2>
+<table>
+  <tr><th>Время</th><th>Вид спорта</th><th>Канал</th><th>Что в программе</th><th>Сайт</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td>{{ r.start_kyiv[11:16] }}</td>
+    <td>{{ r.sport_group }} <span class="muted">({{ r.word }})</span></td>
+    <td>{{ r.channel }}</td>
+    <td>{{ r.title }}{% if r.league %} <span class="muted">— {{ r.league }}</span>{% endif %}</td>
+    <td class="muted">{{ r.domain }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endfor %}
+{% else %}
+<p class="muted">Пока пусто — появится после ближайшей заливки обхода.</p>
+{% endif %}
+{% endblock %}

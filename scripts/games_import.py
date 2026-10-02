@@ -132,6 +132,13 @@ def main() -> int:
                   f"{punish_until or '—'} этот прогон не гасит")
         stats = store.save_games(conn, games, punish=not args.reimport,
                                  worked=worked, punish_until=punish_until)
+        # другой вид спорта — отдельной таблицей для вкладки «Other Sport»
+        # (владелец 03.10); старые файлы ключа не имеют — тогда 0
+        other = store.save_other_sport(
+            conn, _json.loads(path.read_text(encoding="utf-8"))
+            .get("другие_виды") or [])
+        if other:
+            print(f"другой вид спорта — во вкладку «Other Sport»: {other}")
         db.set_setting(conn, stamp_key, stamp)
         # отчёт для карточки на дашборде: владелец видит, что скан доехал.
         # Время — СЕРВЕРНЫМИ часами (метка «собрано» на GitHub идёт в UTC

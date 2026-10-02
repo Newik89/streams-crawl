@@ -332,6 +332,7 @@ def main() -> int:
 
     found: list = []
     maybe: list = []          # пара есть, вида спорта нет — решает склейка
+    other_rows: list = []     # другой вид спорта — во вкладку «Other Sport» (03.10)
     problems: list[str] = []
     parsed_counts: dict[str, int] = {}   # сырых строк от парсера по сайтам:
     # «расписание есть, а строк 0» — признак сломанной разметки (этап 6д)
@@ -434,6 +435,10 @@ def main() -> int:
                 # то же время нашлась на другом сайте с известным видом
                 # спорта, вид берётся оттуда (решение владельца 01.09).
                 maybe.append((row["domain"], r))
+            elif r.reason.startswith("другой вид спорта") and r.start_kyiv:
+                # не футбол/баскет/теннис — не выбрасываем, а отдаём
+                # отдельным списком во вкладку «Other Sport» (владелец 03.10)
+                other_rows.append((row["domain"], r))
 
     # Имена локалей — к записям эталона по fs_id (6е, A2). Без английской
     # записи местное имя не к чему привязать, такие (3–4 в день) пропадают.
@@ -823,6 +828,39 @@ def main() -> int:
 
     found.sort(key=lambda x: x[1].start_kyiv)
 
+    # Другой вид спорта — тем же окном дней, без склейки: одна строка на
+    # (сайт, канал, заголовок, время). Это отдельный список для вкладки
+    # «Other Sport» админки, с футболом/баскетом/теннисом не смешивается
+    # (владелец 03.10); вид спорта словами — из раздела «другие» markers.json
+    if args.date:
+        other_rows = [x for x in other_rows if x[1].start_kyiv.date() == chosen]
+    elif not args.all:
+        other_rows = [x for x in other_rows
+                      if first <= x[1].start_kyiv.date() <= last]
+    seen_other: set = set()
+    other_out: list[dict] = []
+    for domain, r in sorted(other_rows, key=lambda x: x[1].start_kyiv):
+        key = (domain, r.program.channel_raw or "", (r.program.title or "")[:200],
+               r.start_kyiv)
+        if key in seen_other:
+            continue
+        seen_other.add(key)
+        other_out.append({
+            "домен": domain,
+            "канал": r.program.channel_raw or "",
+            "заголовок": (r.program.title or "")[:200],
+            "лига": (r.program.league_raw or "")[:120],
+            "вид": r.sport_group or "другое",
+            "слово": r.reason.split(":", 1)[-1].strip()[:60],
+            "start_kyiv": r.start_kyiv.strftime("%Y-%m-%dT%H:%M"),
+            "start_utc": (r.start_utc.strftime("%Y-%m-%dT%H:%M")
+                          if r.start_utc else ""),
+        })
+    if other_out:
+        kinds = len({x["вид"] for x in other_out})
+        print(f"другой вид спорта: {len(other_out)} строк(и), видов {kinds} — "
+              f"во вкладку «Other Sport»")
+
     # Одна игра, найденная на трёх сайтах, — одна строка с тремя каналами
     # (ТЗ разд. 9). Разбор по сайтам ниже сохраняем: по нему видно, откуда
     # что пришло, и проверяется сама склейка.
@@ -895,6 +933,9 @@ def main() -> int:
                "оценка": verdict,
                "эталон": reference_full,
                "разобрано": parsed_counts,
+               # другой вид спорта — отдельным списком во вкладку «Other
+               # Sport» админки (владелец 03.10)
+               "другие_виды": other_out,
                # нерешённые строки — человеку в модерацию (правило 04.09)
                "на_разбор": [{
                    "домен": domain,

@@ -239,3 +239,24 @@ CREATE TABLE IF NOT EXISTS moderation (
 );
 
 CREATE INDEX IF NOT EXISTS idx_moderation_open ON moderation(status, kind);
+
+-- Другой вид спорта (владелец 03.10): не футбол/баскетбол/теннис — не
+-- выбрасываем, а держим отдельным списком для вкладки «Other Sport» админки.
+-- Без склейки и канона; вид спорта словами — из markers.json → sport/другие.
+-- На публичную витрину не идёт; прошедшие дни убирает purge_expired.
+CREATE TABLE IF NOT EXISTS other_sport (
+    id          INTEGER PRIMARY KEY,
+    sport_group TEXT NOT NULL,            -- хоккей | плавание | … | другое
+    word        TEXT,                     -- слово, по которому решили
+    domain      TEXT NOT NULL,
+    channel     TEXT NOT NULL,
+    title       TEXT NOT NULL,
+    league      TEXT,
+    start_kyiv  TEXT NOT NULL,
+    start_utc   TEXT NOT NULL,
+    first_seen  TEXT NOT NULL DEFAULT (datetime('now')),
+    last_seen   TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (domain, channel, title, start_utc)
+);
+
+CREATE INDEX IF NOT EXISTS idx_other_sport_start ON other_sport(start_kyiv, sport_group);

@@ -37,6 +37,14 @@ class Sports:
     alien: object          # чужие виды спорта
     kinds: dict            # буква → шаблон слов
     exclude: dict | None = None   # буква → шаблон фраз, которые не считаются
+    groups: dict | None = None    # слово (нижний регистр) → вид спорта из «другие»
+
+    def group_of(self, word: str) -> str:
+        """Чужой вид спорта словами («хоккей», «плавание») по слову, которым
+        он найден — для вкладки «Other Sport» (владелец 03.10). Слово из
+        старого плоского списка «чужие» — «другое»."""
+        key = greek_plain((word or "").lower()).strip()
+        return (self.groups or {}).get(key, "другое")
 
     def detect(self, text: str) -> tuple[str | None, str]:
         """Буква вида спорта и слово, по которому решили.
@@ -68,11 +76,20 @@ def load(path: Path | None = None, override: dict | None = None) -> Sports:
     node = (override or {}).get("sport") or data.get("sport") or {}
     skip = node.get("кроме") or {}
     # «другие» — те же чужие виды, но разложенные по видам спорта (03.10,
-    # владелец: позже понадобятся для API flashscore) — пока все отсеиваются
+    # владелец: позже понадобятся для API flashscore) — пока все отсеиваются,
+    # а вид спорта словами едет во вкладку «Other Sport» админки
+    others = node.get("другие") or {}
+    groups = {}
+    for group, words in others.items():
+        if group == "_":
+            continue
+        for w in _flatten(words):
+            groups.setdefault(greek_plain(w.lower()), group)
     return Sports(
-        alien=_pattern(_flatten(node.get("чужие")) + _flatten(node.get("другие"))),
+        alien=_pattern(_flatten(node.get("чужие")) + _flatten(others)),
         kinds={letter: _pattern(_flatten(node.get(letter)))
                for letter in ("F", "B", "T")},
         exclude={letter: _pattern(_flatten(skip.get(letter)))
                  for letter in ("F", "B", "T", "чужие")},
+        groups=groups,
     )

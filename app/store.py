@@ -399,6 +399,9 @@ def purge_expired(conn: sqlite3.Connection, now: datetime | None = None) -> int:
                  (_iso(now - timedelta(days=30)),))
     conn.execute("DELETE FROM runs WHERE started_at < ?",
                  (_iso(now - timedelta(days=90)),))
+    # вкладка «Other Sport»: прошедшие дни не нужны (владелец 03.10)
+    conn.execute("DELETE FROM other_sport WHERE start_kyiv < ?",
+                 ((now - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M"),))
     conn.commit()
     return len(dead)
 
@@ -738,3 +741,31 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
     conn.execute("UPDATE sources SET status = 'broken' WHERE fail_count >= 3 "
                  "AND status NOT IN ('closed', 'broken')")
     conn.commit()
+
+
+def save_other_sport(conn: sqlite3.Connection, rows: list[dict]) -> int:
+    """Строки другого вида спорта из games.json (ключ «другие_виды») — во
+    вкладку «Other Sport» админки (владелец 03.10). Без склейки и канона:
+    одна строка на (сайт, канал, заголовок, время), повтор обновляет
+    `last_seen`. Возвращает, сколько строк пришло."""
+    now = _iso(datetime.now())
+    n = 0
+    for r in rows:
+        if not (r.get("start_utc") and r.get("start_kyiv") and r.get("заголовок")):
+            continue
+        conn.execute(
+            "INSERT INTO other_sport (sport_group, word, domain, channel, title, "
+            "league, start_kyiv, start_utc, first_seen, last_seen) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            "ON CONFLICT (domain, channel, title, start_utc) DO UPDATE SET "
+            "last_seen = excluded.last_seen, sport_group = excluded.sport_group, "
+            "word = excluded.word, league = excluded.league, "
+            "start_kyiv = excluded.start_kyiv",
+            (r.get("вид") or "другое", (r.get("слово") or "")[:60],
+             r.get("домен") or "", r.get("канал") or "", r["заголовок"][:200],
+             (r.get("лига") or "")[:120], r["start_kyiv"], r["start_utc"],
+             now, now))
+        n += 1
+    conn.commit()
+    return n
+

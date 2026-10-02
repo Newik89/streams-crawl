@@ -288,6 +288,24 @@ def create_app() -> Flask:
             return redirect(url_for("login", next=request.path))
         return None
 
+    @app.context_processor
+    def _other_sport_badge():
+        """Счётчик для вкладки «Other Sport» в шапке (владелец 03.10) —
+        только для вошедшего, публичным страницам не нужен."""
+        if not session.get("admin"):
+            return {"other_sport_count": 0}
+        try:
+            conn = db.connect()
+            try:
+                n = conn.execute(
+                    "SELECT COUNT(*) FROM other_sport WHERE start_kyiv >= ?",
+                    (datetime.now().strftime("%Y-%m-%dT%H:%M"),)).fetchone()[0]
+            finally:
+                conn.close()
+        except Exception:
+            n = 0
+        return {"other_sport_count": n}
+
     # ── вход ─────────────────────────────────────────────────────────────────
 
     @app.route("/login", methods=["GET", "POST"])
@@ -1124,6 +1142,36 @@ def create_app() -> Flask:
         finally:
             conn.close()
         return render_template("runs.html", rows=rows)
+
+    @app.route("/other")
+    def other_list():
+        """Вкладка «Other Sport» (владелец 03.10): всё, что сайты дают в
+        прямом эфире, но это не футбол/баскетбол/теннис — отдельным
+        списком по дням, с фильтром по виду спорта. На витрину не идёт."""
+        group = (request.args.get("sport") or "").strip()
+        now = datetime.now().strftime("%Y-%m-%dT%H:%M")
+        conn = db.connect()
+        try:
+            db.init_db(conn)
+            groups = conn.execute(
+                "SELECT sport_group, COUNT(*) AS n FROM other_sport "
+                "WHERE start_kyiv >= ? GROUP BY sport_group "
+                "ORDER BY n DESC, sport_group", (now,)).fetchall()
+            sql = ("SELECT sport_group, word, domain, channel, title, league, "
+                   "start_kyiv FROM other_sport WHERE start_kyiv >= ?")
+            params: list = [now]
+            if group:
+                sql += " AND sport_group = ?"
+                params.append(group)
+            rows = conn.execute(sql + " ORDER BY start_kyiv, sport_group, channel "
+                                "LIMIT 2000", params).fetchall()
+        finally:
+            conn.close()
+        days: dict[str, list] = {}
+        for r in rows:
+            days.setdefault(r["start_kyiv"][:10], []).append(r)
+        return render_template("other.html", groups=groups, days=days,
+                               group=group, total=sum(g["n"] for g in groups))
 
     # ── настройки и ключи API ────────────────────────────────────────────────
 

@@ -43,6 +43,8 @@ class Row:
     sport_word: str = ""           # слово, по которому определили
     sport_source: str = ""         # откуда буква: word (слово на сайте) |
                                    # league (лига в словаре) | women | hint
+    sport_group: str = ""          # чужой вид спорта словами («хоккей») —
+                                   # вкладка «Other Sport» (владелец 03.10)
     start_utc: datetime | None = None
     start_kyiv: datetime | None = None
 
@@ -112,6 +114,7 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     row.sport_source = "word" if letter else ""
     if letter == "-":
         row.reason = f"другой вид спорта: {word}"
+        row.sport_group = sports.group_of(word)
         return row
     if letter is None and league_sports:
         # Слов вида спорта в тексте нет, но лига известна словарю
