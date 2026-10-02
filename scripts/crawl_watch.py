@@ -41,8 +41,11 @@ def main() -> int:
             print(f"{stamp} GitHub не ответил на список прогонов — подожду следующего тика")
             return 0
         run = watch.run_for(order, runs)
-        fresh = watch.new_on_github(ROOT)
-        action, words = watch.decide(order, run, now, state, bool(fresh))
+        result = "unknown"
+        if run is not None and (run.get("status") or "") not in watch.RUNNING:
+            started = watch._utc(run.get("run_started_at") or run.get("created_at") or "") or now
+            result = watch.result_state(ROOT, started)
+        action, words = watch.decide(order, run, now, state, result)
         print(f"{stamp} {action}: {words}" + (" (--check, ничего не делаю)" if check else ""))
         if check or action in ("wait", "none"):
             return 0

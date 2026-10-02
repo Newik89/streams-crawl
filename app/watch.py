@@ -102,11 +102,16 @@ def run_for(order: dict, runs: list[dict]) -> dict | None:
 
 
 def decide(order: dict, run: dict | None, now: datetime, state: dict,
-           new_on_github: bool) -> tuple[str, str]:
+           result: str) -> tuple[str, str]:
     """Одно решение по заказу: (действие, слова). Действия: wait — ничего не
     делать; reorder — повторить заявку; pull — забрать результат самому;
     alarm — строка тревоги (один раз); done — обход забран, больше не следим;
-    none — заказ не наш (устарел)."""
+    none — заказ не наш (устарел).
+
+    `result` — судьба результата этого прогона по метке «собрано»
+    (`result_state`): picked — уже на сервере; pending — лежит на GitHub, на
+    сервере нет; none — прогон результата не оставил (пропуск «сегодня уже
+    ходили», проба); unknown — сверить не вышло."""
     age = (now - order["at"]).total_seconds() / 60
     if age > ORDER_TTL_HOURS * 60:
         return "none", f"заказ {order['stamp']} старше {ORDER_TTL_HOURS} ч — не следим"
@@ -138,10 +143,15 @@ def decide(order: dict, run: dict | None, now: datetime, state: dict,
         if since < KNOCK_GRACE_MINUTES:
             return "wait", (f"прогон #{number} готов {since:.0f} мин назад — "
                             f"даём стуку {KNOCK_GRACE_MINUTES} мин")
-        if new_on_github:
-            return "pull", (f"прогон #{number} готов, стука не было — "
-                            f"забираю сам")
-        return "done", f"прогон #{number} готов и забран по стуку"
+        if result == "pending":
+            return "pull", (f"прогон #{number} готов, результат на GitHub, а на "
+                            f"сервере нет (стук не дошёл) — забираю сам")
+        if result == "picked":
+            return "done", f"прогон #{number} готов и забран по стуку"
+        if result == "none":
+            return "done", (f"прогон #{number} прошёл без результата (пропуск "
+                            f"или проба) — забирать нечего")
+        return "wait", f"прогон #{number} готов, но метку «собрано» сверить не вышло"
     if not state.get("reordered"):
         return "reorder", (f"прогон #{number} кончился «{conclusion}» — "
                            f"повторяю заявку")
@@ -151,20 +161,42 @@ def decide(order: dict, run: dict | None, now: datetime, state: dict,
     return "wait", "обход падает, тревога уже подана"
 
 
-def new_on_github(root) -> bool | None:
-    """На GitHub есть коммит, которого нет на сервере (как в hook_pull.sh).
-    None — GitHub не ответил."""
+def _collected(text: str) -> datetime | None:
+    """Метка «собрано» из games.json (UTC, пишет parse_live)."""
     try:
-        remote = subprocess.run(["git", "ls-remote", "origin", "refs/heads/main"],
-                                capture_output=True, text=True, cwd=root,
-                                timeout=30).stdout.split()
-        head = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
-                              text=True, cwd=root, timeout=10).stdout.strip()
+        raw = json.loads(text).get("собрано") or ""
+        return datetime.strptime(raw, "%Y-%m-%d %H:%M").replace(tzinfo=timezone.utc)
+    except (ValueError, AttributeError):
+        return None
+
+
+def result_state(root, started: datetime) -> str:
+    """Судьба результата прогона, стартовавшего в `started` (UTC): picked —
+    «собрано» на сервере не старше старта (результат уже забран); pending —
+    такое «собрано» есть только на GitHub (стук не дошёл); none — ни там, ни
+    там (прогон результата не оставил); unknown — GitHub не ответил.
+    Сравниваем метку результата, а не коммиты: на GitHub между обходами
+    ложатся и правки кода, и словари — по ним «забрано ли» не понять
+    (02.10 сторож в --check трижды хотел забрать давно забранный #161)."""
+    edge = started - timedelta(minutes=MATCH_SLACK_MINUTES)
+    try:
+        local = _collected((root / "results" / "games.json").read_text(encoding="utf-8"))
+    except OSError:
+        local = None
+    if local and local >= edge:
+        return "picked"
+    try:
+        subprocess.run(["git", "fetch", "-q", "origin", "main"], capture_output=True,
+                       text=True, cwd=root, timeout=60, check=True)
+        shown = subprocess.run(["git", "show", "origin/main:results/games.json"],
+                               capture_output=True, text=True, cwd=root,
+                               timeout=60, check=True).stdout
     except (OSError, subprocess.SubprocessError):
-        return None
-    if not remote or not head:
-        return None
-    return remote[0] != head
+        return "unknown"
+    remote = _collected(shown)
+    if remote and remote >= edge:
+        return "pending"
+    return "none"
 
 
 def note(conn: sqlite3.Connection, text: str, who: str = "сторож") -> None:
