@@ -227,8 +227,23 @@ def main() -> int:
         # тот же час. Меняем вид спорта и канон берём оттуда. Заливка
         # (`store`) вид спорта у существующей игры не трогает — чиним здесь
         overrides = dictionary.league_overrides(conn)
+        # и игры, у которых канон уже есть (имена по словарю), а метки `fs:`
+        # нет: #4336 «Aris — San Pablo Burgos» и #4328 «Colombia — Peru»
+        # получили канон, но вид спорта так и остался чужим (02.10 22:30)
+        with_canon = [{"id": r["id"], "sport": r["sport"] or "",
+                       "home": r["home"] or "", "away": r["away"] or "",
+                       "league": r["league_auto"] or "",
+                       "start_kyiv": r["start_kyiv"], "entries": []}
+                      for r in conn.execute(
+                          "SELECT e.id, e.sport, e.league_auto, e.start_kyiv, "
+                          "th.canonical_name AS home, ta.canonical_name AS away "
+                          "FROM events e JOIN teams th ON th.id = e.team_home_id "
+                          "JOIN teams ta ON ta.id = e.team_away_id "
+                          "WHERE e.flags IS NULL").fetchall()]
+        canon_missed = (canon.align(with_canon, reference, overrides)["missed"]
+                        if with_canon else [])
         resported = 0
-        for game in list(aligned["missed"]):
+        for game in list(aligned["missed"]) + canon_missed:
             for other in sports:
                 if other == (game["sport"] or ""):
                     continue
@@ -251,8 +266,9 @@ def main() -> int:
                     conn.execute("UPDATE events SET sport=? WHERE id=?",
                                  (other, game["id"]))
                 game["sport"] = other
-                aligned["sure"].append((game, ref, s))
-                aligned["missed"].remove(game)
+                if game in aligned["missed"]:
+                    aligned["sure"].append((game, ref, s))
+                    aligned["missed"].remove(game)
                 break
         if resported:
             if not args.dry_run:
