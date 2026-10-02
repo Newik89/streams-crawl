@@ -298,6 +298,8 @@ def readings(name: str) -> tuple[str, ...]:
     if _CYRILLIC_RE.search(cmp_name):
         variants.append(to_english(_bulgarian(cmp_name)) or cmp_name)
         variants.append(to_english(_russian(cmp_name)) or cmp_name)
+    elif not _HEBREW_RE.search(cmp_name):
+        variants.extend(polish_readings(cmp_name))
     out: list[str] = []
     for v in variants:
         t = _tidy(v)
@@ -453,6 +455,31 @@ def _rough(word: str) -> str:
 #: двумя строками). Перед пословным сравнением такие слова приводим к
 #: одному написанию. Ключи и значения — в верхнем регистре, как слова
 #: приходят в `_words_score` после `readings()`.
+#: польское письмо русских/украинских/сербских фамилий (teleman.pl):
+#: «Daniił Miedwiediew» = Medvedev, «Andriej Rublow» = Rublev — сверка с
+#: эталоном давала 28 из 85 (#4063, 29.09). Чтение добавляется ВАРИАНТОМ,
+#: основное не трогаем; окончание -ow читаем и как -ov, и как -ev (ё → o)
+_POLISH_RE = re.compile(r"(?i)[łżśćźó]|sz|cz|rz|ie|ow\b")
+_POLISH_MAP = [("ł", "l"), ("ż", "zh"), ("ś", "s"), ("ć", "ch"), ("ź", "z"),
+               ("ó", "o"), ("sz", "sh"), ("cz", "ch"), ("rz", "zh"),
+               ("ie", "e"), ("w", "v")]
+
+
+def polish_readings(name: str) -> list[str]:
+    """Варианты чтения польской записи кириллической фамилии."""
+    if not _POLISH_RE.search(name):
+        return []
+    base = name
+    for a, b in _POLISH_MAP:
+        base = re.sub(a, b, base, flags=re.I)
+    out = [base]
+    # -ov ↔ -ev: Рублёв у поляков Rublow, у flashscore Rublev
+    alt = re.sub(r"(?i)ov\b", "ev", base)
+    if alt != base:
+        out.append(alt)
+    return out
+
+
 _EXONYMS = {
     # сокращения, которыми пишет сам эталон flashscore: «Ind. del Valle»,
     # «H. Beer Sheva», «Atl. Tucuman». Сетки каналов дают то же имя целиком
@@ -495,6 +522,9 @@ _EXONYMS = {
     "BARNLI": "BURNLEY",
     "MPAGERN": "BAYERN", "BAGERN": "BAYERN", "BAIERN": "BAYERN",
     "OSNAMBRIK": "OSNABRUCK",
+    # «Northern Macedonia» (иврит «צפון» = Northern) против «North Macedonia»
+    # эталона: 77 по буквам; обе стороны сводим к NORTH (01.10)
+    "NORTHERN": "NORTH",
 }
 
 

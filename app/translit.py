@@ -203,6 +203,21 @@ def _extra_he_words() -> dict[str, str]:
 _HE_WORDS.update(_extra_he_words())
 
 
+def _he_fold(word: str) -> str:
+    """Сжатое написание ивритского слова: двойные ו и י — в одну. У иврита
+    нет единой орфографии гласных: Швейцария пишется и «שווייץ», и «שוייץ»,
+    и «שוויץ» — словарь знал одно, maariv писал другое, и сборная не
+    переводилась (#4320, 01.10). Сравниваем по сжатой форме."""
+    return re.sub(r"ו+", "ו", re.sub(r"י+", "י", word))
+
+
+#: сжатая форма → написание эталона; при столкновении двух слов в одной
+#: форме побеждает первое (точное совпадение всё равно ищется раньше)
+_HE_FOLDED: dict[str, str] = {}
+for _w, _en in _HE_WORDS.items():
+    _HE_FOLDED.setdefault(_he_fold(_w), _en)
+
+
 #: буквы иврита, которые читаются двояко: огласовок в письме нет, и одна
 #: буква даёт разные звуки в разных именах. «פ» — это и P (Платенсе), и F
 #: (Флуминенсе, Санта-Фе); «ב» — B и V; «ו» внутри слова — O и U. Из-за
@@ -225,6 +240,8 @@ def hebrew_readings(token: str) -> list[str]:
     """
     bare = token.replace("״", '"').strip(",.()")
     known = _HE_WORDS.get(bare)
+    if known is None:
+        known = _HE_FOLDED.get(_he_fold(bare))
     if known is not None:
         return [known]
     spots = [i for i, ch in enumerate(token) if ch in _HE_ALTS][:_HE_ALT_LIMIT]
