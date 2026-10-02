@@ -233,7 +233,12 @@ def main() -> int:
                 if other == (game["sport"] or ""):
                     continue
                 res = canon.align([dict(game, sport=other)], reference, overrides)
-                hit = [(g, ref, s) for g, ref, s in res["sure"] if s >= 95]
+                # мост «лига + время» отдаёт условный балл SURE (85), а не
+                # счёт пары — считаем пару сами: #4336 «Aris — Burgos» и #4328
+                # «קולומביה — פרו» шли мостом и не проходили порог (02.10)
+                hit = [(g, ref, s) for g, ref, s in res["sure"]
+                       if s >= 95 or canon._pair_score(
+                           dict(game, sport=other), ref) >= 95]
                 if not hit:
                     continue
                 g, ref, s = hit[0]
