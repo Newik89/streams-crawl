@@ -7,14 +7,20 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     venv/bin/python scripts/request_crawl.py days 2            вечер: дозаправка
     venv/bin/python scripts/request_crawl.py date 2026-09-15   скан одной даты
     venv/bin/python scripts/request_crawl.py days 2 --check    только сказать, пошла бы заявка
-    venv/bin/python scripts/request_crawl.py days 6 --force    без правила «2 часа» (ручной заказ)
+    venv/bin/python scripts/request_crawl.py days 6 --force    без правила «1 час» (ручной заказ)
+    … --unlock                                                 снять замок «сбор идёт» (сторож: прогон мёртв по API)
 
 Сбор уже заказан или идёт (`app/crawl_hook.running`) — заявку не шлёт.
-Правило «2 часа» (владелец 29.09): автомат не шлётся, если за последние
-`RECENT_HOURS` часа уже был заказан или собран полный обход НЕ МЕНЬШЕЙ
-глубины (ручной на 6 дней отменяет автомат на 2; ручной на 2 утренний на 6
-не отменяет — тот захватывает больше дней). Точечный «Обойти сайт», скан
-даты и серверный сбор mojtv не в счёт.
+Правило «1 час» (владелец 29.09, срок 2 ч → 1 ч 02.10): автомат не шлётся,
+если за последний `RECENT_HOURS` час уже был заказан или собран полный обход
+НЕ МЕНЬШЕЙ глубины (ручной на 6 дней отменяет автомат на 2; ручной на 2
+утренний на 6 не отменяет — тот захватывает больше дней). Точечный «Обойти
+сайт», скан даты и серверный сбор mojtv не в счёт. Отмена видна в «Прогонах»
+строкой «автомат: плановый обход … отменён: …».
+После заявки скрипт ждёт до 3 мин, пока GitHub не заведёт прогон (открытый
+API, `app/watch`); не завёл — повторяет заявку один раз (владелец 02.10:
+«заказать снова и убедиться, что пошёл»). Дальше за обходом следит
+`scripts/crawl_watch.py`.
 """
 
 from __future__ import annotations
@@ -27,11 +33,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import crawl_hook, db, trigger  # noqa: E402
+from app import crawl_hook, db, trigger, watch  # noqa: E402
 
 
-#: сколько часов свежий полный обход отменяет автомат (владелец 29.09)
-RECENT_HOURS = 2
+#: сколько часов свежий полный обход отменяет автомат (владелец 29.09: 2;
+#: 02.10: 1 — «если был внеплановый в течение часа или идёт сейчас»)
+RECENT_HOURS = 1
 
 
 def recent_full(conn, days: int, now: datetime) -> str:
@@ -63,7 +70,8 @@ def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     flags = {a for a in sys.argv[1:] if a.startswith("--")}
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    if len(args) != 2 or args[0] not in ("days", "date")             or not flags <= {"--check", "--force"}:
+    if len(args) != 2 or args[0] not in ("days", "date") \
+            or not flags <= {"--check", "--force", "--unlock"}:
         print(__doc__)
         return 2
     kind, value = args
@@ -73,6 +81,8 @@ def main() -> int:
     now = datetime.now(crawl_hook.KYIV)
     conn = db.connect()
     try:
+        if "--unlock" in flags:
+            crawl_hook.clear(conn)
         busy = crawl_hook.running(conn)
         if busy:
             print(f"{now:%d.%m %H:%M} заявка {kind} {value} не отправлена: сбор "
@@ -82,19 +92,44 @@ def main() -> int:
             fresh = recent_full(conn, int(value), now)
             if fresh:
                 print(f"{now:%d.%m %H:%M} автомат days {value} пропущен: "
-                      f"{fresh} (правило «{RECENT_HOURS} часа»)")
+                      f"{fresh} (правило «{RECENT_HOURS} час»)")
+                watch.note(conn, f"плановый обход {value} сут. отменён: "
+                                 f"{fresh} (правило «{RECENT_HOURS} час»)",
+                           who="автомат")
                 return 0
         if "--check" in flags:
             print(f"{now:%d.%m %H:%M} заявка {kind} {value} ПОШЛА БЫ (--check)")
             return 0
         ok, words = trigger.push_request_tag(kind, value)
         print(f"{now:%d.%m %H:%M} заявка {kind} {value}: {words}")
-        if ok:
-            crawl_hook.mark(conn, "заявка", f"{kind}-{value}")
-            if kind == "days":
-                db.set_setting(conn, "crawl_request",
-                               f"обход {value} сут.|{now:%Y-%m-%d %H:%M}")
-        return 0 if ok else 1
+        if not ok:
+            return 1
+        crawl_hook.mark(conn, "заявка", f"{kind}-{value}")
+        order = {"days": int(value) if kind == "days" else 0, "at": now,
+                 "stamp": f"{now:%Y-%m-%d %H:%M}"}
+        if kind == "days":
+            db.set_setting(conn, "crawl_request",
+                           f"обход {value} сут.|{order['stamp']}")
+        # убедиться, что GitHub завёл прогон; не завёл за 3 мин — повторить
+        # заявку один раз (владелец 02.10: «заказать снова и убедиться»)
+        slug = trigger._repo_slug()
+        run = watch.wait_for_start(order, slug)
+        if run is None:
+            ok2, words2 = trigger.push_request_tag(kind, value)
+            print(f"{now:%d.%m %H:%M} повтор заявки {kind} {value}: {words2}")
+            watch.note(conn, f"заявка {kind} {value} от {order['stamp']}: GitHub не "
+                             f"стартовал за {watch.START_MINUTES} мин — повтор: {words2}",
+                       who="автомат")
+            run = watch.wait_for_start(order, slug, seconds=120) if ok2 else None
+        if run is not None:
+            words3 = (f"заявка {kind} {value} от {order['stamp']}: пошёл прогон "
+                      f"#{run.get('run_number')}")
+        else:
+            words3 = (f"ТРЕВОГА — заявка {kind} {value} от {order['stamp']}: прогон "
+                      f"не стартовал и после повтора, дальше следит сторож")
+        print(f"{now:%d.%m %H:%M} {words3}")
+        watch.note(conn, words3, who="автомат")
+        return 0
     finally:
         conn.close()
 
