@@ -67,8 +67,10 @@ def load(path: Path | None = None, override: dict | None = None) -> Sports:
     data = json.loads((path or MARKERS_FILE).read_text(encoding="utf-8"))
     node = (override or {}).get("sport") or data.get("sport") or {}
     skip = node.get("кроме") or {}
+    # «другие» — те же чужие виды, но разложенные по видам спорта (03.10,
+    # владелец: позже понадобятся для API flashscore) — пока все отсеиваются
     return Sports(
-        alien=_pattern(_flatten(node.get("чужие"))),
+        alien=_pattern(_flatten(node.get("чужие")) + _flatten(node.get("другие"))),
         kinds={letter: _pattern(_flatten(node.get(letter)))
                for letter in ("F", "B", "T")},
         exclude={letter: _pattern(_flatten(skip.get(letter)))
