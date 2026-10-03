@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Посещения — Streams Schedule{% endblock %}
+{% block body %}
+<h1>Посещения</h1>
+<p class="muted">Кто заходил на сайт за последние 7 дней: адрес (IP), когда и что сделал.
+  «Вы» — заходы из браузера, где выполнен вход в админку. Клик по адресу оставляет только его,
+  ссылка «где это» открывает сведения об адресе (страна, провайдер) на стороннем сайте.</p>
+
+<div class="stats">
+  <div class="stat"><b>{{ today.visits }}</b>заходов сегодня</div>
+  <div class="stat"><b>{{ today.ips }}</b>разных адресов сегодня</div>
+  <div class="stat"><b>{{ today.buttons }}</b>нажатий кнопок сегодня</div>
+  <div class="stat"><b>{{ today.junk }}</b>запросов сканеров сегодня</div>
+</div>
+
+<p style="margin-top:16px">
+  {% for key, label in filters %}
+    <a href="{{ url_for('visits_list', only=key, ip=ip or None) }}"{% if only == key %} style="font-weight:700"{% endif %}>{{ label }}</a>{% if not loop.last %} · {% endif %}
+  {% endfor %}
+  {% if ip %} · адрес <b>{{ ip }}</b> — <a href="{{ url_for('visits_list', only=only) }}">показать все адреса</a>{% endif %}
+</p>
+
+{% if by_ip and not ip %}
+<h2>По адресам</h2>
+<table>
+  <tr><th>Адрес (IP)</th><th>Кто</th><th>Заходов</th><th>Нажатий кнопок</th>
+      <th>Первый раз</th><th>Последний раз</th><th>С чего заходил</th></tr>
+  {% for a in by_ip %}
+  <tr>
+    <td><a href="{{ url_for('visits_list', only=only, ip=a.ip) }}">{{ a.ip }}</a>
+        <a class="muted" style="font-size:12px" href="https://ipinfo.io/{{ a.ip }}" target="_blank" rel="noopener noreferrer">где это</a></td>
+    <td>{% if a.admin %}<b>вы</b>{% else %}гость{% endif %}</td>
+    <td>{{ a.n }}</td>
+    <td {% if a.buttons %}style="font-weight:700"{% endif %}>{{ a.buttons }}</td>
+    <td class="muted">{{ a.first_at }}</td>
+    <td>{{ a.last_at }}</td>
+    <td class="muted">{{ a.device }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<h2>Лента{% if rows|length >= limit %} — последние {{ limit }}{% endif %}</h2>
+{% if rows %}
+<table>
+  <tr><th>Когда</th><th>Адрес (IP)</th><th>Кто</th><th>Что сделал</th><th>С чего</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td style="white-space:nowrap">{{ r.at }}</td>
+    <td><a href="{{ url_for('visits_list', only=only, ip=r.ip) }}">{{ r.ip }}</a></td>
+    <td>{% if r.who == 'admin' %}<b>вы</b>{% else %}гость{% endif %}</td>
+    <td {% if r.kind == 'button' %}style="font-weight:700"{% elif r.kind == 'junk' %}class="muted"{% endif %}>{{ r.what }}
+      {%- if r.status[0] in '45' and r.kind != 'junk' %} <span class="muted">(ответ {{ r.status }})</span>{% endif %}</td>
+    <td class="muted">{{ r.device }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">Записей нет. Журнал ведётся с момента включения — прошлые заходы в него не попали.</p>
+{% endif %}
+{% endblock %}

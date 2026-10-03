@@ -27,7 +27,8 @@ from zoneinfo import ZoneInfo
 from flask import (Flask, abort, flash, jsonify, redirect, render_template, request,
                    session, url_for)
 
-from . import crawl_hook, db, dictionary, health, names, sources, store, trigger
+from . import (crawl_hook, db, dictionary, health, names, sources, store,
+               trigger, visits)
 
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
 _ENV_PASSWORD = os.environ.get("STREAMS_ADMIN_PASSWORD")
@@ -148,6 +149,20 @@ def create_app() -> Flask:
             "default-src 'self'; script-src 'self' 'unsafe-inline'; "
             "style-src 'self' 'unsafe-inline'; img-src 'self' data:; "
             "frame-ancestors 'none'")
+        return resp
+
+    @app.after_request
+    def log_visit(resp):
+        # журнал посещений (владелец 03.10): кто (IP), когда, что открыл или
+        # нажал. В файл, не в базу — см. app/visits.py. Статику не пишем; и
+        # то, как сам владелец смотрит «Посещения», — иначе он засоряет ленту
+        # собой (а вот гостя, сунувшегося на эту страницу, записываем).
+        own_look = request.endpoint == "visits_list" and session.get("admin")
+        if request.endpoint != "static" and not own_look:
+            visits.write(request.remote_addr or "", request.method,
+                         request.path, resp.status_code,
+                         bool(session.get("admin")), request.endpoint,
+                         request.headers.get("User-Agent", ""))
         return resp
 
     # ── защита ───────────────────────────────────────────────────────────────
@@ -1206,6 +1221,69 @@ def create_app() -> Flask:
             conn.close()
         return jsonify({"events": events, "channels": channels,
                         "leagues": leagues_n, "last_import": imported})
+
+    # ── посещения ────────────────────────────────────────────────────────────
+
+    @app.route("/visits")
+    def visits_list():
+        """Посещения (владелец 03.10): кто (IP), когда и что сделал на сайте.
+        Только вошедшему: маршрут не в PUBLIC."""
+        filters = [("people", "Все заходы"), ("guests", "Только гости"),
+                   ("buttons", "Нажатия кнопок"), ("logins", "Входы в админку"),
+                   ("junk", "Сканеры и мусор")]
+        only = request.args.get("only", "people")
+        if only not in {k for k, _ in filters}:
+            only = "people"
+        ip = (request.args.get("ip") or "").strip()
+        visits.purge()
+        rows = visits.read(days=7)
+        today_mark = datetime.now(KYIV).strftime("%Y-%m-%d")
+        for r in rows:
+            r["kind"] = visits.kind(r)
+        # стук GitHub — служебный, к посетителям не относится
+        rows = [r for r in rows if r["kind"] != "hook"]
+        сегодня = [r for r in rows if r["when"].startswith(today_mark)]
+        люди_сегодня = [r for r in сегодня if r["kind"] != "junk"]
+        today = {"visits": len(люди_сегодня),
+                 "ips": len({r["ip"] for r in люди_сегодня}),
+                 "buttons": sum(1 for r in сегодня if r["kind"] == "button"),
+                 "junk": sum(1 for r in сегодня if r["kind"] == "junk")}
+
+        def fits(r: dict) -> bool:
+            if ip and r["ip"] != ip:
+                return False
+            if only == "junk":
+                return r["kind"] == "junk"
+            if r["kind"] == "junk":
+                return False
+            return {"guests": r["who"] == "guest",
+                    "buttons": r["kind"] == "button",
+                    "logins": r["kind"] == "login"}.get(only, True)
+
+        shown = [r for r in rows if fits(r)]
+        by_ip: dict[str, dict] = {}
+        for r in shown:                       # свежие сверху
+            a = by_ip.setdefault(r["ip"], {
+                "ip": r["ip"], "n": 0, "buttons": 0, "admin": False,
+                "last": r["when"], "first": r["when"],
+                "device": visits.device(r["agent"])})
+            a["n"] += 1
+            a["buttons"] += r["kind"] == "button"
+            a["admin"] = a["admin"] or r["who"] == "admin"
+            a["first"] = r["when"]
+        limit = 300
+        feed = shown[:limit]
+        for r in feed:
+            r["what"] = visits.what(r)
+            r["device"] = visits.device(r["agent"])
+            r["at"] = visits.show_time(r["when"], seconds=True)
+        for a in by_ip.values():
+            a["first_at"] = visits.show_time(a["first"])
+            a["last_at"] = visits.show_time(a["last"])
+        return render_template(
+            "visits.html", rows=feed, limit=limit, filters=filters, only=only,
+            ip=ip, today=today,
+            by_ip=sorted(by_ip.values(), key=lambda a: a["last"], reverse=True))
 
     # ── прогоны ──────────────────────────────────────────────────────────────
 
