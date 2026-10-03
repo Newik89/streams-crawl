@@ -12,8 +12,8 @@
   - `schedule()` — готовые строки для публичной страницы.
 
 Свежая строка от сайта считается точнее лежащей в базе: время и лига
-обновляются, если пришли лучше. Канал, пропавший из источника, после трёх
-неподтверждений (`event_channels.miss_count`) не исчезает молча: на витрине
+обновляются, если пришли лучше. Канал, пропавший из источника, после первого
+же неподтверждения (`MISS_LIMIT`, `event_channels.miss_count`) не исчезает молча: на витрине
 он остаётся перечёркнутым «снят» (владелец 22.09, случай #3354), а в API не
 отдаётся. Вернулся в расписание — заливка сбросит счётчик, канал оживёт сам.
 """
@@ -33,7 +33,11 @@ from . import merge, names
 # правится в админке («Настройки»), здесь только значения по умолчанию.
 GRACE_MINUTES = {"F": 130, "B": 190, "T": 240}
 DEFAULT_GRACE = 240          # незнакомый спорт живёт по самому долгому правилу
-MISS_LIMIT = 3               # канал гаснет после стольких неподтверждений
+#: Канал гаснет (на витрине — перечёркнут «снят») после стольких обходов
+#: подряд, в которых ЕГО сайт скачивался на день игры и канал не показал.
+#: Было 3; владелец 03.10: «да» на один — неверный канал уходит сразу
+#: (#2579: maxsport.live перенёс матч с MAX Sport 4 на MAX Sport 1).
+MISS_LIMIT = 1
 #: подсветка нового (правка владельца 12.09: «вчерашние игры уже не новые,
 #: новые — только каналы, которые к ним добавились»): игра зелёная лишь
 #: полсуток после первого появления, канальный бейдж живёт двое суток
@@ -229,7 +233,8 @@ def _league_ids(conn: sqlite3.Connection) -> dict[str, int]:
 def save_games(conn: sqlite3.Connection, games: list[dict],
                now: datetime | None = None, punish: bool = True,
                worked: set[str] | None = None,
-               punish_until: str = "") -> SaveStats:
+               punish_until: str = "",
+               covered: dict[str, set[str]] | None = None) -> SaveStats:
     """Вливает игры из `games.json`. Формат: список словарей с полями
     sport / league / home / away / start_kyiv / start_utc / entries,
     где entries — строки по сайтам: source / channel / url / raw_title.
@@ -245,7 +250,14 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     вечерняя дозаправка ходит на 2 дня, и раньше каналы субботней игры,
     которых в этом файле нет, получали счётчик погашения и через три захода
     пропадали с витрины. Лежащий сайт наказывать тоже не за что — он в
-    `worked` не попадёт. `worked=None` — прежнее поведение."""
+    `worked` не попадёт. `worked=None` — прежнее поведение.
+
+    `covered` — какие дни прогон получил от каждого домена с расписанием
+    (`crawl_facts`; пустая строка в наборе — сетка, вся неделя разом; пустой
+    набор — сайт отдал только пустые страницы). Отметку канала гасит только
+    прогон, в котором ЕЁ сайт отдал расписание на день этой игры: общий
+    порог `punish_until` задают справочники flashscore (7 дней), и
+    двухдневная дозаправка штрафовала отметки сайтов на дальние дни (03.10)."""
     now = now or datetime.now()
     stats = SaveStats()
     graces = grace_map(conn)
@@ -264,6 +276,15 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
         for domain, row in srcs.items():
             if _bare(domain) in {_bare(d) for d in worked}:
                 worked_ids.add(row["id"])
+    # какие дни этот прогон получил от каждого источника — вне своих дней
+    # отметки источника не гасятся (источника нет в отчёте — без ограничения)
+    covered_by_id: dict[int, set[str]] = {}
+    if covered:
+        по_домену = {_bare(d): days for d, days in covered.items()}
+        for domain, row in srcs.items():
+            if _bare(domain) in по_домену:
+                covered_by_id[row["id"]] = по_домену[_bare(domain)]
+    event_day: dict[int, str] = {}
     team_ids, league_ids = _team_ids(conn), _league_ids(conn)
 
     for game in games:
@@ -359,6 +380,7 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
         # (только когда файл свежий, см. punish в шапке); сам штраф — после
         # всех игр файла, когда набор подтверждённых у события полон
         deep = bool(punish_until) and start_kyiv[:10] > punish_until
+        event_day[event_id] = start_kyiv[:10]
         event_seen.setdefault(event_id, set()).update(seen_channel_ids)
         if seen_channel_ids and not deep:
             event_punish[event_id] = True
@@ -372,9 +394,17 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                    f"WHERE event_id = ? AND channel_id NOT IN ({marks})")
             params: list = [event_id, *seen]
             if worked is not None:
-                # прогон не видел этот сайт — и гасить его отметки не вправе
-                sql += " AND source_id IN (" + ",".join("?" * len(worked_ids)) + ")"
-                params += list(worked_ids)
+                # прогон не видел этот сайт — и гасить его отметки не вправе;
+                # видел, но на день этой игры не скачивал — тоже
+                день = event_day.get(event_id, "")
+                вправе = [sid for sid in worked_ids
+                          if sid not in covered_by_id
+                          or "" in covered_by_id[sid]
+                          or день in covered_by_id[sid]]
+                if not вправе:
+                    continue
+                sql += " AND source_id IN (" + ",".join("?" * len(вправе)) + ")"
+                params += вправе
             conn.execute(sql, params)
     conn.commit()
     return stats
