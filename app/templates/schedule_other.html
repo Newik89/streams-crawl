@@ -218,11 +218,18 @@
     pickSport(a.dataset.pick);
     window.scrollTo(0, 0);
   });
-  var m = location.hash.indexOf("#sport=") === 0 ? location.hash.slice(7) : "";
-  if (m) {
-    try { el("f-sport").value = decodeURIComponent(m); } catch (e) { /* адрес битый */ }
+  // вид спорта из адреса: при открытии страницы и при смене #sport=… на лету
+  function readHash() {
+    var m = location.hash.indexOf("#sport=") === 0 ? location.hash.slice(7) : "";
+    var want = "";
+    try { want = decodeURIComponent(m); } catch (e) { /* адрес битый */ }
+    var sel = el("f-sport");
+    sel.value = want;
+    if (sel.value !== want) { sel.value = ""; }
+    shown = CHUNK; apply();
   }
-  apply();
+  window.addEventListener("hashchange", readHash);
+  readHash();
 })();
 </script>
 </body>
