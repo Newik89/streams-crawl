@@ -43,6 +43,41 @@
    "suora",
    "directo",
    "direkte"
+  ],
+  "синонимы по языкам наших сайтов (владелец 03.10.2026: «prenos и direktno — одно и то же, собрать на всех языках»)": [
+   "prenos",
+   "prijenos",
+   "пренос",
+   "izravno",
+   "uzivo",
+   "уживо",
+   "naživo",
+   "v priamom prenose",
+   "v přímém přenosu",
+   "na żywo",
+   "bezpośrednia transmisja",
+   "élőben",
+   "egyenes adás",
+   "transmisiune directă",
+   "transmisie directă",
+   "ζωντανή",
+   "απευθείας",
+   "canli",
+   "naklen",
+   "прямом эфире",
+   "пряма трансляція",
+   "прямому ефірі",
+   "тікелей",
+   "שידור חי",
+   "drejtpërdrejtë",
+   "otseülekanne",
+   "otse",
+   "tiesioginė",
+   "direktsändning",
+   "direktsänds",
+   "rechtstreeks",
+   "live-übertragung",
+   "direktübertragung"
   ]
  },
  "sport": {
@@ -115,9 +150,13 @@
    "fotbalového",
    "fotbalovém",
    "fotbalovou",
-   "fotbalu"
+   "fotbalu",
+   "jalgpall",
+   "jalgpalli"
   ],
   "B": [
+   "korvpall",
+   "korvpalli",
    "баскетбол",
    "basketbal",
    "basketbalová",
@@ -197,7 +236,14 @@
     "ליגה גרמנית בכדורסל"
    ],
    "чужие": [
-    "chl:"
+    "chl:",
+    "rahvuste liiga",
+    "meistrite liiga",
+    "euroopa liiga",
+    "konverentsiliiga",
+    "premium liiga",
+    "meistriliiga",
+    "esiliiga"
    ]
   },
   "другие": {
@@ -1197,6 +1243,41 @@
    "összefoglaló",
    "wiederholung",
    "rediffusion"
+  ],
+  "записи и повторы по языкам наших сайтов (03.10.2026 — пара к синонимам прямого эфира: «prenos» живой, а «odloženi prenos» и «snimak» — нет)": [
+   "snimak",
+   "snimka",
+   "снимак",
+   "odloženi prenos",
+   "odlozeni prenos",
+   "odgođeni prijenos",
+   "одложени пренос",
+   "posnetek",
+   "ponovitev",
+   "ismétlés",
+   "felvételről",
+   "retransmisja",
+   "înregistrare",
+   "inregistrare",
+   "μαγνητοσκοπημένο",
+   "banttan",
+   "в записи",
+   "запись",
+   "у записі",
+   "שידור חוזר",
+   "kordus",
+   "salvestus",
+   "kartojimas",
+   "uusinta",
+   "repris",
+   "genudsendelse",
+   "herhaling",
+   "repetição",
+   "em diferido",
+   "diferido",
+   "in differita",
+   "differita",
+   "aufzeichnung"
   ]
  },
  "stop_title": {

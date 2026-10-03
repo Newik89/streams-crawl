@@ -46,6 +46,21 @@ def _field(block: str, name: str) -> str:
     return m.group(1).replace("\\'", "'").replace("\\\\", "\\").strip()
 
 
+def _unglue(text: str) -> str:
+    """Сайт склеивает подзаголовок с описанием без пробела: «…2026/2027Přímý
+    přenos utkání», «…HK Dukla MichalovcePriamy prenos». Слово маркера тогда
+    не стоит отдельно, и отсев прямой эфир не видел (аудит слов эфира 03.10:
+    Španělsko - Česko на ČT sport терялся). Ставим пробел там, где после
+    строчной буквы или цифры сразу идёт Заглавная со строчной."""
+    out = []
+    for i, ch in enumerate(text):
+        if (i and ch.isupper() and i + 1 < len(text) and text[i + 1].islower()
+                and (text[i - 1].islower() or text[i - 1].isdigit())):
+            out.append(" ")
+        out.append(ch)
+    return "".join(out)
+
+
 def _pair(text: str) -> str:
     """Пара команд из куска заголовка (`Itálie - Bulharsko`)."""
     for sep in (" - ", " – ", " vs ", " x "):
@@ -83,7 +98,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         if channels and channel not in channels:
             continue
         start = datetime.fromtimestamp(int(stamp), timezone.utc).astimezone(zone)
-        desc = _field(block, "desc")
+        desc = _unglue(_field(block, "desc"))
         sport, pair = _split(title)
         out.append(Program(
             channel_raw=channel, title=title, start=start,
