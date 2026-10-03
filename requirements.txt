@@ -2,7 +2,7 @@ flask
 tzdata
 requests
 brotli
-selectolax
+selectolax<1
 rapidfuzz
 openpyxl
 gunicorn

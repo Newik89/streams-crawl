@@ -95,7 +95,11 @@ jobs:
 
       - name: Поставить, что нужно
         run: |
-          pip install requests brotli selectolax tzdata playwright rapidfuzz
+          # selectolax закреплён ниже 1.0: версия 1.0.0 (вышла 03.10.2026) убрала
+          # прежний разборщик `selectolax.parser.HTMLParser`, на котором стоят все
+          # 50 парсеров — разбор падал на импорте, вечерний обход #172 покраснел.
+          # Переезд на новый разборщик (lexbor) — отдельная работа с регрессом.
+          pip install requests brotli "selectolax<1" tzdata playwright rapidfuzz
           playwright install --with-deps chromium
 
       - name: Не ходили ли уже сегодня
