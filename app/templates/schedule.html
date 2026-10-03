@@ -136,6 +136,14 @@
   .crawlnote { flex-basis:100%; margin:2px 0 0; font-size:12.5px;
                font-weight:600; color:#1e7c34; }
   .crawlnote.error { color:var(--live); }
+  /* 03.10: вкладки витрины — матчи и «Other Sport» (отдельная страница) */
+  .tabs { display:flex; gap:4px; margin-right:8px; }
+  .tab { padding:6px 12px; border:1px solid var(--line); border-radius:8px;
+         text-decoration:none; color:var(--text); font-weight:600;
+         white-space:nowrap; background:var(--card); }
+  .tab:hover { border-color:var(--muted); }
+  .tab.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .tab .n { font-weight:400; font-size:12px; opacity:.85; margin-left:2px; }
   [hidden] { display:none !important; }
   @media (max-width:640px) { td.league { display:none; } th.league { display:none; } }
 </style>
@@ -143,6 +151,10 @@
 <body>
 <header>
   <h1>⚽ Live Sport on TV</h1>
+  <nav class="tabs">
+    <a class="tab on" href="{{ url_for('schedule') }}">Matches</a>
+    <a class="tab" href="{{ url_for('schedule_other') }}">Other Sport{% if other_total %} <span class="n">{{ other_total }}</span>{% endif %}</a>
+  </nav>
   {% if admin %}<a class="admin-mark" href="{{ url_for('dashboard') }}"
      title="Вы вошли как админ; клик ведёт в админку">admin</a>
   <button class="pill" id="p-reload" type="button"

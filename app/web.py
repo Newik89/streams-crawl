@@ -46,6 +46,47 @@ API_OPEN = os.environ.get("STREAMS_API", "").strip().lower() in {
     "1", "on", "open", "yes", "true"}
 
 KYIV = ZoneInfo("Europe/Kyiv")
+
+#: Публичная вкладка «Other Sport»: английское имя и значок группы словаря
+#: (`markers.json` → sport → «другие»). Группе, которой тут ещё нет, страница
+#: покажет её собственное имя и общий значок — новая группа не теряется.
+OTHER_SPORT_EN: dict[str, tuple[str, str]] = {
+    "хоккей": ("Ice hockey", "🏒"),
+    "волейбол": ("Volleyball", "🏐"),
+    "гандбол": ("Handball", "🤾"),
+    "плавание": ("Swimming", "🏊"),
+    "велоспорт": ("Cycling", "🚴"),
+    "лёгкая атлетика": ("Athletics", "🏃"),
+    "единоборства": ("Combat sports", "🥊"),
+    "бадминтон и ракетки": ("Badminton & racket sports", "🏸"),
+    "ракетки": ("Racket sports", "🏓"),
+    "гимнастика": ("Gymnastics", "🤸"),
+    "конный спорт": ("Equestrian", "🏇"),
+    "гребля": ("Rowing & canoe", "🚣"),
+    "парус": ("Sailing", "⛵"),
+    "зимние": ("Winter sports", "⛷"),
+    "автоспорт": ("Motorsport", "🏎"),
+    "киберспорт": ("Esports", "🎮"),
+    "шахматы и настольные": ("Chess & table games", "♟"),
+    "крикет и бейсбол": ("Cricket & baseball", "🏏"),
+    "американский футбол": ("American football", "🏈"),
+    "флорбол и прочее с клюшкой": ("Floorball & stick sports", "🏑"),
+    "стрельба и тяжёлая атлетика": ("Shooting & weightlifting", "🏋"),
+    "триатлон и прочее": ("Triathlon & multisport", "🏅"),
+    "футзал и пляжный": ("Futsal & beach soccer", "🥅"),
+    "гольф": ("Golf", "⛳"),
+    "сёрфинг и вода": ("Surfing & water sports", "🏄"),
+    "регби": ("Rugby", "🏉"),
+    "дартс и снукер": ("Darts & snooker", "🎯"),
+    "передачи и повторы": ("Shows & replays", "📺"),
+    "другие категории сайтов": ("Other categories", "🏅"),
+    "другое": ("Other", "🏅"),
+}
+
+
+def other_sport_label(group: str) -> tuple[str, str]:
+    """(имя для гостя, значок) группы другого вида спорта."""
+    return OTHER_SPORT_EN.get(group, (group, "🏅"))
 PUBLIC_RUN_COOLDOWN = 3600   # публичная кнопка «2 days»: не чаще раза в час
 SITE_DAYS = 6                # окно кнопки «Обойти сайт»: как у утреннего,
                              # чтобы сайт пересобрался целиком, а не на 2 дня
@@ -277,7 +318,8 @@ def create_app() -> Flask:
 
     # публичное: страница расписания (ТЗ разд. 12), её кнопки сбора и
     # API по ключу (разд. 13). Всё остальное — только после входа.
-    PUBLIC = {"login", "static", "schedule", "schedule_run", "crawl_hook_in",
+    PUBLIC = {"login", "static", "schedule", "schedule_other", "schedule_run",
+              "crawl_hook_in",
               "api_events", "api_leagues", "api_channels", "api_status"}
 
     @app.before_request
@@ -629,6 +671,8 @@ def create_app() -> Flask:
             games = store.schedule(conn)
             # когда сбор был в последний раз — внизу витрины (владелец 09.09)
             info = health.summary(conn)
+            # счётчик на вкладке «Other Sport» в шапке витрины (владелец 03.10)
+            other_total = len(store.other_sport_schedule(conn))
         finally:
             conn.close()
         # значения для выпадашек фильтров — из самих игр, пустых не предлагаем
@@ -641,6 +685,39 @@ def create_app() -> Flask:
         return render_template("schedule.html", by_date=by_date,
                                leagues=leagues_, channels=channels_,
                                sports=sports_, total=len(games),
+                               other_total=other_total,
+                               admin=bool(session.get("admin")), h=info)
+
+    @app.route("/schedule/other")
+    def schedule_other():
+        """Публичная вкладка «Other Sport» витрины (владелец 03.10): всё, что
+        сайты дают в прямом эфире, но это не футбол, баскетбол или теннис.
+        Открывается сразу всё; конкретный вид спорта выбирается фильтром
+        страницы. С матчами не смешивается: у этих строк нет ни склейки, ни
+        канона — только программа, время и канал."""
+        conn = db.connect()
+        try:
+            items = store.other_sport_schedule(conn)
+            info = health.summary(conn)
+        finally:
+            conn.close()
+        by_date: dict = {}
+        counts: dict[str, int] = {}
+        for g in items:
+            g["sport_name"], g["icon"] = other_sport_label(g["sport"])
+            by_date.setdefault(g["date"], []).append(g)
+            counts[g["sport"]] = counts.get(g["sport"], 0) + 1
+        # в списке видов — от самого частого, как и в админке
+        sports_ = [{"key": k, "n": n, "name": other_sport_label(k)[0],
+                    "icon": other_sport_label(k)[1]}
+                   for k, n in sorted(counts.items(),
+                                      key=lambda kv: (-kv[1], kv[0]))]
+        channels_ = sorted({c for g in items for c in g["channels"]},
+                           key=str.lower)
+        return render_template("schedule_other.html", by_date=by_date,
+                               sports=sports_, channels=channels_,
+                               total=len(items),
+                               today=datetime.now(KYIV).strftime("%Y-%m-%d"),
                                admin=bool(session.get("admin")), h=info)
 
     @app.route("/rename", methods=["POST"])

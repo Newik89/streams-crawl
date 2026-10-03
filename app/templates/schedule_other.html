@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Other Sport on TV</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<style>
+  /* вид — как у витрины (schedule.html): те же цвета, шапка, таблицы */
+  :root { --bg:#f6f7f9; --card:#fff; --line:#e3e6ea; --text:#1c1f23;
+          --muted:#6b7280; --accent:#1f6feb; --live:#b3261e; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font:15px/1.45 system-ui, "Segoe UI", sans-serif; }
+  header { background:var(--card); border-bottom:1px solid var(--line);
+           padding:10px 16px; display:flex; flex-wrap:wrap; gap:10px;
+           align-items:center; position:sticky; top:0; z-index:5; }
+  header h1 { font-size:17px; margin:0 12px 0 0; white-space:nowrap; }
+  .tabs { display:flex; gap:4px; margin-right:8px; }
+  .tab { padding:6px 12px; border:1px solid var(--line); border-radius:8px;
+         text-decoration:none; color:var(--text); font-weight:600;
+         white-space:nowrap; background:var(--card); }
+  .tab:hover { border-color:var(--muted); }
+  .tab.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .tab .n { font-weight:400; font-size:12px; opacity:.85; margin-left:2px; }
+  .controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  select, input[type=search] {
+      padding:6px 8px; border:1px solid var(--line); border-radius:8px;
+      background:var(--card); color:var(--text); font:inherit; max-width:220px; }
+  .pill { padding:6px 12px; border:1px solid var(--line); border-radius:999px;
+          background:var(--card); cursor:pointer; font:inherit; }
+  .pill.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+  main { max-width:1080px; margin:0 auto; padding:12px 16px 40px; }
+  h2.day { font-size:15px; color:var(--muted); margin:22px 0 8px;
+           text-transform:uppercase; letter-spacing:.04em; }
+  table { width:100%; border-collapse:collapse; background:var(--card);
+          border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  th, td { padding:8px 10px; border-top:1px solid var(--line);
+           text-align:left; vertical-align:top; }
+  th { font-size:12px; color:var(--muted); text-transform:uppercase;
+       letter-spacing:.04em; border-top:none; }
+  td.time { white-space:nowrap; font-variant-numeric:tabular-nums; width:72px; }
+  .gdate { display:block; color:var(--muted); font-size:11px; }
+  td.osport { white-space:nowrap; color:var(--muted); width:1%; }
+  td.osport a { color:inherit; text-decoration:none; cursor:pointer; }
+  td.osport a:hover { color:var(--accent); }
+  td.match b { font-weight:600; }
+  .lg, .adm { color:var(--muted); font-size:12.5px; }
+  .adm { font-size:11px; }
+  .live { color:var(--live); font-size:11px; font-weight:700;
+          text-transform:uppercase; margin-left:6px; }
+  .chan { display:inline-block; margin:1px 4px 1px 0; padding:2px 8px;
+          border:1px solid var(--line); border-radius:999px; font-size:12.5px;
+          background:var(--bg); white-space:nowrap; }
+  .empty { color:var(--muted); padding:30px 0; text-align:center; }
+  #more { display:block; margin:18px auto; }
+  td.idx, th.idx { color:var(--muted); font-size:11px; white-space:nowrap;
+                   width:1%; text-align:right; padding-right:6px; }
+  .admin-mark { padding:3px 10px; border:1px solid #2e9e44; border-radius:999px;
+                background:#eaf6ec; color:#1e7c34; font-size:12px; font-weight:700;
+                text-decoration:none; white-space:nowrap; margin-right:8px; }
+  [hidden] { display:none !important; }
+  @media (max-width:640px) { td.osport .sn { display:none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>⚽ Live Sport on TV</h1>
+  <nav class="tabs">
+    <a class="tab" href="{{ url_for('schedule') }}">Matches</a>
+    <a class="tab on" href="{{ url_for('schedule_other') }}">Other Sport <span class="n">{{ total }}</span></a>
+  </nav>
+  {% if admin %}<a class="admin-mark" href="{{ url_for('dashboard') }}"
+     title="Вы вошли как админ; клик ведёт в админку">admin</a>{% endif %}
+  <div class="controls">
+    <button class="pill" id="p-today" type="button">Today</button>
+    <button class="pill" id="p-live" type="button">Live now</button>
+    <select id="f-sport" title="Pick one sport or keep them all">
+      <option value="" data-name="All other sports">All other sports ({{ total }})</option>
+      {% for s in sports %}<option value="{{ s.key }}" data-name="{{ s.icon }} {{ s.name }}">{{ s.icon }} {{ s.name }} ({{ s.n }})</option>{% endfor %}
+    </select>
+    <select id="f-date"><option value="">All dates</option>
+      {% for day in by_date %}<option value="{{ day }}">{{ day.strftime("%d.%m (%a)") }}</option>{% endfor %}
+    </select>
+    <select id="f-channel"><option value="">All channels</option>
+      {% for c in channels %}<option>{{ c }}</option>{% endfor %}
+    </select>
+    <input type="search" id="f-q" placeholder="Search programme or channel…">
+  </div>
+</header>
+
+<main>
+{% if total == 0 %}
+  <p class="empty">Nothing here yet. The next crawl will fill this page.</p>
+{% endif %}
+{% for day, items in by_date.items() %}
+  <section class="day-block" data-date="{{ day }}">
+    <h2 class="day">{{ day.strftime("%A, %d %B") }}</h2>
+    <table>
+      <tr><th class="idx" title="Порядковый номер в текущем списке">№</th>
+          <th>Time (Kyiv)</th><th>Sport</th><th>Programme</th><th>Channels</th></tr>
+      {% for g in items %}
+      <tr class="game" data-date="{{ day }}"
+          data-sport="{{ g.sport }}"
+          data-live="{{ 1 if g.live else 0 }}"
+          data-channels="{{ g.channels | join('||') }}"
+          data-text="{{ (g.title ~ ' ' ~ g.league ~ ' ' ~ g.sport_name ~ ' ' ~ (g.channels | join(' '))) | lower }}">
+        <td class="idx"></td>
+        <td class="time"><span class="gdate">{{ day.strftime("%d.%m") }}</span>{{ g.time }}{% if g.live %}<span class="live">live</span>{% endif %}</td>
+        <td class="osport"><a data-pick="{{ g.sport }}" title="Show only {{ g.sport_name }}">{{ g.icon }} <span class="sn">{{ g.sport_name }}</span></a></td>
+        <td class="match"><b>{{ g.title }}</b>
+          {%- if g.league and g.league not in g.title %}<div class="lg">{{ g.league }}</div>{% endif %}
+          {%- if admin %}<div class="adm" title="Видно только вам: слово, по которому решён вид спорта, и сайт-источник">{{ g.words | join(', ') }} · {{ g.domains | join(', ') }}</div>{% endif %}</td>
+        <td>{% for c in g.channels %}<span class="chan">{{ c }}</span>{% endfor %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+{% endfor %}
+<button id="more" class="pill" hidden type="button">Show more</button>
+<p class="empty" id="nothing" hidden>Nothing matches the filters.</p>
+
+<footer style="margin-top:32px; padding-top:14px; border-top:1px solid var(--line);
+               color:var(--muted); font-size:13px">
+  {% if h and h.crawl %}Last collected: <b>{{ h.crawl.strftime('%d.%m %H:%M') }}</b>
+    {%- if h.crawl_ago %} ({{ h.crawl_ago }}){% endif %}
+  {% else %}Last collected: &mdash;{% endif %}
+  {%- if h and h.stale %} <b style="color:var(--live)">&middot; data may be out of date</b>{% endif %}
+  &middot; everything live on TV that is not football, basketball or tennis
+</footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var CHUNK = 150;                      // ленивая подгрузка: строк за раз
+  var shown = CHUNK;
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tr.game"));
+  var pills = { today: false, live: false };
+  var todayISO = "{{ today }}";         // день по Киеву — считает сервер
+
+  function el(id) { return document.getElementById(id); }
+
+  // skipSport — для счётчиков в списке видов: считаем по остальным фильтрам
+  function matches(r, skipSport) {
+    if (pills.today && r.dataset.date !== todayISO) return false;
+    if (pills.live && r.dataset.live !== "1") return false;
+    var d = el("f-date").value, s = el("f-sport").value,
+        c = el("f-channel").value,
+        q = el("f-q").value.trim().toLowerCase();
+    if (d && r.dataset.date !== d) return false;
+    if (!skipSport && s && r.dataset.sport !== s) return false;
+    if (c && r.dataset.channels.split("||").indexOf(c) === -1) return false;
+    if (q && r.dataset.text.indexOf(q) === -1) return false;
+    return true;
+  }
+
+  function apply() {
+    var counts = {}, all = 0;
+    rows.forEach(function (r) {
+      if (!matches(r, true)) return;
+      counts[r.dataset.sport] = (counts[r.dataset.sport] || 0) + 1;
+      all += 1;
+    });
+    Array.prototype.forEach.call(el("f-sport").options, function (o) {
+      var n = o.value ? (counts[o.value] || 0) : all;
+      o.textContent = o.dataset.name + " (" + n + ")";
+    });
+    var fit = rows.filter(function (r) { return matches(r, false); });
+    rows.forEach(function (r) { r.hidden = true; });
+    var n = 0;
+    fit.slice(0, shown).forEach(function (r) {
+      r.hidden = false;
+      n += 1;
+      var c = r.querySelector("td.idx");
+      if (c) { c.textContent = n; }
+    });
+    document.querySelectorAll(".day-block").forEach(function (b) {
+      b.hidden = !b.querySelector("tr.game:not([hidden])");
+    });
+    el("more").hidden = fit.length <= shown;
+    el("nothing").hidden = fit.length !== 0 || rows.length === 0;
+  }
+
+  // выбранный вид спорта живёт в адресе (#sport=…): ссылкой можно поделиться
+  function saveSport() {
+    var s = el("f-sport").value;
+    history.replaceState(null, "", s ? "#sport=" + encodeURIComponent(s)
+                                     : location.pathname + location.search);
+  }
+  function pickSport(value) {
+    var sel = el("f-sport");
+    sel.value = value;
+    if (sel.value !== value) { sel.value = ""; }
+    shown = CHUNK; saveSport(); apply();
+  }
+
+  ["f-date", "f-channel"].forEach(function (id) {
+    el(id).addEventListener("change", function () { shown = CHUNK; apply(); });
+  });
+  el("f-sport").addEventListener("change", function () {
+    shown = CHUNK; saveSport(); apply();
+  });
+  el("f-q").addEventListener("input", function () { shown = CHUNK; apply(); });
+  [["p-today", "today"], ["p-live", "live"]].forEach(function (p) {
+    el(p[0]).addEventListener("click", function () {
+      pills[p[1]] = !pills[p[1]];
+      el(p[0]).classList.toggle("on", pills[p[1]]);
+      shown = CHUNK; apply();
+    });
+  });
+  el("more").addEventListener("click", function () { shown += CHUNK; apply(); });
+  // клик по виду спорта в строке — оставить только его
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest ? ev.target.closest("a[data-pick]") : null;
+    if (!a) return;
+    ev.preventDefault();
+    pickSport(a.dataset.pick);
+    window.scrollTo(0, 0);
+  });
+  var m = location.hash.indexOf("#sport=") === 0 ? location.hash.slice(7) : "";
+  if (m) {
+    try { el("f-sport").value = decodeURIComponent(m); } catch (e) { /* адрес битый */ }
+  }
+  apply();
+})();
+</script>
+</body>
+</html>

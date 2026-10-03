@@ -39,6 +39,7 @@ MISS_LIMIT = 3               # канал гаснет после стольки
 #: полсуток после первого появления, канальный бейдж живёт двое суток
 FRESH_GAME_HOURS = 12        # сколько часов игра считается «новой»
 FRESH_CHANNEL_HOURS = 48     # сколько часов «новым» считается добавленный канал
+OTHER_SPORT_GRACE_MIN = 180  # начавшееся на вкладке «Other Sport» держим 3 часа
 #: канал «добавился», если появился у игры хотя бы на столько позже неё
 #: самой — иначе каждый канал свежей игры носил бы бейдж
 FRESH_CHANNEL_GAP = timedelta(hours=3)
@@ -768,4 +769,39 @@ def save_other_sport(conn: sqlite3.Connection, rows: list[dict]) -> int:
         n += 1
     conn.commit()
     return n
+
+
+def other_sport_schedule(conn: sqlite3.Connection,
+                         now: datetime | None = None) -> list[dict]:
+    """Публичная вкладка «Other Sport» витрины (владелец 03.10): строки
+    другого вида спорта по времени. Та же программа на нескольких каналах
+    (то же время, вид и заголовок) — одна строка с несколькими каналами.
+    Начавшееся держим OTHER_SPORT_GRACE_MIN минут с пометкой live."""
+    now = now or datetime.now()
+    edge = (now - timedelta(minutes=OTHER_SPORT_GRACE_MIN)).strftime(
+        "%Y-%m-%dT%H:%M")
+    try:
+        rows = conn.execute(
+            "SELECT sport_group, word, domain, channel, title, league, "
+            "start_kyiv FROM other_sport WHERE start_kyiv >= ? "
+            "ORDER BY start_kyiv, sport_group, title, channel",
+            (edge,)).fetchall()
+    except sqlite3.OperationalError:
+        return []          # таблицы ещё нет: база старше вкладки
+    out: dict[tuple[str, str, str], dict] = {}
+    for r in rows:
+        key = (r["start_kyiv"], r["sport_group"], r["title"])
+        item = out.get(key)
+        if item is None:
+            start = _parse_dt(r["start_kyiv"])
+            item = out[key] = {
+                "date": start.date(), "time": start.strftime("%H:%M"),
+                "sport": r["sport_group"], "title": r["title"],
+                "league": r["league"] or "", "live": start <= now,
+                "channels": [], "words": [], "domains": []}
+        for field, value in (("channels", r["channel"]), ("words", r["word"]),
+                             ("domains", r["domain"])):
+            if value and value not in item[field]:
+                item[field].append(value)
+    return list(out.values())
 
