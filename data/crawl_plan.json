@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-10-02",
+ "built": "2026-10-03",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -327,7 +327,24 @@
    "timezone": "Europe/Athens",
    "grid": false,
    "marks": {},
-   "include": [],
+   "include": [
+    "Magenta Sport 1",
+    "Magenta Sport 1 League",
+    "Magenta Sport 2",
+    "Magenta Sport 2 League",
+    "Magenta Sport 3",
+    "Magenta Sport 3 League",
+    "Magenta Sport 4",
+    "Magenta Sport 4 League",
+    "Magenta Sport 4K",
+    "Magenta Sport 5",
+    "Magenta Sport 6",
+    "Magenta Sport 7",
+    "Magenta Sport 8",
+    "Magenta Sport 9",
+    "Magenta Sport Highlights",
+    "Magenta Sport Start"
+   ],
    "parser": "",
    "browser": false,
    "days_inline": false,
@@ -347,7 +364,7 @@
    "channels": [
     {
      "name": "",
-     "pattern": "https://www.cosmotetv.gr/program?date={UNIXDAY}&category=%CE%91%CE%B8%CE%BB%CE%B7%CF%84%CE%B9%CE%BA%CE%AC"
+     "pattern": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from={UNIXDAY}&to={UNIXDAYEND}&endingIncludedInRange=false"
     }
    ]
   },
