@@ -800,7 +800,6 @@
     "nagydíj",
     "erallye",
     "tcr",
-    "australian rules",
     "moto3",
     "moto2",
     "formula regional",
@@ -1141,6 +1140,9 @@
     "регби",
     "regbis",
     "regbio"
+   ],
+   "австралийский футбол": [
+    "australian rules"
    ],
    "дартс и снукер": [
     "snooker",

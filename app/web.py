@@ -77,6 +77,7 @@ OTHER_SPORT_EN: dict[str, tuple[str, str]] = {
     "гольф": ("Golf", "⛳"),
     "сёрфинг и вода": ("Surfing & water sports", "🏄"),
     "регби": ("Rugby", "🏉"),
+    "австралийский футбол": ("Australian football", "🏉"),
     "дартс и снукер": ("Darts & snooker", "🎯"),
     "передачи и повторы": ("Shows & replays", "📺"),
     "другие категории сайтов": ("Other categories", "🏅"),
