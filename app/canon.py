@@ -263,11 +263,23 @@ def _league_core(label: str) -> str:
     return _TIER_RE.sub("", (label or "").strip()).strip()
 
 
+def _league_marks(game: dict) -> list[str]:
+    """Пол и возраст из названия турнира — как на сайте и как его перевёл
+    словарь (`league_canon`, ставит `align`). У израильского и болгарского
+    сайтов возраст виден только в турнире и только на своём языке («עד גיל
+    21», «за младежи»): буквы его не читают, а словарь лигу уже знает —
+    `EUROPE: Euro U21 - Qualification`. Без этого «נורווגיה — ישראל» жила
+    двойней рядом с «Norway U21 — Israel U21», а «България — Шотландия» шла
+    взрослыми сборными без метки эталона (#4313, #4216, 03.10). «Вторая
+    команда» (B) из турнира не берётся — см. `_pair_score`."""
+    text = f"{game.get('league') or ''} {game.get('league_canon') or ''}"
+    return [m for m in names.category(text).split() if m != "B"]
+
+
 def _same_category(game: dict, ref: dict) -> bool:
     """Пол и возраст пары совпадают с кандидатом (та же стена, что в
     `_pair_score`, но без счёта по буквам)."""
-    из_лиги = [m for m in names.category(game.get("league") or "").split()
-               if m != "B"]
+    из_лиги = _league_marks(game)
     моя = names.category(f"{game.get('home') or ''} {game.get('away') or ''}")
     моя = sorted(set((моя + " " + " ".join(из_лиги)).split()))
     его = sorted(set(names.category(
@@ -332,8 +344,7 @@ def _pair_score(game: dict, ref: dict) -> int:
     # болгарское «Шампионска лига на Азия 2» — второй по силе турнир, а не
     # дубль клуба, и матч Arkadag — Al-Muharraq не лёг на эталон, хотя обе
     # команды совпали на 100 (#2061, разбор владельца 10.09)
-    из_лиги = [m for m in names.category(game.get("league") or "").split()
-               if m != "B"]
+    из_лиги = _league_marks(game)
     моя = names.category(f"{game.get('home') or ''} {game.get('away') or ''}")
     моя = sorted(set((моя + " " + " ".join(из_лиги)).split()))
     его = sorted(set(names.category(
@@ -441,6 +452,11 @@ def align(games: list[dict], reference: list[dict],
         start = _parse(game.get("start_kyiv") or "")
         if start is None:
             continue
+        # турнир в переводе словаря — для пола и возраста (`_league_marks`)
+        canon_league = (league_names or {}).get(
+            (game.get("league") or "").strip(), "")
+        if canon_league and not game.get("league_canon"):
+            game["league_canon"] = canon_league
         near = [(r, s) for r, s in ref if abs(start - s) <= WINDOW]
         best, best_score = None, -1
         for r, _ in near:
