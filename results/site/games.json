@@ -1,298 +1,1724 @@
 {
- "собрано": "2026-10-03 20:18",
- "игр": 19,
- "окно": 2,
+ "собрано": "2026-10-03 20:36",
+ "игр": 103,
+ "окно": 6,
  "по_окнам": {
-  "2": 19,
+  "2": 352,
   "5": 528,
-  "6": 381
+  "6": 103
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "cosmotetv.gr": 474
+  "sportklub.hr": 734
  },
  "другие_виды": [
   {
-   "домен": "cosmotetv.gr",
-   "канал": "Magenta Sport 9",
-   "заголовок": "Αμερικάνικο Ποδόσφαιρο: Ουάσινγκτον Κομάντερς - Ιντιανάπολις Κολτς (Ζ)",
-   "лига": "",
-   "вид": "американский футбол",
-   "слово": "Αμερικανικο Ποδοσφαιρο",
-   "start_kyiv": "2026-10-04T16:30",
-   "start_utc": "2026-10-04T13:30"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 2",
+   "заголовок": "Odbojka - Njemački Superkup (ž): Suhl - Dresden",
+   "лига": "Njemački Superkup (ž)",
+   "вид": "волейбол",
+   "слово": "Odbojka",
+   "start_kyiv": "2026-10-03T18:15",
+   "start_utc": "2026-10-03T15:15"
   },
   {
-   "домен": "cosmotetv.gr",
-   "канал": "Magenta Sport 9",
-   "заголовок": "Αμερικάνικο Ποδόσφαιρο: Μπάφαλο Μπιλς - Νιου Ίνγκλαντ Πάτριοτς (Ζ)",
-   "лига": "",
-   "вид": "американский футбол",
-   "слово": "Αμερικανικο Ποδοσφαιρο",
-   "start_kyiv": "2026-10-04T20:00",
-   "start_utc": "2026-10-04T17:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 1",
+   "заголовок": "Rukomet - Njemačka liga: Kiel - Gummersbach",
+   "лига": "Njemačka liga",
+   "вид": "гандбол",
+   "слово": "Rukomet",
+   "start_kyiv": "2026-10-03T19:00",
+   "start_utc": "2026-10-03T16:00"
   },
   {
-   "домен": "cosmotetv.gr",
-   "канал": "Magenta Sport 9",
-   "заголовок": "Αμερικάνικο Ποδόσφαιρο: Σιάτλ Σίχοκς - Λος Άντζελες Τσάρτζερς (Ζ)",
-   "лига": "",
-   "вид": "американский футбол",
-   "слово": "Αμερικανικο Ποδοσφαιρο",
-   "start_kyiv": "2026-10-04T23:25",
-   "start_utc": "2026-10-04T20:25"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 8",
+   "заголовок": "Rukomet - Slovenska liga: Krka - Slovenj Gradec",
+   "лига": "Slovenska liga",
+   "вид": "гандбол",
+   "слово": "Rukomet",
+   "start_kyiv": "2026-10-03T19:00",
+   "start_utc": "2026-10-03T16:00"
+  },
+  {
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 3",
+   "заголовок": "WRC Rally: Sardinia: Finale sezone - TV etapa 5",
+   "лига": "Sardinia",
+   "вид": "автоспорт",
+   "слово": "WRC",
+   "start_kyiv": "2026-10-04T15:00",
+   "start_utc": "2026-10-04T12:00"
+  },
+  {
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 1",
+   "заголовок": "Rukomet - Njemačka liga: Magdeburg - Erlangen",
+   "лига": "Njemačka liga",
+   "вид": "гандбол",
+   "слово": "Rukomet",
+   "start_kyiv": "2026-10-04T16:00",
+   "start_utc": "2026-10-04T13:00"
   }
  ],
  "на_разбор": [],
  "games": [
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Γκόλντεν Στέιτ Βάλκιραϊς",
-   "away": "Ντάλας Γουίνγκς",
-   "start_kyiv": "2026-10-03T04:00",
-   "start_utc": "2026-10-03T01:00",
+   "sport": "T",
+   "league": "ATP 500 Tokyo",
+   "home": "Shapovalov",
+   "away": "Tabilo",
+   "start_kyiv": "2026-10-03T05:00",
+   "start_utc": "2026-10-03T02:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 4",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
-     "raw_title": "Μπάσκετ: Γκόλντεν Στέιτ Βάλκιραϊς - Ντάλας Γουίνγκς (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: Shapovalov - Tabilo"
+    },
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: Shapovalov - Tabilo (UKLJUČENJE)"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Άλεξ ντε Μινόρ",
-   "away": "Κουέντιν Άλις",
+   "league": "1/4 Finale",
+   "home": "Miedler/Oberleitner",
+   "away": "Arribage/Olivetti",
+   "start_kyiv": "2026-10-03T05:00",
+   "start_utc": "2026-10-03T02:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: 1/4 Finale: Miedler/Oberleitner - Arribage/Olivetti (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Gauff W",
+   "away": "Osorio W",
    "start_kyiv": "2026-10-03T06:00",
    "start_utc": "2026-10-03T03:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 6",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
-     "raw_title": "Τένις: Άλεξ ντε Μινόρ - Κουέντιν Άλις (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Gauff - Osorio"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Ματέο Μπερετίνι",
-   "away": "Αντόλφο Ντάνιελ Βαγιέχο",
+   "league": "WTA 1000 Peking",
+   "home": "Vekić W",
+   "away": "Zhu W",
+   "start_kyiv": "2026-10-03T06:00",
+   "start_utc": "2026-10-03T03:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Vekić - Zhu"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Volynets W",
+   "away": "Mertens W",
+   "start_kyiv": "2026-10-03T06:00",
+   "start_utc": "2026-10-03T03:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Volynets - Mertens"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 500 Peking",
+   "home": "De Minaur",
+   "away": "Halys",
+   "start_kyiv": "2026-10-03T06:00",
+   "start_utc": "2026-10-03T03:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: De Minaur - Halys"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Krueger W",
+   "away": "Li W",
+   "start_kyiv": "2026-10-03T06:00",
+   "start_utc": "2026-10-03T03:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Krueger - Li"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/4 Finale",
+   "home": "Hijikata/Uesegi",
+   "away": "Nys/Vasselin",
+   "start_kyiv": "2026-10-03T07:00",
+   "start_utc": "2026-10-03T04:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: (Parovi) 1/4 Finale: Hijikata/Uesegi - Nys/Vasselin"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 500 Tokyo",
+   "home": "Alcaraz",
+   "away": "Arnaldi",
+   "start_kyiv": "2026-10-03T07:00",
+   "start_utc": "2026-10-03T04:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: Alcaraz - Arnaldi"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Ostapenko W",
+   "away": "Badosa W",
+   "start_kyiv": "2026-10-03T07:45",
+   "start_utc": "2026-10-03T04:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Ostapenko - Badosa"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Sakkari W",
+   "away": "Hunter W",
+   "start_kyiv": "2026-10-03T07:45",
+   "start_utc": "2026-10-03T04:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Sakkari - Hunter"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 500 Peking",
+   "home": "Rublev",
+   "away": "Safiullin",
+   "start_kyiv": "2026-10-03T08:00",
+   "start_utc": "2026-10-03T05:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: Rublev - Safiullin"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Siniakova W",
+   "away": "Svitolina W",
+   "start_kyiv": "2026-10-03T08:00",
+   "start_utc": "2026-10-03T05:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Siniakova - Svitolina"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Gao W",
+   "away": "Swiatek W",
+   "start_kyiv": "2026-10-03T08:00",
+   "start_utc": "2026-10-03T05:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Gao - Swiatek"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/4 Finale",
+   "home": "Krajicek/Mektić",
+   "away": "Van Assche/Tabilo",
+   "start_kyiv": "2026-10-03T08:15",
+   "start_utc": "2026-10-03T05:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: (Parovi) 1/4 Finale: Krajicek/Mektić - Van Assche/Tabilo"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Bencic W",
+   "away": "Zakharova W",
+   "start_kyiv": "2026-10-03T09:45",
+   "start_utc": "2026-10-03T06:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Bencic - Zakharova"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Zheng W",
+   "away": "Kalinskaya W",
+   "start_kyiv": "2026-10-03T09:45",
+   "start_utc": "2026-10-03T06:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Zheng - Kalinskaya"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/4 Finale",
+   "home": "Arends/Pol",
+   "away": "Zhang/Zhou",
+   "start_kyiv": "2026-10-03T09:45",
+   "start_utc": "2026-10-03T06:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: (Parovi) 1/4 Finale: Arends/Pol - Zhang/Zhou"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/4 Finale",
+   "home": "Bolelli/Vavassori",
+   "away": "Polmans/Zielinski",
    "start_kyiv": "2026-10-03T10:00",
    "start_utc": "2026-10-03T07:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 7",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
-     "raw_title": "Τένις: Ματέο Μπερετίνι - Αντόλφο Ντάνιελ Βαγιέχο (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: (Parovi) 1/4 Finale: Bolelli/Vavassori - Polmans/Zielinski"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Ουγκό Ουμπέρ",
-   "away": "Γίρι Λεχέτσκα",
+   "league": "WTA 1000 Peking",
+   "home": "Rakhimova W",
+   "away": "Fernandez W",
+   "start_kyiv": "2026-10-03T10:00",
+   "start_utc": "2026-10-03T07:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Rakhimova - Fernandez"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 500 Tokyo",
+   "home": "Berrettini",
+   "away": "Vallejo",
+   "start_kyiv": "2026-10-03T10:00",
+   "start_utc": "2026-10-03T07:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: Berrettini - Vallejo"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Jovic W",
+   "away": "Dart W",
+   "start_kyiv": "2026-10-03T10:00",
+   "start_utc": "2026-10-03T07:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Jovic - Dart"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/4 Finale",
+   "home": "Cabral/Tracy",
+   "away": "Cash/Erler",
+   "start_kyiv": "2026-10-03T11:30",
+   "start_utc": "2026-10-03T08:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: (Parovi) 1/4 Finale: Cabral/Tracy - Cash/Erler"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Sun W",
+   "away": "Bucsa W",
+   "start_kyiv": "2026-10-03T11:45",
+   "start_utc": "2026-10-03T08:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Sun - Bucsa"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 500 Tokyo",
+   "home": "Humbert",
+   "away": "Lehecka",
+   "start_kyiv": "2026-10-03T11:45",
+   "start_utc": "2026-10-03T08:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: Humbert - Lehecka"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Bouzkova W",
+   "away": "Birrell W",
+   "start_kyiv": "2026-10-03T11:45",
+   "start_utc": "2026-10-03T08:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Bouzkova - Birrell"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 500 Peking",
+   "home": "Medvedev",
+   "away": "Struff",
    "start_kyiv": "2026-10-03T12:00",
    "start_utc": "2026-10-03T09:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 7",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
-     "raw_title": "Τένις: Ουγκό Ουμπέρ - Γίρι Λεχέτσκα (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: Medvedev - Struff"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Denizli",
+   "away": "Tofas",
+   "start_kyiv": "2026-10-03T13:00",
+   "start_utc": "2026-10-03T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Denizli - Tofas"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Αλεξάντερ Ζβέρεφ",
-   "away": "Σανγκ Τζούντσενγκ",
+   "league": "ATP 500 Peking",
+   "home": "F. Cerundolo",
+   "away": "Mensik",
+   "start_kyiv": "2026-10-03T13:30",
+   "start_utc": "2026-10-03T10:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: F. Cerundolo - Mensik"
+    },
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: F. Cerundolo - Mensik (UKLJUČENJE)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Kartal W",
+   "away": "Wang W",
    "start_kyiv": "2026-10-03T14:00",
    "start_utc": "2026-10-03T11:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 6",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
-     "raw_title": "Τένις: Αλεξάντερ Ζβέρεφ - Σανγκ Τζούντσενγκ (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Kartal - Wang"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 500 Peking",
+   "home": "Zverev",
+   "away": "Shang",
+   "start_kyiv": "2026-10-03T14:00",
+   "start_utc": "2026-10-03T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: Zverev - Shang"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "",
-   "home": "Τσέστερφιλντ",
-   "away": "Τρανμίρ",
-   "start_kyiv": "2026-10-03T14:30",
-   "start_utc": "2026-10-03T11:30",
+   "league": "Pretkolo",
+   "home": "Krumovgrad",
+   "away": "Spartak Pleven",
+   "start_kyiv": "2026-10-03T14:00",
+   "start_utc": "2026-10-03T11:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 1",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
-     "raw_title": "Ποδόσφαιρο: Τσέστερφιλντ - Τρανμίρ (Ζ)"
-    },
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarski kup: Pretkolo: Krumovgrad - Spartak Pleven"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Bursa",
+   "away": "Turk Telekom",
+   "start_kyiv": "2026-10-03T15:30",
+   "start_utc": "2026-10-03T12:30",
+   "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport Start",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
-     "raw_title": "Ποδόσφαιρο: Τσέστερφιλντ - Τρανμίρ (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Bursa - Turk Telekom"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Χάουµε Μουνάρ",
-   "away": "Κίριαν Ζακέ",
+   "league": "WTA 1000 Peking",
+   "home": "Rybakina W",
+   "away": "Charaeva W",
+   "start_kyiv": "2026-10-03T15:45",
+   "start_utc": "2026-10-03T12:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Rybakina - Charaeva"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Finland",
+   "away": "Albania",
+   "start_kyiv": "2026-10-03T16:00",
+   "start_utc": "2026-10-03T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Finland - Albania"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "La Liga Futures",
+   "home": "Elche",
+   "away": "Getafe",
+   "start_kyiv": "2026-10-03T16:30",
+   "start_utc": "2026-10-03T13:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - La Liga Futures: Elche - Getafe"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "La Liga Futures",
+   "home": "River Plate",
+   "away": "Palmeiras",
+   "start_kyiv": "2026-10-03T17:00",
+   "start_utc": "2026-10-03T14:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - La Liga Futures: River Plate - Palmeiras"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "La Liga Futures",
+   "home": "Flamengo",
+   "away": "Boca Juniors",
+   "start_kyiv": "2026-10-03T17:30",
+   "start_utc": "2026-10-03T14:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - La Liga Futures: Flamengo - Boca Juniors"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "La Liga Futures",
+   "home": "Sevilla",
+   "away": "Betis",
+   "start_kyiv": "2026-10-03T18:00",
+   "start_utc": "2026-10-03T15:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - La Liga Futures: Sevilla - Betis"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "La Liga Futures",
+   "home": "Barcelona",
+   "away": "Villarreal",
+   "start_kyiv": "2026-10-03T18:30",
+   "start_utc": "2026-10-03T15:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - La Liga Futures: Barcelona - Villarreal"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Slovenska liga",
+   "home": "Gorica",
+   "away": "Helios",
+   "start_kyiv": "2026-10-03T18:30",
+   "start_utc": "2026-10-03T15:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Slovenska liga: Gorica - Helios"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Estonia",
+   "away": "Luxembourg",
+   "start_kyiv": "2026-10-03T19:00",
+   "start_utc": "2026-10-03T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Estonia - Luxembourg"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Joventut",
+   "away": "Andorra",
+   "start_kyiv": "2026-10-03T19:00",
+   "start_utc": "2026-10-03T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Joventut - Andorra"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Iceland",
+   "away": "Bulgaria",
+   "start_kyiv": "2026-10-03T19:00",
+   "start_utc": "2026-10-03T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Iceland - Bulgaria"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "La Liga Futures",
+   "home": "Real Madrid",
+   "away": "Atletico Madrid",
+   "start_kyiv": "2026-10-03T19:00",
+   "start_utc": "2026-10-03T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - La Liga Futures: Real Madrid - Atletico Madrid"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Unicaja",
+   "away": "Tenerife",
+   "start_kyiv": "2026-10-03T20:30",
+   "start_utc": "2026-10-03T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Unicaja - Tenerife"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Spain",
+   "away": "Czechia",
+   "start_kyiv": "2026-10-03T21:45",
+   "start_utc": "2026-10-03T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Spain - Czechia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Switzerland",
+   "away": "Slovenia",
+   "start_kyiv": "2026-10-03T21:45",
+   "start_utc": "2026-10-03T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Switzerland - Slovenia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "North Macedonia",
+   "away": "Scotland",
+   "start_kyiv": "2026-10-03T21:45",
+   "start_utc": "2026-10-03T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): North Macedonia - Scotland"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Manresa",
+   "away": "Breogan",
+   "start_kyiv": "2026-10-03T22:00",
+   "start_utc": "2026-10-03T19:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Manresa - Breogan"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "1/4 Finale",
+   "home": "Munar",
+   "away": "Jacquet",
    "start_kyiv": "2026-10-04T05:00",
    "start_utc": "2026-10-04T02:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 7",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Τένις: Χάουµε Μουνάρ - Κίριαν Ζακέ (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: 1/4 Finale: Munar - Jacquet"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Κάρλος Αλκαράθ",
-   "away": "Ντένις Σαποβάλοφ",
+   "league": "WTA 1000 Peking",
+   "home": "Bartunkova W",
+   "away": "Sabalenka W",
+   "start_kyiv": "2026-10-04T06:00",
+   "start_utc": "2026-10-04T03:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Bartunkova - Sabalenka"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Kraus W",
+   "away": "Yastremska W",
+   "start_kyiv": "2026-10-04T06:00",
+   "start_utc": "2026-10-04T03:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Kraus - Yastremska"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Kozyreva/Zvonareva W",
+   "away": "L. Kichenok/Muhammad W",
+   "start_kyiv": "2026-10-04T06:00",
+   "start_utc": "2026-10-04T03:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Kozyreva/Zvonareva - L. Kichenok/Muhammad (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Tang/Xu W",
+   "away": "Dabrowski/Stefani W",
+   "start_kyiv": "2026-10-04T06:00",
+   "start_utc": "2026-10-04T03:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Tang/Xu - Dabrowski/Stefani (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "1/4 Finale",
+   "home": "Alcaraz",
+   "away": "Shapovalov",
    "start_kyiv": "2026-10-04T07:00",
    "start_utc": "2026-10-04T04:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 7",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Τένις: Κάρλος Αλκαράθ - Ντένις Σαποβάλοφ (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: 1/4 Finale: Alcaraz - Shapovalov"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Ουµπέρ Χούρκατς",
-   "away": "Κάρεν Κατσάνοφ",
+   "league": "WTA 1000 Peking",
+   "home": "Alexandrova W",
+   "away": "Shnaider W",
+   "start_kyiv": "2026-10-04T07:45",
+   "start_utc": "2026-10-04T04:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Alexandrova - Shnaider"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "TBD/TBD W",
+   "away": "Perez/Schuurs W",
+   "start_kyiv": "2026-10-04T07:45",
+   "start_utc": "2026-10-04T04:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: TBD/TBD - Perez/Schuurs (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "1/4 Finale",
+   "home": "Hurkacz",
+   "away": "Khachanov",
    "start_kyiv": "2026-10-04T08:00",
    "start_utc": "2026-10-04T05:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 6",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Τένις: Ουµπέρ Χούρκατς - Κάρεν Κατσάνοφ (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: 1/4 Finale: Hurkacz - Khachanov"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Άλεξ ντε Μινόρ",
-   "away": "Αντρέι Ρούμπλεφ",
+   "league": "WTA 1000 Peking",
+   "home": "P. Kudermetova W",
+   "away": "M. Andreeva W",
+   "start_kyiv": "2026-10-04T08:00",
+   "start_utc": "2026-10-04T05:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: P. Kudermetova - M. Andreeva"
+    },
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: P. Kudermetova - M. Andreeva (UKLJUČENJE)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/2 Finale",
+   "home": "Hijikata/Uesugi",
+   "away": "Arribage/Olivetti",
+   "start_kyiv": "2026-10-04T08:30",
+   "start_utc": "2026-10-04T05:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: (Parovi) 1/2 Finale: Hijikata/Uesugi - Arribage/Olivetti"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Bouzkova/Li W",
+   "away": "Hunter/Mladenovic W",
+   "start_kyiv": "2026-10-04T09:00",
+   "start_utc": "2026-10-04T06:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Bouzkova/Li - Hunter/Mladenovic (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "McNally/Tjen W",
+   "away": "Bartunskova/Chwalinska W",
+   "start_kyiv": "2026-10-04T09:15",
+   "start_utc": "2026-10-04T06:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: McNally/Tjen - Bartunskova/Chwalinska (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Snigur W",
+   "away": "Preston W",
+   "start_kyiv": "2026-10-04T09:30",
+   "start_utc": "2026-10-04T06:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Snigur - Preston"
+    },
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Snigur - Preston (UKLJUČENJE)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Noskova W",
+   "away": "Golubic W",
+   "start_kyiv": "2026-10-04T09:45",
+   "start_utc": "2026-10-04T06:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Noskova - Golubic"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "1/4 Finale",
+   "home": "De Minaur",
+   "away": "Rublev",
    "start_kyiv": "2026-10-04T10:00",
    "start_utc": "2026-10-04T07:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 6",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Τένις: Άλεξ ντε Μινόρ - Αντρέι Ρούμπλεφ (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: 1/4 Finale: De Minaur - Rublev"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Βαλεντίν Βασερό",
-   "away": "Αρτούρ Φις",
+   "league": "1/4 Finale",
+   "home": "Vacherot",
+   "away": "Fils",
    "start_kyiv": "2026-10-04T10:00",
    "start_utc": "2026-10-04T07:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 7",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Τένις: Βαλεντίν Βασερό - Αρτούρ Φις (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: 1/4 Finale: Vacherot - Fils"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Ντανιίλ Μεντβέντεφ",
-   "away": "Φρανσίσκο Σερούντολο",
+   "league": "WTA 1000 Peking",
+   "home": "M. Andreeva/Kalinskaya W",
+   "away": "Joint/Klepač W",
+   "start_kyiv": "2026-10-04T11:00",
+   "start_utc": "2026-10-04T08:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: M. Andreeva/Kalinskaya - Joint/Klepač (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Mertens/Shnaider W",
+   "away": "Lumsden/Panova W",
+   "start_kyiv": "2026-10-04T11:00",
+   "start_utc": "2026-10-04T08:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Mertens/Shnaider - Lumsden/Panova (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/2 Finale",
+   "home": "Arends/Pel",
+   "away": "Bublik/Shang",
    "start_kyiv": "2026-10-04T11:30",
    "start_utc": "2026-10-04T08:30",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 8",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Τένις: Ντανιίλ Μεντβέντεφ - Φρανσίσκο Σερούντολο (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: (Parovi) 1/2 Finale: Arends/Pel - Bublik/Shang"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "",
-   "home": "Γίρι Λεχέτσκα",
-   "away": "Αντόλφο Ντάνιελ Βαγιέχο",
-   "start_kyiv": "2026-10-04T12:00",
-   "start_utc": "2026-10-04T09:00",
+   "league": "1/4 Finale",
+   "home": "Medvedev",
+   "away": "F. Cerundolo",
+   "start_kyiv": "2026-10-04T11:45",
+   "start_utc": "2026-10-04T08:45",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 7",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Τένις: Γίρι Λεχέτσκα - Αντόλφο Ντάνιελ Βαγιέχο (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: 1/4 Finale: Medvedev - F. Cerundolo"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "1/4 Finale",
+   "home": "Lehecka",
+   "away": "Vallejo",
+   "start_kyiv": "2026-10-04T11:45",
+   "start_utc": "2026-10-04T08:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Tokyo: 1/4 Finale: Lehecka - Vallejo"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "B",
-   "league": "",
-   "home": "Ομπραντόιρο",
-   "away": "Ρεάλ Μαδρίτης",
+   "league": "Turska liga",
+   "home": "Cayirova",
+   "away": "Bahcesehir",
+   "start_kyiv": "2026-10-04T13:00",
+   "start_utc": "2026-10-04T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Cayirova - Bahcesehir"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Grčka liga",
+   "home": "Panathinaikos",
+   "away": "Vikos Falcons",
+   "start_kyiv": "2026-10-04T13:00",
+   "start_utc": "2026-10-04T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Grčka liga: Panathinaikos - Vikos Falcons"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Lleida",
+   "away": "Burgos",
+   "start_kyiv": "2026-10-04T13:00",
+   "start_utc": "2026-10-04T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Lleida - Burgos"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Coruna",
+   "away": "Bilbao",
+   "start_kyiv": "2026-10-04T13:00",
+   "start_utc": "2026-10-04T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Coruna - Bilbao"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Monbus",
+   "away": "Real Madrid",
    "start_kyiv": "2026-10-04T13:30",
    "start_utc": "2026-10-04T10:30",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 5",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Μπάσκετ: Ομπραντόιρο - Ρεάλ Μαδρίτης (Ζ)"
-    },
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Monbus - Real Madrid"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Pretkolo",
+   "home": "Minyor",
+   "away": "Beroe",
+   "start_kyiv": "2026-10-04T14:00",
+   "start_utc": "2026-10-04T11:00",
+   "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport Start",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Μπάσκετ: Ομπραντόιρο - Ρεάλ Μαδρίτης (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarski kup: Pretkolo: Minyor - Beroe"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "1/4 Finale",
+   "home": "Zverev",
+   "away": "Đokovič",
+   "start_kyiv": "2026-10-04T14:00",
+   "start_utc": "2026-10-04T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 500 Peking: 1/4 Finale: Zverev - Đokovič"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Bejlek W",
+   "away": "Osaka W",
+   "start_kyiv": "2026-10-04T14:00",
+   "start_utc": "2026-10-04T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Bejlek - Osaka"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Fenerbahce",
+   "away": "Korfez",
+   "start_kyiv": "2026-10-04T15:30",
+   "start_utc": "2026-10-04T12:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Fenerbahce - Korfez"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Muchova W",
+   "away": "Samsonova W",
+   "start_kyiv": "2026-10-04T15:45",
+   "start_utc": "2026-10-04T12:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Muchova - Samsonova"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Azerbaijan",
+   "away": "Lithuania",
+   "start_kyiv": "2026-10-04T16:00",
+   "start_utc": "2026-10-04T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Azerbaijan - Lithuania"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Slovenska 2. liga",
+   "home": "Bistrica",
+   "away": "Rudar",
+   "start_kyiv": "2026-10-04T16:00",
+   "start_utc": "2026-10-04T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Slovenska 2. liga: Bistrica - Rudar"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Grčka liga",
+   "home": "Iraklis",
+   "away": "Olympiacos",
+   "start_kyiv": "2026-10-04T17:30",
+   "start_utc": "2026-10-04T14:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Grčka liga: Iraklis - Olympiacos"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Bandirma",
+   "away": "Efes",
+   "start_kyiv": "2026-10-04T18:00",
+   "start_utc": "2026-10-04T15:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Bandirma - Efes"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Zaragoza",
+   "away": "Valencia",
+   "start_kyiv": "2026-10-04T18:00",
+   "start_utc": "2026-10-04T15:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Zaragoza - Valencia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Kosovo",
+   "away": "Austria",
+   "start_kyiv": "2026-10-04T19:00",
+   "start_utc": "2026-10-04T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Kosovo - Austria"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Baskonia",
+   "away": "Girona",
+   "start_kyiv": "2026-10-04T19:00",
+   "start_utc": "2026-10-04T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Baskonia - Girona"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Malta",
+   "away": "Andorra",
+   "start_kyiv": "2026-10-04T19:00",
+   "start_utc": "2026-10-04T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Malta - Andorra"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Murcia",
+   "away": "Barcelona",
+   "start_kyiv": "2026-10-04T20:00",
+   "start_utc": "2026-10-04T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Murcia - Barcelona"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Portugal",
+   "away": "Norway",
+   "start_kyiv": "2026-10-04T21:45",
+   "start_utc": "2026-10-04T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Portugal - Norway"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Netherlands",
+   "away": "Serbia",
+   "start_kyiv": "2026-10-04T21:45",
+   "start_utc": "2026-10-04T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Netherlands - Serbia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Greece",
+   "away": "Germany",
+   "start_kyiv": "2026-10-04T21:45",
+   "start_utc": "2026-10-04T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Greece - Germany"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Wales",
+   "away": "Denmark",
+   "start_kyiv": "2026-10-04T21:45",
+   "start_utc": "2026-10-04T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Wales - Denmark"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "R. Ireland",
+   "away": "Israel",
+   "start_kyiv": "2026-10-04T21:45",
+   "start_utc": "2026-10-04T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): R. Ireland - Israel"
     }
    ]
   },
@@ -300,84 +1726,118 @@
    "guess": 0,
    "sport": "T",
    "league": "",
-   "home": "Αλεξάντερ Ζβέρεφ",
-   "away": "Νόβακ Τζόκοβιτς",
-   "start_kyiv": "2026-10-04T14:00",
-   "start_utc": "2026-10-04T11:00",
+   "home": "ATP 500 Tokyo",
+   "away": "1/2 Finale & WTA 1000 + ATP 500 Peking",
+   "start_kyiv": "2026-10-05T10:00",
+   "start_utc": "2026-10-05T07:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 6",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Τένις: Αλεξάντερ Ζβέρεφ - Νόβακ Τζόκοβιτς (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Tenis: ATP 500 Tokyo - 1/2 Finale & WTA 1000 + ATP 500 Peking"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "B",
-   "league": "",
-   "home": "Φενέρμπαχτσε",
-   "away": "Κιορφέζ",
-   "start_kyiv": "2026-10-04T15:30",
-   "start_utc": "2026-10-04T12:30",
+   "league": "Turska liga",
+   "home": "Besiktas",
+   "away": "Trabzon",
+   "start_kyiv": "2026-10-05T19:00",
+   "start_utc": "2026-10-05T16:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 4",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Μπάσκετ: Φενέρμπαχτσε - Κιορφέζ (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Besiktas - Trabzon"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Μπαντίρμα",
-   "away": "Αναντολού Εφές",
-   "start_kyiv": "2026-10-04T18:00",
-   "start_utc": "2026-10-04T15:00",
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Cyprus",
+   "away": "Latvia",
+   "start_kyiv": "2026-10-05T19:00",
+   "start_utc": "2026-10-05T16:00",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 5",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Μπάσκετ: Μπαντίρμα - Αναντολού Εφές (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Cyprus - Latvia"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Μούρθια",
-   "away": "Μπαρτσελόνα",
-   "start_kyiv": "2026-10-04T20:00",
-   "start_utc": "2026-10-04T17:00",
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Italy",
+   "away": "Turkiye",
+   "start_kyiv": "2026-10-05T21:45",
+   "start_utc": "2026-10-05T18:45",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 4",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Μπάσκετ: Μούρθια - Μπαρτσελόνα (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Italy - Turkiye"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "B",
-   "league": "",
-   "home": "Ατλάντα Ντριμ",
-   "away": "Νιου Γιορκ Λίμπερτι",
-   "start_kyiv": "2026-10-04T21:00",
-   "start_utc": "2026-10-04T18:00",
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "France",
+   "away": "Belgium",
+   "start_kyiv": "2026-10-05T21:45",
+   "start_utc": "2026-10-05T18:45",
    "entries": [
     {
-     "source": "cosmotetv.gr",
-     "channel": "Magenta Sport 6",
-     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
-     "raw_title": "Μπάσκετ: Ατλάντα Ντριμ - Νιου Γιορκ Λίμπερτι (Ζ)"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): France - Belgium"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Bosnia & Herzegovina",
+   "away": "Poland",
+   "start_kyiv": "2026-10-05T21:45",
+   "start_utc": "2026-10-05T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Bosnia & Herzegovina - Poland"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Liga nacija (M)",
+   "home": "Romania",
+   "away": "Sweden",
+   "start_kyiv": "2026-10-05T21:45",
+   "start_utc": "2026-10-05T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1790985600000&toTime=1791590399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: UEFA Liga nacija (M): Romania - Sweden"
     }
    ]
   }
