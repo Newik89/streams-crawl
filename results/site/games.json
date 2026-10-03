@@ -1,646 +1,383 @@
 {
- "собрано": "2026-10-01 20:02",
- "игр": 36,
- "окно": 6,
+ "собрано": "2026-10-03 20:18",
+ "игр": 19,
+ "окно": 2,
  "по_окнам": {
-  "2": 314,
+  "2": 19,
   "5": 528,
-  "6": 36
+  "6": 381
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "livesoccertv.com": 122
+  "cosmotetv.gr": 474
  },
+ "другие_виды": [
+  {
+   "домен": "cosmotetv.gr",
+   "канал": "Magenta Sport 9",
+   "заголовок": "Αμερικάνικο Ποδόσφαιρο: Ουάσινγκτον Κομάντερς - Ιντιανάπολις Κολτς (Ζ)",
+   "лига": "",
+   "вид": "американский футбол",
+   "слово": "Αμερικανικο Ποδοσφαιρο",
+   "start_kyiv": "2026-10-04T16:30",
+   "start_utc": "2026-10-04T13:30"
+  },
+  {
+   "домен": "cosmotetv.gr",
+   "канал": "Magenta Sport 9",
+   "заголовок": "Αμερικάνικο Ποδόσφαιρο: Μπάφαλο Μπιλς - Νιου Ίνγκλαντ Πάτριοτς (Ζ)",
+   "лига": "",
+   "вид": "американский футбол",
+   "слово": "Αμερικανικο Ποδοσφαιρο",
+   "start_kyiv": "2026-10-04T20:00",
+   "start_utc": "2026-10-04T17:00"
+  },
+  {
+   "домен": "cosmotetv.gr",
+   "канал": "Magenta Sport 9",
+   "заголовок": "Αμερικάνικο Ποδόσφαιρο: Σιάτλ Σίχοκς - Λος Άντζελες Τσάρτζερς (Ζ)",
+   "лига": "",
+   "вид": "американский футбол",
+   "слово": "Αμερικανικο Ποδοσφαιρο",
+   "start_kyiv": "2026-10-04T23:25",
+   "start_utc": "2026-10-04T20:25"
+  }
+ ],
  "на_разбор": [],
  "games": [
   {
    "guess": 0,
-   "sport": "F",
-   "league": "UAE League Cup",
-   "home": "Al Ain",
-   "away": "Ajman",
-   "start_kyiv": "2026-10-02T16:15",
-   "start_utc": "2026-10-02T13:15",
+   "sport": "B",
+   "league": "",
+   "home": "Γκόλντεν Στέιτ Βάλκιραϊς",
+   "away": "Ντάλας Γουίνγκς",
+   "start_kyiv": "2026-10-03T04:00",
+   "start_utc": "2026-10-03T01:00",
    "entries": [
     {
-     "source": "livesoccertv.com",
-     "channel": "Abu Dhabi Sports 1",
-     "url": "https://www.livesoccertv.com/channels/abu-dhabi-sports-1/",
-     "raw_title": "Al Ain vs Ajman"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 4",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
+     "raw_title": "Μπάσκετ: Γκόλντεν Στέιτ Βάλκιραϊς - Ντάλας Γουίνγκς (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Άλεξ ντε Μινόρ",
+   "away": "Κουέντιν Άλις",
+   "start_kyiv": "2026-10-03T06:00",
+   "start_utc": "2026-10-03T03:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 6",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
+     "raw_title": "Τένις: Άλεξ ντε Μινόρ - Κουέντιν Άλις (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Ματέο Μπερετίνι",
+   "away": "Αντόλφο Ντάνιελ Βαγιέχο",
+   "start_kyiv": "2026-10-03T10:00",
+   "start_utc": "2026-10-03T07:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 7",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
+     "raw_title": "Τένις: Ματέο Μπερετίνι - Αντόλφο Ντάνιελ Βαγιέχο (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Ουγκό Ουμπέρ",
+   "away": "Γίρι Λεχέτσκα",
+   "start_kyiv": "2026-10-03T12:00",
+   "start_utc": "2026-10-03T09:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 7",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
+     "raw_title": "Τένις: Ουγκό Ουμπέρ - Γίρι Λεχέτσκα (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Αλεξάντερ Ζβέρεφ",
+   "away": "Σανγκ Τζούντσενγκ",
+   "start_kyiv": "2026-10-03T14:00",
+   "start_utc": "2026-10-03T11:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 6",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
+     "raw_title": "Τένις: Αλεξάντερ Ζβέρεφ - Σανγκ Τζούντσενγκ (Ζ)"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UAE League Cup",
-   "home": "Al Wasl",
-   "away": "Al Ittihad Kalba",
-   "start_kyiv": "2026-10-02T16:15",
-   "start_utc": "2026-10-02T13:15",
+   "league": "",
+   "home": "Τσέστερφιλντ",
+   "away": "Τρανμίρ",
+   "start_kyiv": "2026-10-03T14:30",
+   "start_utc": "2026-10-03T11:30",
    "entries": [
     {
-     "source": "livesoccertv.com",
-     "channel": "Abu Dhabi Sports 2",
-     "url": "https://www.livesoccertv.com/channels/abu-dhabi-sports-2/",
-     "raw_title": "Al Wasl vs Al Ittihad Kalba"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Kazakhstan",
-   "away": "Moldova",
-   "start_kyiv": "2026-10-02T17:00",
-   "start_utc": "2026-10-02T14:00",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ART Sport 1",
-     "url": "https://www.livesoccertv.com/channels/artsport1/",
-     "raw_title": "Kazakhstan vs Moldova"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UAE League Cup",
-   "home": "Shabab Al Ahli",
-   "away": "Al Nasr",
-   "start_kyiv": "2026-10-02T18:45",
-   "start_utc": "2026-10-02T15:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "Abu Dhabi Sports 1",
-     "url": "https://www.livesoccertv.com/channels/abu-dhabi-sports-1/",
-     "raw_title": "Shabab Al Ahli vs Al Nasr"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UAE League Cup",
-   "home": "Khor Fakkan",
-   "away": "Al Jazira",
-   "start_kyiv": "2026-10-02T18:45",
-   "start_utc": "2026-10-02T15:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "Abu Dhabi Sports 2",
-     "url": "https://www.livesoccertv.com/channels/abu-dhabi-sports-2/",
-     "raw_title": "Khor Fakkan vs Al Jazira"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Latvia",
-   "away": "Montenegro",
-   "start_kyiv": "2026-10-02T19:00",
-   "start_utc": "2026-10-02T16:00",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ART Sport 1",
-     "url": "https://www.livesoccertv.com/channels/artsport1/",
-     "raw_title": "Latvia vs Montenegro"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Euro U-21 Qualifying",
-   "home": "Slovenia U21",
-   "away": "Netherlands U21",
-   "start_kyiv": "2026-10-02T19:00",
-   "start_utc": "2026-10-02T16:00",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ESPN Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
-     "raw_title": "Slovenia U21 vs Netherlands U21"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "France",
-   "away": "Italy",
-   "start_kyiv": "2026-10-02T21:45",
-   "start_utc": "2026-10-02T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ART Sport 1",
-     "url": "https://www.livesoccertv.com/channels/artsport1/",
-     "raw_title": "France vs Italy"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 1",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
+     "raw_title": "Ποδόσφαιρο: Τσέστερφιλντ - Τρανμίρ (Ζ)"
     },
     {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 2 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
-     "raw_title": "France vs Italy"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport Start",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1790985600&to=1791071999&endingIncludedInRange=false",
+     "raw_title": "Ποδόσφαιρο: Τσέστερφιλντ - Τρανμίρ (Ζ)"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Belgium",
-   "away": "Turkey",
-   "start_kyiv": "2026-10-02T21:45",
-   "start_utc": "2026-10-02T18:45",
+   "sport": "T",
+   "league": "",
+   "home": "Χάουµε Μουνάρ",
+   "away": "Κίριαν Ζακέ",
+   "start_kyiv": "2026-10-04T05:00",
+   "start_utc": "2026-10-04T02:00",
    "entries": [
     {
-     "source": "livesoccertv.com",
-     "channel": "ART Sport 2",
-     "url": "https://www.livesoccertv.com/channels/art-sport-2/",
-     "raw_title": "Belgium vs Turkey"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 7",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Τένις: Χάουµε Μουνάρ - Κίριαν Ζακέ (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Κάρλος Αλκαράθ",
+   "away": "Ντένις Σαποβάλοφ",
+   "start_kyiv": "2026-10-04T07:00",
+   "start_utc": "2026-10-04T04:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 7",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Τένις: Κάρλος Αλκαράθ - Ντένις Σαποβάλοφ (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Ουµπέρ Χούρκατς",
+   "away": "Κάρεν Κατσάνοφ",
+   "start_kyiv": "2026-10-04T08:00",
+   "start_utc": "2026-10-04T05:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 6",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Τένις: Ουµπέρ Χούρκατς - Κάρεν Κατσάνοφ (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Άλεξ ντε Μινόρ",
+   "away": "Αντρέι Ρούμπλεφ",
+   "start_kyiv": "2026-10-04T10:00",
+   "start_utc": "2026-10-04T07:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 6",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Τένις: Άλεξ ντε Μινόρ - Αντρέι Ρούμπλεφ (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Βαλεντίν Βασερό",
+   "away": "Αρτούρ Φις",
+   "start_kyiv": "2026-10-04T10:00",
+   "start_utc": "2026-10-04T07:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 7",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Τένις: Βαλεντίν Βασερό - Αρτούρ Φις (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Ντανιίλ Μεντβέντεφ",
+   "away": "Φρανσίσκο Σερούντολο",
+   "start_kyiv": "2026-10-04T11:30",
+   "start_utc": "2026-10-04T08:30",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 8",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Τένις: Ντανιίλ Μεντβέντεφ - Φρανσίσκο Σερούντολο (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "",
+   "home": "Γίρι Λεχέτσκα",
+   "away": "Αντόλφο Ντάνιελ Βαγιέχο",
+   "start_kyiv": "2026-10-04T12:00",
+   "start_utc": "2026-10-04T09:00",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 7",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Τένις: Γίρι Λεχέτσκα - Αντόλφο Ντάνιελ Βαγιέχο (Ζ)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "",
+   "home": "Ομπραντόιρο",
+   "away": "Ρεάλ Μαδρίτης",
+   "start_kyiv": "2026-10-04T13:30",
+   "start_utc": "2026-10-04T10:30",
+   "entries": [
+    {
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 5",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Μπάσκετ: Ομπραντόιρο - Ρεάλ Μαδρίτης (Ζ)"
     },
     {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 3 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
-     "raw_title": "Belgium vs Turkey"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport Start",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Μπάσκετ: Ομπραντόιρο - Ρεάλ Μαδρίτης (Ζ)"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Bosnia and Herzegovina",
-   "away": "Sweden",
-   "start_kyiv": "2026-10-02T21:45",
-   "start_utc": "2026-10-02T18:45",
+   "sport": "T",
+   "league": "",
+   "home": "Αλεξάντερ Ζβέρεφ",
+   "away": "Νόβακ Τζόκοβιτς",
+   "start_kyiv": "2026-10-04T14:00",
+   "start_utc": "2026-10-04T11:00",
    "entries": [
     {
-     "source": "livesoccertv.com",
-     "channel": "ART Sport 3",
-     "url": "https://www.livesoccertv.com/channels/art-sport-3/",
-     "raw_title": "Bosnia and Herzegovina vs Sweden"
-    },
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 5 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-5-digitalb/",
-     "raw_title": "Bosnia and Herzegovina vs Sweden"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 6",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Τένις: Αλεξάντερ Ζβέρεφ - Νόβακ Τζόκοβιτς (Ζ)"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Poland",
-   "away": "Romania",
-   "start_kyiv": "2026-10-02T21:45",
-   "start_utc": "2026-10-02T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 4 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-4-digitalb/",
-     "raw_title": "Poland vs Romania"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Eerste Divisie",
-   "home": "Helmond Sport",
-   "away": "Heracles",
-   "start_kyiv": "2026-10-02T22:00",
-   "start_utc": "2026-10-02T19:00",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ESPN Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
-     "raw_title": "Helmond Sport vs Heracles"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Finland",
-   "away": "Albania",
-   "start_kyiv": "2026-10-03T16:00",
-   "start_utc": "2026-10-03T13:00",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 2 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
-     "raw_title": "Finland vs Albania"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Eerste Divisie",
-   "home": "Oss",
-   "away": "MVV",
-   "start_kyiv": "2026-10-03T17:30",
-   "start_utc": "2026-10-03T14:30",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ESPN 2 Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-2-netherlands/",
-     "raw_title": "Oss vs MVV"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Eerste Divisie",
-   "home": "Vitesse",
-   "away": "NAC Breda",
-   "start_kyiv": "2026-10-03T17:30",
-   "start_utc": "2026-10-03T14:30",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ESPN Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
-     "raw_title": "Vitesse vs NAC Breda"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Croatia",
-   "away": "England",
-   "start_kyiv": "2026-10-03T19:00",
-   "start_utc": "2026-10-03T16:00",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 1 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-digitalb/",
-     "raw_title": "Croatia vs England"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Eerste Divisie",
-   "home": "Almere City",
-   "away": "Volendam",
-   "start_kyiv": "2026-10-03T21:00",
-   "start_utc": "2026-10-03T18:00",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ESPN 2 Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-2-netherlands/",
-     "raw_title": "Almere City vs Volendam"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Eerste Divisie",
-   "home": "RKC Waalwijk",
-   "away": "Emmen",
-   "start_kyiv": "2026-10-03T21:00",
-   "start_utc": "2026-10-03T18:00",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ESPN 3 Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-3-netherlands/",
-     "raw_title": "RKC Waalwijk vs Emmen"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Spain",
-   "away": "Czech Republic",
-   "start_kyiv": "2026-10-03T21:45",
-   "start_utc": "2026-10-03T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 2 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
-     "raw_title": "Spain vs Czech Republic"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Switzerland",
-   "away": "Slovenia",
-   "start_kyiv": "2026-10-03T21:45",
-   "start_utc": "2026-10-03T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 3 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
-     "raw_title": "Switzerland vs Slovenia"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "North Macedonia",
-   "away": "Scotland",
-   "start_kyiv": "2026-10-03T21:45",
-   "start_utc": "2026-10-03T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 4 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-4-digitalb/",
-     "raw_title": "North Macedonia vs Scotland"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Eerste Divisie",
-   "home": "VVV",
-   "away": "Roda JC",
+   "sport": "B",
+   "league": "",
+   "home": "Φενέρμπαχτσε",
+   "away": "Κιορφέζ",
    "start_kyiv": "2026-10-04T15:30",
    "start_utc": "2026-10-04T12:30",
    "entries": [
     {
-     "source": "livesoccertv.com",
-     "channel": "ESPN Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
-     "raw_title": "VVV vs Roda JC"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 4",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Μπάσκετ: Φενέρμπαχτσε - Κιορφέζ (Ζ)"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "F",
-   "league": "Eredivisie Women",
-   "home": "Feyenoord W",
-   "away": "Ajax W",
-   "start_kyiv": "2026-10-04T17:45",
-   "start_utc": "2026-10-04T14:45",
+   "sport": "B",
+   "league": "",
+   "home": "Μπαντίρμα",
+   "away": "Αναντολού Εφές",
+   "start_kyiv": "2026-10-04T18:00",
+   "start_utc": "2026-10-04T15:00",
    "entries": [
     {
-     "source": "livesoccertv.com",
-     "channel": "ESPN Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
-     "raw_title": "Feyenoord vs Ajax"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 5",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Μπάσκετ: Μπαντίρμα - Αναντολού Εφές (Ζ)"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Kosovo",
-   "away": "Austria",
-   "start_kyiv": "2026-10-04T19:00",
-   "start_utc": "2026-10-04T16:00",
+   "sport": "B",
+   "league": "",
+   "home": "Μούρθια",
+   "away": "Μπαρτσελόνα",
+   "start_kyiv": "2026-10-04T20:00",
+   "start_utc": "2026-10-04T17:00",
    "entries": [
     {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 2 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
-     "raw_title": "Kosovo vs Austria"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 4",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Μπάσκετ: Μούρθια - Μπαρτσελόνα (Ζ)"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "F",
-   "league": "Friendly",
-   "home": "Egypt",
-   "away": "South Africa",
+   "sport": "B",
+   "league": "",
+   "home": "Ατλάντα Ντριμ",
+   "away": "Νιου Γιορκ Λίμπερτι",
    "start_kyiv": "2026-10-04T21:00",
    "start_utc": "2026-10-04T18:00",
    "entries": [
     {
-     "source": "livesoccertv.com",
-     "channel": "ON Sport 1",
-     "url": "https://www.livesoccertv.com/channels/on-sport-egypt/",
-     "raw_title": "Egypt vs South Africa"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Portugal",
-   "away": "Norway",
-   "start_kyiv": "2026-10-04T21:45",
-   "start_utc": "2026-10-04T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 1 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-digitalb/",
-     "raw_title": "Portugal vs Norway"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Greece",
-   "away": "Germany",
-   "start_kyiv": "2026-10-04T21:45",
-   "start_utc": "2026-10-04T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 2 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
-     "raw_title": "Greece vs Germany"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Netherlands",
-   "away": "Serbia",
-   "start_kyiv": "2026-10-04T21:45",
-   "start_utc": "2026-10-04T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 3 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
-     "raw_title": "Netherlands vs Serbia"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "France",
-   "away": "Belgium",
-   "start_kyiv": "2026-10-05T21:45",
-   "start_utc": "2026-10-05T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 2 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
-     "raw_title": "France vs Belgium"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Italy",
-   "away": "Turkey",
-   "start_kyiv": "2026-10-05T21:45",
-   "start_utc": "2026-10-05T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 3 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
-     "raw_title": "Italy vs Turkey"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Bosnia and Herzegovina",
-   "away": "Poland",
-   "start_kyiv": "2026-10-05T21:45",
-   "start_utc": "2026-10-05T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 4 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-4-digitalb/",
-     "raw_title": "Bosnia and Herzegovina vs Poland"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Euro U-21 Qualifying",
-   "home": "Netherlands U21",
-   "away": "Bosnia-Herzegovina U21",
-   "start_kyiv": "2026-10-06T19:45",
-   "start_utc": "2026-10-06T16:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "ESPN Netherlands",
-     "url": "https://www.livesoccertv.com/channels/espn-netherlands/",
-     "raw_title": "Netherlands U21 vs Bosnia-Herzegovina U21"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Albania",
-   "away": "San Marino",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 2 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-2-digitalb/",
-     "raw_title": "Albania vs San Marino"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Croatia",
-   "away": "Spain",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 3 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-3-digitalb/",
-     "raw_title": "Croatia vs Spain"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "England",
-   "away": "Czech Republic",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 4 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-4-digitalb/",
-     "raw_title": "England vs Czech Republic"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Switzerland",
-   "away": "North Macedonia",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "livesoccertv.com",
-     "channel": "SuperSport 5 Digitalb",
-     "url": "https://www.livesoccertv.com/channels/supersport-5-digitalb/",
-     "raw_title": "Switzerland vs North Macedonia"
+     "source": "cosmotetv.gr",
+     "channel": "Magenta Sport 6",
+     "url": "https://mwapi-prod.cosmotetvott.gr/api/v3.4/epg/listings/el?from=1791072000&to=1791158399&endingIncludedInRange=false",
+     "raw_title": "Μπάσκετ: Ατλάντα Ντριμ - Νιου Γιορκ Λίμπερτι (Ζ)"
     }
    ]
   }
