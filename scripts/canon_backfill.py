@@ -357,6 +357,46 @@ def main() -> int:
                 conn.execute("UPDATE events SET flags=? WHERE id=? "
                              "AND flags IS NULL",
                              (f"fs:{ref['fs_id']}", game["id"]))
+        # Событие лежит в базе ПЕРЕВЁРНУТЫМ (#4512, владелец 03.10): ранняя
+        # заливка завела «Bosna BH Telecom — Spartak Office Shoes», эталон
+        # знает «Spartak Subotica — KK Bosna». Заливка такое событие находит
+        # (склейка проверяет и обратный порядок), но сторон не меняет, а
+        # сверка смотрит пару только прямо — игра оставалась без метки
+        # навсегда. Пробуем оставшихся без метки наоборот — и строго: ОБЕ
+        # команды сошлись сами почти дословно (≥ 95, без мостов по лиге и
+        # одной стороне) и турнир тот же. Порога 85 мало: «Madrid CFF —
+        # Athletic» наоборот ложилась на чужой матч «Atl. Paso — Real
+        # Madrid C» (87; поймано на пробе 03.10). Тогда разворачиваем событие
+        # под порядок эталона и ставим метку.
+        без_метки = {r["id"] for r in conn.execute(
+            "SELECT id FROM events WHERE flags IS NULL")}
+        наоборот = [dict(g, home=g["away"], away=g["home"]) for g in всё
+                    if g["id"] in без_метки and g["home"] and g["away"]
+                    and not names.is_placeholder(g["home"])
+                    and not names.is_placeholder(g["away"])]
+        flipped = 0
+        for game, ref, _ in canon.align(
+                наоборот, reference, dictionary.league_overrides(conn))["sure"]:
+            if not ref.get("fs_id") or canon._pair_score(game, ref) < 95:
+                continue
+            лига = (game.get("league") or "").strip()
+            лига = overrides.get(лига, лига)
+            if not лига or canon._league_core(лига).lower() != \
+                    canon._league_core(ref.get("league") or "").lower():
+                continue
+            hit = conn.execute(
+                "UPDATE events SET flags = ?, "
+                "team_home_auto = team_away_auto, "
+                "team_away_auto = team_home_auto, "
+                "team_home_id = team_away_id, team_away_id = team_home_id "
+                "WHERE id = ? AND flags IS NULL",
+                (f"fs:{ref['fs_id']}", game["id"])).rowcount
+            flipped += hit
+            if hit and flipped <= 10:
+                print(f"  развёрнута под эталон: #{game['id']} {game['away']} — "
+                      f"{game['home']} → {ref['home']} — {ref['away']}")
+        if flipped:
+            print(f"перевёрнутых игр развёрнуто под эталон: {flipped}")
         groups: dict[str, list] = {}
         for r in conn.execute("SELECT id, team_home_id, team_away_id, flags "
                               "FROM events WHERE flags LIKE 'fs:%'"):
