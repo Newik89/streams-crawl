@@ -21,8 +21,8 @@
         div.title   `Košarka: Crna Gora - Ukrajina, kvalifikacije za SP, direktno`
 
 Заголовок: вид спорта до двоеточия, дальше пара через дефис, а в хвосте через
-запятую — турнир и пометка эфира. `direktno` — честный маркер прямой
-трансляции, `snimak` и `r` (repriza) — повтор.
+запятую — турнир и пометка эфира. `direktno` и `prenos` — честные маркеры
+прямой трансляции, `snimak` и `r` (repriza) — повтор.
 """
 
 from __future__ import annotations
@@ -44,7 +44,12 @@ CHANNELS = {"177": "TVCG 1", "178": "TVCG 2", "978": "TVCG 3", "179": "TVMNE"}
 _HHMM = re.compile(r"(\d{1,2}):(\d{2})")
 _ID_IN_URL = re.compile(r"broadcastId=(\d+)")
 _DAY_IN_URL = re.compile(r"[?&]day=(\d+)")
-_LIVE = re.compile(r"\bdirektno\b", re.I)
+#: Прямой эфир сайт помечает двумя словами: `direktno` и `prenos` (владелец
+#: 03.10, #4209: «Fudbal: Crna Gora - Jermenija, Liga nacija, prenos» на TVCG 1
+#: — матч переехал с TVCG 2, а мы знали только `direktno` и канал потеряли).
+#: `odloženi prenos` — показ с задержкой, это не прямой эфир.
+_LIVE = re.compile(r"\b(?:direktno|prenos)\b", re.I)
+_DELAYED = re.compile(r"\bodlo[žz]en\w*\s+prenos\b", re.I)
 
 
 def _clean(text: str) -> str:
@@ -95,7 +100,10 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             raw_time=hm.group(0),
             league_raw=", ".join(rest.split(",")[1:]).strip()[:120] if rest else "",
             sport_raw=sport.strip() if rest else "",
-            live_raw="direktno" if _LIVE.search(title) else "",
+            # в строку уходит одно и то же слово-маркер: его знает словарь
+            # прямого эфира (`markers.json`), а `prenos` там нет
+            live_raw=("direktno" if _LIVE.search(title)
+                      and not _DELAYED.search(title) else ""),
             match_raw=pair, source_url=url,
             extra={"day": d.isoformat()},
         ))
