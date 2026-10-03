@@ -95,11 +95,13 @@ jobs:
 
       - name: Поставить, что нужно
         run: |
-          # selectolax закреплён ниже 1.0: версия 1.0.0 (вышла 03.10.2026) убрала
-          # прежний разборщик `selectolax.parser.HTMLParser`, на котором стоят все
-          # 50 парсеров — разбор падал на импорте, вечерний обход #172 покраснел.
-          # Переезд на новый разборщик (lexbor) — отдельная работа с регрессом.
-          pip install requests brotli "selectolax<1" tzdata playwright rapidfuzz
+          # Все версии закреплены в requirements-crawl.txt (владелец 03.10.2026:
+          # «как этого избежать»). До того стояло `pip install …` без версий:
+          # вышла selectolax 1.0.0 без прежнего разборщика
+          # `selectolax.parser.HTMLParser` (на нём все 50 парсеров), GitHub
+          # поставил её сам — разбор падал на импорте, обход #172 покраснел.
+          # Обновление библиотек — только правкой этого файла и пробным запуском.
+          pip install -r requirements-crawl.txt
           playwright install --with-deps chromium
 
       - name: Не ходили ли уже сегодня
@@ -170,6 +172,18 @@ jobs:
           [ -n "${{ steps.what.outputs.only }}" ] && WHAT="site-${{ steps.what.outputs.only }}"
           export WHAT
           sh scripts/knock.sh start
+
+      - name: Самопроверка окружения
+        # До обхода: парсеры и разбор должны хотя бы загрузиться. 03.10 о
+        # сломанной библиотеке узнали только ПОСЛЕ 80 минут обхода, на шаге
+        # разбора. Теперь сломанное окружение краснеет за секунду и к сайтам
+        # не идёт вовсе. Стоит после стука «начали»: при провале работают те
+        # же оповещения, что и у обхода (issue владельцу, стук «закончили»).
+        if: steps.guard.outputs.run == '1'
+        run: |
+          python -c "import app.parsers as p; p._load_all(); print('парсеры загрузились')"
+          python scripts/parse_live.py --help > /dev/null
+          echo "разбор загружается"
 
       - name: Проверка читалок
         if: github.event_name == 'schedule' || inputs.readers == 'yes'

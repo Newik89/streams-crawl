@@ -1,0 +1,18 @@
+# Библиотеки обхода на GitHub — ТОЧНЫЕ версии последнего удачного прогона
+# (#170, 03.10.2026, Python 3.12). Сами не обновляются: 03.10 вышла
+# selectolax 1.0.0, GitHub поставил её без спроса, и обход #172 упал на
+# разборе. Обновлять осознанно: поменять версию здесь → пробный запуск
+# (scripts/github_run.py dispatch, режим proba) → зелёный → оставить.
+brotli==1.2.0
+certifi==2026.7.22
+charset-normalizer==3.5.2
+greenlet==3.5.6
+idna==3.20
+playwright==1.63.0
+pyee==13.0.1
+rapidfuzz==3.14.6
+requests==2.34.2
+selectolax==0.4.13
+typing-extensions==4.16.0
+tzdata==2026.5
+urllib3==2.8.0
