@@ -52,6 +52,10 @@
   .chan { display:inline-block; margin:1px 4px 1px 0; padding:2px 8px;
           border:1px solid var(--line); border-radius:999px; font-size:12.5px;
           background:var(--bg); white-space:nowrap; }
+  /* переход на расписание канала — как на вкладке Matches (владелец 04.10) */
+  .chan-go { margin-left:6px; padding:0 3px; color:var(--muted);
+             text-decoration:none; font-size:12px; border-left:1px solid var(--line); }
+  .chan-go:hover { color:var(--accent); }
   .empty { color:var(--muted); padding:30px 0; text-align:center; }
   #more { display:block; margin:18px auto; }
   td.idx, th.idx { color:var(--muted); font-size:11px; white-space:nowrap;
@@ -111,7 +115,7 @@
         <td class="match"><b>{{ g.title }}</b>
           {%- if g.league and g.league not in g.title %}<div class="lg">{{ g.league }}</div>{% endif %}
           {%- if admin %}<div class="adm" title="Видно только вам: слово, по которому решён вид спорта, и сайт-источник">{{ g.words | join(', ') }} · {{ g.domains | join(', ') }}</div>{% endif %}</td>
-        <td>{% for c in g.channels %}<span class="chan">{{ c }}</span>{% endfor %}</td>
+        <td>{% for c in g.links %}<span class="chan">{{ c.name }}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Open the channel's schedule">↗</a>{% endif %}</span>{% endfor %}</td>
       </tr>
       {% endfor %}
     </table>
@@ -120,14 +124,8 @@
 <button id="more" class="pill" hidden type="button">Show more</button>
 <p class="empty" id="nothing" hidden>Nothing matches the filters.</p>
 
-<footer style="margin-top:32px; padding-top:14px; border-top:1px solid var(--line);
-               color:var(--muted); font-size:13px">
-  {% if h and h.crawl %}Last collected: <b>{{ h.crawl.strftime('%d.%m %H:%M') }}</b>
-    {%- if h.crawl_ago %} ({{ h.crawl_ago }}){% endif %}
-  {% else %}Last collected: &mdash;{% endif %}
-  {%- if h and h.stale %} <b style="color:var(--live)">&middot; data may be out of date</b>{% endif %}
-  &middot; everything live on TV that is not football, basketball or tennis
-</footer>
+{% set footer_note = "everything live on TV that is not football, basketball or tennis" %}
+{% include "_collect_footer.html" %}
 </main>
 
 <script>

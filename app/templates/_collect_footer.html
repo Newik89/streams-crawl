@@ -1,0 +1,73 @@
+{# Нижний блок витрины: когда собирали, три последних сбора, кнопки сбора.
+   Общий для вкладок Matches и Other Sport (владелец 04.10: «этот блок должен
+   быть доступен и в Other Sport»). `footer_note` — приписка вкладки. #}
+<footer style="margin-top:32px; padding-top:14px; border-top:1px solid var(--line);
+               display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+               color:var(--muted); font-size:13px">
+  <span title="Когда сайты обходили и когда результат лёг в базу">
+    {% if h and h.crawl %}Last collected: <b>{{ h.crawl.strftime('%d.%m %H:%M') }}</b>
+      {%- if h.crawl_ago %} ({{ h.crawl_ago }}){% endif %}
+      {%- if h['import'] %}, loaded {{ h['import'].strftime('%d.%m %H:%M') }}{% endif %}
+      {%- if h.games %}, {{ h.games }} games ahead{% endif %}
+    {% else %}Last collected: &mdash;{% endif %}
+    {%- if h and h.stale %} <b style="color:var(--live)">&middot; data may be out of date</b>{% endif %}
+    {%- if footer_note %} &middot; {{ footer_note }}{% endif %}
+  </span>
+  {% if h and h.runs %}
+  <span style="flex-basis:100%; font-size:12px" title="Три последних сбора: когда, на сколько дней и что принёс">
+    Last 3 runs:
+    {%- for r in h.runs %}
+      <span style="margin-left:8px"><b>{{ r.when }}</b> &middot; {{ r.what }} &middot;
+        {{ r.rows_found }} rows &middot; {{ r.events_upserted }} games
+        {%- if r.sources_failed %} &middot; <a href="{{ url_for('run_failed', run_id=r.id) }}"
+             target="_blank" rel="noopener" style="color:var(--live); font-weight:600"
+             title="Какие сайты не пропустили обход — и правка адреса">{{ r.sources_failed }} failed</a>{% endif %}</span>
+      {%- if not loop.last %} |{% endif %}
+    {%- endfor %}
+  </span>
+  {% endif %}
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, m in msgs %}<span style="{% if cat == 'error' %}color:var(--live){% endif %}">{{ m }}</span>{% endfor %}
+  {% endwith %}
+  <span class="sp" style="margin-left:auto"></span>
+  <form method="post" action="{{ url_for('schedule_run') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="2">
+    <button class="pill" type="submit" title="Fetch fresh data (once an hour)">Collect 2 days</button>
+  </form>
+  <form method="post" action="{{ url_for('schedule_run') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="5">
+    {% if not admin %}
+    {# вошедшему владельцу PIN не нужен (20.09) — поле только гостям #}
+    <input type="password" name="pin" placeholder="PIN" size="6"
+           style="padding:6px 8px; border:1px solid var(--line); border-radius:8px">
+    {% endif %}
+    <button class="pill" type="submit" title="{{ 'Полный обход на 5 дней — без PIN, вы вошли' if admin else 'Extended window, PIN required' }}">Collect 5 days</button>
+  </form>
+  {% if admin %}
+  {# владелец 20.09: вошедшему — полный обход на 6 дней и скан одной даты
+     прямо с витрины; маршруты те же, что у дашборда (без PIN и лимитов) #}
+  <form method="post" action="{{ url_for('crawl_run') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="days" value="6">
+    <button class="pill" type="submit" title="Полный обход «сегодня + 6 дней» — только для вошедшего">Обход 6 дней</button>
+  </form>
+  <form method="post" action="{{ url_for('crawl_day') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="date" name="date" required id="scan-date"
+           style="padding:6px 8px; border:1px solid var(--line); border-radius:8px">
+    <button class="pill" type="submit" title="Пересобрать выбранный день отдельным прогоном">Скан даты</button>
+  </form>
+  <script>
+    (function () {
+      var d = document.getElementById('scan-date');
+      if (!d) return;
+      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      var iso = function (t) { return t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-' + pad(t.getDate()); };
+      var today = new Date(); var far = new Date(today.getTime() + 13 * 864e5);
+      d.min = iso(today); d.max = iso(far); d.value = iso(today);
+    })();
+  </script>
+  {% endif %}
+</footer>

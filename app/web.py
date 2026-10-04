@@ -1093,13 +1093,18 @@ def create_app() -> Flask:
     def schedule_run():
         verify_csrf()
         days = _days_choice(request.form.get("days"))
+        # нижний блок с кнопками сбора стоит на обеих вкладках витрины
+        # (владелец 04.10) — возвращаем туда, где нажали
+        откуда = (request.referrer or "").split("#")[0].split("?")[0]
+        back = url_for("schedule_other" if откуда.endswith("/schedule/other")
+                       else "schedule")
         conn = db.connect()
         try:
             busy = crawl_hook.running(conn)
             if busy:                         # до узды: занятость — не попытка
                 flash(f"Collection is already {busy['state_en']} (since "
                       f"{busy['since']}) — please wait until it finishes.", "error")
-                return redirect(url_for("schedule"))
+                return redirect(back)
             if session.get("admin"):
                 pass    # вошедший владелец: без PIN и без часовой паузы (20.09)
             elif days != 2:                  # длинное окно гостю — только по PIN
@@ -1107,18 +1112,18 @@ def create_app() -> Flask:
                 if not pin or not secrets.compare_digest(
                         request.form.get("pin", ""), pin):
                     flash("Wrong PIN.", "error")
-                    return redirect(url_for("schedule"))
+                    return redirect(back)
             else:
                 last = db.get_setting(conn, "public_run_at")
                 if last and time.time() - float(last) < PUBLIC_RUN_COOLDOWN:
                     wait = int((PUBLIC_RUN_COOLDOWN - (time.time() - float(last))) // 60) + 1
                     flash(f"Please wait ~{wait} min between runs.", "error")
-                    return redirect(url_for("schedule"))
+                    return redirect(back)
                 db.set_setting(conn, "public_run_at", str(time.time()))
         finally:
             conn.close()
         _dispatch(days)
-        return redirect(url_for("schedule"))
+        return redirect(back)
 
     # ── API (ТЗ разд. 13): read-only JSON по ключу ───────────────────────────
 

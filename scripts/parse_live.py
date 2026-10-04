@@ -855,6 +855,9 @@ def main() -> int:
             "канал": r.program.channel_raw or "",
             "заголовок": (r.program.title or "")[:200],
             "лига": (r.program.league_raw or "")[:120],
+            # страница, где строка найдена, — для ссылки «открыть расписание
+            # канала» на вкладке Other Sport (владелец 04.10)
+            "url": r.program.source_url or "",
             "вид": r.sport_group or "другое",
             "слово": r.reason.split(":", 1)[-1].strip()[:60],
             "start_kyiv": r.start_kyiv.strftime("%Y-%m-%dT%H:%M"),

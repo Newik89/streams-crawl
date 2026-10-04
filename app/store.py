@@ -865,16 +865,18 @@ def save_other_sport(conn: sqlite3.Connection, rows: list[dict]) -> int:
             continue
         conn.execute(
             "INSERT INTO other_sport (sport_group, word, domain, channel, title, "
-            "league, start_kyiv, start_utc, first_seen, last_seen) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            "league, start_kyiv, start_utc, first_seen, last_seen, source_url) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
             "ON CONFLICT (domain, channel, title, start_utc) DO UPDATE SET "
             "last_seen = excluded.last_seen, sport_group = excluded.sport_group, "
             "word = excluded.word, league = excluded.league, "
-            "start_kyiv = excluded.start_kyiv",
+            "start_kyiv = excluded.start_kyiv, "
+            # старый файл адреса не несёт — уже записанный не затираем
+            "source_url = COALESCE(NULLIF(excluded.source_url, ''), source_url)",
             (r.get("вид") or "другое", (r.get("слово") or "")[:60],
              r.get("домен") or "", r.get("канал") or "", r["заголовок"][:200],
              (r.get("лига") or "")[:120], r["start_kyiv"], r["start_utc"],
-             now, now))
+             now, now, r.get("url") or ""))
         n += 1
     conn.commit()
     return n
@@ -890,13 +892,29 @@ def other_sport_schedule(conn: sqlite3.Connection,
     edge = (now - timedelta(minutes=OTHER_SPORT_GRACE_MIN)).strftime(
         "%Y-%m-%dT%H:%M")
     try:
+        have = {r[1] for r in conn.execute("PRAGMA table_info(other_sport)")}
         rows = conn.execute(
             "SELECT sport_group, word, domain, channel, title, league, "
-            "start_kyiv FROM other_sport WHERE start_kyiv >= ? "
+            "start_kyiv, "
+            + ("source_url" if "source_url" in have else "'' AS source_url")
+            + " FROM other_sport WHERE start_kyiv >= ? "
             "ORDER BY start_kyiv, sport_group, title, channel",
             (edge,)).fetchall()
     except sqlite3.OperationalError:
         return []          # таблицы ещё нет: база старше вкладки
+    # Ссылка «открыть расписание канала» — тот же принцип, что у матчей
+    # (`human_url`; владелец 04.10). Строки, залитые до правки, адреса
+    # страницы не знают — им даём страницу расписания самого сайта
+    base = {_bare(r["domain"]): r["base_url"] or "" for r in conn.execute(
+        "SELECT domain, base_url FROM sources")}
+
+    def link(domain: str, source_url: str | None) -> str:
+        home = base.get(_bare(domain), "")
+        p = urlsplit(home)
+        # в base_url бывают старые даты из закладок — берём без query
+        page = f"{p.scheme}://{p.netloc}{p.path}" if p.scheme else home
+        return human_url(source_url, home) or page
+
     out: dict[tuple[str, str, str], dict] = {}
     for r in rows:
         key = (r["start_kyiv"], r["sport_group"], r["title"])
@@ -907,7 +925,10 @@ def other_sport_schedule(conn: sqlite3.Connection,
                 "date": start.date(), "time": start.strftime("%H:%M"),
                 "sport": r["sport_group"], "title": r["title"],
                 "league": r["league"] or "", "live": start <= now,
-                "channels": [], "words": [], "domains": []}
+                "channels": [], "words": [], "domains": [], "links": []}
+        if r["channel"] and r["channel"] not in item["channels"]:
+            item["links"].append({"name": r["channel"],
+                                  "url": link(r["domain"], r["source_url"])})
         for field, value in (("channels", r["channel"]), ("words", r["word"]),
                              ("domains", r["domain"])):
             if value and value not in item[field]:

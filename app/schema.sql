@@ -256,6 +256,7 @@ CREATE TABLE IF NOT EXISTS other_sport (
     start_utc   TEXT NOT NULL,
     first_seen  TEXT NOT NULL DEFAULT (datetime('now')),
     last_seen   TEXT NOT NULL DEFAULT (datetime('now')),
+    source_url  TEXT,                     -- страница, где строка найдена (ссылка ↗ у канала)
     UNIQUE (domain, channel, title, start_utc)
 );
 
