@@ -146,6 +146,15 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         row.needs_review = True
         return row
     row.sport = letter
+    if letter == "T" and (row.home, row.away) != (verdict.home, verdict.away):
+        # Теннис: пол игрока задаёт турнир (WTA/ATP), к фамилии его не пишет
+        # ни эталон flashscore, ни другие сайты. sportklub.hr кладёт в описание
+        # «teniski turnir za žene» — и «Kraus W — Yastremska W» не сходилась с
+        # эталонной «Kraus S. — Yastremska D.», все женские матчи сайта жили
+        # без канона (#4597, владелец 04.10). Возраст оставляем как был.
+        без_пола = " ".join(p for p in row.league_category.split() if p != "W")
+        row.home = leagues.with_category(verdict.home, без_пола)
+        row.away = leagues.with_category(verdict.away, без_пола)
 
     if row.start_utc is None:
         row.reason = "не разобрали время"

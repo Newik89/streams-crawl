@@ -349,6 +349,14 @@ def _pair_score(game: dict, ref: dict) -> int:
     моя = sorted(set((моя + " " + " ".join(из_лиги)).split()))
     его = sorted(set(names.category(
         f"{ref.get('home') or ''} {ref.get('away') or ''}").split()))
+    # В теннисе буква пола в имени ничего не значит: эталон пишет игроков с
+    # инициалом («Zheng W.», «Osuigwe W.» — это не «женская», а имя), пол
+    # задаёт турнир. Стена по категории тут только мешала: «Kraus W» с
+    # sportklub.hr не сходилась с «Kraus S.», а эталонная «Zheng W.» — ни с
+    # одним сайтом (#4597, владелец 04.10). Возраст сравниваем как раньше
+    if (game.get("sport") or "") == "T":
+        моя = [m for m in моя if m != "W"]
+        его = [m for m in его if m != "W"]
     if моя != его:
         return 0
     # Соперник ещё не назван («España — TBC» у movistarplus за день до

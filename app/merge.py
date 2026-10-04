@@ -167,11 +167,23 @@ def _same_game(a: Entry, b: Entry, threshold: int) -> bool:
     if спорт_врозь and abs(a.start - b.start) > timedelta(
             minutes=SPORT_CLASH_WINDOW):
         return False
-    if names.category(a.home) != names.category(b.home) \
-            or names.category(a.away) != names.category(b.away):
+    # В теннисе буква пола в имени — не категория: это либо инициал («Zheng
+    # W.»), либо метка, которую разбор больше не дописывает (#4597, 04.10).
+    # Без этого игра «Kraus — Yastremska» не нашла бы в базе себя же,
+    # залитую раньше как «Kraus W — Yastremska W», и легла бы двойней
+    теннис = not спорт_врозь and "T" in (a.sport, b.sport)
+
+    def категория(name: str) -> str:
+        cat = names.category(name)
+        if теннис:
+            cat = " ".join(p for p in cat.split() if p != "W")
+        return cat
+
+    if категория(a.home) != категория(b.home) \
+            or категория(a.away) != категория(b.away):
         # порядок может быть обратным — проверим и его, прежде чем отказать
-        if names.category(a.home) != names.category(b.away) \
-                or names.category(a.away) != names.category(b.home):
+        if категория(a.home) != категория(b.away) \
+                or категория(a.away) != категория(b.home):
             return False
     direct = min(names.similarity(a.home, b.home),
                  names.similarity(a.away, b.away))
