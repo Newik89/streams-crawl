@@ -1379,45 +1379,97 @@
    "τουρνουά",
    "טורניר"
   ],
-  "стадия": [
-   "final",
-   "finale",
-   "finals",
-   "finał",
-   "finais",
-   "finále",
-   "финал",
-   "фінал",
-   "τελικός",
-   "meia-final",
-   "meias-finais",
-   "semifinal",
-   "semi-final",
-   "semifinale",
-   "semifinais",
-   "polufinale",
-   "półfinał",
-   "полуфинал",
-   "півфінал",
-   "ημιτελικός",
-   "quartos de final",
-   "quarterfinal",
-   "quarter-final",
-   "četvrtfinale",
-   "ćwierćfinał",
-   "четвертьфинал",
-   "чвертьфінал",
-   "προημιτελικός",
-   "oitavos de final",
-   "osmina finala",
-   "qualification",
-   "qualifying",
-   "kvalifikacije",
-   "kwalifikacje",
-   "parovi",
-   "גמר",
-   "משחקים",
-   "משחק אחד"
+  "стадия": {
+   "_": "Ключ — как стадия пишется на витрине у сведённой трансляции («ATP Beijing — Quarterfinals»); порядок проверки: четвертьфинал, полуфинал, финал — «quartos de final» не должен стать финалом. «прочее» только помогает узнать заголовок.",
+   "Quarterfinals": [
+    "quartos de final",
+    "quarterfinal",
+    "quarterfinals",
+    "quarter-final",
+    "quarter-finals",
+    "četvrtfinale",
+    "ćwierćfinał",
+    "четвертьфинал",
+    "чвертьфінал",
+    "προημιτελικός",
+    "רבעי גמר",
+    "qf"
+   ],
+   "Semifinals": [
+    "meia-final",
+    "meias-finais",
+    "semifinal",
+    "semifinals",
+    "semi-final",
+    "semi-finals",
+    "semifinale",
+    "semifinais",
+    "polufinale",
+    "półfinał",
+    "полуфинал",
+    "півфінал",
+    "ημιτελικός",
+    "חצאי גמר",
+    "sf"
+   ],
+   "Final": [
+    "final",
+    "finale",
+    "finals",
+    "finał",
+    "finais",
+    "finále",
+    "финал",
+    "фінал",
+    "τελικός",
+    "גמר"
+   ],
+   "прочее": [
+    "oitavos de final",
+    "osmina finala",
+    "qualification",
+    "qualifying",
+    "kvalifikacije",
+    "kwalifikacje",
+    "parovi",
+    "משחקים",
+    "משחק אחד"
+   ]
+  }
+ },
+ "tournament_cities": {
+  "_": "Теннис: город турнира на языках наших сайтов. По нему трансляции одного турнира с разных сайтов сводятся в одну строку («China Open - Beijing» Ziggo, «ATP 500 - BEIJING» Cytavision, «BEIJING 2026 - QUARTOS DE FINAL» Sport TV → «ATP Beijing»; владелец 04.10.2026). Ключ — английское имя, как у flashscore. Написания из эталона flashscore (10 языков) добавляются сами — сюда класть то, чего там нет: португальское, испанское, иврит, хорватское. В поиск заголовков эти слова НЕ входят.",
+  "Beijing": [
+   "beijing",
+   "peking",
+   "pekin",
+   "pekín",
+   "pequim",
+   "בייג'ינג",
+   "בייגינג"
+  ],
+  "Tokyo": [
+   "tokyo",
+   "tokio",
+   "tóquio",
+   "toquio",
+   "טוקיו"
+  ],
+  "Shanghai": [
+   "shanghai",
+   "šangaj",
+   "sanghaj",
+   "szanghaj",
+   "xangai",
+   "shanghái",
+   "šanghaj",
+   "шанхай",
+   "σανγκάη",
+   "שנגחאי"
+  ],
+  "Porto": [
+   "porto",
+   "oporto"
   ]
  }
 }

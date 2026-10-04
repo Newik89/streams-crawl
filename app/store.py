@@ -308,7 +308,11 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                           - _parse_dt(found["start_kyiv"]))
                 time_off = int(gap > timedelta(minutes=merge.WINDOW_MINUTES))
                 stats.time_off += time_off
-        if found is None and game.get("guess") and _earlier_show(conn, game):
+        # (сведённая трансляция турнира — «ATP Beijing» — зовётся одинаково
+        # во всех сессиях турнира: вторая сессия дня не повтор первой)
+        if found is None and game.get("guess") \
+                and game.get("away") != broadcast.SESSION \
+                and _earlier_show(conn, game):
             stats.repeats += 1
             continue
         start_kyiv = _iso(_parse_dt(game["start_kyiv"]))
@@ -564,6 +568,9 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
         # API этот список не отдаёт
         gone_channels = []
         seen_channels: set[int] = set()
+        # заголовки живых отметок — по ним сведённая трансляция турнира
+        # узнаёт стадию («ATP Beijing — Quarterfinals»)
+        live_titles: list[str] = []
         # источник моложе трёх дней — канал помечается на витрине «на
         # обкатке» (просьба владельца 05.09: новое должно быть видно;
         # порог в неделю метил 274 канала — проект сам моложе)
@@ -572,7 +579,7 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                 "SELECT c.id, c.canonical_name AS name, c.country, "
                 "       c.custom_name, c.note, ec.first_seen AS ch_first_seen, "
                 "       ec.source_url, s.base_url, s.created_at, ec.time_off, "
-                "       ec.miss_count, ec.seen AS ch_seen "
+                "       ec.miss_count, ec.seen AS ch_seen, ec.raw_title "
                 "FROM event_channels ec "
                 "JOIN channels c ON c.id = ec.channel_id "
                 "LEFT JOIN sources s ON s.id = ec.source_id "
@@ -587,6 +594,8 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                 continue
             seen_channels.add(r["id"])
             gone = r["miss_count"] >= MISS_LIMIT
+            if not gone:
+                live_titles.append(r["raw_title"] or "")
             # снятую отметку владелец убрал кликом (seen=2) — не показываем;
             # вернись канал в расписание, он выйдет живым как ни в чём не бывало
             if gone and r["ch_seen"] == 2:
@@ -641,6 +650,11 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                                         row["team_away_auto"] or ""))
         if title and not channels:
             continue
+        if title:
+            # канал, чей сайт уже назвал игроков, переехал в строку матча —
+            # в строке турнира его «снят» только путал бы (владелец 04.10:
+            # «появятся имена — он перезапишет?»)
+            gone_channels = []
         # запись очереди по этой игре: сперва команды, потом лига
         pending = None
         for kind, raw in (() if title else
@@ -659,6 +673,11 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                         if any(ord(c) > 0x2FF for c in raw) else raw)
             home_shown = plain(row["team_home_auto"])
             away_shown = plain(row["team_away_auto"])
+            if row["team_away_auto"] == broadcast.SESSION:
+                # сведённая трансляция: вместо служебной второй стороны —
+                # стадия, если её назвал хоть один сайт (первая по отметкам)
+                away_shown = next((s for s in map(broadcast.stage, live_titles)
+                                   if s), "")
         else:
             home_shown = show(row["home_canon"], row["team_home_auto"])
             away_shown = show(row["away_canon"], row["team_away_auto"])

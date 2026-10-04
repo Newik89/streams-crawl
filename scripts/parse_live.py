@@ -27,8 +27,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import (canon, db, dictionary, leagues, live, merge, names,  # noqa: E402
-                 pipeline, sport, store)
+from app import (broadcast, canon, db, dictionary, leagues, live,  # noqa: E402
+                 merge, names, pipeline, sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
 
@@ -240,6 +240,11 @@ def drop_late_repeats(games: list) -> tuple[list, int]:
     for game in sorted(games, key=lambda g: g.start):
         guessed_only = all(
             _bare_domain(e.source) in REPEAT_GUESS_DOMAINS for e in game.entries)
+        # две сессии одного турнира в день — не повтор: у сведённой
+        # трансляции («ATP Beijing») имя одно на весь турнир (04.10)
+        if game.first.away == broadcast.SESSION:
+            kept.append(game)
+            continue
         if guessed_only and any(
                 _looks_repeat(earlier, game) for earlier in kept):
             removed += 1
@@ -860,6 +865,31 @@ def main() -> int:
         kinds = len({x["вид"] for x in other_out})
         print(f"другой вид спорта: {len(other_out)} строк(и), видов {kinds} — "
               f"во вкладку «Other Sport»")
+
+    # Трансляция турнира без пары игроков: каждый сайт зовёт её по-своему
+    # («China Open - Beijing», «ATP 500 - BEIJING», «BEIJING 2026 - QUARTOS DE
+    # FINAL»), и склейка по буквам их не сводит. Узнаём тур и город по
+    # словарю и эталону — строка получает общее имя «ATP Beijing», и сайты
+    # ложатся одной строкой со всеми каналами (владелец 04.10,
+    # `app/broadcast.py`). Не узнали — остаётся как написал сайт
+    known_tournaments = broadcast.tournaments(reference_full)
+    сведено, не_узнаны = 0, set()
+    for domain, r in found:
+        if r.sport != "T" or not broadcast.is_title("T", r.home, r.away):
+            continue
+        заголовок = " ".join(x for x in (r.program.title, r.program.league_raw,
+                                         r.program.sport_raw) if x)
+        имя = broadcast.tournament(заголовок, known_tournaments)
+        if имя:
+            r.home, r.away = имя, broadcast.SESSION
+            сведено += 1
+        else:
+            не_узнаны.add((domain, (r.program.title or "")[:70]))
+    if сведено or не_узнаны:
+        print(f"трансляции турниров без пары: сведено по туру и городу {сведено}; "
+              f"город не узнан у {len(не_узнаны)} заголовков"
+              + ("".join(f"\n   • {d}: {t}" for d, t in sorted(не_узнаны)[:12])
+                 if не_узнаны else ""))
 
     # Одна игра, найденная на трёх сайтах, — одна строка с тремя каналами
     # (ТЗ разд. 9). Разбор по сайтам ниже сохраняем: по нему видно, откуда
