@@ -232,7 +232,10 @@ def main() -> int:
         print(f"в файле игр: {len(games)}; новых: {stats.new}, "
               f"обновлено: {stats.updated}, отметок каналов: {stats.channels}, "
               f"повторов не пущено: {stats.repeats}, "
-              f"прилипло к flashscore вопреки времени сайта: {stats.time_off}")
+              f"прилипло к flashscore вопреки времени сайта: {stats.time_off}"
+              + (f", заголовков турниров сайты больше не показывают "
+                 f"(отметок погашено): {stats.titles_gone}"
+                 if stats.titles_gone else ""))
         total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
         print(f"игр в базе теперь: {total}")
         return 0

@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from app import canon, db, dictionary, names  # noqa: E402
+from app import broadcast, canon, db, dictionary, names  # noqa: E402
 from parse_live import REPEAT_GUESS_DOMAINS   # noqa: E402
 
 DEFAULT = ROOT / "results" / "games.json"
@@ -617,12 +617,22 @@ def main() -> int:
               f"канон напрямую {direct}, "
               f"дублей схлопнуто {doubles}, лиг из эталона {leagued}, "
               f"время по эталону {fs_retimed}, эхо-повторов снято {echoes}")
-        left = conn.execute(
-            "SELECT COUNT(*) FROM events WHERE team_home_id IS NULL "
-            "OR team_away_id IS NULL").fetchone()[0]
-        total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+        # трансляции турниров без пары игроков («ATP 500 Tokyo — 1/4 Finale»)
+        # канона не имеют по природе — в долю «без канона» их не кладём,
+        # считаем отдельной строкой (04.10: 48 из 84 «без канона» были ими)
+        titles = left = 0
+        for r in conn.execute(
+                "SELECT sport, team_home_auto, team_away_auto, flags FROM events "
+                "WHERE team_home_id IS NULL OR team_away_id IS NULL"):
+            if not str(r["flags"] or "").startswith("fs:") and broadcast.is_title(
+                    r["sport"], r["team_home_auto"] or "", r["team_away_auto"] or ""):
+                titles += 1
+            else:
+                left += 1
+        total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0] - titles
         print(f"без канона осталось {left} из {total} "
-              f"({100 * left / max(total, 1):.0f}%)")
+              f"({100 * left / max(total, 1):.0f}%)"
+              + (f"; трансляций турниров без пары: {titles}" if titles else ""))
         return 0
     finally:
         conn.close()

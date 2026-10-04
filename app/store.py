@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
 
-from . import merge, names
+from . import broadcast, merge, names
 
 # Грейс после начала, минуты (ТЗ разд. 10). Число-уговор, не измерение;
 # правится в админке («Настройки»), здесь только значения по умолчанию.
@@ -101,6 +101,7 @@ class SaveStats:
     channels: int = 0
     repeats: int = 0    # guess-игры, чья пара уже лежала в базе раньше
     time_off: int = 0   # строки, прилипшие к игре flashscore вопреки времени сайта
+    titles_gone: int = 0  # отметки заголовков турниров, которых сайт больше не показывает
 
 
 def _sources_by_domain(conn: sqlite3.Connection) -> dict[str, sqlite3.Row]:
@@ -406,6 +407,40 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 sql += " AND source_id IN (" + ",".join("?" * len(вправе)) + ")"
                 params += вправе
             conn.execute(sql, params)
+
+        # Трансляция турнира без пары («ATP 500 Tokyo — 1/4 Finale»,
+        # `app/broadcast.py`) живёт, пока сайт не назовёт игроков: тогда в
+        # файле приходит матч с именами, а заголовка в нём уже нет — и штраф
+        # выше его не касается (он раздаётся только событиям из файла).
+        # Заголовок висел рядом с матчами до конца трансляции (mojtv.hr,
+        # #4145). Гасим его отметки от сайтов, которые в этом прогоне отдали
+        # расписание на его день и заголовка не показали (владелец 04.10:
+        # «появятся имена — должно обновиться»). Только будущие: сайт, отдающий
+        # остаток дня, начавшуюся трансляцию уже не пишет — это не отмена
+        if worked is not None:
+            for r in conn.execute(
+                    "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
+                    "FROM events WHERE sport = 'T' AND start_kyiv > ? "
+                    "AND (flags IS NULL OR flags NOT LIKE 'fs:%')",
+                    (_iso(now),)).fetchall():
+                if r["id"] in event_seen or not broadcast.is_title(
+                        r["sport"], r["team_home_auto"] or "",
+                        r["team_away_auto"] or ""):
+                    continue
+                день = r["start_kyiv"][:10]
+                if punish_until and день > punish_until:
+                    continue
+                вправе = [sid for sid in worked_ids
+                          if sid not in covered_by_id
+                          or "" in covered_by_id[sid]
+                          or день in covered_by_id[sid]]
+                if not вправе:
+                    continue
+                stats.titles_gone += conn.execute(
+                    "UPDATE event_channels SET miss_count = miss_count + 1 "
+                    "WHERE event_id = ? AND source_id IN ("
+                    + ",".join("?" * len(вправе)) + ")",
+                    (r["id"], *вправе)).rowcount
     conn.commit()
     return stats
 
@@ -499,7 +534,7 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
     for row in conn.execute(
             "SELECT e.id, e.sport, e.league_auto, e.team_home_auto, "
             "e.team_away_auto, e.start_kyiv, e.grace_minutes, e.first_seen, "
-            "e.seen, e.league_id, l.canonical_name AS league_canon, "
+            "e.seen, e.flags, e.league_id, l.canonical_name AS league_canon, "
             "l.slug AS league_slug, "
             "th.canonical_name AS home_canon, ta.canonical_name AS away_canon "
             "FROM events e "
@@ -596,17 +631,41 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                                  and (ch_dt := _dt(str(r["ch_first_seen"])))
                                  and (ev_dt := _dt(str(row["first_seen"] or "")))
                                  and ch_dt - ev_dt >= FRESH_CHANNEL_GAP)})
+        # Трансляция турнира без пары игроков («ATP 500 Tokyo — 1/4 Finale»,
+        # `app/broadcast.py`): показываем одной строкой без «vs» и как сайт
+        # написал — словарь тут только вредит («Tokyo» он знает как клуб).
+        # Сайт назвал игроков — отметки заголовка гаснут (`save_games`), и
+        # строка без живых каналов с витрины уходит (владелец 04.10)
+        title = (not str(row["flags"] or "").startswith("fs:")
+                 and broadcast.is_title(row["sport"], row["team_home_auto"] or "",
+                                        row["team_away_auto"] or ""))
+        if title and not channels:
+            continue
         # запись очереди по этой игре: сперва команды, потом лига
         pending = None
-        for kind, raw in (("team", row["team_home_auto"]),
-                          ("team", row["team_away_auto"]),
-                          ("league", row["league_auto"])):
+        for kind, raw in (() if title else
+                          (("team", row["team_home_auto"]),
+                           ("team", row["team_away_auto"]),
+                           ("league", row["league_auto"]))):
             pending = waiting.get((kind, (raw or "").strip()))
             if pending:
                 break
+        if title:
+            # не латиница (иврит) — транслит, как у лиги ниже; латиницу не
+            # трогаем: транслит ломал регистр («Atp 1000»)
+            def plain(raw: str | None) -> str:
+                raw = (raw or "").strip()
+                return (names.suggest_canonical(raw)
+                        if any(ord(c) > 0x2FF for c in raw) else raw)
+            home_shown = plain(row["team_home_auto"])
+            away_shown = plain(row["team_away_auto"])
+        else:
+            home_shown = show(row["home_canon"], row["team_home_auto"])
+            away_shown = show(row["away_canon"], row["team_away_auto"])
         games.append({
             "id": row["id"],
             "pending": pending or 0,
+            "title": title,
             "sport": row["sport"],
             "league": (row["league_canon"]
                        or league_names.get((row["league_auto"] or "").strip())
@@ -619,12 +678,13 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             "league_id": row["league_id"],
             "league_slug": row["league_slug"] or "",
             "league_auto": row["league_auto"] or "",
-            "home": show(row["home_canon"], row["team_home_auto"]),
-            "away": show(row["away_canon"], row["team_away_auto"]),
+            "home": home_shown,
+            "away": away_shown,
             "home_auto": row["team_home_auto"] or "",
             "away_auto": row["team_away_auto"] or "",
-            "named": (named(row["home_canon"], row["team_home_auto"])
-                      and named(row["away_canon"], row["team_away_auto"])),
+            # заголовку турнира канон не нужен — в «Names to fix» не идёт
+            "named": title or (named(row["home_canon"], row["team_home_auto"])
+                               and named(row["away_canon"], row["team_away_auto"])),
             "start": start,
             "date": start.date(),
             "time": start.strftime("%H:%M"),
