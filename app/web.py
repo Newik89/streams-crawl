@@ -884,23 +884,36 @@ def create_app() -> Flask:
     @app.route("/games/seen-all", methods=["POST"])
     def games_seen_all():
         """Кнопка «Прочитано всё»: снять новизну разом (владелец 21.09).
-        С 22.09 гасит и зелёные каналы — они той же природы «непрочитанного»."""
+        С 22.09 гасит и зелёные каналы — они той же природы «непрочитанного».
+        С 04.10 — только за дату, выбранную фильтром витрины (поле `day`,
+        его кладёт скрипт страницы): владелец читает расписание по дням, а
+        кнопка гасила новизну и у дней, которые он ещё не смотрел. Дата не
+        выбрана — как раньше, все игры."""
         verify_csrf()
         if not session.get("admin"):
             abort(403)
+        day = (request.form.get("day") or "").strip()
+        if day and not re.fullmatch(r"\d{4}-\d\d-\d\d", day):
+            abort(400)
+        # день игры — киевский, тот же, по которому витрина режет на блоки
+        only = " AND substr(start_kyiv, 1, 10) = ?" if day else ""
         conn = db.connect()
         try:
             n = conn.execute("UPDATE events SET seen = 1 "
-                             "WHERE seen = 0").rowcount
+                             "WHERE seen = 0" + only,
+                             (day,) if day else ()).rowcount
             # только живые отметки: снятые «Прочитано всё» не прячет —
             # их владелец убирает кликом поштучно
             conn.execute("UPDATE event_channels SET seen = 1 "
-                         "WHERE seen = 0 AND miss_count < ?",
-                         (store.MISS_LIMIT,))
+                         "WHERE seen = 0 AND miss_count < ?"
+                         + (" AND event_id IN (SELECT id FROM events WHERE 1=1"
+                            + only + ")" if day else ""),
+                         (store.MISS_LIMIT, day) if day else (store.MISS_LIMIT,))
             conn.commit()
         finally:
             conn.close()
-        flash(f"Прочитано: пометка «новая» снята с {n} игр.", "ok")
+        за = f" за {day[8:10]}.{day[5:7]}" if day else ""
+        flash(f"Прочитано: пометка «новая» снята с {n} игр{за}.", "ok")
         return redirect(url_for("schedule"))
 
     @app.route("/channel-name", methods=["POST"])
