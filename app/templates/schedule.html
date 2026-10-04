@@ -158,20 +158,19 @@
   {% if admin %}<a class="admin-mark" href="{{ url_for('dashboard') }}"
      title="Вы вошли как админ; клик ведёт в админку">admin</a>
   <button class="pill" id="p-reload" type="button"
-     title="Перечитать расписание с сервера, не сбрасывая выбранные фильтры">⟳ Обновить</button>{% endif %}
+     title="Перечитать расписание с сервера, не сбрасывая выбранные фильтры">⟳ Обновить</button>
+  {# «Прочитано» — в верхней строке рядом с «Обновить» (владелец 04.10) #}
+  <form method="post" action="{{ url_for('games_seen_all') }}" style="display:inline" id="seen-all">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="day" value="">
+    <button class="pill" type="submit" title="Снять пометку «новая» с игр выбранной даты; дата не выбрана — со всех игр разом">Прочитано всё</button>
+  </form>{% endif %}
   <div class="controls">
     <button class="pill" id="p-today" type="button">Today</button>
     <button class="pill" id="p-chan" type="button">Only with channels</button>
     <button class="pill" id="p-live" type="button">Live now</button>
     <button class="pill" id="p-names" type="button" title="Игры, которым ещё не найдено правильное название — правятся кнопкой ✎">Names to fix</button>
     <button class="pill" id="p-new" type="button" title="Только новые игры — добавились после прогона и ещё не прочитаны">New only</button>
-    {% if admin %}
-    <form method="post" action="{{ url_for('games_seen_all') }}" style="display:inline" id="seen-all">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <input type="hidden" name="day" value="">
-      <button class="pill" type="submit" title="Снять пометку «новая» с игр выбранной даты; дата не выбрана — со всех игр разом">Прочитано всё</button>
-    </form>
-    {% endif %}
     <select id="f-date"><option value="">All dates</option>
       {% for day in by_date %}<option value="{{ day }}">{{ day.strftime("%d.%m (%a)") }}</option>{% endfor %}
     </select>
