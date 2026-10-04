@@ -1,46 +1,40 @@
 # Матчи с живого обхода
 
-Игр: **442** (строк с сайтов: 1068). Время киевское.
+Игр: **420** (строк с сайтов: 1068). Время киевское.
 
 | Когда | Матч | Лига | Каналы |
 |---|---|---|---|
 | 04.10 00:25 | Atletico Mineiro — RB Bragantino | Campeonato Brasileiro (Nachholspiel, 21. Spieltag) | Sportdigital FUSSBALL |
 | 04.10 03:00 | Argentina — Burkina Faso | Fotbal Amical | Digi Sport 1, Sport1 CZ, Sport1 SK, Sport2 HU, Sport2, Sport1 |
-| 04.10 04:59 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 | SPORT.TV2 |
+| 04.10 04:59 | ATP Tokyo — tournament | ATP WORLD TOUR 500 | SPORT.TV2, Cytavision Sports8 HD, PPV1 |
 | 04.10 05:00 | Χάουµε Μουνάρ — Κίριαν Ζακέ |  | Magenta Sport 7 |
-| 04.10 05:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
-| 04.10 05:00 | Tenis M — ATP: Tokyo / Beijing Open |  | Prima Sport 3, PPV1 |
+| 04.10 05:00 | Tenis M — ATP: Tokyo / Beijing Open |  | Prima Sport 3 |
 | 04.10 05:00 | Munar — Jacquet | 1/4 Finale | Sport Klub 2, M+ Deportes 2 |
-| 04.10 06:00 | Bartunkova W — Sabalenka W | WTA 1000 Peking | Sport Klub 4 |
-| 04.10 06:00 | Kraus W — Yastremska W | WTA 1000 Peking | Sport Klub 5 |
-| 04.10 06:00 | Kozyreva/Zvonareva W — L. Kichenok/Muhammad W | WTA 1000 Peking | Sport Klub 7 |
-| 04.10 06:00 | Tang/Xu W — Dabrowski/Stefani W | WTA 1000 Peking | Sport Klub 8 |
+| 04.10 06:00 | Bartunkova — Sabalenka | WTA 1000 Peking | Sport Klub 4 |
+| 04.10 06:00 | Kraus — Yastremska | WTA 1000 Peking | Sport Klub 5 |
+| 04.10 06:00 | Kozyreva/Zvonareva — L. Kichenok/Muhammad | WTA 1000 Peking | Sport Klub 7 |
+| 04.10 06:00 | Tang/Xu — Dabrowski/Stefani | WTA 1000 Peking | Sport Klub 8 |
 | 04.10 07:00 | Κάρλος Αλκαράθ — Ντένις Σαποβάλοφ |  | Magenta Sport 7 |
 | 04.10 07:00 | Alcaraz — Shapovalov | 1/4 Finale | Sport Klub 2, M+ Deportes 2 |
-| 04.10 07:45 | Alexandrova W — Shnaider W | WTA 1000 Peking | Sport Klub 5 |
-| 04.10 07:45 | TBD/TBD W — Perez/Schuurs W | WTA 1000 Peking | Sport Klub 7 |
+| 04.10 07:45 | Alexandrova — Shnaider | WTA 1000 Peking | Sport Klub 5 |
+| 04.10 07:45 | TBD/TBD — Perez/Schuurs | WTA 1000 Peking | Sport Klub 7 |
 | 04.10 08:00 | Ουµπέρ Χούρκατς — Κάρεν Κατσάνοφ |  | Magenta Sport 6 |
-| 04.10 08:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
-| 04.10 08:00 | BEIJING 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 | SPORT.TV1, SPORT.TV5, SPORT.TV2 |
-| 04.10 08:00 | China Open — Beijing |  | Ziggo Sport 4 |
+| 04.10 08:00 | ATP Beijing — tournament | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD, SPORT.TV1, Ziggo Sport 4, ספורט 5 Stars, SPORT.TV5, SPORT.TV2, 5MAX |
 | 04.10 08:00 | Hurkacz — Khachanov | 1/4 Finale | Sport Klub 4, M+ Deportes 3 |
-| 04.10 08:00 | P. Kudermetova W — M. Andreeva W | WTA 1000 Peking | Sport Klub 8, Sport Klub 2 |
-| 04.10 08:00 | רבעי גמר — 2 משחקים | ATP 500 | ספורט 5 Stars |
+| 04.10 08:00 | P. Kudermetova — M. Andreeva | WTA 1000 Peking | Sport Klub 8, Sport Klub 2 |
 | 04.10 08:30 | Hijikata/Uesugi — Arribage/Olivetti | (Parovi) 1/2 Finale | Sport Klub 9 |
 | 04.10 09:00 | Аделаида — Нью Зиланд Брейкерс | Чемпионат Австралии Прямая трансляция | Старт Баскет |
-| 04.10 09:00 | Bouzkova/Li W — Hunter/Mladenovic W | WTA 1000 Peking | Sport Klub 8 |
-| 04.10 09:15 | McNally/Tjen W — Bartunskova/Chwalinska W | WTA 1000 Peking | Sport Klub 7 |
-| 04.10 09:30 | Snigur W — Preston W | WTA 1000 Peking | Sport Klub 5, Sport Klub 10 |
-| 04.10 09:45 | Noskova W — Golubic W | WTA 1000 Peking | Sport Klub 2 |
-| 04.10 09:59 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 | SPORT.TV2 |
+| 04.10 09:00 | Bouzkova/Li — Hunter/Mladenovic | WTA 1000 Peking | Sport Klub 8 |
+| 04.10 09:15 | McNally/Tjen — Bartunskova/Chwalinska | WTA 1000 Peking | Sport Klub 7 |
+| 04.10 09:30 | Snigur — Preston | WTA 1000 Peking | Sport Klub 5, Sport Klub 10 |
+| 04.10 09:45 | Noskova — Golubic | WTA 1000 Peking | Sport Klub 2 |
+| 04.10 09:59 | ATP Tokyo — tournament | ATP WORLD TOUR 500 | SPORT.TV2, Cytavision Sports8 HD, Ziggo Sport 5 |
 | 04.10 10:00 | Άλεξ ντε Μινόρ — Αντρέι Ρούμπλεφ |  | Magenta Sport 6 |
 | 04.10 10:00 | Βαλεντίν Βασερό — Αρτούρ Φις |  | Magenta Sport 7 |
-| 04.10 10:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
-| 04.10 10:00 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  | Ziggo Sport 5 |
 | 04.10 10:00 | De Minaur — Rublev | 1/4 Finale | Sport Klub 4, M+ Deportes 3 |
 | 04.10 10:00 | Vacherot — Fils | 1/4 Finale | Sport Klub 5, M+ Deportes 2 |
-| 04.10 11:00 | M. Andreeva/Kalinskaya W — Joint/Klepač W | WTA 1000 Peking | Sport Klub 7 |
-| 04.10 11:00 | Mertens/Shnaider W — Lumsden/Panova W | WTA 1000 Peking | Sport Klub 8 |
+| 04.10 11:00 | M. Andreeva/Kalinskaya — Joint/Klepač | WTA 1000 Peking | Sport Klub 7 |
+| 04.10 11:00 | Mertens/Shnaider — Lumsden/Panova | WTA 1000 Peking | Sport Klub 8 |
 | 04.10 11:20 | Levhartice Chomutov W — KP Brno Přímý přenos 2. kola nejvyšší české basketbalové ligy žen W |  | Nova Sport 1 |
 | 04.10 11:30 | Ντανιίλ Μεντβέντεφ — Φρανσίσκο Σερούντολο |  | Magenta Sport 8 |
 | 04.10 11:30 | Arends/Pel — Bublik/Shang | (Parovi) 1/2 Finale | Sport Klub 10 |
@@ -49,7 +43,7 @@
 | 04.10 12:00 | Γίρι Λεχέτσκα — Αντόλφο Ντάνιελ Βαγιέχο |  | Magenta Sport 7 |
 | 04.10 12:49 | SC FARENSE — GD CHAVES | LIGA PORTUGAL 2 | SPORT.TV1 |
 | 04.10 12:50 | STOIXIMAN GBL 2026-27 | ΠΑΝΑΘΗΝΑΪΚΟΣ AKTOR — VIKOS ΦALCONS | Чемпионат Греции Прямая трансляция | ΣΚΑΪ, Старт Баскет, Sport1 4, Sport Klub 3 |
-| 04.10 12:58 | ATP CH 125 PORTO OPEN — FINAL | ATP CHALLENGER TOUR | SPORT.TV6 |
+| 04.10 12:58 | Challenger Porto — tournament | ATP CHALLENGER TOUR | SPORT.TV6 |
 | 04.10 13:00 | Coruna — Bilbao | Лига Ендеса | Diema Sport 3, diemasport 3, Sport Klub 9 |
 | 04.10 13:00 | Lleida — Burgos | Лига Ендеса | nova sport, Sport Klub 8 |
 | 04.10 13:00 | Bandirma — Efes | Turska liga | Arena Sport 1 |
@@ -60,11 +54,8 @@
 | 04.10 13:25 | Napoli Women W — Como 1907 W | Women's Italian Serie A Soccer | Fox Soccer Plus |
 | 04.10 14:00 | Αλεξάντερ Ζβέρεφ — Νόβακ Τζόκοβιτς |  | Magenta Sport 6 |
 | 04.10 14:00 | Minyor — Beroe | Sesame Купа на България | Diema Sport, Diema Xtra, diemasport, Sport Klub 10 |
-| 04.10 14:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
-| 04.10 14:00 | China Open — Beijing |  | Ziggo Sport 4 |
 | 04.10 14:00 | Zverev — Đokovič | 1/4 Finale | Sport Klub 2 |
-| 04.10 14:00 | Bejlek W — Osaka W | WTA 1000 Peking | Sport Klub 4 |
-| 04.10 14:00 | רבעי גמר — 2 משחקים | ATP 500 | 5MAX |
+| 04.10 14:00 | Bejlek — Osaka | WTA 1000 Peking | Sport Klub 4 |
 | 04.10 14:25 | Велес — Волга | Лига Pari Прямая трансляция | Матч ТВ, Телеканал «Матч ТВ», МАТЧ ПРЕМЬЕР HD |
 | 04.10 14:45 | Πύργος — Πανιώνιος | Superbet League 2 | 5η Αγωνιστική | ΕΡΤ2 ΣΠΟΡ |
 | 04.10 14:45 | VfL Wolfsburg W — Hamburger SV W | Fußball - Frauen-Bundesliga | SPORT1 |
@@ -74,7 +65,7 @@
 | 04.10 15:30 | Φενέρμπαχτσε — Κιορφέζ |  | Magenta Sport 4 |
 | 04.10 15:30 | VVV — Roda JC | Eerste Divisie | ESPN Netherlands |
 | 04.10 15:45 | Azerbajdžán — LITHUANIA | Liga národů | Sport1 CZ, Sport1, Diema Sport 3, Cytavision Sports3 HD, PPV2, diemasport 3, Sport Klub 5 |
-| 04.10 15:45 | Muchova W — Samsonova W | WTA 1000 Peking | Sport Klub 4 |
+| 04.10 15:45 | Muchova — Samsonova | WTA 1000 Peking | Sport Klub 4 |
 | 04.10 15:49 | Azerbeidzjan — LITUÂNIA | UEFA NATIONS LEAGUE | SPORT.TV1, Ziggo Sport 1, Ziggo Sport Kanaal 14, Sport1 1 |
 | 04.10 15:50 | Malmoe FF W — FC Rosengaard W | Damallsvenskan | SVT1 HD |
 | 04.10 15:55 | Brann W — Aalesund W | Fotball - Toppserien kvinner | TV 2 Direkte HD, TV 2 Direkte Tekst hørselshem., 892 - TVN accessibility test, TV 2 Direkte |
@@ -147,16 +138,10 @@
 | 05.10 02:00 | Атлетико Букараманга — Жуниор Барранкилья | Колумбия Примера А Клаусура 2026 13 тур Прямая трансляция | viju+ Sport HD |
 | 05.10 02:00 | Houston Dash W — Washington Spirit W | NWSL | TNT Sports 3 |
 | 05.10 04:05 | Льянерос — Америка де Кали | Колумбия Примера А Клаусура 2026 13 тур Прямая трансляция | viju+ Sport HD |
-| 05.10 09:57 | BEIJING 2026 — MEIA-FINAL | ATP WORLD TOUR 500 | SPORT.TV2 |
-| 05.10 09:58 | TÓQUIO 2026 — MEIA-FINAL | ATP WORLD TOUR 500 | SPORT.TV3 |
-| 05.10 10:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
-| 05.10 10:00 | 1/2 Finale & WTA 1000 + ATP 500 Peking — ATP 500 Tokyo | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD, Sport Klub 2 |
-| 05.10 10:00 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
-| 05.10 10:00 | China Open — Beijing Finale |  | Ziggo Sport 5 |
-| 05.10 10:00 | חצאי גמר — 2 משחקים | ATP 500 | ספורט 5 Stars |
-| 05.10 13:59 | BEIJING 2026 — MEIA-FINAL | ATP WORLD TOUR 500 | SPORT.TV2 |
-| 05.10 14:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
-| 05.10 14:05 | China Open — Beijing |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
+| 05.10 09:57 | ATP Beijing — tournament | ATP WORLD TOUR 500 | SPORT.TV2, Cytavision Sports5 HD, Ziggo Sport 5, ספורט 5 Stars |
+| 05.10 09:58 | ATP Tokyo — tournament | ATP WORLD TOUR 500 | SPORT.TV3, Cytavision Sports8 HD, Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
+| 05.10 10:00 | ATP 500 Tokyo — 1/2 Finale & WTA 1000 + ATP 500 Peking |  | Sport Klub 2 |
+| 05.10 13:59 | ATP Beijing — tournament | ATP WORLD TOUR 500 | SPORT.TV2, Cytavision Sports5 HD, Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
 | 05.10 14:45 | ΠΑΟΚ Β’ — Ελλάς Σύρου | Superbet League 2 | 5η Αγωνιστική | ΕΡΤ2 ΣΠΟΡ |
 | 05.10 17:00 | Napredak — Loznica | PRVA LIGA SRBIJE | Arena Sport 10 |
 | 05.10 17:20 | Crna Gora U21 — Jermenija U21 | U21, direktno | TVCG 3 |
@@ -187,15 +172,10 @@
 | 06.10 02:00 | ל.א. קליפרס — גולדן סטייט | NBA | ספורט 5 Stars |
 | 06.10 02:50 | Индепендьенте Медельин — Индепендьенте Санта Фе | Колумбия Примера А Клаусура 2026 13 тур Прямая трансляция | viju+ Sport HD |
 | 06.10 02:50 | Bermuda — Barbados | CONCACAF Nations League Soccer | Fox Soccer Plus |
-| 06.10 11:00 | גמר זוגות — משחק אחד | ATP 500 | 5MAX |
-| 06.10 11:59 | TÓQUIO 2026 — FINAL | ATP WORLD TOUR 500 | SPORT.TV1 |
-| 06.10 12:00 | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO | Cytavision Sports8 HD |
-| 06.10 12:00 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
+| 06.10 11:00 | ATP Beijing — tournament | ATP 500 | 5MAX |
+| 06.10 11:59 | ATP Tokyo — tournament | ATP WORLD TOUR 500 | SPORT.TV1, Cytavision Sports8 HD, Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
 | 06.10 13:00 | U. LEIRIA — SANTA CLARA | Liga Next Gen | Canal 11 |
-| 06.10 14:00 | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD |
-| 06.10 14:00 | China Open — Beijing Finale |  | Ziggo Sport 5, Ziggo Sport 1, Ziggo Sport Kanaal 14, Ziggo Sport 4 |
-| 06.10 14:00 | גמר יחידים — משחק אחד | ATP 500 | ספורט 5 Live |
-| 06.10 14:00 | BEIJING 2026 — FINAL | ATP WORLD TOUR 500 | SPORT.TV2 |
+| 06.10 14:00 | ATP Beijing — tournament | 2026 ATP 500 - BEIJING | Cytavision Sports5 HD, Ziggo Sport 5, ספורט 5 Live, SPORT.TV2, Ziggo Sport 1, Ziggo Sport Kanaal 14, Ziggo Sport 4 |
 | 06.10 15:00 | ארץ הכדורגל — ליגה לאומית |  | ספורט 5+ |
 | 06.10 16:49 | CAZAQUISTÃO — FAROE ISLANDS | UEFA NATIONS LEAGUE | SPORT.TV2, Ziggo Sport 1, Ziggo Sport 2, Ziggo Sport Kanaal 14, Sport1 1, Cytavision Sports4 HD, PPV2, Sport Klub 2 |
 | 06.10 16:49 | ÍNDIA — URUGUAI | JOGOS DE PREPARAÇÃO | SPORT.TV1, ספורט 5 Live, M+ Liga de Campeones, M+ Vamos |
@@ -251,10 +231,9 @@
 | 07.10 02:35 | Colombia — Perú | Partido Amistoso | M+ Liga de Campeones 2, M+ Vamos |
 | 07.10 03:00 | USA — Canada | Men's International Soccer Friendlies | TSN1 |
 | 07.10 05:00 | סקרמנטו — ל.א. לייקרס | NBA | ספורט 5 Stars |
-| 07.10 07:00 | ATP 1000 — SHANGHAI | 2026 ATP 1000 - SHANGHAI | Cytavision Sports5 HD |
-| 07.10 07:00 | Rolex Shanghai Masters — Shanghai |  | Ziggo Sport 4, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
+| 07.10 07:00 | ATP Shanghai — tournament | 2026 ATP 1000 - SHANGHAI | Cytavision Sports5 HD, Ziggo Sport 4, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
 | 07.10 11:30 | Аделаида — Мельбурн Юнайтед | Чемпионат Австралии Прямая трансляция | Старт Баскет |
-| 07.10 13:00 | Rolex Shanghai Masters — Shanghai |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
+| 07.10 13:00 | ATP Shanghai — tournament |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
 | 07.10 17:00 | Primorje — Virtus Zagreb | ABA2 LIGA | Arena Sport 1 |
 | 07.10 17:00 | BC CIU — BC Hipocredit Jonava | Šiaurės Europos krepšinio lyga | Sport 1 |
 | 07.10 18:55 | АЕК — Вилпас | Лига Чемпионов Прямая трансляция | СТАРТ HD, Magenta Sport 4, Magenta Sport Start |
@@ -287,10 +266,9 @@
 | 08.10 02:30 | Atlanta Dream — New York Liberty | WNBA - playoff | Sport1 |
 | 08.10 04:10 | Атлетико Насьональ — Депортес Толима | Колумбия Примера А Клаусура 2026 Перенесённый матч 9 тура Прямая трансляция | viju+ Sport HD |
 | 08.10 04:30 | Golden State Valkyries — Las Vegas Aces | WNBA - playoff | Sport1 |
-| 08.10 07:00 | ATP 1000 — SHANGHAI | 2026 ATP 1000 - SHANGHAI | Cytavision Sports5 HD |
-| 08.10 07:00 | Rolex Shanghai Masters — Shanghai |  | Ziggo Sport 4, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
+| 08.10 07:00 | ATP Shanghai — tournament | 2026 ATP 1000 - SHANGHAI | Cytavision Sports5 HD, Ziggo Sport 4, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
 | 08.10 11:30 | Кэрнс Тайпанс — Брисбен Буллетс | Чемпионат Австралии Прямая трансляция | Старт Баскет |
-| 08.10 13:00 | Rolex Shanghai Masters — Shanghai |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
+| 08.10 13:00 | ATP Shanghai — tournament |  | Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14 |
 | 08.10 18:00 | Politehnica Timisoara — Steaua | digisport Liga a 2-a | Digi Sport 1 |
 | 08.10 18:45 | Khor Fakkan — Al Wasl | UAE League Cup | Abu Dhabi Sports 1 |
 | 08.10 18:45 | Dubai Basketball — Crvena Zvezda Bělehrad | Eurolygos rungtynės | Go3 Sport 2, ספורט 5 Stars, Oneplay Sport 1, Novasports 4 HD, Arena Premium 1 |
@@ -312,7 +290,7 @@
 | 09.10 03:25 | Palmeiras — Bahia | BRAZILSKA LIGA | Sport1 3, Arena Premium 3 |
 | 09.10 04:00 | Форталеза — Мильонариос | Колумбия Примера А Клаусура 2026 14 тур Прямая трансляция | viju+ Sport HD |
 | 09.10 04:30 | גולדן סטייט — לאס וגאס | WNBA | ספורט 5+ |
-| 09.10 07:00 | Rolex Shanghai Masters — Shanghai |  | Ziggo Sport 4, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
+| 09.10 07:00 | ATP Shanghai — tournament |  | Ziggo Sport 4, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
 | 09.10 07:55 | Тэджон — Чонбук | Чемпионат Южной Кореи К-Лига 1 Прямая трансляция | СТАРТ ТРИУМФ HD |
 | 09.10 10:25 | Инчхон — Пхохан | Чемпионат Южной Кореи К-Лига 1 Прямая трансляция | СТАРТ HD |
 | 09.10 11:30 | Иллаварра Хокс — Тасмания Джекджамперс | Чемпионат Австралии Прямая трансляция | Старт Баскет |
@@ -382,7 +360,7 @@
 | 10.10 02:00 | Canada W — Denmark W | Women's International Soccer Friendlies | Fox Soccer Plus, TSN5 |
 | 10.10 02:30 | New York Liberty — Atlanta Dream | WNBA - playoff | Sport1 |
 | 10.10 05:30 | ל.א. לייקרס — סקרמנטו | NBA | ספורט 5 Stars |
-| 10.10 07:00 | Rolex Shanghai Masters — Shanghai |  | Ziggo Sport 4 |
+| 10.10 07:00 | ATP Shanghai — tournament |  | Ziggo Sport 4 |
 | 10.10 11:00 | Chindia Targoviste — Concordia Chiajna | digisport Liga a 2-a | Digi Sport 1 |
 | 10.10 12:50 | CD TONDELA — SCU TORREENSE | LIGA PORTUGAL 2 | SPORT.TV1 |
 | 10.10 13:00 | CSM Resita — CSM Slatina | digisport Liga a 2-a | Digi Sport 1 |
@@ -458,69 +436,69 @@
 | 04.10 03:00 | sport1tv.hu | Sport2 HU | Argentína — Burkina Faso | Felkészülési mérkőzés |
 | 04.10 03:00 | port.hu | Sport2 | Argentína — Burkina Faso | Labdarúgás: Felkészülési mérkőzés |
 | 04.10 03:00 | oneplay.cz | Sport1 | Argentina — Burkina Faso | Přátelské utkání |
-| 04.10 04:59 | sporttv.pt | SPORT.TV2 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
+| 04.10 04:59 | sporttv.pt | SPORT.TV2 | ATP Tokyo — tournament | ATP WORLD TOUR 500 |
 | 04.10 05:00 | cosmotetv.gr | Magenta Sport 7 | Χάουµε Μουνάρ — Κίριαν Ζακέ |  |
-| 04.10 05:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
+| 04.10 05:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP Tokyo — tournament | 2026 ATP 500 - TOKYO |
 | 04.10 05:00 | primaplay.ro | Prima Sport 3 | Tenis M — ATP: Tokyo / Beijing Open |  |
-| 04.10 05:00 | primaplay.ro | PPV1 | Tenis M — ATP: Tokyo Open |  |
+| 04.10 05:00 | primaplay.ro | PPV1 | ATP Tokyo — tournament |  |
 | 04.10 05:00 | sportklub.hr | Sport Klub 2 | Munar — Jacquet | 1/4 Finale |
 | 04.10 05:05 | movistarplus.es | M+ Deportes 2 | Munar — Jacquet | Torneo de Tokio |
-| 04.10 06:00 | sportklub.hr | Sport Klub 4 | Bartunkova W — Sabalenka W | WTA 1000 Peking |
-| 04.10 06:00 | sportklub.hr | Sport Klub 5 | Kraus W — Yastremska W | WTA 1000 Peking |
-| 04.10 06:00 | sportklub.hr | Sport Klub 7 | Kozyreva/Zvonareva W — L. Kichenok/Muhammad W | WTA 1000 Peking |
-| 04.10 06:00 | sportklub.hr | Sport Klub 8 | Tang/Xu W — Dabrowski/Stefani W | WTA 1000 Peking |
-| 04.10 06:59 | sporttv.pt | SPORT.TV2 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
+| 04.10 06:00 | sportklub.hr | Sport Klub 4 | Bartunkova — Sabalenka | WTA 1000 Peking |
+| 04.10 06:00 | sportklub.hr | Sport Klub 5 | Kraus — Yastremska | WTA 1000 Peking |
+| 04.10 06:00 | sportklub.hr | Sport Klub 7 | Kozyreva/Zvonareva — L. Kichenok/Muhammad | WTA 1000 Peking |
+| 04.10 06:00 | sportklub.hr | Sport Klub 8 | Tang/Xu — Dabrowski/Stefani | WTA 1000 Peking |
+| 04.10 06:59 | sporttv.pt | SPORT.TV2 | ATP Tokyo — tournament | ATP WORLD TOUR 500 |
 | 04.10 07:00 | cosmotetv.gr | Magenta Sport 7 | Κάρλος Αλκαράθ — Ντένις Σαποβάλοφ |  |
-| 04.10 07:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
+| 04.10 07:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP Tokyo — tournament | 2026 ATP 500 - TOKYO |
 | 04.10 07:00 | sportklub.hr | Sport Klub 2 | Alcaraz — Shapovalov | 1/4 Finale |
 | 04.10 07:05 | movistarplus.es | M+ Deportes 2 | Alcaraz — Shapovalov | Torneo de Tokio |
-| 04.10 07:45 | sportklub.hr | Sport Klub 5 | Alexandrova W — Shnaider W | WTA 1000 Peking |
-| 04.10 07:45 | sportklub.hr | Sport Klub 7 | TBD/TBD W — Perez/Schuurs W | WTA 1000 Peking |
+| 04.10 07:45 | sportklub.hr | Sport Klub 5 | Alexandrova — Shnaider | WTA 1000 Peking |
+| 04.10 07:45 | sportklub.hr | Sport Klub 7 | TBD/TBD — Perez/Schuurs | WTA 1000 Peking |
 | 04.10 08:00 | cosmotetv.gr | Magenta Sport 6 | Ουµπέρ Χούρκατς — Κάρεν Κατσάνοφ |  |
-| 04.10 08:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
-| 04.10 08:00 | sporttv.pt | SPORT.TV1 | BEIJING 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
-| 04.10 08:00 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
+| 04.10 08:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Beijing — tournament | 2026 ATP 500 - BEIJING |
+| 04.10 08:00 | sporttv.pt | SPORT.TV1 | ATP Beijing — tournament | ATP WORLD TOUR 500 |
+| 04.10 08:00 | ziggosport.nl | Ziggo Sport 4 | ATP Beijing — tournament |  |
 | 04.10 08:00 | sportklub.hr | Sport Klub 4 | Hurkacz — Khachanov | 1/4 Finale |
-| 04.10 08:00 | sportklub.hr | Sport Klub 8 | P. Kudermetova W — M. Andreeva W | WTA 1000 Peking |
-| 04.10 08:00 | sport5.co.il | ספורט 5 Stars | רבעי גמר — 2 משחקים | ATP 500 |
+| 04.10 08:00 | sportklub.hr | Sport Klub 8 | P. Kudermetova — M. Andreeva | WTA 1000 Peking |
+| 04.10 08:00 | sport5.co.il | ספורט 5 Stars | ATP Beijing — tournament | ATP 500 |
 | 04.10 08:05 | movistarplus.es | M+ Deportes 3 | Hurkacz — Khachanov | Torneo de Pekín |
 | 04.10 08:30 | sportklub.hr | Sport Klub 9 | Hijikata/Uesugi — Arribage/Olivetti | (Parovi) 1/2 Finale |
-| 04.10 08:45 | sportklub.hr | Sport Klub 2 | P. Kudermetova W — M. Andreeva W | WTA 1000 Peking |
+| 04.10 08:45 | sportklub.hr | Sport Klub 2 | P. Kudermetova — M. Andreeva | WTA 1000 Peking |
 | 04.10 09:00 | ntvplus.tv | Старт Баскет | Аделаида — Нью Зиланд Брейкерс | Чемпионат Австралии Прямая трансляция |
-| 04.10 09:00 | sportklub.hr | Sport Klub 8 | Bouzkova/Li W — Hunter/Mladenovic W | WTA 1000 Peking |
-| 04.10 09:15 | sportklub.hr | Sport Klub 7 | McNally/Tjen W — Bartunskova/Chwalinska W | WTA 1000 Peking |
-| 04.10 09:30 | sportklub.hr | Sport Klub 5 | Snigur W — Preston W | WTA 1000 Peking |
-| 04.10 09:45 | sportklub.hr | Sport Klub 2 | Noskova W — Golubic W | WTA 1000 Peking |
-| 04.10 09:59 | sporttv.pt | SPORT.TV2 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
-| 04.10 09:59 | sporttv.pt | SPORT.TV1 | BEIJING 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
+| 04.10 09:00 | sportklub.hr | Sport Klub 8 | Bouzkova/Li — Hunter/Mladenovic | WTA 1000 Peking |
+| 04.10 09:15 | sportklub.hr | Sport Klub 7 | McNally/Tjen — Bartunskova/Chwalinska | WTA 1000 Peking |
+| 04.10 09:30 | sportklub.hr | Sport Klub 5 | Snigur — Preston | WTA 1000 Peking |
+| 04.10 09:45 | sportklub.hr | Sport Klub 2 | Noskova — Golubic | WTA 1000 Peking |
+| 04.10 09:59 | sporttv.pt | SPORT.TV2 | ATP Tokyo — tournament | ATP WORLD TOUR 500 |
+| 04.10 09:59 | sporttv.pt | SPORT.TV1 | ATP Beijing — tournament | ATP WORLD TOUR 500 |
 | 04.10 10:00 | cosmotetv.gr | Magenta Sport 6 | Άλεξ ντε Μινόρ — Αντρέι Ρούμπλεφ |  |
 | 04.10 10:00 | cosmotetv.gr | Magenta Sport 7 | Βαλεντίν Βασερό — Αρτούρ Φις |  |
-| 04.10 10:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
-| 04.10 10:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
-| 04.10 10:00 | ziggosport.nl | Ziggo Sport 5 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 04.10 10:00 | sportklub.hr | Sport Klub 10 | Snigur W — Preston W | WTA 1000 Peking |
+| 04.10 10:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Beijing — tournament | 2026 ATP 500 - BEIJING |
+| 04.10 10:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP Tokyo — tournament | 2026 ATP 500 - TOKYO |
+| 04.10 10:00 | ziggosport.nl | Ziggo Sport 5 | ATP Tokyo — tournament |  |
+| 04.10 10:00 | sportklub.hr | Sport Klub 10 | Snigur — Preston | WTA 1000 Peking |
 | 04.10 10:00 | sportklub.hr | Sport Klub 4 | De Minaur — Rublev | 1/4 Finale |
 | 04.10 10:00 | sportklub.hr | Sport Klub 5 | Vacherot — Fils | 1/4 Finale |
 | 04.10 10:05 | movistarplus.es | M+ Deportes 2 | Vacherot — Fils | Torneo de Tokio |
 | 04.10 10:10 | movistarplus.es | M+ Deportes 3 | De Miñaur — Rublev | Torneo de Pekín |
-| 04.10 11:00 | sportklub.hr | Sport Klub 7 | M. Andreeva/Kalinskaya W — Joint/Klepač W | WTA 1000 Peking |
-| 04.10 11:00 | sportklub.hr | Sport Klub 8 | Mertens/Shnaider W — Lumsden/Panova W | WTA 1000 Peking |
+| 04.10 11:00 | sportklub.hr | Sport Klub 7 | M. Andreeva/Kalinskaya — Joint/Klepač | WTA 1000 Peking |
+| 04.10 11:00 | sportklub.hr | Sport Klub 8 | Mertens/Shnaider — Lumsden/Panova | WTA 1000 Peking |
 | 04.10 11:20 | webtv.sk | Nova Sport 1 | Levhartice Chomutov W — KP Brno Přímý přenos 2. kola nejvyšší české basketbalové ligy žen W |  |
 | 04.10 11:20 | oneplay.cz | Nova Sport 1 | Levhartice Chomutov W — KP Brno W |  |
 | 04.10 11:30 | cosmotetv.gr | Magenta Sport 8 | Ντανιίλ Μεντβέντεφ — Φρανσίσκο Σερούντολο |  |
-| 04.10 11:30 | sporttv.pt | SPORT.TV5 | BEIJING 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
+| 04.10 11:30 | sporttv.pt | SPORT.TV5 | ATP Beijing — tournament | ATP WORLD TOUR 500 |
 | 04.10 11:30 | sportklub.hr | Sport Klub 10 | Arends/Pel — Bublik/Shang | (Parovi) 1/2 Finale |
 | 04.10 11:30 | movistarplus.es | M+ Deportes 4 | Medvedev — Cerundolo | Torneo de Pekín |
 | 04.10 11:45 | sportklub.hr | Sport Klub 2 | Medvedev — F. Cerundolo | 1/4 Finale |
 | 04.10 11:45 | sportklub.hr | Sport Klub 5 | Lehecka — Vallejo | 1/4 Finale |
-| 04.10 11:59 | sporttv.pt | SPORT.TV2 | TÓQUIO 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
+| 04.10 11:59 | sporttv.pt | SPORT.TV2 | ATP Tokyo — tournament | ATP WORLD TOUR 500 |
 | 04.10 12:00 | cosmotetv.gr | Magenta Sport 7 | Γίρι Λεχέτσκα — Αντόλφο Ντάνιελ Βαγιέχο |  |
-| 04.10 12:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
+| 04.10 12:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP Tokyo — tournament | 2026 ATP 500 - TOKYO |
 | 04.10 12:49 | sporttv.pt | SPORT.TV1 | SC FARENSE — GD CHAVES | LIGA PORTUGAL 2 |
 | 04.10 12:50 | skai.gr | ΣΚΑΪ | STOIXIMAN GBL 2026-27 | ΠΑΝΑΘΗΝΑΪΚΟΣ AKTOR — VIKOS ΦALCONS |  |
 | 04.10 12:55 | ntvplus.tv | Старт Баскет | Панатинаикос — Викос | Чемпионат Греции Прямая трансляция |
 | 04.10 12:55 | sport1.maariv.co.il | Sport1 4 | פנאתינייקוס — ויקוס פאלקונס | כדורסל יווני |
-| 04.10 12:58 | sporttv.pt | SPORT.TV6 | ATP CH 125 PORTO OPEN — FINAL | ATP CHALLENGER TOUR |
+| 04.10 12:58 | sporttv.pt | SPORT.TV6 | Challenger Porto — tournament | ATP CHALLENGER TOUR |
 | 04.10 13:00 | diemaxtra.nova.bg | Diema Sport 3 | Коруня — Билбао | Лига Ендеса |
 | 04.10 13:00 | nova.bg | diemasport 3 | Коруня — Билбао | Лига Ендеса |
 | 04.10 13:00 | nova.bg | nova sport | Леида — Бургос | Лига Ендеса |
@@ -544,17 +522,17 @@
 | 04.10 13:30 | tvarenasport.ba | Arena Premium 2 | Obradoiro — Real Madrid | Španska liga |
 | 04.10 13:30 | tvarenasport.com | Arena Premium 1 | Obradoiro — Real Madrid | ŠPANSKA LIGA |
 | 04.10 13:30 | sportklub.hr | Sport Klub 7 | Monbus — Real Madrid | Španjolska liga |
-| 04.10 13:59 | sporttv.pt | SPORT.TV2 | BEIJING 2026 — QUARTOS DE FINAL | ATP WORLD TOUR 500 |
+| 04.10 13:59 | sporttv.pt | SPORT.TV2 | ATP Beijing — tournament | ATP WORLD TOUR 500 |
 | 04.10 14:00 | cosmotetv.gr | Magenta Sport 6 | Αλεξάντερ Ζβέρεφ — Νόβακ Τζόκοβιτς |  |
 | 04.10 14:00 | diemaxtra.nova.bg | Diema Sport | Миньор Перник — Берое | Sesame Купа на България |
 | 04.10 14:00 | diemaxtra.nova.bg | Diema Xtra | Миньор Перник — Берое | Sesame Купа на България |
-| 04.10 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
+| 04.10 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Beijing — tournament | 2026 ATP 500 - BEIJING |
 | 04.10 14:00 | nova.bg | diemasport | Миньор Перник — Берое | Sesame Купа на България |
-| 04.10 14:00 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
+| 04.10 14:00 | ziggosport.nl | Ziggo Sport 4 | ATP Beijing — tournament |  |
 | 04.10 14:00 | sportklub.hr | Sport Klub 10 | Minyor — Beroe | Pretkolo |
 | 04.10 14:00 | sportklub.hr | Sport Klub 2 | Zverev — Đokovič | 1/4 Finale |
-| 04.10 14:00 | sportklub.hr | Sport Klub 4 | Bejlek W — Osaka W | WTA 1000 Peking |
-| 04.10 14:00 | sport5.co.il | 5MAX | רבעי גמר — 2 משחקים | ATP 500 |
+| 04.10 14:00 | sportklub.hr | Sport Klub 4 | Bejlek — Osaka | WTA 1000 Peking |
+| 04.10 14:00 | sport5.co.il | 5MAX | ATP Beijing — tournament | ATP 500 |
 | 04.10 14:25 | ntvplus.tv | Матч ТВ | Велес — Волга | Лига Pari Прямая трансляция |
 | 04.10 14:25 | ntvplus.tv | Телеканал «Матч ТВ» | Велес — Волга | Лига Pari Прямая трансляция |
 | 04.10 14:25 | ntvplus.tv | МАТЧ ПРЕМЬЕР HD | Велес — Волга | Тур 21 Прямая трансляция |
@@ -570,7 +548,7 @@
 | 04.10 15:30 | tvarenasport.com | Arena Premium 2 | Fenerbahce — Korfez | TURSKA LIGA |
 | 04.10 15:30 | sportklub.hr | Sport Klub 8 | Fenerbahce — Korfez | Turska liga |
 | 04.10 15:45 | sport1tv.cz | Sport1 CZ | Azerbajdžán — Litva | Liga národů |
-| 04.10 15:45 | sportklub.hr | Sport Klub 4 | Muchova W — Samsonova W | WTA 1000 Peking |
+| 04.10 15:45 | sportklub.hr | Sport Klub 4 | Muchova — Samsonova | WTA 1000 Peking |
 | 04.10 15:45 | oneplay.cz | Sport1 | Azerbajdžán — Litva | Liga národů |
 | 04.10 15:49 | sporttv.pt | SPORT.TV1 | AZERBAIJÃO — LITUÂNIA | UEFA NATIONS LEAGUE |
 | 04.10 15:50 | allente.no | SVT1 HD | Malmoe FF W — FC Rosengaard W | Damallsvenskan |
@@ -589,7 +567,7 @@
 | 04.10 16:00 | epg.cyta.com.cy | PPV1 | ΑΕΛ W — ΑΤΛΑΝΤΑΣ W | 2026 ALLWYN SUPER CUP ΓΥΝΑΙΚΩΝ |
 | 04.10 16:00 | epg.cyta.com.cy | Cytavision Sports3 HD | AZERBAIJAN — LITHUANIA | UEFA NATIONS LEAGUE |
 | 04.10 16:00 | epg.cyta.com.cy | PPV2 | AZERBAIJAN — LITHUANIA | UEFA NATIONS LEAGUE |
-| 04.10 16:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
+| 04.10 16:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Beijing — tournament | 2026 ATP 500 - BEIJING |
 | 04.10 16:00 | nova.bg | diemasport 3 | Азербайджан — Литва | УЕФА Лига на нациите |
 | 04.10 16:00 | poverkhnost.tv | Sport 2 | Бавария — Ольденбург | Чемпионат Германии |
 | 04.10 16:00 | skysports.com | Sky Sports+ | Aston Villa Women W — Crystal Palace Women W | Women's Super League |
@@ -805,26 +783,26 @@
 | 05.10 02:00 | ntvplus.tv | viju+ Sport HD | Атлетико Букараманга — Жуниор Барранкилья | Колумбия Примера А Клаусура 2026 13 тур Прямая трансляция |
 | 05.10 02:00 | tv24.co.uk | TNT Sports 3 | Houston Dash W — Washington Spirit W | NWSL |
 | 05.10 04:05 | ntvplus.tv | viju+ Sport HD | Льянерос — Америка де Кали | Колумбия Примера А Клаусура 2026 13 тур Прямая трансляция |
-| 05.10 09:57 | sporttv.pt | SPORT.TV2 | BEIJING 2026 — MEIA-FINAL | ATP WORLD TOUR 500 |
-| 05.10 09:58 | sporttv.pt | SPORT.TV3 | TÓQUIO 2026 — MEIA-FINAL | ATP WORLD TOUR 500 |
-| 05.10 10:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
-| 05.10 10:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
-| 05.10 10:00 | ziggosport.nl | Ziggo Sport 1 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 05.10 10:00 | ziggosport.nl | Ziggo Sport 4 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 05.10 10:00 | ziggosport.nl | Ziggo Sport 5 | China Open — Beijing Finale |  |
-| 05.10 10:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
+| 05.10 09:57 | sporttv.pt | SPORT.TV2 | ATP Beijing — tournament | ATP WORLD TOUR 500 |
+| 05.10 09:58 | sporttv.pt | SPORT.TV3 | ATP Tokyo — tournament | ATP WORLD TOUR 500 |
+| 05.10 10:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Beijing — tournament | 2026 ATP 500 - BEIJING |
+| 05.10 10:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP Tokyo — tournament | 2026 ATP 500 - TOKYO |
+| 05.10 10:00 | ziggosport.nl | Ziggo Sport 1 | ATP Tokyo — tournament |  |
+| 05.10 10:00 | ziggosport.nl | Ziggo Sport 4 | ATP Tokyo — tournament |  |
+| 05.10 10:00 | ziggosport.nl | Ziggo Sport 5 | ATP Beijing — tournament |  |
+| 05.10 10:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Tokyo — tournament |  |
 | 05.10 10:00 | sportklub.hr | Sport Klub 2 | ATP 500 Tokyo — 1/2 Finale & WTA 1000 + ATP 500 Peking |  |
-| 05.10 10:00 | sport5.co.il | ספורט 5 Stars | חצאי גמר — 2 משחקים | ATP 500 |
-| 05.10 11:59 | sporttv.pt | SPORT.TV3 | TÓQUIO 2026 — MEIA-FINAL | ATP WORLD TOUR 500 |
-| 05.10 12:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
-| 05.10 12:05 | ziggosport.nl | Ziggo Sport 1 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 05.10 12:05 | ziggosport.nl | Ziggo Sport 4 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 05.10 12:05 | ziggosport.nl | Ziggo Sport Kanaal 14 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 05.10 13:59 | sporttv.pt | SPORT.TV2 | BEIJING 2026 — MEIA-FINAL | ATP WORLD TOUR 500 |
-| 05.10 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
-| 05.10 14:05 | ziggosport.nl | Ziggo Sport 1 | China Open — Beijing |  |
-| 05.10 14:05 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing |  |
-| 05.10 14:05 | ziggosport.nl | Ziggo Sport Kanaal 14 | China Open — Beijing |  |
+| 05.10 10:00 | sport5.co.il | ספורט 5 Stars | ATP Beijing — tournament | ATP 500 |
+| 05.10 11:59 | sporttv.pt | SPORT.TV3 | ATP Tokyo — tournament | ATP WORLD TOUR 500 |
+| 05.10 12:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP Tokyo — tournament | 2026 ATP 500 - TOKYO |
+| 05.10 12:05 | ziggosport.nl | Ziggo Sport 1 | ATP Tokyo — tournament |  |
+| 05.10 12:05 | ziggosport.nl | Ziggo Sport 4 | ATP Tokyo — tournament |  |
+| 05.10 12:05 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Tokyo — tournament |  |
+| 05.10 13:59 | sporttv.pt | SPORT.TV2 | ATP Beijing — tournament | ATP WORLD TOUR 500 |
+| 05.10 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Beijing — tournament | 2026 ATP 500 - BEIJING |
+| 05.10 14:05 | ziggosport.nl | Ziggo Sport 1 | ATP Beijing — tournament |  |
+| 05.10 14:05 | ziggosport.nl | Ziggo Sport 4 | ATP Beijing — tournament |  |
+| 05.10 14:05 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Beijing — tournament |  |
 | 05.10 14:45 | ert.gr | ΕΡΤ2 ΣΠΟΡ | ΠΑΟΚ Β’ — Ελλάς Σύρου | Superbet League 2 | 5η Αγωνιστική |
 | 05.10 17:00 | tvarenasport.com | Arena Sport 10 | Napredak — Loznica | PRVA LIGA SRBIJE |
 | 05.10 17:20 | rtcg.me | TVCG 3 | Crna Gora U21 — Jermenija U21 | U21, direktno |
@@ -925,20 +903,20 @@
 | 06.10 02:50 | tvpassport.com | Fox Soccer Plus | Bermuda — Barbados | CONCACAF Nations League Soccer |
 | 06.10 03:00 | digisport.ro | Digi Sport 1 | Argentina — Benin | digisport Fotbal Amical |
 | 06.10 04:05 | ntvplus.tv | viju+ Sport HD | Льянерос — Америка де Кали | Колумбия Примера А Клаусура 2026 13 тур Прямая трансляция |
-| 06.10 11:00 | sport5.co.il | 5MAX | גמר זוגות — משחק אחד | ATP 500 |
-| 06.10 11:59 | sporttv.pt | SPORT.TV1 | TÓQUIO 2026 — FINAL | ATP WORLD TOUR 500 |
-| 06.10 12:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP 500 — TOKYO | 2026 ATP 500 - TOKYO |
-| 06.10 12:00 | ziggosport.nl | Ziggo Sport 1 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 06.10 12:00 | ziggosport.nl | Ziggo Sport 4 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
-| 06.10 12:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | Kinoshita Group Japan Open Tennis Championships — Tokyo |  |
+| 06.10 11:00 | sport5.co.il | 5MAX | ATP Beijing — tournament | ATP 500 |
+| 06.10 11:59 | sporttv.pt | SPORT.TV1 | ATP Tokyo — tournament | ATP WORLD TOUR 500 |
+| 06.10 12:00 | epg.cyta.com.cy | Cytavision Sports8 HD | ATP Tokyo — tournament | 2026 ATP 500 - TOKYO |
+| 06.10 12:00 | ziggosport.nl | Ziggo Sport 1 | ATP Tokyo — tournament |  |
+| 06.10 12:00 | ziggosport.nl | Ziggo Sport 4 | ATP Tokyo — tournament |  |
+| 06.10 12:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Tokyo — tournament |  |
 | 06.10 13:00 | canal11.pt | Canal 11 | U. LEIRIA — SANTA CLARA | Liga Next Gen |
-| 06.10 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 500 — BEIJING | 2026 ATP 500 - BEIJING |
-| 06.10 14:00 | ziggosport.nl | Ziggo Sport 5 | China Open — Beijing Finale |  |
-| 06.10 14:00 | sport5.co.il | ספורט 5 Live | גמר יחידים — משחק אחד | ATP 500 |
-| 06.10 14:00 | sporttv.pt | SPORT.TV2 | BEIJING 2026 — FINAL | ATP WORLD TOUR 500 |
-| 06.10 14:30 | ziggosport.nl | Ziggo Sport 1 | China Open — Beijing Finale |  |
-| 06.10 14:30 | ziggosport.nl | Ziggo Sport Kanaal 14 | China Open — Beijing Finale |  |
-| 06.10 14:35 | ziggosport.nl | Ziggo Sport 4 | China Open — Beijing Finale |  |
+| 06.10 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Beijing — tournament | 2026 ATP 500 - BEIJING |
+| 06.10 14:00 | ziggosport.nl | Ziggo Sport 5 | ATP Beijing — tournament |  |
+| 06.10 14:00 | sport5.co.il | ספורט 5 Live | ATP Beijing — tournament | ATP 500 |
+| 06.10 14:00 | sporttv.pt | SPORT.TV2 | ATP Beijing — tournament | ATP WORLD TOUR 500 |
+| 06.10 14:30 | ziggosport.nl | Ziggo Sport 1 | ATP Beijing — tournament |  |
+| 06.10 14:30 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Beijing — tournament |  |
+| 06.10 14:35 | ziggosport.nl | Ziggo Sport 4 | ATP Beijing — tournament |  |
 | 06.10 15:00 | sport5.co.il | ספורט 5+ | ארץ הכדורגל — ליגה לאומית |  |
 | 06.10 15:45 | sport5.co.il | ספורט 5+ | ארץ הכדורגל — ליגה א |  |
 | 06.10 16:49 | sporttv.pt | SPORT.TV2 | CAZAQUISTÃO — ILHAS FAROÉ | UEFA NATIONS LEAGUE |
@@ -1090,15 +1068,15 @@
 | 07.10 02:35 | movistarplus.es | M+ Vamos | Colombia — Perú | Partido Amistoso |
 | 07.10 03:00 | tvpassport.com | TSN1 | USA — Canada | Men's International Soccer Friendlies |
 | 07.10 05:00 | sport5.co.il | ספורט 5 Stars | סקרמנטו — ל.א. לייקרס | NBA |
-| 07.10 07:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 1000 — SHANGHAI | 2026 ATP 1000 - SHANGHAI |
-| 07.10 07:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
-| 07.10 09:00 | ziggosport.nl | Ziggo Sport 1 | Rolex Shanghai Masters — Shanghai |  |
-| 07.10 09:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
-| 07.10 09:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | Rolex Shanghai Masters — Shanghai |  |
+| 07.10 07:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Shanghai — tournament | 2026 ATP 1000 - SHANGHAI |
+| 07.10 07:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
+| 07.10 09:00 | ziggosport.nl | Ziggo Sport 1 | ATP Shanghai — tournament |  |
+| 07.10 09:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
+| 07.10 09:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Shanghai — tournament |  |
 | 07.10 11:30 | ntvplus.tv | Старт Баскет | Аделаида — Мельбурн Юнайтед | Чемпионат Австралии Прямая трансляция |
-| 07.10 13:00 | ziggosport.nl | Ziggo Sport 1 | Rolex Shanghai Masters — Shanghai |  |
-| 07.10 13:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
-| 07.10 13:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | Rolex Shanghai Masters — Shanghai |  |
+| 07.10 13:00 | ziggosport.nl | Ziggo Sport 1 | ATP Shanghai — tournament |  |
+| 07.10 13:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
+| 07.10 13:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Shanghai — tournament |  |
 | 07.10 17:00 | tvarenasport.com | Arena Sport 1 | Primorje — Virtus Zagreb | ABA2 LIGA |
 | 07.10 17:00 | tv3.lt | Sport 1 | BC CIU — BC Hipocredit Jonava | Šiaurės Europos krepšinio lyga |
 | 07.10 18:55 | ntvplus.tv | СТАРТ HD | АЕК — Вилпас | Лига Чемпионов Прямая трансляция |
@@ -1167,15 +1145,15 @@
 | 08.10 02:40 | sport5.co.il | ספורט 5+ | קולומביה — פרו | משחק הכנה בכדורגל |
 | 08.10 04:10 | ntvplus.tv | viju+ Sport HD | Атлетико Насьональ — Депортес Толима | Колумбия Примера А Клаусура 2026 Перенесённый матч 9 тура Прямая трансляция |
 | 08.10 04:30 | oneplay.cz | Sport1 | Golden State Valkyries — Las Vegas Aces | WNBA - playoff |
-| 08.10 07:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 1000 — SHANGHAI | 2026 ATP 1000 - SHANGHAI |
-| 08.10 07:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
-| 08.10 09:00 | ziggosport.nl | Ziggo Sport 1 | Rolex Shanghai Masters — Shanghai |  |
-| 08.10 09:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
-| 08.10 09:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | Rolex Shanghai Masters — Shanghai |  |
+| 08.10 07:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Shanghai — tournament | 2026 ATP 1000 - SHANGHAI |
+| 08.10 07:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
+| 08.10 09:00 | ziggosport.nl | Ziggo Sport 1 | ATP Shanghai — tournament |  |
+| 08.10 09:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
+| 08.10 09:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Shanghai — tournament |  |
 | 08.10 11:30 | ntvplus.tv | Старт Баскет | Кэрнс Тайпанс — Брисбен Буллетс | Чемпионат Австралии Прямая трансляция |
-| 08.10 13:00 | ziggosport.nl | Ziggo Sport 1 | Rolex Shanghai Masters — Shanghai |  |
-| 08.10 13:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
-| 08.10 13:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | Rolex Shanghai Masters — Shanghai |  |
+| 08.10 13:00 | ziggosport.nl | Ziggo Sport 1 | ATP Shanghai — tournament |  |
+| 08.10 13:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
+| 08.10 13:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Shanghai — tournament |  |
 | 08.10 18:00 | digisport.ro | Digi Sport 1 | Politehnica Timisoara — Steaua | digisport Liga a 2-a |
 | 08.10 18:45 | livesoccertv.com | Abu Dhabi Sports 1 | Khor Fakkan — Al Wasl | UAE League Cup |
 | 08.10 18:45 | tv3.lt | Go3 Sport 2 | Dubai — Crvena Zvezda | Eurolygos rungtynės |
@@ -1241,16 +1219,16 @@
 | 09.10 04:30 | sport5.co.il | ספורט 5+ | גולדן סטייט — לאס וגאס | WNBA |
 | 09.10 05:00 | sport5.co.il | ערוץ הספורט | פורטלנד — גולדן סטייט | NBA |
 | 09.10 05:00 | sport5.co.il | ספורט מובייל | פורטלנד — גולדן סטייט | NBA |
-| 09.10 07:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
+| 09.10 07:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
 | 09.10 07:55 | ntvplus.tv | СТАРТ ТРИУМФ HD | Тэджон — Чонбук | Чемпионат Южной Кореи К-Лига 1 Прямая трансляция |
-| 09.10 09:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
+| 09.10 09:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
 | 09.10 10:25 | ntvplus.tv | СТАРТ HD | Инчхон — Пхохан | Чемпионат Южной Кореи К-Лига 1 Прямая трансляция |
-| 09.10 11:20 | ziggosport.nl | Ziggo Sport 1 | Rolex Shanghai Masters — Shanghai |  |
-| 09.10 11:20 | ziggosport.nl | Ziggo Sport Kanaal 14 | Rolex Shanghai Masters — Shanghai |  |
+| 09.10 11:20 | ziggosport.nl | Ziggo Sport 1 | ATP Shanghai — tournament |  |
+| 09.10 11:20 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Shanghai — tournament |  |
 | 09.10 11:30 | ntvplus.tv | Старт Баскет | Иллаварра Хокс — Тасмания Джекджамперс | Чемпионат Австралии Прямая трансляция |
-| 09.10 13:00 | ziggosport.nl | Ziggo Sport 1 | Rolex Shanghai Masters — Shanghai |  |
-| 09.10 13:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
-| 09.10 13:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | Rolex Shanghai Masters — Shanghai |  |
+| 09.10 13:00 | ziggosport.nl | Ziggo Sport 1 | ATP Shanghai — tournament |  |
+| 09.10 13:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
+| 09.10 13:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Shanghai — tournament |  |
 | 09.10 13:50 | rtcg.me | TVCG 2 | Crna Gora W — Bosna i Hercegovina W | prijateljski meč, direktno |
 | 09.10 15:00 | football-tv.ru | Футбол | Чжэцзян — Шанхай Порт |  |
 | 09.10 15:00 | tvarenasport.com | Arena Sport 3 | Požarevac — Regionalno finale | Moje pravo da biram sport – Sport pobeđuje |
@@ -1418,7 +1396,7 @@
 | 10.10 02:30 | oneplay.cz | Sport1 | New York Liberty — Atlanta Dream | WNBA - playoff |
 | 10.10 04:00 | ntvplus.tv | viju+ Sport HD | Форталеза — Мильонариос | Колумбия Примера А Клаусура 2026 14 тур Прямая трансляция |
 | 10.10 05:30 | sport5.co.il | ספורט 5 Stars | ל.א. לייקרס — סקרמנטו | NBA |
-| 10.10 07:00 | ziggosport.nl | Ziggo Sport 4 | Rolex Shanghai Masters — Shanghai |  |
+| 10.10 07:00 | ziggosport.nl | Ziggo Sport 4 | ATP Shanghai — tournament |  |
 | 10.10 11:00 | digisport.ro | Digi Sport 1 | Chindia Targoviste — Concordia Chiajna | digisport Liga a 2-a |
 | 10.10 12:00 | digisport.ro | Digi Sport 1 | Chindia Targoviste — Concordia Chiajna | digisport Liga a 2-a |
 | 10.10 12:50 | sporttv.pt | SPORT.TV1 | CD TONDELA — SCU TORREENSE | LIGA PORTUGAL 2 |
