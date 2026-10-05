@@ -16,7 +16,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 38720,
+   "байт": 32447,
    "меток времени": 0,
    "чем": "requests",
    "файл": "tvtid-api.api.tv2.dk__api_tvtid_v1_epg_dayviews_2026-10-05_ch=77_ch=2147483561_ch=3_ch=4_ch=31_ch=12566_ch=133.html"
@@ -35,7 +35,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 39805,
+   "байт": 9666,
    "меток времени": 0,
    "чем": "requests",
    "файл": "tvtid-api.api.tv2.dk__api_tvtid_v1_epg_dayviews_2026-10-06_ch=77_ch=2147483561_ch=3_ch=4_ch=31_ch=12566_ch=133.html"
@@ -54,7 +54,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 55089,
+   "байт": 55809,
    "меток времени": 0,
    "чем": "requests",
    "файл": "www.tvsporten.dk__api_fixtures_bydate_day=2026-10-05_dayBreakHour=5_tz=Europe_2FCopenhagen.html"

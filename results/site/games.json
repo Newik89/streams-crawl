@@ -1,5 +1,5 @@
 {
- "собрано": "2026-10-05 09:58",
+ "собрано": "2026-10-05 10:41",
  "игр": 19,
  "окно": 2,
  "по_окнам": {
@@ -10,7 +10,7 @@
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "tvtid.tv2.dk": 321,
+  "tvtid.tv2.dk": 170,
   "tvsporten.dk": 24
  },
  "другие_виды": [
@@ -310,12 +310,6 @@
    "start_utc": "2026-10-06T03:00",
    "entries": [
     {
-     "source": "tvtid.tv2.dk",
-     "channel": "TV 2 Sport",
-     "url": "https://tvtid-api.api.tv2.dk/api/tvtid/v1/epg/dayviews/2026-10-06?ch=77&ch=2147483561&ch=3&ch=4&ch=31&ch=12566&ch=133",
-     "raw_title": "WTA: Beijing"
-    },
-    {
      "source": "tvsporten.dk",
      "channel": "TV 2 Sport",
      "url": "https://www.tvsporten.dk/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FCopenhagen",
@@ -333,12 +327,6 @@
    "start_utc": "2026-10-06T09:00",
    "entries": [
     {
-     "source": "tvtid.tv2.dk",
-     "channel": "TV 2 Sport",
-     "url": "https://tvtid-api.api.tv2.dk/api/tvtid/v1/epg/dayviews/2026-10-06?ch=77&ch=2147483561&ch=3&ch=4&ch=31&ch=12566&ch=133",
-     "raw_title": "ATP: Finale, Tokyo"
-    },
-    {
      "source": "tvsporten.dk",
      "channel": "TV 2 Sport",
      "url": "https://www.tvsporten.dk/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FCopenhagen",
@@ -355,12 +343,6 @@
    "start_kyiv": "2026-10-06T14:00",
    "start_utc": "2026-10-06T11:00",
    "entries": [
-    {
-     "source": "tvtid.tv2.dk",
-     "channel": "TV 2 Sport",
-     "url": "https://tvtid-api.api.tv2.dk/api/tvtid/v1/epg/dayviews/2026-10-06?ch=77&ch=2147483561&ch=3&ch=4&ch=31&ch=12566&ch=133",
-     "raw_title": "ATP: Finale, Beijing"
-    },
     {
      "source": "tvsporten.dk",
      "channel": "TV 2 Sport",
@@ -396,29 +378,6 @@
    "guess": 0,
    "sport": "F",
    "league": "UEFA Nations League",
-   "home": "Kroatien",
-   "away": "Spanien",
-   "start_kyiv": "2026-10-06T21:40",
-   "start_utc": "2026-10-06T18:40",
-   "entries": [
-    {
-     "source": "tvtid.tv2.dk",
-     "channel": "TV 2 Sport",
-     "url": "https://tvtid-api.api.tv2.dk/api/tvtid/v1/epg/dayviews/2026-10-06?ch=77&ch=2147483561&ch=3&ch=4&ch=31&ch=12566&ch=133",
-     "raw_title": "UEFA Nations League: Kroatien-Spanien"
-    },
-    {
-     "source": "tvsporten.dk",
-     "channel": "TV 2 Sport",
-     "url": "https://www.tvsporten.dk/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FCopenhagen",
-     "raw_title": "Kroatien - Spanien"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
    "home": "England",
    "away": "Tjekkiet",
    "start_kyiv": "2026-10-06T21:40",
@@ -435,6 +394,23 @@
      "channel": "TV 2 Sport X",
      "url": "https://www.tvsporten.dk/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FCopenhagen",
      "raw_title": "England - Tjekkiet"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "UEFA Nations League",
+   "home": "Kroatien",
+   "away": "Spanien",
+   "start_kyiv": "2026-10-06T21:45",
+   "start_utc": "2026-10-06T18:45",
+   "entries": [
+    {
+     "source": "tvsporten.dk",
+     "channel": "TV 2 Sport",
+     "url": "https://www.tvsporten.dk/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FCopenhagen",
+     "raw_title": "Kroatien - Spanien"
     }
    ]
   },
