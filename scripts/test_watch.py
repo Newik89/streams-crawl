@@ -80,8 +80,8 @@ watch.github_runs = fake_runs
 watch.wait_for_start = fake_wait
 REAL_RESULT = watch.result_state              # настоящая сверка — для правила С4в
 RESULT_ASKED: list[tuple] = []                # с чем сторож спрашивал судьбу результата
-watch.result_state = lambda root, started, what, imported: (
-    RESULT_ASKED.append((what, imported)) or RESULT[0])
+watch.result_state = lambda root, start, end, what, imported, cache=None: (
+    RESULT_ASKED.append((what, imported[-1] if imported else "")) or RESULT[0])
 trigger.push_request_tag = lambda kind, value: (TAGS.append((kind, value)) or (PUSH_OK[0], "тест"))
 trigger._repo_slug = lambda: SLUG
 
@@ -237,7 +237,7 @@ def state_get() -> dict:
         rec = watch.full_order_record(conn, order, save=False) if order else {}
     finally:
         conn.close()
-    return {k: v for k, v in rec.items() if k not in ("id", "who")}
+    return {k: v for k, v in rec.items() if k not in ("id", "who", "at")}
 
 
 def book() -> list[dict]:
@@ -273,7 +273,7 @@ def alarms_after(edge: int) -> list[str]:
     return [n for n in notes_after(edge) if "ТРЕВОГА" in n]
 
 
-MEMORY = ("crawl_running", "crawl_request", "crawl_order", "crawl_missed",
+MEMORY = ("crawl_running", "crawl_request", "crawl_order", "crawl_bad", "crawl_missed",
           "crawl_early", "crawl_cancel", "crawl_queue", "crawl_slot", "crawl_silent")
 
 
@@ -294,8 +294,9 @@ def reset(now: datetime, runs=()):
         setting(key, "")
     conn = db.connect()
     try:                                     # книга заказов — по строке на заказ
-        conn.execute("DELETE FROM settings WHERE substr(key, 1, ?) = ?",
-                     (len(watch.ORDER_PREFIX), watch.ORDER_PREFIX))
+        for prefix in (watch.ORDER_PREFIX, watch.BAD_PREFIX, "import_stamps:"):
+            conn.execute("DELETE FROM settings WHERE substr(key, 1, ?) = ?",
+                         (len(prefix), prefix))
         conn.commit()
     finally:
         conn.close()
@@ -1357,10 +1358,25 @@ check("метка заливки — своя у каждой папки рез�
       == ["last_import_stamp:results", "last_import_stamp:day", "last_import_stamp:site"]
       and watch.result_dir("site-nova.bg") == "results/site")
 started = datetime(2026, 11, 10, 10, 1, tzinfo=timezone.utc)
-check("«влит» — когда метка заливки не старше старта прогона; старая метка — не влит "
-      "(GitHub не спрашиваем: не репозиторий → «unknown»)",
-      REAL_RESULT(TMP, started, "date-2026-11-12", "2026-11-10 10:30") == "picked"
-      and REAL_RESULT(TMP, started, "date-2026-11-12", "2026-11-10 08:00") == "unknown")
+ended = datetime(2026, 11, 10, 10, 40, tzinfo=timezone.utc)
+check("«влит» — когда среди заливок папки есть метка ИЗ ОКНА прогона [старт, конец]; "
+      "старая или более поздняя — не его (GitHub не спрашиваем: не репозиторий → «unknown»)",
+      REAL_RESULT(TMP, started, ended, "date-2026-11-12", ["2026-11-10 10:30"]) == "picked"
+      and REAL_RESULT(TMP, started, ended, "date-2026-11-12", ["2026-11-10 08:00"]) == "unknown"
+      and REAL_RESULT(TMP, started, ended, "date-2026-11-12",
+                      ["2026-11-10 10:30", "2026-11-10 11:20"]) == "picked"
+      and REAL_RESULT(TMP, started, ended, "date-2026-11-12", ["2026-11-10 11:20"]) == "unknown")
+for remote, verdict in (("2026-11-10 10:30", "pending"), ("2026-11-10 11:20", "lost"),
+                        ("2026-11-10 09:50", "none")):
+    cache = {"fetched": True, "results/day": (True, watch._stamp_utc(remote))}
+    check(f"на GitHub «собрано» {remote[-5:]} UTC, прогон шёл 10:01–10:40 → «{verdict}»",
+          REAL_RESULT(TMP, started, ended, "date-2026-11-12", [], cache) == verdict)
+check("заливка пишет «собрано» в список папки; список не растёт дальше предела",
+      (lambda c: ([watch.remember_import(c, "day", f"2026-11-10 {i:02d}:00")
+                   for i in range(40)],
+                  watch.imported_stamps(c, "date-2026-11-12"))[1])(db.connect())[-2:]
+      == ["2026-11-10 39:00", setting("last_import_stamp:day")]
+      and len(json.loads(setting("import_stamps:day"))) == watch.IMPORT_STAMPS_KEEP)
 reset(K("12:00"), [probe])
 button("site-nova.bg", "12:00")
 API["runs"] = [probe, mkrun(K("12:01"), status="in_progress", title="Обход site-nova.bg")]
@@ -1688,6 +1704,329 @@ check("…без свежего «2 дня» один «6 дней с 3-го» �
       watch.lock_verdict({"what": "full-6", "state": "идёт", "since": "16:21"}, 6,
                          [probe, rest], K("16:45"))[0] == "behind")
 
+
+# ── сценарии независимой проверки 06.10 (S1–S6) и находки 5–8 ──────────────
+rule("сценарии", "сценарии проверяющего 06.10 и его находки")
+import subprocess as _sp  # noqa: E402
+
+
+def _no_git(*a, **k):
+    raise OSError("git в проверке запрещён")
+
+
+REAL_SUBPROCESS = watch.subprocess
+NO_GIT = type("S", (), {"run": staticmethod(_no_git), "SubprocessError": _sp.SubprocessError})
+
+
+def utc_stamp(at):
+    return at.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M")
+
+
+# S1. два скана дат подряд: второй ждал очереди за первым, его стук потерян
+reset(K("10:00"), [probe])
+watch.result_state, watch.subprocess = REAL_RESULT, NO_GIT
+button("date-2026-11-12", "10:00")
+button("date-2026-11-13", "10:05")
+d1 = mkrun(K("10:00"), ended=K("10:20"), title="Обход date-2026-11-12")
+d2 = mkrun(K("10:05"), ended=K("10:40"), title="Обход date-2026-11-13")   # run_started_at = создание
+API["runs"] = [probe, d1, d2]
+setting("last_import_stamp:day", utc_stamp(K("10:19")))   # влит только скан 12-го
+tick(K("10:55"))
+b = {r["what"]: r for r in book()}
+check("S1: второй скан ждал очереди, влит только первый → второй НЕ «влит» (окно — от "
+      "настоящего старта), первый — закрыт",
+      not b["date-2026-11-13"].get("done") and b["date-2026-11-12"].get("done") is True,
+      {k: (v.get("done"), v.get("failed")) for k, v in b.items()})
+# S1b. плановый 6 дней в очереди за ручным 2 дня; стук планового потерян
+reset(K("20:00"), [probe])
+watch.result_state, watch.subprocess = REAL_RESULT, NO_GIT
+button("full-2", "20:00")
+fr = mkrun(K("20:00"), ended=K("20:40"), title="Обход full-2")
+API["runs"] = [probe, mkrun(K("20:00"), status="in_progress", title="Обход full-2")]
+mark("идёт", 30, "full-2")
+NOW[0] = K("20:30")
+planned(6)
+p6 = mkrun(K("20:30"), ended=K("22:10"), title="Обход full-6")
+API["runs"] = [probe, fr, p6]
+setting("last_import_stamp:results", utc_stamp(K("20:39")))   # влит только ручной 2 дня
+tick(K("22:30"))
+rec6 = [r for r in book() if r["what"] == "full-6"]
+check("S1b: плановый 6 дней ждал за ручным 2 дня, влит только ручной → плановый НЕ закрыт «дошёл»",
+      rec6 and not rec6[0].get("done"), rec6)
+watch.subprocess = REAL_SUBPROCESS
+watch.result_state = lambda root, start, end, what, imported, cache=None: (
+    RESULT_ASKED.append((what, imported[-1] if imported else "")) or RESULT[0])
+
+# S2. перезагрузка сервера посреди повтора
+reset(K("12:00"), [probe])
+button("date-2026-11-12", "12:00")
+API["runs"] = [probe, mkrun(K("12:01"), ended=K("12:20"), conclusion="failure",
+                            title="Обход date-2026-11-12")]
+
+
+def dying(kind, value, mark=""):
+    fake_order(kind, value, mark)            # тег ушёл, запись повтора в книге
+    raise KeyboardInterrupt("перезагрузка")  # …и процесс сторожа убит
+
+
+cw.order_crawl = dying
+try:
+    tick(K("12:30"))
+except KeyboardInterrupt:
+    pass
+cw.order_crawl = fake_order
+API["runs"].append(mkrun(K("12:31"), status="in_progress", title="Обход date-2026-11-12"))
+edge = last_id()
+tick(K("12:45"))
+check("S2: проверку оборвали посреди повтора, а повтор ушёл → второго повтора нет, тревоги нет",
+      ORDERS.count("date-2026-11-12") == 1 and alarms_after(edge) == [], (ORDERS, notes_after(edge)))
+reset(K("12:00"), [probe])
+button("date-2026-11-12", "12:00")
+API["runs"] = [probe, mkrun(K("12:01"), ended=K("12:20"), conclusion="failure",
+                            title="Обход date-2026-11-12")]
+
+
+def dying_before(kind, value, mark=""):
+    ORDERS.append(f"{kind}-{value}")         # заявку начали, тег не ушёл
+    raise KeyboardInterrupt("перезагрузка")
+
+
+cw.order_crawl = dying_before
+try:
+    tick(K("12:30"))
+except KeyboardInterrupt:
+    pass
+cw.order_crawl = fake_order
+edge = last_id()
+ticks("12:45", "13:00")
+check("S2: оборвали ДО заявки повтора → одна ТРЕВОГА «повтор заказать не удалось», "
+      "повтора больше нет",
+      ORDERS == ["date-2026-11-12"] and len(alarms_after(edge)) == 1
+      and "проверку оборвали" in alarms_after(edge)[0], (ORDERS, notes_after(edge)))
+
+# S3. книга заказов: 1000 записей
+reset(K("12:00"), [probe])
+conn = db.connect()
+try:
+    for i in range(1000):
+        day = "2026-11-08" if i < 500 else DAY
+        oid = f"{day} 09:{i % 60:02d}:{i // 60:02d}|t{i}"
+        db.set_setting(conn, f"{watch.ORDER_PREFIX}{oid}",
+                       json.dumps({"id": oid, "what": "date-2026-11-12",
+                                   "order": f"{day} 09:{i % 60:02d}", "who": "t", "done": True}))
+finally:
+    conn.close()
+t0 = time.perf_counter()
+tick(K("12:00"))
+spent = time.perf_counter() - t0
+check("S3: 1000 закрытых записей — старше суток ушли (500), свежие остались, проверка < 2 с",
+      len(book()) == 500 and spent < 2, (len(book()), spent))
+conn = db.connect()
+try:
+    for _ in range(200):
+        watch.add_order(conn, "date-2026-11-12", f"{DAY} 12:00", who="t2")
+finally:
+    conn.close()
+ids = [r["id"] for r in book() if r["who"] == "t2"]
+check("S3: 200 заказов в одну секунду — 200 разных id", len(set(ids)) == 200, len(set(ids)))
+
+# S4. перевод часов 25.10.2026
+s = list(watch._slots(datetime(2026, 10, 25).date()))
+check("S4: 06:15 Киева 25.10 = 04:15 UTC (зима), 24.10 = 03:15 UTC (лето)",
+      s[0][0].strftime("%H:%M") == "04:15"
+      and list(watch._slots(datetime(2026, 10, 24).date()))[0][0].strftime("%H:%M") == "03:15")
+check("S4: после 20:30 24.10 следующий — 06:15 25.10 на 6",
+      watch.next_slot(datetime(2026, 10, 24, 17, 31, tzinfo=timezone.utc))
+      == (datetime(2026, 10, 25, 4, 15, tzinfo=timezone.utc), 6))
+second_pass = datetime(2026, 10, 25, 1, 30, tzinfo=timezone.utc)      # 03:30 зимнего
+conn = db.connect()
+try:
+    rec_dst = watch.add_order(conn, "full-6", "2026-10-25 03:30", who="t", at=second_pass)
+finally:
+    conn.close()
+other = {"id": 1, "event": "workflow_dispatch", "status": "completed", "conclusion": "success",
+         "display_title": "Обход full-6", "created_at": "2026-10-25T00:45:00Z",
+         "run_started_at": "2026-10-25T00:45:00Z", "updated_at": "2026-10-25T01:20:00Z"}
+mine = dict(other, id=2, status="in_progress", conclusion=None,
+            created_at="2026-10-25T01:30:40Z", run_started_at="2026-10-25T01:30:40Z")
+got = watch.run_for(watch.record_order(rec_dst), [other, mine])
+check("S4: заказ во второй проход 03:30 — время в книге в UTC; ответом взят свой прогон, "
+      "а не чужой часом раньше",
+      rec_dst["at"] == "2026-10-25T01:30:00+00:00" and got["id"] == 2, (rec_dst, got["id"]))
+
+# S5. настоящая заявка с id повтора (пробел и «|» в аргументе)
+reset(K("12:30"), [probe])
+rid = f"{DAY} 12:00:05|кнопка"
+saved_argv = sys.argv
+sys.argv = ["request_crawl.py", "date", "2026-11-12", "--force", "--unlock", "--locked",
+            f"--retry-of={rid}"]
+try:
+    rc.main()
+finally:
+    sys.argv = saved_argv
+conn = db.connect()
+try:
+    found = watch.find_order(conn, retry_of=rid)
+finally:
+    conn.close()
+check("S5: настоящий request_crawl с --retry-of=<id> → запись повтора с retry_of и reordered",
+      found.get("retry_of") == rid and found.get("reordered") is True
+      and watch.order_who(found) == "date-retry", found)
+
+# S6. 20 проб с GitHub, пока идёт плановый
+reset(K("20:30"), [probe])
+order_of(f"{DAY} 20:30", 6)
+conn = db.connect()
+try:
+    watch.add_order(conn, "full-6", f"{DAY} 20:30", f"{DAY} 20:30", "cron")
+finally:
+    conn.close()
+jset("crawl_slot", {"slot": f"{DAY} 20:30", "days": 6, "at": f"{DAY} 20:30", "state": "ordered"})
+big = mkrun(K("20:30"), status="in_progress", title="Обход full-6")
+probes = [mkrun(K(f"{20 + (40 + 2 * i) // 60}:{(40 + 2 * i) % 60:02d}"), conclusion="cancelled",
+                title="Обход proba-2") for i in range(20)]
+API["runs"] = sorted([big] + probes, key=lambda r: r["created_at"], reverse=True)[:watch.RUNS_LIMIT]
+tick(K("21:30"))
+check("S6: 20 проб за час не вытесняют идущий плановый из списка (берём 100) — досрочного нет",
+      ORDERS == [], ORDERS)
+reset(K("21:30"), [probe])
+order_of(f"{DAY} 20:30", 6)
+conn = db.connect()
+try:
+    watch.add_order(conn, "full-6", f"{DAY} 20:30", f"{DAY} 20:30", "cron")
+finally:
+    conn.close()
+jset("crawl_slot", {"slot": f"{DAY} 20:30", "days": 6, "at": f"{DAY} 20:30", "state": "ordered"})
+many = [mkrun(K("20:40") + timedelta(seconds=20 * i), conclusion="cancelled", title="Обход proba-2")
+        for i in range(watch.RUNS_LIMIT)]
+API["runs"] = many                           # плановый выпал даже из 100
+edge = last_id()
+tick(K("21:30"))
+check("S6: прогон заказа выпал даже из 100 последних → «не стартовал» не выносится, ждём",
+      ORDERS == [] and alarms_after(edge) == [] and watch.is_open(book()[0]), (ORDERS, book()))
+
+# находка 5: одна ждущая очередь GitHub
+pending6 = mkrun(K("12:05"), status="pending", title="Обход full-6")
+running2 = mkrun(K("12:00"), status="in_progress", title="Обход full-2")
+check("очередь: ждущий полный обход виден, идущий — нет; проба ждущая — не повод",
+      watch.waiting_full([running2, pending6], SLUG) is pending6
+      and watch.waiting_full([running2], SLUG) is None
+      and watch.waiting_full([mkrun(K("12:06"), status="queued", title="Обход proba-2")], SLUG)
+      is None)
+reset(K("12:10"), [probe, running2, pending6])
+setting("crawl_running", "")
+saved_argv = sys.argv
+sys.argv = ["request_crawl.py", "date", "2026-11-12", "--manual"]
+try:
+    code = rc.main()
+finally:
+    sys.argv = saved_argv
+check("очередь: в ней ждёт полный обход → заявка скана даты не уходит (вытеснила бы его), "
+      "строка объясняет",
+      code == 3 and TAGS == [] and any("ждёт полный обход" in n for n in notes_after(last_id() - 1)),
+      (code, TAGS))
+pending2 = mkrun(K("20:25"), status="pending", title="Обход full-2")
+reset(K("20:30"), [probe, mkrun(K("20:00"), status="in_progress", title="Обход full-2"), pending2])
+mark("идёт", 10, "full-2")
+check("очередь: плановой заявке приоритет — в очереди ждёт «2 дня», плановый на 6 уходит "
+      "(вытеснит ждущий, и сторож сочтёт его заменённым, а не сорвавшимся)",
+      planned(6) == [("days", "6")])
+reset(K("12:00"), [probe])
+button("date-2026-11-12", "12:00")
+API["runs"] = [probe, mkrun(K("12:01"), ended=K("12:20"), conclusion="failure",
+                            title="Обход date-2026-11-12"),
+               mkrun(K("12:21"), status="in_progress", title="Обход full-2"),
+               mkrun(K("12:22"), status="pending", title="Обход full-6")]
+edge = last_id()
+tick(K("12:30"))
+check("очередь: скан даты сорвался, а в очереди ждёт полный → повтор ОТЛОЖЕН, не вытесняет его",
+      ORDERS == [] and any("повтор отложен" in n for n in notes_after(edge))
+      and book()[0].get("retry_deferred"), (ORDERS, notes_after(edge)))
+API["runs"][-1] = dict(API["runs"][-1], status="in_progress")
+API["runs"][-2] = finished(API["runs"][-2], K("12:40"))
+tick(K("12:45"))
+check("…очередь освободилась (полный пошёл) → отложенный повтор ушёл, ровно один",
+      ORDERS == ["date-2026-11-12"], ORDERS)
+tick(K("13:00"))
+check("…и на следующих проверках второго повтора нет", ORDERS == ["date-2026-11-12"], ORDERS)
+# вытеснение в очереди — не срыв
+reset(K("16:00"), [probe])
+button("full-2", "16:00")
+d2_wait = mkrun(K("16:01"), ended=K("16:16"), conclusion="cancelled", title="Обход full-2")
+API["runs"] = [probe, mkrun(K("15:30"), ended=K("16:40"), title="Обход full-6"), d2_wait,
+               mkrun(K("16:15"), status="in_progress", title="Обход full-6")]
+edge = last_id()
+tick(K("16:45"))
+check("очередь: ручной «2 дня» ждал и был вытеснен плановым на 6 → не срыв, повтора нет, "
+      "строка «вытеснен … соберёт и эти дни»",
+      ORDERS == [] and alarms_after(edge) == [] and book()[0].get("replaced") is True
+      and any("вытеснен" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
+check("очередь: скан даты 12.11, вытесненный обходом на 6 от 10.11, — накрыт; 20.11 — нет",
+      watch.order_covered("date-2026-11-12", (1, 6), K("16:15"))
+      and not watch.order_covered("date-2026-11-20", (1, 6), K("16:15")))
+# отметку живого сбора не снимаем
+live = mkrun(K("12:00"), status="in_progress", title="Обход full-6")
+check("--unlock: живой сбор на GitHub → отметку не снимать; его отмена подана → можно; "
+      "GitHub молчит → нельзя",
+      "живой сбор" in watch.unlock_refusal([probe, live], {}, SLUG)
+      and watch.unlock_refusal([probe, live], {str(live["id"]): {}}, SLUG) == ""
+      and "не ответил" in watch.unlock_refusal(watch.Runs.silent(), {}, SLUG))
+reset(K("12:30"), [probe, live])
+mark("идёт", 30, "full-6")
+saved_argv = sys.argv
+sys.argv = ["request_crawl.py", "date", "2026-11-12", "--force", "--unlock", "--locked"]
+try:
+    rc.main()
+finally:
+    sys.argv = saved_argv
+check("--unlock у заявки сторожа при живом сборе: отметка «идёт full-6» осталась, "
+      "заявка встала в очередь за ним",
+      setting("crawl_running").endswith("|full-6") and TAGS == [("date", "2026-11-12")],
+      (setting("crawl_running"), TAGS))
+
+# находка 7: битая запись книги
+reset(K("12:00"), [probe])
+button("date-2026-11-12", "12:00")
+setting(f"{watch.ORDER_PREFIX}bad-1", json.dumps({"id": "bad-1", "what": "date-2026-11-13",
+                                                  "order": "не время"}))
+setting(f"{watch.ORDER_PREFIX}bad-2", "{не json")
+API["runs"] = [probe, mkrun(K("12:01"), ended=K("12:20"), title="Обход date-2026-11-12")]
+edge = last_id()
+ticks("12:30", "12:45", "13:00")
+check("битые записи книги → по одной ТРЕВОГЕ (не каждые 15 мин), в карантин; остальные "
+      "заказы разобраны",
+      len(alarms_after(edge)) == 2 and setting(f"{watch.BAD_PREFIX}{watch.ORDER_PREFIX}bad-1")
+      and not setting(f"{watch.ORDER_PREFIX}bad-1") and book()[0].get("done") is True,
+      (notes_after(edge), book()))
+
+# находка 8: заявка сторожа старта не ждёт — замок не держит минутами
+reset(K("12:30"), [probe])
+waited = []
+watch.wait_for_start = lambda *a, **k: (waited.append(1) or ({"run_number": 0}, True))
+saved_argv = sys.argv
+sys.argv = ["request_crawl.py", "days", "6", "--force", "--unlock", "--locked", "--early-for=x"]
+try:
+    rc.main()
+finally:
+    sys.argv = saved_argv
+check("заявка сторожа (--locked) старта не ждёт: тег ушёл, ожидания нет — его судит С4",
+      TAGS == [("days", "6")] and waited == [], (TAGS, waited))
+reset(K("16:15"), [probe])
+order = []
+
+
+def wait_records_lock(*a, **k):
+    # ожидание старта плановой заявки идёт уже БЕЗ общего замка
+    with watch.order_lock(0) as held:
+        order.append(held)
+    return {"run_number": 0}, True
+
+
+watch.wait_for_start = wait_records_lock
+planned(2)
+watch.wait_for_start = fake_wait
+check("плановая заявка: решение и тег — под замком, ожидание старта — уже без него",
+      order == [True], order)
 
 # ── итог: сколько обходов за сутки при устойчивой поломке ───────────────────
 def bad_day(hang: bool) -> tuple[list, list, int, list]:

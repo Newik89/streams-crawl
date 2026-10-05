@@ -273,6 +273,26 @@ owner.post("/crawl/day", data={"date": datetime.now().strftime("%Y-%m-%d"), "csr
 check("кнопки «Обход: 2 суток» и «Скан этой даты» админки тоже кладут заказ в книгу",
       sorted(o["what"].split("-")[0] for o in orders_now()) == ["date", "full"], orders_now())
 reset()
+real_push = trigger.push_request_tag
+trigger.push_request_tag = lambda kind, value: (TAGS.append((kind, value))
+                                                or (None, "GitHub не ответил за 90 с — "
+                                                          "заявка могла дойти"))
+r = owner.post("/crawl/run", data={"days": "2", "csrf_token": TOK}, follow_redirects=True)
+trigger.push_request_tag = real_push
+check("кнопка, а git не ответил вовремя («могла дойти») → это не провал: заказ в книге, "
+      "сторож проверит",
+      [o["what"] for o in orders_now()] == ["full-2"]
+      and "сторож проверит" in r.get_data(as_text=True), orders_now())
+reset()
+API["runs"] = [mkrun(20, status="in_progress"), mkrun(5, status="pending")]
+r = owner.post("/crawl/run", data={"days": "2", "csrf_token": TOK}, follow_redirects=True)
+setting("crawl_running", "")
+owner.post("/crawl/day", data={"date": datetime.now().strftime("%Y-%m-%d"), "csrf_token": TOK})
+check("в очереди GitHub ждёт полный обход → кнопки сбора не шлют заявку (вытеснила бы его), "
+      "объясняют почему",
+      TAGS == [] and orders_now() == [] and "ждёт полный обход" in r.get_data(as_text=True),
+      (TAGS, orders_now()))
+reset()
 setting("crawl_running", f"идёт|{int(time.time()) - 30 * 60}|10:00|full-6")
 API["runs"] = [mkrun(30, status="in_progress")]
 edge = last_id()
@@ -288,9 +308,12 @@ check("…строка «владелец: заказ … не отправле�
       any(n.startswith("владелец: заказ обхода на 2 сут. не отправлен") for n in notes_after(edge)))
 SCRIPTS.clear()
 r = press("/crawl/emergency/order", days="2", force="1")
-check("«Всё равно заказать» → заявка как у сторожа (--force --unlock), тег ушёл",
-      SCRIPTS == [(("days", "2", "--manual", "--force", "--unlock"), True)] and TAGS == [("days", "2")],
-      (SCRIPTS, TAGS))
+check("«Всё равно заказать» → та же заявка с --force --unlock: сверка (--check), затем "
+      "настоящая; тег ушёл в очередь за идущим, отметку идущего не тронул",
+      SCRIPTS == [(("days", "2", "--manual", "--force", "--unlock", "--check"), False),
+                  (("days", "2", "--manual", "--force", "--unlock"), True)]
+      and TAGS == [("days", "2")] and setting("crawl_running").endswith("|full-6"),
+      (SCRIPTS, TAGS, setting("crawl_running")))
 check("…строка «в обход правил»", any("в обход правил" in n for n in notes_after(edge)))
 reset()
 setting("crawl_request", f"обход 6 сут.|{datetime.now(watch.KYIV):%Y-%m-%d %H:%M}")
@@ -310,12 +333,24 @@ check("глубина не 6 и не 2 → 400, ничего не делает",
 print("4. Снять отметку")
 reset()
 setting("crawl_running", f"идёт|{int(time.time()) - 60}|10:00|proba-2")
+API["runs"] = [mkrun(300)]                   # на GitHub ничего не идёт — отметка ложная
 edge = last_id()
 r = press("/crawl/emergency/unmark")
-check("отметка снята, строка «владелец: снял отметку … proba-2»",
+check("на GitHub живого сбора нет → отметка снята, строка «владелец: снял отметку … proba-2»",
       r.status_code == 302 and setting("crawl_running") == ""
       and any(n.startswith("владелец: снял отметку") and "proba-2" in n for n in notes_after(edge)),
       notes_after(edge))
+setting("crawl_running", f"идёт|{int(time.time()) - 60}|10:00|full-6")
+API["runs"] = [mkrun(20, status="in_progress")]
+edge = last_id()
+press("/crawl/emergency/unmark")
+check("на GitHub идёт сбор → отметку НЕ снимает, строка объясняет почему",
+      setting("crawl_running").endswith("|full-6")
+      and any("не снял" in n and "живой сбор" in n for n in notes_after(edge)), notes_after(edge))
+API["runs"] = []
+press("/crawl/emergency/unmark")
+check("GitHub не ответил → тоже не снимает (жив ли сбор, не проверить)",
+      setting("crawl_running").endswith("|full-6"))
 
 # ── 5. «Проверить GitHub» ───────────────────────────────────────────────────
 print("5. Проверить GitHub")

@@ -582,6 +582,10 @@ def create_app() -> Flask:
             flash(f"{domain}: проба не отправлена — {bad}.", "error")
             return redirect(back)
         if через == "github":
+            refusal = _queue_refusal()
+            if refusal:
+                flash(f"{domain}: проба не отправлена — {refusal}.", "error")
+                return redirect(back)
             # запятая в заявке делит список адресов — внутри одного адреса
             # она едет закодированной
             ok, words = trigger.push_request_tag(
@@ -825,13 +829,19 @@ def create_app() -> Flask:
             flash(f"Сбор уже {busy['state']} с {busy['since']} ({busy['what']}) — "
                   "второй не запускаю, дождитесь окончания.", "error")
             return False
+        refusal = _queue_refusal()
+        if refusal:
+            flash(f"Не запускаю: {refusal}.", "error")
+            return False
         # сперва прямой запуск (мгновенно, если есть ключ GitHub); без
         # ключа — заявка-тег: её ловит workflow и стартует обход сам
         ok, words = trigger.dispatch_crawl(days, date=date)
         if not ok:
             ok, words = trigger.push_request_tag(
                 "date" if date else "days", date or str(days))
-        if ok:
+        # None — git не ответил вовремя, заявка могла дойти: это не провал —
+        # заказ пишем, дошёл ли он, рассудит сторож (как у заявки, З6)
+        if ok is not False:
             conn = db.connect()
             try:
                 crawl_hook.mark(conn, "заявка",
@@ -855,8 +865,17 @@ def create_app() -> Flask:
                 conn.close()
         tail = (f" — скан {date}" if date else
                 f" — окно {days} дн., результат появится после прогона")
-        flash(words + (tail if ok else ""), "ok" if ok else "error")
-        return ok
+        if ok is None:
+            tail += "; сторож проверит, дошла ли заявка"
+        flash(words + (tail if ok is not False else ""),
+              "ok" if ok is not False else "error")
+        return ok is not False
+
+    def _queue_refusal() -> str:
+        """У GitHub одно место ожидания: заявка с кнопки вытеснила бы ЖДУЩИЙ
+        полный обход — тогда не шлём (`watch.queue_refusal`). Пусто — можно."""
+        return watch.queue_refusal(
+            watch.github_runs(trigger._repo_slug(), workflow=watch.CRAWL_WORKFLOW))
 
     @app.route("/hook/crawl", methods=["POST"])
     def crawl_hook_in():
@@ -1083,11 +1102,17 @@ def create_app() -> Flask:
                 flash(f"Сбор уже {busy['state']} с {busy['since']} "
                       f"({busy['what']}) — дождитесь окончания.", "error")
                 return redirect(back)
+            refusal = _queue_refusal()
+            if refusal:
+                flash(f"{domain}: обход не заказан — {refusal}.", "error")
+                return redirect(back)
             ok, words = trigger.dispatch_crawl(SITE_DAYS, only=domain)
             if not ok:
                 ok, words = trigger.push_request_tag(
                     "site", trigger.encode_probe_url(domain))
-            if ok:
+            # None — git не ответил вовремя, заявка могла дойти: заказ пишем,
+            # дошёл ли он, рассудит сторож
+            if ok is not False:
                 crawl_hook.mark(conn, "заявка", f"сайт {domain}")
                 # для строки статуса «заказан → идёт → ВЫПОЛНЕН» (владелец
                 # 20.09: флеш пропадает, а итога рядом не видно)
@@ -1550,7 +1575,8 @@ def create_app() -> Flask:
     @app.route("/crawl/emergency/unmark", methods=["POST"])
     def emergency_unmark():
         verify_csrf()
-        flash(_emergency(emergency.unmark), "ok")
+        ok, words = _emergency(emergency.unmark)
+        flash(words, "ok" if ok else "error")
         return redirect(url_for("runs_list"))
 
     @app.route("/crawl/emergency/cancel", methods=["POST"])

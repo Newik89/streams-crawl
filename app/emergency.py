@@ -12,7 +12,7 @@
                            же заявка с `--check`: не пошла бы — кнопка
                            говорит почему и предлагает «Всё равно заказать»
                            (`--force --unlock`, как заказывает сторож)
-  Снять отметку          → `crawl_hook.clear`
+  Снять отметку          → `watch.unlock_refusal` + `crawl_hook.clear`
   Остановить зависший    → `watch.stuck` + `watch.send_cancel` (правило С3)
   Проверить GitHub       → `watch.github_runs` + `watch.stuck`
   Сбросить память        → `watch.reset_memory`
@@ -86,37 +86,41 @@ def _said(out: str) -> str:
 def order(conn: sqlite3.Connection, days: int, force: bool) -> dict:
     """«Заказать сбор сейчас» / «Всё равно заказать». {ok, refused, words}:
     refused — правила заявки заказ не пустили, `words` — почему."""
-    if force:
-        ok, out = run_script(["days", str(days), "--manual", "--force", "--unlock"],
-                             background=True)
-        words = (f"заказал обход на {days} сут. в обход правил («всё равно "
-                 f"заказать») — {out}" if ok else
-                 f"обход на {days} сут. заказать не вышло: {out}")
-        watch.note(conn, words, who=WHO)
-        return {"ok": ok, "refused": False, "words": words}
-    ok, out = run_script(["days", str(days), "--manual", "--check"], background=False)
+    args = ["days", str(days), "--manual"] + (["--force", "--unlock"] if force else [])
+    ok, out = run_script(args + ["--check"], background=False)
     if not (ok and "ПОШЛА БЫ" in out):
         words = f"заказ обхода на {days} сут. не отправлен: {_said(out)}"
         watch.note(conn, words, who=WHO)
-        return {"ok": False, "refused": True, "words": words}
-    ok, out = run_script(["days", str(days), "--manual"], background=True)
-    words = (f"заказал обход на {days} сут. — {out}; итог заявки — строкой "
+        # «всё равно заказать» предлагаем, только если не пустили правила;
+        # очередь GitHub (там ждёт полный обход) «всё равно» не обходит
+        return {"ok": False, "refused": not force, "words": words}
+    ok, out = run_script(args, background=True)
+    how = " в обход правил («всё равно заказать»)" if force else ""
+    words = (f"заказал обход на {days} сут.{how} — {out}; итог заявки — строкой "
              f"«автомат» в «Прогонах» через 1–5 мин" if ok else
              f"обход на {days} сут. заказать не вышло: {out}")
     watch.note(conn, words, who=WHO)
     return {"ok": ok, "refused": False, "words": words}
 
 
-def unmark(conn: sqlite3.Connection) -> str:
+def unmark(conn: sqlite3.Connection) -> tuple[bool, str]:
     """«Снять отметку „сбор идёт“»: сервер ошибочно считает, что сбор идёт,
-    и кнопки сбора не пускают."""
+    и кнопки сбора не пускают. Отметку ЖИВОГО сбора не снимаем — сверка с
+    GitHub по тому же правилу, что у ключа заявки --unlock
+    (`watch.unlock_refusal`)."""
     busy = crawl_hook.running(conn)
+    runs = watch.github_runs(trigger._repo_slug(), workflow=watch.CRAWL_WORKFLOW)
+    refusal = watch.unlock_refusal(runs, watch.load_json(conn, "crawl_cancel"))
+    if refusal:
+        words = f"отметку «сбор идёт» не снял: {refusal}"
+        watch.note(conn, words, who=WHO)
+        return False, words
     crawl_hook.clear(conn)
     words = (f"снял отметку «сбор {busy['state']}» («{busy['what']}» с "
-             f"{busy['since']})" if busy else
+             f"{busy['since']}) — на GitHub живого сбора нет" if busy else
              "снял отметку «сбор идёт» (живой отметки и не было)")
     watch.note(conn, words, who=WHO)
-    return words
+    return True, words
 
 
 def _run_line(r: dict, now: datetime, stuck_ids: set) -> dict:

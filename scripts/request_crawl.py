@@ -9,8 +9,8 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     venv/bin/python scripts/request_crawl.py site nova.bg      обход одного сайта на GitHub (повтор сторожа)
     venv/bin/python scripts/request_crawl.py days 2 --check    только сказать, пошла бы заявка
     venv/bin/python scripts/request_crawl.py days 6 --force    без правила «1 час» (ручной заказ)
-    … --unlock                                                 снять отметку «сбор идёт» (сторож: прогон мёртв по API)
-    … --locked                                                 общий замок уже держит вызвавший (так заявку зовёт сторож)
+    … --unlock                                                 снять отметку «сбор идёт», если на GitHub живого сбора нет
+    … --locked                                                 общий замок уже держит вызвавший (так заявку зовёт сторож); старта не ждёт
     … --manual                                                 заказ владельца кнопкой: правила те же, но заявка не плановая
     … --retry-of=<id>                                          это повтор сторожа заказа <id> (запись книги)
     … --early-for=<ГГГГ-ММ-ДД ЧЧ:ММ>                           это досрочный сторожа за сорвавшийся слот
@@ -24,8 +24,10 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     З3  слот уже заменён досрочным сбором сторожа
     З4  стоит отметка «сбор идёт» — сверка с GitHub
     З5  правило «1 час»
-    З6  тег-заявка и запись заказа
-    З7  ждём старта 3 минуты; тег НЕ повторяем — замену закажет сторож
+    З6  тег-заявка и запись заказа (не плановая и не досрочная — только если
+        в очереди GitHub не ждёт полный обход)
+    З7  ждём старта 3 минуты уже без замка (`wait_start`); тег НЕ повторяем —
+        замену закажет сторож
 
 Плановой заявка считается, если пришла по дням без --force и --manual не
 дальше 30 минут от слота таблицы `watch.SCHEDULE` (cron сервера —
@@ -133,13 +135,21 @@ def main() -> int:
         return 2
     if flags & {"--check", "--locked"}:
         # «только сказать» ничего не меняет, а у заявки сторожа замок уже
-        # держит сам сторож — брать его второй раз значило бы ждать себя
-        return request(kind, value, flags, held=True, marks=marks)
+        # держит сам сторож — брать его второй раз значило бы ждать себя.
+        # Старта заявка сторожа не ждёт: его судит сам сторож (С4), а замок
+        # на время ожидания держать незачем
+        code, _ = request(kind, value, flags, held=True, marks=marks)
+        return code
     # З1: общий замок со сторожем — из cron оба стартуют в одну минуту. Кто
     # второй, ждёт первого и решает уже по его итогу. Сторож держит замок
-    # дольше срока — заявка идёт без замка: плановый сбор он не запрёт
+    # дольше срока — заявка идёт без замка: плановый сбор он не запрёт.
+    # Под замком — только решение и тег (З2–З6); ждут старта (З7) уже без
+    # замка: сторожу незачем стоять 3 минуты за чужим ожиданием
     with watch.order_lock(watch.LOCK_WAIT_REQUEST) as held:
-        return request(kind, value, flags, held, marks=marks)
+        code, wait = request(kind, value, flags, held, marks=marks)
+    if wait is not None:
+        wait()
+    return code
 
 
 def who_ordered(flags: set, marks: dict, slot) -> tuple[str, dict]:
@@ -156,8 +166,10 @@ def who_ordered(flags: set, marks: dict, slot) -> tuple[str, dict]:
 
 
 def request(kind: str, value: str, flags: set, held: bool,
-            marks: dict | None = None) -> int:
-    """Одна заявка: правила З2–З7 по порядку (шапка `app/watch.py`)."""
+            marks: dict | None = None):
+    """Одна заявка: правила З2–З6 по порядку (шапка `app/watch.py`).
+    Возвращает (код выхода, ожидание старта З7 или None): ждать старта
+    вызывающий будет уже без общего замка."""
     marks = marks or {}
     now = _now()                    # часы — после ожидания замка
     check = "--check" in flags
@@ -169,8 +181,6 @@ def request(kind: str, value: str, flags: set, held: bool,
                      f"иду без замка")
             print(f"{now:%d.%m %H:%M} {words}")
             watch.note(conn, words, who="автомат")
-        if "--unlock" in flags:
-            crawl_hook.clear(conn)
         # плановая ли это заявка — по таблице watch.SCHEDULE
         slot = (watch.slot_for(now, int(value))
                 if kind == "days" and not flags & {"--force", "--manual"} else None)
@@ -182,6 +192,15 @@ def request(kind: str, value: str, flags: set, held: bool,
                 cache.append(watch.github_runs(trigger._repo_slug(),
                                                workflow=watch.CRAWL_WORKFLOW))
             return cache[0]
+
+        if "--unlock" in flags:
+            # отметку живого сбора не снимаем: сверка с GitHub (прогоны, чью
+            # отмену уже подал сторож, — не живые)
+            refusal = watch.unlock_refusal(runs(), watch.load_json(conn, "crawl_cancel"))
+            if refusal:
+                print(f"{now:%d.%m %H:%M} отметку «сбор идёт» не снимаю: {refusal}")
+            elif not check:
+                crawl_hook.clear(conn)
 
         # ── З2. отметка «заявка пришла на слот» ──────────────────────────────
         seen = None
@@ -211,14 +230,19 @@ def request(kind: str, value: str, flags: set, held: bool,
                 watch.save_json(conn, "crawl_early", early)
             if how in ("done", "running"):
                 close("skipped")
-                return 0
+                return 0, None
 
         # ── З4. стоит отметка «сбор идёт» ────────────────────────────────────
         busy = crawl_hook.running(conn)
         # проба или обход меньшей глубины заявку не держат: GitHub поставит
         # новый обход в очередь за текущим; отметку текущего не трогаем
         behind = bool(busy) and crawl_hook.queue_behind(busy, kind, value)
-        if busy and kind == "days":
+        if busy and "--force" in flags:
+            # сторож или «всё равно заказать»: решение уже принято тем, кто
+            # видел список GitHub, — заявка встаёт в очередь за идущим сбором,
+            # его отметку не трогаем (очередь сторожит З6)
+            behind = True
+        elif busy and kind == "days":
             # отметке на слово не верим — сверяемся со списком прогонов
             # (05.10 проба провисела «идёт», и заявка 16:15 молча не ушла)
             verdict, words = watch.lock_verdict(busy, int(value), runs(), now)
@@ -227,13 +251,13 @@ def request(kind: str, value: str, flags: set, held: bool,
                 watch.note(conn, words)
             if verdict == "skip":
                 close("skipped")
-                return 0
+                return 0, None
             if verdict == "postpone":
                 if slot is not None and not check:
                     watch.lost_slot(conn, "planned-postponed", slot, int(value),
                                     words, now)
                 close("missed")
-                return 0
+                return 0, None
             if verdict == "clear":
                 if not check:
                     crawl_hook.clear(conn)
@@ -241,10 +265,10 @@ def request(kind: str, value: str, flags: set, held: bool,
             else:
                 behind = True
         if busy and not behind:
-            # сюда доходит только скан даты: он отметку «сбор идёт» уважает
+            # сюда доходит скан даты и сайт: отметку «сбор идёт» они уважают
             print(f"{now:%d.%m %H:%M} заявка {kind} {value} не отправлена: сбор "
                   f"уже {busy['state']} с {busy['since']} ({busy['what']})")
-            return 0
+            return 0, None
 
         # ── З5. правило «1 час» ──────────────────────────────────────────────
         if kind == "days" and "--force" not in flags:
@@ -257,13 +281,25 @@ def request(kind: str, value: str, flags: set, held: bool,
                                      f"{fresh} (правило «{RECENT_HOURS} час»)",
                                who="автомат")
                 close("skipped")
-                return 0
+                return 0, None
 
         # ── З6. тег-заявка и запись заказа ───────────────────────────────────
+        # у GitHub в очереди одно место: новая заявка вытесняет ждущую. Если
+        # там уже ЖДЁТ полный обход, уходят только плановая и досрочная (они
+        # его заменяют, и сторож это знает — `watch.superseded`); прочие —
+        # нет, иначе вытеснили бы его
+        if slot is None and not marks.get("early-for"):
+            refusal = watch.queue_refusal(runs())
+            if refusal:
+                words = f"заявка {kind} {value} не отправлена: {refusal}"
+                print(f"{now:%d.%m %H:%M} {words}" + (" (--check)" if check else ""))
+                if not check:
+                    watch.note(conn, words, who="автомат")
+                return 3, None
         queue = f" — в очередь за «{busy['what']}»" if behind else ""
         if check:
             print(f"{now:%d.%m %H:%M} заявка {kind} {value} ПОШЛА БЫ{queue} (--check)")
-            return 0
+            return 0, None
         # в имени тега у сайта — домен в base32 (`queue.yml` его разжимает)
         tag_value = trigger.encode_probe_url(value) if kind == "site" else value
         ok, words = trigger.push_request_tag(kind, tag_value)
@@ -275,7 +311,7 @@ def request(kind: str, value: str, flags: set, held: bool,
                                    why, now) == "early":
                     watch.note(conn, why + " — сторож закажет обход на своей проверке")
             close("missed")
-            return 1
+            return 1, None
         # ok None — git не ответил вовремя, а заявка могла дойти (29.09 так и
         # было). Это не срыв: заказ пишем как ушедший, а дошёл ли — решат
         # ожидание старта (З7) и сторож (С4): нет прогона — заказ сорвался
@@ -292,43 +328,51 @@ def request(kind: str, value: str, flags: set, held: bool,
         who, extra = who_ordered(flags, marks, slot)
         watch.add_order(conn, what, order["stamp"],
                         marks.get("early-for") or (watch.stamp(slot) if slot else ""),
-                        who, **extra)
+                        who, at=now, **extra)
         close("ordered")
+        if "--locked" in flags:
+            return 0, None              # старт заявки сторожа судит сам сторож
+        return 0, lambda: wait_start(kind, value, tag_value, order, now)
+    finally:
+        conn.close()
 
-        # ── З7. ждём старта ──────────────────────────────────────────────────
-        # ответом считается прогон того же вида (`watch.answers`): на заявку
-        # по дням — полный обход, на скан даты — скан той же даты
-        slug = trigger._repo_slug()
-        kinds = watch.FULL_KINDS if kind == "days" else (kind, "unknown")
-        head = f"заявка {kind} {value} от {order['stamp']}"
-        run, answered = watch.wait_for_start(order, slug, kinds)
-        if run is None and not answered:
-            # GitHub молчит: «не стартовал» утверждать нельзя, а второй тег
-            # при живом запуске дал бы два обхода подряд
-            words = (f"{head}: GitHub не отвечает на список прогонов — стартовал ли "
-                     f"обход, не видно. Тег не повторяю (вышло бы два обхода подряд), "
-                     f"дальше следит сторож")
-        elif run is not None:
-            words = f"{head}: пошёл прогон #{run.get('run_number')}"
-        else:
-            # GitHub отвечает, а прогона нет. Тег НЕ повторяем: второй тег мог
-            # бы дать второй полный обход, а замену, если этот так и не
-            # стартует, закажет сторож по таблице RECOVERY. Пересылку тега
-            # (`queue.yml`) смотрим только для слов — что именно случилось
-            fwd = watch.forwarding(order, slug, f"btn-{kind}-{tag_value}-")
-            said = {"going": "пересылка тега ещё идёт или ждёт машину GitHub",
-                    "done": "тег переслан, а обход ещё не показался",
-                    "failed": "пересылка тега упала",
-                    "none": "GitHub пересылку тега не показал — тег, похоже, не дошёл",
-                    "silent": "GitHub не ответил про пересылку тега"}[fwd]
-            # не ТРЕВОГА: это ещё не конец — сторож сам закажет замену
-            words = (f"{head}: обход не стартовал за {watch.START_MINUTES} мин ({said}). "
-                     f"Тег не повторяю (вышло бы два обхода); не стартует за "
-                     f"{watch.START_GIVEUP_MINUTES} мин — сторож сочтёт заказ "
-                     f"сорвавшимся и закажет замену")
-        print(f"{now:%d.%m %H:%M} {words}")
+
+def wait_start(kind: str, value: str, tag_value: str, order: dict, now: datetime) -> None:
+    """З7. Ждём старта 3 минуты — уже БЕЗ общего замка — и пишем итог в
+    «Прогоны». Ответом считается прогон того же вида (`watch.answers`): на
+    заявку по дням — полный обход, на скан даты — скан той же даты."""
+    slug = trigger._repo_slug()
+    kinds = watch.FULL_KINDS if kind == "days" else (kind, "unknown")
+    head = f"заявка {kind} {value} от {order['stamp']}"
+    run, answered = watch.wait_for_start(order, slug, kinds)
+    if run is None and not answered:
+        # GitHub молчит: «не стартовал» утверждать нельзя, а второй тег
+        # при живом запуске дал бы два обхода подряд
+        words = (f"{head}: GitHub не отвечает на список прогонов — стартовал ли "
+                 f"обход, не видно. Тег не повторяю (вышло бы два обхода подряд), "
+                 f"дальше следит сторож")
+    elif run is not None:
+        words = f"{head}: пошёл прогон #{run.get('run_number')}"
+    else:
+        # GitHub отвечает, а прогона нет. Тег НЕ повторяем: второй тег мог
+        # бы дать второй полный обход, а замену, если этот так и не
+        # стартует, закажет сторож по таблице RECOVERY. Пересылку тега
+        # (`queue.yml`) смотрим только для слов — что именно случилось
+        fwd = watch.forwarding(order, slug, f"btn-{kind}-{tag_value}-")
+        said = {"going": "пересылка тега ещё идёт или ждёт машину GitHub",
+                "done": "тег переслан, а обход ещё не показался",
+                "failed": "пересылка тега упала",
+                "none": "GitHub пересылку тега не показал — тег, похоже, не дошёл",
+                "silent": "GitHub не ответил про пересылку тега"}[fwd]
+        # не ТРЕВОГА: это ещё не конец — сторож сам закажет замену
+        words = (f"{head}: обход не стартовал за {watch.START_MINUTES} мин ({said}). "
+                 f"Тег не повторяю (вышло бы два обхода); не стартует за "
+                 f"{watch.START_GIVEUP_MINUTES} мин — сторож сочтёт заказ "
+                 f"сорвавшимся и закажет замену")
+    print(f"{now:%d.%m %H:%M} {words}")
+    conn = db.connect()
+    try:
         watch.note(conn, words, who="автомат")
-        return 0
     finally:
         conn.close()
 

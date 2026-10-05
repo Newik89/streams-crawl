@@ -100,6 +100,8 @@ class Round:
         self.cancels: dict = {}         # `crawl_cancel`
         self.queue: dict = {}           # `crawl_queue`
         self.cancelling: list = []      # id прогонов, отмена которых подана сейчас
+        self.oldest = None              # создание самого старого прогона в ПОЛНОМ списке
+        self.git: dict = {}             # git fetch/show результатов — один раз за проверку
 
     def log(self, words: str) -> None:
         """Строка только в журнал cron."""
@@ -132,9 +134,18 @@ def tick(conn, now: datetime, check: bool = False) -> None:
     t.cancels = watch.load_json(conn, "crawl_cancel")
     t.queue = watch.load_json(conn, "crawl_queue")
     t.order = watch.parse_order(db.get_setting(conn, "crawl_request"))
+    if len(t.runs) >= watch.RUNS_LIMIT:
+        # список полон: прогоны старше самого старого в нём не видны
+        t.oldest = min((watch._utc(r.get("created_at") or "") for r in t.runs
+                        if r.get("created_at")), default=None)
+    if not t.dry:
+        # битые записи книги — в карантин, по одной ТРЕВОГЕ на каждую (С4)
+        for words in watch.quarantine_orders(conn):
+            t.say(f"ТРЕВОГА — {words}")
     # полный заказ без записи в книге (сделан до выкладки) — завести её
     current = watch.full_order_record(conn, t.order, save=not t.dry) if t.order else None
     resume_early(t)                                                       # С2
+    resume_retries(t)                                                     # С2
     records = watch.load_orders(conn)
     if current and current not in records and t.dry:
         records.append(current)       # --check: запись не сохранена, но разобрать её надо
@@ -144,6 +155,7 @@ def tick(conn, now: datetime, check: bool = False) -> None:
         t.log("открытых заказов нет — следить не за чем")
     for rec, run in t.follow:                                             # С4
         follow_order(t, rec, run)
+    deferred_retries(t)                                                   # С4г
     audit_slot(t)                                                         # С5
     order_early(t)                                                        # С6
     if not t.dry:
@@ -217,6 +229,35 @@ def early_order(t: Round) -> dict:
     return rec if rec and rec["order"] >= t.early.get("begun", "") else {}
 
 
+def resume_retries(t: Round) -> None:
+    """С2. Прошлую проверку оборвали посреди повтора (перезагрузка сервера):
+    у записи осталась пометка `retrying` (её пишут ДО заявки). Повтор успел
+    уйти (в книге есть «повтор заказа <id>») — его ведёт С4 своей записью;
+    не успел — ТРЕВОГА («<вид>-retry-lost»). Второго повтора нет в обоих
+    случаях: сорвавшийся заказ сохранён закрытым ещё до заявки."""
+    for rec in watch.load_orders(t.conn):
+        if not rec.get("retrying"):
+            continue
+        t.rec, t.run = rec, None
+        if not watch.find_order(t.conn, retry_of=rec["id"]):
+            recover(t, f"{watch.order_kind(rec)}-retry-lost",
+                    f"{order_words(t)}: повтор заказать не удалось — проверку оборвали "
+                    f"посреди заказа (перезагрузка сервера?)")
+        rec.pop("retrying", None)
+        t.keep(rec)
+
+
+def broken_order(t: Round, rec: dict, error: Exception) -> None:
+    """Разбор записи книги упал — одна ТРЕВОГА, запись в карантин
+    (`watch.BAD_PREFIX`): остальные заказы проверка разбирает дальше, а
+    тревога не повторяется каждые 15 минут."""
+    t.say(f"ТРЕВОГА — запись книги заказов «{rec.get('id')}» ({rec.get('what')}) "
+          f"разобрать не вышло ({type(error).__name__}: {error}) — сторож её больше "
+          f"не ведёт, унёс в карантин; проверьте итог этого заказа сами")
+    if not t.dry:
+        watch.quarantine(t.conn, watch.order_key(rec))
+
+
 def cancel_stuck(t: Round) -> None:
     """С3. Зависшие прогоны: одна заявка отмены на прогон (тег
     `btn-cancel-<id>`, исполняет `queue.yml`). Заявка не ушла или прогон не
@@ -280,22 +321,12 @@ def follow_order(t: Round, rec: dict, run: dict | None) -> None:
     заказать»). У каждого заказа своя запись — новый заказ слежку за
     прежним не вытесняет."""
     t.rec, t.run = rec, run
-    order = watch.record_order(rec)
-    result = "unknown"
-    if watch.order_kind(rec) == "server":
-        verdict, words = watch.decide_server(
-            rec, t.now, db.get_setting(t.conn, "site_crawl_result"))
-    else:
-        if run is not None and (run.get("status") or "") not in watch.RUNNING:
-            started = (watch._utc(run.get("run_started_at") or run.get("created_at") or "")
-                       or t.now)
-            # влит ли результат в базу — по метке заливки своей папки
-            result = watch.result_state(
-                ROOT, started, rec["what"],
-                db.get_setting(t.conn, watch.import_key(rec["what"])))
-        verdict, words = watch.decide(order, run, t.now, rec, result)
-        if verdict == "wait" and run is not None and str(run.get("id")) in t.cancelling:
-            verdict, words = "failed", f"прогон #{run.get('run_number')} завис, отменяю его"
+    try:
+        verdict, words, result = judge(t, rec, run)
+    except Exception as error:                                            # noqa: BLE001
+        # одна странная запись не роняет проверку: в карантин, одна ТРЕВОГА
+        broken_order(t, rec, error)
+        return
     t.log(f"{rec['what']} от {rec['order']} — {verdict}: {words}")
     if t.dry:
         return
@@ -306,11 +337,43 @@ def follow_order(t: Round, rec: dict, run: dict | None) -> None:
         watch.note(t.conn, words)
         if rec.get("early"):
             early_reached(t)
+    elif verdict == "replaced":                                          # С4в
+        rec["replaced"] = True
+        watch.note(t.conn, f"{order_words(t)}: {words}")
+        if rec.get("early"):
+            t.early["state"] = "replaced"
+            t.save("crawl_early", t.early)
     elif verdict == "failed":                                            # С4г
         order_failed(t, words)
     elif verdict == "expired":                                           # С4д
         order_expired(t, result)
     t.keep(rec)
+
+
+def judge(t: Round, rec: dict, run: dict | None) -> tuple[str, str, str]:
+    """Вердикт по заказу книги (С4) — только чтение, ничего не меняет:
+    (вердикт, слова, судьба результата `watch.result_state`)."""
+    order = watch.record_order(rec)
+    result = "unknown"
+    if watch.order_kind(rec) == "server":
+        verdict, words = watch.decide_server(
+            rec, t.now, db.get_setting(t.conn, "site_crawl_result"))
+        return verdict, words, result
+    replaced = None
+    if run is not None and (run.get("status") or "") not in watch.RUNNING:
+        # влит ли результат ИМЕННО этого прогона: окно — от настоящего старта
+        # (прогон мог ждать очереди за другим) до конца
+        created = watch._utc(run.get("created_at") or "") or t.now
+        start = watch.effective_start(run, watch.crawl_only(t.runs, t.slug)) or created
+        end = watch._utc(run.get("updated_at") or "") or t.now
+        result = watch.result_state(ROOT, start, end, rec["what"],
+                                    watch.imported_stamps(t.conn, rec["what"]), t.git)
+        replaced = watch.superseded_by(rec["what"], run, t.runs)
+    hidden = bool(t.oldest and order["at"] < t.oldest)
+    verdict, words = watch.decide(order, run, t.now, rec, result, hidden, replaced)
+    if verdict == "wait" and run is not None and str(run.get("id")) in t.cancelling:
+        verdict, words = "failed", f"прогон #{run.get('run_number')} завис, отменяю его"
+    return verdict, words, result
 
 
 def early_reached(t: Round) -> None:
@@ -361,19 +424,66 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
             at or watch.stamp(t.now), what)
         t.save("crawl_missed", t.missed)
     elif step == "retry":
-        t.say(f"{what} — повторяю один раз")
-        t.log(order_crawl(*request_args(t.rec["what"]), f"--retry-of={t.rec['id']}"))
-        # свой повтор — по пометке «повтор заказа <id>», а не по виду: чужой
-        # заказ той же минуты (друг нажал «2 дня») с ним не спутать
-        if not watch.find_order(t.conn, retry_of=t.rec["id"]):
-            recover(t, f"{watch.order_kind(t.rec)}-retry-refused",
-                    f"повторить не вышло ({t.rec['what']}: GitHub не принял заявку)")
+        retry(t, what)
     else:
         # какой плановый пойдёт следующим, считаем от СЕЙЧАС: заменяемый
         # слот мог уже пройти, пока досрочный шёл (З3, пометка skipped)
         nxt, ndays = watch.next_slot(t.now)
         t.say(f"ТРЕВОГА — {what}. Больше не заказываю.{extra} Следующий плановый — "
               f"{watch.hm(nxt)} ({ndays} сут.), он пойдёт как обычно; проверьте GitHub")
+
+
+def retry(t: Round, what: str) -> None:
+    """Шаг retry: ОДИН повтор той же заявки за сорвавшийся заказ `t.rec`.
+    Повтор уже заказан (в книге есть «повтор заказа <id>») — второго нет. В
+    очереди GitHub ждёт полный обход — повтор откладывается (`queue_refusal`:
+    он вытеснил бы ждущий), его закажет `deferred_retries`, когда очередь
+    освободится. Сорвавшийся заказ сохраняется закрытым и с пометкой
+    `retrying` ДО заявки: оборвут проверку посреди неё — следующая второго
+    повтора не закажет (С2, `resume_retries`). Свой повтор — по пометке
+    «повтор заказа <id>», а не по виду: чужой заказ той же минуты (друг нажал
+    «2 дня») с ним не спутать."""
+    rec = t.rec
+    if watch.find_order(t.conn, retry_of=rec["id"]):
+        return
+    blocker = watch.queue_refusal(t.runs, t.slug)
+    if blocker:
+        if not rec.get("retry_deferred"):
+            t.say(f"{what} — повтор отложен: {blocker}")
+            rec["retry_deferred"] = watch.stamp(t.now)
+        t.keep(rec)
+        return
+    t.say(f"{what} — повторяю один раз")
+    rec.pop("retry_deferred", None)
+    rec["retrying"] = watch.stamp(t.now)
+    t.keep(rec)
+    t.log(order_crawl(*request_args(rec["what"]), f"--retry-of={rec['id']}"))
+    rec.pop("retrying", None)
+    t.keep(rec)
+    if not watch.find_order(t.conn, retry_of=rec["id"]):
+        recover(t, f"{watch.order_kind(rec)}-retry-refused",
+                f"повторить не вышло ({rec['what']}: GitHub не принял заявку)")
+
+
+def deferred_retries(t: Round) -> None:
+    """С4г. Отложенные повторы (в очереди GitHub ждал полный обход):
+    очередь освободилась — заказываем повтор; ждёт дольше `ORDER_TTL_HOURS`
+    — ТРЕВОГА, повтора не будет."""
+    if t.dry:
+        return
+    for rec in watch.load_orders(t.conn):
+        if not rec.get("retry_deferred") or watch.find_order(t.conn, retry_of=rec["id"]):
+            continue
+        t.rec, t.run = rec, None
+        since = watch.kyiv_at(rec["retry_deferred"]) or t.now
+        if (t.now - since).total_seconds() > watch.ORDER_TTL_HOURS * 3600:
+            rec.pop("retry_deferred", None)
+            t.keep(rec)
+            recover(t, f"{watch.order_kind(rec)}-retry-refused",
+                    f"{order_words(t)}: повтор так и не ушёл — очередь GitHub "
+                    f"{watch.ORDER_TTL_HOURS} ч занята ждущим полным обходом")
+        elif not watch.queue_refusal(t.runs, t.slug):
+            retry(t, f"{order_words(t)} сорвался раньше")
 
 
 def order_words(t: Round) -> str:

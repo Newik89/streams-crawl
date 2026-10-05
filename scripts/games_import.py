@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import canon, db, dictionary, health, names, store  # noqa: E402
+from app import canon, db, dictionary, health, names, store, watch  # noqa: E402
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -166,6 +166,9 @@ def main() -> int:
         if other:
             print(f"другой вид спорта — во вкладку «Other Sport»: {other}")
         db.set_setting(conn, stamp_key, stamp)
+        # и в список недавних заливок папки: по нему сторож узнаёт заливку
+        # ИМЕННО своего прогона, даже если за ней уже влили следующий
+        watch.remember_import(conn, path.parent.name, stamp)
         # отчёт для карточки на дашборде: владелец видит, что скан доехал.
         # Время — СЕРВЕРНЫМИ часами (метка «собрано» на GitHub идёт в UTC
         # и сравнение с заказом врало на 3 часа), плюс дата скана
