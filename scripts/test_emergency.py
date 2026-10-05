@@ -168,6 +168,8 @@ def reset():
     try:
         edge = (datetime.now(watch.KYIV) - timedelta(hours=2)).strftime("%Y-%m-%d %H:%M")
         conn.execute("DELETE FROM runs WHERE finished_at >= ? AND window_days > 0", (edge,))
+        conn.execute("DELETE FROM settings WHERE substr(key, 1, ?) = ?",   # книга заказов
+                     (len(watch.ORDER_PREFIX), watch.ORDER_PREFIX))
         conn.commit()
     finally:
         conn.close()
@@ -251,6 +253,25 @@ check("…ушёл один тег, заказ записан, отметка «
 check("…строка «владелец: заказал обход на 6 сут.» в «Прогонах»",
       any(n.startswith("владелец: заказал обход на 6 сут.") for n in notes_after(edge)), notes_after(edge))
 check("…заказ кнопкой — не плановый: слот не трогает", setting("crawl_slot") == "")
+
+
+def orders_now() -> list[dict]:
+    conn = db.connect()
+    try:
+        return watch.load_orders(conn)
+    finally:
+        conn.close()
+
+
+check("…заказ лёг в книгу заказов как ручной: сторож доведёт его до итога",
+      [(o["what"], o["slot"]) for o in orders_now()] == [("full-6", "")], orders_now())
+reset()
+trigger.dispatch_crawl = lambda days, date="", **k: (False, "нет ключа")
+owner.post("/crawl/run", data={"days": "2", "csrf_token": TOK})
+setting("crawl_running", "")                 # иначе вторую кнопка не пустит («сбор уже заказан»)
+owner.post("/crawl/day", data={"date": datetime.now().strftime("%Y-%m-%d"), "csrf_token": TOK})
+check("кнопки «Обход: 2 суток» и «Скан этой даты» админки тоже кладут заказ в книгу",
+      sorted(o["what"].split("-")[0] for o in orders_now()) == ["date", "full"], orders_now())
 reset()
 setting("crawl_running", f"идёт|{int(time.time()) - 30 * 60}|10:00|full-6")
 API["runs"] = [mkrun(30, status="in_progress")]
@@ -354,20 +375,38 @@ setting("crawl_request", f"обход 6 сут.|{stamp_}")
 setting("crawl_running", f"идёт|{int(time.time())}|10:00|full-6")
 for key in watch.WATCH_MEMORY:
     setting(key, json.dumps({"state": "missed", "slot": "2026-10-06 16:15"}))
+conn = db.connect()
+try:
+    watch.add_order(conn, "full-6", stamp_)
+    watch.add_order(conn, "date-2026-10-07", stamp_)
+finally:
+    conn.close()
 edge = last_id()
 r = press("/crawl/emergency/reset")
-state = json.loads(setting("crawl_watch") or "{}")
-check("вся память сторожа стёрта, кроме пометки текущего заказа",
-      all(setting(k) == "" for k in watch.WATCH_MEMORY if k != "crawl_watch")
-      and state == {"order": stamp_, "reset": True}, state)
+conn = db.connect()
+try:
+    orders = watch.load_orders(conn)
+finally:
+    conn.close()
+check("вся память сторожа стёрта, а открытые заказы книги помечены «не вести»",
+      all(setting(k) == "" for k in watch.WATCH_MEMORY)
+      and len(orders) == 2 and all(o.get("reset") for o in orders), orders)
 check("…заказ и отметку «сбор идёт» не трогает",
       setting("crawl_request").endswith(stamp_) and setting("crawl_running") != "")
 order_ = watch.parse_order(setting("crawl_request"))
-check("…сторож за этим заказом больше не следит (С4: «всё решено»)",
-      watch.decide(order_, None, datetime.now(watch.KYIV) + timedelta(hours=1), state,
-                   "unknown")[0] == "closed")
+check("…сторож за этими заказами больше не следит (С4: «всё решено»)",
+      all(watch.decide(order_, None, datetime.now(watch.KYIV) + timedelta(hours=1), o,
+                       "unknown")[0] == "closed" for o in orders))
 check("…строка «владелец: память сторожа стёрта»",
       any(n.startswith("владелец: память сторожа стёрта") for n in notes_after(edge)))
+with watch.order_lock(1):                    # идёт проверка сторожа
+    TAGS.clear()
+    API["runs"] = [mkrun(150, status="in_progress")]
+    busy_reset = press("/crawl/emergency/reset")
+    busy_cancel = press("/crawl/emergency/cancel")
+    lines = notes_after(edge)
+check("сторож держит общий замок → «Сбросить» и «Остановить» память не трогают: «повторите через минуту»",
+      TAGS == [] and sum("повторите через минуту" in n for n in lines) == 2, lines)
 
 print(f"\nпроверок: {passed + len(failed)}, зелёных: {passed}, красных: {len(failed)}")
 shutil.rmtree(TMP, ignore_errors=True)

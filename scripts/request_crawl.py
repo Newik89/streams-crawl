@@ -6,6 +6,7 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     venv/bin/python scripts/request_crawl.py days 6            утро: полный, 6 дней
     venv/bin/python scripts/request_crawl.py days 2            вечер: дозаправка
     venv/bin/python scripts/request_crawl.py date 2026-09-15   скан одной даты
+    venv/bin/python scripts/request_crawl.py site nova.bg      обход одного сайта на GitHub (повтор сторожа)
     venv/bin/python scripts/request_crawl.py days 2 --check    только сказать, пошла бы заявка
     venv/bin/python scripts/request_crawl.py days 6 --force    без правила «1 час» (ручной заказ)
     … --unlock                                                 снять отметку «сбор идёт» (сторож: прогон мёртв по API)
@@ -41,6 +42,7 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
 
 from __future__ import annotations
 
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -65,13 +67,12 @@ def order_dead(conn, now: datetime, listed: list) -> str:
     """Свежий заказ (`crawl_request`) не дошёл до конца? Слова, почему;
     пусто — жив (ждёт, идёт, дошёл) либо узнать нельзя. `listed` — список
     прогонов обхода с GitHub; пустой (GitHub молчит) — спрашиваем память
-    сторожа: сорвавшийся заказ он помечает `failed` в `crawl_watch`."""
+    сторожа: сорвавшийся заказ он помечает `failed` в книге заказов."""
     order = watch.parse_order(db.get_setting(conn, "crawl_request"))
     if order is None:
         return ""
     if not listed:
-        state = watch.load_json(conn, "crawl_watch")
-        if state.get("order") == order["stamp"] and state.get("failed"):
+        if watch.get_order(conn, f"full-{order['days']}", order["stamp"]).get("failed"):
             return "по записи сторожа он сорвался"
         return ""
     run = watch.run_for(order, watch.full_runs(listed))
@@ -110,13 +111,19 @@ def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     flags = {a for a in sys.argv[1:] if a.startswith("--")}
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    if len(args) != 2 or args[0] not in ("days", "date") \
+    if len(args) != 2 or args[0] not in ("days", "date", "site") \
             or not flags <= {"--check", "--force", "--unlock", "--locked", "--manual"}:
         print(__doc__)
         return 2
     kind, value = args
     if kind == "days" and value not in ("2", "5", "6"):
         print("окно — 2, 5 или 6 суток")
+        return 2
+    if kind == "date" and not re.fullmatch(r"\d{4}-\d\d-\d\d", value):
+        print("дата — ГГГГ-ММ-ДД")
+        return 2
+    if kind == "site" and not re.fullmatch(r"[a-z0-9.-]{1,100}", value):
+        print("сайт — домен латиницей, например nova.bg")
         return 2
     if flags & {"--check", "--locked"}:
         # «только сказать» ничего не меняет, а у заявки сторожа замок уже
@@ -236,9 +243,11 @@ def request(kind: str, value: str, flags: set, held: bool) -> int:
         if check:
             print(f"{now:%d.%m %H:%M} заявка {kind} {value} ПОШЛА БЫ{queue} (--check)")
             return 0
-        ok, words = trigger.push_request_tag(kind, value)
+        # в имени тега у сайта — домен в base32 (`queue.yml` его разжимает)
+        tag_value = trigger.encode_probe_url(value) if kind == "site" else value
+        ok, words = trigger.push_request_tag(kind, tag_value)
         print(f"{now:%d.%m %H:%M} заявка {kind} {value}{queue}: {words}")
-        if not ok:
+        if ok is False:
             if slot is not None:
                 why = f"плановая заявка не ушла: {words}"
                 if watch.lost_slot(conn, "planned-not-sent", slot, int(value),
@@ -246,20 +255,27 @@ def request(kind: str, value: str, flags: set, held: bool) -> int:
                     watch.note(conn, why + " — сторож закажет обход на своей проверке")
             close("missed")
             return 1
+        # ok None — git не ответил вовремя, а заявка могла дойти (29.09 так и
+        # было). Это не срыв: заказ пишем как ушедший, а дошёл ли — решат
+        # ожидание старта (З7) и сторож (С4): нет прогона — заказ сорвался
+        what = f"full-{value}" if kind == "days" else f"{kind}-{value}"
         if not behind:
             crawl_hook.mark(conn, "заявка", f"{kind}-{value}")
-        order = {"days": int(value) if kind == "days" else 0, "at": now,
-                 "stamp": f"{now:%Y-%m-%d %H:%M}"}
+        order = {"what": what, "days": int(value) if kind == "days" else 0,
+                 "at": watch.utc(now), "stamp": watch.stamp(now)}
         if kind == "days":
             db.set_setting(conn, "crawl_request",
                            f"обход {value} сут.|{order['stamp']}")
+        # в книгу заказов: сторож доведёт заказ до итога и узнает из записи,
+        # а не по времени, плановый ли он (С4)
+        watch.add_order(conn, what, order["stamp"], slot)
         close("ordered")
 
         # ── З7. ждём старта ──────────────────────────────────────────────────
-        # ответом считается прогон того же вида: на заявку по дням — полный
-        # обход, на скан даты — скан даты
+        # ответом считается прогон того же вида (`watch.answers`): на заявку
+        # по дням — полный обход, на скан даты — скан той же даты
         slug = trigger._repo_slug()
-        kinds = watch.FULL_KINDS if kind == "days" else ("date", "unknown")
+        kinds = watch.FULL_KINDS if kind == "days" else (kind, "unknown")
         head = f"заявка {kind} {value} от {order['stamp']}"
         run, answered = watch.wait_for_start(order, slug, kinds)
         if run is None and not answered:
@@ -270,14 +286,28 @@ def request(kind: str, value: str, flags: set, held: bool) -> int:
                      f"дальше следит сторож")
         else:
             if run is None:
-                # GitHub отвечает, а прогона нет — повторяем тег один раз
-                # (владелец 02.10: «заказать снова и убедиться, что пошёл»)
-                ok, said = trigger.push_request_tag(kind, value)
-                print(f"{now:%d.%m %H:%M} повтор заявки {kind} {value}: {said}")
-                watch.note(conn, f"{head}: GitHub не стартовал за "
-                                 f"{watch.START_MINUTES} мин — повтор: {said}",
-                           who="автомат")
-                if ok:
+                # GitHub отвечает, а прогона нет. Повтор тега — только если
+                # тег не дошёл до пересылки (`queue.yml`): пересылка идёт или
+                # ждёт машину — второй тег дал бы второй полный обход
+                fwd = watch.forwarding(order, slug, f"btn-{kind}-{tag_value}-")
+                if fwd in ("none", "failed"):
+                    # владелец 02.10: «заказать снова и убедиться, что пошёл»
+                    ok, said = trigger.push_request_tag(kind, tag_value)
+                    print(f"{now:%d.%m %H:%M} повтор заявки {kind} {value}: {said}")
+                    watch.note(conn, f"{head}: GitHub не стартовал за "
+                                     f"{watch.START_MINUTES} мин — повтор: {said}",
+                               who="автомат")
+                else:
+                    ok = True
+                    said = {"going": "пересылка тега ещё идёт или ждёт машину",
+                            "done": "тег переслан, обход вот-вот появится",
+                            "silent": "GitHub не ответил про пересылку тега"}[fwd]
+                    print(f"{now:%d.%m %H:%M} {head}: {said} — тег не повторяю, жду")
+                    watch.note(conn, f"{head}: обход не стартовал за "
+                                     f"{watch.START_MINUTES} мин, но {said} — тег не "
+                                     f"повторяю (вышло бы два обхода), жду ещё",
+                               who="автомат")
+                if ok is not False:
                     run, _ = watch.wait_for_start(
                         order, slug, kinds, seconds=watch.RETRY_WAIT_SECONDS)
             if run is not None:
@@ -286,8 +316,8 @@ def request(kind: str, value: str, flags: set, held: bool) -> int:
                 # не ТРЕВОГА: это ещё не конец — сторож на ближайшей проверке
                 # закроет заказ как сорвавшийся и решит по С4г (плановый →
                 # досрочный); ТРЕВОГА будет, если не выйдет и это
-                words = (f"{head}: прогон не стартовал и после повтора — заказ "
-                         f"сорвался, дальше решает сторож на ближайшей проверке")
+                words = (f"{head}: прогон не стартовал и после повтора / ожидания — "
+                         f"заказ сорвался, дальше решает сторож на ближайшей проверке")
         print(f"{now:%d.%m %H:%M} {words}")
         watch.note(conn, words, who="автомат")
         return 0

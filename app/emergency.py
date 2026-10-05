@@ -39,6 +39,8 @@ SCRIPT = db.ROOT / "scripts" / "request_crawl.py"
 CHECK_TIMEOUT_SECONDS = 60
 #: глубины, которые можно заказать кнопкой (как у плановых заявок)
 ORDER_DAYS = (6, 2)
+#: сколько последних заказов книги показать в блоке «что сейчас»
+STATUS_ORDERS = 3
 
 
 def _now() -> datetime:
@@ -148,8 +150,13 @@ def github(conn: sqlite3.Connection) -> dict:
         words = "проверил GitHub — он не ответил на список прогонов"
         watch.note(conn, words, who=WHO)
         return {"ok": False, "rows": [], "words": words}
-    stuck_ids = {str(s["run"].get("id")) for s in watch.stuck(runs, now, slug)}
+    stuck_ids = {str(s["run"].get("id")) for s in watch.stuck(
+        runs, now, slug, watch.load_json(conn, "crawl_queue"))}
+    queue_ids = {str(w["run"].get("id")) for w in watch.queue_waits(runs, now, slug)}
     rows = [_run_line(r, now, stuck_ids) for r in watch.crawl_only(runs, slug)]
+    for row in rows:
+        if row["id"] in queue_ids:
+            row["state"] += " — очередь GitHub стоит, впереди никого"
     active = [r for r in rows if r["active"]]
     words = ("проверил GitHub — сейчас " +
              (", ".join(f"#{r['number']} {r['what']}: {r['state']}"
@@ -159,11 +166,26 @@ def github(conn: sqlite3.Connection) -> dict:
     return {"ok": True, "rows": rows, "words": words}
 
 
+#: ответ кнопки, если общий замок занят: сторож или заявка сейчас пишут ту же
+#: память, и запись кнопки затёрлась бы в конце их работы
+BUSY = ("сторож сейчас работает (идёт его проверка или заявка) — повторите "
+        "через минуту")
+
+
 def cancel(conn: sqlite3.Connection, run_id: str = "") -> tuple[bool, str]:
     """«Остановить зависший сбор»: без `run_id` — все прогоны, которые сторож
     счёл бы зависшими (`watch.stuck`); с `run_id` — этот идущий прогон
     (кнопка у строки списка GitHub). Заявка отмены — та же, что у сторожа
-    (`watch.send_cancel`), и в ту же память: остановку сверит сторож (С3)."""
+    (`watch.send_cancel`), и в ту же память: остановку сверит сторож (С3).
+    Память пишется под общим замком (`watch.order_lock`)."""
+    with watch.order_lock(watch.LOCK_WAIT_BUTTON) as held:
+        if not held:
+            watch.note(conn, f"хотел остановить сбор — {BUSY}", who=WHO)
+            return False, BUSY
+        return _cancel(conn, run_id)
+
+
+def _cancel(conn: sqlite3.Connection, run_id: str) -> tuple[bool, str]:
     now = _now()
     slug = trigger._repo_slug()
     runs = watch.github_runs(slug, workflow=watch.CRAWL_WORKFLOW)
@@ -179,7 +201,8 @@ def cancel(conn: sqlite3.Connection, run_id: str = "") -> tuple[bool, str]:
             watch.note(conn, words, who=WHO)
             return False, words
     else:
-        targets = [s["run"] for s in watch.stuck(runs, now, slug)]
+        queue = watch.load_json(conn, "crawl_queue")
+        targets = [s["run"] for s in watch.stuck(runs, now, slug, queue)]
         if not targets:
             going = ", ".join(f"#{r.get('run_number')} "
                               f"{watch.describe(*watch.run_kind(r))}" for r in active)
@@ -193,9 +216,11 @@ def cancel(conn: sqlite3.Connection, run_id: str = "") -> tuple[bool, str]:
     said, all_ok = [], True
     for r in targets:
         ok, answer = watch.send_cancel(cancels, r, now)
-        all_ok = all_ok and ok
+        all_ok = all_ok and ok is not False
         said.append(f"#{r.get('run_number')} — "
-                    + ("заявка отмены ушла" if ok else f"заявка не ушла ({answer})"))
+                    + ("заявка отмены ушла" if ok else
+                       f"заявка могла не дойти ({answer})" if ok is None else
+                       f"заявка не ушла ({answer})"))
     watch.save_json(conn, "crawl_cancel", cancels)
     words = (f"остановил сбор: {'; '.join(said)}. Сторож сверит остановку и, "
              f"если это был плановый, сам закажет досрочный")
@@ -203,11 +228,17 @@ def cancel(conn: sqlite3.Connection, run_id: str = "") -> tuple[bool, str]:
     return all_ok, words
 
 
-def reset(conn: sqlite3.Connection) -> str:
-    """«Сбросить память сторожа» — если он запутался."""
-    words = watch.reset_memory(conn)
+def reset(conn: sqlite3.Connection) -> tuple[bool, str]:
+    """«Сбросить память сторожа» — если он запутался. Под общим замком
+    (`watch.order_lock`): иначе конец идущей проверки записал бы память
+    обратно."""
+    with watch.order_lock(watch.LOCK_WAIT_BUTTON) as held:
+        if not held:
+            watch.note(conn, f"хотел сбросить память сторожа — {BUSY}", who=WHO)
+            return False, BUSY
+        words = watch.reset_memory(conn)
     watch.note(conn, words, who=WHO)
-    return words
+    return True, words
 
 
 # ── что сейчас ───────────────────────────────────────────────────────────────
@@ -232,17 +263,14 @@ def status(conn: sqlite3.Connection) -> dict:
             lines.append({"cls": "ok", "text":
                           f"Сбор «{busy['what']}» {busy['state']} с {busy['since']} "
                           f"({minutes} мин)."})
-    req = watch.parse_order(db.get_setting(conn, "crawl_request"))
-    if req:
-        state = watch.load_json(conn, "crawl_watch")
-        mine = state.get("order") == req["stamp"]
-        how = ("дошёл и забран" if mine and state.get("done") else
-               "сорвался" if mine and state.get("failed") else
-               "сторож за ним не следит (память сброшена)" if mine and state.get("reset")
+    # книга заказов: последние заказы, по строке на каждый
+    for rec in watch.load_orders(conn)[-STATUS_ORDERS:]:
+        how = ("дошёл" if rec.get("done") else
+               "сорвался" if rec.get("failed") else
+               "сторож за ним не следит (память сброшена)" if rec.get("reset")
                else "сторож следит за ним")
         lines.append({"cls": "error" if how == "сорвался" else "ok",
-                      "text": f"Последний заказ: обход {req['days']} сут. в "
-                              f"{req['stamp']} — {how}."})
+                      "text": f"Заказ {rec['what']} от {rec['order']} — {how}."})
     missed = watch.load_json(conn, "crawl_missed")
     if missed.get("state") == "missed":
         lines.append({"cls": "error", "text":

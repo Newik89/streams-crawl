@@ -28,7 +28,7 @@ from flask import (Flask, abort, flash, jsonify, redirect, render_template, requ
                    session, url_for)
 
 from . import (crawl_hook, db, dictionary, emergency, health, names, sources,
-               store, trigger, visits)
+               store, trigger, visits, watch)
 
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
 _ENV_PASSWORD = os.environ.get("STREAMS_ADMIN_PASSWORD")
@@ -840,15 +840,17 @@ def create_app() -> Flask:
                     # заказ запоминаем: дальше панель «Здоровье» сама скажет,
                     # дошёл ли он до конца — раньше надпись просто исчезала
                     # (владелец 09.09)
-                    db.set_setting(conn, "crawl_request",
-                                   f"обход {days} сут.|"
-                                   f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
+                    stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
+                    db.set_setting(conn, "crawl_request", f"обход {days} сут.|{stamp}")
+                    # в книгу заказов: сторож доведёт до итога; кнопка —
+                    # всегда ручной заказ, даже рядом со слотом (С4)
+                    watch.add_order(conn, f"full-{days}", stamp)
                 else:
                     # заказ скана даты — своя строка статуса на витрине:
                     # раньше его итог не показывался вовсе (владелец 22.09)
-                    db.set_setting(conn, "date_scan_request",
-                                   f"{date}|"
-                                   f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
+                    stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
+                    db.set_setting(conn, "date_scan_request", f"{date}|{stamp}")
+                    watch.add_order(conn, f"date-{date}", stamp)
             finally:
                 conn.close()
         tail = (f" — скан {date}" if date else
@@ -1089,8 +1091,9 @@ def create_app() -> Flask:
                 crawl_hook.mark(conn, "заявка", f"сайт {domain}")
                 # для строки статуса «заказан → идёт → ВЫПОЛНЕН» (владелец
                 # 20.09: флеш пропадает, а итога рядом не видно)
-                db.set_setting(conn, "site_crawl_request",
-                               f"{domain}|{datetime.now():%Y-%m-%d %H:%M}")
+                stamp = f"{datetime.now():%Y-%m-%d %H:%M}"
+                db.set_setting(conn, "site_crawl_request", f"{domain}|{stamp}")
+                watch.add_order(conn, f"site-{domain}", stamp)   # сторож доведёт
                 flash(f"Обход только {domain} заказан — итог вольётся на "
                       "витрину через несколько минут после прогона.", "ok")
             else:
@@ -1126,8 +1129,9 @@ def create_app() -> Flask:
         if ok:
             conn = db.connect()
             try:
-                db.set_setting(conn, "site_crawl_request",
-                               f"{domain}|{datetime.now():%Y-%m-%d %H:%M}")
+                stamp = f"{datetime.now():%Y-%m-%d %H:%M}"
+                db.set_setting(conn, "site_crawl_request", f"{domain}|{stamp}")
+                watch.add_order(conn, f"server-{domain}", stamp)   # сторож доведёт
             finally:
                 conn.close()
         flash(f"{domain}: {said}", "ok" if ok else "error")
@@ -1567,7 +1571,8 @@ def create_app() -> Flask:
     @app.route("/crawl/emergency/reset", methods=["POST"])
     def emergency_reset():
         verify_csrf()
-        flash(_emergency(emergency.reset), "ok")
+        ok, words = _emergency(emergency.reset)
+        flash(words, "ok" if ok else "error")
         return redirect(url_for("runs_list"))
 
     @app.route("/other")
