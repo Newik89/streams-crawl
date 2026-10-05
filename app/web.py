@@ -348,7 +348,9 @@ def create_app() -> Flask:
 
     # публичное: страница расписания (ТЗ разд. 12), её кнопки сбора и
     # API по ключу (разд. 13). Всё остальное — только после входа.
-    PUBLIC = {"login", "static", "schedule", "schedule_other", "schedule_run",
+    # `logout` — тоже: друг (не админ) иначе не мог выйти, его уводило на вход
+    PUBLIC = {"login", "logout", "static", "schedule", "schedule_other",
+              "schedule_run",
               "crawl_hook_in",
               "api_events", "api_leagues", "api_channels", "api_status"}
 
