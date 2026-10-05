@@ -50,6 +50,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, register
 
 DOMAIN = "sport1.maariv.co.il"
@@ -86,7 +87,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         except ValueError:
             return []
     tree = HTMLParser(html)
-    day = day or _date.today()
+    day = day or daytime.today(tz or TZ)
 
     out: list[Program] = []
     for block in tree.css("div.channel-container"):

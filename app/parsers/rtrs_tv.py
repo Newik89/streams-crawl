@@ -27,6 +27,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, mark_first_show, register
 
 DOMAIN = "rtrs.tv"
@@ -55,7 +56,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     tree = HTMLParser(html)
 
     out: list[Program] = []
-    current = day or _date.today()
+    current = day or daytime.today(tz or TZ)
     for node in tree.root.traverse():
         if node.tag == "a":
             anchor = _DAY_ANCHOR.match(node.attributes.get("name") or "")

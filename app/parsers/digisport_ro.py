@@ -28,6 +28,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, register
 
 DOMAIN = "digisport.ro"
@@ -80,7 +81,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     channel = f"Digi Sport {got.group(1)}" if got else "Digi Sport"
     if channels and channel not in channels:
         return []
-    today = day or _date.today()
+    today = day or daytime.today(tz or TZ)
     tree = HTMLParser(html)
 
     out: list[Program] = []

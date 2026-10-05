@@ -81,7 +81,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             tail.text(strip=True) if tail else "",
         ))
 
-    moments = daytime.walk_day([r[0] for r in rows], day or _date.today(), tz or TZ)
+    moments = daytime.walk_day([r[0] for r in rows], day or daytime.today(tz or TZ), tz or TZ)
 
     out = []
     for (raw_time, title, note), moment in zip(rows, moments):

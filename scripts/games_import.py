@@ -20,46 +20,23 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import canon, db, dictionary, health, names, store  # noqa: E402
+from app import canon, db, dictionary, health, miss, names, store  # noqa: E402
 
 DEFAULT = ROOT / "results" / "games.json"
 
 
-def crawl_facts(report_path: Path) -> tuple[set[str] | None, str, dict[str, set[str]]]:
-    """Из отчёта обхода: какие домены отработали и по какой день качали.
-
-    Нужно заливке, чтобы короткий прогон не гасил каналы дальних дней и
-    чтобы лежащий сайт не уносил свои каналы с витрины (аудит 07.09, A7).
-    Отчёта нет — возвращаем `(None, "")`, и заливка ведёт себя по-старому."""
+def crawl_facts(report_path: Path) -> miss.Покрытие | None:
+    """Из отчёта обхода: что сбор реально скачал — какие сайты ответили,
+    какие сетки и страницы каналов на какие дни дали расписание. По этому
+    заливка решает, вправе ли сбор гасить каналы (`app/miss.py`, правила
+    4–5). Отчёта нет — `None`, и заливка не гасит ничего."""
     import json as _json
     try:
         report = _json.loads(report_path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
-        return None, "", {}
+        return None
     rows = report.get("строки") or []
-    if not rows:
-        return None, "", {}
-    broken = ("не открылась", "заглушка защиты")
-    worked = {r["domain"] for r in rows if r.get("итог") not in broken}
-    # последний день, который прогон вообще скачивал: у сеток день не
-    # проставлен — их страницы приносят сразу всё окно, поэтому пустые
-    # значения не учитываем, а если дней нет вовсе, порог не ставим
-    days = sorted(d for d in (r.get("day") or "" for r in rows) if d)
-    # Какие дни КАЖДЫЙ сайт в этом прогоне отдал с расписанием (03.10).
-    # Общий «последний день» выше берётся по всем строкам отчёта, а дальше
-    # всех ходят справочники flashscore (7 дней) — и двухдневная дозаправка
-    # получала право гасить каналы до конца недели: отметки сайтов,
-    # скачанных на 2 дня, у игр дальних дней ловили штраф от КАЖДОЙ
-    # дозаправки (03.10 после двух дозаправок 145 отметок стояли с двумя
-    # пропусками). Сетка (день не проставлен) приносит всё окно — у неё в
-    # наборе пустая строка. Страница с итогом «пусто» гасить не вправе:
-    # пустой ответ — не доказательство, что матча на канале больше нет.
-    covered: dict[str, set[str]] = {}
-    for r in rows:
-        дни = covered.setdefault(r["domain"], set())
-        if r.get("итог") == "расписание есть":
-            дни.add(r.get("day") or "")
-    return worked, (days[-1] if days else ""), covered
+    return miss.покрытие_из_отчёта(rows) if rows else None
 
 
 def _json_stamp(path) -> str:
@@ -140,24 +117,15 @@ def main() -> int:
                 print(f"файл не менялся с прошлой заливки ({stamp}) — пропуск")
                 return 0
             print(f"переналивка того же файла ({stamp}) — без гашения каналов")
-        worked, punish_until, covered = crawl_facts(path.parent / "report.json")
-        if worked is not None:
-            print(f"отработали сайтов: {len(worked)}; каналы игр после "
-                  f"{punish_until or '—'} этот прогон не гасит")
-            сетки = sum(1 for d in worked if "" in covered.get(d, set()))
-            пустые = sum(1 for d in worked if not covered.get(d))
-            по_дням: dict[str, int] = {}
-            for domain in worked:
-                дни = covered.get(domain) or set()
-                if дни and "" not in дни:
-                    по_дням[max(дни)] = по_дням.get(max(дни), 0) + 1
-            print("каждый сайт гасит каналы только в свои скачанные дни: "
-                  f"сетки (всё окно) — {сетки}, "
-                  + ", ".join(f"по {d} — {n}" for d, n in sorted(по_дням.items()))
-                  + f"; отдали пусто и не гасят — {пустые}")
+        coverage = crawl_facts(path.parent / "report.json")
+        if coverage is None:
+            print("отчёта обхода нет — каналы этим файлом не гасятся")
+        else:
+            print(f"ответили сайтов: {len(coverage.ответили)}; гасить каналы "
+                  "вправе только по правилам app/miss.py")
         stats = store.save_games(conn, games, punish=not args.reimport,
-                                 worked=worked, punish_until=punish_until,
-                                 covered=covered)
+                                 coverage=coverage,
+                                 collected=store.kyiv_from_utc(stamp))
         # другой вид спорта — отдельной таблицей для вкладки «Other Sport»
         # (владелец 03.10); старые файлы ключа не имеют — тогда 0
         other = store.save_other_sport(
@@ -179,9 +147,9 @@ def main() -> int:
                            f"{len(games)}")
         if path.parent.name == "site":
             # кнопка «Обойти сайт» (20.09): строка «✅ ВЫПОЛНЕН» под шапкой
-            # админки. Домен — из отчёта; сайт не открылся — worked пуст,
-            # берём первую строку отчёта
-            дом = next(iter(worked)) if worked else ""
+            # админки. Домен — из отчёта; сайт не открылся — ответивших
+            # нет, берём первую строку отчёта
+            дом = min(coverage.ответили) if coverage and coverage.ответили else ""
             if not дом:
                 try:
                     строки = _json.loads((path.parent / "report.json")
@@ -232,7 +200,8 @@ def main() -> int:
         print(f"в файле игр: {len(games)}; новых: {stats.new}, "
               f"обновлено: {stats.updated}, отметок каналов: {stats.channels}, "
               f"повторов не пущено: {stats.repeats}, "
-              f"прилипло к flashscore вопреки времени сайта: {stats.time_off}"
+              f"прилипло к flashscore вопреки времени сайта: {stats.time_off}, "
+              f"каналов погашено (сайт их больше не показывает): {stats.gone}"
               + (f", заголовков турниров сайты больше не показывают "
                  f"(отметок погашено): {stats.titles_gone}"
                  if stats.titles_gone else ""))

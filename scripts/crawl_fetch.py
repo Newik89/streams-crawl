@@ -47,7 +47,7 @@ sys.path.insert(0, str(ROOT))
 
 from urllib.parse import urljoin, urlsplit          # noqa: E402
 
-from app import fetch, protection, timemarks, urls   # noqa: E402
+from app import daytime, fetch, protection, timemarks, urls   # noqa: E402
 
 PLAN = ROOT / "data" / "crawl_plan.json"
 
@@ -229,12 +229,17 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
                 # Считаем от сегодня, а не от первого дня окна: в скане даты
                 # окно начинается с выбранного дня, и flashscore `?d={DAYNUM}`
                 # отдавал сегодняшний футбол вместо 19.09 — все строки
-                # «угадаек» ушли в повторы без эталона (14.09, #2364)
+                # «угадаек» ушли в повторы без эталона (14.09, #2364).
+                # «Сегодня» — по часам САЙТА, не GitHub (UTC): скан даты
+                # #204 в 22:05 UTC просил у flashscore `?d=1`, а в Париже
+                # уже было 06.10 — пришло 07.10 под видом 06.10, эталон
+                # уехал на день, и «угадайки» за 06.10 сняты все (06.10)
+                сегодня = daytime.today(source.get("timezone"))
                 marks = {**(source["marks"] or {}),
-                         "N": str((day - date.today()).days + 1),
+                         "N": str((day - сегодня).days + 1),
                          # {DAYNUM} — тот же номер, но 0-based: `rtcg.me`
                          # просит `day=0` за сегодня
-                         "DAYNUM": str((day - date.today()).days)}
+                         "DAYNUM": str((day - сегодня).days)}
                 yield {
                     "domain": source["domain"],
                     "channel": channel["name"],

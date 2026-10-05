@@ -33,6 +33,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, register
 
 DOMAIN = "diemaxtra.nova.bg"
@@ -103,7 +104,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     if channels and channel not in channels:
         return []
 
-    dates = _tab_dates(tree, day or _date.today())
+    dates = _tab_dates(tree, day or daytime.today(tz or TZ))
     out: list[Program] = []
     for name in DAYS:
         pane = tree.css_first(f"div#{name}")

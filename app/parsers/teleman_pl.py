@@ -119,24 +119,29 @@ _DAY_CELL = re.compile(r"(\d{1,2})\s+(\w+)", re.U)
 
 def _cell_date(text: str, anchor: _date) -> _date | None:
     """`dziś, 31 sierpnia` / `jutro, 1 września` / `środa, 3 września` →
-    дата. Год берём от дня запроса; декабрь/январь на стыке — поправка."""
+    дата. Число и месяц, написанные сайтом, главнее слов `dziś`/`jutro`:
+    «сегодня» сайт считает по Варшаве, а якорь — день запуска обхода по
+    часам GitHub (UTC). В 22:30 UTC в Варшаве уже завтра, и `dziś` от
+    якоря сдвигал весь список на день назад. От якоря берём только год
+    (декабрь/январь на стыке — поправка) и слова без числа."""
     low = text.strip().lower()
+    m = _DAY_CELL.search(low)
+    if m and m.group(2) in _PL_MONTHS:
+        month = _PL_MONTHS[m.group(2)]
+        year = anchor.year + (1 if month < anchor.month - 6 else
+                              -1 if month > anchor.month + 6 else 0)
+        return _date(year, month, int(m.group(1)))
     if low.startswith("dziś"):
         return anchor
     if low.startswith("jutro"):
         return anchor + timedelta(days=1)
-    m = _DAY_CELL.search(low)
-    if not m or m.group(2) not in _PL_MONTHS:
-        return None
-    month = _PL_MONTHS[m.group(2)]
-    year = anchor.year + (1 if month < anchor.month - 6 else 0)
-    return _date(year, month, int(m.group(1)))
+    return None
 
 
 def parse_sport(html: str, *, day: _date | None = None, tz: str | None = None,
                 url: str = "") -> list[Program]:
     tree = HTMLParser(html)
-    anchor = day or _date.today()
+    anchor = day or daytime.today(tz or TZ)
     out: list[Program] = []
     for tr in tree.css("table tr"):
         cells = tr.css("td")
@@ -179,7 +184,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     if "/sport" in (url or "").split("?")[0]:
         return parse_sport(html, day=day, tz=tz, url=url)
     tree = HTMLParser(html)
-    day = page_day(html, url) or day or _date.today()
+    day = page_day(html, url) or day or daytime.today(tz or TZ)
     channel = page_channel(html, url)
 
     rows = []

@@ -28,6 +28,7 @@ from datetime import date as _date, datetime
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
+from .. import daytime
 from . import Program, register
 
 DOMAIN = "flashscore.mobi"
@@ -91,7 +92,7 @@ def _sport_from_url(url: str) -> str:
 @register(DOMAIN)
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
-    day = day or _date.today()
+    day = day or daytime.today(tz or TZ)
     sport = _sport_from_url(url)
     # язык страницы (этап 6е, A2): у локалей `m.flashscore.gr` те же fs_id,
     # что у английской, — по нему словарь учит «Τζένοα» = «Genoa» без
