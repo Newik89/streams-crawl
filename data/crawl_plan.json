@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-10-03",
+ "built": "2026-10-05",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -4751,6 +4751,100 @@
     {
      "name": "football",
      "pattern": "https://m.flashscore.dk/?d={DAYNUM}"
+    }
+   ]
+  },
+  {
+   "domain": "tvtid.tv2.dk",
+   "timezone": "Europe/Copenhagen",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "TV 2 Charlie",
+    "TV 2 Danmark",
+    "TV 2 Echo",
+    "TV 2 Fri",
+    "TV 2 News",
+    "TV 2 Sport",
+    "TV 2 Sport X"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tvtid.tv2.dk/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://tvtid-api.api.tv2.dk/api/tvtid/v1/epg/dayviews/{YYYY-MM-DD}?ch=77&ch=2147483561&ch=3&ch=4&ch=31&ch=12566&ch=133"
+    }
+   ]
+  },
+  {
+   "domain": "tvsporten.dk",
+   "timezone": "Europe/Copenhagen",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "6'eren",
+    "Canal 9",
+    "DK4",
+    "DR1",
+    "DR2",
+    "Eurosport 1 DK",
+    "Eurosport 2 DK",
+    "Kanal 5 (DK)",
+    "SPORT LIVE",
+    "See",
+    "TV 2 Charlie",
+    "TV 2 Danmark",
+    "TV 2 Echo",
+    "TV 2 Sport",
+    "TV 2 Sport X",
+    "TV3 DK",
+    "TV3 Max",
+    "TV3 Plus",
+    "TV3 Sport",
+    "V Sport Golf (DK)",
+    "V Sport Live 1 DK",
+    "V Sport Live 2 DK",
+    "V Sport Live 3 DK",
+    "V Sport Live 4 DK",
+    "V Sport Live 5 DK",
+    "Viaplay Sport News DK",
+    "Viasat Ultra HD"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.tvsporten.dk/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.tvsporten.dk/api/fixtures/bydate?day={YYYY-MM-DD}&dayBreakHour=5&tz=Europe%2FCopenhagen"
     }
    ]
   }
