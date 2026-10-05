@@ -10,6 +10,7 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     venv/bin/python scripts/request_crawl.py days 6 --force    без правила «1 час» (ручной заказ)
     … --unlock                                                 снять отметку «сбор идёт» (сторож: прогон мёртв по API)
     … --locked                                                 общий замок уже держит вызвавший (так заявку зовёт сторож)
+    … --manual                                                 заказ владельца кнопкой: правила те же, но заявка не плановая
 
 Правила З1–З7, память (настройки `crawl_…`) и все пороги описаны в ОДНОМ
 месте — в шапке `app/watch.py`. Здесь — только их исполнение: функция
@@ -23,10 +24,13 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     З6  тег-заявка и запись заказа
     З7  ждём старта; тег повторяем один раз и только если GitHub отвечает
 
-Плановой заявка считается, если пришла по дням без --force не дальше 30
-минут от слота таблицы `watch.SCHEDULE` (cron сервера — `crawl_watch.py
---cron`). Только плановая пишет `crawl_slot` и `crawl_missed`: за её слот
-отвечает сторож (`scripts/crawl_watch.py`).
+Плановой заявка считается, если пришла по дням без --force и --manual не
+дальше 30 минут от слота таблицы `watch.SCHEDULE` (cron сервера —
+`crawl_watch.py --cron`). Только плановая пишет `crawl_slot` и
+`crawl_missed`: за её слот отвечает сторож (`scripts/crawl_watch.py`).
+--manual ставит кнопка «Заказать сбор сейчас» (`app/emergency.py`): правила
+З3–З7 те же, что у плановой, но слот она не закрывает и сорвавшимся не
+делает.
 Правило «1 час» (владелец 29.09, срок 2 ч → 1 ч 02.10): плановая не шлётся,
 если за последний час уже заказан или собран полный обход НЕ МЕНЬШЕЙ глубины
 (ручной на 6 дней отменяет плановый на 2; ручной на 2 утренний на 6 не
@@ -107,7 +111,7 @@ def main() -> int:
     flags = {a for a in sys.argv[1:] if a.startswith("--")}
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     if len(args) != 2 or args[0] not in ("days", "date") \
-            or not flags <= {"--check", "--force", "--unlock", "--locked"}:
+            or not flags <= {"--check", "--force", "--unlock", "--locked", "--manual"}:
         print(__doc__)
         return 2
     kind, value = args
@@ -141,7 +145,7 @@ def request(kind: str, value: str, flags: set, held: bool) -> int:
             crawl_hook.clear(conn)
         # плановая ли это заявка — по таблице watch.SCHEDULE
         slot = (watch.slot_for(now, int(value))
-                if kind == "days" and "--force" not in flags else None)
+                if kind == "days" and not flags & {"--force", "--manual"} else None)
         cache: list = []
 
         def runs() -> list[dict]:
@@ -198,7 +202,8 @@ def request(kind: str, value: str, flags: set, held: bool) -> int:
                 return 0
             if verdict == "postpone":
                 if slot is not None and not check:
-                    missed(conn, slot, value, words, now)
+                    watch.lost_slot(conn, "planned-postponed", slot, int(value),
+                                    words, now)
                 close("missed")
                 return 0
             if verdict == "clear":
@@ -236,8 +241,9 @@ def request(kind: str, value: str, flags: set, held: bool) -> int:
         if not ok:
             if slot is not None:
                 why = f"плановая заявка не ушла: {words}"
-                missed(conn, slot, value, why, now)
-                watch.note(conn, why + " — сторож закажет обход на своей проверке")
+                if watch.lost_slot(conn, "planned-not-sent", slot, int(value),
+                                   why, now) == "early":
+                    watch.note(conn, why + " — сторож закажет обход на своей проверке")
             close("missed")
             return 1
         if not behind:
@@ -287,14 +293,6 @@ def request(kind: str, value: str, flags: set, held: bool) -> int:
         return 0
     finally:
         conn.close()
-
-
-def missed(conn, slot: datetime, days: str, why: str, now: datetime) -> None:
-    """Плановая заявка не ушла — слот записываем сорвавшимся (`crawl_missed`):
-    на ближайшей проверке с ним поступит сторож (правило С6)."""
-    watch.save_json(conn, "crawl_missed", watch.missed_record(
-        watch.load_json(conn, "crawl_missed"), watch.stamp(slot), int(days),
-        watch.stamp(now), why))
 
 
 if __name__ == "__main__":

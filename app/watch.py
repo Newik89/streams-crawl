@@ -13,6 +13,8 @@
 только ТРЕВОГА (строка «сторож: ТРЕВОГА — …» в «Прогонах» админки), новых
 заказов нет до следующего слота. Ничто не кончается молча: у каждого сбора
 итог один из трёх — забран, заменён досрочным, ТРЕВОГА.
+ЧТО ДЕЛАТЬ ПОСЛЕ СБОЯ решает ОДНА таблица — `RECOVERY` («вид сбоя → шаг»:
+досрочный, повтор или ТРЕВОГА); правила ниже лишь замечают сбой и зовут её.
 
 ПРАВИЛА ЗАЯВКИ — в том же порядке, что шаги в `request_crawl.request`
 (что случилось → что делаем → сколько обходов закажет заявка):
@@ -100,8 +102,10 @@
       заново (`load_state`); slot — плановый слот заказа, пусто у ручного;
       early — это досрочный заказ сторожа; reordered — это уже повтор
       ручного заказа; done — результат на сервере; failed — заказ сорвался,
-      и по нему всё решено; pulls — сколько раз сторож сам забирал
-      результат. Пишет сторож. Читают: сторож, правило «1 час» (З5).
+      и по нему всё решено; reset — владелец сбросил память сторожа
+      (`reset_memory`): за этим заказом сторож больше не следит; pulls —
+      сколько раз сторож сам забирал результат. Пишут: сторож, кнопка
+      «Сбросить память». Читают: сторож, правило «1 час» (З5).
   crawl_missed — сорвавшийся плановый слот, по которому надо решить, нужен
       ли досрочный (З4, З6, С4г, С5 → С6), JSON {slot, days, at, why, state,
       also}. at — когда сорвался; state: missed — ждёт решения С6; handled —
@@ -122,11 +126,17 @@
       skipped). Читают: сторож, заявка. Переписывается следующим досрочным.
   crawl_cancel — поданные заявки отмены (С3), JSON {id прогона: {at, number,
       alarmed}}. at — когда подана; number — номер прогона для строк;
-      alarmed — тревога по ней уже была. Пишет и читает сторож; запись
-      уходит, когда прогон остановился или выпал из списка последних.
+      alarmed — тревога по ней уже была. Пишут сторож и кнопка «Остановить
+      зависший» — обе через `send_cancel`; читает сторож (сверяет, что
+      прогон остановился). Запись уходит, когда прогон остановился или
+      выпал из списка последних.
   crawl_silent — с какого времени GitHub молчит (С1), JSON {since, alarmed}.
       Пишет и читает сторож; стирается, когда GitHub ответил.
+Кнопка «Сбросить память сторожа» (`reset_memory`) стирает всё, что сторож
+помнит сам (`WATCH_MEMORY`), а текущий заказ помечает reset. Заказ
+(`crawl_request`) и отметку «сбор идёт» (`crawl_running`) она не трогает.
 Общий замок заявки и сторожа — файл `data/crawl-order.lock` (`order_lock`).
+Экстренные кнопки владельца — `app/emergency.py`: своей логики у них нет.
 
 Список прогонов — из ОТКРЫТОГО API GitHub: репозиторий публичный, ключ не
 нужен, лимит 60 запросов в час на адрес. Сторож делает один запрос за
@@ -147,7 +157,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import crawl_hook, db
+from . import crawl_hook, db, trigger
 
 KYIV = ZoneInfo("Europe/Kyiv")
 API = "https://api.github.com"
@@ -503,6 +513,31 @@ def save_state(conn: sqlite3.Connection, state: dict) -> None:
     save_json(conn, "crawl_watch", state)
 
 
+#: всё, что сторож помнит сам, — это стирает кнопка «Сбросить память
+#: сторожа». Заказ (`crawl_request`) и отметку «сбор идёт» (`crawl_running`)
+#: пишут заявка и стук GitHub — они не память сторожа
+WATCH_MEMORY = ("crawl_watch", "crawl_missed", "crawl_early", "crawl_cancel",
+                "crawl_slot", "crawl_silent")
+
+
+def reset_memory(conn: sqlite3.Connection) -> str:
+    """Кнопка «Сбросить память сторожа»: стереть `WATCH_MEMORY`. Текущий
+    заказ помечается reset — сторож его больше не ведёт, иначе с чистого
+    листа он мог бы заново «увидеть» давний срыв и заказать обход. Дальше
+    сторож решает только по новым событиям: первая проверка запомнит
+    прошедший слот (С5, init), следующий слот пойдёт как обычно.
+    Возвращает слова для строки в «Прогонах»."""
+    for key in WATCH_MEMORY:
+        db.set_setting(conn, key, "")
+    order = parse_order(db.get_setting(conn, "crawl_request"))
+    if order is None:
+        return "память сторожа стёрта; заказов не было"
+    save_state(conn, {"order": order["stamp"], "reset": True})
+    return (f"память сторожа стёрта; заказ от {order['stamp']} ({order['days']} "
+            f"сут.) сторож больше не ведёт — дальше решает только по новым "
+            f"событиям")
+
+
 def note(conn: sqlite3.Connection, text: str, who: str = "сторож") -> None:
     """Строка в «Прогоны» админки: без окна дней она показывается словами
     из поля «режим» (шаблон runs.html)."""
@@ -527,6 +562,74 @@ def missed_record(old: dict, slot: str, days: int, at: str, why: str) -> dict:
         record["why"] = (f"{why}; до него не состоялся и плановый "
                          f"{clock(old['slot'])} — один досрочный закроет оба")
     return record
+
+
+# ── после сбоя: ОДНА таблица «вид сбоя → шаг» ────────────────────────────────
+
+#: Что сервер делает после сбоя — решается ТОЛЬКО здесь (владелец 06.10).
+#: Исполняют шаг: сторож — `crawl_watch.recover`, заявка — `lost_slot`.
+#: Шаги:
+#:   early — слот записать сорвавшимся (`crawl_missed`); правило С6 закажет
+#:           ОДИН досрочный, глубина — большая из сорвавшегося и следующего
+#:   retry — один повтор заказа той же глубины (только у ручного заказа)
+#:   alarm — только ТРЕВОГА, новых заказов нет до следующего планового слота
+#: Вид сбоя — «чей заказ-как сорвался» (`failure_of`). Новый вид сбоя:
+#: строка сюда и вызов исполнителя с этим именем там, где сбой замечен; новый
+#: шаг — ещё ветка в `crawl_watch.recover` (и в `lost_slot`, если он для
+#: плановой заявки). Незнакомый вид — ТРЕВОГА: молча сбой не теряется.
+#: Сбои наблюдения — GitHub молчит (С1), отмена не сработала (С3), забрать
+#: готовый не вышло (С4б) — заказов не порождают: там всегда ТРЕВОГА.
+RECOVERY = {
+    # плановый слот (заявка из cron)
+    "planned-postponed": "early",       # З4: GitHub молчит, по отметке идёт сбор
+    "planned-not-sent": "early",        # З6: тег заявки не ушёл
+    "planned-not-requested": "early",   # С5: заявка не запускалась / оборвалась
+    "planned-failed": "early",          # С4г: не стартовал, упал, завис
+    "planned-expired": "alarm",         # С4д: за 6 ч не закрыт
+    # досрочный сторожа — один на слот, дальше только ТРЕВОГА
+    "early-refused": "alarm",           # С6: GitHub не принял заявку
+    "early-lost": "alarm",              # С2: проверку оборвали до заявки
+    "early-failed": "alarm",            # С4г
+    "early-expired": "alarm",           # С4д
+    # ручной заказ (кнопка витрины) — один повтор
+    "manual-failed": "retry",           # С4г
+    "manual-expired": "alarm",          # С4д
+    "retry-refused": "alarm",           # С4г: повтор не ушёл
+    "retry-failed": "alarm",            # С4г: повтор сорвался
+    "retry-expired": "alarm",           # С4д
+}
+
+
+def recovery(failure: str) -> str:
+    """Шаг после сбоя по таблице `RECOVERY`; незнакомый вид — ТРЕВОГА."""
+    return RECOVERY.get(failure, "alarm")
+
+
+def order_who(state: dict) -> str:
+    """Чей заказ для `RECOVERY`: `order_kind`, а повтор ручного — retry."""
+    who = order_kind(state)
+    return "retry" if who == "manual" and state.get("reordered") else who
+
+
+def failure_of(state: dict, how: str) -> str:
+    """Вид сбоя текущего заказа для `RECOVERY`: чей он (`order_who`) и как
+    сорвался (failed, expired)."""
+    return f"{order_who(state)}-{how}"
+
+
+def lost_slot(conn: sqlite3.Connection, failure: str, slot_at: datetime,
+              days: int, why: str, now: datetime) -> str:
+    """Плановая заявка заметила, что её слот сорвался (З4, З6): шаг по
+    `RECOVERY`. early — записать `crawl_missed`, дальше решает сторож (С6);
+    иначе — строка ТРЕВОГА. Возвращает шаг."""
+    step = recovery(failure)
+    if step == "early":
+        save_json(conn, "crawl_missed", missed_record(
+            load_json(conn, "crawl_missed"), stamp(slot_at), days, stamp(now), why))
+    else:
+        note(conn, f"ТРЕВОГА — {why}. Сторож новых заказов за этот слот не "
+                   f"сделает; следующий плановый пойдёт как обычно")
+    return step
 
 
 # ── З1. общий замок заявки и сторожа ─────────────────────────────────────────
@@ -806,6 +909,21 @@ def cancel_decisions(runs: list[dict], now: datetime, cancels: dict,
     return out
 
 
+def send_cancel(cancels: dict, run: dict, now: datetime) -> tuple[bool, str]:
+    """Заявка отмены прогона — одна на сторожа (С3) и кнопку «Остановить
+    зависший»: тег `btn-cancel-<id>-<время>`, исполняет `queue.yml`.
+    Записывается в `cancels` (память `crawl_cancel`) и неушедшая заявка:
+    сторож этому прогону второй не шлёт, а остановку сверяет (С3).
+    (ушла ли, ответ git)."""
+    rid = str(run.get("id"))
+    if not re.fullmatch(r"\d+", rid):
+        return False, "номер прогона не из цифр — отменять не буду"
+    ok, answer = trigger.push_request_tag("cancel", rid)
+    cancels[rid] = {"at": stamp(now), "number": run.get("run_number") or "?",
+                    "alarmed": not ok}
+    return ok, answer
+
+
 # ── С4. текущий заказ ────────────────────────────────────────────────────────
 
 def parse_order(raw: str) -> dict | None:
@@ -839,7 +957,7 @@ def decide(order: dict, run: dict | None, now: datetime, state: dict,
     сервере либо результата не оставил (С4в); failed — не стартовал за
     `START_MINUTES` или кончился не успехом (С4г).
     `result` — судьба результата прогона (`result_state`)."""
-    if state.get("done") or state.get("failed"):
+    if state.get("done") or state.get("failed") or state.get("reset"):
         return "closed", "по заказу всё решено раньше"
     age = (now - order["at"]).total_seconds() / 60
     if age > ORDER_TTL_HOURS * 60:
@@ -919,9 +1037,11 @@ def slot_audit(seen: dict, missed: dict, early: dict, now: datetime,
     «started» и тишина — заявку оборвали.
     init — памяти ещё нет (первая проверка после выкладки): запомнить слот,
     ничего не делать; seen — слот закрыт и без заявки (выполнен досрочно
-    либо уже записан сорвавшимся): запомнить; missed — запись для
-    `crawl_missed` (время срыва — время слота: давний срыв даст в С6
-    тревогу «поздно», а не заказ); none — всё в порядке или рано судить."""
+    либо уже записан сорвавшимся): запомнить; missed — слот сорвался:
+    {slot, days, at} для `crawl_missed` (время срыва — время слота: давний
+    срыв даст в С6 тревогу «поздно», а не заказ), что делать — решает
+    таблица `RECOVERY` («planned-not-requested»); none — всё в порядке или
+    рано судить."""
     at, days = last_slot(now - timedelta(minutes=SLOT_AUDIT_MINUTES), schedule)
     slot = stamp(at)
     mark = {"slot": slot, "days": days, "at": stamp(now)}
@@ -951,8 +1071,7 @@ def slot_audit(seen: dict, missed: dict, early: dict, now: datetime,
             return "seen", dict(mark, state="early"), ""
     if missed.get("slot") == slot or early.get("for") == slot:
         return "seen", dict(mark, state="audited"), ""
-    record = missed_record(missed, slot, days, slot, why)
-    return "missed", record, record["why"]
+    return "missed", {"slot": slot, "days": days, "at": slot}, why
 
 
 # ── С6. сорвавшийся слот: нужен ли досрочный ─────────────────────────────────

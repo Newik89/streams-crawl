@@ -931,11 +931,28 @@ ticks("17:00", "17:15", "17:30")
 check("ДОСРОЧНЫЙ тоже упал → одна ТРЕВОГА и ни одного нового заказа (на слот — один заказ сторожа)",
       ORDERS == [6] and len(alarms_after(edge)) == 1, (ORDERS, notes_after(edge)))
 check("…тревога называет плановый, который действительно пойдёт следующим (20:30)",
-      "досрочный обход тоже не прошёл" in alarms_after(edge)[0]
+      "досрочный обход за плановый 16:15 сорвался" in alarms_after(edge)[0]
       and "Следующий плановый — 20:30 (6 сут.)" in alarms_after(edge)[0], notes_after(edge))
 NOW[0] = K("20:30")
 setting("crawl_running", "")
 check("…а в 20:30 плановый на 6 идёт как обычно", planned(6) == [("days", "6")])
+# что делать после сбоя — одна таблица: поменяли строку → поменялось поведение
+saved_step = watch.RECOVERY["planned-failed"]
+watch.RECOVERY["planned-failed"] = "alarm"
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+edge = last_id()
+tick(K("16:30"))
+watch.RECOVERY["planned-failed"] = saved_step
+check("таблица RECOVERY — единственное место решения: «planned-failed → alarm» даёт ТРЕВОГУ без досрочного",
+      ORDERS == [] and len(alarms_after(edge)) == 1 and "плановый обход 16:15" in alarms_after(edge)[0],
+      (ORDERS, notes_after(edge)))
+check("в таблице только шаги early / retry / alarm; незнакомый вид сбоя — ТРЕВОГА",
+      set(watch.RECOVERY.values()) <= {"early", "retry", "alarm"}
+      and watch.recovery("что-то-новое") == "alarm"
+      and [watch.failure_of(s, "failed") for s in
+           ({"slot": "x"}, {"early": True, "slot": "x"}, {"slot": ""}, {"slot": "", "reordered": True})]
+      == ["planned-failed", "early-failed", "manual-failed", "retry-failed"])
 reset(K("16:30"), [probe])
 order_of(f"{DAY} 16:15", 2)
 tick(K("16:30"))

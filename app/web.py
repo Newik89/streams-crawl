@@ -27,8 +27,8 @@ from zoneinfo import ZoneInfo
 from flask import (Flask, abort, flash, jsonify, redirect, render_template, request,
                    session, url_for)
 
-from . import (crawl_hook, db, dictionary, health, names, sources, store,
-               trigger, visits)
+from . import (crawl_hook, db, dictionary, emergency, health, names, sources,
+               store, trigger, visits)
 
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
 _ENV_PASSWORD = os.environ.get("STREAMS_ADMIN_PASSWORD")
@@ -1492,8 +1492,9 @@ def create_app() -> Flask:
 
     # ── прогоны ──────────────────────────────────────────────────────────────
 
-    @app.route("/runs")
-    def runs_list():
+    def _runs_page(**extra):
+        """«Прогоны»; `extra` — итог экстренной кнопки для блока сверху
+        (`gh` — список GitHub, `refused` — почему заказ не ушёл)."""
         conn = db.connect()
         try:
             rows = conn.execute(
@@ -1502,7 +1503,72 @@ def create_app() -> Flask:
                 "ORDER BY id DESC LIMIT 60").fetchall()
         finally:
             conn.close()
-        return render_template("runs.html", rows=rows)
+        return render_template("runs.html", rows=rows, **extra)
+
+    @app.route("/runs")
+    def runs_list():
+        return _runs_page()
+
+    # ── сбор расписания — экстренно (владелец 06.10, app/emergency.py) ───────
+    # своей логики у кнопок нет: они зовут то же, что заявка и сторож
+
+    def emergency_status() -> dict:
+        conn = db.connect()
+        try:
+            return emergency.status(conn)
+        finally:
+            conn.close()
+    app.jinja_env.globals["emergency_status"] = emergency_status
+
+    def _emergency(action, *args):
+        conn = db.connect()
+        try:
+            return action(conn, *args)
+        finally:
+            conn.close()
+
+    @app.route("/crawl/emergency/order", methods=["POST"])
+    def emergency_order():
+        verify_csrf()
+        try:
+            days = int(request.form.get("days", ""))
+        except ValueError:
+            abort(400)
+        if days not in emergency.ORDER_DAYS:
+            abort(400)
+        res = _emergency(emergency.order, days, request.form.get("force") == "1")
+        if res["refused"]:
+            # почему не ушёл — и кнопка «Всё равно заказать» рядом
+            return _runs_page(refused={"days": days, "words": res["words"]})
+        flash(res["words"], "ok" if res["ok"] else "error")
+        return redirect(url_for("runs_list"))
+
+    @app.route("/crawl/emergency/unmark", methods=["POST"])
+    def emergency_unmark():
+        verify_csrf()
+        flash(_emergency(emergency.unmark), "ok")
+        return redirect(url_for("runs_list"))
+
+    @app.route("/crawl/emergency/cancel", methods=["POST"])
+    def emergency_cancel():
+        verify_csrf()
+        run_id = (request.form.get("run_id") or "").strip()
+        if run_id and not re.fullmatch(r"\d{1,20}", run_id):
+            abort(400)
+        ok, words = _emergency(emergency.cancel, run_id)
+        flash(words, "ok" if ok else "error")
+        return redirect(url_for("runs_list"))
+
+    @app.route("/crawl/emergency/github", methods=["POST"])
+    def emergency_github():
+        verify_csrf()
+        return _runs_page(gh=_emergency(emergency.github))
+
+    @app.route("/crawl/emergency/reset", methods=["POST"])
+    def emergency_reset():
+        verify_csrf()
+        flash(_emergency(emergency.reset), "ok")
+        return redirect(url_for("runs_list"))
 
     @app.route("/other")
     def other_list():

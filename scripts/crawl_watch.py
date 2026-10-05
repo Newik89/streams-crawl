@@ -17,9 +17,10 @@ r"""Сторож заказа обхода — cron сервера раз в 15 
     С5  audit_slot     плановая заявка на слот не приходила → слот сорвавшийся
     С6  order_early    сорвавшийся слот → один досрочный обход либо ТРЕВОГА
 
-Сторож сам заказывает обход только в двух местах: повтор ручного заказа
-(С4г) и досрочный (С6) — оба через `order_crawl`. На один плановый слот —
-не больше одного заказа сторожа.
+Что делать после сбоя, решает ОДНА таблица `watch.RECOVERY` («вид сбоя →
+шаг»); здесь её шаг исполняет `recover`. Сторож сам заказывает обход только
+в двух местах: повтор ручного заказа (шаг retry) и досрочный (С6) — оба
+через `order_crawl`. На один плановый слот — не больше одного заказа сторожа.
 Каждое решение — строка «сторож: …» в «Прогонах» админки и в журнале cron
 (`/var/log/streams-watch.log`). Проверка идёт под общим с заявкой замком
 (`watch.order_lock`, правило З1). Одна проверка — один запрос к API GitHub.
@@ -177,11 +178,9 @@ def resume_early(t: Round) -> None:
               f"слежу за ней как за досрочным за плановый {slot_hm}")
     else:
         t.early["state"] = "failed"
-        nxt, ndays = watch.next_slot(t.now)
-        t.say(f"ТРЕВОГА — досрочный обход за плановый {slot_hm} заказать не удалось: "
-              f"проверку оборвали посреди заказа (перезагрузка сервера?). Больше не "
-              f"заказываю; следующий плановый — {watch.hm(nxt)} ({ndays} сут.), он "
-              f"пойдёт как обычно")
+        recover(t, "early-lost",
+                f"досрочный обход за плановый {slot_hm} заказать не удалось: "
+                f"проверку оборвали посреди заказа (перезагрузка сервера?)")
     t.save("crawl_early", t.early)
     if went and not t.dry:
         watch.save_state(t.conn, t.state)
@@ -192,11 +191,11 @@ def cancel_stuck(t: Round) -> None:
     `btn-cancel-<id>`, исполняет `queue.yml`). Заявка не ушла или прогон не
     остановился за `CANCEL_CONFIRM_MINUTES` — ТРЕВОГА; новых заявок отмены
     этому прогону нет. Что будет с заказом, чей прогон завис, решает С4г."""
-    kind = watch.order_kind(t.state)
-    own_words = ("вместо него сейчас закажу ближайший плановый досрочно" if kind == "planned"
-                 else "это был досрочный — больше не заказываю, подаю тревогу" if kind == "early"
-                 else "повтор уже был — подаю тревогу" if t.state.get("reordered")
-                 else "сейчас закажу его заново")
+    # что будет с заказом после отмены — по той же таблице RECOVERY (С4г)
+    own_words = {"early": "вместо него сейчас закажу ближайший плановый досрочно",
+                 "retry": "сейчас закажу его заново"}.get(
+        watch.recovery(watch.failure_of(t.state, "failed")),
+        "больше не заказываю, подаю тревогу")
     decisions = watch.cancel_decisions(
         t.runs, t.now, t.cancels, t.slug,
         own_run_id=(t.run or {}).get("id"), own_words=own_words)
@@ -214,13 +213,11 @@ def cancel_stuck(t: Round) -> None:
             t.say(words)
             if t.dry:
                 continue
-            number = next((r.get("run_number") for r in t.runs
-                           if str(r.get("id")) == rid), "?")
-            ok, answer = trigger.push_request_tag("cancel", rid)
+            run = next(r for r in t.runs if str(r.get("id")) == rid)
+            number = run.get("run_number") or "?"
+            # запоминает и неушедшую заявку: вторую этому прогону не шлём
+            ok, answer = watch.send_cancel(t.cancels, run, t.now)
             t.log(f"заявка отмены прогона #{number}: {answer}")
-            # запоминаем и неушедшую заявку: вторую этому прогону не шлём
-            t.cancels[rid] = {"at": watch.stamp(t.now), "number": number,
-                              "alarmed": not ok}
             if not ok:
                 t.say(f"ТРЕВОГА — заявка отмены прогона #{number} не ушла ({answer}). "
                       f"Повторять не буду: GitHub сам оборвёт его через "
@@ -291,83 +288,112 @@ def pull_result(t: Round, words: str) -> None:
               f"проверьте сервер")
 
 
-def order_failed(t: Round, why: str) -> None:
-    """С4г. Заказ сорвался — закрываем его и смотрим, чей он:
-    досрочный → ТРЕВОГА; плановый → слот сорвался, досрочный закажет С6 (в
-    этой же проверке); ручной → один повтор той же глубины, сорвался и
-    повтор → ТРЕВОГА."""
-    kind = watch.order_kind(t.state)
-    t.state["failed"] = True
-    if kind == "early":
-        t.early["state"] = "failed"
-        t.save("crawl_early", t.early)
-        # какой плановый пойдёт следующим, считаем от СЕЙЧАС: заменяемый
-        # слот мог уже пройти, пока досрочный шёл (З3, пометка skipped)
-        nxt, ndays = watch.next_slot(t.now)
-        lost = (f" Плановый {watch.clock(t.early.get('replaces', ''))} был пропущен "
-                f"ради него и остался без обхода." if t.early.get("skipped") else "")
-        t.say(f"ТРЕВОГА — досрочный обход тоже не прошёл ({why}). Больше не "
-              f"заказываю.{lost} Следующий плановый — {watch.hm(nxt)} ({ndays} сут.), "
-              f"он пойдёт как обычно; проверьте GitHub")
-    elif kind == "planned":
-        t.say(f"плановый обход {watch.clock(t.state['slot'])} ({t.order['days']} сут.) "
-              f"сорвался ({why}) — тем же окном не повторяю")
-        t.missed = watch.missed_record(t.missed, t.state["slot"], t.order["days"],
-                                       watch.stamp(t.now), why)
+def recover(t: Round, failure: str, what: str, extra: str = "",
+            slot: str = "", days: int = 0, at: str = "") -> None:
+    """После сбоя: шаг берётся из ОДНОЙ таблицы `watch.RECOVERY` по виду
+    сбоя `failure`, здесь он только исполняется. `what` — что случилось,
+    словами; `extra` — добавка к тревоге; `slot`, `days`, `at` — сорвавшийся
+    слот для шага early (по умолчанию — слот текущего заказа, сорвался сейчас).
+      early — слот в `crawl_missed`, досрочный решит С6 в этой же проверке
+      retry — один повтор той же глубины; не ушёл — снова сюда (retry-refused)
+      alarm — ТРЕВОГА с честным «что дальше»; новых заказов нет"""
+    step = watch.recovery(failure)
+    if step == "early":
+        t.say(f"{what} — беру слот на себя: тем же окном не повторяю, решаю "
+              f"про досрочный")
+        t.missed = watch.missed_record(
+            t.missed, slot or t.state.get("slot", ""), days or t.order["days"],
+            at or watch.stamp(t.now), what)
         t.save("crawl_missed", t.missed)
-    elif t.state.get("reordered"):
-        t.say(f"ТРЕВОГА — повтор ручного заказа тоже сорвался ({why}). Больше не "
-              f"заказываю, проверьте GitHub")
-    else:
-        t.say(f"ручной заказ от {t.order['stamp']} ({t.order['days']} сут.) сорвался "
-              f"({why}) — повторяю один раз")
+    elif step == "retry":
+        t.say(f"{what} — повторяю один раз")
         t.log(order_crawl(t.order["days"]))
         new = watch.parse_order(db.get_setting(t.conn, "crawl_request"))
         if new == t.order:
             # запись заказа не изменилась — заявка повтора не ушла
-            t.say("ТРЕВОГА — повторить ручной заказ не вышло (GitHub не принял "
-                  "заявку). Больше не заказываю, проверьте GitHub")
+            recover(t, "retry-refused",
+                    "повторить ручной заказ не вышло (GitHub не принял заявку)")
         else:
             # заявка записала новый заказ — память переезжает на него
             t.state = {"order": new["stamp"], "slot": "", "reordered": True}
+    else:
+        # какой плановый пойдёт следующим, считаем от СЕЙЧАС: заменяемый
+        # слот мог уже пройти, пока досрочный шёл (З3, пометка skipped)
+        nxt, ndays = watch.next_slot(t.now)
+        t.say(f"ТРЕВОГА — {what}. Больше не заказываю.{extra} Следующий плановый — "
+              f"{watch.hm(nxt)} ({ndays} сут.), он пойдёт как обычно; проверьте GitHub")
+
+
+def order_words(t: Round) -> str:
+    """Чей заказ — словами для строк сторожа."""
+    who = watch.order_who(t.state)
+    if who == "early":
+        return f"досрочный обход за плановый {watch.clock(t.early.get('for', ''))}"
+    if who == "planned":
+        return f"плановый обход {watch.clock(t.state['slot'])} ({t.order['days']} сут.)"
+    if who == "retry":
+        return "повтор ручного заказа"
+    return f"ручной заказ от {t.order['stamp']} ({t.order['days']} сут.)"
+
+
+def close_early(t: Round) -> str:
+    """Досрочный сорвался: память «failed» (З3 тогда слот не пропустит) и
+    добавка к тревоге, если ради него уже пропустили плановый."""
+    t.early["state"] = "failed"
+    t.save("crawl_early", t.early)
+    if not t.early.get("skipped"):
+        return ""
+    return (f" Плановый {watch.clock(t.early.get('replaces', ''))} был пропущен "
+            f"ради него и остался без обхода.")
+
+
+def order_failed(t: Round, why: str) -> None:
+    """С4г. Заказ сорвался — закрываем его; что дальше, решает таблица
+    `watch.RECOVERY` по тому, чей он: плановый → досрочный (С6 в этой же
+    проверке), досрочный → ТРЕВОГА, ручной → один повтор, повтор → ТРЕВОГА."""
+    failure = watch.failure_of(t.state, "failed")
+    extra = close_early(t) if t.state.get("early") else ""
+    what = order_words(t)
+    t.state["failed"] = True
+    recover(t, failure, f"{what} сорвался ({why})", extra)
 
 
 def order_expired(t: Round, result: str) -> None:
     """С4д. Заказ состарился (`ORDER_TTL_HOURS`), а не закрыт. Результат
-    всё-таки на сервере — закрываем молча; иначе ТРЕВОГА, следить перестаём.
+    всё-таки на сервере — закрываем молча; иначе следить перестаём, а что
+    дальше — по таблице `watch.RECOVERY` (сейчас у всех — ТРЕВОГА).
     Досрочный при этом считается сорвавшимся: заменять плановый он не может."""
     run = t.run
     if run is not None and run.get("conclusion") == "success" and result in ("picked", "none"):
         t.state["done"] = True
-        if watch.order_kind(t.state) == "early":
+        if t.state.get("early"):
             early_reached(t)
         return
+    failure = watch.failure_of(t.state, "expired")
+    extra = close_early(t) if t.state.get("early") else ""
+    what = order_words(t)
     t.state["failed"] = True
-    if watch.order_kind(t.state) == "early":
-        t.early["state"] = "failed"
-        t.save("crawl_early", t.early)
     seen = ("прогон на GitHub не найден" if run is None else
             f"прогон #{run.get('run_number')}: {run.get('status')}/"
             f"{run.get('conclusion') or '—'}, результат на сервере не подтверждён")
-    t.say(f"ТРЕВОГА — заказ обхода от {t.order['stamp']} ({t.order['days']} сут.) за "
-          f"{watch.ORDER_TTL_HOURS} ч так и не дошёл до «забран» ({seen}). Больше за "
-          f"ним не слежу — проверьте витрину и GitHub")
+    recover(t, failure, f"{what}, заказ от {t.order['stamp']}, за "
+                        f"{watch.ORDER_TTL_HOURS} ч так и не дошёл до «забран» "
+                        f"({seen}); больше за ним не слежу", extra)
 
 
 def audit_slot(t: Round) -> None:
     """С5. Приходила ли плановая заявка на последний прошедший слот
-    (`watch.slot_audit`). Не приходила или оборвалась — слот сорвавшийся:
-    дальше с ним поступает С6."""
+    (`watch.slot_audit`). Не приходила или оборвалась — сбой
+    «planned-not-requested», что дальше — по таблице `watch.RECOVERY`."""
     action, record, why = watch.slot_audit(
         watch.load_json(t.conn, "crawl_slot"), t.missed, t.early, t.now)
     if action in ("init", "seen"):
         t.save("crawl_slot", record)
     elif action == "missed":
-        t.say(f"{why} — беру слот на себя")
-        t.missed = record
-        t.save("crawl_missed", t.missed)
         t.save("crawl_slot", {"slot": record["slot"], "days": record["days"],
                               "at": watch.stamp(t.now), "state": "audited"})
+        recover(t, "planned-not-requested", why,
+                slot=record["slot"], days=record["days"], at=record["at"])
 
 
 def order_early(t: Round) -> None:
@@ -406,10 +432,8 @@ def order_early(t: Round) -> None:
         t.save("crawl_early", t.early)
         t.missed["state"] = "failed"
         t.save("crawl_missed", t.missed)
-        nxt, ndays = watch.next_slot(t.now)
-        t.say(f"ТРЕВОГА — досрочный обход заказать не вышло (GitHub не принял "
-              f"заявку). Больше не заказываю; следующий плановый — {watch.hm(nxt)} "
-              f"({ndays} сут.), он пойдёт как обычно")
+        recover(t, "early-refused",
+                "досрочный обход заказать не вышло (GitHub не принял заявку)")
         return
     t.early.update(ordered_at=new["stamp"], state="ordered")
     t.save("crawl_early", t.early)
