@@ -30,21 +30,24 @@
     {% for cat, m in msgs %}<span style="{% if cat == 'error' %}color:var(--live){% endif %}">{{ m }}</span>{% endfor %}
   {% endwith %}
   <span class="sp" style="margin-left:auto"></span>
+  {# кнопки сбора — только вошедшим (владелец 05.10): владельцу и друзьям по
+     их паролю; гость с улицы видит одну ссылку входа. PIN убран #}
+  {% set friend = session.get('friend') %}
+  {% if admin or friend %}
   <form method="post" action="{{ url_for('schedule_run') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="days" value="2">
-    <button class="pill" type="submit" title="Fetch fresh data (once an hour)">Collect 2 days</button>
+    <button class="pill" type="submit" title="{{ 'Обход на 2 дня — без паузы, вы вошли' if admin else 'Fetch fresh data (once an hour)' }}">Collect 2 days</button>
   </form>
   <form method="post" action="{{ url_for('schedule_run') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="days" value="5">
-    {% if not admin %}
-    {# вошедшему владельцу PIN не нужен (20.09) — поле только гостям #}
-    <input type="password" name="pin" placeholder="PIN" size="6"
-           style="padding:6px 8px; border:1px solid var(--line); border-radius:8px">
-    {% endif %}
-    <button class="pill" type="submit" title="{{ 'Полный обход на 5 дней — без PIN, вы вошли' if admin else 'Extended window, PIN required' }}">Collect 5 days</button>
+    <button class="pill" type="submit" title="{{ 'Полный обход на 5 дней — без паузы, вы вошли' if admin else 'Extended window (once an hour)' }}">Collect 5 days</button>
   </form>
+  {% if friend %}<a href="{{ url_for('logout') }}" style="color:var(--muted)">Sign out</a>{% endif %}
+  {% else %}
+  <a href="{{ url_for('login') }}" style="color:var(--muted)" title="For invited users">Sign in</a>
+  {% endif %}
   {% if admin %}
   {# владелец 20.09: вошедшему — полный обход на 6 дней и скан одной даты
      прямо с витрины; маршруты те же, что у дашборда (без PIN и лимитов) #}

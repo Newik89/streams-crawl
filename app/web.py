@@ -33,6 +33,9 @@ from . import (crawl_hook, db, dictionary, health, names, sources, store,
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
 _ENV_PASSWORD = os.environ.get("STREAMS_ADMIN_PASSWORD")
 ADMIN_PASSWORD = _ENV_PASSWORD or ("admin" if LOCAL_MODE else None)
+#: пароль друзей владельца (05.10): вход без админки, только кнопки сбора на
+#: витрине. Не задан — входа для друзей нет, кнопки видит один владелец
+FRIEND_PASSWORD = os.environ.get("STREAMS_FRIEND_PASSWORD") or None
 
 LOGIN_WINDOW = 300         # окно в секундах
 LOGIN_MAX_ATTEMPTS = 5
@@ -173,9 +176,20 @@ def create_app() -> Flask:
         return session["csrf_token"]
 
     def verify_csrf() -> None:
-        if not secrets.compare_digest(request.form.get("csrf_token", ""),
-                                      session.get("csrf_token", "")):
+        # пустое с пустым не сравниваем: запрос без куки и без токена раньше
+        # проходил проверку (аудит 05.10) — форму отправляли, не открыв страницу
+        expected = session.get("csrf_token", "")
+        if not expected or not secrets.compare_digest(
+                request.form.get("csrf_token", ""), expected):
             abort(400)
+
+    def safe_next(target: str | None) -> str:
+        """Куда вести после входа: только путь этого сайта. Чужой адрес в
+        `?next=` уводил вошедшего на постороннюю страницу (аудит 05.10)."""
+        target = target or ""
+        if target.startswith("/") and not target.startswith(("//", "/\\")):
+            return target
+        return ""
 
     app.jinja_env.globals["csrf_token"] = csrf_token
     app.jinja_env.globals["ROLES"] = sources.ROLES
@@ -380,10 +394,18 @@ def create_app() -> Flask:
                 flash("Пароль не задан: нужна переменная STREAMS_ADMIN_PASSWORD.",
                       "error")
                 return render_template("login.html")
-            if secrets.compare_digest(request.form.get("password", ""), ADMIN_PASSWORD):
+            typed = request.form.get("password", "")
+            if secrets.compare_digest(typed, ADMIN_PASSWORD):
                 session.clear()
                 session["admin"] = True
-                return redirect(request.args.get("next") or url_for("dashboard"))
+                return redirect(safe_next(request.args.get("next"))
+                                or url_for("dashboard"))
+            if FRIEND_PASSWORD and secrets.compare_digest(typed, FRIEND_PASSWORD):
+                # друзья владельца (05.10): админки не видят, но кнопки сбора
+                # на витрине им открыты — вместо PIN, который подбирался
+                session.clear()
+                session["friend"] = True
+                return redirect(url_for("schedule"))
             _LOGIN_ATTEMPTS[ip].append(time.time())
             flash("Неверный пароль.", "error")
 
@@ -1106,14 +1128,14 @@ def create_app() -> Flask:
                       f"{busy['since']}) — please wait until it finishes.", "error")
                 return redirect(back)
             if session.get("admin"):
-                pass    # вошедший владелец: без PIN и без часовой паузы (20.09)
-            elif days != 2:                  # длинное окно гостю — только по PIN
-                pin = os.environ.get("STREAMS_PIN", "")
-                if not pin or not secrets.compare_digest(
-                        request.form.get("pin", ""), pin):
-                    flash("Wrong PIN.", "error")
-                    return redirect(back)
-            else:
+                pass    # вошедший владелец: без часовой паузы (20.09)
+            elif not session.get("friend"):
+                # гостю с улицы сбор закрыт (владелец 05.10): кнопки видят
+                # только вошедшие по паролю друзей; PIN убран — он подбирался
+                flash("Sign in to run a collection.", "error")
+                return redirect(back)
+            else:                            # друг: 2 или 5 дней, раз в час
+                days = min(days, 5)          # 6 дней — только владельцу
                 last = db.get_setting(conn, "public_run_at")
                 if last and time.time() - float(last) < PUBLIC_RUN_COOLDOWN:
                     wait = int((PUBLIC_RUN_COOLDOWN - (time.time() - float(last))) // 60) + 1
