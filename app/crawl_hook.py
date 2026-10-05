@@ -24,7 +24,7 @@ import sqlite3
 import subprocess
 import sys
 import time
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -144,26 +144,38 @@ def fresh_full(conn: sqlite3.Connection,
     (`crawl_request` — его пишут кнопки и `request_crawl.py`, done=False) и
     сбор, уже влитый в `runs` (полный обход — пустое «кто», есть окно;
     done=True). Скан даты, «Обойти сайт», сервер mojtv и проба сюда не
-    попадают: у них нет окна или есть «кто». Время киевское, наивное."""
-    now = (now or datetime.now(KYIV)).replace(tzinfo=None)
+    попадают: у них нет окна или есть «кто». `at` — время по Киеву С ПОЯСОМ;
+    «за последний час» считается настоящими часами (UTC), а не настенными:
+    в ночь перевода часов (25.10.2026) иначе час растягивался бы до двух
+    или сжимался до нуля."""
+    now = (now or datetime.now(KYIV)).astimezone(timezone.utc)
     edge = now - timedelta(hours=RECENT_HOURS)
+    # отметки в базе — настенное киевское время; с запасом в час на перевод
+    # часов отбираем строки, а точно — уже по UTC
+    wall_edge = (edge.astimezone(KYIV) - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M")
+
+    def kyiv(text: str) -> datetime | None:
+        try:
+            return datetime.strptime(str(text)[:16], "%Y-%m-%d %H:%M").replace(tzinfo=KYIV)
+        except ValueError:
+            return None
+
     out = []
     req = db.get_setting(conn, "crawl_request") or ""
     m = re.match(r"обход (\d+) сут\.\|(\d{4}-\d\d-\d\d \d\d:\d\d)", req)
     if m:
-        when = datetime.strptime(m.group(2), "%Y-%m-%d %H:%M")
-        if when >= edge:
+        when = kyiv(m.group(2))
+        if when and when >= edge:
             out.append({"days": int(m.group(1)), "at": when, "done": False})
     for r in conn.execute("SELECT finished_at, window_days, log FROM runs "
                           "WHERE finished_at >= ? ORDER BY finished_at DESC",
-                          (edge.strftime("%Y-%m-%d %H:%M"),)):
+                          (wall_edge,)):
         try:
             who = (json.loads(r["log"] or "{}") or {}).get("кто") or ""
         except ValueError:
             who = "?"
-        try:
-            at = datetime.strptime(str(r["finished_at"])[:16], "%Y-%m-%d %H:%M")
-        except ValueError:
+        at = kyiv(r["finished_at"])
+        if at is None or at < edge:
             continue
         if not who and (r["window_days"] or 0) > 0:
             out.append({"days": r["window_days"], "at": at, "done": True})

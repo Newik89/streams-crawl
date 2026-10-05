@@ -20,7 +20,7 @@ import os
 import re
 import secrets
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 from zoneinfo import ZoneInfo
 
@@ -844,13 +844,13 @@ def create_app() -> Flask:
                     db.set_setting(conn, "crawl_request", f"обход {days} сут.|{stamp}")
                     # в книгу заказов: сторож доведёт до итога; кнопка —
                     # всегда ручной заказ, даже рядом со слотом (С4)
-                    watch.add_order(conn, f"full-{days}", stamp)
+                    watch.add_order(conn, f"full-{days}", stamp, who="кнопка")
                 else:
                     # заказ скана даты — своя строка статуса на витрине:
                     # раньше его итог не показывался вовсе (владелец 22.09)
                     stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
                     db.set_setting(conn, "date_scan_request", f"{date}|{stamp}")
-                    watch.add_order(conn, f"date-{date}", stamp)
+                    watch.add_order(conn, f"date-{date}", stamp, who="кнопка")
             finally:
                 conn.close()
         tail = (f" — скан {date}" if date else
@@ -1093,7 +1093,7 @@ def create_app() -> Flask:
                 # 20.09: флеш пропадает, а итога рядом не видно)
                 stamp = f"{datetime.now():%Y-%m-%d %H:%M}"
                 db.set_setting(conn, "site_crawl_request", f"{domain}|{stamp}")
-                watch.add_order(conn, f"site-{domain}", stamp)   # сторож доведёт
+                watch.add_order(conn, f"site-{domain}", stamp, who="кнопка")  # сторож доведёт
                 flash(f"Обход только {domain} заказан — итог вольётся на "
                       "витрину через несколько минут после прогона.", "ok")
             else:
@@ -1131,7 +1131,7 @@ def create_app() -> Flask:
             try:
                 stamp = f"{datetime.now():%Y-%m-%d %H:%M}"
                 db.set_setting(conn, "site_crawl_request", f"{domain}|{stamp}")
-                watch.add_order(conn, f"server-{domain}", stamp)   # сторож доведёт
+                watch.add_order(conn, f"server-{domain}", stamp, who="кнопка")  # сторож доведёт
             finally:
                 conn.close()
         flash(f"{domain}: {said}", "ok" if ok else "error")
@@ -1147,8 +1147,8 @@ def create_app() -> Flask:
     def _fresh_en(x: dict, day=None) -> str:
         """Отказ другу «недавно уже собирали» (владелец 05.10: «чтоб сайт
         писал об этом и не запускал») — по-английски, как вся витрина."""
-        ago = max(0, int((datetime.now(KYIV).replace(tzinfo=None)
-                          - x["at"]).total_seconds() // 60))
+        # x["at"] — с поясом: разница считается настоящими часами
+        ago = max(0, int((datetime.now(timezone.utc) - x["at"]).total_seconds() // 60))
         head = f"{day:%d.%m} is already covered: " if day else ""
         if x["done"]:
             return (f"{head}Data was collected {ago} min ago ({x['days']}-day "

@@ -44,18 +44,20 @@ def _now() -> datetime:
     return datetime.now(watch.KYIV)
 
 
-def order_crawl(kind: str, value: str) -> str:
+def order_crawl(kind: str, value: str, mark: str) -> str:
     """Заказать сбор сейчас: `request_crawl.py <kind> <value> --force
-    --unlock --locked` (kind — days, date или site). --force — без правила
-    «1 час» (сторож уже решил, что сбор нужен); --unlock — снять отметку
-    «сбор идёт» (по списку GitHub прежний прогон мёртв или отменяется);
-    --locked — общий замок уже держит сторож. Заявка сама кладёт заказ в
-    книгу (`watch.add_order`) — по ней вызывающий видит, ушла ли она. Не
-    уложилась в срок — не падаем: проверка должна дописать свою память."""
+    --unlock --locked <mark>` (kind — days, date или site). --force — без
+    правила «1 час» (сторож уже решил, что сбор нужен); --unlock — снять
+    отметку «сбор идёт» (по списку GitHub прежний прогон мёртв или
+    отменяется); --locked — общий замок уже держит сторож; `mark` —
+    `--retry-of=<id>` или `--early-for=<слот>`: заявка кладёт заказ в книгу
+    с этой пометкой, и сторож находит СВОЙ заказ по ней (`watch.find_order`),
+    а не по виду — чужой заказ той же минуты с ним не спутать. Не уложилась
+    в срок — не падаем: проверка должна дописать свою память."""
     try:
         r = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "request_crawl.py"),
-             kind, value, "--force", "--unlock", "--locked"],
+             kind, value, "--force", "--unlock", "--locked", mark],
             capture_output=True, text=True, timeout=watch.ORDER_TIMEOUT_SECONDS)
     except subprocess.TimeoutExpired:
         return (f"заявка не уложилась в {watch.ORDER_TIMEOUT_SECONDS // 60} минут — "
@@ -188,21 +190,17 @@ def see_github(t: Round) -> bool:
 def resume_early(t: Round) -> None:
     """С2. Прошлую проверку оборвали посреди заказа досрочного (перезагрузка
     сервера): в `crawl_early` осталось «ordering». Заявка успела уйти (в
-    `crawl_request` заказ той же глубины не старше начала заказа) — следим
-    за ней как за досрочным; не успела — ТРЕВОГА. Второго досрочного за тот
-    же слот не будет в обоих случаях (С6: один на слот)."""
+    книге есть запись с пометкой «досрочный за этот слот», `early_order`) —
+    следим за ней как за досрочным; не успела — ТРЕВОГА. Второго досрочного
+    за тот же слот не будет в обоих случаях (С6: один на слот)."""
     if t.early.get("state") != "ordering":
         return
-    begun = watch.kyiv_at(t.early.get("begun", ""))
     slot_hm = watch.clock(t.early.get("for", ""))
-    went = bool(t.order and begun and t.order["at"] >= begun
-                and t.order["days"] == t.early.get("days"))
-    if went:
-        t.early.update(ordered_at=t.order["stamp"], state="ordered")
-        rec = watch.full_order_record(t.conn, t.order, save=not t.dry)
-        t.keep(dict(rec, slot=t.early.get("for", ""), early=True))
+    rec = early_order(t)
+    if rec:
+        t.early.update(ordered_at=rec["order"], state="ordered")
         t.say(f"прошлую проверку оборвали посреди заказа досрочного обхода "
-              f"(перезагрузка сервера?), но заявка в {watch.hm(t.order['at'])} ушла — "
+              f"(перезагрузка сервера?), но заявка в {watch.clock(rec['order'])} ушла — "
               f"слежу за ней как за досрочным за плановый {slot_hm}")
     else:
         t.early["state"] = "failed"
@@ -210,6 +208,13 @@ def resume_early(t: Round) -> None:
                 f"досрочный обход за плановый {slot_hm} заказать не удалось: "
                 f"проверку оборвали посреди заказа (перезагрузка сервера?)")
     t.save("crawl_early", t.early)
+
+
+def early_order(t: Round) -> dict:
+    """Запись книги о досрочном, который сторож начал заказывать
+    (`crawl_early`): пометка early и тот же слот, заказ не раньше начала."""
+    rec = watch.find_order(t.conn, early=True, slot=t.early.get("for", ""))
+    return rec if rec and rec["order"] >= t.early.get("begun", "") else {}
 
 
 def cancel_stuck(t: Round) -> None:
@@ -281,11 +286,13 @@ def follow_order(t: Round, rec: dict, run: dict | None) -> None:
         verdict, words = watch.decide_server(
             rec, t.now, db.get_setting(t.conn, "site_crawl_result"))
     else:
-        if (run is not None and (run.get("status") or "") not in watch.RUNNING
-                and watch.window(rec["what"])):
+        if run is not None and (run.get("status") or "") not in watch.RUNNING:
             started = (watch._utc(run.get("run_started_at") or run.get("created_at") or "")
                        or t.now)
-            result = watch.result_state(ROOT, started)
+            # влит ли результат в базу — по метке заливки своей папки
+            result = watch.result_state(
+                ROOT, started, rec["what"],
+                db.get_setting(t.conn, watch.import_key(rec["what"])))
         verdict, words = watch.decide(order, run, t.now, rec, result)
         if verdict == "wait" and run is not None and str(run.get("id")) in t.cancelling:
             verdict, words = "failed", f"прогон #{run.get('run_number')} завис, отменяю его"
@@ -355,14 +362,12 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
         t.save("crawl_missed", t.missed)
     elif step == "retry":
         t.say(f"{what} — повторяю один раз")
-        t.log(order_crawl(*request_args(t.rec["what"])))
-        new = watch.newer_order(t.conn, t.rec["what"], t.rec["order"])
-        if new is None:
+        t.log(order_crawl(*request_args(t.rec["what"]), f"--retry-of={t.rec['id']}"))
+        # свой повтор — по пометке «повтор заказа <id>», а не по виду: чужой
+        # заказ той же минуты (друг нажал «2 дня») с ним не спутать
+        if not watch.find_order(t.conn, retry_of=t.rec["id"]):
             recover(t, f"{watch.order_kind(t.rec)}-retry-refused",
                     f"повторить не вышло ({t.rec['what']}: GitHub не принял заявку)")
-        else:
-            # заявка положила в книгу новый заказ — он и есть повтор
-            t.keep(dict(new, reordered=True))
     else:
         # какой плановый пойдёт следующим, считаем от СЕЙЧАС: заменяемый
         # слот мог уже пройти, пока досрочный шёл (З3, пометка skipped)
@@ -454,8 +459,7 @@ def order_early(t: Round) -> None:
     проверку посреди заказа — следующая не закажет второй (С2)."""
     last = watch.parse_order(db.get_setting(t.conn, "crawl_request"))
     # память сторожа о последнем полном заказе: дошёл и забран (С4в, С4б)
-    last_done = bool(last and watch.get_order(
-        t.conn, f"full-{last['days']}", last["stamp"]).get("done"))
+    last_done = bool(last and watch.full_order_record(t.conn, last, save=False).get("done"))
     action, plan, words = watch.plan_early(
         t.missed, t.runs, t.now, t.early, last, last_done,
         skip_ids=t.cancelling + list(t.cancels), slug=t.slug)
@@ -484,10 +488,10 @@ def order_early(t: Round) -> None:
     t.save("crawl_early", t.early)
     t.missed["state"] = "handled"
     t.save("crawl_missed", t.missed)
-    t.log(order_crawl("days", str(plan["days"])))
-    new = watch.parse_order(db.get_setting(t.conn, "crawl_request"))
-    if new == last:
-        # запись заказа не изменилась — заявка досрочного не ушла
+    t.log(order_crawl("days", str(plan["days"]), f"--early-for={plan['for']}"))
+    rec = early_order(t)
+    if not rec:
+        # записи «досрочный за этот слот» в книге нет — заявка не ушла
         t.early["state"] = "failed"
         t.save("crawl_early", t.early)
         t.missed["state"] = "failed"
@@ -495,10 +499,8 @@ def order_early(t: Round) -> None:
         recover(t, "early-refused",
                 "досрочный обход заказать не вышло (GitHub не принял заявку)")
         return
-    t.early.update(ordered_at=new["stamp"], state="ordered")
+    t.early.update(ordered_at=rec["order"], state="ordered")
     t.save("crawl_early", t.early)
-    rec = watch.full_order_record(t.conn, new)
-    t.keep(dict(rec, slot=plan["for"], early=True))
 
 
 def main() -> int:
