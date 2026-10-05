@@ -1,7 +1,39 @@
 {% extends "base.html" %}
 {% block title %}Посещения — Streams Schedule{% endblock %}
 {% macro num(x) %}{{ ('%.1f' % x)|replace('.', ',') }}{% endmacro %}
+{# 05.10 «чтоб не приходилось листать»: в списке видно первые `cap` строк,
+   остальные — во вложенном свёрнутом блоке, без запросов к серверу #}
+{% macro ip_rows(items) %}
+  {% for a in items %}
+  <tr>
+    <td><a href="{{ ip_href }}{{ a.ip|urlencode }}#feed">{{ a.ip }}</a>
+        <a class="muted" style="font-size:12px" href="https://ipinfo.io/{{ a.ip }}" target="_blank" rel="noopener noreferrer">где это</a></td>
+    <td>{% if a.admin %}<b>вы</b>{% elif a.friend %}друг{% else %}гость{% endif %}{% if a.sub or a.group %}<div class="muted">{{ a.sub or a.group }}</div>{% endif %}</td>
+    <td>{{ a.n }}</td>
+    <td {% if a.buttons %}style="font-weight:700"{% endif %}>{{ a.buttons }}</td>
+    <td class="muted">{{ a.first_at }}</td>
+    <td>{{ a.last_at }}</td>
+    <td class="muted">{{ a.device }}</td>
+  </tr>
+  {% endfor %}
+{% endmacro %}
+{% macro ip_table(items, cap=20) %}
+<table>
+  <tr><th>Адрес (IP)</th><th>Кто</th><th>Заходов</th><th>Нажатий кнопок</th>
+      <th>Первый раз</th><th>Последний раз</th><th>С чего заходил</th></tr>
+  {{ ip_rows(items[:cap]) }}
+</table>
+{% if items|length > cap %}
+<details class="more"><summary>показать все {{ items|length }}</summary>
+<table>{{ ip_rows(items[cap:]) }}</table>
+</details>
+{% endif %}
+{% endmacro %}
 {% block body %}
+<style>
+  details > summary { cursor: pointer; padding: 6px 0; }
+  details.more > summary { color: var(--muted, #667); font-size: 13px; }
+</style>
 <h1>Посещения</h1>
 <p class="muted">Кто заходит на сайт: люди, поисковые роботы, роботы ИИ-сервисов, сервисы, сканеры, свои и друзья.
   Подробные записи хранятся {{ keep_days }} дней, итоги по дням — навсегда.</p>
@@ -64,6 +96,12 @@
   <tr><th>Когда</th><th>Кто</th><th>Устройство</th><th>Язык</th><th>Откуда</th>
       <th>Страниц</th><th>Действий</th><th>Время</th><th>Адрес (IP)</th></tr>
   {% for v in recent %}
+  {# 05.10: сканеры дают сотни визитов — видно первые 30, остальное свёрнуто #}
+  {% if loop.index == 31 %}
+</table>
+<details class="more"><summary>показать все {{ recent|length }}</summary>
+<table>
+  {% endif %}
   <tr>
     <td style="white-space:nowrap">{{ v.at }}</td>
     <td>{{ v.gname }}{% if v.sub %}<div class="muted">{{ v.sub }}</div>{% endif %}</td>
@@ -77,6 +115,7 @@
   </tr>
   {% endfor %}
 </table>
+{% if recent|length > 30 %}</details>{% endif %}
 {% if recent_n > recent|length %}<p class="muted">Показаны последние {{ recent|length }} из {{ recent_n }}.</p>{% endif %}
 {% else %}
 <p class="muted">Визитов этой группы за {{ keep_days }} дней нет.</p>
@@ -116,25 +155,28 @@
 
 {% if by_ip and not ip %}
 <h2>По адресам</h2>
-<table>
-  <tr><th>Адрес (IP)</th><th>Кто</th><th>Заходов</th><th>Нажатий кнопок</th>
-      <th>Первый раз</th><th>Последний раз</th><th>С чего заходил</th></tr>
-  {% for a in by_ip %}
-  <tr>
-    <td><a href="{{ url_for('visits_list', only=only, ip=a.ip, g=group) }}#feed">{{ a.ip }}</a>
-        <a class="muted" style="font-size:12px" href="https://ipinfo.io/{{ a.ip }}" target="_blank" rel="noopener noreferrer">где это</a></td>
-    <td>{% if a.admin %}<b>вы</b>{% elif a.friend %}друг{% else %}гость{% endif %}{% if a.group %}<div class="muted">{{ a.group }}</div>{% endif %}</td>
-    <td>{{ a.n }}</td>
-    <td {% if a.buttons %}style="font-weight:700"{% endif %}>{{ a.buttons }}</td>
-    <td class="muted">{{ a.first_at }}</td>
-    <td>{{ a.last_at }}</td>
-    <td class="muted">{{ a.device }}</td>
-  </tr>
-  {% endfor %}
-</table>
+<p class="muted">Адреса разложены по группам — нажмите на строку группы, чтобы открыть список.
+  В каждом списке видно первые 20, остальные — по строке «показать все».</p>
+{% for g in addr_groups %}
+<details class="addr-group"{% if g.open %} open{% endif %}>
+  <summary><b>{{ g.name }}</b> — адресов: {{ g.addrs|length }}, запросов: {{ g.hits }}, последний раз {{ g.last_at }}</summary>
+  {% if g.subs %}
+    {% for sub, items in g.subs %}
+    <details class="addr-sub" style="margin-left:18px">
+      <summary>{{ sub }} — адресов: {{ items|length }}, запросов: {{ items|sum(attribute='n') }}, последний раз {{ items[0].last_at }}</summary>
+      {{ ip_table(items) }}
+    </details>
+    {% endfor %}
+  {% else %}
+    {{ ip_table(g.addrs) }}
+  {% endif %}
+</details>
+{% endfor %}
 {% endif %}
 
-<h2>Лента{% if rows|length >= limit %} — последние {{ limit }}{% endif %}</h2>
+<details id="feed-box"{% if ip %} open{% endif %} style="margin-top:18px">
+  <summary><b>Лента подробно</b> — записей: {{ feed_n }}{% if feed_n > rows|length %} (показаны последние {{ rows|length }}){% endif %}
+    {%- if feed_last %}, последняя {{ feed_last }}{% endif %}</summary>
 {% if rows %}
 <table>
   <tr><th>Когда</th><th>Адрес (IP)</th><th>Кто</th><th>Что сделал</th><th>С чего</th></tr>
@@ -152,4 +194,5 @@
 {% else %}
 <p class="muted">Записей нет. Журнал ведётся с момента включения — прошлые заходы в него не попали.</p>
 {% endif %}
+</details>
 {% endblock %}
