@@ -10,7 +10,9 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     venv/bin/python scripts/request_crawl.py days 6 --force    без правила «1 час» (ручной заказ)
     … --unlock                                                 снять замок «сбор идёт» (сторож: прогон мёртв по API)
 
-Сбор уже заказан или идёт (`app/crawl_hook.running`) — заявку не шлёт.
+Сбор уже заказан или идёт (`app/crawl_hook.running`) — заявку не шлёт. Кроме
+пробы и полного обхода меньшей глубины (05.10, `crawl_hook.queue_behind`):
+тогда заявка уходит, и GitHub ставит обход в очередь за текущим.
 Правило «1 час» (владелец 29.09, срок 2 ч → 1 ч 02.10): автомат не шлётся,
 если за последний `RECENT_HOURS` час уже был заказан или собран полный обход
 НЕ МЕНЬШЕЙ глубины (ручной на 6 дней отменяет автомат на 2; ручной на 2
@@ -26,9 +28,7 @@ API, `app/watch`); не завёл — повторяет заявку один 
 from __future__ import annotations
 
 import sys
-import json
-import re
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -37,33 +37,22 @@ from app import crawl_hook, db, trigger, watch  # noqa: E402
 
 
 #: сколько часов свежий полный обход отменяет автомат (владелец 29.09: 2;
-#: 02.10: 1 — «если был внеплановый в течение часа или идёт сейчас»)
-RECENT_HOURS = 1
+#: 02.10: 1 — «если был внеплановый в течение часа или идёт сейчас»).
+#: С 05.10 правило живёт в `app/crawl_hook` — им же отказывают кнопкам друзей
+RECENT_HOURS = crawl_hook.RECENT_HOURS
 
 
 def recent_full(conn, days: int, now: datetime) -> str:
     """Свежий полный обход глубиной ≥ `days` за `RECENT_HOURS` часа:
     заказ (`crawl_request`, пишут кнопка витрины и этот скрипт) или сбор,
     уже влитый в `runs` (обычный полный обход — у него пустое «кто»).
-    Время — киевское, наивное. Пусто — свежего нет."""
-    edge = now.replace(tzinfo=None) - timedelta(hours=RECENT_HOURS)
-    req = db.get_setting(conn, "crawl_request") or ""
-    m = re.match(r"обход (\d+) сут\.\|(\d{4}-\d\d-\d\d \d\d:\d\d)", req)
-    if m and int(m.group(1)) >= days:
-        when = datetime.strptime(m.group(2), "%Y-%m-%d %H:%M")
-        if when >= edge:
-            return f"заказан обход {m.group(1)} сут. в {when:%H:%M}"
-    for r in conn.execute("SELECT finished_at, window_days, log FROM runs "
-                          "WHERE finished_at >= ? ORDER BY finished_at DESC",
-                          (edge.strftime("%Y-%m-%d %H:%M"),)):
-        try:
-            who = (json.loads(r["log"] or "{}") or {}).get("кто") or ""
-        except ValueError:
-            who = "?"
-        if not who and (r["window_days"] or 0) >= days:
-            return (f"собран обход {r['window_days']} сут. в "
-                    f"{str(r['finished_at'])[11:16]}")
-    return ""
+    Время — киевское, наивное. Пусто — свежего нет. Сама проверка — в
+    `crawl_hook.recent_full` (05.10), здесь — слова для «Прогонов»."""
+    x = crawl_hook.recent_full(conn, days, now)
+    if not x:
+        return ""
+    return (f"{'собран' if x['done'] else 'заказан'} обход {x['days']} сут. "
+            f"в {x['at']:%H:%M}")
 
 
 def main() -> int:
@@ -84,7 +73,10 @@ def main() -> int:
         if "--unlock" in flags:
             crawl_hook.clear(conn)
         busy = crawl_hook.running(conn)
-        if busy:
+        # проба или обход меньшей глубины плановый не держат (05.10): GitHub
+        # поставит его в очередь за текущим; отметку текущего не трогаем
+        behind = bool(busy) and crawl_hook.queue_behind(busy, kind, value)
+        if busy and not behind:
             print(f"{now:%d.%m %H:%M} заявка {kind} {value} не отправлена: сбор "
                   f"уже {busy['state']} с {busy['since']} ({busy['what']})")
             return 0
@@ -97,14 +89,16 @@ def main() -> int:
                                  f"{fresh} (правило «{RECENT_HOURS} час»)",
                            who="автомат")
                 return 0
+        queue = f" — в очередь за «{busy['what']}»" if behind else ""
         if "--check" in flags:
-            print(f"{now:%d.%m %H:%M} заявка {kind} {value} ПОШЛА БЫ (--check)")
+            print(f"{now:%d.%m %H:%M} заявка {kind} {value} ПОШЛА БЫ{queue} (--check)")
             return 0
         ok, words = trigger.push_request_tag(kind, value)
-        print(f"{now:%d.%m %H:%M} заявка {kind} {value}: {words}")
+        print(f"{now:%d.%m %H:%M} заявка {kind} {value}{queue}: {words}")
         if not ok:
             return 1
-        crawl_hook.mark(conn, "заявка", f"{kind}-{value}")
+        if not behind:
+            crawl_hook.mark(conn, "заявка", f"{kind}-{value}")
         order = {"days": int(value) if kind == "days" else 0, "at": now,
                  "stamp": f"{now:%Y-%m-%d %H:%M}"}
         if kind == "days":

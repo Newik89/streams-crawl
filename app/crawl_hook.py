@@ -17,12 +17,14 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import json
 import os
+import re
 import sqlite3
 import subprocess
 import sys
 import time
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -38,6 +40,13 @@ MAX_SKEW = 300            # подпись старше 5 минут не при
 RUN_STALE = 3 * 3600
 #: заявка ушла, а «начал» не пришёл (тег не сработал) — кнопки снова свободны
 REQUEST_STALE = 20 * 60
+#: проба (`proba-N`, `probeurl-…`) идёт 2–3 минуты. 05.10 её «закончил»
+#: сервер отверг, отметка «идёт» с 13:44 провисела бы 3 часа (`RUN_STALE`) —
+#: и плановая заявка 16:15 не ушла. Пробе хватит 20 минут
+PROBE_STALE = 20 * 60
+#: сколько часов свежий полный обход отменяет плановый (владелец 29.09: 2;
+#: 02.10: 1) и отказывает кнопкам друзей (05.10) — правило «1 час»
+RECENT_HOURS = 1
 #: серверный сайт — не чаще раза в сутки («даже кнопкой», владелец 10.09).
 #: Один порог на всех: им живут и server_crawl.py, и кнопка «Обойти сайт»
 SITE_GAP_HOURS = 20
@@ -101,11 +110,78 @@ def running(conn: sqlite3.Connection) -> dict | None:
         age = time.time() - int(ts)
     except ValueError:
         return None
-    if age > (REQUEST_STALE if state == "заявка" else RUN_STALE):
+    if age > (REQUEST_STALE if state == "заявка" else
+              PROBE_STALE if is_probe(what) else RUN_STALE):
         return None
     return {"state": "заказан" if state == "заявка" else "идёт",
             "state_en": "requested" if state == "заявка" else "running",
             "since": since, "what": what}
+
+
+def is_probe(what: str) -> bool:
+    """Проба (`proba-2` — стук «начал», `probeurl-…` — «закончил»), а не обход."""
+    return (what or "").startswith(("proba", "probeurl"))
+
+
+def queue_behind(busy: dict, kind: str, value: str) -> bool:
+    """Пустить плановую заявку, хотя «сбор идёт» (05.10): идёт проба или
+    полный обход МЕНЬШЕЙ глубины. Обход GitHub и так встаёт в очередь за
+    текущим (`concurrency` в crawl.yml); раньше 2-дневный сбор кнопкой,
+    шедший в 20:30, отменял плановый на 6 дней — тот просто не заказывался.
+    Скан даты и «Обойти сайт» по-прежнему держат замок."""
+    if is_probe(busy.get("what", "")):
+        return True
+    m = re.fullmatch(r"(?:days|full)-(\d+)", busy.get("what", ""))
+    return kind == "days" and bool(m) and int(m.group(1)) < int(value)
+
+
+def fresh_full(conn: sqlite3.Connection,
+               now: datetime | None = None) -> list[dict]:
+    """Свежие (за `RECENT_HOURS`) полные обходы: [{days, at, done}].
+    Источник тот же, что у правила «1 час» плановых заявок: заказ
+    (`crawl_request` — его пишут кнопки и `request_crawl.py`, done=False) и
+    сбор, уже влитый в `runs` (полный обход — пустое «кто», есть окно;
+    done=True). Скан даты, «Обойти сайт», сервер mojtv и проба сюда не
+    попадают: у них нет окна или есть «кто». Время киевское, наивное."""
+    now = (now or datetime.now(KYIV)).replace(tzinfo=None)
+    edge = now - timedelta(hours=RECENT_HOURS)
+    out = []
+    req = db.get_setting(conn, "crawl_request") or ""
+    m = re.match(r"обход (\d+) сут\.\|(\d{4}-\d\d-\d\d \d\d:\d\d)", req)
+    if m:
+        when = datetime.strptime(m.group(2), "%Y-%m-%d %H:%M")
+        if when >= edge:
+            out.append({"days": int(m.group(1)), "at": when, "done": False})
+    for r in conn.execute("SELECT finished_at, window_days, log FROM runs "
+                          "WHERE finished_at >= ? ORDER BY finished_at DESC",
+                          (edge.strftime("%Y-%m-%d %H:%M"),)):
+        try:
+            who = (json.loads(r["log"] or "{}") or {}).get("кто") or ""
+        except ValueError:
+            who = "?"
+        try:
+            at = datetime.strptime(str(r["finished_at"])[:16], "%Y-%m-%d %H:%M")
+        except ValueError:
+            continue
+        if not who and (r["window_days"] or 0) > 0:
+            out.append({"days": r["window_days"], "at": at, "done": True})
+    return out
+
+
+def recent_full(conn: sqlite3.Connection, days: int,
+                now: datetime | None = None) -> dict | None:
+    """Свежий полный обход глубиной ≥ `days` или None."""
+    return next((x for x in fresh_full(conn, now) if x["days"] >= days), None)
+
+
+def covering(conn: sqlite3.Connection, day: date,
+             now: datetime | None = None) -> dict | None:
+    """Свежий полный обход, чьё окно (день обхода + `days`−1) включает `day`."""
+    for x in fresh_full(conn, now):
+        first = x["at"].date()
+        if first <= day <= first + timedelta(days=x["days"] - 1):
+            return x
+    return None
 
 
 def start_site_crawl(domain: str) -> tuple[bool, str]:

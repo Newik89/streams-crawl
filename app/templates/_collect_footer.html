@@ -44,6 +44,26 @@
     <input type="hidden" name="days" value="5">
     <button class="pill" type="submit" title="{{ 'Полный обход на 5 дней — без паузы, вы вошли' if admin else 'Extended window (once an hour)' }}">Collect 5 days</button>
   </form>
+  {% if friend and not admin %}
+  {# друг — скан одной даты (владелец 05.10): от сегодня до +6, раз в 2 часа;
+     границы ставит скрипт ниже, сервер проверяет их ещё раз #}
+  <form method="post" action="{{ url_for('schedule_date') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="date" name="date" required id="friend-date"
+           style="padding:6px 8px; border:1px solid var(--line); border-radius:8px">
+    <button class="pill" type="submit" title="Re-collect one day (today to +6 days, once every 2 hours)">Collect a date</button>
+  </form>
+  <script>
+    (function () {
+      var d = document.getElementById('friend-date');
+      if (!d) return;
+      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      var iso = function (t) { return t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-' + pad(t.getDate()); };
+      var today = new Date(); var far = new Date(today.getTime() + 6 * 864e5);
+      d.min = iso(today); d.max = iso(far); d.value = iso(today);
+    })();
+  </script>
+  {% endif %}
   {% if friend %}<a href="{{ url_for('logout') }}" style="color:var(--muted)">Sign out</a>{% endif %}
   {% else %}
   <a href="{{ url_for('login') }}" style="color:var(--muted)" title="For invited users">Sign in</a>

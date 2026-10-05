@@ -93,6 +93,10 @@ def other_sport_label(group: str) -> tuple[str, str]:
     """(имя для гостя, значок) группы другого вида спорта."""
     return OTHER_SPORT_EN.get(group, (group, "🏅"))
 PUBLIC_RUN_COOLDOWN = 3600   # публичная кнопка «2 days»: не чаще раза в час
+#: друг — скан одной даты (владелец 05.10: «на дату конкретную… раз в 2
+#: часа»): своя пауза, отдельная от часовой у 2/5 дней; даты — окно витрины
+FRIEND_DATE_COOLDOWN = 2 * 3600
+FRIEND_DATE_AHEAD = 6
 SITE_DAYS = 6                # окно кнопки «Обойти сайт»: как у утреннего,
                              # чтобы сайт пересобрался целиком, а не на 2 дня
 
@@ -358,7 +362,7 @@ def create_app() -> Flask:
     # API по ключу (разд. 13). Всё остальное — только после входа.
     # `logout` — тоже: друг (не админ) иначе не мог выйти, его уводило на вход
     PUBLIC = {"login", "logout", "static", "schedule", "schedule_other",
-              "schedule_run", "beacon",
+              "schedule_run", "schedule_date", "beacon",
               "crawl_hook_in",
               "api_events", "api_leagues", "api_channels", "api_status"}
 
@@ -1129,15 +1133,30 @@ def create_app() -> Flask:
         flash(f"{domain}: {said}", "ok" if ok else "error")
         return redirect(back)
 
+    def _showcase_back() -> str:
+        # нижний блок с кнопками сбора стоит на обеих вкладках витрины
+        # (владелец 04.10) — возвращаем туда, где нажали
+        откуда = (request.referrer or "").split("#")[0].split("?")[0]
+        return url_for("schedule_other" if откуда.endswith("/schedule/other")
+                       else "schedule")
+
+    def _fresh_en(x: dict, day=None) -> str:
+        """Отказ другу «недавно уже собирали» (владелец 05.10: «чтоб сайт
+        писал об этом и не запускал») — по-английски, как вся витрина."""
+        ago = max(0, int((datetime.now(KYIV).replace(tzinfo=None)
+                          - x["at"]).total_seconds() // 60))
+        head = f"{day:%d.%m} is already covered: " if day else ""
+        if x["done"]:
+            return (f"{head}Data was collected {ago} min ago ({x['days']}-day "
+                    "run) — no need to run again.")
+        return (f"{head}A {x['days']}-day collection was started {ago} min "
+                "ago — no need to run again.")
+
     @app.route("/schedule/run", methods=["POST"])       # публичная: с уздой
     def schedule_run():
         verify_csrf()
         days = _days_choice(request.form.get("days"))
-        # нижний блок с кнопками сбора стоит на обеих вкладках витрины
-        # (владелец 04.10) — возвращаем туда, где нажали
-        откуда = (request.referrer or "").split("#")[0].split("?")[0]
-        back = url_for("schedule_other" if откуда.endswith("/schedule/other")
-                       else "schedule")
+        back = _showcase_back()
         conn = db.connect()
         try:
             busy = crawl_hook.running(conn)
@@ -1154,6 +1173,13 @@ def create_app() -> Flask:
                 return redirect(back)
             else:                            # друг: 2 или 5 дней, раз в час
                 days = min(days, 5)          # 6 дней — только владельцу
+                # за час уже был полный сбор не меньшей глубины — любой:
+                # плановый, владельца, друга (05.10, то же правило «1 час»,
+                # что у плановых заявок). Отказ паузу друга не тратит
+                fresh = crawl_hook.recent_full(conn, days)
+                if fresh:
+                    flash(_fresh_en(fresh), "error")
+                    return redirect(back)
                 last = db.get_setting(conn, "public_run_at")
                 if last and time.time() - float(last) < PUBLIC_RUN_COOLDOWN:
                     wait = int((PUBLIC_RUN_COOLDOWN - (time.time() - float(last))) // 60) + 1
@@ -1163,6 +1189,61 @@ def create_app() -> Flask:
         finally:
             conn.close()
         _dispatch(days)
+        return redirect(back)
+
+    @app.route("/schedule/date", methods=["POST"])      # друг: скан даты
+    def schedule_date():
+        """Друг пересобирает один день (владелец 05.10): дата — от сегодня до
+        +6 (окно витрины), не чаще раза в 2 часа, и не тогда, когда этот день
+        уже покрыл полный сбор за последний час. Гостю — отказ; владелец
+        ходит без пауз (у него свой «Скан даты» до +13, его не трогаем)."""
+        verify_csrf()
+        back = _showcase_back()
+        admin = session.get("admin")
+        if not admin and not session.get("friend"):
+            flash("Sign in to run a collection.", "error")
+            return redirect(back)
+        raw = request.form.get("date") or ""
+        today = datetime.now(KYIV).date()
+        try:                           # строго ГГГГ-ММ-ДД — до любого запуска
+            if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", raw):
+                raise ValueError
+            chosen = datetime.strptime(raw, "%Y-%m-%d").date()
+        except ValueError:
+            flash("Date not recognised — pick a day in the calendar.", "error")
+            return redirect(back)
+        if not today <= chosen <= today + timedelta(days=FRIEND_DATE_AHEAD):
+            flash(f"Pick a date from today to +{FRIEND_DATE_AHEAD} days.", "error")
+            return redirect(back)
+        conn = db.connect()
+        try:
+            busy = crawl_hook.running(conn)
+            if busy:
+                flash(f"Collection is already {busy['state_en']} (since "
+                      f"{busy['since']}) — please wait until it finishes.", "error")
+                return redirect(back)
+            if not admin:
+                fresh = crawl_hook.covering(conn, chosen)
+                if fresh:
+                    flash(_fresh_en(fresh, chosen), "error")
+                    return redirect(back)
+                last = db.get_setting(conn, "public_date_run_at")
+                gap = time.time() - float(last or 0)
+                if gap < FRIEND_DATE_COOLDOWN:
+                    wait = int((FRIEND_DATE_COOLDOWN - gap) // 60) + 1
+                    flash(f"One date per 2 hours — please wait ~{wait} min.", "error")
+                    return redirect(back)
+                db.set_setting(conn, "public_date_run_at", str(time.time()))
+        finally:
+            conn.close()
+        if _dispatch(2, date=chosen.isoformat()):
+            conn = db.connect()        # для пульта, как у «Скан даты» владельца
+            try:
+                db.set_setting(conn, "day_scan_request",
+                               f"{chosen.isoformat()}|"
+                               f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
+            finally:
+                conn.close()
         return redirect(back)
 
     # ── API (ТЗ разд. 13): read-only JSON по ключу ───────────────────────────
@@ -1331,6 +1412,7 @@ def create_app() -> Flask:
             r["kind"] = visits.kind(r)
             v = who_is.get(id(r))
             r["group"] = vs.GROUP_SHORT[v["group"]] if v else ""
+            r["gkey"], r["sub"] = (v["group"], v["sub"]) if v else ("", "")
         # стук GitHub — служебный, к посетителям не относится
         rows = [r for r in rows if r["kind"] != "hook"]
         сегодня = [r for r in rows if r["when"].startswith(today_mark)]
@@ -1352,6 +1434,7 @@ def create_app() -> Flask:
                     "logins": r["kind"] == "login"}.get(only, True)
 
         shown = [r for r in rows if fits(r)]
+        rank = {k: i for i, (k, _) in enumerate(vs.GROUPS)}
         by_ip: dict[str, dict] = {}
         for r in shown:                       # свежие сверху
             a = by_ip.setdefault(r["ip"], {
@@ -1364,6 +1447,11 @@ def create_app() -> Flask:
             a["friend"] = a.get("friend") or r["who"] == "friend"
             a["group"] = a.get("group") or r["group"]
             a["first"] = r["when"]
+            # группа адреса для блоков «По адресам»: самая «человечная» из
+            # его визитов (порядок vs.GROUPS) — человек за общим IP со
+            # сканером не пропадёт среди мусора
+            if r["gkey"] and rank.get(r["gkey"], 99) < rank.get(a.get("gkey"), 99):
+                a["gkey"], a["sub"] = r["gkey"], r["sub"]
         limit = 300
         feed = shown[:limit]
         for r in feed:
@@ -1373,10 +1461,30 @@ def create_app() -> Flask:
         for a in by_ip.values():
             a["first_at"] = visits.show_time(a["first"])
             a["last_at"] = visits.show_time(a["last"])
+        ips = sorted(by_ip.values(), key=lambda a: a["last"], reverse=True)
+        # «По адресам» — блоками по группам (владелец 05.10: «не нужно такой
+        # список большой, чтоб не приходилось листать, нужно сгруппировать»):
+        # люди и друзья раскрыты, прочее свёрнуто; сканеры — ещё и по виду
+        addr_groups = []
+        for key, name in vs.GROUPS + (("", "Без группы"),):
+            items = [a for a in ips if a.get("gkey", "") == key]
+            if not items:
+                continue
+            subs = defaultdict(list)
+            for a in items if key == "scanner" else ():
+                subs[a.get("sub") or "прочие"].append(a)
+            addr_groups.append({
+                "name": name.split(" (")[0], "open": key in ("human", "friend"),
+                "addrs": items, "hits": sum(a["n"] for a in items),
+                "last_at": items[0]["last_at"],
+                "subs": sorted(subs.items(), key=lambda s: -len(s[1]))})
         return render_template(
             "visits.html", rows=feed, limit=limit, filters=filters, only=only,
-            ip=ip, today=today,
-            by_ip=sorted(by_ip.values(), key=lambda a: a["last"], reverse=True),
+            ip=ip, today=today, by_ip=ips, addr_groups=addr_groups,
+            # ссылка «только этот адрес» — одна на страницу: url_for на
+            # каждую из тысяч строк заметно тормозил страницу
+            ip_href=url_for("visits_list", only=only, g=group) + "&ip=",
+            feed_n=len(shown), feed_last=feed[0]["at"] if feed else "",
             tiles=per.get(("human", vs.TOTAL)), periods=vs.PERIODS,
             summary=summary, recent=recent[:limit], recent_n=len(recent),
             group=group, groups=vs.GROUPS, months=vs.by_month(data["daily"]),

@@ -106,6 +106,52 @@ def only(found, **kw):
     return [v for v in found if all(v[k] == x for k, x in kw.items())]
 
 
+def page_shape(html: str) -> dict:
+    """Разметка «Посещений» глазами владельца (05.10): сколько строк таблиц
+    видно сразу (не внутри свёрнутого <details>) и какие блоки раскрыты —
+    {заголовок блока: открыт ли}."""
+    from html.parser import HTMLParser
+
+    class P(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.stack: list[bool] = []       # открыт ли каждый <details>
+            self.visible = 0
+            self.total = 0
+            self.blocks: dict[str, bool] = {}
+            self.in_summary = False
+            self.text = ""
+
+        def handle_starttag(self, tag, attrs):
+            if tag == "details":
+                self.stack.append("open" in dict(attrs))
+            elif tag == "summary":
+                self.in_summary, self.text = True, ""
+            elif tag == "tr":
+                self.total += 1
+                self.visible += all(self.stack)
+
+        def handle_endtag(self, tag):
+            if tag == "details" and self.stack:
+                self.stack.pop()
+            elif tag == "summary" and self.in_summary:
+                self.in_summary = False
+                self.blocks[" ".join(self.text.split())] = self.stack[-1]
+
+        def handle_data(self, data):
+            if self.in_summary:
+                self.text += data
+
+    p = P()
+    p.feed(html)
+    return {"visible": p.visible, "total": p.total, "blocks": p.blocks}
+
+
+def block(shape: dict, start: str) -> list[bool]:
+    """Открыт ли каждый блок, чей заголовок начинается с `start`."""
+    return [v for k, v in shape["blocks"].items() if k.startswith(start)]
+
+
 # ── классификация ────────────────────────────────────────────────────────────
 
 def test_groups():
@@ -675,6 +721,16 @@ def test_web():
                  "Поисковые роботы", "Сканеры и мусор"):
         check(text in page, f"на странице есть «{text}»")
     check("198.51.100.77" in page, "админ видит адрес гостя")
+    # 05.10: «По адресам» блоками — люди и друзья раскрыты, прочее свёрнуто;
+    # подробная лента свёрнута одним блоком
+    shape = page_shape(page)
+    check(block(shape, "Люди —") == [True], f"«По адресам»: люди раскрыты ({shape['blocks']})")
+    check(block(shape, "Друзья —") == [True], "«По адресам»: друзья раскрыты")
+    check(block(shape, "Свои —") == [False], "«По адресам»: свои свёрнуты")
+    check(block(shape, "Лента подробно") == [False], "подробная лента свёрнута")
+    r = admin.get("/visits", query_string={"ip": "198.51.100.77"}, environ_base=aenv)
+    check(block(page_shape(r.get_data(as_text=True)), "Лента подробно") == [True],
+          "выбран адрес — лента раскрыта")
     check(len(lines_of(folder)) == n_before,
           "свой просмотр «Посещений» админом в журнал не пишется")
     print(f"  /visits на маленьком журнале: {took * 1000:.0f} мс")
@@ -777,6 +833,38 @@ def test_speed():
     print(f"  /visits на {len(lines)} строках: {best * 1000:.0f} мс")
     check(r.status_code == 200 and best < 1.0,
           f"страница на 10 днях × 3000 строк — быстрее секунды ({best:.2f} с)")
+    # 05.10 «не листать»: тысячи адресов в разметке есть (ничего не удалено),
+    # но сразу видно не больше сотни строк — остальное в свёрнутых блоках
+    page = r.get_data(as_text=True)
+    shape = page_shape(page)
+    print(f"  строк таблиц: всего {shape['total']}, видно сразу {shape['visible']}")
+    check(shape["total"] > 1000 and shape["visible"] <= 150,
+          f"видно сразу не больше 150 строк из {shape['total']} (вышло {shape['visible']})")
+    check(block(shape, "Люди —") == [True], "люди раскрыты")
+    more = block(shape, "показать все")
+    check(more and not any(more), "длинные списки — «показать все N», свёрнуто")
+    check(page.count("где это") > 1000, "все адреса остались в разметке")
+    # фильтр «Сканеры и мусор»: тысячи адресов сканеров — блоком по видам
+    t0 = time.perf_counter()
+    r = admin.get("/visits", query_string={"only": "junk"}, environ_base=aenv)
+    took = time.perf_counter() - t0
+    page = r.get_data(as_text=True)
+    shape = page_shape(page)
+    print(f"  фильтр «сканеры»: {took * 1000:.0f} мс, строк таблиц {shape['total']}, "
+          f"видно сразу {shape['visible']}")
+    check(r.status_code == 200 and took < 1.5, f"фильтр «сканеры» открывается ({took:.2f} с)")
+    check(shape["total"] > 3000 and shape["visible"] <= 150,
+          f"сканеры: видно сразу не больше 150 строк из {shape['total']} (вышло {shape['visible']})")
+    check(block(shape, "Сканеры и мусор —") == [False], "сканеры свёрнуты")
+    subs = [k for k in shape["blocks"] if k.startswith(("без подписи —", "программы", "ищет уязвимости"))]
+    check(len(subs) >= 2 and not any(shape["blocks"][k] for k in subs),
+          f"у сканеров подгруппы по виду, свёрнутые ({subs})")
+    r = admin.get("/visits", query_string={"g": "scanner"}, environ_base=aenv)
+    shape = page_shape(r.get_data(as_text=True))
+    check(r.status_code == 200 and shape["visible"] <= 150,
+          f"визиты сканеров: видно сразу не больше 150 строк (вышло {shape['visible']})")
+    check(any(k.startswith("показать все 300") for k in shape["blocks"]),
+          "визиты сканеров: первые 30, остальные — «показать все 300»")
     t0 = time.perf_counter()
     for i in range(2000):
         visits.write("198.51.100.1", "GET", "/schedule", 200, False,
