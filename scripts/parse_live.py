@@ -31,6 +31,7 @@ from app import (broadcast, canon, db, dictionary, leagues, live,  # noqa: E402
                  merge, names, pipeline, sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
+from app.reference import Reference                         # noqa: E402
 
 DEFAULT_DIR = ROOT / "recon" / "raw_live"
 PLAN = ROOT / "data" / "crawl_plan.json"
@@ -338,6 +339,10 @@ def main() -> int:
     found: list = []
     maybe: list = []          # пара есть, вида спорта нет — решает склейка
     other_rows: list = []     # другой вид спорта — во вкладку «Other Sport» (03.10)
+    # слово чужого вида спорта, оказавшееся именем команды («Le Mans» —
+    # клуб, а не гонка; `app/sport.py`, 06.10): слово → сколько строк
+    team_words: dict[str, int] = {}
+    pages: list = []          # (сайт, передачи со страницы) — до отсева
     problems: list[str] = []
     parsed_counts: dict[str, int] = {}   # сырых строк от парсера по сайтам:
     # «расписание есть, а строк 0» — признак сломанной разметки (этап 6д)
@@ -430,20 +435,10 @@ def main() -> int:
                             "start_kyiv": begin.strftime("%Y-%m-%dT%H:%M"),
                         })
             continue
-        for r in pipeline.run(programs, markers, sports):
-            if r.ok:
-                found.append((row["domain"], r))
-            elif r.needs_review and r.reason == "вид спорта не определён"                     and r.home and r.away and r.start_kyiv:
-                # Сайт назвал пару, но не сказал, что за игра: `ert.gr` пишет
-                # `Κρουζέιρο – Φλαμένγκο` без слова «футбол». Такую строку не
-                # выбрасываем — отдаём склейке кандидатом: если та же пара в
-                # то же время нашлась на другом сайте с известным видом
-                # спорта, вид берётся оттуда (решение владельца 01.09).
-                maybe.append((row["domain"], r))
-            elif r.reason.startswith("другой вид спорта") and r.start_kyiv:
-                # не футбол/баскет/теннис — не выбрасываем, а отдаём
-                # отдельным списком во вкладку «Other Sport» (владелец 03.10)
-                other_rows.append((row["domain"], r))
+        # Страницы сайтов разбираются ПОСЛЕ цикла: эталон flashscore едет в
+        # том же обходе, и вид спорта строки решается уже с ним на руках
+        # (`sport.Sports.decide`, правило 2; владелец 06.10)
+        pages.append((row["domain"], programs))
 
     # Имена локалей — к записям эталона по fs_id (6е, A2). Без английской
     # записи местное имя не к чему привязать, такие (3–4 в день) пропадают.
@@ -458,24 +453,43 @@ def main() -> int:
         print(f"локали эталона: имена у {len(locale_names)} матчей, "
               f"приложены к {attached} записям эталона")
 
-    # Эталон главнее КОСВЕННЫХ источников вида спорта (владелец 02.10,
-    # #4335/#4336/#4328): подсказка пары и лига из словаря умеют врать —
-    # авто-«знаем» по одной стороне записал футбол баскетбольному Еврокубку,
-    # у лиги «WORLD: Friendly International» в словаре стоял баскетбол, и
-    # футбольный товарищеский Колумбия — Перу уехал в баскет. Слово вида
-    # спорта на самом сайте не трогаем; пара сошлась с эталоном почти точно
-    # (≥ 95) в ±3 ч — берём букву матча
-    by_ref_fixed = 0
-    for domain, r in found:
-        if getattr(r, "sport_source", "") in ("league", "hint"):
-            by_ref = ref_sport_of(r, reference_full, floor=95)
-            if by_ref and by_ref != r.sport:
-                r.sport_word = f"эталон flashscore поверх «{r.sport_word}»"
-                r.sport, r.sport_source = by_ref, "ref"
-                by_ref_fixed += 1
-    if by_ref_fixed:
-        print(f"вид спорта поправлен эталоном (подсказка/лига врали): "
-              f"{by_ref_fixed} строк(и)")
+    # Отсев и вид спорта каждой строки. Эталон главнее всего, что написано
+    # на странице и что знают словари (владелец 02.10, #4335/#4336/#4328:
+    # подсказка пары и лига из словаря умеют врать; владелец 06.10, #4710:
+    # слово «Le Mans» отправляло футбол в автоспорт). Правила — по номерам в
+    # `sport.Sports.decide`; здесь строки только раскладываются по судьбам
+    judge = Reference(reference_full)
+    league_sports, pair_sports = leagues.sports_map(), leagues.pair_sports()
+    by_rule: dict[int, int] = {}       # номер правила → сколько строк
+    for domain, programs in pages:
+        for r in pipeline.run(programs, markers, sports, league_sports,
+                              pair_sports, judge):
+            if r.sport_rule:
+                by_rule[r.sport_rule] = by_rule.get(r.sport_rule, 0) + 1
+            if r.team_word:
+                слово = r.team_word.lower()
+                team_words[слово] = team_words.get(слово, 0) + 1
+            if r.ok:
+                found.append((domain, r))
+            elif r.needs_review and r.reason == "вид спорта не определён" \
+                    and r.home and r.away and r.start_kyiv:
+                # Сайт назвал пару, но не сказал, что за игра: `ert.gr` пишет
+                # `Κρουζέιρο – Φλαμένγκο` без слова «футбол». Такую строку не
+                # выбрасываем — отдаём склейке кандидатом: если та же пара в
+                # то же время нашлась на другом сайте с известным видом
+                # спорта, вид берётся оттуда (решение владельца 01.09).
+                maybe.append((domain, r))
+            elif r.reason.startswith("другой вид спорта") and r.start_kyiv:
+                # не футбол/баскет/теннис — не выбрасываем, а отдаём
+                # отдельным списком во вкладку «Other Sport» (владелец 03.10)
+                other_rows.append((domain, r))
+    if by_rule:
+        print("вид спорта по правилам (номера — `sport.Sports.decide`): "
+              + ", ".join(f"№{n} — {by_rule[n]}" for n in sorted(by_rule)))
+    if team_words:
+        print("слово чужого вида спорта оказалось именем команды — строка "
+              f"не ушла в «Other Sport»: {sum(team_words.values())} — "
+              + ", ".join(f"{w} ×{n}" for w, n in sorted(team_words.items())))
 
     # Кандидаты без вида спорта: оставляем тех, кто сошёлся с настоящей игрой.
     # Сравнивает `app/merge.py` — там и допуск по времени (±150 минут, сетка

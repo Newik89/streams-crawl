@@ -196,19 +196,29 @@ def _same_game(a: Entry, b: Entry, threshold: int) -> bool:
 
 def merge(entries: list[Entry],
           threshold: int = names.SIMILAR_ENOUGH) -> list[Game]:
-    """Строки → игры. Строка цепляется к той игре, с которой сошлась лучше
-    всего; не нашлось — заводит свою."""
+    """Строки → игры. Строка цепляется к игре, с какой-нибудь строкой
+    которой сошлась; не нашлось — заводит свою.
+
+    Строка, сошедшаяся сразу с ДВУМЯ играми, — мост: это одна игра, и они
+    сводятся вместе. Без этого итог зависел от порядка строк с одинаковым
+    временем: cyta «Maccabi Tel Aviv - Armani Milano» в 19:00 шла раньше
+    arenasport «Maccabi Tel Aviv - Milano» в 19:00, не узнавала в игре
+    единственную строку tv3.lt «Maccabi - Olimpia Milano» и заводила
+    двойника с одним каналом (регресс 06.10, прогон #201)."""
     games: list[Game] = []
     for entry in sorted(entries, key=lambda e: e.start):
-        target = None
-        for game in games:
-            if any(_same_game(other, entry, threshold) for other in game.entries):
-                target = game
-                break
-        if target is None:
+        targets = [game for game in games
+                   if any(_same_game(other, entry, threshold)
+                          for other in game.entries)]
+        if not targets:
             games.append(Game(entries=[entry]))
-        else:
-            target.entries.append(_aligned(entry, target.first))
+            continue
+        target = targets[0]
+        for twin in targets[1:]:
+            target.entries.extend(_aligned(e, target.first)
+                                  for e in twin.entries)
+            games.remove(twin)
+        target.entries.append(_aligned(entry, target.first))
     return sorted(games, key=lambda g: g.start)
 
 
