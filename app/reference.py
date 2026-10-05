@@ -53,6 +53,7 @@ class Reference:
         self._home: dict[str, set[int]] = {}      # слово хозяев → номера записей
         self._away: dict[str, set[int]] = {}      # слово гостей → номера записей
         self._cache: dict[str, frozenset] = {}
+        self._teams: set[str] = set()     # чтения всех команд эталона
         for entry in entries or []:
             try:
                 start = datetime.fromisoformat(entry.get("start_kyiv") or "")
@@ -71,6 +72,9 @@ class Reference:
                         and pair[0] and pair[1]:
                     sides.append((str(pair[0]), str(pair[1])))
             for h, a in sides:
+                for name in (h, a):
+                    self._teams.update(r for r in names.readings(name)
+                                       if r.strip())
                 for word in _words(h, self._cache):
                     self._home.setdefault(word, set()).add(number)
                 for word in _words(a, self._cache):
@@ -78,6 +82,13 @@ class Reference:
 
     def __len__(self) -> int:
         return len(self._entries)
+
+    def knows_team(self, name: str) -> bool:
+        """Эталон знает такую команду (в любой день окна): одно из чтений
+        имени совпало с чтением команды эталона — английским или местным.
+        Нужен правилу 3 `sport.Sports.decide`: «пара похожа на матч»."""
+        return any(r in self._teams for r in names.readings(name or "")
+                   if r.strip())
 
     def sport_of(self, home: str, away: str, start: datetime | None) -> str:
         """Буква вида спорта (`F`/`B`/`T`), если пара стоит в эталоне в окне

@@ -129,6 +129,10 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     # эталон flashscore: знает ли он эту пару в это время (правило 2)
     by_ref = reference.sport_of(row.home, row.away, row.start_kyiv) \
         if reference is not None else ""
+    # эталон знает хоть одну сторону как команду (правило 3: «пара похожа
+    # на матч»)
+    ref_team = reference is not None and any(
+        reference.knows_team(side) for side in (verdict.home, verdict.away))
     # лига из словаря лиг (правило 6): `data/dictionaries.json` едет в git
     # и есть и у обхода
     league = None
@@ -143,7 +147,8 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     by_hint = hint[0] if hint and hint_fresh(hint[1], row.start_kyiv) else ""
 
     decision = sports.decide(text, head, (verdict.home, verdict.away),
-                             ref=by_ref, league=league, club=клуб_спорт,
+                             ref=by_ref, ref_team=ref_team, league=league,
+                             club=клуб_спорт,
                              hint=by_hint)
     letter = decision.letter
     row.sport_word = decision.word

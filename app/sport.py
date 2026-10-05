@@ -29,8 +29,10 @@
 «Remo» — и гребля, и бразильский клуб; «Gimnasia», «Marathon», «UFC
 Fehring», «Box Hill»… Списка таких слов нет и заводить его не нужно. Два
 способа узнать имя команды, оба без особых случаев:
-  * по самой строке (правило 3): сайт назвал наш вид спорта, а слово чужого
-    вида стоит внутри стороны пары — значит это имя клуба. Словарь не нужен;
+  * по строке и паре (правило 3): пара похожа на матч (хоть одна сторона —
+    команда словаря или эталона), сайт ВНЕ названий команд назвал наш вид
+    спорта, а слово чужого вида стоит внутри стороны пары — значит это имя
+    клуба;
   * по словарю (правила 4 и 9): сторона пары — команда из
     `data/dictionaries.json`; слова чужих видов, совпавшие с командами
     словаря, выводятся сверкой — `Sports.team_words`. Новое слово или новая
@@ -73,6 +75,9 @@ _PART, _EXACT = 1, 2
 #: сверка слов со словарём стоит нескольких секунд (75 тысяч написаний) —
 #: держим итог на процесс; ключ — сами слова и версия файла словаря
 _TEAM_WORDS_CACHE: dict[tuple, dict] = {}
+#: чтения всех команд словаря (`Sports.knows_team`, правило 3) — так же на
+#: процесс
+_TEAM_READINGS_CACHE: dict[tuple, frozenset] = {}
 
 
 @dataclass
@@ -97,10 +102,13 @@ class Sports:
     #: имена команд вместо словаря — для проверок; None — `TEAMS_FILE`
     teams: tuple | None = None
     _team_words: dict | None = field(default=None, repr=False, compare=False)
+    _team_readings: frozenset | None = field(default=None, repr=False,
+                                             compare=False)
 
     # ── решение ──────────────────────────────────────────────────────────────
 
     def decide(self, text: str, head: str = "", pair=None, *, ref: str = "",
+               ref_team: bool = False,
                league: tuple[str, str] | None = None, club: str = "",
                hint: str = "") -> Verdict:
         """Наш вид спорта или чужой. ВСЁ решение — здесь, правила по порядку.
@@ -114,6 +122,8 @@ class Sports:
           ref    — буква вида спорта из эталона flashscore для этой пары и
                    времени (`reference.Reference.sport_of`); пусто — эталон
                    пару не знает;
+          ref_team — эталон знает хотя бы одну сторону пары как команду
+                   (`reference.Reference.knows_team`), в любой день;
           league — (буква, название): лига строки нашлась в словаре лиг;
           club   — буква сугубо женского клуба (`leagues.women_team`);
           hint   — буква из действующей подсказки владельца по этой паре.
@@ -126,15 +136,21 @@ class Sports:
           2. Эталон flashscore знает эту пару в это время → вид спорта
              эталона. Слова на странице его не оспаривают: «PSG - Le Mans» —
              футбол, хотя «Le Mans» ещё и гонка.
-          3. Сайт сам назвал наш вид спорта (само слово вида: «FUTEBOL»,
-             «Piłka nożna», «Košarka» — не название турнира; сначала в
-             заголовке, категории и лиге, потом в описании), а КАЖДОЕ слово
-             чужого вида в тексте стоит внутри названия команды в паре →
-             наш вид. Сайт сказал «футбол», а «Le Mans» у него — команда.
-             Словарь команд тут не нужен.
+          3. В строке есть слово чужого вида, и выполнены ВСЕ три условия:
+             а) пара похожа на матч: хотя бы одна сторона — команда словаря
+                (`knows_team`) или эталона (`ref_team`). «Euronascar - Ep. 9
+                Vallelunga» — не матч, правило молчит;
+             б) КАЖДОЕ слово чужого вида стоит внутри стороны пары;
+             в) вне сторон пары (`_cut_pair`: категория, лига, остаток
+                заголовка, описание) сайт назвал наш вид спорта самим словом
+                вида («FUTEBOL», «Piłka nożna», «Košarka» — не турниром);
+                сначала заголовок, категория и лига, потом описание. Слово
+                внутри стороны не считается: «NFL LIVE - Guten Abend
+                Football» — не футбол.
+             → наш вид. Сайт сказал «футбол», а «Le Mans» у него — команда.
              Составные чужие виды («FUTEBOL PRAIA», «Fútbol Sala», «Tenis
              stołowy», «Američki fudbal») сюда не проходят: их слово стоит в
-             категории или лиге, а не в имени команды (`_alien_outside_pair`).
+             категории или лиге, а не в имени команды.
           4. В тексте есть слово чужого вида спорта, и это НЕ имя команды из
              пары → чужой вид. Сюда попадают и составные виды («американский
              футбол», «пляжный футбол», «настольный теннис»): в словаре они
@@ -152,7 +168,7 @@ class Sports:
           9. Слово чужого вида стояло в стороне пары РЯДОМ с именем команды
              словаря («24 Horas de Le Mans», «Clube do Remo»): это и клуб, и
              гонка. Правила 2, 3 и 5–8 наш вид спорта не подтвердили → чужой
-             вид.
+             вид; вид для вкладки — по этому самому слову.
          10. Никто ничего не сказал → вид спорта не определён. Строка идёт
              на досбор (`scripts/parse_live.py`: склейка с другими сайтами,
              эталон, команды эталона), а если её никто не узнал — владельцу.
@@ -174,13 +190,18 @@ class Sports:
                 word += f" поверх слова «{alien[0]}»"
             return Verdict(ref, word, rule=2, source="ref")
 
-        # 3. сайт назвал наш вид спорта, а чужие слова — только в именах команд
-        if alien and pair and not self._alien_outside_pair(text, pair):
-            for where in (head, text):
-                letter, word = self._own_word(where, self.sport_names or {})
-                if letter:
-                    return Verdict(letter, word, rule=3, source="word",
-                                   team_word=alien[0])
+        # 3. пара похожа на матч, чужие слова — только в именах команд, а вне
+        # имён команд сайт назвал наш вид спорта
+        if alien and pair and (ref_team or any(self.knows_team(side)
+                                               for side in pair)):
+            rest_text = self._cut_pair(text, pair)            # условие б)
+            if not self._alien_hits(rest_text):
+                for where in (self._cut_pair(head, pair), rest_text):  # в)
+                    letter, word = self._own_word(where,
+                                                  self.sport_names or {})
+                    if letter:
+                        return Verdict(letter, word, rule=3, source="word",
+                                       team_word=alien[0])
 
         # 4. слово чужого вида спорта, которое не имя команды из пары
         team_names = self._names_in_pair(pair) if alien and pair else {}
@@ -214,9 +235,9 @@ class Sports:
                            team_word=team_word)
 
         # 9. имя команды — лишь часть стороны, а наш вид спорта никто не назвал
-        if any(team_names[hit.lower()] == _PART for hit in alien):
-            return Verdict("-", team_word, rule=9,
-                           group=self.group_of(team_word))
+        for hit in alien:
+            if team_names[hit.lower()] == _PART:
+                return Verdict("-", hit, rule=9, group=self.group_of(hit))
 
         # 10. вид спорта не определён
         return Verdict(None, "", rule=10, team_word=team_word)
@@ -247,19 +268,51 @@ class Sports:
         probe = skip.sub(" ", text) if skip else text
         return [m.group(0) for m in self.alien.finditer(probe)]
 
-    def _alien_outside_pair(self, text: str, pair) -> list[str]:
-        """Слова чужих видов спорта, которые остались в тексте, когда из него
-        вырезаны обе стороны пары так, как их написал сайт. Пусто — все
-        чужие слова строки стоят внутри названий команд (правило 3).
-        Сторона, которую разбор пары переписал и которой в тексте дословно
-        нет, не вырезается — тогда её слова считаются «снаружи», и правило 3
-        осторожно молчит."""
-        probe = text.lower()
+    @staticmethod
+    def _cut_pair(text: str, pair) -> str:
+        """Текст без обеих сторон пары, как их написал сайт: остаются
+        категория, лига, остаток заголовка, описание (правило 3). Сторона,
+        которую разбор пары переписал и которой в тексте дословно нет, не
+        вырезается — её слова считаются «снаружи», и правило 3 осторожно
+        молчит."""
+        probe = (text or "").lower()
         for side in pair or ():
             side = greek_plain(side or "").strip().lower()
             if side:
                 probe = probe.replace(side, " ")
-        return self._alien_hits(probe)
+        return probe
+
+    def knows_team(self, name: str) -> bool:
+        """Сторона пары — команда словаря (`data/dictionaries.json` или
+        `teams` для проверок): одно из её чтений (`names.readings`) совпало
+        с чтением команды словаря."""
+        known = self._dictionary_readings()
+        return any(r in known for r in names.readings(name or "") if r.strip())
+
+    def _dictionary_readings(self) -> frozenset:
+        """Все чтения всех команд словаря — один раз на процесс (≈6 с на
+        95 тысяч написаний); ключ — версия файла словаря."""
+        if self._team_readings is not None:
+            return self._team_readings
+        key = None
+        if self.teams is None:
+            try:
+                stamp = TEAMS_FILE.stat().st_mtime_ns
+            except OSError:
+                stamp = 0
+            key = (str(TEAMS_FILE), stamp)
+            if key in _TEAM_READINGS_CACHE:
+                self._team_readings = _TEAM_READINGS_CACHE[key]
+                return self._team_readings
+        found: set[str] = set()
+        for name in (self.teams if self.teams is not None
+                     else _dictionary_teams()):
+            found.update(r for r in names.readings(name or "") if r.strip())
+        self._team_readings = frozenset(found)
+        if key is not None:
+            _TEAM_READINGS_CACHE.clear()       # старая версия словаря не нужна
+            _TEAM_READINGS_CACHE[key] = self._team_readings
+        return self._team_readings
 
     def _own_word(self, text: str, patterns: dict) -> tuple[str | None, str]:
         """Первое слово нашего вида спорта в тексте: буква и само слово.

@@ -204,7 +204,11 @@ def merge(entries: list[Entry],
     временем: cyta «Maccabi Tel Aviv - Armani Milano» в 19:00 шла раньше
     arenasport «Maccabi Tel Aviv - Milano» в 19:00, не узнавала в игре
     единственную строку tv3.lt «Maccabi - Olimpia Milano» и заводила
-    двойника с одним каналом (регресс 06.10, прогон #201)."""
+    двойника с одним каналом (регресс 06.10, прогон #201).
+
+    Мост сводит только игры одного рода (`_same_kind`): тот же вид спорта,
+    те же пол и возраст. Строка, похожая и на футбол, и на баскетбол одних
+    клубов в один вечер, к первой из них прицепится, а их самих не сведёт."""
     games: list[Game] = []
     for entry in sorted(entries, key=lambda e: e.start):
         targets = [game for game in games
@@ -215,11 +219,33 @@ def merge(entries: list[Entry],
             continue
         target = targets[0]
         for twin in targets[1:]:
+            if not _same_kind(target, twin):
+                continue
             target.entries.extend(_aligned(e, target.first)
                                   for e in twin.entries)
             games.remove(twin)
         target.entries.append(_aligned(entry, target.first))
     return sorted(games, key=lambda g: g.start)
+
+
+def _same_kind(a: Game, b: Game) -> bool:
+    """Две игры одного рода — их можно свести мостом: вид спорта один и
+    тот же, пол и возраст сторон (`names.category`) тоже. В теннисе буква W
+    в имени — инициал, а не пол (как в `_same_game`)."""
+    if a.sport and b.sport and a.sport != b.sport:
+        return False
+    теннис = "T" in (a.sport, b.sport)
+
+    def категории(game: Game) -> list[str]:
+        out = []
+        for name in (game.first.home, game.first.away):
+            cat = names.category(name)
+            if теннис:
+                cat = " ".join(p for p in cat.split() if p != "W")
+            out.append(cat)
+        return sorted(out)
+
+    return категории(a) == категории(b)
 
 
 def _aligned(entry: Entry, sample: Entry) -> Entry:
