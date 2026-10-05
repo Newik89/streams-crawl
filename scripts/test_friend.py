@@ -53,11 +53,12 @@ calls: list[tuple] = []
 trigger.dispatch_crawl = lambda days, date="", **k: (calls.append(("dispatch", days, date)) or (True, "тест"))
 trigger.push_request_tag = lambda kind, value: (calls.append(("tag", kind, value)) or (True, "тест"))
 trigger._repo_slug = lambda: "test/test"
-watch.wait_for_start = lambda order, slug, **k: {"run_number": 0}
+# ожидание старта: (прогон, ответил ли GitHub) — здесь прогон «появился» сразу
+watch.wait_for_start = lambda order, slug, kinds, **k: ({"run_number": 0}, True)
 # 05.10 вечер: заявка сверяет отметку «идёт» со списком прогонов GitHub.
 # Здесь GitHub «молчит» — работает прежнее правило замка (`queue_behind`);
 # сами сверки — в test_watch.py
-watch.github_runs = lambda slug, limit=12, workflow="": []
+watch.github_runs = lambda slug, limit=0, workflow="": watch.Runs.silent()
 crawl_hook.start_pull = lambda: "тест"
 crawl_hook.start_site_crawl = lambda domain: (False, "тест")
 visits.write = lambda *a, **k: None          # журнал в тесте не пишем
@@ -372,7 +373,7 @@ check("собран обход 6 дней 30 мин назад → планов�
 conn = db.connect()
 try:
     note = conn.execute("SELECT log FROM runs ORDER BY id DESC LIMIT 1").fetchone()["log"]
-    words = rc.recent_full(conn, 2, datetime.now(KYIV))
+    words = rc.recent_full(conn, 2, datetime.now(KYIV), watch.Runs.silent)
 finally:
     conn.close()
 check("отмена видна в «Прогонах»", "плановый обход 2 сут. отменён" in note, note)
