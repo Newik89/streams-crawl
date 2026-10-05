@@ -140,7 +140,13 @@ DAY_GRID_DOMAINS = {"polsatsport.pl", "allente.no", "ceskatelevize.cz",
                     # Novasports (22.09): ручка admin-ajax отдаёт ЛЮБОЙ день
                     # всей линейкой, будущий эфир честно помечен (Ζ)/LIVE —
                     # раньше брали одной страницей только текущий день
-                    "novasports.gr"}
+                    "novasports.gr",
+                    # Дания (05.10): официальный гид TV 2 — открытая ручка,
+                    # линейка TV 2 одним запросом на день, честный `live`
+                    "tvtid.tv2.dk",
+                    # Дания (05.10): справочник «спорт по ТВ» — ручка сайта
+                    # отдаёт события дня со всеми каналами (TV3 Sport, See…)
+                    "tvsporten.dk"}
 # эталон flashscore.mobi с 02.09 идёт обычным «канал × день»: три раздела
 # (football/basketball/tennis) лежат в source_channels, ?d={DAYNUM} в page_url
 

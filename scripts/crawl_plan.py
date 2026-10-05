@@ -165,6 +165,11 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # Sportdigital (добавил владелец; свой парсер 28.09 — автоподбор
           # не взял): 6 каналов, страница канала держит 21 день
           "start.sportdigital.de",
+          # Дания (владелец 05.10: «заводи»): официальный гид TV 2 (TV 2
+          # Sport, Sport X — пары в заголовке, честный эфир) и справочник
+          # tvsporten.dk (TV3 Sport, TV3 Max, TV3+, See, Eurosport, Canal 9,
+          # Viaplay Sport News — пары у каждого события); по запросу на день
+          "tvtid.tv2.dk", "tvsporten.dk",
           ]
 # СПРАВОЧНИКИ, не источники: liveonsat.com (решение 01.09) и
 # sporteventz.com (решение 02.09) в ежедневный обход не входят. Оба —

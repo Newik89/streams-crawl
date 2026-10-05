@@ -197,4 +197,5 @@ def _load_all():
                    tvguidetonight_com_au, unian_tv,
                    vsetv_com,
                    webtv_sk, ziggosport_nl, tvarenaprogram_com,
-                   tvarenasport_com, tvheute_at, tvpassport_com)
+                   tvarenasport_com, tvheute_at, tvpassport_com,
+                   tvsporten_dk, tvtid_tv2_dk)

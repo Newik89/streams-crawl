@@ -599,7 +599,8 @@
     "box",
     "ökölvívás",
     "okolvivas",
-    "kickbox"
+    "kickbox",
+    "kampsport"
    ],
    "бадминтон и ракетки": [
     "badminton",
@@ -663,7 +664,8 @@
     "dostihy",
     "galopp",
     "trav",
-    "harness racing"
+    "harness racing",
+    "ridebanespringning"
    ],
    "гребля": [
     "canoa",
@@ -709,7 +711,8 @@
     "ιστιοπλοΐα",
     "yelken",
     "regatta",
-    "regata"
+    "regata",
+    "sejlsport"
    ],
    "зимние": [
     "ski",
@@ -766,7 +769,8 @@
     "sci di fondo",
     "esquí",
     "esqui",
-    "fis"
+    "fis",
+    "vintersport"
    ],
    "автоспорт": [
     "f4",
@@ -897,7 +901,8 @@
     "rocket league",
     "overwatch",
     "starcraft",
-    "efootball"
+    "efootball",
+    "e-sport"
    ],
    "шахматы и настольные": [
     "chess",
@@ -979,7 +984,9 @@
     "futbol amerykański",
     "amerikietiškas futbolas",
     "amerikietiško futbolo",
-    "amerického fotbalu"
+    "amerického fotbalu",
+    "amerikansk fodbold",
+    "am. fodbold"
    ],
    "флорбол и прочее с клюшкой": [
     "florbal",
@@ -1036,7 +1043,8 @@
     "strongman",
     "crossfit",
     "bodybuilding",
-    "бодибилдинг"
+    "бодибилдинг",
+    "skydning"
    ],
    "другие категории сайтов": [
     "sporte të tjera",
@@ -1198,7 +1206,8 @@
     "дартс",
     "snuker",
     "bilard",
-    "biliárd"
+    "biliárd",
+    "dart"
    ],
    "передачи и повторы": [
     "informação",
@@ -1446,14 +1455,16 @@
    "pekín",
    "pequim",
    "בייג'ינג",
-   "בייגינג"
+   "בייגינג",
+   "china open"
   ],
   "Tokyo": [
    "tokyo",
    "tokio",
    "tóquio",
    "toquio",
-   "טוקיו"
+   "טוקיו",
+   "japan open"
   ],
   "Shanghai": [
    "shanghai",
