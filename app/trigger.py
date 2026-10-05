@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import urllib.error
 import urllib.request
@@ -68,6 +69,31 @@ def _repo_slug() -> str:
 #: деплой-ключ кнопок: рождён на сервере, наружу ушла только публичная
 #: половинка (добавлена в deploy keys репозитория с write, 05.09)
 _BUTTON_KEY = "/root/.ssh/deploy_streams_rw"
+
+
+#: формат адреса для пробы (аудит 05.10.2026): тот же набор знаков, что
+#: проверяют crawl.yml и queue.yml — без пробелов, кавычек, `$`, обратной
+#: косой и обратных кавычек, | < >. Запятая здесь допустима (серверной
+#: пробе она не мешает), в заявку GitHub-у она уходит как %2C — там
+#: запятая делит список адресов.
+_PROBE_URL_RE = re.compile(r"https?://[A-Za-z0-9._~:/?#\[\]@!&()*+;=%{},-]+")
+PROBE_URL_MAX = 500
+
+
+def check_probe_url(url: str) -> str:
+    """Пусто — адрес годится для пробы; иначе — чем плох, словами для
+    человека. Проверяется ДО любой отправки: и заявки GitHub-у, и запроса
+    с сервера."""
+    if not url:
+        return "адрес пустой"
+    if len(url) > PROBE_URL_MAX:
+        return f"адрес длиннее {PROBE_URL_MAX} знаков"
+    if not url.startswith(("http://", "https://")):
+        return "адрес должен начинаться с http:// или https://"
+    if not _PROBE_URL_RE.fullmatch(url):
+        return ("в адресе недопустимые знаки (пробел, кавычки, $, \\, |, <, > "
+                "или не латиница) — закодируйте их или поправьте адрес")
+    return ""
 
 
 def encode_probe_url(url: str) -> str:

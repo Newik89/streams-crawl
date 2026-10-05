@@ -28,6 +28,11 @@ jobs:
           KIND=$(echo "$TAG" | cut -d- -f2)
           if [ "$KIND" = "date" ]; then
             VALUE=$(echo "$TAG" | cut -d- -f3-5)
+            # аудит 05.10.2026: дата из имени тега — только ГГГГ-ММ-ДД, иначе
+            # чужой текст уехал бы в JSON заявки и дальше в обход
+            if ! [[ "$VALUE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+              echo "::error::дата «$VALUE» не в формате ГГГГ-ММ-ДД — заявка отвергнута"; exit 1
+            fi
             INPUTS="{\"mode\":\"full\",\"days\":\"2\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"\",\"date\":\"$VALUE\"}"
           elif [ "$KIND" = "days" ]; then
             VALUE=$(echo "$TAG" | cut -d- -f3)
@@ -51,6 +56,12 @@ jobs:
               http://*|https://*) ;;
               *) echo "в заявке не адрес — выходим"; exit 0 ;;
             esac
+            # аудит 05.10.2026: тот же жёсткий формат, что у crawl.yml —
+            # без пробелов, кавычек, `$`, обратной косой, | < > и запятой
+            RE_URL='^https?://[]A-Za-z0-9._~:/?#[@!&()*+;=%{}-]+$'
+            if ! [[ "$URL" =~ $RE_URL ]] || [ ${#URL} -gt 500 ]; then
+              echo "::error::адрес в заявке не прошёл проверку формата — заявка отвергнута"; exit 1
+            fi
             URL_JSON=$(printf '%s' "$URL" | sed 's/"/\\"/g')
             INPUTS="{\"mode\":\"proba\",\"days\":\"2\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"$URL_JSON\"}"
           elif [ "$KIND" = "site" ]; then
