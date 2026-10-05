@@ -30,9 +30,16 @@ def main() -> int:
         out = f"fail-{why or 'net'}"
     elif verdict == "заглушка защиты":
         out = f"blocked-{why or 'protection'}"
+    elif verdict == "пусто":
+        out = "empty"
     else:
-        out = verdict
-    print(re.sub(r"\s+", "_", out)[:40])
+        out = "other"
+    # Итог едет в заголовок стука X-What и входит в его подпись: русское слово
+    # («пусто») ломало проверку подписи, сервер отвечал 403 и не снимал отметку
+    # «сбор идёт» — 05.10 из-за этого не ушла плановая заявка 16:15. Поэтому
+    # наружу — только латиница и цифры
+    out = re.sub(r"[^A-Za-z0-9_.-]", "", re.sub(r"\s+", "_", out)) or "other"
+    print(out[:40])
     return 0
 
 
