@@ -87,6 +87,55 @@ jobs:
     timeout-minutes: 150
 
     steps:
+      - name: Проверка параметров запуска
+        # Аудит 05.10.2026: значения формы подставлялись прямо в текст
+        # команд — адрес вида `http://x/$(команда)` выполнился бы на раннере.
+        # Теперь всё, что пришло извне, едет только через env и в кавычках,
+        # а здесь, первым шагом, сверяется с жёстким форматом. Не прошло —
+        # шаг красный, и дальше НИЧЕГО не идёт: шаг «Не ходили ли уже
+        # сегодня» не выполнится, а все прочие ждут его ответа run == '1'
+        # (ни обхода, ни issue, ни стука серверу).
+        env:
+          EVENT: ${{ github.event_name }}
+          IN_MODE: ${{ inputs.mode }}
+          IN_DAYS: ${{ inputs.days }}
+          IN_DELAY: ${{ inputs.delay }}
+          IN_ONLY: ${{ inputs.only }}
+          IN_URLS: ${{ inputs.urls }}
+          IN_POST: ${{ inputs.post }}
+          IN_WARMUP: ${{ inputs.warmup }}
+          IN_BROWSER: ${{ inputs.browser }}
+          IN_DATE: ${{ inputs.date }}
+        run: |
+          if [ "$EVENT" = "schedule" ]; then echo "по расписанию — параметры свои"; exit 0; fi
+          # один адрес: http(s), без пробелов, кавычек, `$`, обратной косой,
+          # обратных кавычек, | < > и запятой (запятая делит список)
+          ONE='https?://[]A-Za-z0-9._~:/?#[@!&()*+;=%{}-]+'
+          RE_URL="^${ONE}\$"
+          RE_URLS="^${ONE}(,${ONE})*\$"
+          RE_POST='^[]A-Za-z0-9._~:/?#[@!&()*+;=%{},-]*$'
+          BAD=""
+          [[ "$IN_MODE" =~ ^(proba|full)$ ]] || BAD="$BAD mode"
+          [[ "$IN_DAYS" =~ ^[1-7]$ ]] || BAD="$BAD days"
+          [[ "$IN_DELAY" =~ ^[0-9]{1,3}(\.[0-9]{1,3})?$ ]] || BAD="$BAD delay"
+          [[ "$IN_BROWSER" =~ ^(yes|no)$ ]] || BAD="$BAD browser"
+          [[ "$IN_ONLY" =~ ^[a-z0-9.,-]*$ ]] && [ ${#IN_ONLY} -le 500 ] || BAD="$BAD only"
+          [[ "$IN_DATE" =~ ^([0-9]{4}-[0-9]{2}-[0-9]{2})?$ ]] || BAD="$BAD date"
+          [[ "$IN_POST" =~ $RE_POST ]] && [ ${#IN_POST} -le 1000 ] || BAD="$BAD post"
+          if [ -n "$IN_WARMUP" ]; then
+            [[ "$IN_WARMUP" =~ $RE_URL ]] && [ ${#IN_WARMUP} -le 1000 ] || BAD="$BAD warmup"
+          fi
+          if [ -n "$IN_URLS" ]; then
+            # весь список целиком: адрес, запятая, адрес… (перевод строки
+            # и любой лишний знак — мимо)
+            [[ "$IN_URLS" =~ $RE_URLS ]] && [ ${#IN_URLS} -le 4000 ] || BAD="$BAD urls"
+          fi
+          if [ -n "$BAD" ]; then
+            echo "::error::параметры запуска не прошли проверку формата:$BAD — обход не запускается"
+            exit 1
+          fi
+          echo "параметры в порядке"
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
@@ -130,6 +179,18 @@ jobs:
       - name: Что запускаем
         if: steps.guard.outputs.run == '1'
         id: what
+        # значения формы — только через env (аудит 05.10.2026); формат уже
+        # сверен первым шагом «Проверка параметров запуска»
+        env:
+          IN_MODE: ${{ inputs.mode }}
+          IN_DAYS: ${{ inputs.days }}
+          IN_DELAY: ${{ inputs.delay }}
+          IN_ONLY: ${{ inputs.only }}
+          IN_URLS: ${{ inputs.urls }}
+          IN_POST: ${{ inputs.post }}
+          IN_WARMUP: ${{ inputs.warmup }}
+          IN_BROWSER: ${{ inputs.browser }}
+          IN_DATE: ${{ inputs.date }}
         run: |
           # По расписанию — всегда полный обход. Руками — как выбрали в форме.
           if [ "${{ github.event_name }}" = "schedule" ]; then
@@ -147,15 +208,15 @@ jobs:
             echo "browser=no" >> $GITHUB_OUTPUT
             echo "date="     >> $GITHUB_OUTPUT
           else
-            echo "mode=${{ inputs.mode }}"   >> $GITHUB_OUTPUT
-            echo "days=${{ inputs.days }}"   >> $GITHUB_OUTPUT
-            echo "delay=${{ inputs.delay }}" >> $GITHUB_OUTPUT
-            echo "only=${{ inputs.only }}"   >> $GITHUB_OUTPUT
-            echo "urls=${{ inputs.urls }}"   >> $GITHUB_OUTPUT
-            echo "post=${{ inputs.post }}"   >> $GITHUB_OUTPUT
-            echo "warmup=${{ inputs.warmup }}" >> $GITHUB_OUTPUT
-            echo "browser=${{ inputs.browser }}" >> $GITHUB_OUTPUT
-            echo "date=${{ inputs.date }}"   >> $GITHUB_OUTPUT
+            echo "mode=$IN_MODE"     >> $GITHUB_OUTPUT
+            echo "days=$IN_DAYS"     >> $GITHUB_OUTPUT
+            echo "delay=$IN_DELAY"   >> $GITHUB_OUTPUT
+            echo "only=$IN_ONLY"     >> $GITHUB_OUTPUT
+            echo "urls=$IN_URLS"     >> $GITHUB_OUTPUT
+            echo "post=$IN_POST"     >> $GITHUB_OUTPUT
+            echo "warmup=$IN_WARMUP" >> $GITHUB_OUTPUT
+            echo "browser=$IN_BROWSER" >> $GITHUB_OUTPUT
+            echo "date=$IN_DATE"     >> $GITHUB_OUTPUT
           fi
 
       - name: Стук серверу — начали
@@ -166,10 +227,14 @@ jobs:
         env:
           HOOK_SECRET: ${{ secrets.CRAWL_HOOK_SECRET }}
           HOOK_URL: ${{ secrets.CRAWL_HOOK_URL }}
+          W_MODE: ${{ steps.what.outputs.mode }}
+          W_DAYS: ${{ steps.what.outputs.days }}
+          W_DATE: ${{ steps.what.outputs.date }}
+          W_ONLY: ${{ steps.what.outputs.only }}
         run: |
-          WHAT="${{ steps.what.outputs.mode }}-${{ steps.what.outputs.days }}"
-          [ -n "${{ steps.what.outputs.date }}" ] && WHAT="date-${{ steps.what.outputs.date }}"
-          [ -n "${{ steps.what.outputs.only }}" ] && WHAT="site-${{ steps.what.outputs.only }}"
+          WHAT="$W_MODE-$W_DAYS"
+          [ -n "$W_DATE" ] && WHAT="date-$W_DATE"
+          [ -n "$W_ONLY" ] && WHAT="site-$W_ONLY"
           export WHAT
           sh scripts/knock.sh start
 
@@ -192,30 +257,44 @@ jobs:
 
       - name: Обход
         if: steps.guard.outputs.run == '1'
+        # значения — только через env и в кавычках (аудит 05.10.2026);
+        # `set -f`: в адресах бывают `?` `*` `[` — оболочка не должна
+        # принимать их за маску имён файлов
+        env:
+          W_MODE: ${{ steps.what.outputs.mode }}
+          W_DAYS: ${{ steps.what.outputs.days }}
+          W_DELAY: ${{ steps.what.outputs.delay }}
+          W_ONLY: ${{ steps.what.outputs.only }}
+          W_URLS: ${{ steps.what.outputs.urls }}
+          W_POST: ${{ steps.what.outputs.post }}
+          W_WARMUP: ${{ steps.what.outputs.warmup }}
+          W_BROWSER: ${{ steps.what.outputs.browser }}
+          W_DATE: ${{ steps.what.outputs.date }}
         run: |
+          set -f
           ONLY=""
-          if [ -n "${{ steps.what.outputs.only }}" ]; then ONLY="--only ${{ steps.what.outputs.only }}"; fi
+          if [ -n "$W_ONLY" ]; then ONLY="--only $W_ONLY"; fi
           BROWSER=""
-          if [ "${{ steps.what.outputs.browser }}" = "yes" ]; then BROWSER="--browser"; fi
+          if [ "$W_BROWSER" = "yes" ]; then BROWSER="--browser"; fi
           POST=""
-          if [ -n "${{ steps.what.outputs.post }}" ]; then POST="--post ${{ steps.what.outputs.post }}"; fi
+          if [ -n "$W_POST" ]; then POST="--post $W_POST"; fi
           WARMUP=""
-          if [ -n "${{ steps.what.outputs.warmup }}" ]; then WARMUP="--warmup ${{ steps.what.outputs.warmup }}"; fi
+          if [ -n "$W_WARMUP" ]; then WARMUP="--warmup $W_WARMUP"; fi
           # обход по расписанию: сайты с пометкой «только по кнопке» в него не
           # идут (решение владельца 10.09 по случаю mojtv.hr — сайт закрылся
           # после того, как заходов стало больше)
           PLANNED=""
           if [ "${{ github.event_name }}" = "schedule" ]; then PLANNED="--scheduled"; fi
-          if [ -n "${{ steps.what.outputs.urls }}" ]; then
-            python scripts/crawl_fetch.py --urls "${{ steps.what.outputs.urls }}" --delay ${{ steps.what.outputs.delay }} $POST $WARMUP $BROWSER
+          if [ -n "$W_URLS" ]; then
+            python scripts/crawl_fetch.py --urls "$W_URLS" --delay "$W_DELAY" $POST $WARMUP $BROWSER
             exit 0
           fi
-          if [ -n "${{ steps.what.outputs.date }}" ]; then
-            python scripts/crawl_fetch.py --full --date ${{ steps.what.outputs.date }} --delay ${{ steps.what.outputs.delay }} $ONLY $BROWSER $PLANNED
-          elif [ "${{ steps.what.outputs.mode }}" = "full" ]; then
-            python scripts/crawl_fetch.py --full --days ${{ steps.what.outputs.days }} --delay ${{ steps.what.outputs.delay }} $ONLY $BROWSER $PLANNED
+          if [ -n "$W_DATE" ]; then
+            python scripts/crawl_fetch.py --full --date "$W_DATE" --delay "$W_DELAY" $ONLY $BROWSER $PLANNED
+          elif [ "$W_MODE" = "full" ]; then
+            python scripts/crawl_fetch.py --full --days "$W_DAYS" --delay "$W_DELAY" $ONLY $BROWSER $PLANNED
           else
-            python scripts/crawl_fetch.py --probe --delay ${{ steps.what.outputs.delay }} $ONLY $BROWSER $PLANNED
+            python scripts/crawl_fetch.py --probe --delay "$W_DELAY" $ONLY $BROWSER $PLANNED
           fi
 
       - name: Разобрать скачанное
@@ -224,15 +303,21 @@ jobs:
         # `--strict` (игр меньше порога — красный) — только полному обходу без
         # фильтров, как и оценка в самом crawl_fetch.py
         if: always() && steps.guard.outputs.run == '1'
+        env:
+          W_MODE: ${{ steps.what.outputs.mode }}
+          W_DAYS: ${{ steps.what.outputs.days }}
+          W_ONLY: ${{ steps.what.outputs.only }}
+          W_URLS: ${{ steps.what.outputs.urls }}
+          W_DATE: ${{ steps.what.outputs.date }}
         run: |
           STRICT=""
-          if [ "${{ steps.what.outputs.mode }}" = "full" ] && [ -z "${{ steps.what.outputs.only }}${{ steps.what.outputs.urls }}${{ steps.what.outputs.date }}" ]; then
+          if [ "$W_MODE" = "full" ] && [ -z "$W_ONLY$W_URLS$W_DATE" ]; then
             STRICT="--strict"
           fi
-          if [ -n "${{ steps.what.outputs.date }}" ]; then
-            python scripts/parse_live.py --date ${{ steps.what.outputs.date }}
+          if [ -n "$W_DATE" ]; then
+            python scripts/parse_live.py --date "$W_DATE"
           else
-            python scripts/parse_live.py --days ${{ steps.what.outputs.days }} $STRICT
+            python scripts/parse_live.py --days "$W_DAYS" $STRICT
           fi
 
       - name: AI-слой — самопочинка и запасной разбор (рубильник STREAMS_AI)
@@ -260,6 +345,8 @@ jobs:
         # results/day/ и полного не затирает; сервер вливает его вдобавок.
         # Без `always()`: упал обход или разбор — старый итог остаётся (A4)
         if: steps.guard.outputs.run == '1' && steps.what.outputs.date != ''
+        env:
+          W_DATE: ${{ steps.what.outputs.date }}
         run: |
           mkdir -p results/day
           cp recon/raw_live/games.json  results/day/ 2>/dev/null || true
@@ -267,7 +354,7 @@ jobs:
           git config user.name  "Обход телесайтов"
           git config user.email "actions@github.com"
           git add results/day/
-          git diff --cached --quiet || git commit -m "Скан даты ${{ steps.what.outputs.date }} — $(date -u +%d.%m.%Y\ %H:%M) UTC"
+          git diff --cached --quiet || git commit -m "Скан даты $W_DATE — $(date -u +%d.%m.%Y\ %H:%M) UTC"
           for i in 1 2 3; do
             git push && exit 0
             git pull --rebase origin main
@@ -282,6 +369,8 @@ jobs:
         # заливка видит по report.json, какие домены отработали).
         # Без `always()`: упал обход или разбор — старого итога не портим (A4)
         if: steps.guard.outputs.run == '1' && steps.what.outputs.mode == 'full' && steps.what.outputs.only != '' && steps.what.outputs.urls == '' && steps.what.outputs.date == ''
+        env:
+          W_ONLY: ${{ steps.what.outputs.only }}
         run: |
           # оба файла обязательны: games.json БЕЗ report.json заливка приняла
           # бы со worked=None и погасила метки чужих сайтов (обход A7)
@@ -294,7 +383,7 @@ jobs:
           git config user.name  "Обход телесайтов"
           git config user.email "actions@github.com"
           git add results/site/
-          git diff --cached --quiet || git commit -m "Точечный обход ${{ steps.what.outputs.only }} — $(date -u +%d.%m.%Y\ %H:%M) UTC"
+          git diff --cached --quiet || git commit -m "Точечный обход $W_ONLY — $(date -u +%d.%m.%Y\ %H:%M) UTC"
           for i in 1 2 3; do
             git push && exit 0
             git pull --rebase origin main
@@ -370,10 +459,14 @@ jobs:
         if: (failure() || cancelled()) && steps.guard.outputs.run == '1'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          W_MODE: ${{ steps.what.outputs.mode }}
+          W_DAYS: ${{ steps.what.outputs.days }}
+          W_ONLY: ${{ steps.what.outputs.only }}
+          W_DATE: ${{ steps.what.outputs.date }}
         run: >
           python scripts/crawl_alarm.py
           --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          --mode "${{ steps.what.outputs.mode }}, окно ${{ steps.what.outputs.days }} сут., only=${{ steps.what.outputs.only }}, date=${{ steps.what.outputs.date }}, запуск: ${{ github.event_name }}"
+          --mode "$W_MODE, окно $W_DAYS сут., only=$W_ONLY, date=$W_DATE, запуск: ${{ github.event_name }}"
 
       - name: Стук серверу — закончили
         # владелец 14.09: сервер по стуку сам забирает результат (заборы по
@@ -384,11 +477,16 @@ jobs:
         env:
           HOOK_SECRET: ${{ secrets.CRAWL_HOOK_SECRET }}
           HOOK_URL: ${{ secrets.CRAWL_HOOK_URL }}
+          W_MODE: ${{ steps.what.outputs.mode }}
+          W_DAYS: ${{ steps.what.outputs.days }}
+          W_DATE: ${{ steps.what.outputs.date }}
+          W_ONLY: ${{ steps.what.outputs.only }}
+          W_URLS: ${{ steps.what.outputs.urls }}
         run: |
-          WHAT="${{ steps.what.outputs.mode }}-${{ steps.what.outputs.days }}"
-          [ -n "${{ steps.what.outputs.date }}" ] && WHAT="date-${{ steps.what.outputs.date }}"
-          [ -n "${{ steps.what.outputs.only }}" ] && WHAT="site-${{ steps.what.outputs.only }}"
-          if [ -n "${{ steps.what.outputs.urls }}" ]; then
+          WHAT="$W_MODE-$W_DAYS"
+          [ -n "$W_DATE" ] && WHAT="date-$W_DATE"
+          [ -n "$W_ONLY" ] && WHAT="site-$W_ONLY"
+          if [ -n "$W_URLS" ]; then
             # проверка адреса кнопкой админки (владелец 20.09): в стук кладём
             # итог пробы — сервер покажет его на странице сбоев
             SUMMARY=$(python scripts/probe_summary.py || echo no-answer)

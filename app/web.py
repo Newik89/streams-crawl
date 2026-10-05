@@ -563,9 +563,17 @@ def create_app() -> Flask:
         if not target:
             flash(f"{domain}: нет адреса для пробы.", "error")
             return redirect(back)
+        # аудит 05.10.2026: адрес из поля админки уходил в заявку GitHub-у
+        # (и в запрос с сервера) как есть — проверяем формат ДО отправки
+        bad = trigger.check_probe_url(target)
+        if bad:
+            flash(f"{domain}: проба не отправлена — {bad}.", "error")
+            return redirect(back)
         if через == "github":
+            # запятая в заявке делит список адресов — внутри одного адреса
+            # она едет закодированной
             ok, words = trigger.push_request_tag(
-                "probeurl", trigger.encode_probe_url(target))
+                "probeurl", trigger.encode_probe_url(target.replace(",", "%2C")))
             if ok:
                 words = ("проба с GitHub заказана — итог появится на этой "
                          "странице через 2–3 минуты")
