@@ -121,6 +121,15 @@ def _secret_key() -> str:
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    # За nginx (05.10, аудит: голый gunicorn на 80 порту кладётся потоком
+    # запросов) все соединения приходят с 127.0.0.1, а настоящий адрес
+    # посетителя — в X-Forwarded-For. Верим заголовку, только когда сайт и
+    # правда стоит за прокси (STREAMS_BEHIND_PROXY=1 в env службы): без
+    # прокси любой гость подделал бы адрес в журнале посещений и в лимите
+    # входа. nginx заголовок не дописывает, а ставит заново ($remote_addr).
+    if os.environ.get("STREAMS_BEHIND_PROXY") == "1":
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     @app.template_filter("from_json")
     def _from_json(text):
