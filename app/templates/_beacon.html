@@ -1,0 +1,52 @@
+{# Маячок посещений (владелец 05.10): раз в 15 секунд, пока вкладка на виду,
+   и при уходе со страницы сообщает серверу, сколько секунд её смотрели и
+   сколько было действий (клики по фильтрам и кнопкам, прокрутка). Сканеры
+   скрипт не выполняют — маячок и отличает людей. Ничего личного не шлёт. #}
+<script>
+(function () {
+  "use strict";
+  var URL_ = "{{ url_for('beacon') }}", PAGE = "{{ beacon_page }}";
+  if (!navigator.sendBeacon && !window.fetch) return;
+  var secs = 0, acts = 0, since = null, scrolling = 0;
+
+  function visible() { return document.visibilityState === "visible"; }
+  function settle() {                   // накопить время, пока вкладка видна
+    var now = Date.now();
+    if (since !== null) { secs += (now - since) / 1000; }
+    since = visible() ? now : null;
+  }
+  function send() {
+    settle();
+    var s = Math.round(secs), a = acts;
+    if (s < 1 && a === 0) return;
+    secs -= s; acts = 0;
+    var body = "p=" + PAGE + "&s=" + s + "&a=" + a;
+    try {
+      if (navigator.sendBeacon) { navigator.sendBeacon(URL_, body); return; }
+      fetch(URL_, { method: "POST", body: body, keepalive: true,
+                    credentials: "same-origin" });
+    } catch (e) { /* маячок не должен мешать странице */ }
+  }
+
+  since = visible() ? Date.now() : null;
+  setInterval(function () { if (visible()) send(); }, 15000);
+  document.addEventListener("visibilitychange", function () {
+    if (visible()) { since = Date.now(); } else { send(); }
+  });
+  window.addEventListener("pagehide", send);
+  document.addEventListener("click", function (ev) {
+    var t = ev.target;
+    if (t && t.closest && t.closest("a,button,select,input,label,summary,tr,[data-pick]")) {
+      acts += 1;
+    }
+  }, true);
+  document.addEventListener("change", function () { acts += 1; }, true);
+  // прокрутка — одно действие на серию движений; ловим на перехвате, чтобы
+  // засчитать и прокрутку внутренних блоков, не только окна
+  document.addEventListener("scroll", function () {
+    var now = Date.now();
+    if (now - scrolling > 2000) { acts += 1; }
+    scrolling = now;
+  }, { passive: true, capture: true });
+})();
+</script>
