@@ -169,12 +169,11 @@ def create_app() -> Flask:
         # нажал. В файл, не в базу — см. app/visits.py. Статику не пишем; и
         # то, как сам владелец смотрит «Посещения», — иначе он засоряет ленту
         # собой (а вот гостя, сунувшегося на эту страницу, записываем).
+        # 05.10: метка посетителя, откуда пришёл, язык; маячок витрины пишет
+        # свой файл и в общий журнал не идёт
         own_look = request.endpoint == "visits_list" and session.get("admin")
-        if request.endpoint != "static" and not own_look:
-            visits.write(request.remote_addr or "", request.method,
-                         request.path, resp.status_code,
-                         bool(session.get("admin")), request.endpoint,
-                         request.headers.get("User-Agent", ""))
+        if request.endpoint not in ("static", "beacon") and not own_look:
+            visits.log_request(request, resp, session)
         return resp
 
     # ── защита ───────────────────────────────────────────────────────────────
@@ -359,7 +358,7 @@ def create_app() -> Flask:
     # API по ключу (разд. 13). Всё остальное — только после входа.
     # `logout` — тоже: друг (не админ) иначе не мог выйти, его уводило на вход
     PUBLIC = {"login", "logout", "static", "schedule", "schedule_other",
-              "schedule_run",
+              "schedule_run", "beacon",
               "crawl_hook_in",
               "api_events", "api_leagues", "api_channels", "api_status"}
 
@@ -1283,10 +1282,20 @@ def create_app() -> Flask:
 
     # ── посещения ────────────────────────────────────────────────────────────
 
+    @app.route("/v", methods=["POST"])
+    def beacon():
+        """Маячок витрины (05.10): сколько секунд вкладку смотрели и сколько
+        было действий. Публичный; умеет только дописать строку в файл
+        маячков — проверки и пределы в `visits.take_beacon`."""
+        return "", visits.take_beacon(request)
+
     @app.route("/visits")
     def visits_list():
         """Посещения (владелец 03.10): кто (IP), когда и что сделал на сайте.
-        Только вошедшему: маршрут не в PUBLIC."""
+        Только вошедшему: маршрут не в PUBLIC. 05.10 — сверху суммы по группам
+        (люди, роботы, сканеры…) за день/неделю/месяц/год и визиты людей с
+        глубиной и временем; прежняя лента — ниже, как была."""
+        from . import visit_stats as vs
         filters = [("people", "Все заходы"), ("guests", "Только гости"),
                    ("buttons", "Нажатия кнопок"), ("logins", "Входы в админку"),
                    ("junk", "Сканеры и мусор")]
@@ -1294,11 +1303,34 @@ def create_app() -> Flask:
         if only not in {k for k, _ in filters}:
             only = "people"
         ip = (request.args.get("ip") or "").strip()
-        visits.purge()
-        rows = visits.read(days=7)
-        today_mark = datetime.now(KYIV).strftime("%Y-%m-%d")
+        group = request.args.get("g", "human")
+        if group not in vs.GROUP_NAMES and group != "all":
+            group = "human"
+        # журнал → визиты; закрытые дни — в суммы, раз в сутки — уборка
+        data = vs.refresh()
+        today_mark = data["today"]
+        edge = datetime.now(KYIV) - timedelta(days=visits.KEEP_DAYS)
+        edge = edge.strftime("%Y-%m-%d %H:%M:%S")
+        rows = [r for r in reversed(data["rows"]) if r["when"] >= edge]
+        who_is = {id(r): v for v in data["visits"] for r in v["rows"]}
+        per = vs.periods(data["daily"], today_mark)
+        summary = []
+        for grp, name in vs.GROUPS:
+            subs = sorted((k[1] for k in per if k[0] == grp and k[1] != vs.TOTAL),
+                          key=lambda s: -per[(grp, s)]["year"]["visits"])
+            summary.append({"grp": grp, "name": name,
+                            "total": per.get((grp, vs.TOTAL)),
+                            "subs": [(s, per[(grp, s)]) for s in subs if s]})
+        recent = [v for v in reversed(data["visits"]) if v["start"] >= edge
+                  and (group == "all" or v["group"] == group)]
+        for v in recent[:300]:
+            v["at"] = visits.show_time(v["start"])
+            v["took"] = vs.duration(v["seconds"])
+            v["gname"] = vs.GROUP_SHORT[v["group"]]
         for r in rows:
             r["kind"] = visits.kind(r)
+            v = who_is.get(id(r))
+            r["group"] = vs.GROUP_SHORT[v["group"]] if v else ""
         # стук GitHub — служебный, к посетителям не относится
         rows = [r for r in rows if r["kind"] != "hook"]
         сегодня = [r for r in rows if r["when"].startswith(today_mark)]
@@ -1329,6 +1361,8 @@ def create_app() -> Flask:
             a["n"] += 1
             a["buttons"] += r["kind"] == "button"
             a["admin"] = a["admin"] or r["who"] == "admin"
+            a["friend"] = a.get("friend") or r["who"] == "friend"
+            a["group"] = a.get("group") or r["group"]
             a["first"] = r["when"]
         limit = 300
         feed = shown[:limit]
@@ -1342,7 +1376,11 @@ def create_app() -> Flask:
         return render_template(
             "visits.html", rows=feed, limit=limit, filters=filters, only=only,
             ip=ip, today=today,
-            by_ip=sorted(by_ip.values(), key=lambda a: a["last"], reverse=True))
+            by_ip=sorted(by_ip.values(), key=lambda a: a["last"], reverse=True),
+            tiles=per.get(("human", vs.TOTAL)), periods=vs.PERIODS,
+            summary=summary, recent=recent[:limit], recent_n=len(recent),
+            group=group, groups=vs.GROUPS, months=vs.by_month(data["daily"]),
+            keep_days=visits.KEEP_DAYS, duration=vs.duration)
 
     # ── прогоны ──────────────────────────────────────────────────────────────
 

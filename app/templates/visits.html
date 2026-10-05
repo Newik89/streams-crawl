@@ -1,23 +1,117 @@
 {% extends "base.html" %}
 {% block title %}Посещения — Streams Schedule{% endblock %}
+{% macro num(x) %}{{ ('%.1f' % x)|replace('.', ',') }}{% endmacro %}
 {% block body %}
 <h1>Посещения</h1>
-<p class="muted">Кто заходил на сайт за последние 7 дней: адрес (IP), когда и что сделал.
+<p class="muted">Кто заходит на сайт: люди, поисковые роботы, роботы ИИ-сервисов, сервисы, сканеры, свои и друзья.
+  Подробные записи хранятся {{ keep_days }} дней, итоги по дням — навсегда.</p>
+
+<h2>Люди</h2>
+<div class="stats">
+  {% for key, label, _ in periods %}
+  {% set p = tiles[key] if tiles else None %}
+  <div class="stat">
+    <span class="muted">{{ label }}</span>
+    <b>{{ p.visitors if p else 0 }}</b>людей
+    <div class="muted" style="margin-top:6px">
+      визитов: {{ p.visits if p else 0 }}<br>
+      страниц за визит: {% if p and p.depth is not none %}{{ num(p.depth) }}{% else %}—{% endif %}<br>
+      время на сайте: {% if p and p.visits %}{{ duration(p.avg_time) }}{% else %}—{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<p class="muted">«Люди» — те, у кого на витрине сработал маячок (сканеры его не запускают), и «вероятно люди» из старых записей:
+  браузер открыл витрину и ничего лишнего не искал. Время на сайте — среднее по визитам, где оно видно по маячку;
+  у старых записей маячка нет, там время «не видно».</p>
+
+<h2>Кто заходит — по группам</h2>
+<table>
+  <tr><th>Группа</th>{% for _, label, _ in periods %}<th>{{ label }}</th>{% endfor %}</tr>
+  {% for s in summary %}
+  <tr>
+    <td><b>{{ s.name }}</b></td>
+    {% for key, _, _ in periods %}
+    {% set p = s.total[key] if s.total else None %}
+    <td>{% if p and p.visits %}<b>{{ p.visitors }}</b> / {{ p.visits }}{% else %}<span class="muted">—</span>{% endif %}</td>
+    {% endfor %}
+  </tr>
+  {% for name, per in s.subs %}
+  <tr>
+    <td class="muted" style="padding-left:28px">{{ name }}</td>
+    {% for key, _, _ in periods %}
+    {% set p = per[key] %}
+    <td class="muted">{% if p.visits %}{{ p.visitors }} / {{ p.visits }}{% else %}—{% endif %}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+  {% endfor %}
+</table>
+<p class="muted">В клетке: <b>посетителей</b> / визитов. Визит — заход с паузами не больше 30 минут.
+  Роботы названы так, как сами представились. «Свои» — вы под паролем, сам сервер и GitHub;
+  «друзья» — вход по паролю друзей. Сканеры — программы, которые ищут на сайте дыры (запросы вроде /.env, /wp-login.php),
+  без подписи, или с подписью браузера, но витрину не открывали.</p>
+
+<h2>Визиты за {{ keep_days }} дней</h2>
+<p>
+  {% for key, label in groups %}
+    <a href="{{ url_for('visits_list', g=key) }}"{% if group == key %} style="font-weight:700"{% endif %}>{{ label.split(' (')[0] }}</a> ·
+  {% endfor %}
+  <a href="{{ url_for('visits_list', g='all') }}"{% if group == 'all' %} style="font-weight:700"{% endif %}>Все</a>
+</p>
+{% if recent %}
+<table>
+  <tr><th>Когда</th><th>Кто</th><th>Устройство</th><th>Язык</th><th>Откуда</th>
+      <th>Страниц</th><th>Действий</th><th>Время</th><th>Адрес (IP)</th></tr>
+  {% for v in recent %}
+  <tr>
+    <td style="white-space:nowrap">{{ v.at }}</td>
+    <td>{{ v.gname }}{% if v.sub %}<div class="muted">{{ v.sub }}</div>{% endif %}</td>
+    <td class="muted">{{ v.device }}</td>
+    <td class="muted">{{ v.lang or '—' }}</td>
+    <td class="muted">{{ v.source or '—' }}</td>
+    <td>{{ v.pages }}</td>
+    <td>{{ v.actions }}</td>
+    <td style="white-space:nowrap"{% if v.seconds is none %} class="muted"{% endif %}>{{ v.took }}</td>
+    <td><a href="{{ url_for('visits_list', g=group, ip=v.ip) }}#feed">{{ v.ip }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% if recent_n > recent|length %}<p class="muted">Показаны последние {{ recent|length }} из {{ recent_n }}.</p>{% endif %}
+{% else %}
+<p class="muted">Визитов этой группы за {{ keep_days }} дней нет.</p>
+{% endif %}
+
+{% if months %}
+<h2>Люди по месяцам</h2>
+<table>
+  <tr><th>Месяц</th><th>Людей</th><th>Визитов</th><th>Страниц за визит</th><th>Время на сайте</th></tr>
+  {% for m in months %}
+  <tr>
+    <td>{{ m.month[5:7] }}.{{ m.month[:4] }}</td>
+    <td><b>{{ m.visitors }}</b></td>
+    <td>{{ m.visits }}</td>
+    <td>{% if m.depth is not none %}{{ num(m.depth) }}{% else %}—{% endif %}</td>
+    <td>{{ duration(m.avg_time) }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<h2 id="feed">Лента — каждый запрос</h2>
+<p class="muted">Кто заходил за последние {{ keep_days }} дней: адрес (IP), когда и что сделал.
   «Вы» — заходы из браузера, где выполнен вход в админку. Клик по адресу оставляет только его,
   ссылка «где это» открывает сведения об адресе (страна, провайдер) на стороннем сайте.</p>
 
-<div class="stats">
-  <div class="stat"><b>{{ today.visits }}</b>заходов сегодня</div>
-  <div class="stat"><b>{{ today.ips }}</b>разных адресов сегодня</div>
-  <div class="stat"><b>{{ today.buttons }}</b>нажатий кнопок сегодня</div>
-  <div class="stat"><b>{{ today.junk }}</b>запросов сканеров сегодня</div>
-</div>
+<p class="muted">Сегодня в ленте: {{ today.visits }} записей (без сканеров) с {{ today.ips }} адресов,
+  нажатий кнопок — {{ today.buttons }}, запросов сканеров — {{ today.junk }}.
+  Это записи, а не люди: людей считает блок выше.</p>
 
 <p style="margin-top:16px">
   {% for key, label in filters %}
-    <a href="{{ url_for('visits_list', only=key, ip=ip or None) }}"{% if only == key %} style="font-weight:700"{% endif %}>{{ label }}</a>{% if not loop.last %} · {% endif %}
+    <a href="{{ url_for('visits_list', only=key, ip=ip or None, g=group) }}#feed"{% if only == key %} style="font-weight:700"{% endif %}>{{ label }}</a>{% if not loop.last %} · {% endif %}
   {% endfor %}
-  {% if ip %} · адрес <b>{{ ip }}</b> — <a href="{{ url_for('visits_list', only=only) }}">показать все адреса</a>{% endif %}
+  {% if ip %} · адрес <b>{{ ip }}</b> — <a href="{{ url_for('visits_list', only=only, g=group) }}#feed">показать все адреса</a>{% endif %}
 </p>
 
 {% if by_ip and not ip %}
@@ -27,9 +121,9 @@
       <th>Первый раз</th><th>Последний раз</th><th>С чего заходил</th></tr>
   {% for a in by_ip %}
   <tr>
-    <td><a href="{{ url_for('visits_list', only=only, ip=a.ip) }}">{{ a.ip }}</a>
+    <td><a href="{{ url_for('visits_list', only=only, ip=a.ip, g=group) }}#feed">{{ a.ip }}</a>
         <a class="muted" style="font-size:12px" href="https://ipinfo.io/{{ a.ip }}" target="_blank" rel="noopener noreferrer">где это</a></td>
-    <td>{% if a.admin %}<b>вы</b>{% else %}гость{% endif %}</td>
+    <td>{% if a.admin %}<b>вы</b>{% elif a.friend %}друг{% else %}гость{% endif %}{% if a.group %}<div class="muted">{{ a.group }}</div>{% endif %}</td>
     <td>{{ a.n }}</td>
     <td {% if a.buttons %}style="font-weight:700"{% endif %}>{{ a.buttons }}</td>
     <td class="muted">{{ a.first_at }}</td>
@@ -47,8 +141,8 @@
   {% for r in rows %}
   <tr>
     <td style="white-space:nowrap">{{ r.at }}</td>
-    <td><a href="{{ url_for('visits_list', only=only, ip=r.ip) }}">{{ r.ip }}</a></td>
-    <td>{% if r.who == 'admin' %}<b>вы</b>{% else %}гость{% endif %}</td>
+    <td><a href="{{ url_for('visits_list', only=only, ip=r.ip, g=group) }}#feed">{{ r.ip }}</a></td>
+    <td>{% if r.who == 'admin' %}<b>вы</b>{% elif r.who == 'friend' %}друг{% else %}гость{% endif %}{% if r.group %}<div class="muted">{{ r.group }}</div>{% endif %}</td>
     <td {% if r.kind == 'button' %}style="font-weight:700"{% elif r.kind == 'junk' %}class="muted"{% endif %}>{{ r.what }}
       {%- if r.status[0] in '45' and r.kind != 'junk' %} <span class="muted">(ответ {{ r.status }})</span>{% endif %}</td>
     <td class="muted">{{ r.device }}</td>

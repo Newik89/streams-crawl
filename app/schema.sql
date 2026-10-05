@@ -261,3 +261,31 @@ CREATE TABLE IF NOT EXISTS other_sport (
 );
 
 CREATE INDEX IF NOT EXISTS idx_other_sport_start ON other_sport(start_kyiv, sport_group);
+
+-- Посещения: суточные суммы (владелец 05.10). Подробный журнал — в файле
+-- data/visits-ГГГГ-ММ.log и живёт 10 дней; суммы здесь — бессрочно.
+-- День × группа (human|friend|own|search|ai|service|scanner) × подгруппа
+-- (имя робота и т.п.). Неделя/месяц/год — сложением дней при показе.
+CREATE TABLE IF NOT EXISTS visit_days (
+    day      TEXT NOT NULL,                 -- ГГГГ-ММ-ДД по Киеву
+    grp      TEXT NOT NULL,
+    sub      TEXT NOT NULL DEFAULT '',
+    visits   INTEGER NOT NULL DEFAULT 0,
+    visitors INTEGER NOT NULL DEFAULT 0,    -- уникальных за день
+    hits     INTEGER NOT NULL DEFAULT 0,    -- запросов (строк журнала)
+    pages    INTEGER NOT NULL DEFAULT 0,    -- открытых страниц
+    actions  INTEGER NOT NULL DEFAULT 0,    -- нажатий, кликов, прокруток
+    seconds  INTEGER NOT NULL DEFAULT 0,    -- активных секунд по маячку
+    timed    INTEGER NOT NULL DEFAULT 0,    -- визитов, у которых время видно
+    -- обезличенные метки посетителей дня (хеш с солью, не IP) через пробел:
+    -- уникальные за неделю/месяц/год — объединением, а не сложением
+    ids      TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (day, grp, sub)
+);
+
+-- День записан в суммы: только после этого его строки уходят из журнала.
+-- Отдельно от visit_days — день без единого визита тоже бывает.
+CREATE TABLE IF NOT EXISTS visit_days_done (
+    day     TEXT PRIMARY KEY,
+    made_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
