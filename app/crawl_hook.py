@@ -113,9 +113,11 @@ def running(conn: sqlite3.Connection) -> dict | None:
     if age > (REQUEST_STALE if state == "заявка" else
               PROBE_STALE if is_probe(what) else RUN_STALE):
         return None
+    # age — секунд с отметки (05.10): свежей заявке сторож верит, даже если
+    # GitHub её ещё не показал (`watch.lock_verdict`)
     return {"state": "заказан" if state == "заявка" else "идёт",
             "state_en": "requested" if state == "заявка" else "running",
-            "since": since, "what": what}
+            "since": since, "what": what, "age": age}
 
 
 def is_probe(what: str) -> bool:

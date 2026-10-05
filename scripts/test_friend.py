@@ -54,6 +54,10 @@ trigger.dispatch_crawl = lambda days, date="", **k: (calls.append(("dispatch", d
 trigger.push_request_tag = lambda kind, value: (calls.append(("tag", kind, value)) or (True, "тест"))
 trigger._repo_slug = lambda: "test/test"
 watch.wait_for_start = lambda order, slug, **k: {"run_number": 0}
+# 05.10 вечер: заявка сверяет отметку «идёт» со списком прогонов GitHub.
+# Здесь GitHub «молчит» — работает прежнее правило замка (`queue_behind`);
+# сами сверки — в test_watch.py
+watch.github_runs = lambda slug, limit=12, workflow="": []
 crawl_hook.start_pull = lambda: "тест"
 crawl_hook.start_site_crawl = lambda domain: (False, "тест")
 visits.write = lambda *a, **k: None          # журнал в тесте не пишем
