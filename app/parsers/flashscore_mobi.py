@@ -41,6 +41,19 @@
 
 Локали (`LOCALES`) размечены так же и идут тем же разбором; их время
 эталону не нужно, но даты они получают по тем же правилам.
+
+**Часы сайта — свойство разбора, а не карточки (проверка 06.10).** По
+своим часам сайт листает сутки (`?d=0` — его «сегодня») и пишет время
+матча. Часы у версий РАЗНЫЕ (`SITE_TZ`, сверено по общим `fs_id` страниц
+сбора #205): английская и большинство локалей — CET/CEST, а `.bg`, `.gr`,
+`.ro`, `.ua` — на час впереди (EET), `.com.tr` — Турция, `.pt` — на час
+позади (WET), `.ru` отдаёт казахский flashscorekz (UTC+5). В карточках
+источников стояло «UTC» у локалей и «Etc/GMT-2» у mobi — с ними обход в
+22:00–24:00 UTC просил у локалей завтрашний день, а после 25.10 (CET =
+UTC+1) mobi в 22:00–23:00 UTC получил бы вчерашнюю страницу под меткой
+сегодняшней (повтор #204). Поэтому `scripts/crawl_fetch.py` берёт пояс
+этих сайтов отсюда (`site_tz`), а карточка их уже не решает; чтобы и она
+не врала, её чинит `scripts/set_flashscore_tz.py`.
 """
 
 from __future__ import annotations
@@ -79,6 +92,32 @@ LOCALES = {
     "m.flashscore.it": "it", "m.flashscore.fr": "fr", "m.flashscore.es": "es",
     "m.flashscore.nl": "nl", "m.flashscore.se": "sv", "m.flashscore.dk": "da",
 }
+
+#: часы каждой версии сайта (шапка, «Часы сайта»). Замер — сбор #205,
+#: 06.10: время одного `fs_id` на странице версии минус время на
+#: flashscore.mobi (CEST): 0 у всех, кого здесь нет в списке отличий, +60 у
+#: bg/gr/ro/ua/com.tr, −60 у pt, +180 у ru (`<html lang="ru-KZ">`,
+#: страница flashscorekz.com). Версия, которой нет в `LOCALES`, сюда не
+#: попадёт: новую локаль сперва сверить так же
+SITE_TZ = {
+    DOMAIN: TZ,
+    "m.eredmenyek.com": TZ, "m.livesport.cz": TZ, "m.rezultati.com": TZ,
+    "m.flashscore.pl": TZ, "m.flashscore.sk": TZ, "m.flashscore.de": TZ,
+    "m.flashscore.it": TZ, "m.flashscore.fr": TZ, "m.flashscore.es": TZ,
+    "m.flashscore.nl": TZ, "m.flashscore.se": TZ, "m.flashscore.dk": TZ,
+    "m.flashscore.bg": "Europe/Sofia", "m.flashscore.gr": "Europe/Athens",
+    "m.flashscore.ro": "Europe/Bucharest", "m.flashscore.ua": "Europe/Kyiv",
+    "m.flashscore.com.tr": "Europe/Istanbul",
+    "m.flashscore.pt": "Europe/Lisbon",
+    "m.flashscore.ru": "Asia/Almaty",
+}
+
+
+def site_tz(domain: str) -> str | None:
+    """Пояс, по которому эта версия flashscore листает сутки и пишет время;
+    `None` — домен не flashscore (тогда пояс — из карточки источника)."""
+    return SITE_TZ.get((domain or "").strip().lower().removeprefix("www."))
+
 
 _ZONE = ZoneInfo(TZ)
 #: окно страницы дня D, минуты (шапка, правило 2): с `ОКНО_С` дня D-1 до
@@ -133,7 +172,10 @@ def _sport_from_url(url: str) -> str:
 @register(DOMAIN)
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
-    day = day or daytime.today(tz or TZ)
+    # часы страницы — по её версии сайта (`SITE_TZ`); `tz` карточки тут не
+    # судья (шапка, «Часы сайта»)
+    zone = site_tz(urlsplit(url).netloc) or TZ
+    day = day or daytime.today(zone)
     sport = _sport_from_url(url)
     # язык страницы (этап 6е, A2): у локалей `m.flashscore.gr` те же fs_id,
     # что у английской, — по нему словарь учит «Τζένοα» = «Genoa» без
@@ -156,18 +198,19 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             blocks.append(("", [m]))          # строки до первой лиги
     out: list[Program] = []
     for league, rows in blocks:
-        out += _block(league, rows, day, sport, url, lang)
+        out += _block(league, rows, day, sport, url, lang, zone)
     return out
 
 
 def _block(league: str, rows: list, day: _date, sport: str, url: str,
-           lang: str) -> list[Program]:
-    """Строки одного блока лиги; дата каждой — по правилам 1–2 шапки."""
+           lang: str, zone: str) -> list[Program]:
+    """Строки одного блока лиги; дата каждой — по правилам 1–2 шапки,
+    время — по часам версии сайта `zone`."""
     # у идущего матча вместо времени минута (`8'`): в счёт полуночей она
     # не идёт — пустое время walk_day пропускает, оставляя место в списке
     clock = [m.group("time").strip() if _TIME.match(m.group("time").strip())
              else "" for m in rows]
-    moments = daytime.walk_day(clock, day, TZ, overlap=ПОЛНОЧЬ_ЛЮБОЙ_ШАГ,
+    moments = daytime.walk_day(clock, day, zone, overlap=ПОЛНОЧЬ_ЛЮБОЙ_ШАГ,
                                window=(ОКНО_С, ОКНО_ДО))
     out: list[Program] = []
     for m, raw, begin in zip(rows, clock, moments):
@@ -179,7 +222,7 @@ def _block(league: str, rows: list, day: _date, sport: str, url: str,
         if begin is None and status == "live":
             # старт восстанавливать не из чего, ставим «сейчас», допуска
             # эталона (±3 часа) этого достаточно
-            begin = datetime.now(tz=_ZONE)
+            begin = datetime.now(tz=ZoneInfo(zone))
         elif begin is None:
             continue
         home = _COUNTRY_TAG.sub("", home.strip())

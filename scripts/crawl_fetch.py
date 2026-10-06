@@ -48,6 +48,7 @@ sys.path.insert(0, str(ROOT))
 from urllib.parse import urljoin, urlsplit          # noqa: E402
 
 from app import daytime, fetch, protection, timemarks, urls   # noqa: E402
+from app.parsers import flashscore_mobi                      # noqa: E402
 
 PLAN = ROOT / "data" / "crawl_plan.json"
 
@@ -142,6 +143,16 @@ def form(source: dict, day: date, marks: dict) -> dict | None:
     return {k: urls.resolve(str(v), "", day=day, **marks) for k, v in fields.items()}
 
 
+def site_tz(source: dict) -> str | None:
+    """Пояс, по которому сайт листает сутки: от него «сегодня» сайта, окно
+    обхода и номер дня `?d=`. Обычно — из карточки источника (поле плана
+    `timezone`). У эталона flashscore и его локалей часы знает сам разбор
+    (`flashscore_mobi.SITE_TZ`): карточки в базе ошибались — «UTC» у
+    локалей, «Etc/GMT-2» у mobi (проверка 06.10), и номер дня уезжал на
+    сутки в часы у полуночи."""
+    return flashscore_mobi.site_tz(source["domain"]) or source.get("timezone")
+
+
 def targets(plan: dict, days: int, probe: bool, start: date | None = None,
             single: bool = False, scheduled: bool = False,
             only: frozenset[str] | set[str] = frozenset()):
@@ -156,7 +167,7 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
     UTC в Европе уже завтра, в Сиднее завтра с 13:00–14:00 UTC — страница
     «сегодня» сайта иначе легла бы под вчерашней датой."""
     for source in plan["sources"]:
-        пояс = source.get("timezone")
+        пояс = site_tz(source)
         сегодня = daytime.today(пояс)
         first = start or сегодня
         # «только по кнопке» (владелец 10.09): сайт, который сердится на
@@ -544,7 +555,7 @@ def main() -> int:
     # день; «сегодня» — по часам сайта (`link_days`)
     by_links = not (args.urls or args.probe)
     scan = date.fromisoformat(args.date) if args.date else None
-    пояс = {s["domain"]: s.get("timezone") for s in plan["sources"]}
+    пояс = {s["domain"]: site_tz(s) for s in plan["sources"]}
 
     report = []
     started = time.monotonic()
