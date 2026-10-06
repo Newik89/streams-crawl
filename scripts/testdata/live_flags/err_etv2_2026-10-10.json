@@ -1,0 +1,44 @@
+[
+ {
+  "programName": "BooSnoo!: Lained",
+  "name": "Animasari BooSnoo!, 19/21: Lained (Inglise 2023)",
+  "startTime": 1791605100,
+  "automaticReplay": "N",
+  "lead": "BooSnoo saab teada, kui palju erinevaid laineid on maailmas olemas."
+ },
+ {
+  "programName": "Vegesaurused: Aevastuste sadu",
+  "name": "Animasari Vegesaurused 3, 20/20: Aevastuste sadu (Austraalia 2024)",
+  "startTime": 1791605700,
+  "automaticReplay": "N",
+  "lead": ""
+ },
+ {
+  "programName": "Numbriklotsid: Sõida kiirega",
+  "name": "Animasari Numbriklotsid 2, 25/30: Sõida kiirega (Inglise 2018)",
+  "startTime": 1791606000,
+  "automaticReplay": "N",
+  "lead": "Täna läheme Kiirte kanjonisse. Huvitav, miks seda hüütakse Kiirte kanjoniks?"
+ },
+ {
+  "programName": "Puu ja mesilane: Liumägi",
+  "name": "Animasari Puu ja mesilane, 13/26: Liumägi (Horvaatia 2025)*",
+  "startTime": 1791604800,
+  "automaticReplay": "Y",
+  "lead": "Sõbrad nuputavad, kuidas saaks päev otsa liumäel ainult alla lasta, ilma et peaks kordagi üles ronima."
+ },
+ {
+  "programName": "Põrsas Peppa: Folkbänd",
+  "name": "Animasari Põrsas Peppa 10, 49/52: Folkbänd (Inglise 2021)*",
+  "startTime": 1791606900,
+  "automaticReplay": "Y",
+  "lead": ""
+ },
+ {
+  "programName": "Mystery Lane'i põnevad juhtumid: Tabamatu Loomade Robin",
+  "name": "Animasari Mystery Lane'i põnevad juhtumid, 19/26: Tabamatu Loomade Robin (Mystery Lane, Prantsuse 2022)*",
+  "startTime": 1791607800,
+  "automaticReplay": "Y",
+  "lead": "Selles osas tuleb detektiivipaaril uurida välja, kes ja miks püüab kehastada Loomade Robinit, kes varastab tänavaloomade toitmiseks müümata jäänud toitu."
+ }
+]

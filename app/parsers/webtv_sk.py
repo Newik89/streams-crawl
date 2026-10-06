@@ -26,7 +26,10 @@ details` так и не поддалась (параметры лежат в о�
 подзаголовке (`Subtitle`), а вид спорта — в самом заголовке (`Futbal`,
 `Basketbal`), поэтому в `sport_raw` кладём заголовок, а разбираем подзаголовок.
 
-Признака прямого эфира сайт не даёт — эфир определяем первым показом пары.
+Отдельного поля эфира у сайта нет, но словацкие каналы пишут пометку в
+описании — `Priamy prenos …` или `Záznam …` (аудит 06.10). Её читаем как
+пометку сайта (`SAYS_LIVE`, `SAYS_RECORD`); где описание молчит (чешский
+Sport 2), эфир определяем первым показом пары.
 """
 
 from __future__ import annotations
@@ -36,10 +39,17 @@ import re
 from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "webtv.sk"
 TZ = "Europe/Bratislava"
+
+#: слова эфира и записи в описании словацких каналов (JOJ, Nova Sport) —
+#: пометка сайта: `Priamy prenos zápasu…` / `Záznam zápasu…`, `Zostrih`.
+#: Обход #205: 12 «priamy prenos» и 118 «záznam/zostrih» у строк-пар; у
+#: чешского Sport 2 описания без пометок — там эфир угадывается
+SAYS_LIVE = re.compile(r"\bpriam\w*\s+prenos", re.I)
+SAYS_RECORD = re.compile(r"\b(?:záznam|zostrih)", re.I)
 
 _ID = re.compile(r'"channel_id"\s*:\s*"([a-z0-9_]+)"')
 
@@ -115,11 +125,17 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             continue
         sub = " ".join((show.get("Subtitle") or "").split())
         about = " ".join((show.get("Description") or "").split())
-        out.append(Program(
+        program = Program(
             channel_raw=channel, title=f"{title}: {sub}" if sub else title,
             start=start, raw_time=start.strftime("%H:%M"),
             description=about[:300], league_raw=sub[:120], sport_raw=title[:40],
             match_raw=_pair(sub) if _pair(sub).strip() else _pair(about),
             source_url=url, extra={"day": start.date().isoformat()},
-        ))
+        )
+        said_live = bool(SAYS_LIVE.search(about))
+        said_record = bool(SAYS_RECORD.search(about))
+        if said_live != said_record:          # оба слова сразу — промолчим
+            site_says(program, said_live,
+                      "priamy prenos" if said_live else "záznam")
+        out.append(program)
     return mark_first_show(out, "priamy prenos")

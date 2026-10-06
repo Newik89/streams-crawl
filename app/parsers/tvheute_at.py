@@ -24,24 +24,37 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "tvheute.at"
 TZ = "Europe/Vienna"
+
+#: пометка повтора в заголовке: «hallo deutschland (Wh.)» (аудит 06.10).
+#: Класс `type--live` у жанра «Sport» признаком эфира НЕ считаем: в обходе
+#: #205 он стоит у всех 8 спортивных строк подряд, включая журналы
+SAYS_REPEAT = re.compile(r"\((?:Wh|Wdh)\.?\)")
+#: рубрика в начале подзаголовка — слово ЗАГЛАВНЫМИ (с дефисом и запятой)
+_GENRE_HEAD = re.compile(r"^([A-ZÄÖÜẞ][A-ZÄÖÜẞß-]{2,}),?\s+(?=\S)")
+#: спортивные рубрики командных игр: под ними и однословная пара — матч
+SPORT_RUBRICS = {"FUßBALL", "FUSSBALL", "HANDBALL", "BASKETBALL",
+                 "VOLLEYBALL", "EISHOCKEY", "WASSERBALL"}
 
 _URL_SLUG = re.compile(r"/partial/([a-z0-9]+)/")
 _NAMES = {"ard": "Das Erste", "zdf": "ZDF"}
 _PAIR_SEPS = (" - ", " – ", " gegen ")
 
 
-def _pair(text: str) -> str:
+def _pair(text: str, sporty: bool = False) -> str:
+    """Пара из «А - Б». Однословные стороны через « - » берём только под
+    спортивной рубрикой (`sporty`): иначе «Berichte - Analysen» сойдёт за
+    матч, а «Deutschland - Australien» под «FUßBALL» — настоящий матч."""
     for sep in _PAIR_SEPS:
         if sep in text:
             home, _, away = text.partition(sep)
             home, away = home.strip(), away.strip()
             if home and away and (len(home.split()) >= 2
                                   or len(away.split()) >= 2
-                                  or sep != " - "):
+                                  or sep != " - " or sporty):
                 return f"{home} - {away}"
     return " "
 
@@ -73,8 +86,15 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             continue
         sub_node = row.css_first("span.sub")
         sub = " ".join(sub_node.text().split()) if sub_node else ""
+        # подзаголовок начинается рубрикой ЗАГЛАВНЫМИ: «FUßBALL Deutschland -
+        # Australien», «INFOMAGAZIN …». Без среза рубрика прилипала к хозяевам
+        # («FUßBALL Deutschland W»), и строка не сходилась с эталоном (06.10)
+        head = _GENRE_HEAD.match(sub)
+        rubric = head.group(1) if head else ""
+        sub = sub[head.end():] if head else sub
         genre_node = row.css_first("span.type")
-        genre = " ".join(genre_node.text().split()) if genre_node else ""
+        genre = " ".join(x for x in (
+            " ".join(genre_node.text().split()) if genre_node else "", rubric) if x)
         key = (stamp, title)
         if key in seen:
             continue
@@ -82,9 +102,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         pair = _pair(title)
         league = sub if pair != " " else ""
         if pair == " " and sub:
-            pair = _pair(sub)
+            pair = _pair(sub, sporty=rubric in SPORT_RUBRICS)
             league = title if pair != " " else ""
-        out.append(Program(
+        program = Program(
             channel_raw=channel, title=f"{title}: {sub}" if sub else title,
             start=begin,
             raw_time=begin.strftime("%H:%M"),
@@ -93,5 +113,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             sport_raw=genre,
             match_raw=pair,
             source_url=url, extra={"day": begin.date().isoformat()},
-        ))
+        )
+        # `(Wh.)` в заголовке — пометка сайта «повтор» (Wiederholung)
+        if SAYS_REPEAT.search(title):
+            site_says(program, False, "wiederholung")
+        out.append(program)
     return mark_first_show(out, "live")

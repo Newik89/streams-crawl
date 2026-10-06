@@ -29,7 +29,7 @@ from datetime import date as _date, datetime
 
 from selectolax.parser import HTMLParser
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "tv.orf.at"
 TZ = "Europe/Vienna"
@@ -97,15 +97,19 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             # ORF пишет прямые трансляции с приставкой `LIVE` в заголовке
             # (`LIVE Handball HLA & WHA Media Day`) — это честный признак,
             # угадывать по первому показу тут не нужно
-            program.live_raw = "live"
+            site_says(program, True)
             rest.append(program)
         elif meta_text.casefold().startswith(_LIVE):
-            program.live_raw = _LIVE
             covered.append(program)
         else:
             rest.append(program)
 
-    return mark_first_show(covered, _LIVE) + rest
+    # Маркер угаданного эфира — слово словаря (`live`). До 06.10 здесь стояло
+    # само «übertragung», а его в `data/markers.json` нет (и класть нельзя —
+    # у ORF оно стоит и у повтора): отсев не видел маркера, и все строки
+    # «Übertragung» молча отсеивались — тот же класс, что `otseülekanne` у
+    # err.ee 03.10 (аудит признаков, обход #204/#205)
+    return mark_first_show(covered, "live") + rest
 
 
 def list_channels(html: str) -> list[str]:

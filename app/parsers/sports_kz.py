@@ -28,10 +28,15 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "sports.kz"
 TZ = "Asia/Almaty"
+
+#: пометка сайта «прямой эфир» — последним куском заголовка: «…. Қазақстан —
+#: Фарер аралдары. Прямая трансляция» (аудит 06.10, обход #205: у 5 из 26
+#: строк-пар; утренние повторы вчерашних матчей идут без неё)
+SAYS_LIVE = re.compile(r"(?:прямая трансляция|тікелей эфир)", re.I)
 
 _MONTHS = {"января": 1, "февраля": 2, "марта": 3, "апреля": 4, "мая": 5,
            "июня": 6, "июля": 7, "августа": 8, "сентября": 9, "октября": 10,
@@ -94,7 +99,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     if got_pair.strip():
                         pair = got_pair
                         break
-                out.append(Program(
+                program = Program(
                     channel_raw=channel, title=title,
                     start=datetime(current.year, current.month, current.day,
                                    int(hm.group(1)), int(hm.group(2)),
@@ -104,6 +109,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     league_raw=" ".join(parts[1:-1])[:120] if len(parts) > 2 else "",
                     match_raw=pair, source_url=url,
                     extra={"day": current.isoformat()},
-                ))
-    # маркера эфира сайт не даёт вовсе — помечаем первый показ пары
+                )
+                if any(SAYS_LIVE.fullmatch(part) for part in parts):
+                    site_says(program, True, "прямая трансляция")
+                out.append(program)
+    # без пометки сайт промолчал — помечаем первый показ пары
     return mark_first_show(out, "тікелей эфир")

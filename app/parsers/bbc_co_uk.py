@@ -15,7 +15,9 @@
 
 Прямой эфир BBC отдельным словом не помечает; футбол у них идёт под
 названиями вида `Football: Team A v Team B`, поэтому пару ищем и в
-подзаголовке, а эфиром считаем первый показ (`mark_first_show`).
+подзаголовке, а эфиром считаем первый показ (`mark_first_show`). Повтор BBC
+помечает сама — `(R)` в описании (`abbr.repeat`, аудит 06.10: 20 штук на
+странице канала); его читаем, и угадывание такой строке эфира не даёт.
 """
 
 from __future__ import annotations
@@ -26,7 +28,7 @@ from datetime import date as _date, datetime
 
 from selectolax.parser import HTMLParser
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "bbc.co.uk"
 TZ = "Europe/London"
@@ -75,7 +77,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         pair = _pair(title)
         if not pair.strip():
             pair = _pair(subtitle)
-        out.append(Program(
+        program = Program(
             channel_raw=channel, title=" ".join(x for x in (title, subtitle) if x),
             start=start, raw_time=f"{start:%H:%M}",
             description=_html.unescape(
@@ -83,5 +85,10 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             league_raw=title if pair.strip() and pair not in title else "",
             match_raw=pair, source_url=url,
             extra={"day": start.date().isoformat()},
-        ))
+        )
+        # `<abbr class="repeat" title="Repeat">(R)</abbr>` — повтор по слову
+        # BBC; эфира BBC не помечает, его угадывает первый показ пары
+        if item.css_first("abbr.repeat") is not None:
+            site_says(program, False)
+        out.append(program)
     return mark_first_show(out, "live")
