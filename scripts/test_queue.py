@@ -6,7 +6,9 @@ r"""Проверки очереди «Названия» по командам (
 подсказкой «Slavia Prague ERA NBK». Эталон дня был сдвинут, своей игры в
 нём не нашлось, и сопоставитель отдал паре «с сомнением» соседний матч
 того же часа. Правила постановки в очередь — `app/canon.py:
-queue_decision`, уборка открытых записей — `scripts/review_queue.py
+queue_decision`; другая игра (лига другой страны или ни одна команда не
+совпала уверенно, `canon.other_game`) не получает в сопоставителе даже
+статуса «с сомнением»; уборка открытых записей — `scripts/review_queue.py
 --kind team`. Каждому правилу — сценарий с говорящим именем.
 
 В сеть не ходит. База — пустая, во временной папке. Запуск:
@@ -127,29 +129,88 @@ event(conn, "B", "Igokea", "Bilbao", "2026-10-06 21:00", "fs:Ol1G4ele",
       igokea_id, bilbao_id)
 conn.commit()
 aligned = canon.align([dict(IGOKEA)], REF_204, {CL_SITE: CL})
-pair = [(g["home"], r["home"]) for g, r, _ in aligned["ask"]]
-check("igokea_сопоставитель_отдаёт_соседний_матч_с_сомнением",
-      pair == [("Igokea", "Slavia Prague ERA NBK")], pair)
+check("igokea_мост_не_даёт_соседнему_матчу_статус_с_сомнением",
+      aligned["ask"] == [] and [g["home"] for g in aligned["missed"]]
+      == ["Igokea"], aligned)
 canon.apply(conn, aligned)
 check("igokea_в_очередь_не_ложится", queued(conn) == [], queued(conn))
-g, r, _ = aligned["ask"][0]
+# до правки мост отдавал «Slavia Prague ERA NBK — Alba Berlin» (44/60);
+# и такую пару очередь отвергает сама — по первому сработавшему правилу
+SLAVIA = REF_204[1]
 check("igokea_причина_имя_уже_в_библиотеке",
-      canon.queue_decision(conn, g, r, "home")
+      canon.queue_decision(conn, dict(IGOKEA), SLAVIA, "home")
       == (False, "имя уже в библиотеке"),
-      canon.queue_decision(conn, g, r, "home"))
+      canon.queue_decision(conn, dict(IGOKEA), SLAVIA, "home"))
+check("igokea_пара_другая_игра",
+      canon.other_game(dict(IGOKEA), SLAVIA)
+      == "ни одна команда не совпала уверенно — другая игра",
+      canon.other_game(dict(IGOKEA), SLAVIA))
 
 # та же пара, но имён в библиотеке нет и события нет: спасает правило 5 —
 # Bilbao против Alba Berlin (60) не совпал, значит это другая игра
 conn = fresh_db()
-aligned = canon.align([dict(IGOKEA)], REF_204, {CL_SITE: CL})
-canon.apply(conn, aligned)
+canon.apply(conn, ask_only(dict(IGOKEA), SLAVIA))
 check("igokea_без_словаря_тоже_не_ложится__вторая_не_совпала",
       queued(conn) == [], queued(conn))
-g, r, _ = aligned["ask"][0]
 check("igokea_без_словаря_причина",
-      canon.queue_decision(conn, g, r, "home")
+      canon.queue_decision(conn, dict(IGOKEA), SLAVIA, "home")
       == (False, "вторая команда не совпала — другая игра"),
-      canon.queue_decision(conn, g, r, "home"))
+      canon.queue_decision(conn, dict(IGOKEA), SLAVIA, "home"))
+
+# ── правило 7: лига другой страны (прогон 26.09, разбор 06.10) ──────────────
+
+print("Лига другой страны")
+# французский баскетбол на ивритском сайте записан футболом; в футбольном
+# эталоне буквы иврита дали чешскую пару «Velke Hamry — Brozany» на 85/72
+FR_SITE = "ליגה צרפתית בכדורסל"
+BOULAZAC = game("בולאזאק", "רואן", "2026-09-26T18:55", "F", FR_SITE)
+VELKE = ref("Velke Hamry", "Brozany", "2026-09-26T17:30", "F",
+            "CZECH REPUBLIC: 3. CFL - Group B", "jHKQvxk5")
+ROANNE = ref("Boulazac", "Roanne", "2026-09-26T19:00", "B", "FRANCE: LNB",
+             "UNDVleEG")
+# второй по буквам футбольный кандидат того окна (66): с ним отрыв лидера
+# мал, и пара шла «с сомнением», как в настоящем прогоне (901 кандидат)
+BORAC = ref("Borac Banja Luka", "Radnik Bijeljina", "2026-09-26T16:00", "F",
+            "WORLD: Club Friendly", "rs1")
+conn = fresh_db()
+aligned = canon.align([dict(BOULAZAC)], [VELKE, BORAC, ROANNE],
+                      {FR_SITE: "FRANCE: LNB"})
+check("чужая_страна_не_с_сомнением_а_мимо",
+      aligned["ask"] == [] and len(aligned["missed"]) == 1, aligned)
+check("чужая_страна_причина_пары",
+      canon.other_game(aligned["missed"][0], VELKE)
+      == "лига другой страны — другая игра")
+probe = dict(BOULAZAC, league_canon="FRANCE: LNB")
+check("чужая_страна_правило_7_очереди",
+      canon.queue_decision(conn, probe, VELKE, "away")
+      == (False, "лига другой страны — другая игра"),
+      canon.queue_decision(conn, probe, VELKE, "away"))
+check("без_перевода_лиги_страну_не_судим",
+      not canon.foreign_league(dict(BOULAZAC), VELKE))
+# верная пара той же страны: одна сторона дословно, вторая — другое
+# написание (75) — это не другая игра, очередь спрашивает
+CRAIOVA = dict(game("Universitatea Craiova", "FCSB", "2026-10-06T19:30"),
+               league_canon="ROMANIA: Superliga")
+CRAIOVA_REF = ref("Univ. Craiova", "FCSB", "2026-10-06T19:30", "F",
+                  "ROMANIA: Superliga", "ro1")
+conn = fresh_db()
+check("та_же_страна_не_другая_игра",
+      canon.other_game(dict(CRAIOVA), CRAIOVA_REF) == "")
+canon.apply(conn, ask_only(dict(CRAIOVA), CRAIOVA_REF))
+check("та_же_страна_вопрос_в_очередь",
+      queued(conn) == [("Universitatea Craiova", "Univ. Craiova")],
+      queued(conn))
+# и в сопоставителе такая пара остаётся «с сомнением», когда буквы не
+# решают между двумя кандидатами (тот же счёт 75 — лидера нет)
+RO_SITE = "Liga 1 Superbet"
+TWIN = ref("Univ. Craiova", "FCSB", "2026-10-06T18:30", "F",
+           "ROMANIA: Cup", "ro2")
+aligned = canon.align([game("Universitatea Craiova", "FCSB",
+                            "2026-10-06T19:30", "F", RO_SITE)],
+                      [CRAIOVA_REF, TWIN], {RO_SITE: "ROMANIA: Liga 1"})
+check("та_же_страна_мост_держит_с_сомнением",
+      [g["home"] for g, _, _ in aligned["ask"]] == ["Universitatea Craiova"],
+      aligned)
 
 # ── правила по одному ───────────────────────────────────────────────────────
 

@@ -498,7 +498,7 @@ def align(games: list[dict], reference: list[dict],
                     if verdict == "sure":
                         out["sure"].append((game, pick, SURE))
                     elif verdict == "ask":
-                        out["ask"].append((game, pick, LONE_HE))
+                        _ask(out, game, pick, LONE_HE)
                     else:
                         out["missed"].append(game)
                     continue
@@ -545,7 +545,7 @@ def align(games: list[dict], reference: list[dict],
                     if verdict == "sure":
                         out["sure"].append((game, pick, SURE))
                     elif verdict == "ask":
-                        out["ask"].append((game, pick, LONE_HE))
+                        _ask(out, game, pick, LONE_HE)
                     else:
                         out["missed"].append(game)
                     continue
@@ -589,10 +589,25 @@ def align(games: list[dict], reference: list[dict],
             # без перевода (разбор владельца 11.09)
             out["sure"].append((game, best, SURE))
         elif best_score >= (lone if len(near) == 1 else SURE - 15):
-            out["ask"].append((game, best, best_score))
+            _ask(out, game, best, best_score)
         else:
             out["missed"].append(game)
     return out
+
+
+def _ask(out: dict, game: dict, ref: dict, score: int) -> None:
+    """Пара «с сомнением» — только когда эталон похож на НАШУ игру под
+    другим написанием. Другая игра того же часа (`other_game`) идёт в
+    «мимо», а не в «с сомнением»: «с сомнением» прятало игру от сверки
+    задним числом — `canon_backfill` ищет вид спорта по эталону только у
+    «мимо». Баскетбольная «נאנסי — פריז» (лига FRANCE: LNB, а записана
+    футболом) держалась за испанский футбол «San Ignacio — Pasaia» и не
+    доходила до своего «Nancy — Paris» (100 в баскетболе; прогон 24.09,
+    разбор 06.10)."""
+    if other_game(game, ref):
+        out["missed"].append(game)
+    else:
+        out["ask"].append((game, ref, score))
 
 
 _SEPS = (" - ", " – ", " — ")
@@ -654,7 +669,8 @@ def _entry_sides(game: dict):
 #: 70/66), лежат в той же полосе: буквами их от соседа по времени не
 #: отличить. Поэтому порог — уверенное совпадение проекта, `SURE`; цена —
 #: такие пары в очередь больше не идут (на витрину это не влияет: пара
-#: «с сомнением» ничего у игры не ставит)
+#: «с сомнением» ничего у игры не ставит). Тот же порог не даёт паре, где
+#: ни одна команда не совпала уверенно, и статуса «с сомнением» (`other_game`)
 QUEUE_OTHER_SIDE = SURE
 #: подсказка, похожая на имя меньше этого, — не подсказка. В истории
 #: очереди (330 записей «команда» с 02.09) ни одна подтверждённая пара не
@@ -674,6 +690,53 @@ def _side_score(name: str, ref: dict, side: str) -> int:
     for pair in _sides(ref, _script(name)):
         best = max(best, names.similarity(name, pair[index]))
     return best
+
+
+def _league_country(label: str) -> str:
+    """Страна лиги в написании flashscore — часть до двоеточия:
+    «FRANCE: LNB» → «FRANCE», «EUROPE: Champions League» → «EUROPE».
+    Без двоеточия (лига словарю не знакома) — пусто."""
+    head, colon, _ = (label or "").partition(":")
+    return head.strip().upper() if colon else ""
+
+
+def foreign_league(game: dict, ref: dict) -> bool:
+    """Лига игры известна словарю (`league_canon`, ставит `align`), и её
+    страна не та, что у лиги эталона: «בולאזאק — רואן» из французской
+    баскетбольной лиги (FRANCE: LNB) — не чешский футбол «Velke Hamry —
+    Brozany» (CZECH REPUBLIC: 3. CFL), как бы ни сошлись буквы иврита
+    (85 и 72, разбор 06.10). Страна неизвестна с любой стороны — не судим."""
+    mine = _league_country(game.get("league_canon") or "")
+    theirs = _league_country(ref.get("league") or "")
+    return bool(mine and theirs) and mine != theirs
+
+
+def other_game(game: dict, ref: dict) -> str:
+    """Запись эталона — ДРУГАЯ игра, а не другое написание нашей? Пусто —
+    нет, иначе причина. Одна проверка на двоих: сопоставитель (`align`) по
+    ней не даёт паре статуса «с сомнением», очередь (`queue_decision`) —
+    вопроса владельцу.
+
+      * лига другой страны (`foreign_league`);
+      * ни одна команда пары не совпала уверенно (`QUEUE_OTHER_SIDE`):
+        «Igokea — Bilbao» ⇒ «Slavia Prague ERA NBK — Alba Berlin», 44/60.
+        Сторону-заглушку («TBC») не считаем: судит известная сторона,
+        в любой позиции эталона — как в `_pair_score`."""
+    if foreign_league(game, ref):
+        return "лига другой страны — другая игра"
+    sides = [s for s in ("home", "away")
+             if not names.is_placeholder(game.get(s) or "")]
+    best = 0
+    for side in sides:
+        name = (game.get(side) or "").strip()
+        if len(sides) == 1:
+            best = max(_side_score(name, ref, "home"),
+                       _side_score(name, ref, "away"))
+        elif name:
+            best = max(best, _side_score(name, ref, side))
+    if best < QUEUE_OTHER_SIDE:
+        return "ни одна команда не совпала уверенно — другая игра"
+    return ""
 
 
 def known_team(conn: sqlite3.Connection, name: str, sport: str = "") -> bool:
@@ -764,6 +827,10 @@ def queue_decision(conn: sqlite3.Connection, game: dict, ref: dict,
       5. Вторая команда пары не совпала уверенно (ниже `QUEUE_OTHER_SIDE`)
          или это заглушка — это ДРУГАЯ игра, а не другое написание нашей.
       6. Подсказка похожа на имя меньше `QUEUE_HINT_MIN` — не подсказка.
+      7. Лига игры известна словарю, а страна у неё не та, что у лиги
+         эталона (`foreign_league`) — другая игра, как бы ни сошлись буквы
+         («רואן» → «Brozany»: французский баскетбол против чешского
+         футбола, 06.10).
 
     Ни одно не сработало — спрашиваем: это новое написание реальной
     команды («Queens Park Rangers» → «QPR», когда «West Ham» узнан)."""
@@ -784,6 +851,8 @@ def queue_decision(conn: sqlite3.Connection, game: dict, ref: dict,
         return False, "вторая команда не совпала — другая игра"
     if _side_score(mine, ref, side) < QUEUE_HINT_MIN:
         return False, "подсказка не похожа на имя"
+    if foreign_league(game, ref):
+        return False, "лига другой страны — другая игра"
     return True, ""
 
 
