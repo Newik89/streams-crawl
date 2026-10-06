@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-10-05",
+ "built": "2026-10-06",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -393,7 +393,7 @@
    "channels": [
     {
      "name": "",
-     "pattern": "https://www.kolla.tv/api/es/channels/listWithPrograms?dat={YYYY-MM-DD}"
+     "pattern": "https://www.kolla.tv/api/es/channels/listWithPrograms?day={DAYNUM}"
     }
    ]
   },
@@ -867,10 +867,11 @@
   {
    "domain": "mediaklikk.hu",
    "timezone": "Europe/Budapest",
-   "grid": true,
+   "grid": false,
    "marks": {},
    "include": [
-    "M4 Sport"
+    "M4 Sport",
+    "M4 Sport+"
    ],
    "parser": "",
    "browser": false,
@@ -883,7 +884,15 @@
    "manual_only": false,
    "by_server": false,
    "channel_days": {},
-   "post_fields": null,
+   "post_fields": {
+    "ChannelIds": "30,34,",
+    "ShortCodes": "m4,m4p,",
+    "Names": "M4 Sport,M4 Sport +,",
+    "Date": "{YYYY-MM-DD}",
+    "Type": "0",
+    "buttonType": "text_type",
+    "newDesign": "true"
+   },
    "warmup_url": "",
    "post_json": null,
    "headers": null,
@@ -891,7 +900,7 @@
    "channels": [
     {
      "name": "",
-     "pattern": "https://mediaklikk.hu/musorujsag/"
+     "pattern": "https://mediaklikk.hu/wp-content/plugins/hms-global-widgets/widgets/programGuide/programGuideInterface.php"
     }
    ]
   },
@@ -3641,7 +3650,7 @@
   },
   {
    "domain": "flashscore.mobi",
-   "timezone": "Etc/GMT-2",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -3682,7 +3691,7 @@
   },
   {
    "domain": "m.flashscore.gr",
-   "timezone": "UTC",
+   "timezone": "Europe/Athens",
    "grid": false,
    "marks": {},
    "include": [
@@ -3723,7 +3732,7 @@
   },
   {
    "domain": "m.flashscore.bg",
-   "timezone": "UTC",
+   "timezone": "Europe/Sofia",
    "grid": false,
    "marks": {},
    "include": [
@@ -3754,7 +3763,7 @@
   },
   {
    "domain": "m.eredmenyek.com",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -3790,7 +3799,7 @@
   },
   {
    "domain": "m.flashscore.ro",
-   "timezone": "UTC",
+   "timezone": "Europe/Bucharest",
    "grid": false,
    "marks": {},
    "include": [
@@ -3826,7 +3835,7 @@
   },
   {
    "domain": "m.flashscore.com.tr",
-   "timezone": "UTC",
+   "timezone": "Europe/Istanbul",
    "grid": false,
    "marks": {},
    "include": [
@@ -3867,7 +3876,7 @@
   },
   {
    "domain": "m.flashscore.pl",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -3903,7 +3912,7 @@
   },
   {
    "domain": "m.flashscore.ru",
-   "timezone": "UTC",
+   "timezone": "Asia/Almaty",
    "grid": false,
    "marks": {},
    "include": [
@@ -3944,7 +3953,7 @@
   },
   {
    "domain": "m.flashscore.ua",
-   "timezone": "UTC",
+   "timezone": "Europe/Kyiv",
    "grid": false,
    "marks": {},
    "include": [
@@ -3980,7 +3989,7 @@
   },
   {
    "domain": "m.livesport.cz",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4016,7 +4025,7 @@
   },
   {
    "domain": "m.rezultati.com",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4472,7 +4481,7 @@
   },
   {
    "domain": "m.flashscore.sk",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4508,7 +4517,7 @@
   },
   {
    "domain": "m.flashscore.de",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4539,7 +4548,7 @@
   },
   {
    "domain": "m.flashscore.pt",
-   "timezone": "UTC",
+   "timezone": "Europe/Lisbon",
    "grid": false,
    "marks": {},
    "include": [
@@ -4570,7 +4579,7 @@
   },
   {
    "domain": "m.flashscore.it",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4601,7 +4610,7 @@
   },
   {
    "domain": "m.flashscore.fr",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4632,7 +4641,7 @@
   },
   {
    "domain": "m.flashscore.es",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4663,7 +4672,7 @@
   },
   {
    "domain": "m.flashscore.nl",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4694,7 +4703,7 @@
   },
   {
    "domain": "m.flashscore.se",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
@@ -4725,7 +4734,7 @@
   },
   {
    "domain": "m.flashscore.dk",
-   "timezone": "UTC",
+   "timezone": "Europe/Paris",
    "grid": false,
    "marks": {},
    "include": [
