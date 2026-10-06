@@ -356,17 +356,22 @@ probe = mkrun(K("13:44"), ended=K("13:47"), title="Обход proba-2")
 rule("основа", "расписание, вид прогона, потолки, список прогонов")
 check("16:20 заявка на 2 дня — это плановый 16:15", watch.slot_for(K("16:20"), 2) == K("16:15"))
 check("16:20 заявка на 6 дней — не плановый", watch.slot_for(K("16:20"), 6) is None)
-check("06:14 на 6 дней — плановый 06:15", watch.slot_for(K("06:14"), 6) == K("06:15"))
+check("08:14 на 6 дней — плановый 08:15", watch.slot_for(K("08:14"), 6) == K("08:15"))
 check("после 16:30 следующий плановый — 20:30 на 6", watch.next_slot(K("16:30")) == (K("20:30"), 6))
-check("после 06:30 следующий — 16:15 на 2", watch.next_slot(K("06:30")) == (K("16:15"), 2))
-check("после 20:45 следующий — 06:15 завтра на 6",
-      watch.next_slot(K("20:45")) == (K("06:15", NEXT), 6))
-check("последний прошедший слот: в 16:20 — 16:15, в 16:14 — 06:15, в 05:00 — вчерашний 20:30",
-      watch.last_slot(K("16:20")) == (K("16:15"), 2) and watch.last_slot(K("16:14")) == (K("06:15"), 6)
-      and watch.last_slot(K("05:00")) == (K("20:30", "2026-11-09"), 6))
+check("после 08:30 следующий — 16:15 на 2", watch.next_slot(K("08:30")) == (K("16:15"), 2))
+check("после 20:45 следующий — 08:15 завтра на 6",
+      watch.next_slot(K("20:45")) == (K("08:15", NEXT), 6))
+check("последний прошедший слот: в 16:20 — 16:15, в 16:14 — 08:15, в 07:00 — вчерашний 20:30",
+      watch.last_slot(K("16:20")) == (K("16:15"), 2) and watch.last_slot(K("16:14")) == (K("08:15"), 6)
+      and watch.last_slot(K("07:00")) == (K("20:30", "2026-11-09"), 6))
+check("утренний слот — 08:15 (владелец 06.10: programetv.ro и tv.orf.at до ~07:00 отдают "
+      "вчерашние телесутки); промежутки 8 ч, 4 ч 15 мин, 11 ч 45 мин",
+      watch.SCHEDULE == (("08:15", 6), ("16:15", 2), ("20:30", 6))
+      and watch.next_slot(K("08:15")) == (K("16:15"), 2)
+      and watch.next_slot(K("20:30")) == (K("08:15", NEXT), 6))
 cron = watch.cron_lines("/srv/x", "py")
 check("cron-строки из той же таблицы",
-      cron[:3] == ["15 6 * * * cd /srv/x && py scripts/request_crawl.py days 6 >> /var/log/streams-request.log 2>&1",
+      cron[:3] == ["15 8 * * * cd /srv/x && py scripts/request_crawl.py days 6 >> /var/log/streams-request.log 2>&1",
                    "15 16 * * * cd /srv/x && py scripts/request_crawl.py days 2 >> /var/log/streams-request.log 2>&1",
                    "30 20 * * * cd /srv/x && py scripts/request_crawl.py days 6 >> /var/log/streams-request.log 2>&1"]
       and "crawl_watch.py" in cron[3], cron)
@@ -427,8 +432,8 @@ check("будущий «6 дней с 3-го» — ответ на заказ fu
       and watch.run_for({"at": K("06:15", NEXT), "days": 6}, [part]) is None)
 # перевод часов 25.10.2026: 04:00 летнего = 03:00 зимнего
 OCT = "2026-10-25"
-check("перевод часов: окно досрочного считается настоящими часами (06:15 зимнего − 4 ч 20 мин = 23:55 UTC)",
-      watch.covers_from(K("06:15", OCT)) == datetime(2026, 10, 24, 23, 55, tzinfo=timezone.utc))
+check("перевод часов: окно досрочного считается настоящими часами (08:15 зимнего − 4 ч 20 мин = 01:55 UTC)",
+      watch.covers_from(K("08:15", OCT)) == datetime(2026, 10, 25, 1, 55, tzinfo=timezone.utc))
 check("перевод часов: заказ 01:30, сейчас 06:45 — прошло 6 ч 15 мин настоящих (а не 5 ч 15 мин) → «состарился»",
       watch.decide({"at": watch.kyiv_at(f"{OCT} 01:30"), "stamp": f"{OCT} 01:30", "days": 6},
                    None, K("06:45", OCT), {}, "unknown")[0] == "expired")
@@ -1145,42 +1150,42 @@ edge = last_id()
 ticks("16:45", "17:00")
 check("…ДОСРОЧНЫЙ не стартовал → одна ТРЕВОГА, заказов больше нет",
       ORDERS == [6] and len(alarms_after(edge)) == 1, (ORDERS, notes_after(edge)))
-hung = mkrun(K("06:16"), status="in_progress", title="Обход full-6")
-hung_off = finished(hung, K("08:42"), "cancelled")
-reset(K("08:40"), [yday, hung])
-order_of(f"{DAY} 06:15", 6)
+hung = mkrun(K("08:16"), status="in_progress", title="Обход full-6")
+hung_off = finished(hung, K("10:42"), "cancelled")
+reset(K("10:40"), [yday, hung])
+order_of(f"{DAY} 08:15", 6)
 edge = last_id()
-calls = tick(K("08:40"))
+calls = tick(K("10:40"))
 check("ПЛАНОВЫЙ на 6 дней идёт 144 мин (> 140) → заявка отмены с номером прогона",
       TAGS == [("cancel", str(hung["id"]))] and calls == 1, (TAGS, calls))
 check("…и в той же проверке — досрочный на 6, а не повтор («отменить зависшее и СРАЗУ заказать»)",
-      ORDERS == [6] and jget("crawl_early").get("for") == f"{DAY} 06:15"
+      ORDERS == [6] and jget("crawl_early").get("for") == f"{DAY} 08:15"
       and state_get().get("early") is True, (ORDERS, jget("crawl_early")))
 check("…строка «завис … отменяю его, вместо него … досрочно»",
       any("завис" in n and "отменяю его" in n and "досрочно" in n for n in notes_after(edge)),
       notes_after(edge))
-early_run = mkrun(K("08:41"), status="pending", title="Обход full-6")
+early_run = mkrun(K("10:41"), status="pending", title="Обход full-6")
 API["runs"] = [yday, hung, early_run]
 edge = last_id()
-tick(K("08:45"))
+tick(K("10:45"))
 API["runs"] = [yday, hung_off, dict(early_run, status="in_progress")]
-tick(K("08:55"))
+tick(K("10:55"))
 check("…отмена подтверждена, досрочный, ждавший за зависшим, идёт → второго заказа и тревог нет",
       ORDERS == [6] and len(TAGS) == 1 and alarms_after(edge) == []
       and any("остановлен" in n for n in notes_after(edge)), (ORDERS, TAGS, notes_after(edge)))
-hung_e = mkrun(K("08:41"), status="in_progress", title="Обход full-6")
-reset(K("11:10"), [yday, hung_off, hung_e])
-order_of(f"{DAY} 08:40", 6)
-state_set({"order": f"{DAY} 08:40", "slot": f"{DAY} 06:15", "early": True})
-jset("crawl_early", early_mem(for_="06:15", replaces="16:15", ordered="08:40"))
+hung_e = mkrun(K("10:41"), status="in_progress", title="Обход full-6")
+reset(K("13:10"), [yday, hung_off, hung_e])
+order_of(f"{DAY} 10:40", 6)
+state_set({"order": f"{DAY} 10:40", "slot": f"{DAY} 08:15", "early": True})
+jset("crawl_early", early_mem(for_="08:15", replaces="16:15", ordered="10:40"))
 edge = last_id()
-tick(K("11:10"))
+tick(K("13:10"))
 check("ДОСРОЧНЫЙ идёт 148 мин → заявка отмены и сразу ТРЕВОГА, заказов нет",
       TAGS == [("cancel", str(hung_e["id"]))] and ORDERS == [] and len(alarms_after(edge)) == 1
       and "Следующий плановый — 16:15 (2 сут.)" in alarms_after(edge)[0],
       (TAGS, ORDERS, notes_after(edge)))
-API["runs"] = [yday, hung_off, finished(hung_e, K("11:12"), "cancelled")]
-ticks("11:25", "11:40", "11:55")
+API["runs"] = [yday, hung_off, finished(hung_e, K("13:12"), "cancelled")]
+ticks("13:25", "13:40", "13:55")
 check("…дальше тихо: одна тревога на досрочный, ни заказов, ни новых отмен",
       ORDERS == [] and len(TAGS) == 1 and len(alarms_after(edge)) == 1, (ORDERS, TAGS, notes_after(edge)))
 NOW[0] = K("16:15")
@@ -1199,9 +1204,9 @@ edge = last_id()
 ticks("21:00", "21:15", "21:30")
 check("ДОСРОЧНЫЙ упал уже ПОСЛЕ слота, который пропустили ради него → одна ТРЕВОГА, заказов нет",
       ORDERS == [] and len(alarms_after(edge)) == 1, (ORDERS, notes_after(edge)))
-check("…тревога правдива: 20:30 остался без обхода, следующий плановый — 06:15",
+check("…тревога правдива: 20:30 остался без обхода, следующий плановый — 08:15",
       "Плановый 20:30 был пропущен" in alarms_after(edge)[0]
-      and "Следующий плановый — 06:15 (6 сут.)" in alarms_after(edge)[0]
+      and "Следующий плановый — 08:15 (6 сут.)" in alarms_after(edge)[0]
       and "20:30 пойдёт" not in alarms_after(edge)[0], notes_after(edge))
 mfail = mkrun(K("13:01"), ended=K("13:10"), conclusion="failure", title="Обход full-6")
 reset(K("13:15"), [probe, mfail])
@@ -1431,21 +1436,22 @@ check("книга: закрытые заказы старше суток ухо�
 
 # ── С4д. заказ состарился ───────────────────────────────────────────────────
 rule("С4д", "текущий заказ за 6 часов так и не закрыт")
-reset(K("13:00"), [yday])
-order_of(f"{DAY} 06:15", 6)
-jset("crawl_slot", {"slot": f"{DAY} 06:15", "days": 6, "at": f"{DAY} 06:15", "state": "ordered"})
-state_set({"order": f"{DAY} 06:15", "slot": f"{DAY} 06:15"})
+reset(K("15:00"), [yday])
+order_of(f"{DAY} 08:15", 6)
+jset("crawl_slot", {"slot": f"{DAY} 08:15", "days": 6, "at": f"{DAY} 08:15", "state": "ordered"})
+state_set({"order": f"{DAY} 08:15", "slot": f"{DAY} 08:15"})
 edge = last_id()
-ticks("13:00", "13:15")
+ticks("15:00", "15:15")
 check("заказу 6 ч 45 мин, он не закрыт, прогона в списке нет → одна ТРЕВОГА, заказов нет",
       ORDERS == [] and len(alarms_after(edge)) == 1 and "так и не дошёл" in alarms_after(edge)[0]
       and state_get().get("failed") is True, (ORDERS, notes_after(edge)))
-reset(K("13:00"), [yday, done6])
-order_of(f"{DAY} 06:15", 6)
-jset("crawl_slot", {"slot": f"{DAY} 06:15", "days": 6, "at": f"{DAY} 06:15", "state": "ordered"})
-state_set({"order": f"{DAY} 06:15", "slot": f"{DAY} 06:15"})
+done8 = mkrun(K("08:16"), ended=K("09:40"), title="Обход full-6")
+reset(K("15:00"), [yday, done8])
+order_of(f"{DAY} 08:15", 6)
+jset("crawl_slot", {"slot": f"{DAY} 08:15", "days": 6, "at": f"{DAY} 08:15", "state": "ordered"})
+state_set({"order": f"{DAY} 08:15", "slot": f"{DAY} 08:15"})
 edge = last_id()
-tick(K("13:00"))
+tick(K("15:00"))
 check("заказ состарился, но результат на сервере → закрыт молча",
       notes_after(edge) == [] and state_get().get("done") is True, notes_after(edge))
 reset(K("23:00"), [yday])
@@ -1494,8 +1500,8 @@ jset("crawl_slot", {"slot": "2026-11-09 20:30", "days": 6, "at": "2026-11-09 20:
                     "state": "ordered"})
 edge = last_id()
 ticks("15:00", "15:15")
-check("слот 06:15 пропал, а узнали через 8 ч 45 мин → одна ТРЕВОГА «поздно», заказа нет",
-      ORDERS == [] and len(alarms_after(edge)) == 1 and "06:15" in alarms_after(edge)[0]
+check("слот 08:15 пропал, а узнали через 6 ч 45 мин → одна ТРЕВОГА «поздно», заказа нет",
+      ORDERS == [] and len(alarms_after(edge)) == 1 and "08:15" in alarms_after(edge)[0]
       and jget("crawl_missed").get("state") == "late", (ORDERS, notes_after(edge)))
 reset(K("16:30"), [probe])                   # заявку оборвали сразу после отметки
 jset("crawl_slot", {"slot": f"{DAY} 16:15", "days": 2, "at": f"{DAY} 16:15", "state": "started"})
@@ -1585,14 +1591,14 @@ check("заявку досрочного GitHub не принял → одна �
       ORDERS == [6] and len(alarms_after(edge)) == 1
       and "заказать не вышло" in alarms_after(edge)[0] and "20:30" in alarms_after(edge)[0],
       (ORDERS, notes_after(edge)))
-reset(K("06:15"), [])
+reset(K("08:15"), [])
 edge = last_id()
 mark("идёт", 35, "full-6")
 planned(6)
 API["runs"] = [probe]
-tick(K("06:30"))
+tick(K("08:30"))
 early = jget("crawl_early")
-check("сорвался 06:15 (6 дней) → в 06:30 заказ на 6 дней; ближайший плановый — 16:15 (2 дня)",
+check("сорвался 08:15 (6 дней) → в 08:30 заказ на 6 дней; ближайший плановый — 16:15 (2 дня)",
       ORDERS == [6] and early.get("replaces") == f"{DAY} 16:15" and early.get("days") == 6, early)
 check("…пропуск 16:15 сторож НЕ обещает: до него дальше окна «досрочно»",
       not any("повторять не буду" in n for n in notes_after(edge))
@@ -1604,13 +1610,13 @@ planned(6)
 API["runs"] = [probe]
 tick(K("20:45"))
 early = jget("crawl_early")
-check("сорвался 20:30 → в 20:45 заказ на 6 дней; ближайший плановый — 06:15 завтра",
-      ORDERS == [6] and early.get("replaces") == f"{NEXT} 06:15", early)
+check("сорвался 20:30 → в 20:45 заказ на 6 дней; ближайший плановый — 08:15 завтра",
+      ORDERS == [6] and early.get("replaces") == f"{NEXT} 08:15", early)
 API["runs"] = [probe, mkrun(K("20:46"), ended=K("22:10"), title="Обход full-6")]
 tick(K("22:30"))
-NOW[0] = K("06:15", NEXT)
+NOW[0] = K("08:15", NEXT)
 setting("crawl_running", "")
-check("…утром 06:15 плановый на 6 идёт как обычно (досрочный был за 9 часов)",
+check("…утром 08:15 плановый на 6 идёт как обычно (досрочный был за 11 с половиной часов)",
       planned(6) == [("days", "6")])
 cover6 = mkrun(K("16:20"), status="in_progress", title="Обход full-6")
 reset(K("16:30"), [probe, cover6])
@@ -1836,12 +1842,12 @@ check("S3: 200 заказов в одну секунду — 200 разных id
 
 # S4. перевод часов 25.10.2026
 s = list(watch._slots(datetime(2026, 10, 25).date()))
-check("S4: 06:15 Киева 25.10 = 04:15 UTC (зима), 24.10 = 03:15 UTC (лето)",
-      s[0][0].strftime("%H:%M") == "04:15"
-      and list(watch._slots(datetime(2026, 10, 24).date()))[0][0].strftime("%H:%M") == "03:15")
-check("S4: после 20:30 24.10 следующий — 06:15 25.10 на 6",
+check("S4: 08:15 Киева 25.10 = 06:15 UTC (зима), 24.10 = 05:15 UTC (лето)",
+      s[0][0].strftime("%H:%M") == "06:15"
+      and list(watch._slots(datetime(2026, 10, 24).date()))[0][0].strftime("%H:%M") == "05:15")
+check("S4: после 20:30 24.10 следующий — 08:15 25.10 на 6",
       watch.next_slot(datetime(2026, 10, 24, 17, 31, tzinfo=timezone.utc))
-      == (datetime(2026, 10, 25, 4, 15, tzinfo=timezone.utc), 6))
+      == (datetime(2026, 10, 25, 6, 15, tzinfo=timezone.utc), 6))
 second_pass = datetime(2026, 10, 25, 1, 30, tzinfo=timezone.utc)      # 03:30 зимнего
 conn = db.connect()
 try:
@@ -2310,13 +2316,66 @@ check("Н10: старые киевские отметки памяти по-пр
       and watch.moment("2026-10-25T01:10:00+00:00") == datetime(2026, 10, 25, 1, 10,
                                                                   tzinfo=timezone.utc))
 
+# ── ночь 20:30 → 08:15 и запасной запуск по расписанию GitHub (06.10) ───────
+rule("ночь", "утренний слот 08:15: ночь без досрочных, запасной запуск GitHub после утра")
+check("ночь для досрочных — с 22:30 до утреннего слота 08:15 по Киеву",
+      [watch.in_night(K(h)) for h in ("22:29", "22:30", "23:59", "00:00", "03:00", "08:14", "08:15",
+                                      "12:00", "20:45")]
+      == [False, True, True, True, True, True, False, False, False])
+reset(K("20:30"), [probe])
+setting("crawl_request", f"обход 6 сут.|{DAY} 20:30")
+conn = db.connect()
+try:
+    watch.add_order(conn, "full-6", f"{DAY} 20:30", f"{DAY} 20:30", "cron", at=K("20:30"))
+finally:
+    conn.close()
+jset("crawl_slot", {"slot": f"{DAY} 20:30", "days": 6, "at": f"{DAY} 20:30", "state": "ordered"})
+late_fail = mkrun(K("20:31"), ended=K("22:40"), conclusion="failure", title="Обход full-6")
+API["runs"] = [probe, late_fail]
+edge = last_id()
+ticks("22:45", "23:00", "23:15")
+check("ночь: вечерний 20:30 упал в 22:40 → досрочный НЕ заказан (сайты до утра отдают вчерашние "
+      "телесутки), тревоги нет, строка «его дни соберёт утренний плановый 08:15»",
+      ORDERS == [] and alarms_after(edge) == [] and jget("crawl_missed").get("state") == "night"
+      and any("ночь" in n and "08:15" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
+NOW[0] = K("08:15", NEXT)
+setting("crawl_running", "")
+check("…а утром 08:15 плановый на 6 уходит как обычно", planned(6) == [("days", "6")])
+reset(K("20:30"), [probe])
+setting("crawl_request", f"обход 6 сут.|{DAY} 20:30")
+conn = db.connect()
+try:
+    watch.add_order(conn, "full-6", f"{DAY} 20:30", f"{DAY} 20:30", "cron", at=K("20:30"))
+finally:
+    conn.close()
+jset("crawl_slot", {"slot": f"{DAY} 20:30", "days": 6, "at": f"{DAY} 20:30", "state": "ordered"})
+API["runs"] = [probe, mkrun(K("20:31"), ended=K("21:50"), conclusion="failure", title="Обход full-6")]
+tick(K("22:00"))
+check("вечер до 22:30: 20:30 упал в 21:50 → досрочный на 6 в 22:00, утренний 08:15 он не заменяет "
+      "(10 ч 15 мин > 4 ч 20 мин)",
+      ORDERS == [6] and jget("crawl_early").get("replaces") == f"{NEXT} 08:15"
+      and watch.covers_from(K("08:15", NEXT)) > K("22:00"), (ORDERS, jget("crawl_early")))
+crawl_yml = (ROOT / ".github" / "workflows" / "crawl.yml").read_text(encoding="utf-8")
+gh_cron = re.search(r'cron:\s*"(\d+) (\d+) \* \* \*"', crawl_yml)
+gh_at = datetime(2026, 7, 10, int(gh_cron.group(2)), int(gh_cron.group(1)), tzinfo=timezone.utc)
+gh_winter = gh_at.replace(month=1)
+check("запасной запуск GitHub — после утреннего планового 08:15 с его возможным досрочным "
+      "(≥ 11:00 Киева и летом, и зимой) и до 16:15 с запасом на обход (≤ 14:30)",
+      all("11:00" <= x.astimezone(KYIV).strftime("%H:%M") <= "14:30" for x in (gh_at, gh_winter)),
+      (gh_at.astimezone(KYIV), gh_winter.astimezone(KYIV)))
+gh_run = mkrun(K("12:17"), status="in_progress", title="Обход по расписанию", event="schedule")
+check("запуск по расписанию GitHub — свой вид: заказом не считается, очередь его не бережёт",
+      watch.run_kind(gh_run) == ("schedule", 0)
+      and not watch.answers("full-6", gh_run)
+      and watch.waiting_crawl([dict(gh_run, status="pending")], SLUG) is None)
+
 # ── итог: сколько обходов за сутки при устойчивой поломке ───────────────────
 def bad_day(hang: bool) -> tuple[list, list, int, list]:
     """Сутки, в которые не удаётся НИ ОДИН обход: каждый либо проходит целиком
     и краснеет (hang=False), либо виснет до отмены (hang=True). Заявки идут
     по cron в слоты, сторож — каждые 15 минут. Возвращает (теги плановых
     заявок, заказы сторожа, число заявок отмены, тревоги)."""
-    reset(K("06:15"), [yday])
+    reset(K("08:15"), [yday])
     edge = last_id()
     spawned: list[dict] = []     # {created, days, id, ended, conclusion}
     plan_tags, cancel_tags = [], 0
@@ -2340,8 +2399,8 @@ def bad_day(hang: bool) -> tuple[list, list, int, list]:
                              rid=s["id"]))
         return out
 
-    now = K("06:15")
-    while now <= K("02:00", NEXT):
+    now = K("08:15")
+    while now <= K("04:00", NEXT):
         API["runs"] = world(now)
         NOW[0] = now
         setting("crawl_running", "")         # стук «закончил» / срок отметки
@@ -2363,19 +2422,22 @@ def bad_day(hang: bool) -> tuple[list, list, int, list]:
         for days in ORDERS[seen_orders:]:
             spawn(days, now + timedelta(minutes=1))
         now += timedelta(minutes=15)
-    return plan_tags, list(ORDERS), cancel_tags, alarms_after(edge)
+    return plan_tags, list(ORDERS), cancel_tags, alarms_after(edge), notes_after(edge)
 
 
 rule("итог", "худшие сутки: не удаётся ни один обход")
-plans, orders, cancels, alarms = bad_day(hang=False)
+plans, orders, cancels, alarms, lines = bad_day(hang=False)
 check("каждый обход проходит и краснеет → за сутки 3 плановых + 3 досрочных = 6 обходов, не больше",
       plans == [("days", "6"), ("days", "2"), ("days", "6")] and orders == [6, 6, 6],
       (plans, orders))
 check("…и три ТРЕВОГИ — по одной на сорвавшийся слот", len(alarms) == 3, alarms)
-plans, orders, cancels, alarms = bad_day(hang=True)
-check("каждый обход виснет → те же 3 плановых + 3 досрочных, каждому одна отмена (6), три ТРЕВОГИ",
-      plans == [("days", "6"), ("days", "2"), ("days", "6")] and orders == [6, 6, 6]
-      and cancels == 6 and len(alarms) == 3, (plans, orders, cancels, alarms))
+plans, orders, cancels, alarms, lines = bad_day(hang=True)
+check("каждый обход виснет → 3 плановых + 2 досрочных, каждому одна отмена (5), две ТРЕВОГИ: "
+      "вечерний 20:30 виснет до 22:50 — досрочный за него уже ночью не заказывается",
+      plans == [("days", "6"), ("days", "2"), ("days", "6")] and orders == [6, 6]
+      and cancels == 5 and len(alarms) == 2, (plans, orders, cancels, alarms))
+check("…вместо ночного досрочного — строка «ночью досрочно не заказываю, соберёт утренний 08:15»",
+      any("ночь" in n and "08:15" in n for n in lines), lines[-5:])
 
 # ── workflow: защита и вид прогона ──────────────────────────────────────────
 rule("workflow", "queue.yml и crawl.yml")
