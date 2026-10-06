@@ -1130,8 +1130,8 @@ watch.RECOVERY["planned-failed"] = saved_step
 check("таблица RECOVERY — единственное место решения: «planned-failed → alarm» даёт ТРЕВОГУ без досрочного",
       ORDERS == [] and len(alarms_after(edge)) == 1 and "плановый обход 16:15" in alarms_after(edge)[0],
       (ORDERS, notes_after(edge)))
-check("в таблице только шаги early / retry / alarm; незнакомый вид сбоя — ТРЕВОГА",
-      set(watch.RECOVERY.values()) <= {"early", "retry", "alarm"}
+check("в таблице только шаги early / retry / alarm / close; незнакомый вид сбоя — ТРЕВОГА",
+      set(watch.RECOVERY.values()) <= {"early", "retry", "alarm", "close"}
       and watch.recovery("что-то-новое") == "alarm"
       and [watch.failure_of(s, "failed") for s in
            ({"slot": "x"}, {"early": True, "slot": "x"}, {"slot": ""}, {"slot": "", "reordered": True})]
@@ -2168,9 +2168,37 @@ live = mkrun(K("16:15") + timedelta(seconds=10), status="in_progress", title="О
 jset("crawl_cancel", {str(live["id"]): {"at": watch.when(K("16:20")), "number": 1,
                                         "alarmed": False, "by": "владелец"}})
 API["runs"] = [probe, finished(live, K("16:21"), "cancelled")]
+edge = last_id()
 tick(K("16:30"))
-check("N6: ПЛАНОВЫЙ, остановленный владельцем, — как задумано: досрочный (вопрос владельцу)",
-      ORDERS == [6], ORDERS)
+check("N6: ПЛАНОВЫЙ, остановленный владельцем, — «стоп = стоп» (владелец 06.10): досрочного "
+      "нет, слот не сорвавшийся, тревоги нет, строка «остановил владелец»",
+      ORDERS == [] and alarms_after(edge) == [] and jget("crawl_missed") == {}
+      and any("остановил владелец" in n for n in notes_after(edge))
+      and book()[0].get("stopped") is True, (ORDERS, notes_after(edge), jget("crawl_missed")))
+ticks("16:45", "17:00")
+NOW[0] = K("20:30")
+setting("crawl_running", "")
+check("N6: …и на следующих проверках ничего не заказано, а следующий плановый 20:30 идёт по "
+      "расписанию",
+      ORDERS == [] and planned(6) == [("days", "6")], ORDERS)
+reset(K("16:30"), [probe])
+jset("crawl_missed", gap())
+tick(K("16:30"))                             # досрочный на 6 за 16:15 вместо 20:30
+early_live = mkrun(K("16:31"), status="in_progress", title="Обход full-6")
+jset("crawl_cancel", {str(early_live["id"]): {"at": watch.when(K("16:40")), "number": 1,
+                                              "alarmed": False, "by": "владелец"}})
+API["runs"] = [probe, finished(early_live, K("16:41"), "cancelled")]
+edge = last_id()
+ticks("16:45", "17:00")
+check("N6: ДОСРОЧНЫЙ, остановленный владельцем, → без тревоги и без новых заказов, строка "
+      "«остановил владелец»",
+      ORDERS == [6] and alarms_after(edge) == [] and jget("crawl_early").get("state") == "stopped"
+      and any("остановил владелец" in n for n in notes_after(edge)),
+      (ORDERS, notes_after(edge), jget("crawl_early")))
+NOW[0] = K("20:30")
+setting("crawl_running", "")
+check("N6: …а плановый 20:30, который он должен был заменить, идёт по расписанию",
+      planned(6) == [("days", "6")])
 
 # N7. лёгкий список для ожидания старта и кнопок
 asked_limits = []

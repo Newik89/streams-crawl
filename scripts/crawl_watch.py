@@ -296,8 +296,8 @@ def cancel_stuck(t: Round) -> None:
     decisions = watch.cancel_decisions(t.runs, t.now, t.cancels, t.slug, own, t.queue)
     for action, rid, words in decisions:
         if action in ("forget", "confirmed") and t.cancels[rid].get("by") == "владелец":
-            # остановил владелец кнопкой: ручной заказ этого прогона С4
-            # закроет без повтора («стоп = стоп»)
+            # остановил владелец кнопкой: заказ этого прогона (любой) С4
+            # закроет без перезаказа и тревоги («стоп = стоп»)
             t.owner_stopped.add(rid)
         if action == "forget":
             t.cancels.pop(rid)
@@ -351,9 +351,13 @@ def follow_order(t: Round, rec: dict, run: dict | None) -> None:
         watch.note(t.conn, words)
         if rec.get("early"):
             early_reached(t)
-    elif verdict == "stopped":                                           # С4в
+    elif verdict == "stopped":                                           # С4а′
+        failure = watch.failure_of(rec, "stopped")
         rec["stopped"] = True
-        watch.note(t.conn, f"{order_words(t)}: {words}")
+        if rec.get("early"):
+            t.early["state"] = "stopped"
+            t.save("crawl_early", t.early)
+        recover(t, failure, f"{order_words(t)}: {words}")
     elif verdict == "replaced":                                          # С4в
         rec["replaced"] = True
         watch.note(t.conn, f"{order_words(t)}: {words}")
@@ -386,12 +390,12 @@ def judge(t: Round, rec: dict, run: dict | None) -> tuple[str, str, str]:
         result = watch.result_state(ROOT, start, end, rec["what"],
                                     watch.imported_stamps(t.conn, rec["what"]), t.git)
         replaced = watch.superseded_by(rec["what"], run, t.runs, t.ordered_ids)
-        if (str(run.get("id")) in t.owner_stopped
-                and watch.order_kind(rec) in watch.RETRIED and not rec.get("reordered")):
-            # «стоп = стоп» (владелец 06.10): ручной сбор, остановленный
-            # владельцем, — не срыв; плановый и досрочный идут как обычно
+        if str(run.get("id")) in t.owner_stopped:
+            # «стоп = стоп» (владелец 06.10): сбор, остановленный владельцем
+            # кнопкой, — не срыв; что дальше — строка «<вид>-stopped» в RECOVERY
             return "stopped", (f"прогон #{run.get('run_number')} остановил владелец "
-                               f"кнопкой — не повторяю"), result
+                               f"кнопкой — ничего не перезаказываю, следующий "
+                               f"плановый пойдёт по расписанию"), result
     hidden = bool(t.oldest and order["at"] < t.oldest)
     verdict, words = watch.decide(order, run, t.now, rec, result, hidden, replaced)
     if verdict == "wait" and run is not None and str(run.get("id")) in t.cancelling:
@@ -436,6 +440,7 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
     сейчас).
       early — слот в `crawl_missed`, досрочный решит С6 в этой же проверке
       retry — один повтор той же заявки; не ушёл — снова сюда (<вид>-retry-refused)
+      close — только строка (сбор остановил владелец): ничего не заказываем
       alarm — ТРЕВОГА с честным «что дальше»; новых заказов нет"""
     step = watch.recovery(failure)
     if step == "early":
@@ -448,6 +453,8 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
         t.save("crawl_missed", t.missed)
     elif step == "retry":
         retry(t, what)
+    elif step == "close":
+        t.say(what)
     else:
         # какой плановый пойдёт следующим, считаем от СЕЙЧАС: заменяемый
         # слот мог уже пройти, пока досрочный шёл (З3, пометка skipped)
