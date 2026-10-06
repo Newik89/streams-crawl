@@ -60,6 +60,10 @@ _WOMEN = re.compile(
     r"|\bdamer\b|\bdames\b|\bnaiset\b|\bnői\b|\bnoi\b|\bfeminin\w*\b"
     r"|\bžene?\b|\bza žene\b|\bжінк\w*\b|\bwomen\b|\bkvinn\w*\b|\bkvinder\b"
     r"|\bfrauen\b|\(ž\)|\(w\)"
+    # «(k)» — kvinder/kvinner/kvinnor: «Fodbold: Canada - Danmark (k),
+    # direkte» у dr.dk, «Fodbold (k)» у allente.no и tv2.no — женский
+    # товарищеский 10.10 шёл мужским и не сводился с «Denmark W» (#205)
+    r"|\(k\)"
     # «Чемпионат мира. Женщины» (vsetv), «MS žen» (чехи), «Europe Cup Ž»
     # (сербы), одиночные «Ж»/«Γ» (кириллица, греки) — ЧМ шёл мужским (06.09);
     # «moterų» — литовский tv3.lt (FIBA moterų … čempionatas)
@@ -82,6 +86,26 @@ _WOMEN_LEAGUES = re.compile(
     # английская женская суперлига пишется без слова «женская»;
     # без страны `WSL` не берём — так зовут и лигу сёрфинга
     r"|england:\s*wsl\b", re.I)
+
+#: турниры, которые бывают ТОЛЬКО молодёжными, а возраст в названии сайт не
+#: пишет (как `_WOMEN_LEAGUES` для пола). Значение — возраст, под которым
+#: команды этой лиги записаны в эталоне flashscore. Без списка молодёжный
+#: матч шёл с именами взрослых и сводился со взрослым клубом (canal11.pt:
+#: «Liga Next Gen» FELGUEIRAS — ESTRELA ↔ эталон «Felgueiras U23 — Estrela
+#: U23», самопроверка #205, 06.10). Правила:
+#:   1. только турниры, где в эталоне У ВСЕХ команд одна метка возраста;
+#:   2. название целиком, без общих слов: «Premier League 2» — да, но не
+#:      «Premier League 2.» («2. kolo» — тур взрослой лиги);
+#:   3. встретил новый — дописать сюда с возрастом из эталона.
+_AGED_LEAGUES = (
+    # Португалия: «Liga Next Gen» (до 2025 — «Liga Revelação»), U23
+    (re.compile(r"\bliga next ?gen\b|\bliga revela[cç][aã]o\b", re.I), "U23"),
+    # Англия: «Premier League 2», «Professional Development League» — U21
+    (re.compile(r"\bpremier league 2(?![\w.])|\bprofessional development league\b",
+                re.I), "U21"),
+    # ЮАР: «Diski Challenge» (резервная лига ПСЛ) — U23
+    (re.compile(r"\bdiski challenge\b", re.I), "U23"),
+)
 
 #: молодёжный турнир, в названии которого нет цифры возраста: teleman пишет
 #: юношескую ЛЧ «Liga Młodzieżowa UEFA», и без метки юноши шли той же парой,
@@ -149,8 +173,12 @@ def category(raw: str) -> str:
     """
     parts = []
     m = _AGE.search(raw or "")
+    aged = next((age for pattern, age in _AGED_LEAGUES
+                 if pattern.search(raw or "")), "")
     if m:
         parts.append(f"U{m.group(1) or m.group(2)}")
+    elif aged:
+        parts.append(aged)
     elif _U21_NATIONAL.search(raw or ""):
         parts.append("U21")
     elif _YOUTH_LEAGUES.search(raw or ""):

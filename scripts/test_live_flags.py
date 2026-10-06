@@ -46,6 +46,7 @@ from app.parsers import (SITE_FLAG, SITE_LIVE, SITE_LIVE_WORD,   # noqa: E402
                          SITE_REPEAT, SITE_REPEAT_WORD, Program, get,
                          mark_first_show, site_says)
 import audit_run                                                 # noqa: E402
+import parse_live as parse_live_mod                              # noqa: E402
 
 DATA = ROOT / "scripts" / "testdata" / "live_flags"
 KYIV = ZoneInfo("Europe/Kyiv")
@@ -387,6 +388,128 @@ twin = {"эталон": [{"fs_id": "0K7iLNL7", "home": "Olimpia Asuncion",
 lines = audit_run.check_reference(twin)
 check("эталон: один fs_id с двумя временами (ровно сутки — полночь страниц)",
       lines and "ровно на сутки" in lines[0] and "разнесены 1" in lines[0], lines)
+
+# ── второй круг самопроверки (сбор #205, 06.10) ──────────────────────────────
+print("Второй круг: лиги, клички, ORF, проверки 5/6/7/10 audit_run")
+check("«Liga Next Gen» (canal11.pt) — турнир U23: команды получают U23",
+      leagues.category("Liga Next Gen: FC FELGUEIRAS - CF ESTRELA") == "U23"
+      and leagues.category("Liga Revelação") == "U23")
+check("«Premier League 2» — U21, а «Premier League 2. kolo» (тур взрослой) — нет",
+      leagues.category("Premier League 2: Chelsea - Arsenal") == "U21"
+      and leagues.category("Premier League 2. kolo: Chelsea - Arsenal") == "")
+check("«(k)» — женский: «Fodbold: Canada - Danmark (k), direkte» (dr.dk)",
+      leagues.category("Fodbold: Canada - Danmark (k), direkte") == "W")
+check("клички: QPR, Barca, VENEZA, UAE, Hapoel TA, BiH U21, Internazionale, "
+      "Brose = эталон",
+      all(names.same_team(a, b) for a, b in (
+          ("QPR", "Queens Park Rangers"), ("QPR", "Куинс Парк Рейнджърс"),
+          ("Barca", "Barcelona"), ("VENEZA", "Venezia"),
+          ("UAE", "United Arab Emirates"), ("Hapoel TA", "Hapoel Tel Aviv"),
+          ("BiH U21", "Bosnia & Herzegovina U21"), ("Internazionale", "Inter"),
+          ("Brose", "Bamberg"),
+          ("Crvena Zvezda Bělehrad", "Crvena Zvezda Meridianbet"))))
+check("соседи кличек не сходятся: QPR ≠ Queen's Park, Hapoel TA ≠ Maccabi Tel "
+      "Aviv, VENEZA ≠ Venezuela, BiH U21 ≠ взрослой BiH",
+      not any(names.same_team(a, b) for a, b in (
+          ("Queens Park Rangers", "Queens Park"), ("Hapoel TA", "Maccabi Tel Aviv"),
+          ("VENEZA", "Venezuela"), ("BiH U21", "Bosnia & Herzegovina"),
+          ("Internazionale", "Inter Turku"))))
+
+orf_rows = parse("tv.orf.at", "orf_sport_plus.html",
+                 "https://tv.orf.at/program/orfs/index.html")
+check("tv.orf.at отдаёт строки в порядке страницы (самопроверка видела «время "
+      "пошло назад» из-за склейки угадываемых и остальных)",
+      [p.start for p in orf_rows] == sorted(p.start for p in orf_rows))
+
+kolla_json = ('{"status": true, "content": {"channels": [{"name": "SVT1", "programs": ['
+              '{"name": "Fotboll: Allsvenskan, AIK - Hammarby", "startTime": 1791313200000},'
+              '{"name": "Nyheter", "startTime": 1791291600000}]}]}}')
+kolla = get("dagenstv.com")(kolla_json, day=date(2026, 10, 6), url="")
+check("kolla.tv: передачи канала по времени (ручка отдаёт вразнобой)",
+      [p.title for p in kolla] == ["Nyheter", "Fotboll: Allsvenskan, AIK - Hammarby"],
+      [p.title for p in kolla])
+
+copy = Program(channel_raw="Diema Sport", title="Черно море - Левски", start=None)
+row_a = pipeline.Row(program=copy, ok=True, home="Черно море", away="Левски", sport="F",
+                     start_kyiv=datetime(2026, 10, 11, 17, 30, tzinfo=KYIV))
+row_b = pipeline.Row(program=Program(channel_raw="Diema Sport", title="Черно море - Левски",
+                                     start=None),
+                     ok=True, home="Черно море", away="Левски", sport="F",
+                     start_kyiv=datetime(2026, 10, 11, 17, 30, tzinfo=KYIV))
+kept, dropped = parse_live_mod.unique_rows([("diemaxtra.nova.bg", row_a),
+                                            ("diemaxtra.nova.bg", row_b),
+                                            ("nova.bg", row_b)])
+check("одна передача с двух страниц сайта — одна строка (другой сайт — своя)",
+      dropped == 1 and len(kept) == 2, (dropped, len(kept)))
+
+site = audit_run.Site("dagenstv.com")
+for d in ("2026-10-06", "2026-10-07", "2026-10-08"):
+    site.by_content["same"].append((d, "", f"kolla_{d}.html"))
+site.by_content["other"].append(("2026-10-06", "SVT1", "x.html"))
+same = audit_run.check_same_pages({"dagenstv.com": site})
+check("проверка 10: три даты — один файл → 2 запроса впустую",
+      len(same) == 1 and "2 запрос" in same[0], same)
+
+site = audit_run.Site("tv.orf.at")
+site.undated_yesterday.append(("ORF SPORT+", date(2026, 10, 6), "index: вчера"))
+site.undated_yesterday.append(("ORF 1", date(2026, 10, 6), "index: вчера"))
+site.days_held.add(("ORF SPORT+", date(2026, 10, 6)))
+lines = audit_run.check_days({"tv.orf.at": site})
+check("проверка 5: «сегодня» без даты отдало вчера — подозрение, только если "
+      "день не скачан другой страницей (ORF SPORT+ скачан ссылкой, ORF 1 — нет)",
+      len(lines) == 1 and "1 стр." in lines[0], lines)
+
+ref_round = [{"fs_id": f"w{i}", "league": "BOSNIA AND HERZEGOVINA: WWIN Liga BiH",
+              "start_kyiv": "2026-10-10T18:00", "home": f"H{i}", "away": f"A{i}"}
+             for i in range(5)]
+ref_round.append({"fs_id": "pl1", "league": "ENGLAND: Premier League",
+                  "start_kyiv": "2026-10-10T17:00", "home": "Ipswich", "away": "Fulham"})
+
+
+def lost_row(channel, title, home, away, hour, day=11):
+    prog = Program(channel_raw=channel, title=title, start=None,
+                   extra={SITE_FLAG: SITE_LIVE})
+    return pipeline.Row(program=prog, ok=True, home=home, away=away, sport="F",
+                        start_kyiv=datetime(2026, 10, day, hour, 0, tzinfo=KYIV))
+
+
+arena = audit_run.Site("tvarenasport.ba")
+arena.rows.append((lost_row("Arena Premium 1", "Sloga - Zrinjski", "Sloga",
+                            "Zrinjski", 17), "p"))
+diema = audit_run.Site("diemaxtra.nova.bg")
+diema.rows.append((lost_row("Diema Sport 2", "Ипсуич Таун - Фулъм", "Ипсуич Таун",
+                            "Фулъм", 16, 12), "p"))
+games_lost = {"окно": 6, "собрано": "2026-10-06 03:20", "эталон": ref_round,
+              "games": [], "на_разбор": [], "снято": [
+                  {"фильтр": parse_live_mod.СНЯТО_СЫГРАН, "домен": "tvarenasport.ba",
+                   "канал": "Arena Premium 1", "заголовок": "Sloga - Zrinjski",
+                   "почему": "эталон: Sloga Meridian - Zrinjski 10.10 18:00 (fs_id w0)"},
+                  {"фильтр": parse_live_mod.СНЯТО_СЫГРАН, "домен": "diemaxtra.nova.bg",
+                   "канал": "Diema Sport 2", "заголовок": "Ипсуич Таун - Фулъм",
+                   "почему": "эталон: Ipswich - Fulham 10.10 17:00 (fs_id pl1)"}]}
+lost, info = audit_run.check_lost({"tvarenasport.ba": arena,
+                                   "diemaxtra.nova.bg": diema}, games_lost)
+check("проверка 6: снятое «повтор по flashscore» при заглушке тура в эталоне — "
+      "подозрение (Arena BA), при настоящем времени — справка (Diema)",
+      len(lost) == 1 and "tvarenasport.ba" in lost[0] and "заглушка" in lost[0]
+      and any("diemaxtra" in x and "снято фильтром" in x for x in info), (lost, info))
+
+row = pipeline.Row(program=Program(channel_raw="Arena Sport 1", title="X", start=None,
+                                   league_raw="SRPSKA LIGA"),
+                   ok=True, home="Radnički Obrenovac", away="BSK 1926", sport="F",
+                   start_kyiv=datetime(2026, 10, 11, 12, 0, tzinfo=KYIV))
+site = audit_run.Site("tvarenasport.com")
+site.rows.append((row, "page"))
+games_bsk = {"окно": 0, "собрано": "2026-10-11 04:00", "games": [{"start_kyiv": "2026-10-11T12:00"}],
+             "эталон": [{"sport": "F", "home": "Radnicki Obrenovac", "away": "Bacevac",
+                         "league": "SERBIA: Srpska Liga - Belgrade", "fs_id": "b1",
+                         "start_kyiv": "2026-10-11T12:00"}]}
+aliases_bsk, _, info_bsk = audit_run.check_aliases_and_zones({"tvarenasport.com": site},
+                                                             games_bsk)
+check("проверка 7: двусмысленная кличка из KNOWN_NOT_ALIASES (BSK 1926) — в "
+      "справку, не в подозрения", not aliases_bsk
+      and any("BSK 1926" in x and "проверено" in x for x in info_bsk),
+      (aliases_bsk, info_bsk))
 
 print(f"\nИтого: {passed} зелёных, {len(failed)} красных")
 for name in failed:

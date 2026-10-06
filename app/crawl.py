@@ -125,7 +125,8 @@ DAY_GRID_DOMAINS = {"polsatsport.pl", "allente.no", "ceskatelevize.cz",
                     "atv.com.tr",
                     # Sport5: один запрос на день, в ответе все пять каналов
                     "sport5.co.il",
-                    # dagenstv/kolla.tv: сутки по 16 шведским каналам разом
+                    # dagenstv/kolla.tv: сутки по 16 шведским каналам разом;
+                    # день — номером `?day={DAYNUM}` (дату ручка не знает)
                     "dagenstv.com",
                     # COSMOTE: один адрес на день, в ответе все девять
                     # спортивных каналов; берём через читалку
@@ -274,10 +275,15 @@ def plan_source(conn, source_id: int, days: int = 2,
                 for c in channels]
 
     if row["domain"] in DAY_GRID_DOMAINS:
-        # дневная сетка: адрес на день, каналы все разом
+        # дневная сетка: адрес на день, каналы все разом. {DAYNUM} — номер
+        # дня от СЕГОДНЯ сайта, 0-based, как в `crawl_fetch.targets`: ручка
+        # kolla.tv (dagenstv.com) берёт день только так — `?day=1` завтра,
+        # а дату `dat=` молча пропускает и отдаёт сегодня (06.10, #205)
+        сегодня = daytime.today(tz)
         return [Target(
             url=urls.resolve(row["url_pattern"], row["base_url"], day=day,
-                             tz=tz, N=str(i + 1), **marks),
+                             tz=tz, N=str(i + 1),
+                             DAYNUM=str((day - сегодня).days), **marks),
             source_id=row["id"], domain=row["domain"], day=day,
             post=form(day))
             for i, day in enumerate(window(days, start))]

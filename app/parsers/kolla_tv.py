@@ -5,7 +5,13 @@ r"""kolla.tv (он же dagenstv.com) — Швеция, 16 каналов за �
 запрос по кругу редиректов, а сертификат отдаёт неполной цепочкой. Настоящий
 адрес данных нашёлся в его бандле — `baseURL: "https://www.kolla.tv"`:
 
-    https://www.kolla.tv/api/es/channels/listWithPrograms?dat=2026-09-01
+    https://www.kolla.tv/api/es/channels/listWithPrograms?day=1
+
+`day` — номер дня от сегодня (0 — сегодня; так шлёт сам сайт:
+`C.set("day", (неделя - 1) * 7 + номер_дня)` в бандле). Параметр `dat`
+ручка НЕ знает: до 06.10 мы просили `?dat=<дата>` и на все шесть дней окна
+получали одну и ту же страницу «сегодня» (md5 один, сбор #205; проба #209 —
+`day=1` дал 07.10, `day=5` — 11.10). Настройка — `scripts/add_kolla_days.py`.
 
 Ответ — сутки по всем каналам сразу:
 
@@ -97,4 +103,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 match_raw=_pair(title), source_url=url,
                 extra={"day": start.date().isoformat()},
             ))
+    # ручка отдаёт передачи канала вразнобой (SVT1: 11:00, 07:00, 12:30…) —
+    # возвращаем по времени, как идут в эфире (самопроверка #205 видела
+    # «время пошло назад»)
+    out.sort(key=lambda p: (p.channel_raw, p.start))
     return mark_first_show(out, "direkt")

@@ -40,7 +40,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
-from . import Program, register
+from . import Program, register, site_says
 
 DOMAIN = "tvarenaprogram.com"
 TZ = "Europe/Sarajevo"
@@ -126,7 +126,11 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                      if not (s.attributes.get("class") or "")), "")
                 live = block.css_first(".live-title") is not None
 
-                out.append(Program(
+                # «Uživo» — честный флаг сайта: пишем его как пометку сайта
+                # (`site_says`), а не одним словом в live_raw — по ней
+                # `parse_live.played_before` верит сайту против заглушки тура
+                # в эталоне (Sloga — Zrinjski, #205, 06.10)
+                out.append(site_says(Program(
                     channel_raw=channel, title=title,
                     start=datetime(d.year, d.month, d.day,
                                    int(hm.group(1)), int(hm.group(2)),
@@ -134,10 +138,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     raw_time=top.text(strip=True),
                     league_raw=league,
                     sport_raw=middle.text(strip=True) if middle else "",
-                    live_raw="uživo" if live else "",
                     match_raw=title, source_url=url,
                     extra={"day": d.isoformat()},
-                ))
+                ), True if live else None, "uživo"))
     return out
 
 
@@ -193,15 +196,14 @@ def parse_si(html: str, *, day: _date | None = None, tz: str | None = None,
             sport_node = rec.css_first("span.sport")
             event = rec.css_first(".event")
             live = rec.css_first(".status .live_icon")
-            out.append(Program(
+            out.append(site_says(Program(
                 channel_raw=channel, title=title,
                 start=datetime(page_day.year, page_day.month, page_day.day,
                                int(hm.group(1)), int(hm.group(2)), tzinfo=zone),
                 raw_time=t.text(strip=True),
                 league_raw=event.text(strip=True) if event else "",
                 sport_raw=sport_node.text(strip=True) if sport_node else "",
-                live_raw="v živo" if live else "",
                 match_raw=title, source_url=url,
                 extra={"day": page_day.isoformat()},
-            ))
+            ), True if live else None, "v živo"))
     return out

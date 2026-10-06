@@ -25,15 +25,24 @@ r"""Самопроверка прогона: ищет ИЗВЕСТНЫЕ кла�
   4. ЭТАЛОН ДВОИТСЯ. Один fs_id эталона flashscore с двумя временами.
   5. СДВИГ ДНЯ. Передачи страницы дня легли не на её день, или время в
      сетке канала пошло назад (страница начинается с вечера: sport1tv,
-     digisport «Marți 06» 06.10).
+     digisport «Marți 06» 06.10). Страница «сегодня» без даты, отдавшая
+     вчера (ночью — tv.orf.at, programetv.ro), подозрительна, только если
+     сам день у этого канала не скачан другой страницей.
   6. ПОТЕРЯ. Строка с парой и нашим видом спорта, которую сайт пометил
-     эфиром сам, прошла отсев — и не оказалась ни в играх, ни «на разбор».
+     эфиром сам, прошла отсев — и не оказалась ни в играх, ни «на разбор»,
+     ни в журнале «снято». Снятая фильтром «повтор по flashscore» — в
+     подозрения, только если время эталона похоже на заглушку тура
+     (`ROUND_SAME_TIME`): тогда сайт, скорее всего, прав (WWIN liga BiH).
   7. КЛИЧКА. Команда сайта не сводится с эталоном в ±30 мин, хотя вторая
      команда совпала твёрдо (DVSC ↔ Debrecen, PSG ↔ Paris SG).
   8. ПОЯС. Время сайта отличается от эталона на целые часы (tvpassport).
   9. УГАДЫВАЕТ БЕЗ СВЕРКИ. Разбор угадывает эфир (`repeat_guess`), а сверка
      с эталоном у строк выключена: домена нет в `REPEAT_GUESS_DOMAINS` и
      нет `live_guess` (tvheute.at до 06.10).
+ 10. ОДНА СТРАНИЦА. Разные адреса сайта (дни или каналы) дали файл слово в
+     слово: параметр дня сайт не слышит (kolla.tv `?dat=` — шесть дат, один
+     файл, 06.10) или адрес канала отдаёт чужую страницу (diemaxtra
+     `/schedule` = Diema Sport; movistarplus `multi6` — страница La 1).
 
 Правила:
   * подозрение — строка «сайт: что не так — пример»; решение принимает
@@ -49,6 +58,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import html as _html
 import json
 import re
@@ -109,6 +119,14 @@ TZ_MIN_ROWS = 2
 #: и не меньше такой доли от всех строк сайта, сошедшихся с эталоном: сбой
 #: пояса сдвигает ВСЁ (tvpassport), а пара повторов через 8 часов — нет
 TZ_SHARE = 0.5
+#: страниц одного сайта с одинаковым содержимым — с этого числа подозрение
+#: «сайт отдаёт одно и то же» (kolla.tv: шесть дат окна — один файл, 06.10)
+SAME_PAGE_MIN = 2
+#: время эталона — «заглушка тура», если у лиги в этот день столько матчей
+#: ровно в одну минуту: WWIN liga BiH 10.10 — все пять в 18:00, а Arena
+#: (tvarenasport.ba) ставит их на пт 18:00, сб 18:30, вс 16:00 и 18:30.
+#: По такому времени «матч уже сыгран» доказать нельзя (проверка 6)
+ROUND_SAME_TIME = 5
 #: примеров на одно подозрение
 EXAMPLES = 4
 #: клубная обвязка имени — для первой буквы в проверке 7
@@ -145,6 +163,17 @@ KNOWN_NOT_FLAGS = {
         "справочник: «идёт сейчас» у счёта матча",
     ("unian.tv", "class:tv-item__now"):
         "«Зараз в ефірі» — идёт сейчас (unian_tv.py)",
+}
+
+#: Проверенные клички (проверка 7), которые в словарь НЕ кладём — написание
+#: двусмысленно: (имя сайта, имя эталона) → почему. Печатаются в справке.
+KNOWN_NOT_ALIASES = {
+    ("BSK 1926", "Bacevac"):
+        "BSK — ещё Borča и Banja Luka, а год чистка снимает (06.10)",
+    ("DINAMO B", "Dinamo Bucuresti"):
+        "«B» — метка второго состава (Dinamo Zagreb B), не Бухарест (06.10)",
+    ("Trabzon", "Trabzonspor"):
+        "есть и «1461 Trabzon» — одно слово сводило бы оба клуба (06.10)",
 }
 
 #: Слова эфира на языках наших сайтов — кандидаты для проверки 2. Есть в
@@ -283,6 +312,13 @@ class Site:
         self.errors: list[str] = []
         self.day_shift: list[str] = []
         self.time_back: list[str] = []
+        # страница без даты отдала вчера: (канал, день страницы, строка)
+        self.undated_yesterday: list[tuple[str, _date, str]] = []
+        # (канал, день), которые хоть одна страница держит целиком
+        self.days_held: set[tuple[str, _date]] = set()
+        # содержимое страницы → [(день, канал, файл)] (проверка 10)
+        self.by_content: dict[str, list[tuple[str, str, str]]] = \
+            collections.defaultdict(list)
 
 
 #: сколько символов вокруг слова смотрим, чтобы понять, не часть ли оно
@@ -364,11 +400,18 @@ def check_day_page(site: Site, programs: list, row: dict, tz: str | None,
         page_day.strftime("%d.%m.%Y"), page_day.strftime("%Y/%m/%d"),
         page_day.strftime("%d%%2F%m%%2F%Y"), page_day.strftime("%d/%m/%Y")))
     share = count / len(timed)
-    if len(timed) >= DAY_SHIFT_MIN_ROWS and main_day != page_day and (
-            (dated and share > 0.5)
-            or (main_day < page_day and share >= DAY_SHIFT_SHARE)):
-        site.day_shift.append(f"{name}: страница {page_day:%d.%m}, а "
-                              f"{count} из {len(timed)} передач — {main_day:%d.%m}")
+    channel = row.get("channel") or ""
+    if count >= DAY_SHIFT_MIN_ROWS:
+        site.days_held.add((channel, main_day))
+    line = (f"{name}: страница {page_day:%d.%m}, а {count} из {len(timed)} "
+            f"передач — {main_day:%d.%m}")
+    if len(timed) >= DAY_SHIFT_MIN_ROWS and main_day != page_day:
+        if dated and share > 0.5:
+            site.day_shift.append(line)
+        elif not dated and main_day < page_day and share >= DAY_SHIFT_SHARE:
+            # судим в check_days: если сам день скачан другой страницей
+            # (ссылкой дня ночью — ORF), это не потеря
+            site.undated_yesterday.append((channel, page_day, line))
     last: dict[str, datetime] = {}
     for p in timed:
         prev = last.get(p.channel_raw)
@@ -399,6 +442,8 @@ def collect(folder: Path, markers, sports) -> dict[str, Site]:
         if not name or not (folder / name).exists():
             continue
         text = (folder / name).read_text(encoding="utf-8", errors="replace")
+        site.by_content[hashlib.md5(text.encode("utf-8")).hexdigest()].append(
+            (row.get("day") or "", row.get("channel") or "", name))
         site.flags.update(raw_flags(text, markers))
         if domain not in REFERENCE_DOMAINS:
             uncovered_words(visible(text), markers, site)
@@ -601,15 +646,46 @@ def check_reference(games: dict | None) -> list[str]:
 
 
 def check_days(sites: dict[str, Site]) -> list[str]:
-    """5: передачи страницы дня уехали на другой день / время пошло назад."""
+    """5: передачи страницы дня уехали на другой день / время пошло назад.
+    Страница «сегодня» без даты, отдавшая вчера, — подозрение, только если
+    этот день у канала не скачан другой страницей."""
     out = []
     for domain, s in sorted(sites.items()):
         if s.day_shift:
             out.append(f"{domain}: {len(s.day_shift)} стр. легли не на свой день — "
                        + "; ".join(s.day_shift[:2]))
+        lost_day = [line for channel, day, line in s.undated_yesterday
+                    if (channel, day) not in s.days_held]
+        if lost_day:
+            out.append(f"{domain}: {len(lost_day)} стр. «сегодня» без даты отдали "
+                       f"ВЧЕРА, а сам день другой страницей не скачан — "
+                       + "; ".join(lost_day[:2]))
         if s.time_back:
             out.append(f"{domain}: время в сетке пошло назад на {len(s.time_back)} "
                        f"стр. — " + "; ".join(s.time_back[:2]))
+    return out
+
+
+def check_same_pages(sites: dict[str, Site]) -> list[str]:
+    """10: разные адреса сайта (день или канал) дали один и тот же файл —
+    запросы впустую, а дни/каналы, которых ждали, не пришли вовсе."""
+    out = []
+    for domain, s in sorted(sites.items()):
+        groups = [g for g in s.by_content.values() if len(g) >= SAME_PAGE_MIN]
+        if not groups:
+            continue
+        wasted = sum(len(g) - 1 for g in groups)
+        shown = []
+        for g in sorted(groups, key=len, reverse=True)[:2]:
+            days = sorted({d for d, _, _ in g if d})
+            channels = sorted({c for _, c, _ in g if c})
+            what = (f"дни {days[0]}…{days[-1]}" if len(days) > 1 else
+                    f"каналы {', '.join(channels[:4])}" if len(channels) > 1 else
+                    g[0][2])
+            shown.append(f"{len(g)} одинаковых ({what}) — {g[0][2][:80]}")
+        out.append(f"{domain}: {wasted} запрос(ов) впустую — " + "; ".join(shown)
+                   + ". Параметр дня сайт не слышит или адрес канала отдаёт "
+                     "чужую страницу")
     return out
 
 
@@ -634,10 +710,15 @@ def check_lost(sites: dict[str, Site], games: dict | None) -> tuple[list[str], l
                        (e.get("raw_title") or "")[:200]))
     review = {(bare(x.get("домен", "")), x.get("канал", ""), (x.get("raw_title") or "")[:200])
               for x in games.get("на_разбор") or []}
+    # журнал «снято»: строку убрал фильтр повторов — это не потеря, а решение
+    removed = {(bare(x.get("домен", "")), x.get("канал", ""),
+                (x.get("заголовок") or "")[:200]): x for x in games.get("снято") or []}
+    placeholder = placeholder_times(games)
     days = run_window(games)
     out, info = [], []
     for domain, s in sorted(sites.items()):
-        honest, guessed = [], 0
+        honest, doubtful, guessed = [], [], 0
+        by_filter: collections.Counter = collections.Counter()
         seen = set()
         for r, _ in s.rows:
             if r.start_kyiv.date() not in days:
@@ -649,6 +730,13 @@ def check_lost(sites: dict[str, Site], games: dict | None) -> tuple[list[str], l
             extra = r.program.extra or {}
             if parse_live.guessed(domain, r) and extra.get(SITE_FLAG) != SITE_LIVE:
                 guessed += 1
+            elif key in removed:
+                why = removed[key]
+                ref = placeholder.get(_fs_id(why.get("почему") or ""))
+                if why.get("фильтр") == parse_live.СНЯТО_СЫГРАН and ref:
+                    doubtful.append((r, ref))
+                else:
+                    by_filter[why.get("фильтр") or "?"] += 1
             else:
                 honest.append(r)
         if honest:
@@ -656,9 +744,42 @@ def check_lost(sites: dict[str, Site], games: dict | None) -> tuple[list[str], l
                            f"«{r.home} — {r.away}»" for r in honest[:EXAMPLES])
             out.append(f"{domain}: {len(honest)} строк(и) с пометкой эфира прошли "
                        f"отсев и пропали — {ex}")
+        if doubtful:
+            ex = "; ".join(f"{r.start_kyiv:%d.%m %H:%M} {r.program.channel_raw} "
+                           f"«{r.home} — {r.away}» (эталон {ref})"
+                           for r, ref in doubtful[:EXAMPLES])
+            out.append(f"{domain}: {len(doubtful)} строк(и) с пометкой эфира сняты "
+                       f"«{parse_live.СНЯТО_СЫГРАН}», а время эталона — заглушка "
+                       f"тура (≥{ROUND_SAME_TIME} матчей лиги в одну минуту): сайт, "
+                       f"скорее всего, прав — {ex}")
+        for name, n in by_filter.most_common():
+            info.append(f"{domain}: помеченных эфиром снято фильтром «{name}» — {n}")
         if guessed:
             info.append(f"{domain}: угаданных эфиров снято {guessed} (повтор / нет в эталоне)")
     return out, info
+
+
+_FS_ID = re.compile(r"fs_id\s+(\w+)")
+
+
+def _fs_id(text: str) -> str:
+    found = _FS_ID.search(text or "")
+    return found.group(1) if found else ""
+
+
+def placeholder_times(games: dict) -> dict[str, str]:
+    """fs_id эталона, чьё время похоже на заглушку тура: у лиги в этот день
+    `ROUND_SAME_TIME` и больше матчей ровно в одну минуту → «лига, время»."""
+    by_slot: dict[tuple, list[str]] = collections.defaultdict(list)
+    for r in games.get("эталон") or []:
+        if r.get("fs_id") and r.get("league") and r.get("start_kyiv"):
+            by_slot[(r["league"], r["start_kyiv"])].append(r["fs_id"])
+    out: dict[str, str] = {}
+    for (league, when), ids in by_slot.items():
+        if len(ids) >= ROUND_SAME_TIME:
+            for fs in ids:
+                out[fs] = f"{league}: {len(ids)} матчей в {when[11:16]} {when[8:10]}.{when[5:7]}"
+    return out
 
 
 def _ref_index(games: dict) -> dict:
@@ -816,8 +937,13 @@ def check_aliases_and_zones(sites: dict[str, Site], games: dict | None
                                             f"«{r.home} — {r.away}» сайт {when:%d.%m %H:%M}, "
                                             f"эталон {t:%d.%m %H:%M}")
                     break
-    alias_out = []
+    alias_out, skipped = [], []
     for (domain, other, theirs), seen in sorted(aliases.items()):
+        why = KNOWN_NOT_ALIASES.get((other, theirs))
+        if why:
+            skipped.append(f"{domain}: «{other}» ≠ «{theirs}» — проверено, в словарь "
+                           f"не кладём: {why}")
+            continue
         alias_out.append(f"{domain}: «{other}» ≠ «{theirs}»? — {seen[0]}"
                          + (f" (и ещё {len(seen) - 1})" if len(seen) > 1 else ""))
     zone_out = []
@@ -829,7 +955,7 @@ def check_aliases_and_zones(sites: dict[str, Site], games: dict | None
     canon_info = [f"{domain}: {n} честн. строк(и) не сходятся с английскими именами "
                   f"эталона, но канон сведёт их по местным (не подозрение)"
                   for domain, n in sorted(canon_only.items())]
-    return alias_out, zone_out, canon_info
+    return alias_out, zone_out, skipped + canon_info
 
 
 def main() -> int:
@@ -871,6 +997,7 @@ def main() -> int:
         ("6. Помеченный эфир прошёл отсев и пропал", lost),
         ("7. Кличка: вторая команда сошлась, эта — нет", alias),
         ("8. Время сайта отличается от эталона на целые часы", zones),
+        ("10. Одна страница на разные дни или каналы", check_same_pages(sites)),
     ]
     errors = [f"{d}: {e}" for d, s in sorted(sites.items()) for e in s.errors[:2]]
     if errors:

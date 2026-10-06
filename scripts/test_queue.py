@@ -259,31 +259,32 @@ check("та_же_страна_мост_держит_с_сомнением",
 # ── правила по одному ───────────────────────────────────────────────────────
 
 print("Правила queue_decision")
-# настоящий вопрос: соперник узнан дословно, а «Queens Park Rangers» у
-# flashscore пишется «QPR» — это новое написание реальной команды
-QPR = game("Queens Park Rangers", "West Ham")
-QPR_REF = ref("QPR", "West Ham")
+# настоящий вопрос: соперник узнан дословно, а «Northgate Park Rovers» у
+# эталона пишется «NPR» — новое написание реальной команды. Клуб вымышленный:
+# настоящий QPR с 06.10 записан в aliases.json и вопросом быть перестал
+QPR = game("Northgate Park Rovers", "West Ham")
+QPR_REF = ref("NPR", "West Ham")
 conn = fresh_db()
 canon.apply(conn, ask_only(dict(QPR), QPR_REF))
 check("настоящий_вопрос_по_прежнему_в_очередь",
-      queued(conn) == [("Queens Park Rangers", "QPR")], queued(conn))
+      queued(conn) == [("Northgate Park Rovers", "NPR")], queued(conn))
 
 # имя — канон команды
 conn = fresh_db()
-team(conn, "Queens Park Rangers")
+team(conn, "Northgate Park Rovers")
 check("имя_канон_не_спрашиваем",
       canon.queue_decision(conn, dict(QPR), QPR_REF, "home")
       == (False, "имя уже в библиотеке"))
 # имя — алиас команды
 conn = fresh_db()
-team(conn, "Queens Park", "Queens Park Rangers")
+team(conn, "Northgate Park", "Northgate Park Rovers")
 check("имя_алиас_не_спрашиваем",
       canon.queue_decision(conn, dict(QPR), QPR_REF, "home")
       == (False, "имя уже в библиотеке"))
 # канон есть, но команда другого вида спорта — имя этому виду не известно
 conn = fresh_db()
-other = team(conn, "Queens Park Rangers")
-event(conn, "B", "Queens Park Rangers", "Somebody", "2026-09-01 20:00",
+other = team(conn, "Northgate Park Rovers")
+event(conn, "B", "Northgate Park Rovers", "Somebody", "2026-09-01 20:00",
       None, other, None)
 conn.commit()
 check("канон_чужого_вида_спорта_не_мешает_вопросу",
@@ -292,7 +293,7 @@ check("канон_чужого_вида_спорта_не_мешает_вопр�
 
 # игра уже с меткой flashscore (событие в базе, время в окне, имена те же)
 conn = fresh_db()
-event(conn, "F", "Queens Park Rangers", "West Ham", "2026-10-06 21:00",
+event(conn, "F", "Northgate Park Rovers", "West Ham", "2026-10-06 21:00",
       "fs:abc")
 conn.commit()
 canon.apply(conn, ask_only(dict(QPR), QPR_REF))
@@ -302,7 +303,7 @@ check("игра_с_fs_причина",
       == (False, "игра уже сопоставлена с эталоном"))
 # метка у события сверки задним числом — по номеру события
 conn = fresh_db()
-eid = event(conn, "F", "Queens Park Rangers", "West Ham", "2026-10-06 21:00",
+eid = event(conn, "F", "Northgate Park Rovers", "West Ham", "2026-10-06 21:00",
             "fs:abc")
 conn.commit()
 check("игра_с_fs_по_номеру_события",
@@ -310,7 +311,7 @@ check("игра_с_fs_по_номеру_события",
       is False)
 # метка у матча ДРУГОГО дня тех же команд — не наша игра, вопрос остаётся
 conn = fresh_db()
-event(conn, "F", "Queens Park Rangers", "West Ham", "2026-12-20 18:00",
+event(conn, "F", "Northgate Park Rovers", "West Ham", "2026-12-20 18:00",
       "fs:xyz")
 conn.commit()
 check("fs_у_ответного_матча_не_мешает",
@@ -331,8 +332,8 @@ canon.apply(conn, ask_only(game("Zwitserland", "Slowenien"),
 check("вторая_не_совпала_не_спрашиваем", queued(conn) == [], queued(conn))
 # вторая — заглушка: подтвердить игру нечем
 check("вторая_заглушка_не_спрашиваем",
-      canon.queue_decision(conn, game("Queens Park Rangers", "TBC"),
-                           ref("QPR", "West Ham"), "home")
+      canon.queue_decision(conn, game("Northgate Park Rovers", "TBC"),
+                           ref("NPR", "West Ham"), "home")
       == (False, "вторая команда не совпала — другая игра"))
 # подсказка совсем не похожа на имя (Denizli → Karsiyaka: 12)
 check("подсказка_не_похожа_не_спрашиваем",
@@ -342,7 +343,7 @@ check("подсказка_не_похожа_не_спрашиваем",
 # заглушка вместо имени
 check("заглушка_не_спрашиваем",
       canon.queue_decision(conn, game("TBC", "West Ham"),
-                           ref("QPR", "West Ham"), "home")
+                           ref("NPR", "West Ham"), "home")
       == (False, "не имя команды"))
 # пороги — именованные константы
 check("пороги_константы",
@@ -359,12 +360,12 @@ event(conn, "B", "Igokea", "Bilbao", "2026-10-06 21:00", "fs:Ol1G4ele",
 event(conn, "F", "Sparta Rotterdam Jong", "Ajax", "2026-10-06 18:00",
       "fs:q1")
 # настоящий вопрос: имени нет в словаре, игра без метки
-event(conn, "F", "Queens Park Rangers", "West Ham", "2026-10-06 21:00")
+event(conn, "F", "Northgate Park Rovers", "West Ham", "2026-10-06 21:00")
 # имя в словаре, но запись «Не знаю» (отложена) — тоже отпала
 team(conn, "Lithuania", "Λιθουανία")
 for raw, hint, status in (("Igokea", "Slavia Prague ERA NBK", "open"),
                           ("Sparta Rotterdam Jong", "Feyenoord", "open"),
-                          ("Queens Park Rangers", "QPR", "open"),
+                          ("Northgate Park Rovers", "NPR", "open"),
                           ("Λιθουανία", "Andorra", "later"),
                           ("Igokea", "что-то", "done")):
     conn.execute("INSERT INTO moderation (kind, raw_value, suggestion, status) "
@@ -384,7 +385,7 @@ review_queue.review_teams(conn, apply=True)
 left = [r["raw_value"] for r in conn.execute(
     "SELECT raw_value FROM moderation WHERE kind = 'team' "
     "AND status IN ('open', 'later')")]
-check("уборка_настоящий_вопрос_остался", left == ["Queens Park Rangers"], left)
+check("уборка_настоящий_вопрос_остался", left == ["Northgate Park Rovers"], left)
 check("уборка_закрывает_в_отсеянные",
       conn.execute("SELECT COUNT(*) FROM moderation WHERE kind = 'team' "
                    "AND status = 'skipped'").fetchone()[0] == 3)
