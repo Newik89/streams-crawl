@@ -174,7 +174,10 @@ def cmd_wait(args) -> int:
 
 def cmd_fetch(args) -> int:
     slug = repo_slug()
-    runs = _runs(slug, 10)
+    # 30, а не 10: за сутки прогонов бывает больше десятка (сборы, пробы,
+    # очередь queue.yml идёт тем же списком), и утренний сбор уже не попадал
+    # в выборку — `fetch --run 205` отвечал «не найден» (06.10)
+    runs = _runs(slug, 30)
     if not runs:
         print("запусков ещё не было")
         return 1
