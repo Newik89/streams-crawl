@@ -341,7 +341,7 @@ def review_sport(conn, apply: bool, days: int = ЖИВЁТ_ДНЕЙ,
     # обе команды известны — ответ видом спорта, как кнопкой
     for r, буква in по_командам:
         dictionary.resolve(conn, r["id"], буква, answered_by=(
-            "ответила программа: обе команды известны — "
+            f"{dictionary.PROGRAM_MARK}: обе команды известны — "
             f"{SPORT_WORDS.get(буква, буква)}"))
     watch.note(conn, f"очередь «Названия» (вид спорта): закрыто {всего} ("
                      + "; ".join(f"{имя}: {len(куча)}"

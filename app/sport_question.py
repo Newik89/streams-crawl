@@ -134,7 +134,7 @@ class Answer:
     @property
     def note(self) -> str:
         """Пометка в `moderation.answered_by`."""
-        return f"ответила программа: {self.rule} — {self.why}"
+        return f"{dictionary.PROGRAM_MARK}: {self.rule} — {self.why}"
 
     @property
     def plain(self) -> str:

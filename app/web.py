@@ -27,8 +27,8 @@ from zoneinfo import ZoneInfo
 from flask import (Flask, abort, flash, jsonify, redirect, render_template, request,
                    session, url_for)
 
-from . import (crawl_hook, db, dictionary, emergency, health, names, sources,
-               store, trigger, visits, watch)
+from . import (crawl_hook, db, dictionary, emergency, health, names_page,
+               sources, store, trigger, visits, watch)
 
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
 #: отказ другу, когда в очереди GitHub уже ждёт заказанный сбор
@@ -1869,46 +1869,15 @@ def create_app() -> Flask:
             conn.close()
         return redirect(back)
 
-    def _sport_previews(conn, rows) -> list[dict]:
-        """Английская подпись к строкам «Вид спорта»: иврит и греческий
-        владелец читать не обязан (жалоба 15.09). Команды и лигу переводит
-        словарь подтверждённых имён, незнакомое — транслит."""
-        teams = dictionary.team_overrides(conn)
-        лиги = dictionary.league_overrides(conn)
-
-        def по_английски(текст: str, словарь: dict) -> str:
-            текст = (текст or "").strip()
-            if not текст:
-                return ""
-            if текст in словарь:
-                return словарь[текст]
-            if any(ord(c) > 0x2FF for c in текст):
-                return names.suggest_canonical(текст)
-            return текст
-
-        out = []
-        for r in rows:
-            d = dict(r)
-            if d.get("kind") == "sport":
-                части = [x.strip() for x in (d["raw_value"] or "").split("|")]
-                пара = части[0]
-                лига = части[1] if len(части) > 2 else ""
-                home, _, away = пара.partition(" - ")
-                перевод = (f"{по_английски(home, teams)} - "
-                           f"{по_английски(away, teams)}" if away
-                           else по_английски(пара, teams))
-                перевод_лиги = по_английски(лига, лиги)
-                if перевод != пара or перевод_лиги != лига:
-                    d["preview"] = " | ".join(
-                        x for x in (перевод, перевод_лиги) if x)
-            out.append(d)
-        return out
-
     @app.route("/names")
     def moderation_list():
+        """Страница «Названия»: вопросы программы владельцу. Что показать у
+        каждого вопроса и какими словами — `app/names_page.py`."""
         conn = db.connect()
         try:
             kind = request.args.get("kind", "")
+            if kind not in dictionary.KINDS:
+                kind = ""
             # ?focus=<номер> — пришли с витрины по оранжевой строке игры:
             # эта запись идёт первой и подсвечивается (просьба владельца 10.09)
             focus = request.args.get("focus", type=int) or 0
@@ -1916,17 +1885,29 @@ def create_app() -> Flask:
             # вкладка «Отсеянные»: закрытое без ответа — рукой или чисткой;
             # всё видно и возвращается кнопкой (условие владельца 15.09)
             отсеянные = request.args.get("rejected") == "1"
+            # что программа ответила сама за неделю (06.10)
+            сама = request.args.get("auto") == "1"
             if отсеянные:
-                rows = dictionary.skipped_items(conn, kind or "sport")
+                rows = dictionary.skipped_items(conn, kind)
+                note = names_page.REJECTED_NOTE
+            elif сама:
+                rows = dictionary.auto_answered(conn, kind)
+                note = names_page.AUTO_NOTE
             else:
                 rows = dictionary.open_items(conn, kind, first=focus,
                                              later=отложенные)
+                note = (names_page.LATER_NOTE if отложенные
+                        else names_page.tab_note(kind))
             return render_template("moderation.html",
-                                   rows=_sport_previews(conn, rows),
+                                   rows=names_page.describe(conn, rows),
                                    later=отложенные, rejected=отсеянные,
+                                   auto=сама, note=note,
+                                   tabs=names_page.TABS,
                                    later_count=dictionary.later_count(conn),
                                    rejected_count=dictionary.skipped_count(
-                                       conn, kind or "sport"),
+                                       conn, kind),
+                                   auto_count=len(dictionary.auto_answered(
+                                       conn, kind)),
                                    counts=dictionary.counts(conn), kind=kind,
                                    focus=focus,
                                    # куда вернуться: якорь строки витрины,
@@ -1959,23 +1940,32 @@ def create_app() -> Flask:
         verify_csrf()
         conn = db.connect()
         try:
-            if request.form.get("action") == "skip":
+            # запись ДО ответа: строка «Запомнено: …» называет её как была
+            item = conn.execute("SELECT * FROM moderation WHERE id = ?",
+                                (item_id,)).fetchone()
+            action = request.form.get("action", "")
+            answer = request.form.get("canonical", "").strip()
+            if item is None:
+                flash(f"Вопроса №{item_id} уже нет.", "error")
+            elif action == "skip":
                 dictionary.skip(conn, item_id)
-                flash("Пропущено — больше не спросим.", "ok")
-            elif request.form.get("action") == "later":
+                flash(names_page.result_message(item, action), "ok")
+            elif action == "later":
                 dictionary.later(conn, item_id)
-                flash("Отложено — лежит во вкладке «Отложенные».", "ok")
-            elif request.form.get("action") == "reopen":
+                flash(names_page.result_message(item, action), "ok")
+            elif action == "reopen":
                 dictionary.back_to_open(conn, item_id)
-                flash("Вернули в список.", "ok")
+                flash(names_page.result_message(item, action), "ok")
             else:
                 try:
-                    dictionary.resolve(conn, item_id,
-                                       request.form.get("canonical", ""),
+                    dictionary.resolve(conn, item_id, answer,
                                        request.form.get("country", "").strip())
-                    flash("Закреплено.", "ok")
+                    flash(names_page.result_message(item, "answer", answer),
+                          "ok")
                 except (ValueError, LookupError) as e:
-                    flash(str(e), "error")
+                    flash(str(e) if str(e) != "пустое название" else
+                          "Впишите название в поле — пустое не сохраняется.",
+                          "error")
         finally:
             conn.close()
         return redirect(request.referrer or url_for("moderation_list"))

@@ -504,37 +504,44 @@ def skip(conn: sqlite3.Connection, item_id: int,
     conn.commit()
 
 
+#: начало пометки `answered_by`, когда вопрос решила сама программа
+#: (`app/sport_question.py`); уборка («прошло», «дубль») пишет своё
+PROGRAM_MARK = "ответила программа"
+
+
 def auto_answered(conn: sqlite3.Connection, kind: str = "sport",
                   days: int = 7, limit: int = 100) -> list[sqlite3.Row]:
     """Что программа за последние `days` дней ответила сама (пометка
-    `answered_by`): и ответы видом спорта, и отсеянное. Для строки «Программа
-    ответила сама» на странице «Названия» — владелец видит и может вернуть."""
+    `PROGRAM_MARK`): и ответы видом спорта, и отсеянное. Вкладка «Ответила
+    программа» на странице «Названия» — владелец видит, что решено без него.
+    `kind` пустой — все виды."""
     return conn.execute(
         "SELECT m.*, s.domain, s.country AS source_country FROM moderation m "
         "LEFT JOIN sources s ON s.id = m.source_id "
-        "WHERE m.kind = ? AND m.answered_by IS NOT NULL "
+        "WHERE (? = '' OR m.kind = ?) AND m.answered_by LIKE ? "
         "AND m.status IN ('done', 'skipped') "
         "AND m.created_at >= datetime('now', ?) "
         "ORDER BY m.id DESC LIMIT ?",
-        (kind, f"-{int(days)} days", limit)).fetchall()
+        (kind, kind, PROGRAM_MARK + "%", f"-{int(days)} days",
+         limit)).fetchall()
 
 
 def skipped_items(conn: sqlite3.Connection, kind: str = "sport",
                   limit: int = 100) -> list[sqlite3.Row]:
     """Вкладка «Отсеянные»: что закрыто без ответа — рукой («Не матч») или
     автоматической чисткой. Всё видно и возвращается кнопкой «Вернуть» —
-    условие владельца 15.09 к любому автоотсеву."""
+    условие владельца 15.09 к любому автоотсеву. `kind` пустой — все виды."""
     return conn.execute(
         "SELECT m.*, s.domain, s.country AS source_country FROM moderation m "
         "LEFT JOIN sources s ON s.id = m.source_id "
-        "WHERE m.status = 'skipped' AND m.kind = ? "
-        "ORDER BY m.id DESC LIMIT ?", (kind, limit)).fetchall()
+        "WHERE m.status = 'skipped' AND (? = '' OR m.kind = ?) "
+        "ORDER BY m.id DESC LIMIT ?", (kind, kind, limit)).fetchall()
 
 
 def skipped_count(conn: sqlite3.Connection, kind: str = "sport") -> int:
     return conn.execute("SELECT COUNT(*) FROM moderation "
-                        "WHERE status = 'skipped' AND kind = ?",
-                        (kind,)).fetchone()[0]
+                        "WHERE status = 'skipped' AND (? = '' OR kind = ?)",
+                        (kind, kind)).fetchone()[0]
 
 
 def clear_open(conn: sqlite3.Connection, kind: str = "sport") -> int:

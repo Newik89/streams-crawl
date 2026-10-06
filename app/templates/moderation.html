@@ -1,157 +1,254 @@
 {% extends "base.html" %}
 {% block title %}Названия — Streams Schedule{% endblock %}
 
+{# Страница вопросов программы владельцу. Данные и слова — app/names_page.py,
+   ответы — маршрут /names/<id> (dictionary.resolve / skip / later /
+   back_to_open), как и раньше: здесь только вид и надписи (владелец 06.10:
+   «непонятно, что кнопки делают»). #}
+
 {% block body %}
 <style>
-  /* строка, на которую привели с витрины: её видно сразу */
-  tr.focus > td { background:#fff3e0; }
-  tr.focus > td:first-child { box-shadow:inset 3px 0 0 #f59e0b; }
-  @media (prefers-color-scheme: dark) { tr.focus > td { background:#2e2415; } }
+  .intro { font-size:15px; }
+  .tabs { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
+  .tabs .btn.on { border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .tabs .gap { flex:0 0 14px; }
+  .tabnote { margin:0 0 14px; padding:10px 14px; border-left:4px solid var(--accent);
+             background:#eef4ff; border-radius:6px; }
+  .q { background:var(--card); border:1px solid var(--line); border-radius:10px;
+       padding:14px 16px; margin-bottom:12px; }
+  .q.focus { box-shadow:inset 4px 0 0 #f59e0b; background:#fff8ec; }
+  .q-head { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:6px; }
+  .q-num { margin-left:auto; color:var(--muted); font-size:12px; }
+  .q-raw { font-size:18px; font-weight:600; word-break:break-word; }
+  .q-facts { margin:6px 0 4px; padding:0; list-style:none; font-size:14px; }
+  .q-facts li { margin:3px 0; }
+  .q-facts .k { color:var(--muted); }
+  .q-ask { font-weight:600; margin:12px 0 4px; font-size:15px; }
+  .q-why { color:var(--muted); font-size:13px; margin-bottom:8px; }
+  .q-hint { margin:4px 0 8px; }
+  .q-hint.weak { color:var(--warn); }
+  .q-note { margin:8px 0 4px; padding:6px 10px; background:#f3f4f6; border-radius:6px;
+            font-size:13px; color:var(--muted); }
+  .q-answer { margin:8px 0 0; font-weight:600; color:var(--ok); }
+  .q-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px; }
+  .q-actions form { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0; }
+  .q-actions form.answer { flex:1 1 640px; }
+  .q-actions input[type=text] { width:auto; flex:1 1 220px; max-width:360px; }
+  .q-actions input.country { flex:0 1 110px; }
+  .q-actions .or { color:var(--muted); font-size:13px; }
+  button.sport { min-width:112px; }
+  button.linkish { padding:2px 8px; font-size:13px; }
+  @media (prefers-color-scheme: dark) {
+    .q.focus { background:#2e2415; }
+    .tabnote { background:#1d2636; }
+    .q-note { background:#24272c; }
+  }
 </style>
-<h1>Названия{% if back %}
+
+<h1>Названия — вопросы программы{% if back %}
   <a class="btn" style="float:right;font-weight:400"
      href="{{ url_for('schedule') }}#{{ back }}">← к расписанию, на ту же игру</a>
 {% endif %}</h1>
 
-<div class="card">
-  <p class="muted" style="margin:0">
-    Здесь то, что система не смогла опознать сама. Слева — как написано на
-    сайте, справа — как это должно называться у нас. Подтверждённое
-    закрепляется навсегда и на следующем обходе уже не спросится.
-  </p>
+<div class="card intro">
+  <b>Здесь программа спрашивает то, в чём не уверена сама.</b>
+  Каждый ваш ответ запоминается: в следующий раз она узнает такое же сама и
+  спрашивать не будет. Наведите мышь на кнопку — появится подсказка, что она
+  сделает.
 </div>
 
-<div class="row" style="margin-bottom:14px">
-  <div style="flex:0 0 auto">
-    <a class="btn" href="{{ url_for('moderation_list') }}">Все</a>
-    {% for k, title in [('team','Команды'), ('league','Лиги'),
-                        ('channel','Каналы'), ('sport','Вид спорта')] %}
-      <a class="btn" href="{{ url_for('moderation_list', kind=k) }}"
-         {% if kind == k and not later %}style="border-color:var(--accent);color:var(--accent)"{% endif %}>
-        {{ title }}{% if counts.get(k) %} · {{ counts[k] }}{% endif %}
-      </a>
-    {% endfor %}
-    {# «Не знаю» не удаляет запись: она ждёт здесь, пока не будет ответа #}
-    <a class="btn" href="{{ url_for('moderation_list', later=1) }}"
-       {% if later %}style="border-color:var(--accent);color:var(--accent)"{% endif %}
-       title="То, на что нажали «Не знаю»: не удалено, ждёт ответа">
-      Отложенные{% if later_count %} · {{ later_count }}{% endif %}
+<div class="tabs">
+  {% set special = later or rejected or auto %}
+  {% for k, title, tip in tabs %}
+    <a class="btn{% if kind == k and not special %} on{% endif %}"
+       href="{{ url_for('moderation_list', kind=k) if k else url_for('moderation_list') }}"
+       title="{{ tip }}">
+      {{ title }}{% if k and counts.get(k) %} · {{ counts[k] }}{% elif not k and counts %} · {{ counts.values()|sum }}{% endif %}
     </a>
-    {# закрытое без ответа — рукой («Не матч») или автоматической чисткой.
-       Всё видно и возвращается кнопкой «Вернуть» — ничего не пропадает #}
-    <a class="btn" href="{{ url_for('moderation_list', rejected=1) }}"
-       {% if rejected %}style="border-color:var(--accent);color:var(--accent)"{% endif %}
-       title="Закрытые без ответа строки «Вид спорта»: «Не матч» и автоотсев. Можно вернуть">
-      Отсеянные{% if rejected_count %} · {{ rejected_count }}{% endif %}
-    </a>
-  </div>
-  {% if kind == 'sport' and not later and not rejected and rows %}
-  <div style="flex:0 0 auto;margin-left:auto">
-    {# просто стирает строки: ничего не блокирует, непонятные матчи
-       вернутся со следующим обходом (уточнение владельца 15.09) #}
-    <form method="post" action="{{ url_for('moderation_clear') }}"
-          onsubmit="return confirm('Стереть все открытые строки списка? Игры не блокируются: непонятное вернётся со следующим обходом.')">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <button type="submit"
-              title="Стереть открытые строки. Это не «Не матч»: ничего не запоминается">
-        Очистить список
-      </button>
-    </form>
-  </div>
-  {% endif %}
+  {% endfor %}
+  <span class="gap"></span>
+  <a class="btn{% if later %} on{% endif %}" href="{{ url_for('moderation_list', later=1) }}"
+     title="Вопросы, которые вы отложили кнопкой «Отложить». Они не удалены и ждут ответа">
+    Отложенные{% if later_count %} · {{ later_count }}{% endif %}
+  </a>
+  <a class="btn{% if rejected %} on{% endif %}"
+     href="{{ url_for('moderation_list', rejected=1, kind=kind) if kind else url_for('moderation_list', rejected=1) }}"
+     title="Закрытое без ответа — вами («Не матч», «Это не команда») или программой. Можно вернуть">
+    Отсеянные{% if rejected_count %} · {{ rejected_count }}{% endif %}
+  </a>
+  <a class="btn{% if auto %} on{% endif %}"
+     href="{{ url_for('moderation_list', auto=1, kind=kind) if kind else url_for('moderation_list', auto=1) }}"
+     title="На что программа ответила сама за неделю и почему">
+    Ответила программа{% if auto_count %} · {{ auto_count }}{% endif %}
+  </a>
 </div>
+<p class="tabnote">{{ note }}</p>
+
+{% if kind == 'sport' and not special and rows %}
+<form method="post" action="{{ url_for('moderation_clear') }}" style="margin:0 0 12px"
+      onsubmit="return confirm('Стереть все открытые вопросы «Вид спорта»? Ничего не запоминается: если игра всё ещё непонятна, следующий сбор спросит о ней снова.')">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button type="submit"
+          title="Стереть все открытые вопросы этой вкладки. Это не «Не матч»: ничего не запоминается, непонятные игры следующий сбор принесёт снова">
+    Очистить список
+  </button>
+</form>
+{% endif %}
 
 {% if not rows %}
   <div class="card">
-    <b>Разбирать нечего.</b>
+    <b>Вопросов нет.</b>
     <p class="muted" style="margin:6px 0 0">
-      Либо всё опознано, либо очередь ещё не наполнялась:
-      <code>scripts\fill_moderation.py</code> после обхода.
+      {% if later %}Отложенных вопросов нет.
+      {% elif rejected %}Отсеянного нет.
+      {% elif auto %}За неделю программа сама ничего не решала.
+      {% else %}Всё опознано: программа уверена во всём, что собрала.{% endif %}
     </p>
   </div>
 {% else %}
-<table>
-  <tr>
-    <th style="width:22%">Как на сайте</th>
-    <th style="width:10%">Что это</th>
-    <th style="width:14%">Сайт</th>
-    <th>Как назвать у нас</th>
-  </tr>
-  {% for r in rows %}
-  <tr id="item-{{ r.id }}"{% if focus and focus == r.id %} class="focus"{% endif %}>
-    <td><b>{{ r.raw_value }}</b></td>
-    <td><span class="tag">{{ {'team':'команда','league':'лига',
-                              'channel':'канал','sport':'вид спорта'}
-                             .get(r.kind, r.kind) }}</span></td>
-    <td class="muted">{{ r.domain or '—' }}</td>
-    <td>
+{% for r in rows %}
+<div class="q{% if focus and focus == r.id %} focus{% endif %}" id="item-{{ r.id }}">
+  <div class="q-head">
+    <span class="tag b">{{ r.title }}</span>
+    {% if r.status == 'later' %}<span class="tag d">отложено</span>
+    {% elif r.status == 'skipped' %}<span class="tag off">отсеяно</span>
+    {% elif r.status == 'done' %}<span class="tag a">отвечено</span>{% endif %}
+    <span class="q-num">вопрос №{{ r.id }}</span>
+  </div>
+
+  {# ── что увидела программа ── #}
+  {% if r.kind == 'sport' %}
+    <div class="q-raw" dir="auto">{{ r.pair }}</div>
+    <ul class="q-facts">
+      {% if r.preview %}<li><span class="k">По-английски (по словарю, может ошибаться):</span> {{ r.preview }}</li>{% endif %}
+      {% if r.league %}<li><span class="k">Турнир на сайте:</span> «<span dir="auto">{{ r.league }}</span>»</li>{% endif %}
+      {% if r.site_title %}<li><span class="k">Заголовок на сайте:</span> «<span dir="auto">{{ r.site_title }}</span>»</li>{% endif %}
+      <li><span class="k">Канал:</span> {{ r.channel or '—' }}{% if r.site %},
+        <span class="k">сайт</span> {% if r.site_url %}<a href="{{ r.site_url }}" target="_blank" rel="noopener" title="Открыть сайт, где программа нашла эту строку">{{ r.site }} ↗</a>{% else %}{{ r.site }}{% endif %}{% endif %}</li>
+      {% if r.when %}<li><span class="k">Когда:</span> {{ r.when }} (по Киеву)</li>{% endif %}
+      {% if r.status in ('open', 'later') %}<li class="muted">На витрине этой игры пока нет — она появится после ответа.</li>{% endif %}
+    </ul>
+  {% else %}
+    <div class="q-raw">На сайте написано: «<span dir="auto">{{ r.raw_value }}</span>»</div>
+    <ul class="q-facts">
+      {% for g in r.games %}
+        <li><span class="k">{% if loop.first %}Где увидели:{% else %}И ещё:{% endif %}</span>
+          игра «{{ g.pair }}», {{ g.when }}{% if g.league %}, {{ g.league }}{% endif %}{% if g.sport %} ({{ g.sport }}){% endif %}{% for c in g.channels %}
+          · {{ c.name }}{% if c.domain %} — {% if c.url %}<a href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть страницу сайта, где программа это увидела">{{ c.domain }} ↗</a>{% else %}{{ c.domain }}{% endif %}{% endif %}{% endfor %}
+          {% if g.upcoming %} · <a href="{{ url_for('schedule') }}#g{{ g.id }}" target="_blank" rel="noopener" title="Открыть эту игру в расписании">игра на витрине ↗</a>{% endif %}
+        </li>
+      {% else %}
+        <li class="muted">Игр с этим именем в расписании сейчас нет{% if r.domain %} (сайт {{ r.domain }}){% endif %}.</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {# ── кто и почему закрыл (отсеянное и ответы программы) ── #}
+  {% if r.status in ('done', 'skipped') %}
+    {% if r.answered_by %}
+      <div class="q-note">{{ r.answered_by[:1]|upper }}{{ r.answered_by[1:] }}</div>
+    {% elif r.status == 'skipped' %}
+      <div class="q-note">Закрыто без пометки: нажали «{{ r.not_this }}» или старая уборка очереди.</div>
+    {% endif %}
+    {% if r.status == 'done' and r.suggestion %}
+      <div class="q-answer">Ответ: {{ {'F': 'футбол', 'B': 'баскетбол', 'T': 'теннис'}.get(r.suggestion, r.suggestion) }}</div>
+    {% endif %}
+  {% endif %}
+
+  {# ── кнопки ── #}
+  {% if r.status == 'skipped' %}
+    <div class="q-actions">
       <form method="post" action="{{ url_for('moderation_resolve', item_id=r.id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="row">
-          {% if r.kind == 'sport' %}
-          {# тут спрашивается не название, а вид спорта: сайт о нём молчит,
-             и без ответа строка на витрину не попадёт #}
-          <div style="flex:2 1 240px" class="muted">
-            {% if r.preview %}{# перевод: словарь имён, незнакомое — транслит #}
-              <b style="color:var(--fg,inherit)">≈ {{ r.preview }}</b><br>
-            {% endif %}
-            {% if r.suggestion %}{{ r.suggestion }}<br>{% endif %}
-            {% if not rejected %}Какой это спорт?{% endif %}
-          </div>
-          {% if not rejected %}
-          <div style="flex:0 0 auto">
-            <button class="primary" type="submit" name="canonical" value="F">Футбол</button>
-            <button class="primary" type="submit" name="canonical" value="B">Баскетбол</button>
-            <button class="primary" type="submit" name="canonical" value="T">Теннис</button>
-          </div>
-          {% endif %}
-          {% else %}
-          <div style="flex:2 1 240px">
-            <input type="text" name="canonical" value="{{ r.suggestion or '' }}"
-                   placeholder="каноническое название">
-          </div>
-          {% endif %}
-          {% if r.kind == 'channel' %}
-          <div style="flex:0 1 110px">
-            <input type="text" name="country" value="{{ r.source_country or '' }}"
-                   placeholder="страна"
-                   title="Обязательно: Nova Sport 1 бывает греческий и чешский —
-                          это разные каналы. Подставлена страна сайта, поправьте,
-                          если канал иностранный">
-          </div>
-          {% endif %}
-          <div style="flex:0 0 auto">
-            {% if rejected %}
-            <button type="submit" name="action" value="reopen"
-                    title="Вернуть в основной список">Вернуть</button>
-            {% else %}
-            {% if r.kind != 'sport' %}
-            <button class="primary" type="submit">Закрепить</button>
-            {% endif %}
-            <button type="submit" name="action" value="skip"
-                    title="{% if r.kind == 'sport' %}Это не матч — студия, обзор, повтор{% else %}Это не название — например заголовок турнира{% endif %}">
-              {% if r.kind == 'sport' %}Не матч{% else %}Не название{% endif %}
-            </button>
-            {% if later %}
-            <button type="submit" name="action" value="reopen"
-                    title="Вернуть в основной список">Вернуть</button>
-            {% else %}
-            <button type="submit" name="action" value="later"
-                    title="Не знаю ответа: запись не удалится, а уйдёт во вкладку «Отложенные»">
-              Не знаю
-            </button>
-            {% endif %}
-            {% endif %}
-          </div>
-        </div>
+        <button type="submit" name="action" value="reopen"
+                title="Вопрос снова появится в списке — можно будет ответить заново">Вернуть в вопросы</button>
       </form>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+    </div>
+  {% elif r.status in ('open', 'later') %}
+    <div class="q-ask">{{ r.ask }}</div>
+    {% if r.kind == 'sport' %}
+      <div class="q-why">Почему спрашиваю: {{ r.doubt }}</div>
+      <div class="q-actions">
+        <form method="post" action="{{ url_for('moderation_resolve', item_id=r.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          {% for letter, word in [('F', 'Футбол'), ('B', 'Баскетбол'), ('T', 'Теннис')] %}
+          <button class="primary sport" type="submit" name="canonical" value="{{ letter }}"
+                  title="Это {{ word|lower }}. Запомнится для этой пары около этой даты (±1,5 суток); игра появится в расписании после следующего сбора">{{ word }}</button>
+          {% endfor %}
+          <button type="submit" name="action" value="skip"
+                  title="Это не матч: студия, обзор, повтор, фильм или другой вид спорта. Вопрос уйдёт в «Отсеянные», эту пару больше не спросим">Не матч</button>
+          {% if r.status == 'later' %}
+          <button type="submit" name="action" value="reopen"
+                  title="Вернуть вопрос из «Отложенных» в основной список">Вернуть в список</button>
+          {% else %}
+          <button type="submit" name="action" value="later"
+                  title="Не знаю сейчас. Вопрос уйдёт во вкладку «Отложенные» и подождёт там — ничего не удалится">Отложить</button>
+          {% endif %}
+        </form>
+      </div>
+    {% else %}
+      {% if r.hint and r.hint_ready %}
+        <div class="q-hint">Программа думает, что это «<b>{{ r.hint }}</b>» — похоже на {{ r.hint_score }}%.</div>
+      {% elif r.hint %}
+        <div class="q-hint weak">Программа сравнивала с «{{ r.hint }}», но совпадение слабое
+          ({{ r.hint_score }}%) — скорее всего, это {{ r.other }}. Поэтому поле пустое.
+          <button type="button" class="linkish" data-fill="{{ r.hint }}"
+                  title="Вставить «{{ r.hint }}» в поле — если это всё-таки {{ r.what }}">Подставить</button>
+        </div>
+      {% endif %}
+      <div class="q-actions">
+        {% if r.hint_ready %}
+        <form method="post" action="{{ url_for('moderation_resolve', item_id=r.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="canonical" value="{{ r.hint }}">
+          {% if r.kind == 'channel' %}<input type="hidden" name="country" value="{{ r.source_country or '' }}">{% endif %}
+          <button class="primary" type="submit"
+                  title="Запомнить: «{{ r.raw_value }}» на сайтах — это «{{ r.hint }}». Вопрос закроется, больше не спросим">Да, это «{{ r.hint }}»</button>
+        </form>
+        <span class="or">или</span>
+        {% endif %}
+        <form class="answer" method="post" action="{{ url_for('moderation_resolve', item_id=r.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="text" name="canonical" required
+                 placeholder="{% if r.hint_ready %}другое название{% else %}впишите правильное название{% endif %}"
+                 aria-label="Правильное название" title="Как это называется у нас — латиницей, как на flashscore">
+          {% if r.kind == 'channel' %}
+          <input type="text" name="country" class="country" value="{{ r.source_country or '' }}"
+                 placeholder="страна" aria-label="Страна канала"
+                 title="Обязательно: Nova Sport 1 бывает греческий и чешский — это разные каналы. Подставлена страна сайта, поправьте, если канал иностранный">
+          {% endif %}
+          <button type="submit"
+                  title="Запомнить название из поля: «{{ r.raw_value }}» = то, что вы вписали. Вопрос закроется">Сохранить</button>
+          <button type="submit" name="action" value="skip" formnovalidate
+                  title="Это вообще не {{ r.what }} (например, заголовок турнира или передачи). Вопрос уйдёт в «Отсеянные», больше не спросим">{{ r.not_this }}</button>
+          {% if r.status == 'later' %}
+          <button type="submit" name="action" value="reopen" formnovalidate
+                  title="Вернуть вопрос из «Отложенных» в основной список">Вернуть в список</button>
+          {% else %}
+          <button type="submit" name="action" value="later" formnovalidate
+                  title="Не знаю сейчас. Вопрос уйдёт во вкладку «Отложенные» и подождёт там — ничего не удалится">Отложить</button>
+          {% endif %}
+        </form>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+{% endfor %}
+{% if kind in ('team', '') %}
 <p class="muted" style="margin-top:10px">
-  Женские команды пишем с ` W` на конце, возраст (`U19`) не убираем —
-  без этого они склеятся со взрослой основой.
+  Женские команды пишем с « W» на конце, возраст (U19) не убираем — иначе
+  они склеятся со взрослой командой.
 </p>
 {% endif %}
+{% endif %}
+
+<script>
+  // «Подставить»: слабая догадка программы — в поле, не отправляя ответ
+  document.querySelectorAll('button[data-fill]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var box = b.closest('.q').querySelector('input[type=text][name=canonical]');
+      if (box) { box.value = b.getAttribute('data-fill'); box.focus(); }
+    });
+  });
+</script>
 {% endblock %}
