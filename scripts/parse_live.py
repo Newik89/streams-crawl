@@ -27,8 +27,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import (broadcast, canon, db, dictionary, leagues, live,  # noqa: E402
-                 merge, names, pipeline, sport, store)
+from app import (broadcast, canon, daytime, db, dictionary,  # noqa: E402
+                 leagues, live, merge, names, pipeline, sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
 
@@ -238,8 +238,7 @@ def drop_late_repeats(games: list) -> tuple[list, int]:
     kept: list = []
     removed = 0
     for game in sorted(games, key=lambda g: g.start):
-        guessed_only = all(
-            _bare_domain(e.source) in REPEAT_GUESS_DOMAINS for e in game.entries)
+        guessed_only = all(guessed(e.source, e.payload) for e in game.entries)
         # две сессии одного турнира в день — не повтор: у сведённой
         # трансляции («ATP Beijing») имя одно на весь турнир (04.10)
         if game.first.away == broadcast.SESSION:
@@ -255,6 +254,17 @@ def drop_late_repeats(games: list) -> tuple[list, int]:
 
 def _bare_domain(domain: str) -> str:
     return (domain or "").removeprefix("www.")
+
+
+def guessed(domain: str, result) -> bool:
+    """Эфир у строки угадан, а не помечен сайтом: у всего сайта честного
+    флага нет (`REPEAT_GUESS_DOMAINS`) или разбор пометил угаданной именно
+    эту строку (`extra["live_guess"]`) — у digisport.ro флаг есть, но не у
+    всех строк (06.10). Угаданный эфир сверяется с эталоном и чистится от
+    повторов; помеченный честно — нет."""
+    program = getattr(result, "program", None)
+    return _bare_domain(domain) in REPEAT_GUESS_DOMAINS \
+        or bool(getattr(program, "extra", {}).get("live_guess"))
 
 
 def _looks_repeat(earlier, later) -> bool:
@@ -679,12 +689,12 @@ def main() -> int:
 
     firsts: dict[tuple, object] = {}
     for domain, r in found:
-        if _bare(domain) in REPEAT_GUESS_DOMAINS:
+        if guessed(domain, r):
             key = _guess_key(domain, r)
             if key not in firsts or r.start_kyiv < firsts[key]:
                 firsts[key] = r.start_kyiv
     found = [(domain, r) for domain, r in found
-             if _bare(domain) not in REPEAT_GUESS_DOMAINS
+             if not guessed(domain, r)
              or r.start_kyiv <= firsts[_guess_key(domain, r)]]
 
     # Топовая лига от «угадаек» без подтверждения эталоном — запись.
@@ -757,7 +767,7 @@ def main() -> int:
     # проверяем по размеру: сломается mobi — вернёмся к мягкому правилу.
     rich = len(reference) >= 100
     found = [(domain, r) for domain, r in found
-             if _bare_domain(domain) not in REPEAT_GUESS_DOMAINS
+             if not guessed(domain, r)
              or r.sport != "F"
              or not (rich
                      or top_league.search(f"{r.league} {r.program.league_raw}"))
@@ -800,7 +810,7 @@ def main() -> int:
 
     before = len(found)
     found = [(domain, r) for domain, r in found
-             if _bare_domain(domain) not in REPEAT_GUESS_DOMAINS
+             if not guessed(domain, r)
              or r.sport not in ("B", "T")
              or not rich_bt.get(r.sport)
              or _in_reference_bt(r)]
@@ -814,7 +824,7 @@ def main() -> int:
     # `Crystal Palace - Man City` в 03:47 у movistarplus — поймано
     # владельцем на витрине 02.09). Честно помеченных сайтов не касается.
     found = [(domain, r) for domain, r in found
-             if _bare(domain) not in REPEAT_GUESS_DOMAINS
+             if not guessed(domain, r)
              or r.start_kyiv.minute % 5 == 0]
 
     # Сетки отдают сразу две недели вперёд. Обрезаем по правилу владельца
@@ -827,7 +837,9 @@ def main() -> int:
         chosen = _date.fromisoformat(args.date)
         found = [x for x in found if x[1].start_kyiv.date() == chosen]
     elif not args.all:
-        first = _date.today()
+        # окно витрины — киевские сутки: игры идут с киевским временем, а
+        # часы GitHub (UTC) в 22:30 ещё во вчерашнем дне Киева
+        first = daytime.today("Europe/Kyiv")
         last = first + timedelta(days=6)
         found = [x for x in found if first <= x[1].start_kyiv.date() <= last]
 
@@ -983,8 +995,7 @@ def main() -> int:
                    # игра целиком из «угаданных» источников: при заливке её
                    # сверяют с УЖЕ лежащими в базе событиями той же пары —
                    # прошлый прогон мог видеть настоящий эфир (этап 6б)
-                   "guess": int(all(_bare_domain(e.source)
-                                    in REPEAT_GUESS_DOMAINS
+                   "guess": int(all(guessed(e.source, e.payload)
                                     for e in g.entries)),
                    "sport": g.sport,
                    "league": g.league,

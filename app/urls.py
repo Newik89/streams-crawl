@@ -33,6 +33,8 @@ import re
 from datetime import date as _date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
+from . import daytime
+
 _MARK = re.compile(r"\{([^{}]+)\}")
 _DATE_ONLY = re.compile(r"^[YMD][YMD\-./ :]*$")
 
@@ -60,12 +62,19 @@ _WEEKDAY_EN = ("monday", "tuesday", "wednesday", "thursday", "friday",
 
 
 def resolve(url_pattern: str | None, base_url: str = "",
-            day: _date | None = None, **marks: str) -> str:
+            day: _date | None = None, tz: str | None = None,
+            **marks: str) -> str:
     """Адрес расписания на день `day` (по умолчанию — сегодня).
-    Шаблона нет — возвращаем `base_url` как есть."""
+    Шаблона нет — возвращаем `base_url` как есть.
+
+    `tz` — пояс сайта: «сегодня» (день по умолчанию и `{AU_DAYPATH}`)
+    считается по ЕГО часам, а не по часам машины. GitHub живёт по UTC, а в
+    Сиднее «завтра» наступает на 10–11 часов раньше: в 17:30 UTC сайт уже
+    отдаёт следующий день под адресом «сегодня»."""
     if not url_pattern:
         return base_url
-    d = day or _date.today()
+    сегодня = daytime.today(tz)
+    d = day or сегодня
 
     def sub(m: re.Match[str]) -> str:
         name = m.group(1)
@@ -97,10 +106,9 @@ def resolve(url_pattern: str | None, base_url: str = "",
         if name == "WEEKDAY_TR":
             return _WEEKDAY_TR[d.weekday()]
         if name == "AU_DAYPATH":
-            today = _date.today()
-            if d == today:
+            if d == сегодня:
                 return ""
-            if d == today + timedelta(days=1):
+            if d == сегодня + timedelta(days=1):
                 return "/tomorrow"
             return "/" + _WEEKDAY_EN[d.weekday()]
         if _DATE_ONLY.match(name):

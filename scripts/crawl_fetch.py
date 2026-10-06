@@ -148,9 +148,17 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
     """Адреса на сегодня. В пробе — по одному на сайт, чтобы проверить
     площадку четырьмя запросами, а не шестьюдесятью двумя. `single` —
     скан ОДНОЙ даты `start` (календарь владельца, 05.09): дневные сетки
-    качаются только за этот день, глубины источников не разворачиваются."""
-    first = start or date.today()
+    качаются только за этот день, глубины источников не разворачиваются.
+
+    «Сегодня» у каждого сайта своё — по его часам (`daytime.today`), а не
+    по часам GitHub (UTC): с него начинается окно полного обхода, от него
+    считаются номера дня `{N}`/`{DAYNUM}` и хвост `{AU_DAYPATH}`. В 22:30
+    UTC в Европе уже завтра, в Сиднее завтра с 13:00–14:00 UTC — страница
+    «сегодня» сайта иначе легла бы под вчерашней датой."""
     for source in plan["sources"]:
+        пояс = source.get("timezone")
+        сегодня = daytime.today(пояс)
+        first = start or сегодня
         # «только по кнопке» (владелец 10.09): сайт, который сердится на
         # частые заходы, из ночного обхода убираем совсем — он ходит, лишь
         # когда обход заказан руками или кнопкой на сайте
@@ -184,7 +192,7 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
                     "day": first.isoformat(),
                     "locale": LOCALES.get(source["domain"], "en-GB"),
                     "url": urls.resolve(channel["pattern"],
-                                        source["base_url"], day=first,
+                                        source["base_url"], day=first, tz=пояс,
                                         **(source["marks"] or {})),
                     "browser": source.get("browser", False),
                     "post": form(source, first, source["marks"] or {}),
@@ -204,7 +212,7 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
                     "day": first.isoformat(),
                     "locale": LOCALES.get(source["domain"], "en-GB"),
                     "url": urls.resolve(pattern, source["base_url"],
-                                        day=first, N=str(p),
+                                        day=first, tz=пояс, N=str(p),
                                         **(source["marks"] or {})),
                     "browser": source.get("browser", False),
                     "post": form(source, first, source["marks"] or {}),
@@ -234,7 +242,6 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
                 # #204 в 22:05 UTC просил у flashscore `?d=1`, а в Париже
                 # уже было 06.10 — пришло 07.10 под видом 06.10, эталон
                 # уехал на день, и «угадайки» за 06.10 сняты все (06.10)
-                сегодня = daytime.today(source.get("timezone"))
                 marks = {**(source["marks"] or {}),
                          "N": str((day - сегодня).days + 1),
                          # {DAYNUM} — тот же номер, но 0-based: `rtcg.me`
@@ -249,14 +256,14 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
                     "day": "" if source["grid"] else day.isoformat(),
                     "locale": LOCALES.get(source["domain"], "en-GB"),
                     "url": urls.resolve(channel["pattern"], source["base_url"],
-                                        day=day, **marks),
+                                        day=day, tz=пояс, **marks),
                     "browser": source.get("browser", False),
                     "post": form(source, day, marks),
                     "warmup": source.get("warmup_url") or "",
                     "post_json": json_body(
                         source, day,
                         urls.resolve(channel["pattern"], source["base_url"],
-                                     day=day, **marks)),
+                                     day=day, tz=пояс, **marks)),
                     "headers": source.get("headers"),
                 }
 
@@ -265,6 +272,15 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
 #: index~_day-30-09-2026_-df68bd…html`). Хеш вычислить нельзя — только взять
 _DAY_LINK = re.compile(
     r'href="([^"?]*?_day-(\d{2})-(\d{2})-(\d{4})_-[0-9a-f]{6,}[^"?]*?\.html)"')
+
+
+def link_days(today: date, days: int, scan: date | None) -> list[date]:
+    """Какие дни сайт с `day_links` добирает по ссылкам из страницы канала.
+    Сама страница — «сегодня» САЙТА (`today` по его часам, не UTC): полному
+    обходу — остальные дни окна, скану даты — его день, если он не сегодня."""
+    if scan:
+        return [scan] if scan != today else []
+    return [today + timedelta(days=i) for i in range(1, days)]
 
 
 def day_link_jobs(job: dict, html: str, wanted: list[date]) -> list[dict]:
@@ -524,14 +540,11 @@ def main() -> int:
           f"запросами к одному сайту\n")
 
     # дни, которые у сайтов с `day_links` добираем по ссылкам из страницы
-    # (адрес дня хеширован — ORF): полному обходу — окно, скану даты — его день
-    if args.urls or args.probe:
-        link_days: list[date] = []
-    elif args.date:
-        scan = date.fromisoformat(args.date)
-        link_days = [scan] if scan != date.today() else []
-    else:
-        link_days = [date.today() + timedelta(days=i) for i in range(1, days)]
+    # (адрес дня хеширован — ORF): полному обходу — окно, скану даты — его
+    # день; «сегодня» — по часам сайта (`link_days`)
+    by_links = not (args.urls or args.probe)
+    scan = date.fromisoformat(args.date) if args.date else None
+    пояс = {s["domain"]: s.get("timezone") for s in plan["sources"]}
 
     report = []
     started = time.monotonic()
@@ -556,9 +569,10 @@ def main() -> int:
                                     job.get("post") or job.get("post_json")).name
             (out / name).write_text(page.html, encoding="utf-8")
             row["файл"] = name
-            if job.get("day_links") and link_days \
+            if by_links and job.get("day_links") \
                     and not job.get("_day_from_link"):
-                extra = day_link_jobs(job, page.html, link_days)
+                extra = day_link_jobs(job, page.html, link_days(
+                    daytime.today(пояс.get(job["domain"])), days, scan))
                 if extra:
                     jobs.extend(extra)
                     print(f"     ↳ {job['domain']}: добавлено дней "

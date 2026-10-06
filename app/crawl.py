@@ -24,7 +24,7 @@ from dataclasses import dataclass
 from datetime import date as _date, timedelta
 import json
 
-from . import urls
+from . import daytime, urls
 
 #: сайты-сетки: дата и канал в адресе не нужны, всё приходит одним ответом
 #: (`tvarenasport.com/tv-scheme` — 18 каналов Arena на 7 дней одним запросом;
@@ -221,10 +221,10 @@ def depth(config: dict, days: int, domain: str = "") -> int:
     return got
 
 
-def window(days: int, start: _date | None = None) -> list[_date]:
-    """Окно обхода: сегодня и ещё `days - 1` вперёд (ТЗ разд. 2 — 2 или 5)."""
-    first = start or _date.today()
-    return [first + timedelta(days=i) for i in range(max(1, days))]
+def window(days: int, start: _date) -> list[_date]:
+    """Окно обхода: `start` («сегодня» сайта) и ещё `days - 1` вперёд
+    (ТЗ разд. 2 — 2 или 5)."""
+    return [start + timedelta(days=i) for i in range(max(1, days))]
 
 
 def plan_source(conn, source_id: int, days: int = 2,
@@ -235,6 +235,9 @@ def plan_source(conn, source_id: int, days: int = 2,
     config = json.loads(row["selector_config"] or "{}") or {}
     marks = config.get("url_marks") or {}
     days = depth(config, days, row["domain"])   # окно одно на всех, кроме справочников
+    # окно начинается с «сегодня» САЙТА — по его часам, не по часам машины
+    tz = row["timezone"]
+    start = start or daytime.today(tz)
     #: сайты, у которых день переключается формой, а не адресом: поля лежат
     #: в карточке источника (`post_fields`), даты в них — теми же метками
     post_fields = config.get("post_fields") or None
@@ -267,7 +270,7 @@ def plan_source(conn, source_id: int, days: int = 2,
         # дневная сетка: адрес на день, каналы все разом
         return [Target(
             url=urls.resolve(row["url_pattern"], row["base_url"], day=day,
-                             N=str(i + 1), **marks),
+                             tz=tz, N=str(i + 1), **marks),
             source_id=row["id"], domain=row["domain"], day=day,
             post=form(day))
             for i, day in enumerate(window(days, start))]
@@ -278,7 +281,7 @@ def plan_source(conn, source_id: int, days: int = 2,
         pages = max(1, days) * PAGED_DOMAINS[row["domain"]]
         return [Target(
             url=urls.resolve(row["url_pattern"], row["base_url"], day=first,
-                             N=str(p), **marks),
+                             tz=tz, N=str(p), **marks),
             source_id=row["id"], domain=row["domain"], day=first)
             for p in range(1, pages + 1)]
 
@@ -297,7 +300,7 @@ def plan_source(conn, source_id: int, days: int = 2,
             # `day=0` за сегодня, даты в адресе у него нет
             out.append(Target(
                 url=urls.resolve(pattern, row["base_url"], day=day,
-                                 DAYNUM=str(i), **marks),
+                                 tz=tz, DAYNUM=str(i), **marks),
                 source_id=row["id"], domain=row["domain"],
                 channel=channel["raw_name"], day=day, post=form(day)))
     return out

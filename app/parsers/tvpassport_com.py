@@ -6,13 +6,21 @@
 всё в data-атрибутах строки `div.list-group-item`:
 
     data-st           `2026-09-01 05:00:00` — начало в поясе страницы
-                      (`#timezone_selector`, по умолчанию America/New_York)
+                      (`#timezone_selector`, выбранный пункт)
     data-showName     `Italian Serie B Soccer` — турнир
     data-episodeTitle `Pisa vs. Catanzaro` — пара
     data-live         `1` у прямого эфира, data-repeat `1` у повтора
 
 Адрес на канал и день: `/tv-listings/stations/{слаг}/{YYYY-MM-DD}`
 (подсмотрено в iptv-org/epg).
+
+**Пояс страницы выбирает сайт сам — по адресу, с которого пришёл запрос.**
+Один и тот же Scotland — Slovenia (#4222) обход #201 получил как `12:30`
+с поясом `America/Denver`, скан #204 — как `19:30` с `Europe/London`; оба
+значат 21:30 по Киеву. Разбор читал оба по поясу из карточки источника
+(New York) — и матч уезжал то на 19:30, то на 02:30 следующих суток. Пояс,
+написанный на странице, главнее карточки; карточка — только когда страница
+его не назвала.
 """
 
 from __future__ import annotations
@@ -48,7 +56,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
     tree = HTMLParser(html)
     sel = tree.css_first("#timezone_selector option[selected]")
-    zone = ZoneInfo(tz or (sel.attributes.get("value") if sel else None) or TZ)
+    zone = ZoneInfo((sel.attributes.get("value") if sel else None) or tz or TZ)
     m = _URL_SLUG.search(url or "")
     channel = _NAMES.get(m.group(1) if m else "", "tvpassport")
 

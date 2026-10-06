@@ -4,7 +4,10 @@ r"""Проверки гашения каналов и чтения дат (ра�
 Гашение — правила `app/miss.py`: каждому правилу — сценарий с говорящим
 именем. Даты — `app/daytime.py` и teleman: страница дня, начатая хвостом
 прошлого вечера; наложение передач; «dziś» при сборе в 22:30 UTC; ночь
-перевода часов 25.10; «сегодня» для `?d=` — по часам сайта.
+перевода часов 25.10; «сегодня» по часам сайта — `?d=`, окно полного
+обхода, `{AU_DAYPATH}` Сиднея, добор дней ORF. digisport.ro — имя тура
+вместо LIVE и ночные строки; tvpassport.com — пояс страницы главнее
+карточки.
 
 В сеть не ходит. База — пустая, во временной папке. Запуск:
 
@@ -251,33 +254,84 @@ check("ночь_перевода_часов_25_10: Варшава → Киев",
       [kyiv(m) for m in dst])
 
 
-class _At2230UTC(datetime):
-    """Часы GitHub остановлены на 05.10.2026 22:30 UTC."""
-    @classmethod
-    def now(cls, tz=None):
-        moment = datetime(2026, 10, 5, 22, 30, tzinfo=timezone.utc)
-        return moment.astimezone(tz) if tz else moment.replace(tzinfo=None)
+def frozen_utc(*moment):
+    """Часы машины (GitHub), остановленные на этом моменте UTC."""
+    utc = datetime(*moment, tzinfo=timezone.utc)
+
+    class Frozen(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return utc.astimezone(tz) if tz else utc.replace(tzinfo=None)
+    return Frozen
+
+
+def load_script(name):
+    spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / f"{name}.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+crawl_fetch = load_script("crawl_fetch")
+parse_live = load_script("parse_live")
+
+
+def source(domain, tz, pattern, name=""):
+    return {"domain": domain, "timezone": tz, "grid": False, "marks": {},
+            "base_url": "", "channels": [{"name": name, "pattern": pattern}]}
+
+
+SYDNEY = source("tvguidetonight.com.au", "Australia/Sydney",
+                "https://www.tvguidetonight.com.au/channels/7mate-hd-sydney{AU_DAYPATH}")
+POLAND = source("pages.pl", "Europe/Warsaw", "https://pages.pl/kanal?date={YYYY-MM-DD}")
+API_UTC = source("api.test", "UTC", "https://api.test/epg/{YYYY-MM-DD}")
+
+
+def jobs_of(plan_sources, days=2, **kw):
+    return [(j["domain"], j["day"], j["url"]) for j in
+            crawl_fetch.targets({"sources": plan_sources}, days, False, **kw)]
 
 
 real_datetime = daytime.datetime
-daytime.datetime = _At2230UTC
 try:
+    daytime.datetime = frozen_utc(2026, 10, 5, 22, 30)
     check("сегодня_по_часам_сайта: в 22:30 UTC в Варшаве уже 06.10",
           daytime.today("Europe/Warsaw") == date(2026, 10, 6)
           and daytime.today("UTC") == date(2026, 10, 5))
-    spec = importlib.util.spec_from_file_location(
-        "crawl_fetch", ROOT / "scripts" / "crawl_fetch.py")
-    crawl_fetch = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(crawl_fetch)
-    plan = {"sources": [{"domain": "flashscore.mobi", "timezone": "Etc/GMT-2",
-                         "grid": False, "marks": {}, "base_url": "",
-                         "channels": [{"name": "football",
-                                       "pattern": "https://www.flashscore.mobi/?d={DAYNUM}"}]}]}
-    jobs = list(crawl_fetch.targets(plan, 1, False, start=date(2026, 10, 6),
-                                    single=True))
+    flash = source("flashscore.mobi", "Etc/GMT-2", "https://www.flashscore.mobi/?d={DAYNUM}",
+                   "football")
+    got = jobs_of([flash], 1, start=date(2026, 10, 6), single=True)
     check("скан_даты_06_10_в_22_30_UTC_просит_у_сайта_d0 (#204 просил d=1 и получил 07.10)",
-          [j["url"] for j in jobs] == ["https://www.flashscore.mobi/?d=0"],
-          [j["url"] for j in jobs])
+          [u for *_, u in got] == ["https://www.flashscore.mobi/?d=0"], got)
+    got = jobs_of([POLAND, API_UTC, SYDNEY])
+    check("полный_обход_в_22_30_UTC: окно каждого сайта — с его «сегодня»",
+          got == [("pages.pl", "2026-10-06", "https://pages.pl/kanal?date=2026-10-06"),
+                  ("pages.pl", "2026-10-07", "https://pages.pl/kanal?date=2026-10-07"),
+                  ("api.test", "2026-10-05", "https://api.test/epg/2026-10-05"),
+                  ("api.test", "2026-10-06", "https://api.test/epg/2026-10-06"),
+                  ("tvguidetonight.com.au", "2026-10-06",
+                   "https://www.tvguidetonight.com.au/channels/7mate-hd-sydney"),
+                  ("tvguidetonight.com.au", "2026-10-07",
+                   "https://www.tvguidetonight.com.au/channels/7mate-hd-sydney/tomorrow")],
+          got)
+    check("добор_дней_ORF_в_22_30_UTC: от «сегодня» Вены (06.10)",
+          crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3, None)
+          == [date(2026, 10, 7), date(2026, 10, 8)]
+          and crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3, date(2026, 10, 6)) == []
+          and crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3, date(2026, 10, 7))
+          == [date(2026, 10, 7)])
+
+    # Сидней: «завтра» наступает раньше всех — в 14:00 UTC там уже 01:00 06.10
+    daytime.datetime = frozen_utc(2026, 10, 5, 14, 0)
+    got = jobs_of([POLAND, SYDNEY])
+    check("сидней_в_14_00_UTC: у него уже 06.10, у Варшавы ещё 05.10",
+          got == [("pages.pl", "2026-10-05", "https://pages.pl/kanal?date=2026-10-05"),
+                  ("pages.pl", "2026-10-06", "https://pages.pl/kanal?date=2026-10-06"),
+                  ("tvguidetonight.com.au", "2026-10-06",
+                   "https://www.tvguidetonight.com.au/channels/7mate-hd-sydney"),
+                  ("tvguidetonight.com.au", "2026-10-07",
+                   "https://www.tvguidetonight.com.au/channels/7mate-hd-sydney/tomorrow")],
+          got)
 finally:
     daytime.datetime = real_datetime
 
@@ -292,6 +346,78 @@ check("teleman_dziś_при_сборе_в_22_30_UTC: 06.10 20:35 Варшава 
       len(sport) == 1 and sport[0].start.strftime("%Y-%m-%d %H:%M") == "2026-10-06 20:35"
       and kyiv(sport[0].start) == "2026-10-06 21:35",
       [(p.start, kyiv(p.start)) for p in sport])
+
+# ── digisport.ro: имя тура вытеснило LIVE; ночные строки — следующий день ──
+print("digisport.ro и tvpassport.com")
+
+
+def digi_row(hhmm, kind, tag, title):
+    mark = f'<span class="tag"> {tag} </span> ' if tag else ""
+    return (f'<tr class=""> <td class="schedule-icon" data-schedule="{kind}"></td> '
+            f'<td>{hhmm}</td> <td> {mark}{title} </td> </tr>')
+
+
+digi = ('<div class="schedule-wrapper"><h3>Marți 06 Octombrie</h3>'
+        '<table class="schedule-table">'
+        + digi_row("21:00", "digisport", "LIVE", "Euro Fotbal")
+        + digi_row("21:40", "liga natiunilor", "etapa 4",
+                   "Nations League: Croatia-Spania<br>Grupe")
+        + digi_row("22:45", "liga natiunilor", "etapa 4",
+                   "Nations League: Croatia-Spania<br>Grupe")
+        + digi_row("23:30", "digisport", "Premiera", "Liga 2: Rezumat")
+        + digi_row("02:00", "digisport", "LIVE", "Fotbal Amical: Argentina-Benin")
+        + digi_row("04:00", "liga natiunilor", "etapa 4",
+                   "Nations League: Croatia-Spania<br>Grupe")
+        + '</table></div>')
+from app.parsers import digisport_ro, tvpassport_com  # noqa: E402
+rows = {(p.raw_time, p.match_raw): p for p in digisport_ro.parse(
+    digi, day=date(2026, 10, 5), tz=digisport_ro.TZ,
+    url="https://www.digisport.ro/program-tv/digisport-1")}
+first = rows[("21:40", "Croatia - Spania")]
+check("digisport_имя_тура_вместо_LIVE: первый показ пары — угаданный эфир",
+      first.live_raw == "live" and first.extra.get("live_guess")
+      and kyiv(first.start) == "2026-10-06 21:40",
+      (first.live_raw, first.extra, kyiv(first.start)))
+check("digisport_повторы_той_же_пары_не_эфир",
+      rows[("22:45", "Croatia - Spania")].live_raw == ""
+      and rows[("04:00", "Croatia - Spania")].live_raw == "")
+night = rows[("02:00", "Argentina - Benin")]
+check("digisport_ночная_строка_под_заголовком_06_10 — это 07.10; LIVE честный",
+      kyiv(night.start) == "2026-10-07 02:00" and night.live_raw == "live"
+      and not night.extra.get("live_guess")
+      and kyiv(rows[("04:00", "Croatia - Spania")].start) == "2026-10-07 04:00",
+      (kyiv(night.start), night.extra))
+check("digisport_Premiera_не_эфир",
+      all(p.live_raw == "" for (t, _), p in rows.items() if t == "23:30"))
+
+
+class _Result:
+    """Строка отсева, как её видит parse_live: `.program`."""
+    def __init__(self, program):
+        self.program = program
+
+
+check("эфир_угадан_у_строки_сверяется_с_эталоном_даже_у_сайта_с_флагом",
+      parse_live.guessed("www.digisport.ro", _Result(first))
+      and not parse_live.guessed("www.digisport.ro", _Result(night))
+      and parse_live.guessed("www.movistarplus.es", _Result(night)))
+
+
+def passport(zone, stamp):
+    return (f'<select id="timezone_selector"><option value="America/New_York">Eastern'
+            f'</option><option value="{zone}" selected>X</option></select>'
+            f'<div class="list-group-item" data-st="{stamp}" '
+            f'data-showName="UEFA Nations League Soccer" '
+            f'data-episodeTitle="Scotland vs. Slovenia" data-live="1"></div>')
+
+
+url_fsp = "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-06"
+# пояс карточки передаёт разбор (`parse_live`: tz из плана) — страница главнее
+got = [kyiv(p.start) for page in (passport("America/Denver", "2026-10-06 12:30:00"),
+                                  passport("Europe/London", "2026-10-06 19:30:00"))
+       for p in tvpassport_com.parse(page, tz="America/New_York", url=url_fsp)]
+check("tvpassport_пояс_страницы_главнее_карточки: Денвер 12:30 и Лондон 19:30 → 21:30 Киев",
+      got == ["2026-10-06 21:30", "2026-10-06 21:30"], got)
 
 print(f"\nпроверок: {passed + len(failed)}, зелёных: {passed}, красных: {len(failed)}")
 shutil.rmtree(TMP, ignore_errors=True)

@@ -17,19 +17,33 @@
 `superliga`, `la liga`, `fotbal european`. Кладём её в лигу — по ней вид
 спорта определяется даже там, где в заголовке одна пара команд.
 
-`<span class="tag">LIVE</span>` — честный маркер прямого эфира.
+`<span class="tag">…</span>` — ОДНА пометка перед заголовком, и сайт кладёт
+туда что сочтёт важнее (разбор 06.10):
+
+* `LIVE` / `Live` — прямой эфир;
+* `Premiera` — первый показ записи (обзор, магазин) — не эфир;
+* пусто — обычная строка сетки, не эфир;
+* что угодно другое — `Etapa 4`, `Liga Florilor`, `Cupa Mondiala`: название
+  тура или турнира ВЫТЕСНИЛО `LIVE`. На 30.09 матчи Лиги наций 06.10 стояли
+  с `LIVE`, с 01.10 у них `etapa 4` — и у прямого эфира 21:40, и у повторов
+  22:45 и 04:00; три канала Digi у #4215/#4221/#4223 пропали с витрины. Эфир
+  такой строки неизвестен: его получает первый показ пары
+  (`mark_first_show`), а `parse_live.py` сверяет угаданный эфир с эталоном —
+  ночной повтор вчерашнего матча туда не пройдёт.
+
+День на странице — телевизионный, 06:00 → 06:00: строки после полуночи под
+заголовком `Marți 06 Octombrie` идут уже 07.10 (`daytime.walk_day`).
 """
 
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime
-from zoneinfo import ZoneInfo
+from datetime import date as _date
 
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, register
+from . import Program, mark_first_show, register
 
 DOMAIN = "digisport.ro"
 TZ = "Europe/Bucharest"
@@ -42,6 +56,9 @@ _MONTHS = {"ianuarie": 1, "februarie": 2, "martie": 3, "aprilie": 4,
 _DAY_HEAD = re.compile(r"(\d{1,2})\s+([A-Za-zăâîșşţț]+)", re.I)
 _HHMM = re.compile(r"^(\d{1,2}):(\d{2})$")
 _CHANNEL = re.compile(r"digisport-(\d)")
+#: пометка прямого эфира и пометка «не эфир» (шапка модуля)
+_LIVE_TAG = re.compile(r"\blive\b", re.I)
+_NOT_LIVE_TAG = re.compile(r"^premier", re.I)
 
 
 #: Хвост стадии турнира сайт приклеивает к имени гостей БЕЗ пробела:
@@ -76,7 +93,6 @@ def _pair(text: str) -> str:
 @register(DOMAIN)
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
-    zone = ZoneInfo(tz or TZ)
     got = _CHANNEL.search(url or "")
     channel = f"Digi Sport {got.group(1)}" if got else "Digi Sport"
     if channels and channel not in channels:
@@ -84,8 +100,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     today = day or daytime.today(tz or TZ)
     tree = HTMLParser(html)
 
-    out: list[Program] = []
-    current: _date | None = None
+    # строки по телевизионным суткам: (день заголовка, [(время, вид, пометка,
+    # заголовок)])
+    days: list[tuple[_date, list[tuple[str, str, str, str]]]] = []
     for node in tree.root.traverse():
         if node.tag == "h3":
             head = _DAY_HEAD.search(" ".join(node.text().split()))
@@ -94,9 +111,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 # года на странице нет: он тот же, что у сегодняшнего дня,
                 # а на переходе через Новый год — следующий
                 year = today.year + (1 if month < today.month else 0)
-                current = _date(year, month, int(head.group(1)))
+                days.append((_date(year, month, int(head.group(1))), []))
             continue
-        if node.tag != "tr" or current is None:
+        if node.tag != "tr" or not days:
             continue
         cells = node.css("td")
         if len(cells) < 3:
@@ -104,26 +121,40 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         hm = _HHMM.match(cells[1].text(strip=True))
         if not hm:
             continue
-        kind = (cells[0].attributes.get("data-schedule") or "").strip()
         tag = cells[2].css_first("span.tag")
-        live = bool(tag and "LIVE" in tag.text(strip=True).upper())
+        mark = tag.text(strip=True) if tag else ""
         title = " ".join(cells[2].text().split())
-        if tag:
-            title = title.replace(tag.text(strip=True), "", 1).strip()
-        if not title:
-            continue
-        # `Superliga: Rapid-Universitatea CraiovaEtapa 7` — лига до двоеточия,
-        # пара после; двоеточия нет — пару ищем во всём заголовке
-        head, sep, rest = title.partition(":")
-        league = f"{kind} {head.strip()}".strip() if sep and rest.strip() else kind
-        pair = _pair(rest) if sep and rest.strip() else _pair(title)
-        out.append(Program(
-            channel_raw=channel, title=title,
-            start=datetime(current.year, current.month, current.day,
-                           int(hm.group(1)), int(hm.group(2)), tzinfo=zone),
-            raw_time=hm.group(0), league_raw=league[:120],
-            live_raw="live" if live else "",
-            match_raw=pair, source_url=url,
-            extra={"day": current.isoformat()},
-        ))
+        if mark:
+            title = title.replace(mark, "", 1).strip()
+        if title:
+            days[-1][1].append((hm.group(0),
+                                (cells[0].attributes.get("data-schedule") or "").strip(),
+                                mark, title))
+
+    out: list[Program] = []
+    unknown: list[Program] = []          # пометку вытеснило имя тура — эфир неизвестен
+    for current, rows in days:
+        moments = daytime.walk_day([r[0] for r in rows], current, tz or TZ)
+        for (raw_time, kind, mark, title), moment in zip(rows, moments):
+            if moment is None:
+                continue
+            # `Superliga: Rapid-Universitatea CraiovaEtapa 7` — лига до
+            # двоеточия, пара после; двоеточия нет — пару ищем во всём заголовке
+            head, sep, rest = title.partition(":")
+            league = f"{kind} {head.strip()}".strip() if sep and rest.strip() else kind
+            pair = _pair(rest) if sep and rest.strip() else _pair(title)
+            program = Program(
+                channel_raw=channel, title=title, start=moment,
+                raw_time=raw_time, league_raw=league[:120],
+                live_raw="live" if _LIVE_TAG.search(mark) else "",
+                match_raw=pair, source_url=url,
+                extra={"day": moment.date().isoformat()})
+            out.append(program)
+            if mark and not _LIVE_TAG.search(mark) \
+                    and not _NOT_LIVE_TAG.match(mark):
+                unknown.append(program)
+    for program in mark_first_show(unknown, "live"):
+        if program.live_raw:
+            # эфир угадан, а не помечен сайтом — `parse_live.guessed`
+            program.extra["live_guess"] = True
     return out

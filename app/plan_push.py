@@ -89,7 +89,6 @@ def probe_url(domain: str) -> str:
     """Адрес для разовой пробы с сервера — тот же, каким ходит обход:
     первая строка домена в плане с подставленной сегодняшней датой.
     У POST-источников (тело запроса) пробуем страницу-витрину."""
-    from datetime import date
     from . import urls
     try:
         plan = json.loads(PLAN.read_text(encoding="utf-8"))
@@ -102,8 +101,9 @@ def probe_url(domain: str) -> str:
             return s.get("base_url") or ""
         channels = s.get("channels") or []
         pattern = (channels[0].get("pattern") if channels else "") or ""
+        # день — «сегодня» сайта по его часам (`urls.resolve`, tz)
         return urls.resolve(pattern, s.get("base_url") or "",
-                            day=date.today(), **(s.get("marks") or {}))
+                            tz=s.get("timezone"), **(s.get("marks") or {}))
     return ""
 
 
