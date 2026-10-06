@@ -16,6 +16,8 @@ tv.orf.at (`übertragung`).
      назвал эфиром, — не эфир; угаданное метится `live_guess`.
   3. По каждому изменённому сайту — урезанная НАСТОЯЩАЯ страница обхода #205
      (`scripts/testdata/live_flags/`) и что из неё должно выйти.
+  4. Самопроверка `scripts/audit_run.py` ловит флаг в данных, слово вне
+     словаря и кличку (DVSC ↔ Debrecen).
 
 В сеть не ходит, базу не трогает. Запуск:
 
@@ -43,6 +45,7 @@ from app import live, pipeline                                   # noqa: E402
 from app.parsers import (SITE_FLAG, SITE_LIVE, SITE_LIVE_WORD,   # noqa: E402
                          SITE_REPEAT, SITE_REPEAT_WORD, Program, get,
                          mark_first_show, site_says)
+import audit_run                                                 # noqa: E402
 
 DATA = ROOT / "scripts" / "testdata" / "live_flags"
 KYIV = ZoneInfo("Europe/Kyiv")
@@ -299,6 +302,56 @@ check("время trtspor «20:30Z» — местное: 20:30 по Киеву, 
       "(как UTC было бы 23:30)",
       bourg and bourg[0].start.astimezone(KYIV).strftime("%d.%m %H:%M")
       == "06.10 20:30")
+
+# ── самопроверка прогона scripts/audit_run.py ────────────────────────────────
+print("audit_run.py — известные классы ошибок")
+flags = audit_run.raw_flags(page("porthu_290_2026-10-06.json"), MARKERS)
+check("флаг port.hu `is_live_mp` виден в сырых данных",
+      flags.get(("live", "json:is_live_mp=true")) == 2
+      and flags.get(("repeat", "json:is_repeat=true")) == 2)
+flags = audit_run.raw_flags(page("tvpassport_fox-soccer-plus_2026-10-06.html"), MARKERS)
+check("data-live / data-repeat tvpassport видны",
+      flags.get(("live", "attr:data-live=1")) and flags.get(("repeat", "attr:data-repeat=1")))
+check("закомментированный значок (oneplaysport.cz) признаком не считается",
+      not audit_run.raw_flags('<!--<div class="live">Živě</div>-->', MARKERS))
+
+site = audit_run.Site("port.hu")
+site.pages, site.programs, site.guessed_live = 3, 90, 20
+site.flags[("live", "json:is_live_mp=true")] = 9
+problems, _ = audit_run.check_flags({"port.hu": site})
+check("флаг в данных при нуле честного эфира — подозрение «не читается»",
+      any("port.hu" in x and "не читается" in x for x in problems), problems)
+
+no_word = live.Markers(live=live._pattern(["live"]), not_live=None, stop_title=None)
+site = audit_run.Site("jupiter.err.ee")
+audit_run.uncovered_words("Jalgpall: Eesti - Norra, otseülekanne", no_word, site)
+check("слово эфира, которого нет в словаре, найдено («otseülekanne», 03.10)",
+      site.words.get("otseülekanne") == 1)
+site = audit_run.Site("tvarenasport.si")
+audit_run.uncovered_words("Fudbal v živo", MARKERS, site)
+check("слово внутри словарного выражения («živo» в «v živo») не подозрение",
+      not site.words)
+
+ref = {"sport": "F", "home": "Ferencvaros", "away": "Debrecen",
+       "league": "HUNGARY: NB I", "fs_id": "x1", "start_kyiv": "2026-10-04T19:00"}
+row = pipeline.Row(program=Program(channel_raw="M4 Sport", title="Ferencváros - DVSC",
+                                   start=None, league_raw="Labdarúgó NB I"),
+                   ok=True, home="Ferencváros", away="DVSC", sport="F",
+                   start_kyiv=datetime(2026, 10, 4, 19, 0, tzinfo=KYIV))
+site = audit_run.Site("port.hu")
+site.rows.append((row, "page"))
+games = {"окно": 0, "собрано": "2026-10-04 04:00", "эталон": [ref],
+         "games": [{"start_kyiv": "2026-10-04T19:00"}]}
+aliases, zones, _ = audit_run.check_aliases_and_zones({"port.hu": site}, games)
+check("кличка: «DVSC» ≠ «Debrecen» при твёрдо совпавшей второй команде",
+      any("DVSC" in x and "Debrecen" in x for x in aliases), aliases)
+
+twin = {"эталон": [{"fs_id": "0K7iLNL7", "home": "Olimpia Asuncion",
+                    "away": "Nacional Asuncion", "start_kyiv": t}
+                   for t in ("2026-10-06T01:15", "2026-10-07T01:15")]}
+lines = audit_run.check_reference(twin)
+check("эталон: один fs_id с двумя временами (ровно сутки — полночь страниц)",
+      lines and "ровно на сутки" in lines[0] and "разнесены 1" in lines[0], lines)
 
 print(f"\nИтого: {passed} зелёных, {len(failed)} красных")
 for name in failed:
