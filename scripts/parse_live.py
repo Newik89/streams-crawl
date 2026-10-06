@@ -30,6 +30,7 @@ sys.path.insert(0, str(ROOT))
 from app import (broadcast, canon, daytime, db, dictionary,  # noqa: E402
                  leagues, live, merge, names, pipeline, sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
+from app.parsers import flashscore_mobi                     # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
 
 DEFAULT_DIR = ROOT / "recon" / "raw_live"
@@ -128,6 +129,39 @@ REPEAT_AFTER = timedelta(hours=4)
 #: как далеко в прошлое смотрим: канал крутит запись день-два, дальше уже
 #: не повтор, а новый матч тех же команд
 REPEAT_DEPTH = timedelta(hours=60)
+#: матч эталона в пределах ±3 ч от строки — строка показывает его вживую
+#: (тот же допуск, что у сверки угаданного эфира с эталоном)
+LIVE_NEAR = timedelta(hours=3)
+
+
+def add_reference(programs: list, reference: list,
+                  reference_full: list | None) -> None:
+    """Строки справочника → эталон. `reference` — кортежи (дом, гости,
+    киевское время) для сверки футбольного live; `reference_full` — полные
+    записи flashscore (с fs_id) для games.json (None — не нужен)."""
+    from zoneinfo import ZoneInfo as _Z
+    for prg in programs:
+        pair = (prg.match_raw or "").strip()
+        if " - " not in pair or prg.start is None:
+            continue
+        home, _, away = pair.partition(" - ")
+        begin = prg.start.astimezone(_Z("Europe/Kyiv"))
+        # live-подтверждение остаётся футбольным: правила про повторы
+        # топ-лиг и порог rich считают только футбол
+        if prg.sport_raw in ("Soccer", ""):
+            reference.append((home.strip(), away.strip(), begin))
+        # полный эталон уезжает в games.json: по нему импорт закрепляет
+        # канонические английские имена (app/canon.py); с 6б в нём и
+        # баскетбол с теннисом
+        if reference_full is not None:
+            reference_full.append({
+                "sport": {"Basketball": "B",
+                          "Tennis": "T"}.get(prg.sport_raw, "F"),
+                "home": home.strip(), "away": away.strip(),
+                "league": (prg.league_raw or "").strip(),
+                "fs_id": (prg.extra or {}).get("fs_id", ""),
+                "start_kyiv": begin.strftime("%Y-%m-%dT%H:%M"),
+            })
 
 
 def reference_index(reference: list) -> dict:
@@ -143,34 +177,55 @@ def reference_index(reference: list) -> dict:
     return по_дням
 
 
-def already_played(home: str, away: str, start, индекс: dict) -> bool:
-    """Этот матч уже сыгран — значит показ является повтором.
+def played_before(home: str, away: str, league: str, start,
+                  индекс: dict) -> dict | None:
+    """Запись эталона, повтором которой является показ, или None.
 
-    Ищем ту же пару в эталоне flashscore за прошедшие 4–60 часов. Меньше
-    четырёх — это тот же матч в своём окне (студия, разброс сеток), больше
-    шестидесяти — уже новая встреча тех же команд.
+    Правила по порядку:
+
+    1. Соперник ещё не назван («Francia — TBC») — судить не по чему: по
+       одной стороне легко принять показ за повтор прошлого матча команды.
+    2. Та же пара есть в эталоне в пределах ±`LIVE_NEAR` от строки — строка
+       показывает этот матч вживую, это не повтор, даже если та же пара
+       встречалась и раньше (сбор #205: эталон держал Instituto — Boca
+       Juniors и 09.10, и 10.10, и живой эфир 10.10 снимался «записью»).
+    3. Та же пара в эталоне раньше строки на `REPEAT_AFTER`…`REPEAT_DEPTH`
+       (4–60 ч) — матч уже сыгран, показ — повтор. Меньше четырёх часов —
+       тот же матч в своём окне (студия, разброс сеток), больше шестидесяти
+       — уже новая встреча тех же команд.
     """
     if not индекс or not start:
-        return False
+        return None
+    if names.is_placeholder(home) or names.is_placeholder(away):
+        return None                                          # правило 1
     # эталон лежит в наивном киевском времени, а время строки — со смещением;
     # сравнивать их напрямую нельзя (обход 11.09 упал именно на этом)
     start = start.replace(tzinfo=None)
-    if names.is_placeholder(home) or names.is_placeholder(away):
-        return False        # соперник ещё не назван — судить не по чему
     день = start.date()
+
+    def same_pair(r) -> bool:
+        пара = {"home": home, "away": away, "league": league,
+                "sport": r.get("sport", "F")}
+        return canon._pair_score(пара, r) >= names.SIMILAR_ENOUGH
+
+    for д in (день - timedelta(days=1), день, день + timedelta(days=1)):
+        for r, when in индекс.get(д, []):
+            if abs(start - when) <= LIVE_NEAR and same_pair(r):
+                return None                                  # правило 2
     for д in (день, день - timedelta(days=1), день - timedelta(days=2)):
         for r, when in индекс.get(д, []):
-            разрыв = start - when
-            if not (REPEAT_AFTER < разрыв <= REPEAT_DEPTH):
-                continue
-            пара = {"home": home, "away": away, "league": "",
-                    "sport": r.get("sport", "F")}
-            if canon._pair_score(пара, r) >= names.SIMILAR_ENOUGH:
-                return True
-    return False
+            if REPEAT_AFTER < start - when <= REPEAT_DEPTH and same_pair(r):
+                return r                                     # правило 3
+    return None
 
 
-def drop_reference_repeats(games: list, reference: list) -> tuple[list, int]:
+def already_played(home: str, away: str, start, индекс: dict) -> bool:
+    """Этот матч уже сыгран — значит показ является повтором
+    (правила — `played_before`)."""
+    return played_before(home, away, "", start, индекс) is not None
+
+
+def drop_reference_repeats(games: list, reference: list) -> tuple[list, list]:
     """Снять показы матчей, которые УЖЕ сыграны.
 
     Канал крутит запись: `Fenerbahçe - AS Řím` стоит в сетке 11.09 в 10:00,
@@ -179,50 +234,26 @@ def drop_reference_repeats(games: list, reference: list) -> tuple[list, int]:
     67 оказались именно такими, в основном oneplaysport.cz и beIN).
 
     Матч эталона ПОЗЖЕ строки не трогаем: это либо анонс будущей игры, либо
-    расхождение дат у сайта — другой случай, отдельный разбор.
+    расхождение дат у сайта — другой случай, отдельный разбор. Правила —
+    `played_before`. Возвращает (оставленные игры, [(снятая игра, запись
+    эталона)]) — снятое уходит в журнал поимённо.
     """
     if not reference:
-        return games, 0
+        return games, []
     # индекс по дню: перебирать 5 тысяч записей на каждую игру слишком долго
-    по_дням: dict = {}
-    for r in reference:
-        try:
-            when = datetime.fromisoformat(r.get("start_kyiv") or "")
-        except ValueError:
-            continue
-        по_дням.setdefault(when.date(), []).append((r, when))
-    оставили, снято = [], 0
+    по_дням = reference_index(reference)
+    оставили, снятые = [], []
     for g in games:
-        начало = g.start.replace(tzinfo=None)     # эталон — в наивном времени
-        # соперник ещё не назван («Francia — TBC»): такую строку по одной
-        # стороне легко принять за повтор прошлого матча этой команды
-        if names.is_placeholder(g.home) or names.is_placeholder(g.away):
+        матч = played_before(g.home, g.away, g.first.league or "", g.start,
+                             по_дням)
+        if матч is None:
             оставили.append(g)
-            continue
-        повтор = False
-        день = начало.date()
-        сутки = [день, день - timedelta(days=1), день - timedelta(days=2)]
-        for д in сутки:
-            for r, when in по_дням.get(д, []):
-                разрыв = начало - when
-                if not (REPEAT_AFTER < разрыв <= REPEAT_DEPTH):
-                    continue
-                пара = {"home": g.home, "away": g.away,
-                        "league": g.first.league or "",
-                        "sport": r.get("sport", "F")}
-                if canon._pair_score(пара, r) >= names.SIMILAR_ENOUGH:
-                    повтор = True
-                    break
-            if повтор:
-                break
-        if повтор:
-            снято += 1
         else:
-            оставили.append(g)
-    return оставили, снято
+            снятые.append((g, матч))
+    return оставили, снятые
 
 
-def drop_late_repeats(games: list) -> tuple[list, int]:
+def drop_late_repeats(games: list) -> tuple[list, list]:
     """Убрать поздние повторы, которые видно только по соседнему сайту.
 
     Сайт без честного флага эфира помечает эфиром свой самый ранний показ
@@ -234,9 +265,11 @@ def drop_late_repeats(games: list) -> tuple[list, int]:
     была раньше (в пределах 30 часов, чтобы не снести ответный матч через
     неделю), а поздняя запись целиком собрана из «угаданных» источников —
     это повтор, в ленту он не идёт.
+
+    Возвращает (оставленные, [(снятая игра, та же пара раньше)]).
     """
     kept: list = []
-    removed = 0
+    removed: list = []
     for game in sorted(games, key=lambda g: g.start):
         guessed_only = all(guessed(e.source, e.payload) for e in game.entries)
         # две сессии одного турнира в день — не повтор: у сведённой
@@ -244,12 +277,59 @@ def drop_late_repeats(games: list) -> tuple[list, int]:
         if game.first.away == broadcast.SESSION:
             kept.append(game)
             continue
-        if guessed_only and any(
-                _looks_repeat(earlier, game) for earlier in kept):
-            removed += 1
+        earlier = next((e for e in kept if _looks_repeat(e, game)), None) \
+            if guessed_only else None
+        if earlier is not None:
+            removed.append((game, earlier))
             continue
         kept.append(game)
     return kept, removed
+
+
+#: имена фильтров повторов в журнале снятого (ключ «снято» в games.json)
+СНЯТО_ОЧЕРЕДЬ = "очередь: матч уже сыгран"
+СНЯТО_ПОЗДНИЙ_ПОКАЗ = "поздний показ у сайта без флага"
+СНЯТО_НЕТ_В_ЭТАЛОНЕ = "угаданный эфир без эталона"
+СНЯТО_НЕТ_В_ЭТАЛОНЕ_БТ = "угаданный эфир без эталона (баскет/теннис)"
+СНЯТО_ГРЯЗНЫЕ_МИНУТЫ = "угаданный эфир не на ровной минуте"
+СНЯТО_СЫГРАН = "повтор по flashscore: матч уже сыгран"
+СНЯТО_ПОЗДНИЙ_ПОВТОР = "поздний повтор: пара была раньше у другого сайта"
+
+
+def removed_row(фильтр: str, domain: str, r, почему: str) -> dict:
+    """Строка, снятая фильтром повторов, — поимённо для журнала разбора
+    (принцип владельца «ничто не теряется молча»). `r` — строка отсева
+    (`.program`, `.start_kyiv`)."""
+    program = getattr(r, "program", None)
+    when = getattr(r, "start_kyiv", None)
+    return {"фильтр": фильтр, "домен": domain,
+            "канал": getattr(program, "channel_raw", "") or "",
+            "заголовок": (getattr(program, "title", "") or "")[:200],
+            "start_kyiv": when.strftime("%Y-%m-%dT%H:%M") if when else "",
+            "почему": почему}
+
+
+def sift(rows: list, keep, снято: list, фильтр: str, почему: str) -> list:
+    """Оставить строки `(сайт, строка)`, для которых `keep(сайт, строка)`
+    истинно; остальные записать в `снято` поимённо."""
+    kept = []
+    for domain, r in rows:
+        if keep(domain, r):
+            kept.append((domain, r))
+        else:
+            снято.append(removed_row(фильтр, domain, r, почему))
+    return kept
+
+
+def _ref_text(r: dict) -> str:
+    """Запись эталона одной строкой: «Instituto - Boca Juniors 09.10 01:30
+    (fs_id Cv4icMr4)»."""
+    try:
+        when = datetime.fromisoformat(r.get("start_kyiv") or "").strftime("%d.%m %H:%M")
+    except ValueError:
+        when = r.get("start_kyiv") or "?"
+    return (f"{r.get('home', '')} - {r.get('away', '')} {when} "
+            f"(fs_id {r.get('fs_id') or '—'})")
 
 
 def _bare_domain(domain: str) -> str:
@@ -355,6 +435,8 @@ def main() -> int:
     reference_full: list = []  # тот же flashscore, но с именами и fs_id — в games.json
     locale_names: dict[str, dict] = {}    # fs_id → {язык: [home, away]} (6е, A2)
     locale_leagues: dict[str, dict] = {}  # fs_id → {язык: лига как её пишут там}
+    fs_programs: list = []    # строки всех страниц flashscore.mobi — до settle
+    снято: list[dict] = []    # строки, снятые фильтрами повторов, поимённо
     for row in rows:
         name = row.get("файл")
         if not name or not (folder / name).exists():
@@ -416,29 +498,13 @@ def main() -> int:
             # не гоняем: у строки календаря нет маркера эфира, и pipeline
             # срезал её раньше, чем отдавал пару (поймано 02.09 —
             # эталон приходил пустым).
-            from zoneinfo import ZoneInfo as _Z
-            for prg in programs:
-                pair = (prg.match_raw or "").strip()
-                if " - " in pair and prg.start is not None:
-                    home, _, away = pair.partition(" - ")
-                    begin = prg.start.astimezone(_Z("Europe/Kyiv"))
-                    # live-подтверждение остаётся футбольным: правила про
-                    # повторы топ-лиг и порог rich считают только футбол
-                    if prg.sport_raw in ("Soccer", ""):
-                        reference.append((home.strip(), away.strip(),
-                                          begin))
-                    # полный эталон уезжает в games.json: по нему импорт
-                    # закрепляет канонические английские имена (app/canon.py);
-                    # с 6б в нём и баскетбол с теннисом
-                    if _bare_domain(row["domain"]) == "flashscore.mobi":
-                        reference_full.append({
-                            "sport": {"Basketball": "B",
-                                      "Tennis": "T"}.get(prg.sport_raw, "F"),
-                            "home": home.strip(), "away": away.strip(),
-                            "league": (prg.league_raw or "").strip(),
-                            "fs_id": (prg.extra or {}).get("fs_id", ""),
-                            "start_kyiv": begin.strftime("%Y-%m-%dT%H:%M"),
-                        })
+            # flashscore.mobi копим до конца цикла: матч у полуночи стоит на
+            # страницах двух дней, и одно время ему выбирается по всем
+            # страницам сразу (`flashscore_mobi.settle`, сбор #205)
+            if _bare_domain(row["domain"]) == "flashscore.mobi":
+                fs_programs += programs
+            else:
+                add_reference(programs, reference, None)
             continue
         for r in pipeline.run(programs, markers, sports):
             if r.ok:
@@ -454,6 +520,21 @@ def main() -> int:
                 # не футбол/баскет/теннис — не выбрасываем, а отдаём
                 # отдельным списком во вкладку «Other Sport» (владелец 03.10)
                 other_rows.append((row["domain"], r))
+
+    # Эталон flashscore: один матч — одна запись и одно время (сбор #205:
+    # 103 матча стояли дважды с разницей в сутки, и живой эфир Instituto —
+    # Boca Juniors 10.10 снимался «повтором» несуществующего матча 09.10)
+    if fs_programs:
+        прочтения: dict[str, set] = {}
+        for prg in fs_programs:
+            прочтения.setdefault((prg.extra or {}).get("fs_id") or "",
+                                 set()).add(prg.start)
+        разошлись = sum(1 for k, v in прочтения.items() if k and len(v) > 1)
+        settled = flashscore_mobi.settle(fs_programs)
+        add_reference(settled, reference, reference_full)
+        print(f"эталон flashscore: строк со страниц {len(fs_programs)}, "
+              f"матчей {len(settled)}; у {разошлись} страницы разошлись "
+              f"во времени — оставлено одно (flashscore_mobi.settle)")
 
     # Имена локалей — к записям эталона по fs_id (6е, A2). Без английской
     # записи местное имя не к чему привязать, такие (3–4 в день) пропадают.
@@ -670,9 +751,15 @@ def main() -> int:
     # упал на этой путанице)
     индекс_эталона = reference_index(reference_full)
     было = len(unsolved)
-    unsolved = [(domain, r) for domain, r in unsolved
-                if not already_played(r.home, r.away, r.start_kyiv,
-                                      индекс_эталона)]
+    в_очередь = []
+    for domain, r in unsolved:
+        матч = played_before(r.home, r.away, "", r.start_kyiv, индекс_эталона)
+        if матч is None:
+            в_очередь.append((domain, r))
+        else:
+            снято.append(removed_row(СНЯТО_ОЧЕРЕДЬ, domain, r,
+                                     f"эталон: {_ref_text(матч)}"))
+    unsolved = в_очередь
     if было - len(unsolved):
         print(f"из очереди убрано повторов: {было - len(unsolved)} "
               f"(матч уже сыгран)")
@@ -693,9 +780,19 @@ def main() -> int:
             key = _guess_key(domain, r)
             if key not in firsts or r.start_kyiv < firsts[key]:
                 firsts[key] = r.start_kyiv
-    found = [(domain, r) for domain, r in found
-             if not guessed(domain, r)
-             or r.start_kyiv <= firsts[_guess_key(domain, r)]]
+
+    def _late_show(domain: str, r) -> bool:
+        if not guessed(domain, r):
+            return False
+        first = firsts[_guess_key(domain, r)]
+        if r.start_kyiv <= first:
+            return False
+        снято.append(removed_row(
+            СНЯТО_ПОЗДНИЙ_ПОКАЗ, domain, r,
+            f"та же пара у этого сайта раньше: {first.strftime('%d.%m %H:%M')}"))
+        return True
+
+    found = [(domain, r) for domain, r in found if not _late_show(domain, r)]
 
     # Топовая лига от «угадаек» без подтверждения эталоном — запись.
     # Повторы АПЛ/ЛаЛиги/ЛЧ крутят днём все европейские пакеты (Spurs -
@@ -766,12 +863,13 @@ def main() -> int:
     # Eliteserien и 1. Lig уходят так же, как АПЛ. Богат ли эталон,
     # проверяем по размеру: сломается mobi — вернёмся к мягкому правилу.
     rich = len(reference) >= 100
-    found = [(domain, r) for domain, r in found
-             if not guessed(domain, r)
-             or r.sport != "F"
-             or not (rich
-                     or top_league.search(f"{r.league} {r.program.league_raw}"))
-             or _in_reference(r)]
+    found = sift(found, lambda domain, r: (
+        not guessed(domain, r)
+        or r.sport != "F"
+        or not (rich or top_league.search(f"{r.league} {r.program.league_raw}"))
+        or _in_reference(r)),
+        снято, СНЯТО_НЕТ_В_ЭТАЛОНЕ,
+        "эфир угадан, а пары нет в эталоне в ±3 ч — запись")
     if before - len(found):
         kind = "все лиги, эталон полный" if rich else "топ-лиги"
         print(f"повторы без эталона ({kind}): убрано {before - len(found)}")
@@ -809,11 +907,13 @@ def main() -> int:
         return False
 
     before = len(found)
-    found = [(domain, r) for domain, r in found
-             if not guessed(domain, r)
-             or r.sport not in ("B", "T")
-             or not rich_bt.get(r.sport)
-             or _in_reference_bt(r)]
+    found = sift(found, lambda domain, r: (
+        not guessed(domain, r)
+        or r.sport not in ("B", "T")
+        or not rich_bt.get(r.sport)
+        or _in_reference_bt(r)),
+        снято, СНЯТО_НЕТ_В_ЭТАЛОНЕ_БТ,
+        "эфир угадан, а пары нет в эталоне в ±3 ч — запись")
     if before - len(found):
         print("повторы без эталона (баскет/теннис): "
               f"убрано {before - len(found)}")
@@ -823,9 +923,10 @@ def main() -> int:
     # где закончился прошлый блок (`Man Utd - Ipswich` в 00:17 и
     # `Crystal Palace - Man City` в 03:47 у movistarplus — поймано
     # владельцем на витрине 02.09). Честно помеченных сайтов не касается.
-    found = [(domain, r) for domain, r in found
-             if not guessed(domain, r)
-             or r.start_kyiv.minute % 5 == 0]
+    found = sift(found, lambda domain, r: (
+        not guessed(domain, r) or r.start_kyiv.minute % 5 == 0),
+        снято, СНЯТО_ГРЯЗНЫЕ_МИНУТЫ,
+        "эфир угадан, а начало не на :00/:05/…/:55 — запись")
 
     # Сетки отдают сразу две недели вперёд. Обрезаем по правилу владельца
     # «сегодня и не больше 6 дней вперёд» (01.09), а НЕ по окну скачивания:
@@ -833,15 +934,17 @@ def main() -> int:
     # их — терять понедельник бесплатно (поймано владельцем 03.09 по
     # sporttv.pt). Окно `days` управляет только числом СКАЧИВАЕМЫХ страниц.
     # С `--all` видно всё, что пришло.
-    if args.date:
-        chosen = _date.fromisoformat(args.date)
-        found = [x for x in found if x[1].start_kyiv.date() == chosen]
-    elif not args.all:
+    def in_window(day: _date) -> bool:
+        if args.date:
+            return day == _date.fromisoformat(args.date)
+        if args.all:
+            return True
         # окно витрины — киевские сутки: игры идут с киевским временем, а
         # часы GitHub (UTC) в 22:30 ещё во вчерашнем дне Киева
         first = daytime.today("Europe/Kyiv")
-        last = first + timedelta(days=6)
-        found = [x for x in found if first <= x[1].start_kyiv.date() <= last]
+        return first <= day <= first + timedelta(days=6)
+
+    found = [x for x in found if in_window(x[1].start_kyiv.date())]
 
     found.sort(key=lambda x: x[1].start_kyiv)
 
@@ -849,11 +952,7 @@ def main() -> int:
     # (сайт, канал, заголовок, время). Это отдельный список для вкладки
     # «Other Sport» админки, с футболом/баскетом/теннисом не смешивается
     # (владелец 03.10); вид спорта словами — из раздела «другие» markers.json
-    if args.date:
-        other_rows = [x for x in other_rows if x[1].start_kyiv.date() == chosen]
-    elif not args.all:
-        other_rows = [x for x in other_rows
-                      if first <= x[1].start_kyiv.date() <= last]
+    other_rows = [x for x in other_rows if in_window(x[1].start_kyiv.date())]
     seen_other: set = set()
     other_out: list[dict] = []
     for domain, r in sorted(other_rows, key=lambda x: x[1].start_kyiv):
@@ -920,14 +1019,43 @@ def main() -> int:
         for domain, r in found])
 
     games, повторы = drop_reference_repeats(games, reference_full)
+    for g, матч in повторы:
+        for e in g.entries:
+            снято.append(removed_row(СНЯТО_СЫГРАН, e.source, e.payload,
+                                     f"эталон: {_ref_text(матч)}"))
     if повторы:
-        print(f"повторы сняты по flashscore: {повторы} (матч уже сыгран, "
-              f"канал крутит запись)")
+        print(f"повторы сняты по flashscore: {len(повторы)} (матч уже сыгран, "
+              f"канал крутит запись)"
+              + "".join(f"\n   • {g.start.strftime('%d.%m %H:%M')} {g.home} — "
+                        f"{g.away} [{', '.join(g.channels)}] ← {_ref_text(матч)}"
+                        for g, матч in повторы))
 
     games, late = drop_late_repeats(games)
+    for g, earlier in late:
+        for e in g.entries:
+            снято.append(removed_row(
+                СНЯТО_ПОЗДНИЙ_ПОВТОР, e.source, e.payload,
+                f"та же пара раньше: {earlier.start.strftime('%d.%m %H:%M')} "
+                f"[{', '.join(earlier.channels)}]"))
     if late:
-        print(f"поздние повторы сняты: {late} (та же пара уже была раньше "
-              f"у другого сайта)")
+        print(f"поздние повторы сняты: {len(late)} (та же пара уже была раньше "
+              f"у другого сайта)"
+              + "".join(f"\n   • {g.start.strftime('%d.%m %H:%M')} {g.home} — "
+                        f"{g.away} [{', '.join(g.channels)}] ← "
+                        f"{earlier.start.strftime('%d.%m %H:%M')}"
+                        for g, earlier in late))
+
+    # Журнал снятого (владелец: «ничто не теряется молча»): каждая строка,
+    # снятая фильтром повторов, — поимённо, тем же окном дней, что витрина
+    снято = [x for x in снято if not x["start_kyiv"]
+             or in_window(_date.fromisoformat(x["start_kyiv"][:10]))]
+    if снято:
+        по_фильтрам: dict[str, int] = {}
+        for x in снято:
+            по_фильтрам[x["фильтр"]] = по_фильтрам.get(x["фильтр"], 0) + 1
+        print(f"снято фильтрами повторов (в окне витрины): {len(снято)} — "
+              + "; ".join(f"{k}: {v}" for k, v in по_фильтрам.items())
+              + " (поимённо — matches.md и games.json «снято»)")
 
     lines = ["# Матчи с живого обхода", "",
              f"Игр: **{len(games)}** (строк с сайтов: {len(found)}). "
@@ -947,6 +1075,14 @@ def main() -> int:
     for domain, r in found:
         lines.append(f"| {r.when} | {domain} | {r.program.channel_raw} | "
                      f"{r.home} — {r.away} | {r.league} |")
+    if снято:
+        lines += ["", "## Снято фильтрами повторов", "",
+                  "| Когда | Сайт | Канал | Заголовок | Фильтр | Почему |",
+                  "|---|---|---|---|---|---|"]
+        for x in sorted(снято, key=lambda x: (x["start_kyiv"], x["домен"])):
+            lines.append(f"| {x['start_kyiv'].replace('T', ' ')} | {x['домен']} | "
+                         f"{x['канал']} | {x['заголовок'][:80]} | {x['фильтр']} | "
+                         f"{x['почему']} |")
     if problems:
         print("\nне разобрано:")
         lines += ["", "## Не разобрано", ""]
@@ -991,6 +1127,9 @@ def main() -> int:
                                   if r.start_kyiv else ""),
                    "raw_title": (r.program.title or "")[:200],
                } for domain, r in unsolved],
+               # строки, снятые фильтрами повторов, поимённо (сайт, канал,
+               # заголовок, время, фильтр, почему) — заливка ключ не читает
+               "снято": снято,
                "games": [{
                    # игра целиком из «угаданных» источников: при заливке её
                    # сверяют с УЖЕ лежащими в базе событиями той же пары —

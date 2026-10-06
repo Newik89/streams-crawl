@@ -30,6 +30,17 @@
 (nova.bg вечером: `23:00`, `0:30`, `2:00`) за полночью только ночь — они
 читаются как раньше.
 
+**Окно страницы (07.10, flashscore).** Бывает страница дня, которая честно
+показывает и края соседних суток: flashscore.mobi за 10.10 начинает блок
+лиги с `23:00` 09.10 и заканчивает `00:15` 11.10, а матчи у полуночи стоят
+на обеих страницах. Такому сайту `walk_day` передаёт `window` — с какого
+часа накануне и до какого часа после страница ещё показывает. Тогда день
+первой строки выбирается не по `ДЕНЬ_НАЧАЛСЯ`, а по окну: из двух прочтений
+(«первая строка в день страницы» и «первая строка накануне») берётся то,
+при котором в окно попадает больше строк; поровну — день самой страницы.
+Порядок внутри такой страницы строгий (сайт сортирует по началу), поэтому
+полуночью там считается любой шаг назад: `overlap=1`.
+
 **Сегодня — по часам сайта.** Относительный день (`dziś`, `?d=1`, «0-й
 день») сайт считает по своему поясу, а GitHub живёт по UTC: в 22:30 UTC
 в Варшаве уже завтра. `today(tz)` даёт дату в поясе сайта; всё время на
@@ -69,13 +80,21 @@ def today(tz: str | None) -> _date:
     return datetime.now(ZoneInfo(tz) if tz else timezone.utc).date()
 
 
-def walk_day(raw_times, day: _date, tz: str | None):
+def walk_day(raw_times, day: _date, tz: str | None, *,
+             overlap: int = НАЛОЖЕНИЕ,
+             window: tuple[int, int] | None = None):
     """Настенное время страницы за `day` → список моментов со смещением.
 
     На вход — время в том порядке, в каком оно стоит на странице. Значение,
     которое меньше предыдущего, считается уже следующими сутками.
     Нераспознанное время даёт `None` на своём месте, чтобы список не съезжал.
-    Страница, начатая хвостом прошлого вечера, читается с `day - 1` (шапка).
+
+    * `overlap` — шаг назад меньше этого (минуты) не полночь, а наложение
+      передач (шапка). Сайту со строгим порядком — `1`: полночь любой шаг.
+    * `window` — окно страницы `(с, до)` в минутах: страница дня `D`
+      показывает время с минуты `с` дня `D-1` до минуты `до` дня `D+1`
+      (шапка, «Окно страницы»). Без окна страница, начатая хвостом
+      прошлого вечера, узнаётся правилом `ДЕНЬ_НАЧАЛСЯ`.
     """
     zone = ZoneInfo(tz) if tz else timezone.utc
     marks = [parse_hhmm(raw or "") for raw in raw_times]
@@ -85,12 +104,14 @@ def walk_day(raw_times, day: _date, tz: str | None):
     prev: tuple[int, int] | None = None
     for hm in marks:
         if hm is not None:
-            if prev is not None and _minutes(prev) - _minutes(hm) >= НАЛОЖЕНИЕ:
+            if prev is not None and _minutes(prev) - _minutes(hm) >= overlap:
                 shift += 1
             prev = hm
         passed.append(shift)
-    if any(hm is not None and n == 1 and hm[0] >= ДЕНЬ_НАЧАЛСЯ
-           for hm, n in zip(marks, passed)):
+    if window is not None:
+        day += timedelta(days=_start_by_window(marks, passed, window))
+    elif any(hm is not None and n == 1 and hm[0] >= ДЕНЬ_НАЧАЛСЯ
+             for hm, n in zip(marks, passed)):
         day -= timedelta(days=1)          # до первой полуночи — вчерашний вечер
     out: list[datetime | None] = []
     for hm, n in zip(marks, passed):
@@ -103,6 +124,26 @@ def walk_day(raw_times, day: _date, tz: str | None):
         # значений — расписание печатают по «обычному» ходу часов.
         out.append(naive.replace(tzinfo=zone, fold=0))
     return out
+
+
+def _start_by_window(marks, passed, window: tuple[int, int]) -> int:
+    """В какой день стоит первая строка: `0` — в день страницы, `-1` —
+    накануне. Правила (шапка, «Окно страницы»):
+
+    1. Каждое прочтение раскладывает строки по суткам: строка после `n`
+       полуночей стоит в день `первая + n`.
+    2. Считаем, сколько строк попадает в окно страницы: с минуты `с`
+       накануне до минуты `до` следующих суток.
+    3. Берём прочтение, где таких строк больше; поровну — день страницы.
+    """
+    since, until = window
+    lo, hi = -24 * 60 + since, 24 * 60 + until    # минуты от полуночи дня D
+
+    def inside(first_day: int) -> int:
+        return sum(1 for hm, n in zip(marks, passed) if hm is not None
+                   and lo <= (first_day + n) * 24 * 60 + _minutes(hm) < hi)
+
+    return -1 if inside(-1) > inside(0) else 0
 
 
 def _minutes(hm: tuple[int, int]) -> int:
