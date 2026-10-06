@@ -5,7 +5,8 @@ r"""Проверки гашения каналов и чтения дат (ра�
 именем. Даты — `app/daytime.py` и teleman: страница дня, начатая хвостом
 прошлого вечера; наложение передач; «dziś» при сборе в 22:30 UTC; ночь
 перевода часов 25.10; «сегодня» по часам сайта — `?d=`, окно полного
-обхода, `{AU_DAYPATH}` Сиднея, добор дней ORF. digisport.ro — имя тура
+обхода, `{AU_DAYPATH}` Сиднея, добор дней ORF; часы flashscore и его
+локалей — из разбора, а не из карточки (проверка 06.10). digisport.ro — имя тура
 вместо LIVE и ночные строки; tvpassport.com — пояс страницы главнее
 карточки.
 
@@ -332,8 +333,50 @@ try:
                   ("tvguidetonight.com.au", "2026-10-07",
                    "https://www.tvguidetonight.com.au/channels/7mate-hd-sydney/tomorrow")],
           got)
+
+    # flashscore: часы сайта знает разбор (`flashscore_mobi.SITE_TZ`), а не
+    # карточка — в базе у локалей стояло «UTC», у mobi «Etc/GMT-2» (06.10)
+    def fs(domain, card_tz):
+        return source(domain, card_tz, f"https://{domain}/?d={{DAYNUM}}", "football")
+
+    daytime.datetime = frozen_utc(2026, 10, 5, 22, 30)
+    got = jobs_of([fs("m.flashscore.de", "UTC")], 1)
+    check("flashscore_локаль_с_карточкой_UTC_в_22_30_UTC: день 06.10 (Париж), d=0",
+          got == [("m.flashscore.de", "2026-10-06", "https://m.flashscore.de/?d=0")], got)
+    daytime.datetime = frozen_utc(2026, 10, 5, 21, 30)
+    got = jobs_of([fs("m.flashscore.gr", "UTC"), fs("flashscore.mobi", "Etc/GMT-2")], 1)
+    check("flashscore_gr_в_21_30_UTC: в Афинах уже 06.10, в Париже ещё 05.10",
+          got == [("m.flashscore.gr", "2026-10-06", "https://m.flashscore.gr/?d=0"),
+                  ("flashscore.mobi", "2026-10-05", "https://flashscore.mobi/?d=0")], got)
+    # после перевода часов 25.10 Париж = UTC+1: в 22:30 UTC там ещё 26.10,
+    # а «Etc/GMT-2» карточки давал 27.10 — вчерашняя страница под меткой
+    # сегодняшней (как #204)
+    daytime.datetime = frozen_utc(2026, 10, 26, 22, 30)
+    got = jobs_of([fs("flashscore.mobi", "Etc/GMT-2")], 2)
+    check("flashscore_mobi_зимой_в_22_30_UTC: день 26.10 и d=0, а не 27.10",
+          got == [("flashscore.mobi", "2026-10-26", "https://flashscore.mobi/?d=0"),
+                  ("flashscore.mobi", "2026-10-27", "https://flashscore.mobi/?d=1")], got)
 finally:
     daytime.datetime = real_datetime
+
+from app.parsers import flashscore_mobi  # noqa: E402
+
+fs_row = ('<html lang="xx"><h4>EUROPE: Test</h4><span>20:30</span>Alpha - Beta '
+          '<a href="/match/AbCd1234/" class="sched">-</a>')
+fs_time = {domain: kyiv(flashscore_mobi.parse(
+    fs_row, day=date(2026, 10, 6), tz="UTC", url=f"https://{domain}/?d=0")[0].start)
+    for domain in ("www.flashscore.mobi", "m.flashscore.gr", "m.flashscore.pt",
+                   "m.flashscore.ru")}
+check("flashscore_время_по_часам_версии_сайта: 20:30 Париж/Афины/Лиссабон/Алматы",
+      fs_time == {"www.flashscore.mobi": "2026-10-06 21:30",
+                  "m.flashscore.gr": "2026-10-06 20:30",
+                  "m.flashscore.pt": "2026-10-06 22:30",
+                  "m.flashscore.ru": "2026-10-06 18:30"}, fs_time)
+check("flashscore_часы_только_у_своих_доменов: прочим — карточка",
+      crawl_fetch.site_tz(fs("m.flashscore.bg", "UTC")) == "Europe/Sofia"
+      and crawl_fetch.site_tz(POLAND) == "Europe/Warsaw"
+      and set(flashscore_mobi.SITE_TZ) == set(flashscore_mobi.LOCALES)
+      | {flashscore_mobi.DOMAIN})
 
 cell = ('<table><tr><td>dziś, 6 października</td><td>20:35</td><td>Polsat Sport 1</td>'
         '<td><a class="prog-title">Piłka nożna: Liga Narodów</a>'
