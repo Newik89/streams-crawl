@@ -187,6 +187,50 @@ check("чужая_страна_правило_7_очереди",
       canon.queue_decision(conn, probe, VELKE, "away"))
 check("без_перевода_лиги_страну_не_судим",
       not canon.foreign_league(dict(BOULAZAC), VELKE))
+# единственный кандидат в окне: одна сторона на 85 и никого рядом —
+# `_clear_leader` делал пару УВЕРЕННОЙ, и словарь выучил бы навсегда
+# «רואן» = «Brozany». Лига другой страны — в «мимо», словарь не трогаем
+conn = fresh_db()
+aligned = canon.align([dict(BOULAZAC)], [VELKE, ROANNE], {FR_SITE: "FRANCE: LNB"})
+check("чужая_страна_не_уверенная_даже_одиночкой",
+      aligned["sure"] == [] and len(aligned["missed"]) == 1, aligned)
+canon.apply(conn, aligned)
+check("чужая_страна_словарь_не_учит",
+      conn.execute("SELECT COUNT(*) FROM team_aliases").fetchone()[0] == 0)
+# без перевода лиги сайта страну не судим — правило не выходит за свои
+# рамки, решают буквы, как прежде (тут они ошибаются: это граница правила)
+aligned = canon.align([dict(BOULAZAC)], [VELKE, ROANNE], {})
+check("без_перевода_лиги_правило_молчит__решают_буквы",
+      [r["home"] for _, r, _ in aligned["sure"]] == ["Velke Hamry"], aligned)
+# та же страна — уверенные пары как были: и по буквам, и мостом по лиге
+ARS_SITE = "Premier League"
+aligned = canon.align(
+    [game("Arsenal", "Chelsea", "2026-10-06T19:30", "F", ARS_SITE)],
+    [ref("Arsenal", "Chelsea", "2026-10-06T19:30", "F",
+         "ENGLAND: Premier League", "en1")],
+    {ARS_SITE: "ENGLAND: Premier League"})
+check("та_же_страна_уверенная_по_буквам",
+      [r["fs_id"] for _, r, _ in aligned["sure"]] == ["en1"], aligned)
+RO_LEAGUE = "Liga 1 Superbet"
+aligned = canon.align(
+    [game("Universitatea Craiova", "FCSB", "2026-10-06T19:30", "F",
+          RO_LEAGUE)],
+    [ref("Univ. Craiova", "FCSB", "2026-10-06T19:30", "F",
+         "ROMANIA: Superliga", "ro1")],
+    {RO_LEAGUE: "ROMANIA: Superliga"})
+check("та_же_страна_уверенная_мостом",
+      [r["fs_id"] for _, r, _ in aligned["sure"]] == ["ro1"], aligned)
+# теннис не судим: до двоеточия у турнира не страна, а тур и разряд, и
+# ярлык сайта «WTA 1000 Peking» словарь ведёт к парному разряду, а матч —
+# одиночный (регресс 06.10: 14 честных пар Пекина и Токио ушли бы в «мимо»)
+WTA_SITE = "WTA 1000 Peking"
+aligned = canon.align(
+    [game("Ostapenko J.", "Badosa P.", "2026-10-03T07:45", "T", WTA_SITE)],
+    [ref("Ostapenko J.", "Badosa P.", "2026-10-03T07:45", "T",
+         "WTA - SINGLES: Beijing (China), hard", "wta1")],
+    {WTA_SITE: "WTA - DOUBLES: Beijing (China), hard"})
+check("теннис_разряд_турнира_не_страна",
+      [r["fs_id"] for _, r, _ in aligned["sure"]] == ["wta1"], aligned)
 # верная пара той же страны: одна сторона дословно, вторая — другое
 # написание (75) — это не другая игра, очередь спрашивает
 CRAIOVA = dict(game("Universitatea Craiova", "FCSB", "2026-10-06T19:30"),

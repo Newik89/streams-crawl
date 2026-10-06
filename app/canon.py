@@ -496,7 +496,7 @@ def align(games: list[dict], reference: list[dict],
                 if il:
                     pick, verdict = il_pick(game, il)
                     if verdict == "sure":
-                        out["sure"].append((game, pick, SURE))
+                        _sure(out, game, pick, SURE)
                     elif verdict == "ask":
                         _ask(out, game, pick, LONE_HE)
                     else:
@@ -543,7 +543,7 @@ def align(games: list[dict], reference: list[dict],
                             and not _one_side_enough(game, pick):
                         pick, verdict = None, ""
                     if verdict == "sure":
-                        out["sure"].append((game, pick, SURE))
+                        _sure(out, game, pick, SURE)
                     elif verdict == "ask":
                         _ask(out, game, pick, LONE_HE)
                     else:
@@ -574,12 +574,12 @@ def align(games: list[dict], reference: list[dict],
                                           away=bare_away)) >= SURE:
                     aged.append(r)
             if len(aged) == 1:
-                out["sure"].append((game, aged[0], SURE))
+                _sure(out, game, aged[0], SURE)
                 continue
         if best is None:
             out["missed"].append(game)
         elif best_score >= SURE:
-            out["sure"].append((game, best, best_score))
+            _sure(out, game, best, best_score)
         elif _clear_leader(game, best, best_score, near):
             # Лиги нет, но одна команда узнана твёрдо, а соперники в окне
             # далеко позади: `לברקוזן W` = Bayer Leverkusen W (83), вторая
@@ -587,12 +587,27 @@ def align(games: list[dict], reference: list[dict],
             # этот час нет. Раньше тут выручал мост по лиге, но ивритское
             # «женский футбол» лигой больше не считается — и #1793 остался
             # без перевода (разбор владельца 11.09)
-            out["sure"].append((game, best, SURE))
+            _sure(out, game, best, SURE)
         elif best_score >= (lone if len(near) == 1 else SURE - 15):
             _ask(out, game, best, best_score)
         else:
             out["missed"].append(game)
     return out
+
+
+def _sure(out: dict, game: dict, ref: dict, score: int) -> None:
+    """Уверенная пара — только если лига эталона той же страны, что и
+    лига игры по словарю (`foreign_league`). Уверенная пара пишет НАВСЕГДА:
+    алиасы команд и лиги в словарь, метку `fs:`, время. Буквам иврита
+    этого мало: «בולאזאק — רואן» (французский баскетбол, записан футболом)
+    при единственном кандидате в окне становилась уверенной парой с чешским
+    футболом «Velke Hamry — Brozany» (одна сторона 85, `_clear_leader`), и
+    словарь выучил бы «רואן» = «Brozany» (разбор 06.10). Лига другой страны —
+    другая игра: в «мимо»."""
+    if foreign_league(game, ref):
+        out["missed"].append(game)
+    else:
+        out["sure"].append((game, ref, score))
 
 
 def _ask(out: dict, game: dict, ref: dict, score: int) -> None:
@@ -705,7 +720,14 @@ def foreign_league(game: dict, ref: dict) -> bool:
     страна не та, что у лиги эталона: «בולאזאק — רואן» из французской
     баскетбольной лиги (FRANCE: LNB) — не чешский футбол «Velke Hamry —
     Brozany» (CZECH REPUBLIC: 3. CFL), как бы ни сошлись буквы иврита
-    (85 и 72, разбор 06.10). Страна неизвестна с любой стороны — не судим."""
+    (85 и 72, разбор 06.10). Страна неизвестна с любой стороны — не судим.
+
+    Теннис не судим вовсе: у его турнира до двоеточия не страна, а тур и
+    разряд («WTA - SINGLES: Beijing (China), hard»), и ярлык сайта «WTA
+    1000 Peking» словарь ведёт к парному разряду — одиночки Пекина с
+    честными 100 по буквам уходили бы в «мимо» (регресс 06.10, 14 пар)."""
+    if (game.get("sport") or "") == "T":
+        return False
     mine = _league_country(game.get("league_canon") or "")
     theirs = _league_country(ref.get("league") or "")
     return bool(mine and theirs) and mine != theirs
