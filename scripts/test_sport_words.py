@@ -177,7 +177,16 @@ check("окно времени вокруг матча эталона — 3 ча
     ("эталон сильнее лиги из словаря лиг",
      "B", 2, "Tortona - Le Mans", "Liga Evropa", "", "", "",
      "2026-10-07T20:30"),
+    # спонсорское имя клуба Tortona — «Derthona Basket»: cyta пишет
+    # «Derthona», эталон «Tortona»; без клички в `_клубы целиком`
+    # (`data/aliases.json`) игра уходила в очередь «Вид спорта» (06.10)
+    ("Derthona = Tortona (cyta) — баскетбол по эталону",
+     "B", 2, "Derthona - Le Mans (L)", "", "", "Derthona - Le Mans", "",
+     "2026-10-07T20:30"),
 ], reference=ЭТАЛОН, sports=БЕЗ_КОМАНД, league_sports={"liga evropa": "F"})
+check("Derthona ≠ Derthona FbC: футбольный клуб кличкой не задет",
+      names.similarity("Derthona", "Tortona") == 100
+      and names.similarity("Derthona FbC", "Tortona") < names.SIMILAR_ENOUGH)
 сценарии([
     ("эталон знает пару и в футболе, и в баскетболе — он не судья, решает "
      "слово сайта", "B", 5, "Partizan - Crvena zvezda", "ABA liga", "Košarka",
