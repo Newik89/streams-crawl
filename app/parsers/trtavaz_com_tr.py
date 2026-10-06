@@ -26,6 +26,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, mark_first_show, register
 
 DOMAIN = "trtavaz.com.tr"
@@ -51,7 +52,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     zone = ZoneInfo(tz or TZ)
     m = _URL_DAY.search(url or "")
     day = (_date(int(m.group(1)), int(m.group(2)), int(m.group(3))) if m
-           else day or _date.today())
+           else day or daytime.today(tz or TZ))
     tree = HTMLParser(html)
 
     out: list[Program] = []

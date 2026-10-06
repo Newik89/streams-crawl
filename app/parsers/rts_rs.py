@@ -32,6 +32,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, mark_first_show, register
 
 DOMAIN = "rts.rs"
@@ -78,7 +79,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
     zone = ZoneInfo(tz or TZ)
     tree = HTMLParser(html)
-    base = _day_from_title(tree) or day or _date.today()
+    base = _day_from_title(tree) or day or daytime.today(tz or TZ)
 
     got = _CHANNEL.search(url or "")
     slug = got.group(1).lower() if got else ""

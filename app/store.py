@@ -13,7 +13,8 @@
 
 Свежая строка от сайта считается точнее лежащей в базе: время и лига
 обновляются, если пришли лучше. Канал, пропавший из источника, после первого
-же неподтверждения (`MISS_LIMIT`, `event_channels.miss_count`) не исчезает молча: на витрине
+же неподтверждения (`MISS_LIMIT`, `event_channels.miss_count`; когда сбор вправе
+считать канал пропавшим — правила в `app/miss.py`) не исчезает молча: на витрине
 он остаётся перечёркнутым «снят» (владелец 22.09, случай #3354), а в API не
 отдаётся. Вернулся в расписание — заливка сбросит счётчик, канал оживёт сам.
 """
@@ -27,14 +28,15 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
 
-from . import broadcast, merge, names
+from . import broadcast, merge, miss, names
 
 # Грейс после начала, минуты (ТЗ разд. 10). Число-уговор, не измерение;
 # правится в админке («Настройки»), здесь только значения по умолчанию.
 GRACE_MINUTES = {"F": 130, "B": 190, "T": 240}
 DEFAULT_GRACE = 240          # незнакомый спорт живёт по самому долгому правилу
 #: Канал гаснет (на витрине — перечёркнут «снят») после стольких обходов
-#: подряд, в которых ЕГО сайт скачивался на день игры и канал не показал.
+#: подряд, доказавших, что ЕГО сайт канал больше не показывает (что считать
+#: доказательством — правила `app/miss.py`).
 #: Было 3; владелец 03.10: «да» на один — неверный канал уходит сразу
 #: (#2579: maxsport.live перенёс матч с MAX Sport 4 на MAX Sport 1).
 MISS_LIMIT = 1
@@ -102,6 +104,7 @@ class SaveStats:
     repeats: int = 0    # guess-игры, чья пара уже лежала в базе раньше
     time_off: int = 0   # строки, прилипшие к игре flashscore вопреки времени сайта
     titles_gone: int = 0  # отметки заголовков турниров, которых сайт больше не показывает
+    gone: int = 0       # отметки каналов, погашенные этим сбором (`app/miss.py`)
 
 
 def _sources_by_domain(conn: sqlite3.Connection) -> dict[str, sqlite3.Row]:
@@ -233,35 +236,22 @@ def _league_ids(conn: sqlite3.Connection) -> dict[str, int]:
 
 def save_games(conn: sqlite3.Connection, games: list[dict],
                now: datetime | None = None, punish: bool = True,
-               worked: set[str] | None = None,
-               punish_until: str = "",
-               covered: dict[str, set[str]] | None = None) -> SaveStats:
+               coverage: miss.Покрытие | None = None,
+               collected: str = "") -> SaveStats:
     """Вливает игры из `games.json`. Формат: список словарей с полями
     sport / league / home / away / start_kyiv / start_utc / entries,
     где entries — строки по сайтам: source / channel / url / raw_title.
 
-    `punish=False` — повторная заливка того же файла: каналы, не
-    подтверждённые им, счётчик погашения не получают (05.09 три ручные
-    заливки одного прогона накрутили miss_count до 3, и 14 живых каналов
-    Интер - Наполи погасли).
-
-    `worked` — домены, реально отработавшие в этом прогоне (из отчёта
-    обхода), `punish_until` — последний скачанный день `ГГГГ-ММ-ДД`. Вместе
-    они не дают короткому прогону погасить чужие каналы (аудит 07.09, A7):
-    вечерняя дозаправка ходит на 2 дня, и раньше каналы субботней игры,
-    которых в этом файле нет, получали счётчик погашения и через три захода
-    пропадали с витрины. Лежащий сайт наказывать тоже не за что — он в
-    `worked` не попадёт. `worked=None` — прежнее поведение.
-
-    `covered` — какие дни прогон получил от каждого домена с расписанием
-    (`crawl_facts`; пустая строка в наборе — сетка, вся неделя разом; пустой
-    набор — сайт отдал только пустые страницы). Отметку канала гасит только
-    прогон, в котором ЕЁ сайт отдал расписание на день этой игры: общий
-    порог `punish_until` задают справочники flashscore (7 дней), и
-    двухдневная дозаправка штрафовала отметки сайтов на дальние дни (03.10)."""
+    Каналы игры, которых этот сбор не подтвердил, гасятся только по
+    правилам `app/miss.py` (там они списком). `punish=False` — повторная
+    заливка того же файла; `coverage` — что сбор реально скачал (из
+    `report.json`, `miss.покрытие_из_отчёта`), без отчёта не гасится ничего;
+    `collected` — момент сбора по Киеву `ГГГГ-ММ-ДД ЧЧ:ММ`."""
     now = now or datetime.now()
     stats = SaveStats()
     graces = grace_map(conn)
+    # до записи игр: правилу 6 нужны отметки, жившие до этой заливки
+    гашение = miss.Гашение(conn, coverage, punish, collected, MISS_LIMIT)
     # подтверждённые каналы копим ПО СОБЫТИЮ за весь файл, а штраф
     # раздаём после всех игр: один матч бывает в файле ДВУМЯ играми
     # (пока словарь не связал написания — «Wolverhampton» и «Wolves»),
@@ -269,23 +259,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     # SPORT TV + у Шеффилд - Вулвз докапал так до порога и пропал с
     # витрины (владелец 12.09: «затирает каналы, которые раньше были»)
     event_seen: dict[int, set[int]] = {}
-    event_punish: dict[int, bool] = {}
+    event_start: dict[int, str] = {}
     srcs = _sources_by_domain(conn)
-    # id источников, которым позволено гасить чужие отметки в этом прогоне
-    worked_ids: set[int] = set()
-    if worked is not None:
-        for domain, row in srcs.items():
-            if _bare(domain) in {_bare(d) for d in worked}:
-                worked_ids.add(row["id"])
-    # какие дни этот прогон получил от каждого источника — вне своих дней
-    # отметки источника не гасятся (источника нет в отчёте — без ограничения)
-    covered_by_id: dict[int, set[str]] = {}
-    if covered:
-        по_домену = {_bare(d): days for d, days in covered.items()}
-        for domain, row in srcs.items():
-            if _bare(domain) in по_домену:
-                covered_by_id[row["id"]] = по_домену[_bare(domain)]
-    event_day: dict[int, str] = {}
     team_ids, league_ids = _team_ids(conn), _league_ids(conn)
 
     for game in games:
@@ -369,6 +344,7 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             if channel_id is None:
                 continue
             seen_channel_ids.add(channel_id)
+            гашение.учесть(source["id"], start_kyiv[:10], event_id, channel_id)
             conn.execute(
                 "INSERT INTO event_channels (event_id, channel_id, source_id, "
                 "source_url, raw_title, last_seen, miss_count, time_off) "
@@ -381,72 +357,63 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                  entry.get("url") or "", entry.get("raw_title") or "",
                  _iso(now), time_off))
             stats.channels += 1
-        # каналы игры, не подтверждённые этим прогоном, — на счётчик
-        # (только когда файл свежий, см. punish в шапке); сам штраф — после
-        # всех игр файла, когда набор подтверждённых у события полон
-        deep = bool(punish_until) and start_kyiv[:10] > punish_until
-        event_day[event_id] = start_kyiv[:10]
+        # каналы игры, не подтверждённые этим прогоном, — кандидаты на
+        # счётчик; сам штраф — после всех игр файла, когда набор
+        # подтверждённых у события полон
+        event_start[event_id] = start_kyiv
         event_seen.setdefault(event_id, set()).update(seen_channel_ids)
-        if seen_channel_ids and not deep:
-            event_punish[event_id] = True
 
-    if punish and (worked is None or worked_ids):
-        for event_id, seen in event_seen.items():
-            if not event_punish.get(event_id) or not seen:
-                continue
-            marks = ",".join("?" * len(seen))
-            sql = (f"UPDATE event_channels SET miss_count = miss_count + 1 "
-                   f"WHERE event_id = ? AND channel_id NOT IN ({marks})")
-            params: list = [event_id, *seen]
-            if worked is not None:
-                # прогон не видел этот сайт — и гасить его отметки не вправе;
-                # видел, но на день этой игры не скачивал — тоже
-                день = event_day.get(event_id, "")
-                вправе = [sid for sid in worked_ids
-                          if sid not in covered_by_id
-                          or "" in covered_by_id[sid]
-                          or день in covered_by_id[sid]]
-                if not вправе:
-                    continue
-                sql += " AND source_id IN (" + ",".join("?" * len(вправе)) + ")"
-                params += вправе
-            conn.execute(sql, params)
+    def погасить(marks: list[sqlite3.Row], start: str, в_сборе: bool) -> int:
+        """Отметкам, которые разрешают правила `app/miss.py`, — +1 к
+        счётчику; вернёт, сколько из них этим погасло."""
+        gone = 0
+        for mark in marks:
+            if not гашение.почему_нельзя(
+                    source_id=mark["source_id"], channel_id=mark["channel_id"],
+                    адрес=mark["source_url"] or "", start=start,
+                    в_сборе=в_сборе):
+                gone += _add_miss(conn, mark["id"])
+        return gone
 
-        # Трансляция турнира без пары («ATP 500 Tokyo — 1/4 Finale»,
-        # `app/broadcast.py`) живёт, пока сайт не назовёт игроков: тогда в
-        # файле приходит матч с именами, а заголовка в нём уже нет — и штраф
-        # выше его не касается (он раздаётся только событиям из файла).
-        # Заголовок висел рядом с матчами до конца трансляции (mojtv.hr,
-        # #4145). Гасим его отметки от сайтов, которые в этом прогоне отдали
-        # расписание на его день и заголовка не показали (владелец 04.10:
-        # «появятся имена — должно обновиться»). Только будущие: сайт, отдающий
-        # остаток дня, начавшуюся трансляцию уже не пишет — это не отмена
-        if worked is not None:
-            for r in conn.execute(
-                    "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
-                    "FROM events WHERE sport = 'T' AND start_kyiv > ? "
-                    "AND (flags IS NULL OR flags NOT LIKE 'fs:%')",
-                    (_iso(now),)).fetchall():
-                if r["id"] in event_seen or not broadcast.is_title(
-                        r["sport"], r["team_home_auto"] or "",
-                        r["team_away_auto"] or ""):
-                    continue
-                день = r["start_kyiv"][:10]
-                if punish_until and день > punish_until:
-                    continue
-                вправе = [sid for sid in worked_ids
-                          if sid not in covered_by_id
-                          or "" in covered_by_id[sid]
-                          or день in covered_by_id[sid]]
-                if not вправе:
-                    continue
-                stats.titles_gone += conn.execute(
-                    "UPDATE event_channels SET miss_count = miss_count + 1 "
-                    "WHERE event_id = ? AND source_id IN ("
-                    + ",".join("?" * len(вправе)) + ")",
-                    (r["id"], *вправе)).rowcount
+    # Канал, подтверждённый у игры хоть одним сайтом, не гаснет ни от
+    # какого сайта; остальные отметки игры — по правилам `app/miss.py`
+    for event_id, seen in event_seen.items():
+        marks = ",".join("?" * len(seen))
+        stats.gone += погасить(conn.execute(
+            "SELECT id, channel_id, source_id, source_url FROM event_channels "
+            f"WHERE event_id = ? AND channel_id NOT IN ({marks})",
+            (event_id, *seen)).fetchall(), event_start[event_id], bool(seen))
+
+    # Трансляция турнира без пары («ATP 500 Tokyo — 1/4 Finale»,
+    # `app/broadcast.py`) живёт, пока сайт не назовёт игроков: тогда в
+    # файле приходит матч с именами, а заголовка в нём уже нет — и штраф
+    # выше его не касается (он раздаётся только событиям из файла).
+    # Заголовок висел рядом с матчами до конца трансляции (mojtv.hr,
+    # #4145). Гасим его отметки от сайтов, которые в этом прогоне отдали
+    # расписание на его день и заголовка не показали (владелец 04.10:
+    # «появятся имена — должно обновиться») — по тем же правилам
+    for r in conn.execute(
+            "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
+            "FROM events WHERE sport = 'T' "
+            "AND (flags IS NULL OR flags NOT LIKE 'fs:%')").fetchall():
+        if r["id"] in event_seen or not broadcast.is_title(
+                r["sport"], r["team_home_auto"] or "",
+                r["team_away_auto"] or ""):
+            continue
+        stats.titles_gone += погасить(conn.execute(
+            "SELECT id, channel_id, source_id, source_url FROM event_channels "
+            "WHERE event_id = ?", (r["id"],)).fetchall(), r["start_kyiv"], True)
     conn.commit()
     return stats
+
+
+def _add_miss(conn: sqlite3.Connection, mark_id: int) -> int:
+    """+1 к счётчику пропусков отметки; вернёт 1, если отметка этим
+    погасла (дошла до `MISS_LIMIT`)."""
+    conn.execute("UPDATE event_channels SET miss_count = miss_count + 1 "
+                 "WHERE id = ?", (mark_id,))
+    return int(conn.execute("SELECT miss_count FROM event_channels WHERE id = ?",
+                            (mark_id,)).fetchone()[0] == MISS_LIMIT)
 
 
 # ── срок жизни ───────────────────────────────────────────────────────────────
@@ -749,7 +716,7 @@ def _bare(domain: str) -> str:
     return (domain or "").strip().lower().removeprefix("www.")
 
 
-def _kyiv_from_utc(text: str) -> str:
+def kyiv_from_utc(text: str) -> str:
     """Метка «собрано» из games.json (часы GitHub, UTC) → киевское время
     `ГГГГ-ММ-ДД ЧЧ:ММ`. Не разобрали — пусто."""
     from zoneinfo import ZoneInfo
@@ -778,7 +745,7 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
     fail_by: dict[str, int] = {}        # не открылись вовсе
     why_by: dict[str, str] = {}         # чем сайт ответил: «HTTP 520», защита
     rows_found = 0
-    when = _kyiv_from_utc(crawled)
+    when = kyiv_from_utc(crawled)
     mode = ""
     days = None
     try:

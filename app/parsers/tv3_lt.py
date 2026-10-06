@@ -27,6 +27,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, mark_first_show, register
 
 DOMAIN = "tv3.lt"
@@ -82,7 +83,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     if channels and channel not in channels:
         return []
 
-    page_day = day or _date.today()
+    page_day = day or daytime.today(tz or TZ)
     for tab in tree.css("a.dayItem"):
         cls = tab.attributes.get("class") or ""
         if " on" in f" {cls} ":

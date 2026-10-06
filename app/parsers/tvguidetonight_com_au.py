@@ -30,6 +30,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, mark_first_show, register
 
 DOMAIN = "tvguidetonight.com.au"
@@ -72,7 +73,7 @@ def _start_minutes(sh: int, sm: int, end: int) -> int | None:
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
     zone = ZoneInfo(tz or TZ)
-    day = day or _date.today()
+    day = day or daytime.today(tz or TZ)
     channel = _channel_from_url(url)
     tree = HTMLParser(html)
 

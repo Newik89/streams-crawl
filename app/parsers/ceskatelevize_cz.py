@@ -38,7 +38,7 @@ CHANNELS = {"4": "ČT sport"}
 @register(DOMAIN)
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
-    day = day or _date.today()
+    day = day or daytime.today(tz or TZ)
     tree = HTMLParser(html)
 
     out: list[Program] = []

@@ -32,6 +32,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, mark_first_show, register
 
 DOMAIN = "vsetv.com"
@@ -127,7 +128,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
 
     got = _DAY.search(url or "")
     base = _date(int(got.group(1)), int(got.group(2)), int(got.group(3))) \
-        if got else (day or _date.today())
+        if got else (day or daytime.today(tz or TZ))
 
     logo = tree.css_first("img.pic")
     channel = (logo.attributes.get("alt") or "").strip() if logo else ""

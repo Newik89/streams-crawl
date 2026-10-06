@@ -24,6 +24,7 @@ from datetime import date as _date, datetime, timedelta, timezone
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, register
 
 DOMAIN = "tv24.co.uk"
@@ -58,7 +59,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
     m = _URL_DAY.search(url or "")
     day = (_date(int(m.group(1)), int(m.group(2)), int(m.group(3))) if m
-           else day or _date.today())
+           else day or daytime.today(tz or TZ))
     channel = _channel_from_url(url)
     tree = HTMLParser(html)
 

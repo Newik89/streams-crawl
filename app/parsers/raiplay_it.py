@@ -32,6 +32,7 @@ import re
 from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
+from .. import daytime
 from . import Program, mark_first_show, register
 
 DOMAIN = "raiplay.it"
@@ -97,7 +98,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         except ValueError:
             pass
     if day is None:
-        day = _date.today()
+        day = daytime.today(tz or TZ)
 
     out: list[Program] = []
     for event in data.get("events", []):

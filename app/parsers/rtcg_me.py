@@ -33,6 +33,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, register
 
 DOMAIN = "rtcg.me"
@@ -65,10 +66,10 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     if not channel or (channels and channel not in channels):
         return []
     # даты в адресе нет — только номер дня от сегодняшнего
-    day = day or _date.today()
-    shift = _DAY_IN_URL.search(url or "")
-    if shift and not day:
-        day = _date.today() + timedelta(days=int(shift.group(1)))
+    if day is None:
+        shift = _DAY_IN_URL.search(url or "")
+        day = daytime.today(tz or TZ) + timedelta(
+            days=int(shift.group(1)) if shift else 0)
     tree = HTMLParser(html)
 
     out: list[Program] = []
