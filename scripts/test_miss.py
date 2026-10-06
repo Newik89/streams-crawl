@@ -196,6 +196,65 @@ check("правило6_сайт_дал_вчетверо_меньше_игр_не
        ((1, "Arsenal"), (2, "Liverpool"), (3, "Juventus"), (4, "Ajax"))]
       == [0, 0, 0, 0])
 
+# правило 5: день страницы — тот, с которого пришла отметка, а не киевская
+# дата игры. Argentina — Benin 07.10 01:50 Киева ziggosport отдал со
+# страницы 06.10; скан даты 07.10 качал только 07.10 и гасил отметку (06.10)
+def night_game(home, away, when, *entries):
+    """Игра с явными адресами отметок: entries — (сайт, канал, адрес)."""
+    return {"sport": "F", "league": "", "home": home, "away": away,
+            "start_kyiv": when, "start_utc": "",
+            "entries": [{"source": domain, "channel": channel, "url": url,
+                         "raw_title": ""} for domain, channel, url in entries]}
+
+
+Z06 = "https://pages.test/epg/epg-2026-10-06.json"
+Z07 = "https://pages.test/epg/epg-2026-10-07.json"
+O07 = "https://other.test/tv?date=2026-10-07"
+NIGHT = ("Argentina", "Benin", "2026-10-07T01:50")
+EVENING = ("Ajax", "PSV", "2026-10-07T21:00")    # сайт отдал на 07.10 игру —
+first = [night_game(*NIGHT, (PAGES, "Ziggo", Z06), (OTHER, "Other 1", O07)),
+         night_game(*EVENING, (PAGES, "Ziggo", Z07), (OTHER, "Other 2", O07))]
+second = [night_game(*NIGHT, (OTHER, "Other 1", O07)),     # правило 6 молчит
+          night_game(*EVENING, (PAGES, "Ziggo", Z07), (OTHER, "Other 2", O07))]
+scan07 = [row(PAGES, "Ziggo", day="2026-10-07", url=Z07),
+          row(OTHER, day="2026-10-07", url=O07)]
+conn = import_twice(first, second, scan07)
+check("правило5а_скан_07_10_не_гасит_ночную_игру_со_страницы_06_10 (Argentina — Benin)",
+      miss_of(conn, "Ziggo", "Argentina") == 0, miss_of(conn, "Ziggo", "Argentina"))
+conn = import_twice(first, second, scan07 + [row(PAGES, "Ziggo", day=DAY, url=Z06)])
+check("правило5а_сбор_скачал_страницу_06_10_целой_матча_нет_гаснет",
+      miss_of(conn, "Ziggo", "Argentina") == store.MISS_LIMIT,
+      miss_of(conn, "Ziggo", "Argentina"))
+
+# адрес без даты: день страницы не узнать — ночной игре нужны обе страницы
+U = "https://pages.test/live/ziggo"
+first = [night_game(*NIGHT, (PAGES, "Ziggo", U), (OTHER, "Other 1", O07)),
+         night_game(*EVENING, (PAGES, "Ziggo", U), (OTHER, "Other 2", O07))]
+second = [night_game(*NIGHT, (OTHER, "Other 1", O07)),
+          night_game(*EVENING, (PAGES, "Ziggo", U), (OTHER, "Other 2", O07))]
+only07 = [row(PAGES, "Ziggo", day="2026-10-07", url=U), row(OTHER, day="2026-10-07", url=O07)]
+conn = import_twice(first, second, only07)
+check("правило5б_адрес_без_даты_ночная_игра_без_страницы_накануне_не_гаснет",
+      miss_of(conn, "Ziggo", "Argentina") == 0)
+conn = import_twice(first, second, only07 + [row(PAGES, "Ziggo", day=DAY, url=U)])
+check("правило5б_адрес_без_даты_обе_страницы_целы_гаснет",
+      miss_of(conn, "Ziggo", "Argentina") == store.MISS_LIMIT)
+
+check("дата_в_адресе: форматы сайтов плана; номер дня — не дата",
+      [miss.дата_в_адресе(u) for u in (
+          Z06, "https://ntvplus.tv/tv/ajax/tv?genre=sport&date=06.10.2026&tz=0",
+          "https://www.sport5.co.il/Ajax/GetBroadcastSheetData.aspx?date=06%2F10%2F2026",
+          "https://nova.bg/schedule/index/4/2026/10/06/",
+          "https://tv.orf.at/program/orfs/index~_day-06-10-2026_-d8b2f4c4.html",
+          "https://port.hu/tvapi?i_datetime_from=2026-10-06&i_datetime_to=2026-10-07",
+          "https://www.flashscore.mobi/?d=1", "https://www.sporttv.pt/guia")]
+      == ["2026-10-06"] * 6 + ["", ""])
+cov = miss.покрытие_из_отчёта([row(PAGES, "Ziggo", day="2026-10-07", url=Z06)])
+check("правило5а_вид_не_датирован_если_дата_адреса_не_день_строки",
+      cov.датированы == {miss.вид_адреса(Z06): False}
+      and cov.дни_страницы(Z06, "2026-10-07 01:50") == ["2026-10-06", "2026-10-07"]
+      and cov.дни_страницы(Z06, "2026-10-07 21:00") == ["2026-10-07"])
+
 check("вид_адреса_без_чисел_и_запроса",
       miss.вид_адреса("https://www.teleman.pl/program-tv/stacje/Polsat-Sport-2"
                       "?date=2026-10-06") == "teleman.pl/program-tv/stacje/Polsat-Sport-#"
