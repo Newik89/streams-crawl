@@ -22,7 +22,26 @@ r"""port.hu — Венгрия, телегид на 149 каналов; свой
 Спортивные: 305 Spíler1, 362 Spíler2, 375 Match4, 290 M4 Sport, 320 M4
 Sport+, 90 Sport1, 44 Sport2, 94 Eurosport 1, 37 Eurosport 2.
 
-Признака прямого эфира у сайта нет — эфир определяем первым показом пары.
+**Эфир.** У каждой передачи сайт ставит два флага (разбор 06.10, обход #205,
+1164 передачи):
+
+* `is_live_mp: true` — прямой эфир, на странице сайта «(élő)»;
+* `is_repeat: true` — повтор, на странице «(ism.)».
+
+Флаги стоят и на будущих днях: `Ferencvárosi TC - DVSC` 10.10 17:00 —
+`is_live_mp`, его повтор 11.10 08:50 — `is_repeat`. Сверка с эталоном
+flashscore: 18 передач с `is_live_mp` совпали с матчем по часу, записью не
+оказалась ни одна; ни одна передача с `is_repeat` не совпала с живым
+матчем. Флаг сайта — честный, эфир по нему не угадываем.
+
+Но флаги ставят не все каналы: Spíler1, Spíler2 и Match4 почти всегда
+оставляют оба `false` — и у живых АПЛ и Ла Лиги, и у записей. Строка без
+флагов — эфир неизвестен: его получает первый показ пары
+(`mark_first_show`) с пометкой `live_guess`, и `parse_live.py` сверяет
+угаданный эфир с эталоном, как у сайтов без флагов вовсе.
+
+Флаг `is_live` (стоит у единиц) — «идёт сейчас», а не прямой эфир; его
+не читаем.
 """
 
 from __future__ import annotations
@@ -62,11 +81,25 @@ def _pair(text: str) -> str:
     for sep in (" - ", " – ", " — ", " vs ", " × "):
         if sep in text:
             home, _, away = text.partition(sep)
-            home = home.split(":")[-1]
-            away = _TAIL.sub("", away.strip()).strip()
+            # стадию сайт пишет через запятую — после пары («Magyarország -
+            # Hollandia mérkőzés, rájátszás») или перед ней («Csoportkör,
+            # Brest - FTC-Toyota Kovács»); к именам команд она не относится,
+            # а «Hollandia mérkőzés» не сводилась с эталоном (06.10)
+            home = home.split(":")[-1].split(", ")[-1]
+            away = _TAIL.sub("", away.split(", ")[0].strip()).strip()
             if home.strip() and away:
                 return f"{home.strip()} - {away}"
     return " "
+
+
+def _site_mark(show: dict) -> str:
+    """Что сайт сам сказал об эфире передачи: `live`, `repeat` или пусто —
+    флаги молчат (шапка модуля)."""
+    if show.get("is_live_mp") is True:
+        return "live"
+    if show.get("is_repeat") is True:
+        return "repeat"
+    return ""
 
 
 @register(DOMAIN)
@@ -81,6 +114,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         return []
 
     out: list[Program] = []
+    unknown: list[Program] = []                 # флаги молчат — эфир неизвестен
     for block in data.values():                 # ключ — начало суток
         if not isinstance(block, dict):
             continue
@@ -100,7 +134,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                                   or show.get("description") or "").split())
                 full = f"{title}: {episode}" if episode else title
                 start = datetime.fromtimestamp(stamp, tz=zone)
-                out.append(Program(
+                mark = _site_mark(show)
+                program = Program(
                     channel_raw=channel, title=full, start=start,
                     raw_time=show.get("start_time") or start.strftime("%H:%M"),
                     # лига — заголовок передачи («OTP Bank Liga»), а не
@@ -108,8 +143,18 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     # лигой («Ferencvárosi TC - Újpest FC mérkőzés», 15.09)
                     description=about[:300],
                     league_raw=(title if episode else "")[:120],
+                    # эфир — по флагу сайта; повтор («ism.») эфиром не бывает
+                    live_raw="élő" if mark == "live" else "",
                     match_raw=_pair(full) if _pair(full).strip() else _pair(about),
                     source_url=url,
                     extra={"day": start.date().isoformat()},
-                ))
-    return mark_first_show(out, "élő")
+                )
+                out.append(program)
+                if not mark:
+                    unknown.append(program)
+    # флаги молчат (Spíler1/2, Match4) — эфир получает первый показ пары, и
+    # он помечен угаданным: `parse_live.guessed` сверит его с эталоном
+    for program in mark_first_show(unknown, "élő"):
+        if program.live_raw:
+            program.extra["live_guess"] = True
+    return out
