@@ -28,7 +28,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
 
-from . import broadcast, merge, miss, names
+from . import broadcast, channel_owner, merge, miss, names
 
 # Грейс после начала, минуты (ТЗ разд. 10). Число-уговор, не измерение;
 # правится в админке («Настройки»), здесь только значения по умолчанию.
@@ -105,6 +105,36 @@ class SaveStats:
     time_off: int = 0   # строки, прилипшие к игре flashscore вопреки времени сайта
     titles_gone: int = 0  # отметки заголовков турниров, которых сайт больше не показывает
     gone: int = 0       # отметки каналов, погашенные этим сбором (`app/miss.py`)
+    #: строки агрегаторов, не взятые потому, что у канала есть свой сайт
+    #: (`app/channel_owner.py`), и строка для журнала по сайтам
+    not_own: int = 0
+    not_own_note: str = ""
+    #: снятые прежние отметки тех же агрегаторов по тем же каналам
+    not_own_dropped: int = 0
+
+
+def _хозяева_канала(conn: sqlite3.Connection, games: list[dict],
+                    now: datetime) -> channel_owner.Хозяева:
+    """Первый проход по файлу: чьи каналы и на какую глубину дали свои сайты.
+
+    Идём только по строкам официальных источников — у остальных строк чей
+    канал, спросим во втором проходе (`Хозяева.пропустить`)."""
+    хозяева = channel_owner.Хозяева(conn, now)
+    if not хозяева.официальные:
+        return хозяева
+    srcs = _sources_by_domain(conn)
+    for game in games:
+        день = (game.get("start_kyiv") or "")[:10]
+        if not день:
+            continue
+        for entry in game.get("entries", []):
+            source = srcs.get(entry.get("source") or "")
+            if source is None or not хозяева.свой(source["id"]):
+                continue
+            channel_id = _channel_id(conn, entry.get("channel") or "?", source)
+            if channel_id is not None:
+                хозяева.учесть(source["id"], channel_id, день)
+    return хозяева
 
 
 def _sources_by_domain(conn: sqlite3.Connection) -> dict[str, sqlite3.Row]:
@@ -252,6 +282,9 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     graces = grace_map(conn)
     # до записи игр: правилу 6 нужны отметки, жившие до этой заливки
     гашение = miss.Гашение(conn, coverage, punish, collected, MISS_LIMIT)
+    # чей канал: у канала со своим сайтом строки агрегаторов не берём, пока
+    # свой сайт этот день показывает (`app/channel_owner.py`, правила там)
+    хозяева = _хозяева_канала(conn, games, now)
     # подтверждённые каналы копим ПО СОБЫТИЮ за весь файл, а штраф
     # раздаём после всех игр: один матч бывает в файле ДВУМЯ играми
     # (пока словарь не связал написания — «Wolverhampton» и «Wolves»),
@@ -343,6 +376,17 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             channel_id = _channel_id(conn, entry.get("channel") or "?", source)
             if channel_id is None:
                 continue
+            if хозяева.пропустить(source["id"], channel_id, start_kyiv[:10],
+                                  source["domain"]):
+                # у канала есть свой сайт, и он этот день показывает — строку
+                # агрегатора не берём (слово владельца 07.10), а прежнюю его
+                # отметку снимаем: гашение её не возьмёт (шапка
+                # `app/channel_owner.py`), и она висела бы вечно
+                stats.not_own_dropped += conn.execute(
+                    "DELETE FROM event_channels WHERE event_id = ? "
+                    "AND channel_id = ? AND source_id = ?",
+                    (event_id, channel_id, source["id"])).rowcount
+                continue
             seen_channel_ids.add(channel_id)
             гашение.учесть(source["id"], start_kyiv[:10], event_id, channel_id)
             conn.execute(
@@ -404,6 +448,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             "SELECT id, channel_id, source_id, source_url FROM event_channels "
             "WHERE event_id = ?", (r["id"],)).fetchall(), r["start_kyiv"], True)
     conn.commit()
+    stats.not_own = sum(хозяева.пропущено.values())
+    stats.not_own_note = хозяева.отчёт(stats.not_own_dropped)
     return stats
 
 
