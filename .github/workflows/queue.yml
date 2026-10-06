@@ -7,6 +7,7 @@
 #   btn-days-6-<ts>            → полный обход, «сегодня + 6» целиком (аудит 07.09)
 #   btn-date-2026-09-10-<ts>   → скан одной даты
 #   btn-site-<домен base32>-<ts> → точечный обход одного сайта (кнопка 20.09)
+#   btn-cancel-<id прогона>-<ts> → отменить зависший прогон обхода (сторож, 05.10)
 name: Кнопки сайта
 
 on:
@@ -77,6 +78,39 @@ jobs:
             esac
             # окно 6 дней: сайт пересобирается целиком, как утренним обходом
             INPUTS="{\"mode\":\"full\",\"days\":\"6\",\"delay\":\"3\",\"only\":\"$SITE\",\"urls\":\"\"}"
+          elif [ "$KIND" = "cancel" ]; then
+            # отмена зависшего прогона обхода сторожем сервера (05.10.2026):
+            # у сервера нет ключа GitHub, отменяет этот workflow своим
+            # GITHUB_TOKEN. Номер прогона — только цифры, иначе отказ; и
+            # отменяем только прогон обхода (crawl.yml) этого же репозитория:
+            # адрес API и так в пределах репозитория, путь workflow сверяем
+            # по ответу GitHub
+            RUN_ID=$(echo "$TAG" | cut -d- -f3)
+            if ! [[ "$RUN_ID" =~ ^[0-9]{1,20}$ ]]; then
+              echo "::error::номер прогона не из одних цифр — заявка отвергнута"; exit 1
+            fi
+            RUN_API="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+            CODE=$(curl -s -o /tmp/run -w "%{http_code}" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" "$RUN_API")
+            if [ "$CODE" != "200" ]; then
+              echo "::error::прогон $RUN_ID не найден (ответ $CODE)"; exit 1
+            fi
+            RUN_PATH=$(jq -r '.path // ""' /tmp/run)
+            RUN_STATUS=$(jq -r '.status // ""' /tmp/run)
+            echo "прогон $RUN_ID: $RUN_PATH, $RUN_STATUS"
+            if [ "${RUN_PATH%%@*}" != ".github/workflows/crawl.yml" ]; then
+              echo "::error::прогон $RUN_ID — не обход сайтов, не отменяю"; exit 1
+            fi
+            if [ "$RUN_STATUS" = "completed" ]; then
+              echo "прогон уже закончился — отменять нечего"; exit 0
+            fi
+            CODE=$(curl -s -o /tmp/answer -w "%{http_code}" -X POST \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" "$RUN_API/cancel")
+            echo "cancel: $CODE"; cat /tmp/answer || true
+            [ "$CODE" = "202" ] || exit 1
+            exit 0
           else
             echo "непонятная заявка — выходим"; exit 0
           fi
@@ -90,8 +124,10 @@ jobs:
 
       - name: Удалить тег-заявку
         if: always()
+        # --globoff (05.10): в имени тега могут быть { } — без него curl
+        # счёл бы их шаблоном адреса и удалял бы не тот тег
         run: |
-          curl -s -X DELETE \
+          curl -s --globoff -X DELETE \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/git/${GITHUB_REF}" \
             -o /dev/null || true

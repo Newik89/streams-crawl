@@ -20,17 +20,21 @@ import os
 import re
 import secrets
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 from zoneinfo import ZoneInfo
 
 from flask import (Flask, abort, flash, jsonify, redirect, render_template, request,
                    session, url_for)
 
-from . import (crawl_hook, db, dictionary, health, names, sources, store,
-               trigger, visits)
+from . import (crawl_hook, db, dictionary, emergency, health, names, sources,
+               store, trigger, visits, watch)
 
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
+#: отказ другу, когда в очереди GitHub уже ждёт заказанный сбор
+#: (`watch.queue_refusal`): витрина — по-английски
+QUEUE_BUSY_EN = ("Another collection is already waiting in the GitHub queue — "
+                 "please try again in a few minutes, after it starts.")
 _ENV_PASSWORD = os.environ.get("STREAMS_ADMIN_PASSWORD")
 ADMIN_PASSWORD = _ENV_PASSWORD or ("admin" if LOCAL_MODE else None)
 #: пароль друзей владельца (05.10): вход без админки, только кнопки сбора на
@@ -582,6 +586,10 @@ def create_app() -> Flask:
             flash(f"{domain}: проба не отправлена — {bad}.", "error")
             return redirect(back)
         if через == "github":
+            refusal = _queue_refusal()
+            if refusal:
+                flash(f"{domain}: проба не отправлена — {refusal}.", "error")
+                return redirect(back)
             # запятая в заявке делит список адресов — внутри одного адреса
             # она едет закодированной
             ok, words = trigger.push_request_tag(
@@ -814,7 +822,7 @@ def create_app() -> Flask:
 
     # ── запуск обхода кнопкой (ТЗ разд. 12 и 14) ─────────────────────────────
 
-    def _dispatch(days: int, date: str = "") -> bool:
+    def _dispatch(days: int, date: str = "", queue_checked: bool = False) -> bool:
         # сбор уже заказан или идёт — второй не запускаем (владелец 14.09)
         conn = db.connect()
         try:
@@ -825,14 +833,20 @@ def create_app() -> Flask:
             flash(f"Сбор уже {busy['state']} с {busy['since']} ({busy['what']}) — "
                   "второй не запускаю, дождитесь окончания.", "error")
             return False
+        refusal = "" if queue_checked else _queue_refusal()
+        if refusal:
+            flash(f"Не запускаю: {refusal}.", "error")
+            return False
         # сперва прямой запуск (мгновенно, если есть ключ GitHub); без
         # ключа — заявка-тег: её ловит workflow и стартует обход сам
         ok, words = trigger.dispatch_crawl(days, date=date)
         if not ok:
             ok, words = trigger.push_request_tag(
                 "date" if date else "days", date or str(days))
-        if ok:
-            conn = db.connect()
+        # None — git не ответил вовремя, заявка могла дойти: это не провал —
+        # заказ пишем, дошёл ли он, рассудит сторож (как у заявки, З6)
+        if ok is not False:
+            conn = db.connect(db.BUSY_TIMEOUT_ORDER)    # тег ушёл — записать надо
             try:
                 crawl_hook.mark(conn, "заявка",
                                 f"date-{date}" if date else f"days-{days}")
@@ -840,21 +854,35 @@ def create_app() -> Flask:
                     # заказ запоминаем: дальше панель «Здоровье» сама скажет,
                     # дошёл ли он до конца — раньше надпись просто исчезала
                     # (владелец 09.09)
-                    db.set_setting(conn, "crawl_request",
-                                   f"обход {days} сут.|"
-                                   f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
+                    stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
+                    db.set_setting(conn, "crawl_request", f"обход {days} сут.|{stamp}")
+                    # в книгу заказов: сторож доведёт до итога; кнопка —
+                    # всегда ручной заказ, даже рядом со слотом (С4)
+                    watch.add_order(conn, f"full-{days}", stamp, who="кнопка",
+                                    at=datetime.now(timezone.utc))
                 else:
                     # заказ скана даты — своя строка статуса на витрине:
                     # раньше его итог не показывался вовсе (владелец 22.09)
-                    db.set_setting(conn, "date_scan_request",
-                                   f"{date}|"
-                                   f"{datetime.now().strftime('%Y-%m-%d %H:%M')}")
+                    stamp = datetime.now().strftime('%Y-%m-%d %H:%M')
+                    db.set_setting(conn, "date_scan_request", f"{date}|{stamp}")
+                    watch.add_order(conn, f"date-{date}", stamp, who="кнопка",
+                                    at=datetime.now(timezone.utc))
             finally:
                 conn.close()
         tail = (f" — скан {date}" if date else
                 f" — окно {days} дн., результат появится после прогона")
-        flash(words + (tail if ok else ""), "ok" if ok else "error")
-        return ok
+        if ok is None:
+            tail += "; сторож проверит, дошла ли заявка"
+        flash(words + (tail if ok is not False else ""),
+              "ok" if ok is not False else "error")
+        return ok is not False
+
+    def _queue_refusal() -> str:
+        """У GitHub одно место ожидания: заявка с кнопки вытеснила бы ЖДУЩИЙ
+        полный обход — тогда не шлём (`watch.queue_refusal`). Пусто — можно."""
+        return watch.queue_refusal(
+            watch.github_runs(trigger._repo_slug(), watch.RUNS_LIMIT_QUICK,
+                              workflow=watch.CRAWL_WORKFLOW))
 
     @app.route("/hook/crawl", methods=["POST"])
     def crawl_hook_in():
@@ -1056,7 +1084,7 @@ def create_app() -> Flask:
                 or url_for("sources_list"))
         domain = (request.form.get("domain") or "").strip().lower()
         import json as _json
-        conn = db.connect()
+        conn = db.connect(db.BUSY_TIMEOUT_ORDER)     # заказ сайта пишется после тега
         try:
             row = conn.execute(
                 "SELECT id, domain, enabled, status, selector_config "
@@ -1081,16 +1109,24 @@ def create_app() -> Flask:
                 flash(f"Сбор уже {busy['state']} с {busy['since']} "
                       f"({busy['what']}) — дождитесь окончания.", "error")
                 return redirect(back)
+            refusal = _queue_refusal()
+            if refusal:
+                flash(f"{domain}: обход не заказан — {refusal}.", "error")
+                return redirect(back)
             ok, words = trigger.dispatch_crawl(SITE_DAYS, only=domain)
             if not ok:
                 ok, words = trigger.push_request_tag(
                     "site", trigger.encode_probe_url(domain))
-            if ok:
+            # None — git не ответил вовремя, заявка могла дойти: заказ пишем,
+            # дошёл ли он, рассудит сторож
+            if ok is not False:
                 crawl_hook.mark(conn, "заявка", f"сайт {domain}")
                 # для строки статуса «заказан → идёт → ВЫПОЛНЕН» (владелец
                 # 20.09: флеш пропадает, а итога рядом не видно)
-                db.set_setting(conn, "site_crawl_request",
-                               f"{domain}|{datetime.now():%Y-%m-%d %H:%M}")
+                stamp = f"{datetime.now():%Y-%m-%d %H:%M}"
+                db.set_setting(conn, "site_crawl_request", f"{domain}|{stamp}")
+                watch.add_order(conn, f"site-{domain}", stamp, who="кнопка",
+                                at=datetime.now(timezone.utc))  # сторож доведёт
                 flash(f"Обход только {domain} заказан — итог вольётся на "
                       "витрину через несколько минут после прогона.", "ok")
             else:
@@ -1124,10 +1160,12 @@ def create_app() -> Flask:
             return redirect(back)
         ok, said = crawl_hook.start_site_crawl(domain)
         if ok:
-            conn = db.connect()
+            conn = db.connect(db.BUSY_TIMEOUT_ORDER)
             try:
-                db.set_setting(conn, "site_crawl_request",
-                               f"{domain}|{datetime.now():%Y-%m-%d %H:%M}")
+                stamp = f"{datetime.now():%Y-%m-%d %H:%M}"
+                db.set_setting(conn, "site_crawl_request", f"{domain}|{stamp}")
+                watch.add_order(conn, f"server-{domain}", stamp, who="кнопка",
+                                at=datetime.now(timezone.utc))  # сторож доведёт
             finally:
                 conn.close()
         flash(f"{domain}: {said}", "ok" if ok else "error")
@@ -1143,8 +1181,8 @@ def create_app() -> Flask:
     def _fresh_en(x: dict, day=None) -> str:
         """Отказ другу «недавно уже собирали» (владелец 05.10: «чтоб сайт
         писал об этом и не запускал») — по-английски, как вся витрина."""
-        ago = max(0, int((datetime.now(KYIV).replace(tzinfo=None)
-                          - x["at"]).total_seconds() // 60))
+        # x["at"] — с поясом: разница считается настоящими часами
+        ago = max(0, int((datetime.now(timezone.utc) - x["at"]).total_seconds() // 60))
         head = f"{day:%d.%m} is already covered: " if day else ""
         if x["done"]:
             return (f"{head}Data was collected {ago} min ago ({x['days']}-day "
@@ -1152,11 +1190,20 @@ def create_app() -> Flask:
         return (f"{head}A {x['days']}-day collection was started {ago} min "
                 "ago — no need to run again.")
 
+    def _restore_pause(key: str, previous: str) -> None:
+        """Заявка друга не ушла — его пауза возвращается как была."""
+        conn = db.connect()
+        try:
+            db.set_setting(conn, key, previous)
+        finally:
+            conn.close()
+
     @app.route("/schedule/run", methods=["POST"])       # публичная: с уздой
     def schedule_run():
         verify_csrf()
         days = _days_choice(request.form.get("days"))
         back = _showcase_back()
+        friend_pause = None
         conn = db.connect()
         try:
             busy = crawl_hook.running(conn)
@@ -1185,10 +1232,16 @@ def create_app() -> Flask:
                     wait = int((PUBLIC_RUN_COOLDOWN - (time.time() - float(last))) // 60) + 1
                     flash(f"Please wait ~{wait} min between runs.", "error")
                     return redirect(back)
+                # очередь GitHub — ДО паузы: отказ очереди паузу друга не тратит
+                if _queue_refusal():
+                    flash(QUEUE_BUSY_EN, "error")
+                    return redirect(back)
                 db.set_setting(conn, "public_run_at", str(time.time()))
+                friend_pause = ("public_run_at", last or "")
         finally:
             conn.close()
-        _dispatch(days)
+        if not _dispatch(days, queue_checked=bool(friend_pause)) and friend_pause:
+            _restore_pause(*friend_pause)        # заявка не ушла — пауза не тратится
         return redirect(back)
 
     @app.route("/schedule/date", methods=["POST"])      # друг: скан даты
@@ -1215,6 +1268,7 @@ def create_app() -> Flask:
         if not today <= chosen <= today + timedelta(days=FRIEND_DATE_AHEAD):
             flash(f"Pick a date from today to +{FRIEND_DATE_AHEAD} days.", "error")
             return redirect(back)
+        friend_pause = None
         conn = db.connect()
         try:
             busy = crawl_hook.running(conn)
@@ -1233,10 +1287,18 @@ def create_app() -> Flask:
                     wait = int((FRIEND_DATE_COOLDOWN - gap) // 60) + 1
                     flash(f"One date per 2 hours — please wait ~{wait} min.", "error")
                     return redirect(back)
+                # очередь GitHub — ДО паузы: отказ очереди паузу друга не тратит
+                if _queue_refusal():
+                    flash(QUEUE_BUSY_EN, "error")
+                    return redirect(back)
                 db.set_setting(conn, "public_date_run_at", str(time.time()))
+                friend_pause = ("public_date_run_at", last or "")
         finally:
             conn.close()
-        if _dispatch(2, date=chosen.isoformat()):
+        sent = _dispatch(2, date=chosen.isoformat(), queue_checked=bool(friend_pause))
+        if not sent and friend_pause:
+            _restore_pause(*friend_pause)        # заявка не ушла — пауза не тратится
+        if sent:
             conn = db.connect()        # для пульта, как у «Скан даты» владельца
             try:
                 db.set_setting(conn, "day_scan_request",
@@ -1492,8 +1554,9 @@ def create_app() -> Flask:
 
     # ── прогоны ──────────────────────────────────────────────────────────────
 
-    @app.route("/runs")
-    def runs_list():
+    def _runs_page(**extra):
+        """«Прогоны»; `extra` — итог экстренной кнопки для блока сверху
+        (`gh` — список GitHub, `refused` — почему заказ не ушёл)."""
         conn = db.connect()
         try:
             rows = conn.execute(
@@ -1502,7 +1565,74 @@ def create_app() -> Flask:
                 "ORDER BY id DESC LIMIT 60").fetchall()
         finally:
             conn.close()
-        return render_template("runs.html", rows=rows)
+        return render_template("runs.html", rows=rows, **extra)
+
+    @app.route("/runs")
+    def runs_list():
+        return _runs_page()
+
+    # ── сбор расписания — экстренно (владелец 06.10, app/emergency.py) ───────
+    # своей логики у кнопок нет: они зовут то же, что заявка и сторож
+
+    def emergency_status() -> dict:
+        conn = db.connect()
+        try:
+            return emergency.status(conn)
+        finally:
+            conn.close()
+    app.jinja_env.globals["emergency_status"] = emergency_status
+
+    def _emergency(action, *args):
+        conn = db.connect()
+        try:
+            return action(conn, *args)
+        finally:
+            conn.close()
+
+    @app.route("/crawl/emergency/order", methods=["POST"])
+    def emergency_order():
+        verify_csrf()
+        try:
+            days = int(request.form.get("days", ""))
+        except ValueError:
+            abort(400)
+        if days not in emergency.ORDER_DAYS:
+            abort(400)
+        res = _emergency(emergency.order, days, request.form.get("force") == "1")
+        if res["refused"]:
+            # почему не ушёл — и кнопка «Всё равно заказать» рядом
+            return _runs_page(refused={"days": days, "words": res["words"]})
+        flash(res["words"], "ok" if res["ok"] else "error")
+        return redirect(url_for("runs_list"))
+
+    @app.route("/crawl/emergency/unmark", methods=["POST"])
+    def emergency_unmark():
+        verify_csrf()
+        ok, words = _emergency(emergency.unmark)
+        flash(words, "ok" if ok else "error")
+        return redirect(url_for("runs_list"))
+
+    @app.route("/crawl/emergency/cancel", methods=["POST"])
+    def emergency_cancel():
+        verify_csrf()
+        run_id = (request.form.get("run_id") or "").strip()
+        if run_id and not re.fullmatch(r"\d{1,20}", run_id):
+            abort(400)
+        ok, words = _emergency(emergency.cancel, run_id)
+        flash(words, "ok" if ok else "error")
+        return redirect(url_for("runs_list"))
+
+    @app.route("/crawl/emergency/github", methods=["POST"])
+    def emergency_github():
+        verify_csrf()
+        return _runs_page(gh=_emergency(emergency.github))
+
+    @app.route("/crawl/emergency/reset", methods=["POST"])
+    def emergency_reset():
+        verify_csrf()
+        ok, words = _emergency(emergency.reset)
+        flash(words, "ok" if ok else "error")
+        return redirect(url_for("runs_list"))
 
     @app.route("/other")
     def other_list():

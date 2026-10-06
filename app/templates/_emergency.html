@@ -1,0 +1,76 @@
+{# Блок «Сбор расписания — экстренно» (владелец 06.10): дашборд и «Прогоны».
+   Кнопки — app/emergency.py; своей логики у них нет, они зовут то же, что
+   заявка и сторож. Опасные кнопки спрашивают подтверждение. #}
+{% set em = emergency_status() %}
+<div class="card" id="emergency" style="margin:18px 0">
+  <h2 style="margin-top:0">Сбор расписания — экстренно</h2>
+  <p class="muted" style="margin-top:0">Обычно ничего нажимать не нужно: сторож
+    сервера раз в 15 минут сам чинит сорвавшийся сбор или пишет ТРЕВОГУ в
+    «Прогоны». Кнопки — на случай, если хочется вмешаться руками.</p>
+  {% for st in em.lines %}<div class="flash {{ st.cls }}">{{ st.text }}</div>{% endfor %}
+  {% if em.alarm %}
+  <div class="flash error">Последняя ТРЕВОГА ({{ em.alarm.at }}): {{ em.alarm.text }}</div>
+  {% endif %}
+  {% if refused is defined and refused %}
+  <div class="flash error">{{ refused.words }}
+    <form method="post" action="{{ url_for('emergency_order') }}" style="display:inline"
+          onsubmit="return confirm('Заказать обход на {{ refused.days }} сут., хотя правила его не пустили? Он встанет в очередь GitHub за текущим и вытеснит ждущий.')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="days" value="{{ refused.days }}">
+      <input type="hidden" name="force" value="1">
+      <button type="submit" class="danger">Всё равно заказать {{ refused.days }} сут.</button>
+    </form>
+  </div>
+  {% endif %}
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+    {% for d in em.days %}
+    <form method="post" action="{{ url_for('emergency_order') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="days" value="{{ d }}">
+      <button type="submit" class="primary">Заказать сбор сейчас: {{ d }} {{ 'дней' if d > 4 else 'дня' }}</button>
+    </form>
+    {% endfor %}
+    <form method="post" action="{{ url_for('emergency_github') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit">Проверить GitHub</button>
+    </form>
+    <form method="post" action="{{ url_for('emergency_unmark') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit">Снять отметку «сбор идёт»</button>
+    </form>
+    <form method="post" action="{{ url_for('emergency_cancel') }}"
+          onsubmit="return confirm('Остановить зависший сбор на GitHub? Если это был плановый, сторож сам закажет замену.')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="danger">Остановить зависший сбор</button>
+    </form>
+    <form method="post" action="{{ url_for('emergency_reset') }}"
+          onsubmit="return confirm('Сбросить память сторожа? Текущий заказ он больше не ведёт и решает только по новым событиям.')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="danger">Сбросить память сторожа</button>
+    </form>
+  </div>
+  {% if gh is defined and gh %}
+  <h3>GitHub сейчас</h3>
+  {% if not gh.ok %}
+  <div class="flash error">GitHub не ответил на список прогонов — попробуйте через минуту.</div>
+  {% else %}
+  <table>
+    <tr><th>Номер</th><th>Что</th><th>Создан</th><th>Состояние</th><th></th></tr>
+    {% for r in gh.rows %}
+    <tr>
+      <td>#{{ r.number }}</td><td>{{ r.what }}</td><td>{{ r.at }}</td>
+      <td {% if r.stuck %}style="color:var(--err)"{% endif %}>{{ r.state }}{% if r.stuck %} — завис{% endif %}</td>
+      <td>{% if r.active %}
+        <form method="post" action="{{ url_for('emergency_cancel') }}"
+              onsubmit="return confirm('Остановить прогон #{{ r.number }}?')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="run_id" value="{{ r.id }}">
+          <button type="submit" class="danger">Остановить</button>
+        </form>
+      {% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {% endif %}
+</div>

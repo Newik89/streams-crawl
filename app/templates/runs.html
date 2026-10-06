@@ -2,6 +2,7 @@
 {% block title %}Прогоны — Streams Schedule{% endblock %}
 {% block body %}
 <h1>Прогоны</h1>
+{% include "_emergency.html" %}
 <p class="muted">Строка появляется при каждом вливании обхода в базу
   (<code>games_import</code>). «Сайтов ок / сбои» — по отчёту обхода.</p>
 {% if rows %}

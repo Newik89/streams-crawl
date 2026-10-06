@@ -104,10 +104,13 @@ def encode_probe_url(url: str) -> str:
     return packed.rstrip("=")
 
 
-def push_request_tag(kind: str, value: str) -> tuple[bool, str]:
+def push_request_tag(kind: str, value: str) -> tuple[bool | None, str]:
     """Заявка кнопки БЕЗ ключа GitHub: пуш пустого тега `btn-…` деплой-
     ключом сервера; workflow `queue.yml` ловит тег и сам запускает обход.
-    Секретов в сети нет — тег это просто имя."""
+    Секретов в сети нет — тег это просто имя.
+    (ушла ли, слова): True — ушла; False — точно не ушла; None — git не
+    ответил вовремя, заявка МОГЛА дойти (29.09 так и было) — вызывающий
+    не считает это срывом и проверяет по списку прогонов."""
     import time as _time
     tag = f"btn-{kind}-{value}-{int(_time.time())}"
     env = dict(os.environ)
@@ -121,8 +124,8 @@ def push_request_tag(kind: str, value: str) -> tuple[bool, str]:
              f"HEAD:refs/tags/{tag}"],
             capture_output=True, text=True, cwd=ROOT, env=env, timeout=90)
     except subprocess.TimeoutExpired:
-        return False, ("GitHub не ответил за 90 с — заявка могла дойти, "
-                       "смотрите «Прогоны»")
+        return None, ("GitHub не ответил за 90 с — заявка могла дойти, "
+                      "смотрите «Прогоны»")
     if r.returncode == 0:
         return True, "обход заказан — GitHub запускает его"
     return False, "заявка не прошла: " + (r.stderr or "?").strip()[:160]
