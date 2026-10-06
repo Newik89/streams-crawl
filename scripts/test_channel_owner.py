@@ -166,23 +166,51 @@ def main() -> int:
 
     # прежняя отметка агрегатора снимается: иначе висела бы вечно — гашение
     # её не возьмёт (у сайта «пропала» разом вся линейка, правило 6 miss.py)
+    # у игры есть и чужой канал агрегатора — значит пустой она не останется
     conn5 = база()
-    без_правила = store.save_games(conn5, [
-        игра("2026-10-08", [("mojtv.hr", "Sport Klub 1")])], now=None)
+    строки5 = [("mojtv.hr", "Sport Klub 1"), ("mojtv.hr", "MAX Sport 1")]
+    без_правила = store.save_games(conn5, [игра("2026-10-08", строки5)],
+                                   now=None)
     conn5.execute("UPDATE sources SET selector_config = ? WHERE id = 1",
                   (json.dumps({channel_owner.ФЛАГ: True}),))
     conn5.commit()
     прошлый_сбор(conn5, "2026-10-09", datetime.now().strftime("%Y-%m-%d %H:%M"))
-    с_правилом = store.save_games(conn5, [
-        игра("2026-10-08", [("mojtv.hr", "Sport Klub 1")])], now=None)
-    осталось = conn5.execute(
-        "SELECT COUNT(*) FROM event_channels ec JOIN sources s "
-        "ON s.id = ec.source_id WHERE s.domain = 'mojtv.hr'").fetchone()[0]
+    с_правилом = store.save_games(conn5, [игра("2026-10-08", строки5)],
+                                  now=None)
+    осталось = {r["canonical_name"] for r in conn5.execute(
+        "SELECT c.canonical_name FROM event_channels ec "
+        "JOIN channels c ON c.id = ec.channel_id "
+        "JOIN sources s ON s.id = ec.source_id JOIN events e "
+        "ON e.id = ec.event_id WHERE s.domain = 'mojtv.hr' "
+        "AND e.start_kyiv LIKE '2026-10-08%'")}
     проверка("прежняя отметка агрегатора снята",
              (без_правила.not_own, с_правилом.not_own_dropped, осталось),
-             (0, 1, 0))
+             (0, 1, {"MAX Sport 1"}))
     проверка("в отчёте видно, сколько снято",
              "снято прежних отметок: 1" in с_правилом.not_own_note, True)
+
+    # у игры только строка агрегатора и других каналов нет — берём её:
+    # пустая запись на витрине хуже канала с агрегатора
+    conn6 = база()
+    прошлый_сбор(conn6, "2026-10-09", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    один = store.save_games(conn6, [
+        игра("2026-10-08", [("mojtv.hr", "Sport Klub 1")])], now=None)
+    есть = conn6.execute(
+        "SELECT COUNT(*) FROM event_channels ec JOIN sources s "
+        "ON s.id = ec.source_id JOIN events e ON e.id = ec.event_id "
+        "WHERE s.domain = 'mojtv.hr' AND e.start_kyiv LIKE '2026-10-08%'"
+    ).fetchone()[0]
+    проверка("единственную строку игры правило не отбирает",
+             (один.not_own, есть), (0, 1))
+
+    # а когда у той же игры есть и свой канал — строку агрегатора не берём
+    conn7 = база()
+    прошлый_сбор(conn7, "2026-10-09", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    пара = store.save_games(conn7, [
+        игра("2026-10-08", [("sportklub.hr", "Sport Klub 1"),
+                            ("mojtv.hr", "Sport Klub 1")])], now=None)
+    проверка("рядом со своим каналом строка агрегатора не берётся",
+             пара.not_own, 1)
     проверка("заливка: строка для журнала есть",
              "mojtv.hr: 1" in stats.not_own_note, True)
 

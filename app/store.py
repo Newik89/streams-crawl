@@ -366,6 +366,7 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             stats.updated += 1
 
         seen_channel_ids: set[int] = set()
+        строки = []
         for entry in game.get("entries", []):
             source = srcs.get(entry.get("source") or "")
             if source is None:
@@ -376,8 +377,26 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             channel_id = _channel_id(conn, entry.get("channel") or "?", source)
             if channel_id is None:
                 continue
-            if хозяева.пропустить(source["id"], channel_id, start_kyiv[:10],
-                                  source["domain"]):
+            строки.append((entry, source, channel_id))
+        # правило «свой сайт важнее агрегатора» не оставляет игру ВОВСЕ без
+        # каналов: если под него попали все строки игры и других живых
+        # отметок у неё нет, берём строки как раньше — пустая запись на
+        # витрине хуже, чем канал с агрегатора (слово владельца: «mojtv —
+        # запасом»)
+        отдаём = [с for с in строки
+                  if хозяева.почему(с[1]["id"], с[2], start_kyiv[:10]) != 3]
+        # живые отметки игры, кроме тех самых, что правило и собирается снять
+        снимаем = {(с[2], с[1]["id"]) for с in строки if с not in отдаём}
+        чужие_живые = [
+            1 for r in conn.execute(
+                "SELECT channel_id, source_id FROM event_channels "
+                "WHERE event_id = ? AND miss_count = 0", (event_id,))
+            if (r["channel_id"], r["source_id"]) not in снимаем]
+        беречь = not отдаём and not чужие_живые
+        for entry, source, channel_id in строки:
+            if not беречь and хозяева.пропустить(
+                    source["id"], channel_id, start_kyiv[:10],
+                    source["domain"]):
                 # у канала есть свой сайт, и он этот день показывает — строку
                 # агрегатора не берём (слово владельца 07.10), а прежнюю его
                 # отметку снимаем: гашение её не возьмёт (шапка
