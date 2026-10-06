@@ -405,8 +405,7 @@
    "include": [
     "Diema Sport",
     "Diema Sport 2",
-    "Diema Sport 3",
-    "Diema Xtra"
+    "Diema Sport 3"
    ],
    "parser": "",
    "browser": false,
@@ -436,10 +435,6 @@
     {
      "name": "Diema Sport 3",
      "pattern": "https://diemaxtra.nova.bg/diemasport3/schedule"
-    },
-    {
-     "name": "Diema Xtra",
-     "pattern": "https://diemaxtra.nova.bg/schedule"
     }
    ]
   },
