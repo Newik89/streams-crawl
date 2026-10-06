@@ -10,7 +10,8 @@ Sport — port.hu отдал матч с флагом прямого эфира,
   первым показом пары — только у строк, где оба флага молчат;
 * пара port.hu — стадия через запятую к именам команд не прилипает;
 * `data/aliases.json`, раздел «_клубы целиком» — DVSC, FTC, Puskás
-  Akadémia, West Bromwich, OB, R. Racing Club сводятся с именами эталона,
+  Akadémia, West Bromwich, OB, R. Racing Club, Atomerőmű SE (баскетбол
+  Пакша) сводятся с именами эталона,
   а чужие клубы и вторые составы — нет; «_сборные целиком» — румынские и
   французские имена сборных (Scotia, Insulele Feroe, Lettonie). Все — из
   строк обхода #205, которые английский эталон не узнавал.
@@ -191,7 +192,8 @@ for mine, ref in (("DVSC", "Debrecen"),               # port.hu ⇒ эталон
                   ("R. Racing Club", "Racing Santander"),  # movistarplus.es
                   ("Scotia", "Scotland"),             # digisport.ro
                   ("Insulele Feroe", "Faroe Islands"),
-                  ("Lettonie W", "Latvia W")):        # programme-tv.net
+                  ("Lettonie W", "Latvia W"),         # programme-tv.net
+                  ("Atomerőmű SE", "Atomeromu Paks")):  # port.hu, баскетбол
     check(f"сокращение_одна_команда: {mine} = {ref}",
           names.same_team(mine, ref), names.similarity(mine, ref))
 
@@ -200,6 +202,7 @@ for mine, ref in (("FTC", "Ferencvaros II"),           # второй соста
                   ("DVSC Skyline", "Debrecen"),        # только имя ЦЕЛИКОМ
                   ("West Ham", "West Brom"),
                   ("OB", "Odense W"),
+                  ("Atomerőmű SE W", "Atomeromu Paks"),
                   ("Puskás Akadémia FC", "Puskas Academy II")):
     check(f"сокращение_не_цепляет_чужих: {mine} ≠ {ref}",
           not names.same_team(mine, ref), names.similarity(mine, ref))

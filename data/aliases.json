@@ -206,7 +206,8 @@
   "WEST BROMWICH": "WEST BROM",
   "WEST BROMWICH ALBION": "WEST BROM",
   "OB": "ODENSE",
-  "R RACING": "RACING SANTANDER"
+  "R RACING": "RACING SANTANDER",
+  "ATOMEROMU SE": "ATOMEROMU PAKS"
  },
  "_сборные целиком (6е A3): экзоним = всё имя, замена только полным совпадением — SAD нельзя словом, иначе Novi Sad станет Novi USA": {
   "ABD": "USA",
