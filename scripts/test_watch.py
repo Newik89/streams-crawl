@@ -1242,9 +1242,12 @@ reset(K("17:30"), [probe, mkrun(K("16:16"), ended=K("16:30"), conclusion="failur
                    mkrun(K("16:46"), ended=K("17:05"), conclusion="failure", title="Обход full-2")])
 order_of(f"{DAY} 16:45", 2)
 state_set({"order": f"{DAY} 16:45", "reordered": True, "slot": f"{DAY} 16:15"})
+edge = last_id()
 ticks("17:30", "17:45")
-check("память прежней версии (плановому уже делали повтор, и он упал) → один досрочный на 6, не больше",
-      ORDERS == [6] and jget("crawl_early").get("replaces") == f"{DAY} 20:30", ORDERS)
+check("память прежней версии (плановому уже делали повтор, и он упал) → на слот уже было два "
+      "обхода: одна ТРЕВОГА, досрочного нет",
+      ORDERS == [] and len(alarms_after(edge)) == 1 and jget("crawl_early") == {},
+      (ORDERS, notes_after(edge)))
 
 
 def button(what: str, at: str):
@@ -1565,7 +1568,8 @@ API["runs"] = [probe, finished(run6, K("18:00"))]
 tick(K("18:15"))
 mem = jget("crawl_early")
 check("досрочный дошёл и забран → память «done» с его началом и номером",
-      mem.get("state") == "done" and mem.get("started") == f"{DAY} 16:31" and mem.get("run"), mem)
+      mem.get("state") == "done" and watch.moment(mem.get("started")) == K("16:31")
+      and mem.get("run"), mem)
 NOW[0] = K("20:30")
 setting("crawl_running", "")                 # стук «закончил» снял отметку
 edge = last_id()
@@ -1908,10 +1912,15 @@ check("S6: прогон заказа выпал даже из 100 последн
 # находка 5: одна ждущая очередь GitHub
 pending6 = mkrun(K("12:05"), status="pending", title="Обход full-6")
 running2 = mkrun(K("12:00"), status="in_progress", title="Обход full-2")
-check("очередь: ждущий полный обход виден, идущий — нет; проба ждущая — не повод",
-      watch.waiting_full([running2, pending6], SLUG) is pending6
-      and watch.waiting_full([running2], SLUG) is None
-      and watch.waiting_full([mkrun(K("12:06"), status="queued", title="Обход proba-2")], SLUG)
+pend_date = mkrun(K("12:05"), status="pending", title="Обход date-2026-11-12")
+pend_site = mkrun(K("12:05"), status="pending", title="Обход site-nova.bg")
+check("очередь: ждущий заказанный сбор (полный, дата, сайт) виден, идущий — нет; ждущая проба "
+      "— не повод",
+      watch.waiting_crawl([running2, pending6], SLUG) is pending6
+      and watch.waiting_crawl([running2, pend_date], SLUG) is pend_date
+      and watch.waiting_crawl([running2, pend_site], SLUG) is pend_site
+      and watch.waiting_crawl([running2], SLUG) is None
+      and watch.waiting_crawl([mkrun(K("12:06"), status="queued", title="Обход proba-2")], SLUG)
       is None)
 reset(K("12:10"), [probe, running2, pending6])
 setting("crawl_running", "")
@@ -1923,7 +1932,7 @@ finally:
     sys.argv = saved_argv
 check("очередь: в ней ждёт полный обход → заявка скана даты не уходит (вытеснила бы его), "
       "строка объясняет",
-      code == 3 and TAGS == [] and any("ждёт полный обход" in n for n in notes_after(last_id() - 1)),
+      code == 3 and TAGS == [] and any(watch.QUEUE_BUSY in n for n in notes_after(last_id() - 1)),
       (code, TAGS))
 pending2 = mkrun(K("20:25"), status="pending", title="Обход full-2")
 reset(K("20:30"), [probe, mkrun(K("20:00"), status="in_progress", title="Обход full-2"), pending2])
@@ -1952,9 +1961,14 @@ check("…и на следующих проверках второго повт�
 # вытеснение в очереди — не срыв
 reset(K("16:00"), [probe])
 button("full-2", "16:00")
+conn = db.connect()
+try:                                         # плановый 16:15 — заказ книги
+    watch.add_order(conn, "full-6", f"{DAY} 16:15", f"{DAY} 16:15", "cron", at=K("16:15"))
+finally:
+    conn.close()
 d2_wait = mkrun(K("16:01"), ended=K("16:16"), conclusion="cancelled", title="Обход full-2")
-API["runs"] = [probe, mkrun(K("15:30"), ended=K("16:40"), title="Обход full-6"), d2_wait,
-               mkrun(K("16:15"), status="in_progress", title="Обход full-6")]
+p6_live = mkrun(K("16:15") + timedelta(seconds=20), status="in_progress", title="Обход full-6")
+API["runs"] = [probe, mkrun(K("15:30"), ended=K("16:40"), title="Обход full-6"), d2_wait, p6_live]
 edge = last_id()
 tick(K("16:45"))
 check("очередь: ручной «2 дня» ждал и был вытеснен плановым на 6 → не срыв, повтора нет, "
@@ -2027,6 +2041,246 @@ planned(2)
 watch.wait_for_start = fake_wait
 check("плановая заявка: решение и тег — под замком, ожидание старта — уже без него",
       order == [True], order)
+
+# ── сценарии третьей проверки 06.10 (N1–N9) и её находки ───────────────────
+rule("сценарии-3", "сценарии третьей проверки 06.10")
+
+# N1. прогон старого crawl.yml (без run-name: «Обход телесайтов») в день выкладки
+old_named = {"display_title": "Обход телесайтов", "event": "workflow_dispatch",
+             "created_at": "2026-11-10T18:30:20Z"}
+check("N1: прогон без вида — ответ на полный заказ (answers, run_for), пока «unknown» в FULL_KINDS",
+      watch.answers("full-6", old_named)
+      and watch.run_for({"at": K("20:30"), "days": 6}, [old_named]) is not None)
+reset(K("20:30"), [probe])
+setting("crawl_request", f"обход 6 сут.|{DAY} 20:30")
+setting("crawl_watch", json.dumps({"order": f"{DAY} 20:30"}))
+setting("crawl_running", f"идёт|{int(time.time()) - 600}|20:31|full-6")
+old_live = mkrun(K("20:30") + timedelta(seconds=20), status="in_progress", title="Обход телесайтов")
+API["runs"] = [probe, old_live]
+jset("crawl_slot", {"slot": f"{DAY} 20:30", "days": 6, "at": f"{DAY} 20:30", "state": "ordered"})
+edge = last_id()
+tick(K("20:45"))
+check("N1: выкладка во время идущего планового старого вида → лишнего обхода нет",
+      ORDERS == [] and alarms_after(edge) == [], (ORDERS, notes_after(edge)))
+API["runs"] = [probe, finished(old_live, K("22:00"))]
+tick(K("22:15"))
+check("N1: …он кончился → заказ закрыт «дошёл», без досрочного и без тревоги",
+      ORDERS == [] and alarms_after(edge) == [] and book()[0].get("done") is True,
+      (ORDERS, notes_after(edge), book()))
+check("N1: С6 прогон без вида тоже засчитывает (идёт — «жду итога»)",
+      watch.plan_early(gap("16:15", 6), [probe, dict(old_live, created_at=Z(K("16:20")))],
+                       K("16:30"), {}, None)[0] == "covered")
+
+# N2. день выкладки: заливка ДО выкладки есть только в last_import_stamp
+reset(K("16:00"), [probe])
+watch.result_state, watch.subprocess = REAL_RESULT, NO_GIT
+setting("last_import_stamp:results", utc_stamp(K("16:38")))      # «2 дня» влит до выкладки
+conn = db.connect()
+try:                                         # заливка «6 дней» — уже новым games_import
+    watch.remember_import(conn, "results", utc_stamp(K("21:58")))
+    db.set_setting(conn, "last_import_stamp:results", utc_stamp(K("21:58")))
+    imported = watch.imported_stamps(conn, "full-2")
+finally:
+    conn.close()
+check("N2: первая заливка после выкладки кладёт в список и прежнюю метку → «2 дня» (16:00–16:40) "
+      "считается влитым, лишнего повтора нет",
+      REAL_RESULT(TMP, K("16:00"), K("16:40"), "full-2", imported) == "picked", imported)
+gi = (ROOT / "scripts" / "games_import.py").read_text(encoding="utf-8")
+check("N2: games_import пишет список заливок ДО того, как перепишет last_import_stamp",
+      gi.index("watch.remember_import(") < gi.index("db.set_setting(conn, stamp_key, stamp)"))
+watch.subprocess = REAL_SUBPROCESS
+watch.result_state = lambda root, start, end, what, imported, cache=None: (
+    RESULT_ASKED.append((what, imported[-1] if imported else "")) or RESULT[0])
+
+# N3. два повтора в одну проверку вытеснили бы друг друга в очереди
+reset(K("12:00"), [probe])
+button("date-2026-11-12", "12:00")
+button("site-nova.bg", "12:02")
+running6 = mkrun(K("11:50"), status="in_progress", title="Обход full-6")
+base3 = [probe, running6,
+         mkrun(K("12:00") + timedelta(seconds=5), ended=K("12:10"), conclusion="failure",
+               title="Обход date-2026-11-12"),
+         mkrun(K("12:02") + timedelta(seconds=5), ended=K("12:12"), conclusion="failure",
+               title="Обход site-nova.bg")]
+API["runs"] = list(base3)
+edge = last_id()
+tick(K("12:30"))
+first = list(ORDERS)
+check("N3: два коротких сорвались при идущем полном → за проверку уходит ОДИН повтор, второй "
+      "отложен со строкой «уже ушла другая заявка повтора»",
+      len(first) == 1 and any("уже ушла другая заявка повтора" in n for n in notes_after(edge)),
+      (first, notes_after(edge)))
+API["runs"] = base3 + [mkrun(K("12:30") + timedelta(seconds=15), status="pending",
+                             title=f"Обход {w}") for w in first]
+tick(K("12:45"))
+check("N3: пока первый повтор ждёт очереди, второй не уходит (вытеснил бы его); тревог нет",
+      ORDERS == first and alarms_after(edge) == [], (ORDERS, alarms_after(edge)))
+
+# N4. очередь бережёт любой ждущий заказанный сбор
+check("N4: в очереди ждёт скан даты → новая заявка (не плановая) не уходит",
+      watch.QUEUE_BUSY in watch.queue_refusal(
+          [running6, mkrun(K("12:05"), status="pending", title="Обход date-2026-11-12")], SLUG))
+
+# N5. дни ручного «2 дня» уже собрал успешный «6 дней»
+reset(K("16:00"), [probe])
+button("full-2", "16:00")
+API["runs"] = [probe, mkrun(K("16:00") + timedelta(seconds=10), ended=K("16:40"), title="Обход full-2"),
+               mkrun(K("16:15") + timedelta(seconds=10), ended=K("17:50"), title="Обход full-6")]
+RESULT[0] = "lost"
+edge = last_id()
+tick(K("18:00"))
+check("N5: результат «2 дня» перекрыт, но его дни собрал успешный «6 дней» → повтора нет, "
+      "строка «повтор не нужен», тревоги нет",
+      ORDERS == [] and alarms_after(edge) == []
+      and any("повтор не нужен" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
+
+# N6. «стоп = стоп»: ручной сбор, остановленный владельцем кнопкой
+for what, at in (("full-6", "16:00"), ("date-2026-11-12", "16:00"), ("site-nova.bg", "16:00")):
+    reset(K("16:00"), [probe])
+    button(what, at)
+    live = mkrun(K("16:00") + timedelta(seconds=10), status="in_progress", title=f"Обход {what}")
+    API["runs"] = [probe, live]
+    jset("crawl_cancel", {str(live["id"]): {"at": watch.when(K("16:20")), "number": 1,
+                                            "alarmed": False, "by": "владелец"}})
+    API["runs"] = [probe, finished(live, K("16:21"), "cancelled")]
+    edge = last_id()
+    tick(K("16:30"))
+    check(f"N6: {what}, остановленный владельцем, → без повтора и без тревоги, строка "
+          f"«остановил владелец», заказ закрыт",
+          ORDERS == [] and alarms_after(edge) == [] and book()[0].get("stopped") is True
+          and any("остановил владелец" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
+reset(K("16:00"), [probe])
+button("full-6", "16:00")
+live = mkrun(K("16:00") + timedelta(seconds=10), status="in_progress", title="Обход full-6")
+jset("crawl_cancel", {str(live["id"]): {"at": watch.when(K("16:20")), "number": 1,
+                                        "alarmed": False, "by": "сторож"}})
+API["runs"] = [probe, finished(live, K("16:21"), "cancelled")]
+tick(K("16:30"))
+check("N6: тот же ручной, но остановил СТОРОЖ (завис) → это срыв: один повтор", ORDERS == [6], ORDERS)
+reset(K("16:15"), [probe])
+conn = db.connect()
+try:
+    watch.add_order(conn, "full-2", f"{DAY} 16:15", f"{DAY} 16:15", "cron", at=K("16:15"))
+finally:
+    conn.close()
+setting("crawl_request", f"обход 2 сут.|{DAY} 16:15")
+live = mkrun(K("16:15") + timedelta(seconds=10), status="in_progress", title="Обход full-2")
+jset("crawl_cancel", {str(live["id"]): {"at": watch.when(K("16:20")), "number": 1,
+                                        "alarmed": False, "by": "владелец"}})
+API["runs"] = [probe, finished(live, K("16:21"), "cancelled")]
+tick(K("16:30"))
+check("N6: ПЛАНОВЫЙ, остановленный владельцем, — как задумано: досрочный (вопрос владельцу)",
+      ORDERS == [6], ORDERS)
+
+# N7. лёгкий список для ожидания старта и кнопок
+asked_limits = []
+saved_runs = watch.github_runs
+watch.github_runs = lambda slug, limit=0, workflow="": (asked_limits.append(limit)
+                                                        or watch.Runs([probe]))
+REAL_WAIT({"at": K("12:00"), "days": 6}, SLUG, watch.FULL_KINDS, sleep=lambda s: None)
+watch.forwarding({"at": K("12:00")}, SLUG, "btn-days-6-")
+watch.github_runs = saved_runs
+check("N7: ожидание старта и сверка пересылки берут 20 последних прогонов, не 100 "
+      "(11 запросов за ожидание: 10 опросов и пересылка)",
+      set(asked_limits) == {watch.RUNS_LIMIT_QUICK} and len(asked_limits) == 11, asked_limits)
+
+# N8. повторный час 25.10: «GitHub молчит» с 03:10 второго прохода
+reset(datetime(2026, 10, 25, 1, 10, tzinfo=timezone.utc), [])
+edge = last_id()
+tick(datetime(2026, 10, 25, 1, 10, tzinfo=timezone.utc))      # 03:10 зимнего
+tick(datetime(2026, 10, 25, 1, 25, tzinfo=timezone.utc))      # 03:25 зимнего
+check("N8: повторный час — 15 мин молчания GitHub не превращаются в «75 мин»: тревоги нет, "
+      "отметка «с какого времени» — в UTC",
+      alarms_after(edge) == [] and jget("crawl_silent").get("since") == "2026-10-25T01:10:00+00:00",
+      (alarms_after(edge), jget("crawl_silent")))
+
+# N9. день выкладки: прежний сторож уже повторял плановый, и повтор сорвался
+reset(K("16:30"), [probe])
+setting("crawl_request", f"обход 2 сут.|{DAY} 16:31")
+setting("crawl_watch", json.dumps({"order": f"{DAY} 16:31", "reordered": True, "alarmed": True}))
+API["runs"] = [probe, mkrun(K("16:31") + timedelta(seconds=10), ended=K("17:05"),
+                            conclusion="failure", title="Обход full-2")]
+jset("crawl_slot", {"slot": f"{DAY} 16:15", "days": 2, "at": f"{DAY} 16:15", "state": "ordered"})
+edge = last_id()
+tick(K("17:30"))
+check("N9: на слот уже ушли заявка и повтор прежнего сторожа → третьего (досрочного) нет, "
+      "одна ТРЕВОГА",
+      ORDERS == [] and len(alarms_after(edge)) == 1, (ORDERS, notes_after(edge)))
+
+# Н8. замена засчитывается только прогоном заказа из книги
+reset(K("16:00"), [probe])
+button("full-2", "16:00")
+API["runs"] = [probe, mkrun(K("16:01"), ended=K("16:16"), conclusion="cancelled", title="Обход full-2"),
+               mkrun(K("16:15") + timedelta(seconds=20), status="in_progress", title="Обход full-6")]
+tick(K("16:45"))
+check("Н8: ждущий «2 дня» вытеснен полным, запущенным НЕ сервером (его нет в книге) → это срыв: "
+      "один повтор",
+      ORDERS == [2] and not book()[0].get("replaced"), (ORDERS, book()))
+
+# Н9. занятая база: скриптам — 30 с, страницам — как было
+conn_web, conn_script = db.connect(), db.connect(db.BUSY_TIMEOUT_SCRIPT)
+try:
+    web_ms = conn_web.execute("PRAGMA busy_timeout").fetchone()[0]
+    script_ms = conn_script.execute("PRAGMA busy_timeout").fetchone()[0]
+finally:
+    conn_web.close()
+    conn_script.close()
+src = {n: (ROOT / "scripts" / f"{n}.py").read_text(encoding="utf-8")
+       for n in ("crawl_watch", "request_crawl", "games_import")}
+check("Н9: сторож, заявка и заливка ждут занятую базу 30 с, страницы сайта — 5 с",
+      web_ms == 5000 and script_ms == 30000
+      and all("db.connect(db.BUSY_TIMEOUT_SCRIPT)" in t and "db.connect()" not in t
+              for t in src.values()), (web_ms, script_ms))
+import threading  # noqa: E402
+locked = threading.Event()
+
+
+def long_import():
+    """Как заливка игр: одна долгая транзакция на запись (≈1 с)."""
+    holder = db.connect()
+    try:
+        holder.execute("BEGIN IMMEDIATE")
+        holder.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('busy-test', '1')")
+        locked.set()
+        time.sleep(1.0)
+        holder.commit()
+    finally:
+        holder.close()
+
+
+worker = threading.Thread(target=long_import)
+worker.start()
+locked.wait()
+conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
+try:
+    t0 = time.perf_counter()
+    db.set_setting(conn, "busy-test", "2")       # ждёт, пока «заливка» закончит
+    waited_s = time.perf_counter() - t0
+finally:
+    conn.close()
+worker.join()
+check("Н9: запись скрипта дождалась чужой долгой транзакции (≈1 с), а не упала «database is locked»",
+      setting("busy-test") == "2" and waited_s >= 0.5, waited_s)
+
+# Н10. отметки «когда» в памяти — UTC ISO
+reset(K("12:00"), [yday, mkrun(K("11:30"), status="in_progress", title="Обход proba-2")])
+tick(K("12:00"))                             # зависшая проба — заявка отмены
+cancel_at = next(iter(jget("crawl_cancel").values()), {}).get("at", "")
+reset(K("12:15"), [yday, mkrun(K("11:30"), status="queued", title="Обход full-2")])
+tick(K("12:15"))                             # ждёт очереди 45 мин, впереди никого
+queue_last = next(iter(jget("crawl_queue").values()), {}).get("last", "")
+check("Н10: «подана отмена» и «последний раз видели в очереди» — UTC ISO",
+      cancel_at.endswith("+00:00") and queue_last.endswith("+00:00"), (cancel_at, queue_last))
+reset(K("16:15"), [])
+mark("идёт", 35, "full-6")
+planned(2)                                   # GitHub молчит — слот сорвался
+check("Н10: «когда сорвался слот» и «заявка пришла» — UTC ISO",
+      jget("crawl_missed").get("at", "").endswith("+00:00")
+      and jget("crawl_slot").get("at", "").endswith("+00:00"), (jget("crawl_missed"), jget("crawl_slot")))
+check("Н10: старые киевские отметки памяти по-прежнему читаются",
+      watch.moment(f"{DAY} 16:15") == K("16:15")
+      and watch.moment("2026-10-25T01:10:00+00:00") == datetime(2026, 10, 25, 1, 10,
+                                                                  tzinfo=timezone.utc))
 
 # ── итог: сколько обходов за сутки при устойчивой поломке ───────────────────
 def bad_day(hang: bool) -> tuple[list, list, int, list]:

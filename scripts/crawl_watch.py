@@ -23,7 +23,9 @@ r"""Сторож заказа обхода — cron сервера раз в 15 
 `order_crawl`. На один плановый слот — не больше одного заказа сторожа.
 Каждое решение — строка «сторож: …» в «Прогонах» админки и в журнале cron
 (`/var/log/streams-watch.log`). Проверка идёт под общим с заявкой замком
-(`watch.order_lock`, правило З1). Одна проверка — один запрос к API GitHub.
+(`watch.order_lock`, правило З1). Запросов к API GitHub за проверку: один
+свой (список прогонов) и по одному у каждой заявки, которую сторож подаёт
+(своя заявка — не больше одной за проверку, кроме досрочного).
 """
 
 from __future__ import annotations
@@ -102,6 +104,9 @@ class Round:
         self.cancelling: list = []      # id прогонов, отмена которых подана сейчас
         self.oldest = None              # создание самого старого прогона в ПОЛНОМ списке
         self.git: dict = {}             # git fetch/show результатов — один раз за проверку
+        self.sent = False               # своя заявка повтора в эту проверку уже ушла
+        self.owner_stopped: set = set() # id прогонов, остановленных кнопкой владельца
+        self.ordered_ids: set = set()   # id прогонов, отвечающих заказам книги
 
     def log(self, words: str) -> None:
         """Строка только в журнал cron."""
@@ -150,6 +155,9 @@ def tick(conn, now: datetime, check: bool = False) -> None:
     if current and current not in records and t.dry:
         records.append(current)       # --check: запись не сохранена, но разобрать её надо
     t.follow = [(rec, run_of(t, rec)) for rec in records if watch.is_open(rec)]
+    # прогоны заказов книги — только они могут «вытеснить» ждущий (С4)
+    t.ordered_ids = {str(run.get("id")) for run in (run_of(t, rec) for rec in records)
+                     if run is not None}
     cancel_stuck(t)                                                       # С3
     if not t.follow:
         t.log("открытых заказов нет — следить не за чем")
@@ -176,7 +184,7 @@ def see_github(t: Round) -> bool:
     снова ответил после тревоги — строка «отбой»."""
     t.runs = watch.github_runs(t.slug, workflow=watch.CRAWL_WORKFLOW)
     silent = watch.load_json(t.conn, "crawl_silent")
-    since = watch.kyiv_at(silent.get("since", ""))
+    since = watch.moment(silent.get("since", ""))
     if t.runs:
         if silent.get("alarmed"):
             t.say(f"GitHub снова отвечает на список прогонов (молчал с "
@@ -185,7 +193,7 @@ def see_github(t: Round) -> bool:
             t.save("crawl_silent", {})
         return True
     if since is None:
-        silent, since = {"since": watch.stamp(t.now)}, t.now
+        silent, since = {"since": watch.when(t.now)}, t.now
     minutes = (t.now - since).total_seconds() / 60
     t.log(f"GitHub не ответил на список прогонов (молчит {minutes:.0f} мин) — "
           f"подожду следующей проверки")
@@ -210,7 +218,7 @@ def resume_early(t: Round) -> None:
     slot_hm = watch.clock(t.early.get("for", ""))
     rec = early_order(t)
     if rec:
-        t.early.update(ordered_at=rec["order"], state="ordered")
+        t.early.update(ordered_at=rec["order"], order_at=rec.get("at", ""), state="ordered")
         t.say(f"прошлую проверку оборвали посреди заказа досрочного обхода "
               f"(перезагрузка сервера?), но заявка в {watch.clock(rec['order'])} ушла — "
               f"слежу за ней как за досрочным за плановый {slot_hm}")
@@ -226,7 +234,9 @@ def early_order(t: Round) -> dict:
     """Запись книги о досрочном, который сторож начал заказывать
     (`crawl_early`): пометка early и тот же слот, заказ не раньше начала."""
     rec = watch.find_order(t.conn, early=True, slot=t.early.get("for", ""))
-    return rec if rec and rec["order"] >= t.early.get("begun", "") else {}
+    begun = watch.moment(t.early.get("begun", ""))
+    at = watch.record_at(rec) if rec else None
+    return rec if at and (begun is None or at >= begun) else {}
 
 
 def resume_retries(t: Round) -> None:
@@ -278,13 +288,17 @@ def cancel_stuck(t: Round) -> None:
         if action == "forget":
             t.queue.pop(rid)
         elif action == "seen":
-            t.queue.setdefault(rid, {})["last"] = watch.stamp(t.now)
+            t.queue.setdefault(rid, {})["last"] = watch.when(t.now)
         else:
             t.say(words)
             t.queue.setdefault(rid, {})["warned" if action == "warn" else "alarmed"] = True
     t.save("crawl_queue", t.queue)
     decisions = watch.cancel_decisions(t.runs, t.now, t.cancels, t.slug, own, t.queue)
     for action, rid, words in decisions:
+        if action in ("forget", "confirmed") and t.cancels[rid].get("by") == "владелец":
+            # остановил владелец кнопкой: ручной заказ этого прогона С4
+            # закроет без повтора («стоп = стоп»)
+            t.owner_stopped.add(rid)
         if action == "forget":
             t.cancels.pop(rid)
         elif action == "confirmed":
@@ -337,6 +351,9 @@ def follow_order(t: Round, rec: dict, run: dict | None) -> None:
         watch.note(t.conn, words)
         if rec.get("early"):
             early_reached(t)
+    elif verdict == "stopped":                                           # С4в
+        rec["stopped"] = True
+        watch.note(t.conn, f"{order_words(t)}: {words}")
     elif verdict == "replaced":                                          # С4в
         rec["replaced"] = True
         watch.note(t.conn, f"{order_words(t)}: {words}")
@@ -368,7 +385,13 @@ def judge(t: Round, rec: dict, run: dict | None) -> tuple[str, str, str]:
         end = watch._utc(run.get("updated_at") or "") or t.now
         result = watch.result_state(ROOT, start, end, rec["what"],
                                     watch.imported_stamps(t.conn, rec["what"]), t.git)
-        replaced = watch.superseded_by(rec["what"], run, t.runs)
+        replaced = watch.superseded_by(rec["what"], run, t.runs, t.ordered_ids)
+        if (str(run.get("id")) in t.owner_stopped
+                and watch.order_kind(rec) in watch.RETRIED and not rec.get("reordered")):
+            # «стоп = стоп» (владелец 06.10): ручной сбор, остановленный
+            # владельцем, — не срыв; плановый и досрочный идут как обычно
+            return "stopped", (f"прогон #{run.get('run_number')} остановил владелец "
+                               f"кнопкой — не повторяю"), result
     hidden = bool(t.oldest and order["at"] < t.oldest)
     verdict, words = watch.decide(order, run, t.now, rec, result, hidden, replaced)
     if verdict == "wait" and run is not None and str(run.get("id")) in t.cancelling:
@@ -382,7 +405,7 @@ def early_reached(t: Round) -> None:
     begun = (watch._utc(t.run.get("run_started_at") or t.run.get("created_at") or "")
              if t.run else None)
     t.early.update(state="done", run=(t.run or {}).get("run_number"),
-                   started=watch.stamp(begun) if begun else "")
+                   started=watch.when(begun) if begun else "")
     t.save("crawl_early", t.early)
 
 
@@ -421,7 +444,7 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
         t.missed = watch.missed_record(
             t.missed, slot or t.rec.get("slot", ""),
             days or (watch.window(t.rec.get("what", "")) or (1, 0))[1],
-            at or watch.stamp(t.now), what)
+            at or watch.when(t.now), what)
         t.save("crawl_missed", t.missed)
     elif step == "retry":
         retry(t, what)
@@ -442,21 +465,36 @@ def retry(t: Round, what: str) -> None:
     `retrying` ДО заявки: оборвут проверку посреди неё — следующая второго
     повтора не закажет (С2, `resume_retries`). Свой повтор — по пометке
     «повтор заказа <id>», а не по виду: чужой заказ той же минуты (друг нажал
-    «2 дня») с ним не спутать."""
+    «2 дня») с ним не спутать. Дни заказа уже собрал успешный полный обход,
+    созданный после заказа (`collected_by`), — повтор не нужен. За проверку —
+    не больше ОДНОГО повтора: второй тег вытеснил бы первый в очереди."""
     rec = t.rec
     if watch.find_order(t.conn, retry_of=rec["id"]):
         return
-    blocker = watch.queue_refusal(t.runs, t.slug)
+    run = t.run or {}
+    cover = watch.collected_by(rec["what"], watch.record_at(rec) or t.now, t.runs,
+                               skip_id=run.get("id"))
+    if cover is not None:
+        rec.pop("retry_deferred", None)
+        rec["collected_by"] = cover.get("run_number")
+        t.keep(rec)
+        t.say(f"{what} — повтор не нужен: эти дни уже собрал обход "
+              f"#{cover.get('run_number')} ({watch.run_what(cover)})")
+        return
+    blocker = watch.queue_refusal(t.runs, t.slug) or (
+        "в эту проверку уже ушла другая заявка повтора — второй тег вытеснил бы "
+        "её в очереди GitHub; закажу на следующей проверке" if t.sent else "")
     if blocker:
         if not rec.get("retry_deferred"):
             t.say(f"{what} — повтор отложен: {blocker}")
-            rec["retry_deferred"] = watch.stamp(t.now)
+            rec["retry_deferred"] = watch.when(t.now)
         t.keep(rec)
         return
     t.say(f"{what} — повторяю один раз")
     rec.pop("retry_deferred", None)
-    rec["retrying"] = watch.stamp(t.now)
+    rec["retrying"] = watch.when(t.now)
     t.keep(rec)
+    t.sent = True
     t.log(order_crawl(*request_args(rec["what"]), f"--retry-of={rec['id']}"))
     rec.pop("retrying", None)
     t.keep(rec)
@@ -475,14 +513,14 @@ def deferred_retries(t: Round) -> None:
         if not rec.get("retry_deferred") or watch.find_order(t.conn, retry_of=rec["id"]):
             continue
         t.rec, t.run = rec, None
-        since = watch.kyiv_at(rec["retry_deferred"]) or t.now
+        since = watch.moment(rec["retry_deferred"]) or t.now
         if (t.now - since).total_seconds() > watch.ORDER_TTL_HOURS * 3600:
             rec.pop("retry_deferred", None)
             t.keep(rec)
             recover(t, f"{watch.order_kind(rec)}-retry-refused",
                     f"{order_words(t)}: повтор так и не ушёл — очередь GitHub "
                     f"{watch.ORDER_TTL_HOURS} ч занята ждущим полным обходом")
-        elif not watch.queue_refusal(t.runs, t.slug):
+        elif not watch.queue_refusal(t.runs, t.slug) and not t.sent:
             retry(t, f"{order_words(t)} сорвался раньше")
 
 
@@ -558,7 +596,7 @@ def audit_slot(t: Round) -> None:
         t.save("crawl_slot", record)
     elif action == "missed":
         t.save("crawl_slot", {"slot": record["slot"], "days": record["days"],
-                              "at": watch.stamp(t.now), "state": "audited"})
+                              "at": watch.when(t.now), "state": "audited"})
         recover(t, "planned-not-requested", why,
                 slot=record["slot"], days=record["days"], at=record["at"])
 
@@ -594,7 +632,7 @@ def order_early(t: Round) -> None:
         t.missed["state"] = action
         t.save("crawl_missed", t.missed)
         return
-    t.early = dict(plan, begun=watch.stamp(t.now), ordered_at="", state="ordering")
+    t.early = dict(plan, begun=watch.when(t.now), ordered_at="", state="ordering")
     t.save("crawl_early", t.early)
     t.missed["state"] = "handled"
     t.save("crawl_missed", t.missed)
@@ -609,7 +647,7 @@ def order_early(t: Round) -> None:
         recover(t, "early-refused",
                 "досрочный обход заказать не вышло (GitHub не принял заявку)")
         return
-    t.early.update(ordered_at=rec["order"], state="ordered")
+    t.early.update(ordered_at=rec["order"], order_at=rec.get("at", ""), state="ordered")
     t.save("crawl_early", t.early)
 
 
@@ -634,7 +672,7 @@ def main() -> int:
 
 
 def _run(check: bool) -> int:
-    conn = db.connect()
+    conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
     try:
         tick(conn, _now(), check)     # часы — после ожидания замка
         return 0

@@ -34,18 +34,24 @@
 `full-6-from3` — 3…6 («добор дней», следующий пакет). «Не меньшей глубины»
 везде значит «окна прогонов вместе накрывают нужное окно» (`window`,
 `covered`): «2 дня» и «6 дней с 3-го» вместе закрывают слот на 6 дней.
-ВРЕМЯ. Внутри сторожа всё — в UTC; по Киеву — только слоты, отметки в
-памяти и слова (см. раздел «время и отметки»): в ночь перевода часов
-пороги не сдвигаются. Время заказа книга хранит в UTC (`at`) — оно точно и
-в повторный час 03:00–04:00; прочие отметки памяти («когда подана отмена»,
-«когда сорвался слот») в этот час читаются на час раньше — это сдвигает
-лишь момент одной строки или тревоги, заказов не добавляет.
+ВРЕМЯ. Внутри сторожа всё — в UTC; по Киеву — только слоты, подписи
+заказов (`order`, `slot`) и слова в строках (раздел «время и отметки»).
+Все отметки «когда» в памяти — время заказа в книге (`at`), «подана
+отмена», «последний раз в очереди», «сорвался слот», «заявка пришла»,
+«GitHub молчит с», начало досрочного — пишутся в UTC ISO (`when`) и
+однозначны и в повторный час 03:00–04:00 ночи перевода часов (25.10.2026):
+пороги в ту ночь ничего не сдвигают. Прежние киевские отметки (до выкладки)
+читаются по-старому (`moment`).
 ОЧЕРЕДЬ GITHUB. У обхода одно место ожидания: новая заявка вытесняет ждущую
-(«cancelled»). Поэтому, пока в очереди ЖДЁТ полный обход, не уходит ни одна
-заявка, кроме плановой и досрочной (`queue_refusal`): кнопки сайта, проба
-«Проверить GitHub-ом», «Заказать сбор» отказывают с объяснением, повтор
-сторожа откладывается. Ждущий, вытесненный плановым или досрочным, чьё окно
-накрывает его, — не срыв, а замена (`superseded_by`, С4: replaced).
+(«cancelled»). Поэтому, пока в очереди ЖДЁТ заказанный сбор (полный, скан
+даты, сайт — `waiting_crawl`), не уходит ни одна заявка, кроме плановой и
+досрочной (`queue_refusal`): кнопки сайта и витрины, проба «Проверить
+GitHub-ом», «Заказать сбор» отказывают с объяснением (друг паузу при этом
+не тратит, «Всё равно заказать» не предлагается), повтор сторожа
+откладывается; и за одну проверку сторож подаёт не больше одной заявки
+повтора. Ждущий, вытесненный плановым или досрочным заказом книги, чьё окно
+накрывает его, — не срыв, а замена (`superseded_by`, С4: replaced); прогон,
+запущенный не сервером (из интерфейса GitHub), заменой не считается.
 
 ПРАВИЛА ЗАЯВКИ — в том же порядке, что шаги в `request_crawl.request`
 (что случилось → что делаем → сколько обходов закажет заявка):
@@ -71,8 +77,8 @@
       (`unlock_refusal`). → 0.
   З5. Правило «1 час»: за последний час полный не меньшей глубины уже собран
       или заказан (и не сорвался) → выходим. → 0.
-  З6. Не плановая и не досрочная, а в очереди GitHub ждёт полный обход →
-      не шлём, строка «не отправлена: …ждёт полный обход» (0). Шлём
+  З6. Не плановая и не досрочная, а в очереди GitHub ждёт заказанный сбор
+      → не шлём, строка «не отправлена: …ждёт заказанный сбор» (0). Шлём
       тег-заявку: точно не ушла → слот записываем сорвавшимся и выходим (0);
       git не ответил вовремя («могла дойти») или ушла → записываем заказ
       (`crawl_request` и книга заказов) — дошёл ли, решат З7 и С4. → 1.
@@ -104,6 +110,10 @@
       ТРЕВОГА, запись в карантин (`crawl_bad`), остальные идут дальше.
       а) рано судить (ждём старта, обход идёт, ждём стука; прогона заказа
          не видно, потому что он старше всех 100 прогонов списка) → ждём. → 0;
+      а′) ручной сбор (кнопки 2/6 дней, дата, сайт) остановил владелец
+         кнопкой «Остановить» (`crawl_cancel.by`) → «стоп = стоп»:
+         закрываем без повтора, строка «остановил владелец». Плановый и
+         досрочный, остановленные владельцем, идут как срыв (г). → 0;
       б) готов, а ЕГО результат в базу сервера не влит — среди заливок папки
          (`imported_stamps`) нет метки «собрано» из окна [настоящий старт —
          конец прогона]; настоящий старт — после конца прогона, за которым
@@ -117,9 +127,14 @@
          попал на сервер) → закрываем заказ; что дальше — `RECOVERY` по виду
          (ВИДЫ ЗАКАЗОВ): ПЛАНОВЫЙ → слот сорвавшимся, решает С6 (0);
          ДОСРОЧНЫЙ, СЕРВЕРНЫЙ → ТРЕВОГА (0); РУЧНОЙ, ДАТА, САЙТ → один
-         повтор той же заявки (1), сорвался и повтор → ТРЕВОГА (0); в
-         очереди ждёт полный → повтор откладывается, пока не освободится
-         (`deferred_retries`), ждёт дольше 6 ч → ТРЕВОГА;
+         повтор той же заявки (1), сорвался и повтор → ТРЕВОГА (0). Перед
+         повтором: его дни уже собрал успешный полный, созданный после
+         заказа (`collected_by`), → повтора нет (0); в очереди ждёт
+         заказанный сбор или в эту проверку уже ушла другая заявка повтора
+         → повтор откладывается до следующих проверок (`deferred_retries`),
+         ждёт дольше 6 ч → ТРЕВОГА. Плановый из памяти прежней версии
+         сторожа, которому та уже делала повтор, → ТРЕВОГА без досрочного:
+         на слот уже ушло два обхода;
       д) за 6 часов заказ так и не закрыт → ТРЕВОГА, следить перестаём
          (досрочный считается сорвавшимся). → 0.
   С5. Плановая заявка на последний прошедший слот не запускалась (сервер был
@@ -148,8 +163,8 @@
       переписывается следующим заказом. Следит за заказами книга, не она.
   crawl_order — книга заказов: ПО ЗАПИСИ НА КАЖДЫЙ ЗАКАЗ, ключ
       `crawl_order:<id>`, JSON {id, what, order, at, slot, who, early,
-      retry_of, reordered, retrying, retry_deferred, done, failed, replaced,
-      reset, pulls}. id — свой у каждого заказа:
+      retry_of, reordered, collected_by, stopped, retrying, retry_deferred,
+      done, failed, replaced, reset, pulls}. id — свой у каждого заказа:
       отметка с секундами и кто заказал (`2026-10-06 16:30:12|кнопка`), так
       два заказа одной минуты не путаются; what — вид (`full-6`,
       `date-2026-10-07`, `site-nova.bg`, `server-mojtv.hr`); order — отметка
@@ -158,7 +173,9 @@
       слот, за который досрочный (пусто — ни то ни другое); who — cron,
       кнопка, владелец, сторож…; early — досрочный сторожа; retry_of — id
       заказа, который этот повторяет (по нему сторож находит СВОЙ повтор);
-      reordered — это повтор; retrying — сторож заказывает его повтор
+      reordered — это повтор; collected_by — повтор не понадобился: дни
+      собрал этот прогон; stopped — остановлен владельцем кнопкой;
+      retrying — сторож заказывает его повтор
       (пишется ДО заявки, С2); retry_deferred — повтор отложен: в очереди
       ждал полный обход; done — дошёл и результат влит в базу; failed —
       сорвался, по нему всё решено; replaced — вытеснен в очереди более
@@ -177,13 +194,15 @@
       заявка (З4 — ложная отметка; ключ --unlock), сторож перед забором
       (С4б). Сама гаснет по сроку (`crawl_hook.running`).
   crawl_slot — приходила ли плановая заявка на слот (З2 → С5), JSON
-      {slot, days, at, state}. state: started — пришла, итога ещё нет;
+      {slot, days, at, state}. at — когда (UTC ISO); state: started —
+      пришла, итога ещё нет;
       ordered, skipped, missed — итог заявки; init — первая проверка сторожа
       после выкладки; early, audited — слот закрыл сторож. Пишут: заявка,
       сторож. Читает: сторож. Переписывается на каждом слоте.
   crawl_missed — сорвавшийся плановый слот, по которому надо решить, нужен
       ли досрочный (З4, З6, С4г, С5 → С6), JSON {slot, days, at, why, state,
-      also}. at — когда сорвался; state: missed — ждёт решения С6; handled —
+      also}. at — когда сорвался (UTC ISO); state: missed — ждёт решения С6;
+      handled —
       досрочный заказан (или уже был); late, drop, covered, collected —
       досрочный не нужен (почему — `plan_early`); failed — заявка досрочного
       не ушла. also — прежний слот, который ещё ждал решения, когда сорвался
@@ -193,28 +212,31 @@
       Пишут: заявка, сторож — только через `missed_record`. Читает: сторож.
       Переписывается следующим сорвавшимся слотом.
   crawl_early — досрочный сбор сторожа (С6 → С2, С4, З3), JSON {for,
-      for_days, days, replaces, replaces_days, begun, ordered_at, state,
-      started, run, skipped}. for — за какой слот; replaces — какой слот
-      заменяет; begun — когда сторож начал заказывать; ordered_at — отметка
-      заказа, пусто, пока заявка не ушла; state: ordering — заказ начат;
-      ordered — заявка ушла; done — дошёл до конца (started и run — его
-      начало и номер); failed — не прошёл; replaced — вытеснен в очереди
+      for_days, days, replaces, replaces_days, begun, ordered_at, order_at,
+      state, started, run, skipped}. for — за какой слот; replaces — какой
+      слот заменяет; begun — когда сторож начал заказывать (UTC ISO);
+      ordered_at — подпись заказа, пусто, пока заявка не ушла; order_at —
+      мгновение заказа (UTC ISO, из книги); state: ordering — заказ начат;
+      ordered — заявка ушла; done — дошёл до конца (started — его начало,
+      UTC ISO, run — номер); failed — не прошёл; replaced — вытеснен в очереди
       более полным; skipped — плановый `replaces`
       пропущен, пока досрочный ещё шёл. Пишут: сторож, заявка (только
       skipped). Читают: сторож, заявка. Переписывается следующим досрочным.
   crawl_cancel — поданные заявки отмены (С3), JSON {id прогона: {at, number,
-      alarmed}}. at — когда подана; number — номер прогона для строк;
-      alarmed — тревога по ней уже была. Пишут сторож и кнопка «Остановить
+      alarmed, by}}. at — когда подана (UTC ISO); number — номер прогона для
+      строк; alarmed — тревога по ней уже была; by — кто остановил:
+      «сторож» (завис) или «владелец» (кнопка — ручной заказ не повторяется). Пишут сторож и кнопка «Остановить
       зависший» — обе через `send_cancel`; читает сторож (сверяет, что
       прогон остановился). Запись уходит, когда прогон остановился или
       выпал из списка последних.
   crawl_queue — прогоны, ждущие очереди при пустой очереди (С3), JSON
       {id прогона: {last, warned, alarmed}}. last — когда сторож последний
-      раз видел его ждущим: от этой отметки считается ход прогона, когда он
+      раз видел его ждущим (UTC ISO): от этой отметки считается ход прогона, когда он
       пойдёт (`stuck`; у GitHub `run_started_at` — время создания); warned,
       alarmed — строка и ТРЕВОГА уже были. Пишет и читает сторож; запись
       уходит, когда прогон закончился или выпал из списка.
-  crawl_silent — с какого времени GitHub молчит (С1), JSON {since, alarmed}.
+  crawl_silent — с какого времени GitHub молчит (С1, UTC ISO), JSON {since,
+      alarmed}.
       Пишет и читает сторож; стирается, когда GitHub ответил.
 Кнопка «Сбросить память сторожа» (`reset_memory`) стирает всё, что сторож
 помнит сам (`WATCH_MEMORY`), а открытые заказы книги помечает reset. Заказ
@@ -228,9 +250,11 @@
 удачной заливки (`remember_import`).
 
 Список прогонов — из ОТКРЫТОГО API GitHub: репозиторий публичный, ключ не
-нужен, лимит 60 запросов в час на адрес. Сторож делает один запрос за
-проверку (100 последних прогонов — предел GitHub за раз), заявка — один на
-сверку и до одиннадцати, пока ждёт старта; кнопка сбора — один.
+нужен, лимит 60 запросов в час на адрес. Сторож за проверку делает один
+свой запрос (100 последних прогонов — предел GitHub за раз) и по одному у
+каждой поданной им заявки (заявка сторожа старта не ждёт); плановая заявка
+— один на сверку и до одиннадцати, пока ждёт старта (по 20 прогонов);
+кнопка сбора — один (20 прогонов).
 """
 
 from __future__ import annotations
@@ -275,6 +299,11 @@ CRAWL_WORKFLOW = "crawl.yml"
 #: вытеснили бы из списка в 20 идущий плановый. Список полон, а заказ старше
 #: самого старого прогона в нём — «не стартовал» сторож не выносит (`decide`)
 RUNS_LIMIT = 100
+#: …а там, где важны только самые свежие прогоны — ожидание старта (прогон
+#: создан минуты назад) и кнопки сайта (ждущий в очереди — из последних), —
+#: 20: ответ на 100 прогонов весит ~0,5–1 МБ, а кнопка ждёт его в
+#: веб-процессе
+RUNS_LIMIT_QUICK = 20
 #: статусы GitHub «прогон ещё не закончен»
 RUNNING = ("queued", "in_progress", "waiting", "pending", "requested")
 #: workflow пересылки тега: тег-заявка → его прогон → `crawl.yml` (З7)
@@ -432,6 +461,25 @@ def kyiv_at(text: str) -> datetime | None:
         return None
 
 
+def when(at: datetime) -> str:
+    """Мгновение → отметка «когда» для памяти сторожа: UTC ISO
+    (`2026-10-25T01:10:00+00:00`). Однозначна и в повторный час ночи
+    перевода часов — в отличие от киевской `stamp`."""
+    return utc(at).isoformat(timespec="seconds")
+
+
+def moment(text) -> datetime | None:
+    """Отметка «когда» из памяти → мгновение (UTC): ISO с поясом (`when`,
+    так пишет сторож с 07.10) или прежняя киевская `ГГГГ-ММ-ДД ЧЧ:ММ`."""
+    try:
+        at = datetime.fromisoformat(str(text))
+    except (TypeError, ValueError):
+        return None
+    if at.tzinfo is not None:
+        return utc(at)
+    return kyiv_at(text)
+
+
 def stamp(at: datetime) -> str:
     """Время → отметка `ГГГГ-ММ-ДД ЧЧ:ММ` по Киеву (так сторож пишет в память)."""
     return at.astimezone(KYIV).strftime("%Y-%m-%d %H:%M")
@@ -443,8 +491,9 @@ def hm(at: datetime | None) -> str:
 
 
 def clock(mark: str) -> str:
-    """Отметка `ГГГГ-ММ-ДД ЧЧ:ММ` → `ЧЧ:ММ` для строк сторожа."""
-    return hm(kyiv_at(mark))
+    """Отметка (киевская `ГГГГ-ММ-ДД ЧЧ:ММ` или UTC ISO) → `ЧЧ:ММ` по Киеву
+    для строк сторожа."""
+    return hm(moment(mark))
 
 
 # ── список прогонов GitHub ───────────────────────────────────────────────────
@@ -591,14 +640,23 @@ def answers(order_what: str, run: dict) -> bool:
     ответ на плановый на 6, он лишь шёл впереди в очереди); скан даты и
     сайт — только прогон с тем же словом (`date-2026-10-07`). Прогон без
     вида («unknown», см. `FULL_KINDS`) окна не называет — годится полному."""
-    what = run_what(run)
     need = window(order_what)
     if need is not None:
-        if not what:
-            return "unknown" in FULL_KINDS
-        have = window(what)
+        have = run_window(run, need)
         return have is not None and covered(need, [have])
-    return what == order_what
+    return run_what(run) == order_what
+
+
+def run_window(run: dict, need: tuple[int, int] | None = None) -> tuple[int, int] | None:
+    """Окно дней прогона. Прогон без вида (старый `crawl.yml` без
+    `run-name`: «Обход телесайтов», `run_kind` — unknown) окна не называет:
+    пока «unknown» в `FULL_KINDS`, считаем, что он накрывает нужное окно
+    `need`. Не полный обход — None."""
+    have = window(run_what(run))
+    if have is None and need is not None and run_kind(run)[0] == "unknown" \
+            and "unknown" in FULL_KINDS:
+        return need
+    return have
 
 
 def run_for(order: dict, runs: list[dict]) -> dict | None:
@@ -811,9 +869,9 @@ def find_order(conn: sqlite3.Connection, **match) -> dict:
 
 def is_open(record: dict) -> bool:
     """Заказ ещё не закрыт: не забран, не сорвался, не вытеснен в очереди
-    более полным, память о нём не сброшена."""
+    более полным, не остановлен владельцем, память о нём не сброшена."""
     return not (record.get("done") or record.get("failed") or record.get("replaced")
-                or record.get("reset"))
+                or record.get("stopped") or record.get("reset"))
 
 
 def prune_orders(conn: sqlite3.Connection, now: datetime) -> None:
@@ -972,6 +1030,10 @@ RECOVERY = {
     "planned-not-requested": "early",   # С5: заявка не запускалась / оборвалась
     "planned-failed": "early",          # С4г: не стартовал, упал, завис
     "planned-expired": "alarm",         # С4д: за 6 ч не закрыт
+    # плановый из памяти прежней версии, которому та уже делала повтор: на
+    # слот уже ушло два обхода — третьего (досрочного) не будет
+    "planned-retry-failed": "alarm",
+    "planned-retry-expired": "alarm",
     # досрочный сторожа — один на слот, дальше только ТРЕВОГА
     "early-refused": "alarm",           # С6: GitHub не принял заявку
     "early-lost": "alarm",              # С2: проверку оборвали до заявки
@@ -1009,9 +1071,10 @@ def recovery(failure: str) -> str:
 
 def order_who(state: dict) -> str:
     """Чей заказ для `RECOVERY`: `order_kind`, повтор — с припиской -retry
-    (повтор бывает только у видов с шагом retry: ручной, дата, сайт)."""
+    (повтор бывает у видов с шагом retry: ручной, дата, сайт; и у планового
+    из памяти прежней версии сторожа — она повторяла и плановый)."""
     who = order_kind(state)
-    return f"{who}-retry" if state.get("reordered") and who in RETRIED else who
+    return f"{who}-retry" if state.get("reordered") and who in RETRIED + ("planned",) else who
 
 
 #: виды заказов, у которых срыв даёт шаг retry (один повтор)
@@ -1032,7 +1095,7 @@ def lost_slot(conn: sqlite3.Connection, failure: str, slot_at: datetime,
     step = recovery(failure)
     if step == "early":
         save_json(conn, "crawl_missed", missed_record(
-            load_json(conn, "crawl_missed"), stamp(slot_at), days, stamp(now), why))
+            load_json(conn, "crawl_missed"), stamp(slot_at), days, when(now), why))
     else:
         note(conn, f"ТРЕВОГА — {why}. Сторож новых заказов за этот слот не "
                    f"сделает; следующий плановый пойдёт как обычно")
@@ -1113,14 +1176,14 @@ def early_covers(early: dict | None, slot_at: datetime, runs: list[dict],
     и тогда, когда прогон уже выпал из списка последних."""
     if not early or early.get("replaces") != stamp(slot_at):
         return "", ""
-    ordered = kyiv_at(early.get("ordered_at", ""))
+    ordered = moment(early.get("order_at") or early.get("ordered_at", ""))
     if ordered is None:
         return "", ""
     run = run_for({"at": ordered, "days": early.get("days")}, full_runs(runs, slug))
     remembered = early.get("state") == "done"
     started = ((_utc(run.get("run_started_at") or run.get("created_at") or "")
                 if run else None)
-               or (kyiv_at(early.get("started", "")) if remembered else None)
+               or (moment(early.get("started", "")) if remembered else None)
                or ordered)
     if started < covers_from(slot_at):
         return "no", (f"досрочный обход начался в {hm(started)} — раньше, чем за "
@@ -1220,7 +1283,7 @@ def wait_for_start(order: dict, slug: str, kinds: tuple,
     утверждать нельзя, и вызывающий тег не повторяет."""
     waited = 0
     while True:
-        listed = github_runs(slug, workflow=CRAWL_WORKFLOW)
+        listed = github_runs(slug, RUNS_LIMIT_QUICK, workflow=CRAWL_WORKFLOW)
         run = run_for(order, [r for r in listed if run_kind(r)[0] in kinds])
         if run is not None or waited >= seconds:
             return run, listed.ok
@@ -1238,7 +1301,7 @@ def forwarding(order: dict, slug: str, tag_prefix: str) -> str:
     это имя тега (сверено вживую 06.10: «Кнопки сайта» #101 →
     `btn-cancel-37375152529-1791235179`), он начинается с `tag_prefix`,
     например `btn-days-6-`."""
-    listed = github_runs(slug, workflow=QUEUE_WORKFLOW)
+    listed = github_runs(slug, RUNS_LIMIT_QUICK, workflow=QUEUE_WORKFLOW)
     if not listed.ok:
         return "silent"
     edge = utc(order["at"]) - timedelta(seconds=MATCH_SLACK_SECONDS)
@@ -1295,7 +1358,7 @@ def stuck(runs: list[dict], now: datetime, slug: str = "",
         start = effective_start(r, crawls)
         if start is None:
             continue
-        seen = kyiv_at((queue or {}).get(str(r.get("id")), {}).get("last", ""))
+        seen = moment((queue or {}).get(str(r.get("id")), {}).get("last", ""))
         if seen and seen > start:
             start = seen
         minutes = (utc(now) - start).total_seconds() / 60
@@ -1379,7 +1442,7 @@ def cancel_decisions(runs: list[dict], now: datetime, cancels: dict,
             out.append(("confirmed", rid,
                         f"прогон #{number} остановлен (итог «{r.get('conclusion') or '?'}»)"))
             continue
-        asked = kyiv_at(c.get("at", ""))
+        asked = moment(c.get("at", ""))
         since = (utc(now) - asked).total_seconds() / 60 if asked else 0
         if since >= CANCEL_CONFIRM_MINUTES and not c.get("alarmed"):
             out.append(("alarm", rid,
@@ -1399,19 +1462,22 @@ def cancel_decisions(runs: list[dict], now: datetime, cancels: dict,
     return out
 
 
-def send_cancel(cancels: dict, run: dict, now: datetime) -> tuple[bool, str]:
+def send_cancel(cancels: dict, run: dict, now: datetime,
+                by: str = "сторож") -> tuple[bool, str]:
     """Заявка отмены прогона — одна на сторожа (С3) и кнопку «Остановить
     зависший»: тег `btn-cancel-<id>-<время>`, исполняет `queue.yml`.
     Записывается в `cancels` (память `crawl_cancel`) и неушедшая заявка:
     сторож этому прогону второй не шлёт, а остановку сверяет (С3).
     (ушла ли: True / False / None — git не ответил вовремя, могла дойти;
     ответ git). При None тревогу даст сверка остановки через
-    `CANCEL_CONFIRM_MINUTES`, если заявка и правда не дошла."""
+    `CANCEL_CONFIRM_MINUTES`, если заявка и правда не дошла. `by` — кто
+    остановил: «сторож» (завис) или «владелец» (кнопка): остановленный
+    владельцем РУЧНОЙ заказ сторож не повторяет (С4: stopped)."""
     rid = str(run.get("id"))
     if not re.fullmatch(r"\d+", rid):
         return False, "номер прогона не из цифр — отменять не буду"
     ok, answer = trigger.push_request_tag("cancel", rid)
-    cancels[rid] = {"at": stamp(now), "number": run.get("run_number") or "?",
+    cancels[rid] = {"at": when(now), "number": run.get("run_number") or "?", "by": by,
                     "alarmed": ok is False}
     return ok, answer
 
@@ -1462,8 +1528,7 @@ def decide(order: dict, run: dict | None, now: datetime, state: dict,
     `result` — судьба результата прогона (`result_state`); `hidden` —
     список прогонов полон, а заказ старше самого старого в нём: прогона
     заказа может быть просто не видно — «не стартовал» не выносим."""
-    if (state.get("done") or state.get("failed") or state.get("replaced")
-            or state.get("reset")):
+    if not is_open(state):
         return "closed", "по заказу всё решено раньше"
     now = utc(now)
     age = (now - order["at"]).total_seconds() / 60
@@ -1524,12 +1589,15 @@ def decide_server(record: dict, now: datetime, result_raw: str) -> tuple[str, st
     return "wait", f"сервер обходит {domain} ({minutes:.0f} мин)"
 
 
-def superseded_by(what: str, run: dict, runs: list[dict]) -> dict | None:
+def superseded_by(what: str, run: dict, runs: list[dict],
+                  ordered_ids: set) -> dict | None:
     """Прогон заказа `what` кончился «cancelled», а за время, пока он ждал,
     создан полный обход, чьё окно накрывает нужное заказу (`order_covered`):
     у GitHub одно место ожидания, новая заявка вытесняет ждущую. Тогда заказ
     не сорвался, а заменён (С4: replaced), — вытеснивший прогон ведёт его
-    собственный заказ. Возвращает вытеснивший прогон или None."""
+    собственный заказ. Вытеснивший засчитывается, только если он — прогон
+    заказа из книги (`ordered_ids`): прогон, запущенный из интерфейса GitHub
+    или с компьютера, никто не ведёт. Возвращает вытеснивший прогон или None."""
     if run.get("conclusion") != "cancelled":
         return None
     created = _utc(run.get("created_at") or "")
@@ -1539,6 +1607,8 @@ def superseded_by(what: str, run: dict, runs: list[dict]) -> dict | None:
     for r in crawl_only(runs):
         rc = _utc(r.get("created_at") or "")
         if r is run or r.get("id") == run.get("id") or rc is None:
+            continue
+        if str(r.get("id")) not in ordered_ids:
             continue
         if not created < rc <= ended + timedelta(seconds=RESULT_SKEW_SECONDS):
             continue
@@ -1571,13 +1641,37 @@ def order_covered(what: str, have: tuple[int, int], created: datetime) -> bool:
     return False
 
 
-def waiting_full(runs: list[dict], slug: str = "") -> dict | None:
-    """Полный обход, который ЖДЁТ в очереди GitHub (ещё не пошёл). Прогон без
-    вида (до выкладки, `FULL_KINDS`) — тоже считаем полным."""
+#: виды прогона, которые ЗАКАЗЫВАЮТ (книга заказов): их ждущий прогон
+#: очередь бережёт. Проба не в счёт — её заказ не ведётся
+ORDERED_KINDS = ("full", "unknown", "date", "site")
+
+
+def collected_by(what: str, since: datetime, runs: list[dict],
+                 skip_id=None) -> dict | None:
+    """Успешно закончившийся полный обход, созданный не раньше `since`
+    (времени заказа), чьё окно накрывает то, что собирал заказ `what`
+    (`order_covered`), — тогда его повтор не нужен: дни уже собраны (С4г).
+    Тот же довод, что «collected» у сорвавшегося слота (С6)."""
+    edge = utc(since) - timedelta(seconds=MATCH_SLACK_SECONDS)
+    for r in crawl_only(runs):
+        rc = _utc(r.get("created_at") or "")
+        if rc is None or rc < edge or str(r.get("id")) == str(skip_id):
+            continue
+        if (r.get("status") or "") != "completed" or r.get("conclusion") != "success":
+            continue
+        have = window(run_what(r))
+        if have and order_covered(what, have, rc):
+            return r
+    return None
+
+
+def waiting_crawl(runs: list[dict], slug: str = "") -> dict | None:
+    """Заказанный сбор (полный, скан даты, сайт; прогон без вида — тоже),
+    который ЖДЁТ в очереди GitHub (ещё не пошёл)."""
     for r in active_crawls(runs, slug):
         if (r.get("status") or "") == "in_progress":
             continue
-        if window(run_what(r)) or run_kind(r)[0] == "unknown":
+        if run_kind(r)[0] in ORDERED_KINDS:
             return r
     return None
 
@@ -1585,17 +1679,22 @@ def waiting_full(runs: list[dict], slug: str = "") -> dict | None:
 def queue_refusal(runs: list[dict], slug: str = "") -> str:
     """Почему заявку (не плановую и не досрочную) сейчас слать нельзя: у
     GitHub одно место ожидания, новая заявка вытесняет ждущую — а там уже
-    ждёт полный обход. Пусто — можно (или GitHub не ответил: проверить
+    ждёт заказанный сбор (`waiting_crawl`). Пусто — можно (или GitHub не ответил: проверить
     нечем, заявку не держим). Одно правило на кнопки сайта, «Заказать сбор»
     и повторы сторожа (З6, С4г)."""
     if not runs:
         return ""
-    r = waiting_full(runs, slug)
+    r = waiting_crawl(runs, slug)
     if r is None:
         return ""
-    return (f"в очереди GitHub уже ждёт полный обход #{r.get('run_number')} "
-            f"({run_what(r) or 'обход'}) — у GitHub одно место ожидания, новая "
-            f"заявка вытеснила бы его. Повторите, когда он стартует")
+    return (f"{QUEUE_BUSY} #{r.get('run_number')} ({run_what(r) or 'обход'}) — у "
+            f"GitHub одно место ожидания, новая заявка вытеснила бы его. "
+            f"Повторите, когда он стартует")
+
+
+#: начало отказа «очередь занята» — по нему кнопка «Заказать сбор» узнаёт,
+#: что «Всё равно заказать» тут не поможет
+QUEUE_BUSY = "в очереди GitHub уже ждёт заказанный сбор"
 
 
 def unlock_refusal(runs: list[dict], cancels: dict, slug: str = "") -> str:
@@ -1671,7 +1770,10 @@ def imported_stamps(conn: sqlite3.Connection, what: str) -> list[str]:
 
 def remember_import(conn: sqlite3.Connection, folder: str, collected: str) -> None:
     """Заливка папки `folder` прошла: «собрано» влитого файла — в список
-    `import_stamps:<папка>` (пишет `games_import.py`)."""
+    `import_stamps:<папка>` (пишет `games_import.py` — ДО того, как
+    перепишет `last_import_stamp:<папка>`). Прежняя последняя метка, если её
+    в списке нет, ложится первой: в день выкладки списка ещё нет, а заливка
+    до выкладки должна остаться видна сторожу."""
     key = f"import_stamps:{folder}"
     try:
         stamps = json.loads(db.get_setting(conn, key) or "[]")
@@ -1679,6 +1781,9 @@ def remember_import(conn: sqlite3.Connection, folder: str, collected: str) -> No
         stamps = []
     if not isinstance(stamps, list):
         stamps = []
+    previous = db.get_setting(conn, f"last_import_stamp:{folder}")
+    if previous and previous not in stamps:
+        stamps.append(previous)
     if collected and collected not in stamps:
         stamps.append(collected)
     db.set_setting(conn, key, json.dumps(stamps[-IMPORT_STAMPS_KEEP:]))
@@ -1755,7 +1860,7 @@ def slot_audit(seen: dict, missed: dict, early: dict, now: datetime,
     now = utc(now)
     at, days = last_slot(now - timedelta(minutes=SLOT_AUDIT_MINUTES), schedule)
     slot = stamp(at)
-    mark = {"slot": slot, "days": days, "at": stamp(now)}
+    mark = {"slot": slot, "days": days, "at": when(now)}
     known = str(seen.get("slot") or "")
     if not known:
         return "init", dict(mark, state="init"), ""
@@ -1766,7 +1871,7 @@ def slot_audit(seen: dict, missed: dict, early: dict, now: datetime,
     if known == slot:
         if seen.get("state") != "started":
             return "none", {}, ""
-        begun = kyiv_at(seen.get("at", "")) or at
+        begun = moment(seen.get("at", "")) or at
         if (now - begun).total_seconds() < SLOT_STARTED_STALE_MINUTES * 60:
             return "none", {}, ""
         why = (f"плановая заявка {hm(at)} началась в {hm(begun)} и оборвалась "
@@ -1777,12 +1882,13 @@ def slot_audit(seen: dict, missed: dict, early: dict, now: datetime,
     if early.get("replaces") == slot:
         if early.get("state") in ("ordering", "ordered"):
             return "none", {}, ""           # досрочный за этот слот ещё в работе
-        begun = kyiv_at(early.get("started") or early.get("ordered_at") or "")
+        begun = moment(early.get("started") or early.get("order_at")
+                       or early.get("ordered_at") or "")
         if early.get("state") == "done" and begun and begun >= covers_from(at):
             return "seen", dict(mark, state="early"), ""
     if missed.get("slot") == slot or early.get("for") == slot:
         return "seen", dict(mark, state="audited"), ""
-    return "missed", {"slot": slot, "days": days, "at": slot}, why
+    return "missed", {"slot": slot, "days": days, "at": when(at)}, why
 
 
 # ── С6. сорвавшийся слот: нужен ли досрочный ─────────────────────────────────
@@ -1809,7 +1915,7 @@ def plan_early(missed: dict, runs: list[dict], now: datetime,
     now = utc(now)
     slot = missed.get("slot", "")
     mdays = int(missed.get("days") or 0)
-    at = kyiv_at(missed.get("at", "")) or now
+    at = moment(missed.get("at", "")) or now
     slot_hm = (f"{clock(missed['also'])} и {clock(slot)}" if missed.get("also")
                else clock(slot))
     if early.get("for") == slot:
@@ -1832,20 +1938,21 @@ def plan_early(missed: dict, runs: list[dict], now: datetime,
             f"дошёл и забран (по памяти сторожа) — эти дни собраны, досрочно "
             f"не заказываю")
     # окна дней: успешно прошедшие после слота (или за час до него) и идущие
+    # (прогон без вида — тоже, см. `run_window`)
     done = [r for r in crawl_only(runs, slug)
-            if window(run_what(r)) and (r.get("status") or "") == "completed"
+            if run_window(r, need) and (r.get("status") or "") == "completed"
             and r.get("conclusion") == "success"
             and (_utc(r.get("updated_at") or "") or since) >= since]
     skip = {str(x) for x in skip_ids}
     going = [r for r in active_crawls(runs, slug)
-             if window(run_what(r)) and str(r.get("id")) not in skip]
-    if done and covered(need, [window(run_what(r)) for r in done]):
+             if run_window(r, need) and str(r.get("id")) not in skip]
+    if done and covered(need, [run_window(r, need) for r in done]):
         names = ", ".join(f"#{r.get('run_number')} ({run_what(r)}, в "
                           f"{hm(_utc(r.get('updated_at') or ''))})" for r in done)
         return "collected", {}, (
             f"плановый обход {slot_hm} не состоялся, но эти дни уже успешно "
             f"собраны: {names} — досрочно не заказываю")
-    if going and covered(need, [window(run_what(r)) for r in done + going]):
+    if going and covered(need, [run_window(r, need) for r in done + going]):
         ids = ",".join(str(r.get("id")) for r in going)
         names = ", ".join(f"#{r.get('run_number')} ({run_what(r)})" for r in going)
         return "covered", {"run": ids}, (

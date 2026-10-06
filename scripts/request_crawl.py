@@ -173,7 +173,7 @@ def request(kind: str, value: str, flags: set, held: bool,
     marks = marks or {}
     now = _now()                    # часы — после ожидания замка
     check = "--check" in flags
-    conn = db.connect()
+    conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
     try:
         if not held:
             words = (f"заявка {kind} {value}: общий замок со сторожем занят дольше "
@@ -206,7 +206,7 @@ def request(kind: str, value: str, flags: set, held: bool,
         seen = None
         if slot is not None and not check:
             seen = {"slot": watch.stamp(slot), "days": int(value),
-                    "at": watch.stamp(now), "state": "started"}
+                    "at": watch.when(now), "state": "started"}
             watch.save_json(conn, "crawl_slot", seen)
 
         def close(state: str) -> None:
@@ -370,7 +370,7 @@ def wait_start(kind: str, value: str, tag_value: str, order: dict, now: datetime
                  f"{watch.START_GIVEUP_MINUTES} мин — сторож сочтёт заказ "
                  f"сорвавшимся и закажет замену")
     print(f"{now:%d.%m %H:%M} {words}")
-    conn = db.connect()
+    conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
     try:
         watch.note(conn, words, who="автомат")
     finally:

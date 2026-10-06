@@ -92,8 +92,9 @@ def order(conn: sqlite3.Connection, days: int, force: bool) -> dict:
         words = f"заказ обхода на {days} сут. не отправлен: {_said(out)}"
         watch.note(conn, words, who=WHO)
         # «всё равно заказать» предлагаем, только если не пустили правила;
-        # очередь GitHub (там ждёт полный обход) «всё равно» не обходит
-        return {"ok": False, "refused": not force, "words": words}
+        # очередь GitHub (там ждёт заказанный сбор) «всё равно» не обходит
+        return {"ok": False, "refused": not force and watch.QUEUE_BUSY not in out,
+                "words": words}
     ok, out = run_script(args, background=True)
     how = " в обход правил («всё равно заказать»)" if force else ""
     words = (f"заказал обход на {days} сут.{how} — {out}; итог заявки — строкой "
@@ -219,7 +220,7 @@ def _cancel(conn: sqlite3.Connection, run_id: str) -> tuple[bool, str]:
     cancels = watch.load_json(conn, "crawl_cancel")
     said, all_ok = [], True
     for r in targets:
-        ok, answer = watch.send_cancel(cancels, r, now)
+        ok, answer = watch.send_cancel(cancels, r, now, by="владелец")
         all_ok = all_ok and ok is not False
         said.append(f"#{r.get('run_number')} — "
                     + ("заявка отмены ушла" if ok else

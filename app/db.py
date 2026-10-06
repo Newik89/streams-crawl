@@ -21,10 +21,23 @@ def db_path() -> Path:
     return Path(os.environ.get("STREAMS_DB") or DEFAULT_DB)
 
 
-def connect() -> sqlite3.Connection:
+#: сколько секунд ждать базу, занятую чужой записью. Страницы сайта — 5 с
+#: (как было у sqlite по умолчанию): дольше странице висеть незачем, а
+#: gunicorn сам обрывает запрос через 30 с…
+BUSY_TIMEOUT_WEB = 5
+#: …кнопка сбора, когда тег уже ушёл и заказ надо записать в книгу, — 15 с
+#: (дольше, но в пределах 30 с gunicorn)…
+BUSY_TIMEOUT_ORDER = 15
+#: …скрипты сторожа, заявки и заливки — 30 с: заливка игр (`save_games`)
+#: пишет одной длинной транзакцией, и запись заявки или решения сторожа не
+#: должна из-за неё падать «database is locked»
+BUSY_TIMEOUT_SCRIPT = 30
+
+
+def connect(timeout: float = BUSY_TIMEOUT_WEB) -> sqlite3.Connection:
     path = db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(path)
+    conn = sqlite3.connect(path, timeout=timeout)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     # WAL: чтение не блокируется записью — пригодится, когда парсер пишет,

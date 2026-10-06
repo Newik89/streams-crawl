@@ -290,7 +290,7 @@ setting("crawl_running", "")
 owner.post("/crawl/day", data={"date": datetime.now().strftime("%Y-%m-%d"), "csrf_token": TOK})
 check("в очереди GitHub ждёт полный обход → кнопки сбора не шлют заявку (вытеснила бы его), "
       "объясняют почему",
-      TAGS == [] and orders_now() == [] and "ждёт полный обход" in r.get_data(as_text=True),
+      TAGS == [] and orders_now() == [] and "ждёт заказанный сбор" in r.get_data(as_text=True),
       (TAGS, orders_now()))
 reset()
 setting("crawl_running", f"идёт|{int(time.time()) - 30 * 60}|10:00|full-6")
@@ -379,8 +379,9 @@ edge = last_id()
 r = press("/crawl/emergency/cancel")
 check("зависший → тот же тег отмены, что у сторожа (btn-cancel-<id>)",
       TAGS == [("cancel", str(hung["id"]))], TAGS)
-check("…записан в память отмен сторожа: он сам сверит остановку и второй не пошлёт",
-      str(hung["id"]) in json.loads(setting("crawl_cancel") or "{}"))
+check("…записан в память отмен сторожа: он сам сверит остановку и второй не пошлёт; "
+      "помечено «остановил владелец» — ручной заказ сторож не повторит",
+      json.loads(setting("crawl_cancel") or "{}").get(str(hung["id"]), {}).get("by") == "владелец")
 check("…строка «владелец: остановил сбор»",
       any(n.startswith("владелец: остановил сбор") for n in notes_after(edge)))
 reset()
@@ -442,6 +443,41 @@ with watch.order_lock(1):                    # идёт проверка сто�
     lines = notes_after(edge)
 check("сторож держит общий замок → «Сбросить» и «Остановить» память не трогают: «повторите через минуту»",
       TAGS == [] and sum("повторите через минуту" in n for n in lines) == 2, lines)
+
+# ── 8. очередь GitHub и кнопки (третья проверка 06.10) ────────────────────
+print("8. Очередь GitHub")
+reset()
+API["runs"] = [mkrun(30, status="in_progress", title="Обход full-2"),
+               mkrun(2, status="pending", title="Обход date-2026-11-12")]
+html = owner.post("/crawl/emergency/order", data={"days": "6", "csrf_token": TOK},
+                  follow_redirects=True).get_data(as_text=True)
+check("«Заказать сбор»: отказ из-за ждущего в очереди → «Всё равно заказать» НЕ предлагается",
+      "не отправлен" in html and "ждёт заказанный сбор" in html
+      and "Всё равно заказать" not in html, re.findall(r"не отправлен[^<]*", html))
+reset()
+pal = app.test_client()
+pal.post("/login", data={"password": "fr-test-1"})
+pal_tok = token(pal.get("/schedule").get_data(as_text=True))
+setting("public_run_at", "")
+API["runs"] = [mkrun(30, status="in_progress"), mkrun(2, status="pending", title="Обход full-6")]
+r = pal.post("/schedule/run", data={"days": "2", "csrf_token": pal_tok}, follow_redirects=True)
+check("друг: в очереди ждёт сбор → отказ по-английски, пауза друга НЕ потрачена, заявки нет",
+      TAGS == [] and setting("public_run_at") == ""
+      and "waiting in the GitHub queue" in r.get_data(as_text=True), (TAGS, setting("public_run_at")))
+reset()
+setting("public_run_at", "")
+real_push = trigger.push_request_tag
+trigger.push_request_tag = lambda kind, value: (False, "заявка не прошла: тест")
+pal.post("/schedule/run", data={"days": "2", "csrf_token": pal_tok})
+trigger.push_request_tag = real_push
+check("друг: заявка не ушла (git отказал) → пауза возвращена, можно нажать снова",
+      setting("public_run_at") == "", setting("public_run_at"))
+reset()
+setting("public_run_at", "")
+pal.post("/schedule/run", data={"days": "2", "csrf_token": pal_tok})
+check("друг: заявка ушла → пауза поставлена, заказ в книге",
+      setting("public_run_at") != "" and [o["what"] for o in orders_now()] == ["full-2"],
+      (setting("public_run_at"), orders_now()))
 
 print(f"\nпроверок: {passed + len(failed)}, зелёных: {passed}, красных: {len(failed)}")
 shutil.rmtree(TMP, ignore_errors=True)
