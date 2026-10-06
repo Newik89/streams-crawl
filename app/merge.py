@@ -196,20 +196,56 @@ def _same_game(a: Entry, b: Entry, threshold: int) -> bool:
 
 def merge(entries: list[Entry],
           threshold: int = names.SIMILAR_ENOUGH) -> list[Game]:
-    """Строки → игры. Строка цепляется к той игре, с которой сошлась лучше
-    всего; не нашлось — заводит свою."""
+    """Строки → игры. Строка цепляется к игре, с какой-нибудь строкой
+    которой сошлась; не нашлось — заводит свою.
+
+    Строка, сошедшаяся сразу с ДВУМЯ играми, — мост: это одна игра, и они
+    сводятся вместе. Без этого итог зависел от порядка строк с одинаковым
+    временем: cyta «Maccabi Tel Aviv - Armani Milano» в 19:00 шла раньше
+    arenasport «Maccabi Tel Aviv - Milano» в 19:00, не узнавала в игре
+    единственную строку tv3.lt «Maccabi - Olimpia Milano» и заводила
+    двойника с одним каналом (регресс 06.10, прогон #201).
+
+    Мост сводит только игры одного рода (`_same_kind`): тот же вид спорта,
+    те же пол и возраст. Строка, похожая и на футбол, и на баскетбол одних
+    клубов в один вечер, к первой из них прицепится, а их самих не сведёт."""
     games: list[Game] = []
     for entry in sorted(entries, key=lambda e: e.start):
-        target = None
-        for game in games:
-            if any(_same_game(other, entry, threshold) for other in game.entries):
-                target = game
-                break
-        if target is None:
+        targets = [game for game in games
+                   if any(_same_game(other, entry, threshold)
+                          for other in game.entries)]
+        if not targets:
             games.append(Game(entries=[entry]))
-        else:
-            target.entries.append(_aligned(entry, target.first))
+            continue
+        target = targets[0]
+        for twin in targets[1:]:
+            if not _same_kind(target, twin):
+                continue
+            target.entries.extend(_aligned(e, target.first)
+                                  for e in twin.entries)
+            games.remove(twin)
+        target.entries.append(_aligned(entry, target.first))
     return sorted(games, key=lambda g: g.start)
+
+
+def _same_kind(a: Game, b: Game) -> bool:
+    """Две игры одного рода — их можно свести мостом: вид спорта один и
+    тот же, пол и возраст сторон (`names.category`) тоже. В теннисе буква W
+    в имени — инициал, а не пол (как в `_same_game`)."""
+    if a.sport and b.sport and a.sport != b.sport:
+        return False
+    теннис = "T" in (a.sport, b.sport)
+
+    def категории(game: Game) -> list[str]:
+        out = []
+        for name in (game.first.home, game.first.away):
+            cat = names.category(name)
+            if теннис:
+                cat = " ".join(p for p in cat.split() if p != "W")
+            out.append(cat)
+        return sorted(out)
+
+    return категории(a) == категории(b)
 
 
 def _aligned(entry: Entry, sample: Entry) -> Entry:

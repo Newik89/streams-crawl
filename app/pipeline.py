@@ -9,6 +9,12 @@
 получается на выходе: строка `Row`, у которой уже есть время в UTC и в Киеве,
 пара команд и понятная причина, если событие не взяли.
 
+Вид спорта («наш или чужой») решается в ОДНОМ месте — `sport.Sports.decide`,
+десять правил по номерам. `classify` для него только собирает улики: текст
+строки, пару, ответ эталона flashscore (`app/reference.py`), лигу из словаря
+лиг, подсказку владельца. Номер сработавшего правила остаётся в строке
+(`Row.sport_rule`).
+
 Названия команд остаются здесь в том виде, в каком стояли на сайте (поля
 `home` / `away`, как `*_auto` в базе) — с одной поправкой: если турнир
 женский или возрастной, метка (` W`, ` U19`) дописывается к именам сразу.
@@ -26,6 +32,7 @@ from datetime import datetime, timedelta
 
 from . import daytime, leagues, live, names, sport
 from .parsers import Program
+from .reference import Reference
 
 
 @dataclass
@@ -41,10 +48,15 @@ class Row:
     league_category: str = ""      # `W`, `U19` — из названия турнира
     sport: str = ""                # F | B | T
     sport_word: str = ""           # слово, по которому определили
-    sport_source: str = ""         # откуда буква: word (слово на сайте) |
-                                   # league (лига в словаре) | women | hint
+    sport_source: str = ""         # откуда буква: ref (эталон flashscore) |
+                                   # word (слово на сайте) | league (лига в
+                                   # словаре) | women | hint
+    sport_rule: int = 0            # номер сработавшего правила из
+                                   # `sport.Sports.decide`
     sport_group: str = ""          # чужой вид спорта словами («хоккей») —
                                    # вкладка «Other Sport» (владелец 03.10)
+    team_word: str = ""            # слово чужого вида, признанное именем
+                                   # команды из пары («Le Mans», 06.10)
     start_utc: datetime | None = None
     start_kyiv: datetime | None = None
 
@@ -73,7 +85,8 @@ def hint_fresh(day: str | None, start_kyiv: datetime | None) -> bool:
 
 def classify(program: Program, markers: live.Markers, sports: sport.Sports,
              league_sports: dict[str, str] | None = None,
-             pair_sports: dict[str, str] | None = None) -> Row:
+             pair_sports: dict[str, str] | None = None,
+             reference: Reference | None = None) -> Row:
     row = Row(program=program, ok=False,
               start_utc=daytime.to_utc(program.start),
               start_kyiv=daytime.to_kyiv(program.start))
@@ -107,39 +120,45 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
             row.home = leagues.with_category(row.home, "W")
             row.away = leagues.with_category(row.away, "W")
 
-    text = " ".join(x for x in (program.title, program.sport_raw,
-                                program.league_raw, program.description) if x)
-    letter, word = sports.detect(text)
-    row.sport_word = word
-    row.sport_source = "word" if letter else ""
-    if letter == "-":
-        row.reason = f"другой вид спорта: {word}"
-        row.sport_group = sports.group_of(word)
-        return row
-    if letter is None and league_sports:
-        # Слов вида спорта в тексте нет, но лига известна словарю
-        # (`data/dictionaries.json` — он едет в git и есть и у обхода).
-        for key in (row.league, program.league_raw, program.sport_raw):
-            letter = league_sports.get(" ".join(key.lower().split()))
-            if letter:
-                row.sport_word = key
-                row.sport_source = "league"
-                break
-    if letter is None and клуб_спорт:
-        # сугубо женский клуб играет в одном виде (`leagues._WOMEN_TEAMS`)
-        letter = клуб_спорт
-        row.sport_word = "женский клуб"
-        row.sport_source = "women"
-    if letter is None and pair_sports:
-        # владелец сам сказал, какой это спорт, для такой пары команд
-        # (страница «Названия», раздел «Вид спорта»): сайт о нём молчит
-        ключ = f"{row.home} - {row.away}".strip()
-        hint = pair_sports.get(ключ)
-        if hint and hint_fresh(hint[1], row.start_kyiv):
-            letter = hint[0]
-            row.sport_word = "подсказка владельца"
-            row.sport_source = "hint"
+    # ── Вид спорта. Здесь только собираются улики; само решение — в одном
+    # месте, `sport.Sports.decide`, там правила записаны по номерам ────────
+    # что сайт пишет о матче сам (без описания) и весь текст строки
+    head = " ".join(x for x in (program.title, program.sport_raw,
+                                program.league_raw) if x)
+    text = " ".join(x for x in (head, program.description) if x)
+    # эталон flashscore: знает ли он эту пару в это время (правило 2)
+    by_ref = reference.sport_of(row.home, row.away, row.start_kyiv) \
+        if reference is not None else ""
+    # эталон знает хоть одну сторону как команду (правило 3: «пара похожа
+    # на матч»)
+    ref_team = reference is not None and any(
+        reference.knows_team(side) for side in (verdict.home, verdict.away))
+    # лига из словаря лиг (правило 6): `data/dictionaries.json` едет в git
+    # и есть и у обхода
+    league = None
+    for key in (row.league, program.league_raw, program.sport_raw):
+        letter = (league_sports or {}).get(" ".join(key.lower().split()))
+        if letter:
+            league = (letter, key)
+            break
+    # подсказка владельца для этой пары (правило 8; страница «Названия»,
+    # раздел «Вид спорта») — пока не вышел её срок
+    hint = (pair_sports or {}).get(f"{row.home} - {row.away}".strip())
+    by_hint = hint[0] if hint and hint_fresh(hint[1], row.start_kyiv) else ""
 
+    decision = sports.decide(text, head, (verdict.home, verdict.away),
+                             ref=by_ref, ref_team=ref_team, league=league,
+                             club=клуб_спорт,
+                             hint=by_hint)
+    letter = decision.letter
+    row.sport_word = decision.word
+    row.sport_source = decision.source
+    row.sport_rule = decision.rule
+    row.team_word = decision.team_word
+    if letter == "-":
+        row.reason = f"другой вид спорта: {decision.word}"
+        row.sport_group = decision.group
+        return row
     if letter is None:
         # ТЗ разд. 6: не определился — не в мусор, а владельцу на проверку
         row.reason = "вид спорта не определён"
@@ -168,12 +187,15 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
 def run(programs, markers: live.Markers | None = None,
         sports: sport.Sports | None = None,
         league_sports: dict[str, str] | None = None,
-        pair_sports: dict[str, str] | None = None) -> list[Row]:
+        pair_sports: dict[str, str] | None = None,
+        reference: Reference | None = None) -> list[Row]:
+    """`reference` — эталон flashscore этого обхода (`app/reference.py`).
+    Без него правило 2 (`sport.Sports.decide`) молчит, остальные работают."""
     markers = markers or live.load()
     sports = sports or sport.load()
     if league_sports is None:
         league_sports = leagues.sports_map()
     if pair_sports is None:
         pair_sports = leagues.pair_sports()
-    return [classify(p, markers, sports, league_sports, pair_sports)
+    return [classify(p, markers, sports, league_sports, pair_sports, reference)
             for p in programs]
