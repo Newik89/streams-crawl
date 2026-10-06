@@ -298,7 +298,8 @@ def _sides(ref: dict, script: str = "lat") -> list[tuple[str, str]]:
     for lang, pair in (ref.get("names") or {}).items():
         if _SCRIPT_OF_LANG.get(lang, "lat") != script:
             continue
-        if isinstance(pair, (list, tuple)) and len(pair) == 2                 and pair[0] and pair[1]:
+        if isinstance(pair, (list, tuple)) and len(pair) == 2 \
+                and pair[0] and pair[1]:
             out.append((str(pair[0]).strip(), str(pair[1]).strip()))
     return out
 
@@ -420,14 +421,16 @@ def learn_by_id(conn: sqlite3.Connection, reference: list[dict]) -> tuple[int, i
                 continue
             for local, en in ((str(pair[0]).strip(), en_home),
                               (str(pair[1]).strip(), en_away)):
-                if not local or not en or local == en                         or (local, lang) in known_teams:
+                if not local or not en or local == en \
+                        or (local, lang) in known_teams:
                     continue
                 dictionary.remember_team(conn, local, en, lang=lang)
                 known_teams.add((local, lang))
                 teams += 1
         for lang, league in (r.get("leagues") or {}).items():
             league = (league or "").strip()
-            if not league or not en_league or league == en_league                     or (league, lang) in known_leagues:
+            if not league or not en_league or league == en_league \
+                    or (league, lang) in known_leagues:
                 continue
             dictionary.remember_league(conn, league, en_league,
                                        sport=r.get("sport"), lang=lang)
@@ -634,6 +637,156 @@ def _entry_sides(game: dict):
                 break
 
 
+# ── Очередь «Названия»: спрашивать ли владельца ─────────────────────────────
+
+#: в очередь идёт пара «с сомнением», только если ВТОРАЯ команда совпала с
+#: эталоном уверенно — тогда игра та же, и сомнение лишь в написании первой.
+#: Иначе это соседняя игра того же часа, а не другое написание нашей (#2100,
+#: 06.10: «Igokea — Bilbao» легла на «Slavia Prague ERA NBK — Alba Berlin»).
+#: Замер 06.10 — пары «с сомнением» в 24 прогонах 20.09–06.10 против копии
+#: серверной базы: у ЛОЖНЫХ пар вторая сторона набирает 40–63 («Igokea —
+#: Bilbao» 44/60, «Zwitserland — Slowenien» ⇒ «Netherlands — Serbia»
+#: 63/57, «Бамберг — Людвигсбург» ⇒ «Wurzburg — Oldenburg» 40/60), а
+#: ивритский костяк согласных даёт ложным и 80–85 («נאנסי — פריז» ⇒ «San
+#: Ignacio — Pasaia» 80/80; на 85 буквы бессильны вовсе). Верные пары, где
+#: сомнительны ОБЕ стороны (новый язык сборных: «Greqi — Holande» = Greece
+#: — Netherlands 72/55, «BIELORRÚSSIA — SÃO MARINO» = Belarus — San Marino
+#: 70/66), лежат в той же полосе: буквами их от соседа по времени не
+#: отличить. Поэтому порог — уверенное совпадение проекта, `SURE`; цена —
+#: такие пары в очередь больше не идут (на витрину это не влияет: пара
+#: «с сомнением» ничего у игры не ставит)
+QUEUE_OTHER_SIDE = SURE
+#: подсказка, похожая на имя меньше этого, — не подсказка. В истории
+#: очереди (330 записей «команда» с 02.09) ни одна подтверждённая пара не
+#: была ниже 50 («Meksyk U20 W» → «Mexico U20 W» 50, «Γουλβς» → «Wolves»
+#: 54, «Queens Park Rangers» → «QPR» 57), а у трети ложных (8 из 24 —
+#: все отсеянные и открытые на 06.10 оказались ложными) сходство 0–47:
+#: «Denizli» → «Karsiyaka» 12, «Igokea» → «Slavia Prague ERA NBK» 44
+QUEUE_HINT_MIN = 50
+
+
+def _side_score(name: str, ref: dict, side: str) -> int:
+    """Насколько имя похоже на команду эталона на той же стороне пары
+    (`side` — «home» или «away»): английское написание flashscore или
+    местное той же письменности (`_sides`), что лучше."""
+    index = 0 if side == "home" else 1
+    best = names.similarity(name, ref.get(side) or "")
+    for pair in _sides(ref, _script(name)):
+        best = max(best, names.similarity(name, pair[index]))
+    return best
+
+
+def known_team(conn: sqlite3.Connection, name: str, sport: str = "") -> bool:
+    """Имя уже есть в библиотеке: это канон команды или её алиас (любого
+    языка). Вид спорта команды узнаём по её играм в базе: вид известен и
+    не тот — имя чужое (баскетбольный «Bilbao» футбольному не помощник).
+    Игр у команды нет или вид игры неизвестен — имя считаем известным."""
+    name = (name or "").strip()
+    if not name:
+        return False
+    ids = [r[0] for r in conn.execute(
+        "SELECT id FROM teams WHERE canonical_name = ? "
+        "UNION SELECT team_id FROM team_aliases WHERE alias = ?",
+        (name, name))]
+    if not ids:
+        return False
+    if not sport:
+        return True
+    marks = ",".join("?" * len(ids))
+    sports = {r[0] for r in conn.execute(
+        f"SELECT DISTINCT sport FROM events WHERE team_home_id IN ({marks}) "
+        f"OR team_away_id IN ({marks})", ids + ids)}
+    return not sports or sport in sports
+
+
+def _flagged(conn: sqlite3.Connection, game: dict) -> bool:
+    """У события этой игры в базе уже стоит метка эталона `fs:` — игра
+    прежде сопоставлена уверенно. Событие ищем по номеру (сверка задним
+    числом даёт `id`) или по паре имён в окне `WINDOW` (заливка обхода;
+    порядок команд любой — склейка проверяет и обратный)."""
+    if game.get("id"):
+        row = conn.execute("SELECT flags FROM events WHERE id = ?",
+                           (game["id"],)).fetchone()
+        return bool(row) and str(row[0] or "").startswith("fs:")
+    start = _parse(game.get("start_kyiv") or "")
+    if start is None:
+        return False
+    home = (game.get("home") or "").strip()
+    away = (game.get("away") or "").strip()
+    for r in conn.execute(
+            "SELECT start_kyiv FROM events WHERE flags LIKE 'fs:%' AND ("
+            "(team_home_auto = ? AND team_away_auto = ?) OR "
+            "(team_home_auto = ? AND team_away_auto = ?))",
+            (home, away, away, home)):
+        when = _parse((r[0] or "").replace(" ", "T"))
+        if when is not None and abs(when - start) <= WINDOW:
+            return True
+    return False
+
+
+def _sure_times(sure: list) -> dict[tuple[str, str], list[datetime]]:
+    """Пара имён → время игр, уверенно сопоставленных в этом прогоне."""
+    out: dict[tuple[str, str], list[datetime]] = {}
+    for game, _, _ in sure:
+        start = _parse(game.get("start_kyiv") or "")
+        if start is not None:
+            key = ((game.get("home") or "").strip(),
+                   (game.get("away") or "").strip())
+            out.setdefault(key, []).append(start)
+    return out
+
+
+def _in_sure(game: dict, sure_times: dict) -> bool:
+    """Та же пара в том же окне уже легла в «уверенные» этого прогона."""
+    start = _parse(game.get("start_kyiv") or "")
+    key = ((game.get("home") or "").strip(), (game.get("away") or "").strip())
+    return start is not None and any(
+        abs(start - t) <= WINDOW for t in sure_times.get(key, []))
+
+
+def queue_decision(conn: sqlite3.Connection, game: dict, ref: dict,
+                   side: str, sure_times: dict | None = None
+                   ) -> tuple[bool, str]:
+    """Ставить ли команду `side` («home»/«away») пары «с сомнением»
+    (`align` → «ask») в очередь «Названия» с подсказкой — именем эталона.
+    Это ЕДИНСТВЕННОЕ место, где решается вопрос владельцу по команде.
+    Возвращает (ставить ли, почему нет). Правила по порядку, решает первое
+    сработавшее:
+
+      1. Имени нет или это заглушка («TBC», «Winner QF1») — не команда.
+      2. Имя и так совпало с эталоном (сходство ≥ SURE) — спрашивать нечего.
+      3. Имя уже в библиотеке — канон команды или её алиас того же вида
+         спорта (`known_team`): словарь его знает, а подсказка досталась от
+         чужой игры (#2100 «Igokea» → «Slavia Prague ERA NBK», 06.10).
+      4. Игра уже уверенно сопоставлена с эталоном: у её события в базе
+         метка `fs:` или та же пара в этом прогоне легла в «уверенные» —
+         пара «с сомнением» тут лишний сосед по времени.
+      5. Вторая команда пары не совпала уверенно (ниже `QUEUE_OTHER_SIDE`)
+         или это заглушка — это ДРУГАЯ игра, а не другое написание нашей.
+      6. Подсказка похожа на имя меньше `QUEUE_HINT_MIN` — не подсказка.
+
+    Ни одно не сработало — спрашиваем: это новое написание реальной
+    команды («Queens Park Rangers» → «QPR», когда «West Ham» узнан)."""
+    other = "away" if side == "home" else "home"
+    mine = (game.get(side) or "").strip()
+    hint = (ref.get(side) or "").strip()
+    if not mine or not hint or names.is_placeholder(mine):
+        return False, "не имя команды"
+    if names.similarity(mine, hint) >= SURE:
+        return False, "совпало с эталоном"
+    if known_team(conn, mine, game.get("sport") or ""):
+        return False, "имя уже в библиотеке"
+    if _flagged(conn, game) or _in_sure(game, sure_times or {}):
+        return False, "игра уже сопоставлена с эталоном"
+    second = (game.get(other) or "").strip()
+    if not second or names.is_placeholder(second) \
+            or _side_score(second, ref, other) < QUEUE_OTHER_SIDE:
+        return False, "вторая команда не совпала — другая игра"
+    if _side_score(mine, ref, side) < QUEUE_HINT_MIN:
+        return False, "подсказка не похожа на имя"
+    return True, ""
+
+
 def apply(conn: sqlite3.Connection, aligned: dict) -> tuple[int, int]:
     """Уверенные — в библиотеку, сомнительные — в очередь. Возвращает
     (сколько имён закреплено, сколько легло в очередь)."""
@@ -672,13 +825,15 @@ def apply(conn: sqlite3.Connection, aligned: dict) -> tuple[int, int]:
             # «BRAZIL: Serie A Betano» успел стать алиасом LaLiga, Португалии
             # и Сербии разом (кейс #688, 04.09)
             dictionary.remember_league(conn, league, canon_league)
-    for game, ref, score in aligned["ask"]:
-        for mine, canon in ((game["home"], ref["home"]),
-                            (game["away"], ref["away"])):
-            mine, canon = (mine or "").strip(), (canon or "").strip()
-            if mine and canon and names.similarity(mine, canon) < SURE                     and not names.is_placeholder(mine):
-                if dictionary.enqueue(conn, "team", mine, suggestion=canon):
-                    queued += 1
+    # пары «с сомнением» — владельцу, но только настоящие вопросы:
+    # решает `queue_decision`, правила — там
+    sure_times = _sure_times(aligned["sure"])
+    for game, ref, _ in aligned["ask"]:
+        for side in ("home", "away"):
+            ask, _why = queue_decision(conn, game, ref, side, sure_times)
+            if ask and dictionary.enqueue(conn, "team", game[side].strip(),
+                                          suggestion=ref[side].strip()):
+                queued += 1
     conn.commit()
     return fixed, queued
 

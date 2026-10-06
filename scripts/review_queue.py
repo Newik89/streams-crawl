@@ -21,8 +21,18 @@ r"""Пересмотр очереди «Названия»: убрать то, �
 Гадательное правило «ни одна команда не знакома» больше НЕ закрывает:
 такие строки только показываются счётчиком, решает их владелец.
 
+Раздел «Команды» (`--kind team`, разбор 06.10, #2100 «Igokea» → «Slavia
+Prague ERA NBK») закрывается по двум бесспорным правилам:
+
+* **имя уже в словаре** — имя стало каноном команды или её алиасом
+  (`canon.known_team`; вид спорта — по играм с этим именем, если он один);
+* **игра с меткой flashscore** — все игры в базе с этим именем уже уверенно
+  сопоставлены с эталоном (метка `fs:`), спрашивать не о чем.
+
     venv\Scripts\python.exe scripts/review_queue.py            # показать
     venv\Scripts\python.exe scripts/review_queue.py --apply    # закрыть
+    venv\Scripts\python.exe scripts/review_queue.py --kind team          # команды: показать
+    venv\Scripts\python.exe scripts/review_queue.py --kind team --apply  # команды: закрыть
 
 Закрытая запись не удаляется: у неё ставится `skipped` (видно во вкладке
 «Отсеянные», кнопка «Вернуть» возвращает). Если строка вернётся с новым
@@ -40,7 +50,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import canon, db, dictionary, leagues, names, pipeline, sport  # noqa: E402
+from app import canon, db, dictionary, leagues, names, pipeline, sport, watch  # noqa: E402
 
 
 def teams_from_reference(path: Path | None = None) -> dict[str, str]:
@@ -150,10 +160,75 @@ def teams_from_base(conn) -> dict[str, str]:
             if len(v) == 1 and next(iter(v))}      # имя → единственный вид
 
 
+def team_closures(conn) -> dict[str, list]:
+    """Раздел «Команды»: открытые и отложенные записи, спрашивать которые
+    уже незачем. Закрываем только бесспорное (условие владельца 15.09):
+
+    * «имя уже в словаре» — имя стало каноном команды или её алиасом
+      (`canon.known_team`). Вид спорта берём по играм базы с этим именем,
+      если он у них один: баскетбольный «Bilbao» футбольный вопрос не снимает;
+    * «игра с меткой flashscore» — в базе есть игры с этим именем, и ВСЕ
+      они уже уверенно сопоставлены с эталоном (метка `fs:`).
+
+    Остальное — настоящие вопросы владельцу, их не трогаем."""
+    причины: dict[str, list] = {"имя уже в словаре": [],
+                                "игра с меткой flashscore": []}
+    for r in conn.execute(
+            "SELECT id, raw_value, suggestion FROM moderation "
+            "WHERE kind = 'team' AND status IN ('open', 'later') "
+            "ORDER BY id").fetchall():
+        имя = (r["raw_value"] or "").strip()
+        игры = conn.execute(
+            "SELECT sport, flags FROM events "
+            "WHERE team_home_auto = ? OR team_away_auto = ?",
+            (имя, имя)).fetchall()
+        виды = {g["sport"] for g in игры if g["sport"]}
+        вид = next(iter(виды)) if len(виды) == 1 else ""
+        if canon.known_team(conn, имя, вид):
+            причины["имя уже в словаре"].append(r)
+        elif игры and all(str(g["flags"] or "").startswith("fs:")
+                          for g in игры):
+            причины["игра с меткой flashscore"].append(r)
+    return причины
+
+
+def review_teams(conn, apply: bool) -> int:
+    """`--kind team`: показать, что закроется; с `apply` — закрыть
+    (`skipped`, вкладка «Отсеянные», кнопка «Вернуть») и оставить строку
+    в «Прогонах» админки — сколько и почему."""
+    всего_в_очереди = conn.execute(
+        "SELECT COUNT(*) FROM moderation WHERE kind = 'team' "
+        "AND status IN ('open', 'later')").fetchone()[0]
+    причины = team_closures(conn)
+    всего = sum(len(v) for v in причины.values())
+    print(f"в очереди «team»: {всего_в_очереди}; можно закрыть: {всего}")
+    for имя, куча in причины.items():
+        print(f"   {имя}: {len(куча)}")
+        for r in куча:
+            print(f"      #{r['id']} {r['raw_value'][:48]} "
+                  f"(подсказка: {(r['suggestion'] or '')[:40]})")
+    if not всего:
+        return 0
+    if not apply:
+        print("\nчтобы закрыть — добавьте --apply")
+        return 0
+    conn.executemany("UPDATE moderation SET status = 'skipped' WHERE id = ?",
+                     [(r["id"],) for куча in причины.values() for r in куча])
+    conn.commit()
+    watch.note(conn, f"очередь «Названия» (команды): закрыто {всего} ("
+                     + "; ".join(f"{имя}: {len(куча)}"
+                                 for имя, куча in причины.items() if куча)
+                     + ") — вкладка «Отсеянные», кнопка «Вернуть»",
+               who="автомат")
+    print(f"закрыто записей: {всего}; осталось: {всего_в_очереди - всего}")
+    return 0
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--kind", default="sport", help="какой раздел очереди")
+    ap.add_argument("--kind", default="sport",
+                    help="какой раздел очереди: sport (по умолчанию) или team")
     ap.add_argument("--days", type=int, default=ЖИВЁТ_ДНЕЙ,
                     help="сколько дней после матча запись ещё нужна")
     ap.add_argument("--apply", action="store_true", help="без него — показ")
@@ -162,6 +237,8 @@ def main() -> int:
     conn = db.connect()
     try:
         db.init_db(conn)                     # досыпает свежие колонки
+        if args.kind == "team":
+            return review_teams(conn, args.apply)
         sports = sport.load()
         лиги = leagues.sports_map()
         подсказки = leagues.pair_sports()
