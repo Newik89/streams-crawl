@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -80,8 +80,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         hour, minute = int(hm.group(1)), int(hm.group(2))
         if hour > 23 or minute > 59:
             continue
-        # день сетки начинается утром: ночные часы — уже следующая дата
-        when = d + timedelta(days=1) if hour < 6 else d
+        when = d   # дата — ниже, по порядку страницы
         out.append(Program(
             channel_raw=CHANNEL, title=title,
             start=datetime(when.year, when.month, when.day, hour, minute,
@@ -90,4 +89,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=_pair(title), source_url=url,
             extra={"day": when.isoformat()},
         ))
-    return mark_first_show(out, "canlı")
+    # День сетки — с утра до утра (`08:00 … 20:00, 00:20 … 05:30`). Вместо
+    # порога «час < 6 → завтра» — общее правило полуночи (07.10, сбор #205:
+    # тот же порог у ntvplus и sport5 ставил ночной эфир на сутки позже)
+    return mark_first_show(daytime.walk_programs(out, d, tz or TZ), "canlı")

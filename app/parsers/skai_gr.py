@@ -30,7 +30,7 @@ r"""skai.gr — Греция, канал ΣΚΑΪ; адрес на день, к�
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -79,8 +79,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         if not hm or not title:
             continue
         hour, minute = int(hm.group(1)), int(hm.group(2))
-        # день сетки начинается утром: ночные часы — уже следующая дата
-        d = base + timedelta(days=1) if hour < 5 else base
+        d = base   # дата — ниже, по порядку страницы
         about = row.css_first("p.date")
         about = " ".join(about.text().split()) if about else ""
         kind = _KIND.search(row.attributes.get("class") or "")
@@ -92,4 +91,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=_pair(title) if _pair(title).strip() else _pair(about),
             source_url=url, extra={"day": d.isoformat()},
         ))
-    return mark_first_show(out, "ζωντανά")
+    # День сетки — с утра до утра (`05:00 … 22:30, 02:15 … 04:30`). Вместо
+    # порога «час < 5 → завтра» — общее правило полуночи (07.10, сбор #205:
+    # тот же порог у rts.rs оставлял `05:43` следующего утра на сегодня)
+    return mark_first_show(daytime.walk_programs(out, base, tz or TZ), "ζωντανά")

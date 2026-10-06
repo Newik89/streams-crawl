@@ -30,7 +30,7 @@
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -44,6 +44,7 @@ TZ = "Europe/Moscow"
 _HHMM = re.compile(r"^(\d{1,2}):(\d{2})")
 _DATE_IN_URL = re.compile(r"date=(\d{2})\.(\d{2})\.(\d{4})")
 _AGE = re.compile(r"\s*\(\d{1,2}\+\)\s*$")
+_TS = re.compile(r"[?&]ts=(\d{9,11})\b")     # `/channel/…?ts=1791244200&…`
 
 
 def _split(title: str) -> tuple[str, str, str]:
@@ -94,8 +95,13 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 continue
             live = "live" in (item.attributes.get("class") or "")
             sport, league, pair = _split(title)
-            # телегид-день начинается с 06:00, как у большинства сеток
-            d = day + timedelta(days=1) if int(hm.group(1)) < 6 else day
+            d = day        # дата — ниже, по порядку страницы
+            # у записи эфира в ссылке «смотреть» есть точная unix-метка
+            # `ts=` (сбор #205: у 47 строк из 545) — она главнее порядка
+            stamp = ""
+            for a in item.css("a"):
+                found = _TS.search(a.attributes.get("href") or "")
+                stamp = stamp or (found.group(1) if found else "")
             out.append(Program(
                 channel_raw=channel, title=_AGE.sub("", title).strip(),
                 start=datetime(d.year, d.month, d.day,
@@ -103,6 +109,15 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 raw_time=hm.group(0), league_raw=league, sport_raw=sport,
                 live_raw="прямая трансляция" if live else "",
                 match_raw=pair, source_url=url,
-                extra={"day": d.isoformat()},
+                extra={"day": d.isoformat(), **({"ts": int(stamp)} if stamp else {})},
             ))
+    # Сетка дня начинается передачей, идущей в начале суток (`02:50`,
+    # `04:05` — это ещё тот же день, так говорит `ts=`), и кончается ночью
+    # следующего. Жёсткое «час < 6 → завтра» ставило ночной прямой эфир на
+    # сутки позже, и его снимали «повтором» (07.10, сбор #205: Медельин —
+    # Санта Фе 06.10 02:50 уезжало на 07.10). Дата — общим правилом полуночи
+    for prg in daytime.walk_programs(out, day, tz or TZ):
+        if prg.extra.get("ts"):
+            prg.start = datetime.fromtimestamp(prg.extra["ts"], tz=zone)
+            prg.extra["day"] = prg.start.date().isoformat()
     return out
