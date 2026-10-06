@@ -170,6 +170,11 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # tvsporten.dk (TV3 Sport, TV3 Max, TV3+, See, Eurosport, Canal 9,
           # Viaplay Sport News — пары у каждого события); по запросу на день
           "tvtid.tv2.dk", "tvsporten.dk",
+          # Швеция и Финляндия (задание владельца 06.10: «заводим V Sport
+          # Швеции и Финляндии»): близнецы tvsporten.dk той же сети, разбор
+          # одолженный; отсюда V Sport 1/Extra/Premium/Vinter/Golf/Motor/
+          # Football/Live, TV4 Sport, MTV Urheilu, Eurosport SE и FI
+          "tvmatchen.nu", "tvmatsit.com",
           ]
 # СПРАВОЧНИКИ, не источники: liveonsat.com (решение 01.09) и
 # sporteventz.com (решение 02.09) в ежедневный обход не входят. Оба —

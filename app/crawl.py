@@ -150,6 +150,10 @@ DAY_GRID_DOMAINS = {"polsatsport.pl", "allente.no", "ceskatelevize.cz",
                     # Дания (05.10): справочник «спорт по ТВ» — ручка сайта
                     # отдаёт события дня со всеми каналами (TV3 Sport, See…)
                     "tvsporten.dk",
+                    # Швеция и Финляндия (06.10): близнецы tvsporten.dk той
+                    # же сети — та же ручка дня, разбор берут взаймы
+                    # (`selector_config.parser`); отсюда линейка V Sport
+                    "tvmatchen.nu", "tvmatsit.com",
                     # M4 Sport (06.10): ручка программы MTVA — POST на день,
                     # каналы и дата в полях формы (`post_fields` карточки);
                     # страница `/musorujsag/` держала только сегодня, и матч

@@ -508,7 +508,8 @@
     "volei",
     "beachvolley",
     "beach volley",
-    "plážový volejbal"
+    "plážový volejbal",
+    "volleyboll"
    ],
    "гандбол": [
     "ehf",
@@ -617,7 +618,10 @@
     "cyklistika",
     "ciclismo",
     "kolarstwo",
-    "велоспорт"
+    "велоспорт",
+    "cykel",
+    "landsvägscykling",
+    "maantiepyöräily"
    ],
    "лёгкая атлетика": [
     "athletics",
@@ -744,7 +748,10 @@
     "kampsport",
     "cage fight",
     "power slap",
-    "slap fighting"
+    "slap fighting",
+    "taistelu",
+    "paini",
+    "brottning"
    ],
    "бадминтон и ракетки": [
     "badminton",
@@ -815,7 +822,10 @@
     "galopp",
     "trav",
     "harness racing",
-    "ridebanespringning"
+    "ridebanespringning",
+    "ridsport",
+    "hästsport",
+    "ravit"
    ],
    "гребля": [
     "canoa",
@@ -862,7 +872,9 @@
     "yelken",
     "regatta",
     "regata",
-    "sejlsport"
+    "sejlsport",
+    "segling",
+    "purjehdus"
    ],
    "зимние": [
     "ski",
@@ -920,7 +932,22 @@
     "esquí",
     "esqui",
     "fis",
-    "vintersport"
+    "vintersport",
+    "skidor",
+    "längdskidor",
+    "skidskytte",
+    "alpint",
+    "alppihiihto",
+    "backhoppning",
+    "mäkihyppö",
+    "konståkning",
+    "taitoluistelu",
+    "hiihto",
+    "maastohiihto",
+    "ampumahiihto",
+    "pikaluistelu",
+    "skridsko",
+    "lumilautailu"
    ],
    "автоспорт": [
     "f4",
@@ -1035,7 +1062,8 @@
     "worldssp",
     "worldwcr",
     "superpole",
-    "world superbike"
+    "world superbike",
+    "moottoriurheilu"
    ],
    "киберспорт": [
     "esports",
@@ -1062,7 +1090,8 @@
     "overwatch",
     "starcraft",
     "efootball",
-    "e-sport"
+    "e-sport",
+    "e-urheilu"
    ],
    "шахматы и настольные": [
     "chess",
@@ -1115,7 +1144,8 @@
     "крикет",
     "baseball",
     "mlb",
-    "t20"
+    "t20",
+    "pesäpallo"
    ],
    "американский футбол": [
     "futbol americano",
@@ -1450,7 +1480,8 @@
     "настільного тенісу",
     "tenisului de masă",
     "настольному теннису",
-    "настольном теннисе"
+    "настольном теннисе",
+    "pöytätennis"
    ],
    "регби": [
     "rugby",
@@ -1493,7 +1524,10 @@
     "timeline",
     "unfiltered",
     "ανασκόπηση",
-    "ανασκοπηση"
+    "ανασκοπηση",
+    "vinterstudio",
+    "vinterstudion",
+    "talvistudio"
    ]
   },
   "сезоны": {
