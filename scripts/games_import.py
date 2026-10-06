@@ -20,7 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import canon, db, dictionary, health, miss, names, store, watch  # noqa: E402
+from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
+                 sport_question, store, watch)
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -48,6 +49,43 @@ def _json_stamp(path) -> str:
                    .get("собрано") or "")
     except (OSError, ValueError):
         return ""
+
+
+def queue_unsolved(conn, unsolved: list[dict],
+                   reference: list[dict]) -> tuple[int, int]:
+    """Нерешённые строки обхода (`на_разбор`) → вопросы «вид спорта».
+
+    Владельцу остаётся только то, на что программа не ответила сама
+    (`app/sport_question.py`): у заливки улик больше, чем у обхода — словари
+    базы и эталон целиком. Ответ пишется тем же путём, что кнопки «Футбол»
+    и «Не матч», с пометкой «ответила программа». Отложенные владельцем
+    («Не знаю») не трогаем. Возвращает (новых вопросов, ответила программа)."""
+    queued, touched = 0, set()
+    for row in unsolved:
+        # без времени: одна пара спрашивается один раз, а не на каждый
+        # повтор в сетке (время и сырой заголовок — в подсказке)
+        label = " | ".join(x for x in (
+            f"{row.get('home', '')} - {row.get('away', '')}",
+            row.get("league") or "",
+            f"{row.get('канал', '')} ({row.get('домен', '')})") if x)
+        hint = " | ".join(x for x in (
+            (row.get("start_kyiv") or "").replace("T", " "),
+            row.get("raw_title") or "") if x)
+        if dictionary.enqueue(conn, "sport", label, suggestion=hint):
+            queued += 1
+        touched.add(dictionary.norm_pair(label))
+    if not touched:
+        return queued, 0
+    judge = sport_question.Judge(conn, reference)
+    items = [(r, sport_question.Question.parse(r["raw_value"], r["suggestion"]))
+             for r in conn.execute(
+                 "SELECT id, raw_value, suggestion FROM moderation "
+                 "WHERE kind = 'sport' AND status = 'open' ORDER BY id")
+             if dictionary.norm_pair(r["raw_value"]) in touched]
+    answered = sum(1 for _, a in sport_question.settle(conn, judge, items,
+                                                       apply=True)
+                   if a.letter)
+    return queued, answered
 
 
 def main() -> int:
@@ -175,22 +213,11 @@ def main() -> int:
         import json as _json
         unsolved = _json.loads(path.read_text(encoding="utf-8")) \
             .get("на_разбор", [])
-        queued_review = 0
-        for row in unsolved:
-            # без времени: одна пара спрашивается один раз, а не на каждый
-            # повтор в сетке (время и сырой заголовок — в подсказке)
-            label = " | ".join(x for x in (
-                f"{row.get('home', '')} - {row.get('away', '')}",
-                row.get("league") or "",
-                f"{row.get('канал', '')} ({row.get('домен', '')})") if x)
-            hint = " | ".join(x for x in (
-                (row.get("start_kyiv") or "").replace("T", " "),
-                row.get("raw_title") or "") if x)
-            if dictionary.enqueue(conn, "sport", label, suggestion=hint):
-                queued_review += 1
+        queued_review, answered = queue_unsolved(conn, unsolved, reference)
         if unsolved:
             print(f"нерешённых строк: {len(unsolved)}, "
-                  f"в модерацию добавлено: {queued_review}")
+                  f"в модерацию добавлено: {queued_review}, "
+                  f"программа ответила сама: {answered}")
         from datetime import datetime
         db.set_setting(conn, "last_import", datetime.now().strftime("%Y-%m-%d %H:%M"))
         # заливка дошла до конца — прежняя жалоба на дашборде снимается (A5)

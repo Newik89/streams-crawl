@@ -126,20 +126,12 @@ def source_settings(plan_path: Path) -> dict[str, dict]:
 LATE_REPEAT = timedelta(hours=30)
 
 
-#: насколько раньше строки должен был пройти матч, чтобы считать показ
-#: повтором. Меньше — это тот же матч в своём окне (студия, разброс сеток)
-REPEAT_AFTER = timedelta(hours=4)
-#: как далеко в прошлое смотрим: канал крутит запись день-два, дальше уже
-#: не повтор, а новый матч тех же команд
-REPEAT_DEPTH = timedelta(hours=60)
-#: матч эталона в пределах ±3 ч от строки — строка показывает его вживую
-#: (тот же допуск, что у сверки угаданного эфира с эталоном)
-LIVE_NEAR = timedelta(hours=3)
-#: время эталона — «заглушка тура», если у лиги в этот день столько матчей
-#: ровно в одну минуту: WWIN liga BiH 10.10 — все 5 в 18:00, а Arena ставит
-#: их на пт 18:00, сб 18:30, вс 16:00 и 18:30 (самопроверка #205, 06.10).
-#: По такому времени «матч уже сыгран» не доказать (`played_before`, правило 4)
-ROUND_SAME_TIME = 5
+# Пороги «показ в час матча или повтор» (REPEAT_AFTER 4 ч, REPEAT_DEPTH
+# 60 ч, LIVE_NEAR ±3 ч, ROUND_SAME_TIME — заглушка тура) живут в
+# `app/reference.py`: по ним же очередь «Вид спорта» отличает повтор от
+# матча (`app/sport_question.py`). Смысл каждого — там.
+from app.reference import (LIVE_NEAR, REPEAT_AFTER, REPEAT_DEPTH,  # noqa: E402
+                           ROUND_SAME_TIME)
 
 
 def add_reference(programs: list, reference: list,
