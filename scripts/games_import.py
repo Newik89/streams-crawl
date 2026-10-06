@@ -237,6 +237,8 @@ def main() -> int:
               + (f", заголовков турниров сайты больше не показывают "
                  f"(отметок погашено): {stats.titles_gone}"
                  if stats.titles_gone else ""))
+        if stats.not_own_note:
+            print(f"   {stats.not_own_note}")
         total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
         print(f"игр в базе теперь: {total}")
         return 0
