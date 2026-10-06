@@ -20,8 +20,15 @@
 Пару команд французы пишут через косую черту (`HEBC Hambourg / Borussia
 Dortmund`), поэтому здесь она разделитель наравне с дефисом.
 
-Маркера прямого эфира на страницах нет — эфиром считаем первый показ пары
-(`mark_first_show`), домен внесён в `REPEAT_GUESS_DOMAINS`.
+Пометки эфира у карточки есть — значки рядом с длительностью (аудит 06.10,
+обход #205: 213 «Direct», 904 «Rediffusion» на 48 страницах, и на будущих
+днях тоже):
+
+    span.mainBroadcastCard-live          `Direct` — эфир
+    span.mainBroadcastCard-rebroadcast   `Rediffusion` — повтор
+
+Раньше здесь было «маркера нет». Значки читаем (`site_says`); карточки без
+значка угадываются первым показом пары.
 """
 
 from __future__ import annotations
@@ -33,7 +40,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "programme-tv.net"
 TZ = "Europe/Paris"
@@ -129,7 +136,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         pair = _pair(title)
         if not pair.strip() and subtitle_text:
             pair = _pair(subtitle_text)
-        out.append(Program(
+        program = Program(
             channel_raw=channel, title=title, start=start,
             raw_time=clock.text(strip=True), description=subtitle_text,
             league_raw=tournament,
@@ -137,7 +144,16 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 fmt.text(strip=True) if fmt else "", sport_hint) if x),
             match_raw=pair, source_url=url,
             extra={"day": start.date().isoformat() if start else ""},
-        ))
+        )
+        # значки карточки — пометка сайта: «Direct» — эфир, «Rediffusion» —
+        # повтор. Слово «direct» само по себе двусмысленно и в словарь не
+        # кладётся (`ГРАБЛИ.md`), поэтому эфир пишем словарным «en direct»
+        if card.css_first("span.mainBroadcastCard-rebroadcast") is not None:
+            site_says(program, False, "rediffusion")
+        elif card.css_first("span.mainBroadcastCard-live") is not None:
+            site_says(program, True, "en direct")
+        out.append(program)
+    # без значка сайт промолчал — такие строки угадывает первый показ пары
     return mark_first_show(out, "en direct")
 
 

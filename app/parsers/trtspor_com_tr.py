@@ -7,9 +7,14 @@
 
 Путь в JSON: `props.pageProps.data.rows[].content.epg[]` →
 `{date, tvChannels[{title, slug, past[], current{}, upcoming[]}]}`.
-У записи: `title`, `starttime`/`endtime` (ISO, UTC!), `isRepeat`, `synopsis`.
-Брать только ветку `props.pageProps.data` — в `pageComponents` те же данные
-второй раз, иначе всё задваивается (разведка агентом 31.08).
+У записи: `title`, `starttime`/`endtime`, `isRepeat`, `synopsis`. Время
+пишется с «Z», но оно МЕСТНОЕ стамбульское, не UTC (сверено с эталоном
+06.10: «20:30Z» EuroCup Bourg — Tofaş = 20:30 по Киеву, а не 23:30).
+В `pageComponents` те же данные второй раз — копии отсекаются по (канал,
+время, заголовок). К 06.10 сайт перенёс сетку целиком в `pageComponents`, а
+имя канала у дня убрал (осталось в `content.channels` по `slug`) — разбор
+давал 0 строк при «расписание есть»; теперь блок `content` с `epg` ищется
+по всему дереву (`_contents`).
 
 **Признак эфира.** Поле `livestream_access` — мусор (false у всех 418,
 капкан как `/dirette/` у raiplay). Честное здесь — `isRepeat`: у повторов
@@ -22,7 +27,8 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date as _date, datetime, timezone
+from datetime import date as _date, datetime
+from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
@@ -49,6 +55,25 @@ def _items(channel: dict):
             yield from value
 
 
+def _contents(node):
+    """Все блоки `content` с сеткой (`epg`) — где бы они ни лежали.
+
+    До октября сетка была в `pageProps.data.rows[]`, к 06.10 сайт перенёс её
+    в `pageProps.pageComponents[…].rows[].data.content` (`data` остался с
+    одной шапкой) — и разбор молча отдавал 0 строк при «расписание есть»
+    (самопроверка `audit_run.py`, обход #205). Ищем по всему дереву: копии
+    одной передачи в двух ветках отсекает `seen` ниже."""
+    if isinstance(node, dict):
+        content = node.get("content")
+        if isinstance(content, dict) and isinstance(content.get("epg"), list):
+            yield content
+        for value in node.values():
+            yield from _contents(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from _contents(value)
+
+
 @register(DOMAIN)
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
@@ -57,16 +82,21 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         return []
     try:
         data = json.loads(node.text())
-        rows = data["props"]["pageProps"]["data"]["rows"]
+        page = data["props"]["pageProps"]
     except (ValueError, KeyError, TypeError):
         return []
 
     out: list[Program] = []
     seen: set[tuple] = set()
-    for row in rows:
-        for epg_day in (row.get("content") or {}).get("epg") or []:
+    for content in _contents(page):
+        # имя канала у дня бывает пустым — тогда берём его по `slug` из
+        # списка каналов того же блока (так с переносом 06.10)
+        by_slug = {c.get("slug"): (c.get("title") or "").strip()
+                   for c in content.get("channels") or [] if isinstance(c, dict)}
+        for epg_day in content.get("epg") or []:
             for channel in epg_day.get("tvChannels") or []:
-                name = (channel.get("title") or "").strip()
+                name = (channel.get("title") or by_slug.get(channel.get("slug"))
+                        or "").strip()
                 if not name or (channels and name not in channels):
                     continue
                 for item in _items(channel):
@@ -79,8 +109,13 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                         continue
                     seen.add(key)
                     try:
+                        # «Z» у сайта врёт: время МЕСТНОЕ (Стамбул). Сверено
+                        # с эталоном flashscore 06.10: «20:30Z» Bourg — Tofaş
+                        # = 20:30 Киева, «19:30Z» ÇBK Mersin — Fenerbahçe =
+                        # 19:30 Киева; гимн «İstiklal Marşı» — в 06:58
                         start = datetime.fromisoformat(
-                            raw.replace("Z", "+00:00")).astimezone(timezone.utc)
+                            raw.replace("Z", "")[:19]).replace(
+                                tzinfo=ZoneInfo(tz or TZ))
                     except ValueError:
                         continue
                     m = _MATCH_SPLIT.search(title)

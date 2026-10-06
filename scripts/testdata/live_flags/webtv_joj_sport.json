@@ -1,0 +1,61 @@
+{
+ "id": "joj_sport",
+ "content": [
+  {
+   "ChannelTitle": "JOJ Šport",
+   "Start": "2026-10-09T17:55:00+02:00",
+   "Stop": "2026-10-09T21:20:00+02:00",
+   "Title": "Hokej - Tipsport liga",
+   "Subtitle": "",
+   "Description": "9. kolo: HK Dukla Trenčín - HK Nitra\nPriamy prenos hokejového zápasu Tipsport ligy., (šport)",
+   "Icon": "/channel/joj_sport/programme/2026-10-09T17:55:00+02:00/icon/986f053abd02ebe4ba15b8ac21551814",
+   "SeriesID": "986f053abd02ebe4ba15b8ac21551814",
+   "Genres": [
+    "šport"
+   ],
+   "Score": 0
+  },
+  {
+   "ChannelTitle": "JOJ Šport",
+   "Start": "2026-10-08T21:50:00+02:00",
+   "Stop": "2026-10-09T00:05:00+02:00",
+   "Title": "Futsal - Tipos Extraliga",
+   "Subtitle": "",
+   "Description": "4. kolo: Podpor Pohyb Košice - FUTSAL KLUB Lučenec\nZáznam futsalového zápasu., (šport)",
+   "Icon": "/channel/joj_sport/programme/2026-10-08T21:50:00+02:00/icon/da01c3b45cca153fe984a1dcd37df87f",
+   "SeriesID": "da01c3b45cca153fe984a1dcd37df87f",
+   "Genres": [
+    "šport"
+   ],
+   "Score": 0
+  },
+  {
+   "ChannelTitle": "JOJ Šport",
+   "Start": "2026-10-09T00:05:00+02:00",
+   "Stop": "2026-10-09T02:00:00+02:00",
+   "Title": "FIS Svetový pohár Super G muži",
+   "Subtitle": "",
+   "Description": "Val Gardena, Taliansko\nZáznam z FIS Svetový pohár - Super G muži., (šport)",
+   "Icon": "/channel/joj_sport/programme/2026-10-09T00:05:00+02:00/icon/6ed61089cf24ca17539b9e06e8d1dab0",
+   "SeriesID": "6ed61089cf24ca17539b9e06e8d1dab0",
+   "Genres": [
+    "šport"
+   ],
+   "Score": 0
+  },
+  {
+   "ChannelTitle": "JOJ Šport",
+   "Start": "2026-10-09T02:00:00+02:00",
+   "Stop": "2026-10-09T03:40:00+02:00",
+   "Title": "FIS Svetový pohár zjazd muži",
+   "Subtitle": "",
+   "Description": "Val Gardena, Taliansko\nZáznam z FIS Svetový pohár muži - zjazd., (šport)",
+   "Icon": "/channel/joj_sport/programme/2026-10-09T02:00:00+02:00/icon/8250ab1c30b1f492a09f5bdd44d41998",
+   "SeriesID": "8250ab1c30b1f492a09f5bdd44d41998",
+   "Genres": [
+    "šport"
+   ],
+   "Score": 0
+  }
+ ]
+}

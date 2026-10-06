@@ -1,0 +1,523 @@
+[
+ {
+  "date": "2026-10-06",
+  "channelId": "TV2S01",
+  "channel": {
+   "id": "TV2S01",
+   "displayName": "TV 2 Sport 1",
+   "priority": 880,
+   "disabled": false
+  },
+  "programs": [
+   {
+    "id": "cf4996bf-93a0-4739-b99d-94a8a1bb8eef",
+    "title": "UEFA Nations League: Romania - Sverige",
+    "synopsis": "Fra Arena Națională, București og kampen mellom Romania og Sverige i UEFA Nation",
+    "genre": "sport",
+    "startTime": "2026-10-06T06:00:00",
+    "endTime": "2026-10-06T07:50:00",
+    "episodeNumber": 22,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "6110a6c7-8497-4b18-ac78-71537a89a06d",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "bf4d3816-9ddb-4aa5-bdaa-3cf3a5a0bfab",
+    "title": "UEFA Nations League: Italia - Tyrkia",
+    "synopsis": "Fra Stadio Renato Dall'Ara, Bologna og kampen mellom Italia og Tyrkia i UEFA Nat",
+    "genre": "sport",
+    "startTime": "2026-10-06T08:00:00",
+    "endTime": "2026-10-06T09:50:00",
+    "episodeNumber": 148,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "93acfc0b-7617-444b-93b9-318401d62db5",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "c6c44574-b642-4728-8867-9a1bace8e89f",
+    "title": "UEFA Nations League: Frankrike - Belgia",
+    "synopsis": "Fra Stade de France og kampen mellom Frankrike og Belgia i UEFA Nations League. ",
+    "genre": "sport",
+    "startTime": "2026-10-06T10:00:00",
+    "endTime": "2026-10-06T11:50:00",
+    "episodeNumber": 65,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "ab7b92f4-feb2-476e-9ec8-d8a1acb41627",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "8c5c443b-ba72-4128-9826-ea43ec679c8f",
+    "title": "UEFA Nations League: Romania - Sverige",
+    "synopsis": "Fra Arena Națională, București og kampen mellom Romania og Sverige i UEFA Nation",
+    "genre": "sport",
+    "startTime": "2026-10-06T12:00:00",
+    "endTime": "2026-10-06T14:05:00",
+    "episodeNumber": 22,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "6110a6c7-8497-4b18-ac78-71537a89a06d",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "d4568e2f-e7d1-4a31-9e83-1850ab7b305c",
+    "title": "UEFA Nations League: Kasakhstan - Færøyene",
+    "synopsis": "Fra Astana Arena og kampen mellom Kasakhstan og Færøyene i UEFA Nations League. ",
+    "genre": "sport",
+    "startTime": "2026-10-06T15:45:00",
+    "endTime": "2026-10-06T18:00:00",
+    "episodeNumber": 141,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "142579ec-e071-4b06-8b26-37da1d43aec9",
+    "live": true,
+    "replay": false
+   },
+   {
+    "id": "ad6fafd4-4acd-4332-8c0c-d2da1367855a",
+    "title": "EM-kvalifisering U21: Norge U21 - Israel U21",
+    "synopsis": "Fra Lyse Arena og EM-kvalifiseringskampen mellom Norge U21 og Israell U21. Komme",
+    "genre": "sport",
+    "startTime": "2026-10-06T18:35:00",
+    "endTime": "2026-10-06T20:45:00",
+    "episodeNumber": 8,
+    "episodeCount": 8,
+    "seasonNumber": 2025,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2025,
+    "countryOfOrigin": [],
+    "ageRating": 7,
+    "programAggregateId": "e8caf924-8de5-4725-a57e-86e3436a2d5e",
+    "live": true,
+    "replay": false
+   },
+   {
+    "id": "228f8a1a-8aca-4eb8-9f55-7777d0117411",
+    "title": "UEFA Nations League: Portugal - Norge",
+    "synopsis": "Fra Estádio do Dragão og kampen mellom Portugal og Norge i UEFA Nations League. ",
+    "genre": "sport",
+    "startTime": "2026-10-06T21:00:00",
+    "endTime": "2026-10-06T23:00:00",
+    "episodeNumber": 36,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "1f4f5bc4-6540-4fba-902b-fdf3753d22ee",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "a92a8d80-d464-4db2-9f6f-6ce35ddd2f08",
+    "title": "UEFA Nations League: England - Tsjekkia",
+    "synopsis": "Fra Wembley Stadium connected by EE, London og kampen mellom England og Tsjekkia",
+    "genre": "sport",
+    "startTime": "2026-10-07T00:00:00",
+    "endTime": "2026-10-07T02:00:00",
+    "episodeNumber": 60,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "fbae72ff-5b17-41e9-aa90-acaf3ad62207",
+    "live": false,
+    "replay": false
+   },
+   {
+    "id": "8c5ae410-7f04-41c8-bcaf-baf5466eff2b",
+    "title": "UEFA Nations League: Kroatia - Spania",
+    "synopsis": "Fra Gradski stadion u Poljudu, Split og kampen mellom Kroatia og Spania i UEFA N",
+    "genre": "sport",
+    "startTime": "2026-10-07T02:00:00",
+    "endTime": "2026-10-07T04:00:00",
+    "episodeNumber": 16,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "88e93416-572b-42e3-800f-b72950b4bcce",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "11f76d63-df57-4a29-a690-05ee694929c6",
+    "title": "UEFA Nations League: Spania - Tsjekkia",
+    "synopsis": "Fra Nuevo Carlos Tartiere og kampen mellom Spania og Tsjekkia i UEFA Nations Lea",
+    "genre": "sport",
+    "startTime": "2026-10-07T04:00:00",
+    "endTime": "2026-10-07T06:00:00",
+    "episodeNumber": 51,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "5ca0a145-c6fd-4915-a7b3-af502d69baa1",
+    "live": false,
+    "replay": true
+   }
+  ],
+  "created": "2026-09-23T12:47:58.248196"
+ },
+ {
+  "date": "2026-10-06",
+  "channelId": "TV2S02",
+  "channel": {
+   "id": "TV2S02",
+   "displayName": "TV 2 Sport 2",
+   "priority": 870,
+   "disabled": false
+  },
+  "programs": [
+   {
+    "id": "9a58a4b3-4550-4814-88ce-38f2f521de0a",
+    "title": "EHF Champions League, kvinner: Sola - Dortmund",
+    "synopsis": "Fra Åsenhallen og kampen mellom Sola og Dortmund i EHF Champions League, kvinner",
+    "genre": "sport",
+    "startTime": "2026-10-06T10:00:00",
+    "endTime": "2026-10-06T11:25:00",
+    "episodeNumber": 6,
+    "episodeCount": 112,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "Se alt fra kvinnenes EHF Champions League.",
+    "productionYear": 2026,
+    "countryOfOrigin": [],
+    "ageRating": 7,
+    "programAggregateId": "60683ab1-a7b9-417a-bf81-4546b3160ad3",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "1c4702e2-12c7-49fb-844c-73b0db2a5240",
+    "title": "EHF Champions League, kvinner: Odense - Storhamar",
+    "synopsis": "Fra kampen mellom Odense og Storhamar i EHF Champions League, kvinner. Kommentat",
+    "genre": "sport",
+    "startTime": "2026-10-06T11:25:00",
+    "endTime": "2026-10-06T13:00:00",
+    "episodeNumber": 62,
+    "episodeCount": 112,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "Se alt fra kvinnenes EHF Champions League.",
+    "productionYear": 2026,
+    "countryOfOrigin": [],
+    "ageRating": 7,
+    "programAggregateId": "d245c794-e2ac-4898-8daf-d5d27eba1afd",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "c78a887c-dbb5-4a10-8ab0-48e8a03f8085",
+    "title": "Elkjøp-ligaen, kvinner: Larvik - Storhamar",
+    "synopsis": "Fra Jotron Arena, Larvik og kampen mellom Larvik og Storhamar i Runde 5 av Elkjø",
+    "genre": "sport",
+    "startTime": "2026-10-06T19:05:00",
+    "endTime": "2026-10-06T20:40:00",
+    "episodeNumber": 118,
+    "episodeCount": 182,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "NO"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "b65491e5-479b-4a38-9fb7-691a78a7ce6c",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "e3bae74a-72d0-4b3d-89e2-8459cb8a2e08",
+    "title": "EHF European League, menn: Saint-Raphaël - Elverum",
+    "synopsis": "Fra Palais des Sports JFK og kampen Saint-Raphaël og Elverum i EHF European Leag",
+    "genre": "sport",
+    "startTime": "2026-10-06T20:40:00",
+    "endTime": "2026-10-06T22:30:00",
+    "episodeNumber": 94,
+    "episodeCount": 102,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [],
+    "ageRating": 7,
+    "programAggregateId": "8d46a00c-c646-4115-86f9-f491ec9718b7",
+    "live": true,
+    "replay": true
+   },
+   {
+    "id": "42075e03-effa-4675-9733-e62e5ee72bc8",
+    "title": "Elkjøp-ligaen, menn: ØIF Arendal - Kristiansand",
+    "synopsis": "Fra SØR amfi og kampen mellom ØIF Arendal og Kristiansand  i Runde 6 av Elkjøp-l",
+    "genre": "sport",
+    "startTime": "2026-10-06T22:30:00",
+    "endTime": "2026-10-07T00:00:00",
+    "episodeNumber": 104,
+    "episodeCount": 182,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "Få med deg all spenningen i Rema 1000-ligaen her.",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "NO"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "521ae731-35ec-49c1-87fa-dde123fab9d8",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "0a72006c-365a-4657-8576-23cc4d8e6ba0",
+    "title": "EHF Champions League, kvinner: Sola - Dortmund",
+    "synopsis": "Fra Åsenhallen og kampen mellom Sola og Dortmund i EHF Champions League, kvinner",
+    "genre": "sport",
+    "startTime": "2026-10-07T00:00:00",
+    "endTime": "2026-10-07T01:30:00",
+    "episodeNumber": 6,
+    "episodeCount": 112,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "Se alt fra kvinnenes EHF Champions League.",
+    "productionYear": 2026,
+    "countryOfOrigin": [],
+    "ageRating": 7,
+    "programAggregateId": "60683ab1-a7b9-417a-bf81-4546b3160ad3",
+    "live": false,
+    "replay": true
+   }
+  ],
+  "created": "2026-09-28T12:43:59.153265"
+ },
+ {
+  "date": "2026-10-06",
+  "channelId": "TV2SP1",
+  "channel": {
+   "id": "TV2SP1",
+   "displayName": "TV 2 Sport Premium",
+   "priority": 830,
+   "disabled": false
+  },
+  "programs": [
+   {
+    "id": "0b6bbcc7-c748-4f28-9f28-9507deb5affb",
+    "title": "UEFA Nations League: Kroatia - England",
+    "synopsis": "Fra Stadion HNK Rijeka og kampen mellom Kroatia og England i UEFA Nations League",
+    "genre": "sport",
+    "startTime": "2026-10-06T14:30:00",
+    "endTime": "2026-10-06T16:30:00",
+    "episodeNumber": 67,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "1778fb49-ee67-4295-a611-0627f745a087",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "2d400f0d-7312-47c6-8c0f-81ed623cbc56",
+    "title": "UEFA Nations League: Spania - Tsjekkia",
+    "synopsis": "Fra Nuevo Carlos Tartiere og kampen mellom Spania og Tsjekkia i UEFA Nations Lea",
+    "genre": "sport",
+    "startTime": "2026-10-06T16:30:00",
+    "endTime": "2026-10-06T18:30:00",
+    "episodeNumber": 51,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "5ca0a145-c6fd-4915-a7b3-af502d69baa1",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "495df242-f990-4f65-91fc-f53bfbe1674c",
+    "title": "UEFA Nations League: Sveits - Slovenia",
+    "synopsis": "Fra Swissporarena, Luzern og kampen mellom Sveits og Slovenia i UEFA Nations Lea",
+    "genre": "sport",
+    "startTime": "2026-10-06T18:30:00",
+    "endTime": "2026-10-06T20:30:00",
+    "episodeNumber": 155,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "280ec938-6532-4582-b794-a5ccbcd5e513",
+    "live": false,
+    "replay": true
+   },
+   {
+    "id": "5d1c0546-1df3-4045-99f2-1e5ab9311646",
+    "title": "UEFA Nations League: Kroatia - Spania",
+    "synopsis": "Fra Gradski stadion u Poljudu, Split og kampen mellom Kroatia og Spania i UEFA N",
+    "genre": "sport",
+    "startTime": "2026-10-06T20:30:00",
+    "endTime": "2026-10-06T22:29:00",
+    "episodeNumber": 16,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "88e93416-572b-42e3-800f-b72950b4bcce",
+    "live": true,
+    "replay": false
+   },
+   {
+    "id": "e0338dc5-75b3-4e3e-bef6-6efe89ccadec",
+    "title": "UEFA Nations League: Aserbajdsjan - Litauen",
+    "synopsis": "Fra Palms Sports Arena og kampen mellom Aserbajdsjan og Litauen i UEFA Nations L",
+    "genre": "sport",
+    "startTime": "2026-10-06T22:45:00",
+    "endTime": "2026-10-07T00:44:00",
+    "episodeNumber": 70,
+    "episodeCount": 156,
+    "seasonNumber": 2026,
+    "seasonCount": 1,
+    "seasonSynopsis": "",
+    "productionYear": 2026,
+    "countryOfOrigin": [
+     "CH"
+    ],
+    "ageRating": 7,
+    "programAggregateId": "ce9949ba-2998-4bdd-a716-63dbcb230e1e",
+    "live": false,
+    "replay": true
+   }
+  ],
+  "created": "2026-09-23T10:35:56.704669"
+ },
+ {
+  "date": "2026-10-06",
+  "channelId": "TVN",
+  "channel": {
+   "id": "TVN",
+   "displayName": "TVNorge",
+   "priority": 690,
+   "disabled": false
+  },
+  "programs": [
+   {
+    "id": "33b43612-9ed0-427c-9920-8c91298ff0db",
+    "title": "71° nord - Norges tøffeste kjendis",
+    "synopsis": "",
+    "genre": "TV-lek",
+    "startTime": "2026-10-06T11:30:00",
+    "endTime": "2026-10-06T12:30:00",
+    "episodeNumber": 12,
+    "episodeCount": 30,
+    "seasonNumber": 18,
+    "seasonCount": 0,
+    "seasonSynopsis": "En gruppe med kjendiser bytter ut rød løper med svart løype, og kjemper om tittelen «Norges tøffeste kjendis».",
+    "productionYear": 0,
+    "countryOfOrigin": [],
+    "ageRating": 0,
+    "programAggregateId": "",
+    "live": false,
+    "replay": false
+   },
+   {
+    "id": "2feb173d-5b56-414e-988e-d1ead05f3829",
+    "title": "71° nord - Norges tøffeste kjendis",
+    "synopsis": "",
+    "genre": "TV-lek",
+    "startTime": "2026-10-06T20:30:00",
+    "endTime": "2026-10-06T21:30:00",
+    "episodeNumber": 13,
+    "episodeCount": 30,
+    "seasonNumber": 18,
+    "seasonCount": 0,
+    "seasonSynopsis": "En gruppe med kjendiser bytter ut rød løper med svart løype, og kjemper om tittelen «Norges tøffeste kjendis».",
+    "productionYear": 0,
+    "countryOfOrigin": [],
+    "ageRating": 0,
+    "programAggregateId": "",
+    "live": false,
+    "replay": false
+   }
+  ],
+  "created": "2026-09-23T00:24:25.016523"
+ }
+]

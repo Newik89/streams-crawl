@@ -15,8 +15,10 @@
         div.program-desni    заголовок, а в нём иногда `div.rerun` — повтор
 
 Спорт на общественном канале появляется наездами (матчи сборной), поэтому
-маркера эфира у сайта нет вовсе: `live_raw` ставим пустым, а повтор помечаем
-через `rerun`, чтобы отсев не принял его за прямую трансляцию.
+маркера эфира у сайта нет вовсе: `live_raw` ставим пустым, а повтор (`rerun`)
+передаём пометкой сайта (`site_says`), чтобы угадывание первым показом не
+сделало его прямой трансляцией (до 06.10 делало: слово «repriza» в словарь
+записи не кладём — оно двусмысленное).
 """
 
 from __future__ import annotations
@@ -28,7 +30,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "rtrs.tv"
 TZ = "Europe/Sarajevo"
@@ -77,7 +79,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         rerun = node.css_first("div.rerun") is not None
         _, _, rest = title.partition(":")
         rest = rest.strip()
-        out.append(Program(
+        program = Program(
             channel_raw=CHANNEL, title=title,
             start=datetime(current.year, current.month, current.day,
                            int(hm.group(1)), int(hm.group(2)), tzinfo=zone),
@@ -87,5 +89,11 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=_pair(rest) if rest else _pair(title),
             source_url=url, extra={"day": current.isoformat(),
                                    "rerun": rerun},
-        ))
+        )
+        # `div.rerun` — пометка повтора от сайта. Слово «repriza» в словарь
+        # не кладём (двусмысленное, `ГРАБЛИ.md`), поэтому до 06.10 повтор,
+        # оказавшийся первым показом пары, получал эфир угадыванием
+        if rerun:
+            site_says(program, False)
+        out.append(program)
     return mark_first_show(out, "uživo")

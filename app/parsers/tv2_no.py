@@ -20,9 +20,15 @@
 пары. Жанр называет вид спорта своим словом (`Fotball`, `Tennis`,
 `Håndball`), общий `sport` не говорит ничего.
 
-**Флаг `live` у сайта не про прямой эфир**, а про то, идёт ли передача
-прямо сейчас: у всей суточной выдачи он `false`. Поэтому эфир, как у
-`ert.gr`, определяем первым показом пары — домен в `REPEAT_GUESS_DOMAINS`.
+**Флаги `live` и `replay` у сайта честные** (аудит 06.10, обход #205: 20
+матчей `live`, 108 `replay` за 6 дней, `live` стоит и на будущих днях —
+«Eliteserien: Fredrikstad - Tromsø» 11.10). Раньше здесь было написано, что
+`live` — «идёт сейчас» и всегда `false`; на 01.09 так и было, и эфир
+угадывался первым показом пары. Теперь флаг читаем (`site_says`): `live` —
+эфир (он главнее `replay`: у «Saint-Raphaël - Elverum» стоят оба), `replay`
+— повтор, ни того ни другого — не эфир. Флаги стоят только у каналов самого
+TV 2; у гостей гида (NRK, Viasport, Eurosport…) они пустые — там эфир
+по-прежнему угадывается первым показом пары.
 
 Время в `startTime` без смещения — это местное время Осло.
 """
@@ -33,7 +39,7 @@ import json
 from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "tv2.no"
 TZ = "Europe/Oslo"
@@ -69,6 +75,15 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     if not isinstance(days, list):
         return []
 
+    # Флаги сайт ставит только СВОИМ каналам (TV 2 Sport 1/2/Premium, TV 2
+    # Direkte, Nyheter, Zebra, Livsstil): у NRK, Viasport, Eurosport и прочих
+    # гостей гида `live`/`replay` — false у всех строк (обход #205). Поэтому
+    # флаг живой у КАНАЛА, где хоть одна передача им помечена; гостей угадываем
+    flagged = {((b.get("channel") or {}).get("displayName") or "").strip()
+               for b in days if isinstance(b, dict)
+               if any(isinstance(show, dict)
+                      and (show.get("live") or show.get("replay"))
+                      for show in (b.get("programs") or []))}
     out: list[Program] = []
     for block in days:
         if not isinstance(block, dict):
@@ -88,7 +103,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             if start.tzinfo is None:
                 start = start.replace(tzinfo=zone)
             genre = (show.get("genre") or "").strip()
-            out.append(Program(
+            program = Program(
                 channel_raw=channel, title=title,
                 start=start, raw_time=start.strftime("%H:%M"),
                 description=" ".join((show.get("synopsis") or "").split())[:300],
@@ -96,5 +111,13 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 sport_raw="" if genre.lower() in _EMPTY_GENRE else genre,
                 match_raw=_pair(title), source_url=url,
                 extra={"day": start.date().isoformat()},
-            ))
-    return mark_first_show(out, "direkte")
+            )
+            if channel in flagged:
+                site_says(program, True if show.get("live")
+                          else False if show.get("replay") else None,
+                          "direkte" if show.get("live") else "")
+            out.append(program)
+    # у канала с живыми флагами строка без пометки — не эфир, угадывать её
+    # нельзя; угадываем только каналы-гости без флагов
+    mark_first_show([p for p in out if p.channel_raw not in flagged], "direkte")
+    return out

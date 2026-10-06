@@ -390,10 +390,20 @@ def guessed(domain: str, result) -> bool:
     флага нет (`REPEAT_GUESS_DOMAINS`) или разбор пометил угаданной именно
     эту строку (`extra["live_guess"]`) — у digisport.ro флаг есть, но не у
     всех строк (06.10). Угаданный эфир сверяется с эталоном и чистится от
-    повторов; помеченный честно — нет."""
+    повторов; помеченный честно — нет.
+
+    Порядок правил (06.10, аудит меток эфира, ветка live-flags):
+    1. Сайт сам пометил строку эфиром или повтором (`extra["site_flag"]`,
+       ставит `parsers.site_says`) — не угадана, даже если весь сайт в
+       `REPEAT_GUESS_DOMAINS`: часть строк сайта честная, часть нет.
+    2. Разбор пометил строку угаданной (`extra["live_guess"]`) — угадана.
+    3. Сайт целиком в `REPEAT_GUESS_DOMAINS` — угадана."""
     program = getattr(result, "program", None)
-    return _bare_domain(domain) in REPEAT_GUESS_DOMAINS \
-        or bool(getattr(program, "extra", {}).get("live_guess"))
+    extra = getattr(program, "extra", None) or {}
+    if extra.get("site_flag"):
+        return False
+    return bool(extra.get("live_guess")) \
+        or _bare_domain(domain) in REPEAT_GUESS_DOMAINS
 
 
 def _looks_repeat(earlier, later) -> bool:

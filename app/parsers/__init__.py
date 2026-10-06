@@ -38,6 +38,41 @@ class Program:
                                     self.league_raw, self.sport_raw) if x)
 
 
+#: ПОМЕТКА САЙТА — эфир или повтор сказал сам сайт (поле JSON, класс,
+#: значок, слово в своей графе), а не угадал разбор. Правила (06.10, port.hu:
+#: `is_live_mp` лежал в данных, а разбор угадывал эфир — и потерял матч):
+#:   1. Есть у сайта признак — разбор ЧИТАЕТ его через `site_says`, а не
+#:      угадывает. Угадывание (`mark_first_show`) — только для строк, о которых
+#:      сайт промолчал.
+#:   2. `site_says` кладёт слово в `live_raw`: эфир — `SITE_LIVE_WORD`
+#:      (раздел live в `data/markers.json`), повтор/запись — `SITE_REPEAT_WORD`
+#:      (раздел not_live) или своё слово сайта, если оно есть в словаре.
+#:   3. Вердикт сайта лежит в `extra[SITE_FLAG]`: `mark_first_show` такие
+#:      строки не трогает — повтор не станет «первым показом», эфир не сотрётся.
+#:   4. Строку, которой эфир достался угадыванием, `mark_first_show` метит
+#:      `extra["live_guess"]` — по нему `scripts/parse_live.py` (`guessed`)
+#:      сверяет её с эталоном flashscore.
+SITE_FLAG = "site_flag"
+SITE_LIVE = "live"
+SITE_REPEAT = "repeat"
+SITE_LIVE_WORD = "live"
+SITE_REPEAT_WORD = "replay"
+
+
+def site_says(program: "Program", live: bool | None,
+              word: str = "") -> "Program":
+    """Записать пометку самого сайта у передачи.
+
+    `live`: True — сайт сказал «прямой эфир», False — «повтор/запись»,
+    None — сайт промолчал (строку оставляем угадыванию). `word` — слово
+    сайта, если оно есть в `data/markers.json`; иначе — общее слово."""
+    if live is None:
+        return program
+    program.live_raw = word or (SITE_LIVE_WORD if live else SITE_REPEAT_WORD)
+    program.extra[SITE_FLAG] = SITE_LIVE if live else SITE_REPEAT
+    return program
+
+
 def mark_first_show(programs: list["Program"], marker: str) -> list["Program"]:
     """Проставить маркер эфира первому показу каждой пары.
 
@@ -47,9 +82,14 @@ def mark_first_show(programs: list["Program"], marker: str) -> list["Program"]:
     пометкой на всех — лента наполняется повторами. Поэтому маркер получает
     самый ранний показ пары, остальные помечаются как повтор.
 
-    Порядок команд не важен: запись часто идёт перевёрнутой парой. Домены,
-    где эфир именно угадан, перечислены в `scripts/parse_live.py`
-    (`REPEAT_GUESS_DOMAINS`) — там же снимаются повторы между файлами.
+    Строки с пометкой сайта (`site_says`) не угадываются: сайт уже сказал.
+    Если у пары есть показ, который сайт назвал эфиром, остальные её показы
+    без пометки — не эфир. Повтор по слову сайта первым показом не считается.
+
+    Порядок команд не важен: запись часто идёт перевёрнутой парой. Угаданный
+    эфир метится `extra["live_guess"]`; домены, где угадано всё, перечислены
+    в `scripts/parse_live.py` (`REPEAT_GUESS_DOMAINS`) — там же снимаются
+    повторы между файлами.
     """
     def key(p: "Program"):
         if " - " not in p.match_raw:
@@ -57,20 +97,26 @@ def mark_first_show(programs: list["Program"], marker: str) -> list["Program"]:
         return tuple(sorted(" ".join(s.lower().split())
                             for s in p.match_raw.split(" - ", 1)))
 
+    said_live = {key(p) for p in programs
+                 if p.extra.get(SITE_FLAG) == SITE_LIVE} - {None}
     first: dict[tuple, object] = {}
     for p in programs:
         pair = key(p)
-        if pair is not None and p.start is not None                 and (pair not in first or p.start < first[pair]):
+        if p.extra.get(SITE_FLAG) or pair is None or p.start is None:
+            continue
+        if pair not in first or p.start < first[pair]:
             first[pair] = p.start
     for p in programs:
         pair = key(p)
-        if pair is None:
+        if pair is None or p.extra.get(SITE_FLAG):
             continue
-        if p.start is not None and p.start > first[pair]:
+        if pair in said_live or (p.start is not None
+                                 and p.start > first[pair]):
             p.live_raw = ""
             p.extra["repeat_guess"] = True
         else:
             p.live_raw = p.live_raw or marker
+            p.extra["live_guess"] = True
     return programs
 
 

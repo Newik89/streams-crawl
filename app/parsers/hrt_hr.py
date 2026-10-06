@@ -16,8 +16,10 @@
 Первая строка — канал и дата, дальше «время + название». Номера сети:
 `2` — HTV 1, `3` — HTV 2 (там футбол), `4` — HTV 3; `1` и `5` пусты.
 
-Пометок эфира нет: спортивные трансляции у HRT называются прямо
-(`Nogomet: Dinamo - Hajduk`), поэтому эфиром считаем первый показ пары.
+Отдельного поля эфира нет, но пометки в строке есть (аудит 06.10): `(R)` —
+повтор, «…, prijenos» в конце — прямая трансляция. Их читаем как пометку
+сайта (`site_says`); строки без пометки (`Nogomet: Dinamo - Hajduk`)
+угадываем первым показом пары.
 """
 
 from __future__ import annotations
@@ -26,7 +28,7 @@ import re
 from datetime import date as _date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "raspored.hrt.hr"
 TZ = "Europe/Zagreb"
@@ -35,6 +37,13 @@ _HEAD = re.compile(r"^HRT\s*-\s*(.+?),\s*[^,]+,\s*(\d{2})\.(\d{2})\.(\d{4})")
 _ROW = re.compile(r"^(\d{1,2}):(\d{2})\s+(.+)$")
 #: служебные хвосты сайта: `(R)`, `(kod. na sat.)`, `(12/60)`
 _TAIL = re.compile(r"\s*\((?:R|kod\.[^)]*|\d+/\d+)\)", re.I)
+#: пометка сайта «повтор» — `(R)` (repriza) хвостом строки; в обходе #205
+#: у 300+ строк. До 06.10 хвост просто срезался, и повтор, оказавшийся
+#: первым показом пары, получал эфир угадыванием
+SAYS_REPEAT = re.compile(r"\(R\)")
+#: пометка сайта «прямая трансляция» — слово `prijenos` последним в строке:
+#: «Zadar: Misa, prijenos», «…, KD V. Lisinski, prijenos»
+SAYS_LIVE = re.compile(r",\s*prijenos\s*$", re.I)
 
 
 def _pair(text: str) -> str:
@@ -91,11 +100,18 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                              int(row.group(1)), int(row.group(2)),
                              tzinfo=zone) + timedelta(days=shift)
         league, pair = _split(title)
-        out.append(Program(
+        program = Program(
             channel_raw=channel, title=title, start=start,
             raw_time=f"{row.group(1)}:{row.group(2)}",
             league_raw=league, sport_raw=league, match_raw=pair,
             source_url=url,
             extra={"day": start.date().isoformat() if start else ""},
-        ))
+        )
+        # пометки HRT в самой строке (аудит 06.10): `(R)` — повтор,
+        # «…, prijenos» в конце — прямая трансляция (мессы, концерты, матчи)
+        if SAYS_REPEAT.search(row.group(3)):
+            site_says(program, False)
+        elif SAYS_LIVE.search(title):
+            site_says(program, True, "prijenos")
+        out.append(program)
     return mark_first_show(out, "uživo")

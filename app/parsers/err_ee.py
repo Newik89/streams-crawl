@@ -23,7 +23,7 @@ import json
 import re
 from datetime import date as _date, datetime, timezone
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "jupiter.err.ee"
 TZ = "Europe/Tallinn"
@@ -64,14 +64,17 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         replay = (rec.get("automaticReplay") or "") == "Y"
         head, sep, tail = title.partition(":")
         rest = tail.strip() if sep and tail.strip() else title
-        out.append(Program(
+        program = Program(
             channel_raw=channel, title=title,
             start=begin,
             raw_time=begin.strftime("%H:%M"),
             description=(rec.get("lead") or "")[:200],
             league_raw=head.strip()[:120] if sep and tail.strip() else "",
-            live_raw="" if replay else "",
             match_raw=" " if replay else _pair(rest),
             source_url=url, extra={"day": begin.date().isoformat()},
-        ))
+        )
+        if replay:
+            # пометка сайта «повтор» — словом словаря (`kordus`, not_live)
+            site_says(program, False, "kordus")
+        out.append(program)
     return mark_first_show(out, "otseülekanne")

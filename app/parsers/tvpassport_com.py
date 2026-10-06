@@ -31,7 +31,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
-from . import Program, mark_first_show, register
+from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "tvpassport.com"
 TZ = "America/New_York"
@@ -74,19 +74,24 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         except ValueError:
             continue
         pair = _pair(episode)
-        live = "live" if (a.get("data-live") or "").strip() else ""
-        if (a.get("data-repeat") or "").strip():
-            live = ""
-        out.append(Program(
+        program = Program(
             channel_raw=channel,
             title=f"{league}: {episode}" if episode else league,
             start=begin,
             raw_time=begin.strftime("%H:%M"),
             league_raw=league[:120],
-            live_raw=live,
             match_raw=pair,
             source_url=url, extra={"day": begin.date().isoformat()},
-        ))
-    # data-live проставлен далеко не всегда: непомеченным повтором строкам
-    # эфир достаётся первым показом пары (домен в REPEAT_GUESS_DOMAINS)
+        )
+        # повтор главнее эфира: «1» в data-repeat — запись, даже если
+        # data-live тоже стоит. До 06.10 повтор лишь гасил live_raw, и
+        # первый показ пары всё равно получал эфир угадыванием — запись
+        # уходила в ленту (аудит признаков, обход #205)
+        if (a.get("data-repeat") or "").strip() == "1":
+            site_says(program, False)
+        elif (a.get("data-live") or "").strip() == "1":
+            site_says(program, True)
+        out.append(program)
+    # data-live проставлен далеко не всегда: строкам, о которых сайт
+    # промолчал, эфир достаётся первым показом пары (`live_guess`)
     return mark_first_show(out, "live")

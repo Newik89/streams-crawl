@@ -10,8 +10,11 @@
 Запись: `{title, start, stop, categories: ["Sport"], live, replay}`.
 Время ISO с поясом (+03:00). Что важно (проба 31.08):
 
-* **поля `live`/`replay` мёртвые** — false у всех 74 передач Digi Sport 1;
-  честный маркер — приставка `LIVE ` в `title`;
+* у Digi эфир помечает приставка `LIVE ` в `title`, поля `live`/`replay`
+  там мёртвые (false у всех 74 передач Digi Sport 1 на 31.08). У Prima
+  Sport поля ожили (аудит 06.10, обход #205: `live` у 5 матчей, `replay` у
+  79 повторов) — читаем всё это как пометку сайта (`site_says`); поле
+  `live` у Prima стоит не у всех матчей, остальные пары угадываются;
 * пара команд через дефис БЕЗ пробелов: `FC Bacau-CSM Slatina` — режем по
   первому дефису и отдаём `A - B`; хвост `Etapa N` (тур) срезаем;
 * прерванный матч идёт двумя записями с LIVE (тайм 1 в 17:30, тайм 2 в
@@ -30,7 +33,7 @@ import json
 import re
 from datetime import date as _date, datetime
 
-from . import Program, register
+from . import SITE_FLAG, SITE_REPEAT, Program, register, site_says
 
 DOMAIN = "programetv.ro"
 TZ = "Europe/Bucharest"
@@ -123,49 +126,65 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     break
             if pair == " ":
                 league = ""
-            out.append(Program(
+            program = Program(
                 channel_raw=channel, title=clean, start=start,
                 raw_time=raw[11:16],
                 league_raw=league.strip() if pair != " " else "",
                 sport_raw="",
-                live_raw="live" if live else "",
                 match_raw=pair, source_url=url,
-                extra={"day": raw[:10], "spaced": spaced},
-            ))
+                extra={"day": raw[:10], "spaced": spaced, "prefix": live},
+            )
+            # пометки сайта: приставка LIVE (Digi), поля `live`/`replay`
+            # (Prima — ожили к 10.2026: 5 эфиров и 79 повторов в обходе #205)
+            if live or item.get("live") is True:
+                site_says(program, True)
+            elif item.get("replay") is True:
+                site_says(program, False)
+            out.append(program)
 
-    # Prima Sport и Pro Arena размечают эфир никак: ни LIVE, ни лиги —
+    # Prima Sport и Pro Arena приставкой LIVE эфир не размечают, а поле
+    # `live` у них стоит не у всех матчей (06.10: «Ucraina – Ungaria» и
+    # «Bosnia – Polonia» в 21:45 без пометки) — лиги в заголовке тоже нет:
     # просто `Rapid București – CS U Craiova`. Если на странице канала
-    # приставки LIVE нет ВООБЩЕ, эфиром считаем передачи-пары (только с
-    # пробельным тире — дефис без пробелов в имени передачи не в счёт);
-    # повторы срежет правило первого показа ниже.
-    if out and not any(p.live_raw for p in out):
+    # приставки LIVE нет ВООБЩЕ, эфиром считаем передачи-пары, о которых сайт
+    # промолчал (только с пробельным тире — дефис без пробелов в имени
+    # передачи не в счёт); повторы срежет правило первого показа ниже.
+    if out and not any(p.extra.get("prefix") for p in out):
         for p in out:
-            if p.extra.get("spaced"):
+            if not p.extra.get("spaced") \
+                    or p.extra.get(SITE_FLAG) == SITE_REPEAT:
+                continue
+            if not p.extra.get(SITE_FLAG):
                 p.live_raw = "live"
                 p.extra["live_guess"] = True
-                # лиги в таких заголовках не бывает, вид спорта взять неоткуда;
-                # каналы эти — футбольные (авто/мото и прочее режет список
-                # «чужих» по названию передачи), даём осторожный дефолт
-                if not p.sport_raw:
-                    p.sport_raw = "fotbal"
-                    p.extra["sport_guess"] = True
+            # лиги в таких заголовках не бывает, вид спорта взять неоткуда;
+            # каналы эти — футбольные (авто/мото и прочее режет список
+            # «чужих» по названию передачи), даём осторожный дефолт
+            if not p.sport_raw:
+                p.sport_raw = "fotbal"
+                p.extra["sport_guess"] = True
 
     # Эфир — первый показ пары; поздние сегменты/повторы того же матча
-    # (в т.ч. с переставленной парой) идут записью.
+    # (в т.ч. с переставленной парой) идут записью. Повтор по слову сайта
+    # первым показом не считается.
     def _pk(p: Program):
         if " - " not in p.match_raw:
             return None
         return tuple(sorted(" ".join(s.lower().split())
                             for s in p.match_raw.split(" - ", 1)))
 
+    def _on_air(p: Program) -> bool:
+        return bool(p.live_raw) and p.extra.get(SITE_FLAG) != SITE_REPEAT
+
     first: dict[tuple, datetime] = {}
     for p in out:
         k = _pk(p)
-        if k is not None and (k not in first or p.start < first[k]):
+        if _on_air(p) and k is not None and (k not in first or p.start < first[k]):
             first[k] = p.start
     for p in out:
         k = _pk(p)
-        if p.live_raw and k is not None and p.start > first[k]:
+        if _on_air(p) and k is not None and p.start > first[k]:
             p.live_raw = ""
+            p.extra.pop(SITE_FLAG, None)
             p.extra["repeat_guess"] = True
     return out
