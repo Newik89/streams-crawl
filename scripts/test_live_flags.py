@@ -334,20 +334,21 @@ check("слово внутри словарного выражения («živo�
 
 ref = {"sport": "F", "home": "Ferencvaros", "away": "Debrecen",
        "league": "HUNGARY: NB I", "fs_id": "x1", "start_kyiv": "2026-10-04T19:00"}
-# кличка, которой нет в словаре: «Loki» — прозвище «Debrecen». Сам DVSC
+# сокращение, которого нет в словаре (вымышленное «DBRC»; детектор ловит
+# клички на ту же первую букву или по местному имени). Сам DVSC
 # с 06.10 записан в aliases.json (ветка hu-live) и сходится — детектор
 # должен ловить именно НЕзнакомые клички
-row = pipeline.Row(program=Program(channel_raw="M4 Sport", title="Ferencváros - Loki",
+row = pipeline.Row(program=Program(channel_raw="M4 Sport", title="Ferencváros - DBRC",
                                    start=None, league_raw="Labdarúgó NB I"),
-                   ok=True, home="Ferencváros", away="Loki", sport="F",
+                   ok=True, home="Ferencváros", away="DBRC", sport="F",
                    start_kyiv=datetime(2026, 10, 4, 19, 0, tzinfo=KYIV))
 site = audit_run.Site("port.hu")
 site.rows.append((row, "page"))
 games = {"окно": 0, "собрано": "2026-10-04 04:00", "эталон": [ref],
          "games": [{"start_kyiv": "2026-10-04T19:00"}]}
 aliases, zones, _ = audit_run.check_aliases_and_zones({"port.hu": site}, games)
-check("кличка: «Loki» ≠ «Debrecen» при твёрдо совпавшей второй команде",
-      any("Loki" in x and "Debrecen" in x for x in aliases), aliases)
+check("кличка: «DBRC» ≠ «Debrecen» при твёрдо совпавшей второй команде",
+      any("DBRC" in x and "Debrecen" in x for x in aliases), aliases)
 
 twin = {"эталон": [{"fs_id": "0K7iLNL7", "home": "Olimpia Asuncion",
                     "away": "Nacional Asuncion", "start_kyiv": t}
