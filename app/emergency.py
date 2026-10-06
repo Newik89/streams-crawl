@@ -227,8 +227,8 @@ def _cancel(conn: sqlite3.Connection, run_id: str) -> tuple[bool, str]:
                        f"заявка могла не дойти ({answer})" if ok is None else
                        f"заявка не ушла ({answer})"))
     watch.save_json(conn, "crawl_cancel", cancels)
-    words = (f"остановил сбор: {'; '.join(said)}. Сторож сверит остановку и, "
-             f"если это был плановый, сам закажет досрочный")
+    words = (f"остановил сбор: {'; '.join(said)}. Сторож сверит остановку и "
+             f"ничего не перезаказывает; следующий плановый пойдёт по расписанию")
     watch.note(conn, words, who=WHO)
     return all_ok, words
 

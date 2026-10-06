@@ -39,7 +39,7 @@
       <button type="submit">Снять отметку «сбор идёт»</button>
     </form>
     <form method="post" action="{{ url_for('emergency_cancel') }}"
-          onsubmit="return confirm('Остановить зависший сбор на GitHub? Если это был плановый, сторож сам закажет замену.')">
+          onsubmit="return confirm('Остановить зависший сбор на GitHub? Сторож ничего не перезаказывает, следующий плановый пойдёт по расписанию.')">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button type="submit" class="danger">Остановить зависший сбор</button>
     </form>
