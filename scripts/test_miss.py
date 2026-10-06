@@ -320,6 +320,31 @@ try:
           and crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3, date(2026, 10, 6)) == []
           and crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3, date(2026, 10, 7))
           == [date(2026, 10, 7)])
+    # ночь по часам сайта (00:30 Вены): страница «сегодня» у ORF ещё держит
+    # вчерашние телесутки — сегодняшний день тоже берём ссылкой (#205)
+    check("ночь_ORF_в_22_30_UTC: tv_night, и сегодня 06.10 добирается ссылкой",
+          daytime.tv_night("Europe/Vienna")
+          and crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3, None, night=True)
+          == [date(2026, 10, 6), date(2026, 10, 7), date(2026, 10, 8)]
+          and crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3,
+                                    date(2026, 10, 6), night=True) == [date(2026, 10, 6)])
+    # kolla.tv (dagenstv.com): день номером от сегодня, `?dat=` ручка не знает
+    kolla = source("dagenstv.com", "Europe/Stockholm",
+                   "https://www.kolla.tv/api/es/channels/listWithPrograms?day={DAYNUM}")
+    got = jobs_of([kolla], 3)
+    check("kolla_день_номером: окно 06.10–08.10 → day=0,1,2 (у Стокгольма уже 06.10)",
+          [u.rsplit("=", 1)[1] for *_, u in got] == ["0", "1", "2"]
+          and [d for _, d, _ in got] == ["2026-10-06", "2026-10-07", "2026-10-08"], got)
+
+    # утренний сбор 03:15 UTC (#205): Вена 05:15 — ещё ночь, днём — нет
+    daytime.datetime = frozen_utc(2026, 10, 6, 3, 15)
+    morning = daytime.tv_night("Europe/Vienna") and daytime.tv_night("Europe/Bucharest")
+    daytime.datetime = frozen_utc(2026, 10, 6, 13, 15)
+    check("tv_night: 03:15 UTC — ночь у Вены и Бухареста, 13:15 UTC — день",
+          morning and not daytime.tv_night("Europe/Vienna")
+          and crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3, None,
+                                    night=daytime.tv_night("Europe/Vienna"))
+          == [date(2026, 10, 7), date(2026, 10, 8)])
 
     # Сидней: «завтра» наступает раньше всех — в 14:00 UTC там уже 01:00 06.10
     daytime.datetime = frozen_utc(2026, 10, 5, 14, 0)
@@ -389,6 +414,42 @@ check("digisport_ночная_строка_под_заголовком_06_10 —
       (kyiv(night.start), night.extra))
 check("digisport_Premiera_не_эфир",
       all(p.live_raw == "" for (t, _), p in rows.items() if t == "23:30"))
+
+# подпись под <br> — турнир или стадия; сплошной текст ячейки клеил её к
+# гостям: «Fribourg OlympicFIBA Masculin Europe Cup» (самопроверка #205)
+glued = ('<div class="schedule-wrapper"><h3>Miercuri 07 Octombrie</h3>'
+         '<table class="schedule-table">'
+         + digi_row("19:00", "baschet", "Etapa 1",
+                    "Baschet: CSM CSU Oradea-Fribourg Olympic<br>FIBA Masculin Europe Cup")
+         + digi_row("20:00", "digisport", "LIVE",
+                    "Fotbal Feminin: Romania-Norvegia<br>Cupa Mondiala, Play-off")
+         + '</table></div>')
+got = {p.raw_time: p for p in digisport_ro.parse(
+    glued, day=date(2026, 10, 7), tz=digisport_ro.TZ,
+    url="https://www.digisport.ro/program-tv/digisport-3")}
+check("digisport_подпись_под_br_не_клеится_к_гостям, а уходит в лигу",
+      got["19:00"].match_raw == "CSM CSU Oradea - Fribourg Olympic"
+      and "FIBA Masculin Europe Cup" in got["19:00"].league_raw
+      and got["20:00"].match_raw == "Romania - Norvegia"
+      and "Cupa Mondiala" in got["20:00"].league_raw,
+      [(p.match_raw, p.league_raw) for p in got.values()])
+
+# diemaxtra: имя канала — из подписи страницы, не из адреса: `/schedule`
+# отдаёт страницу Diema Sport, а звался «Diema Xtra» (лишний канал у 11 игр)
+from app.parsers import diemaxtra_bg  # noqa: E402
+diema = ('<html><head><title>Програма - Diemasport - Diema xtra</title></head><body>'
+         '<a data-toggle="tab" href="#tuesday"><span class="day">вт</span>'
+         '<span class="date">06 окт</span></a><div id="tuesday"><ul class="tv_content">'
+         '<li><p class="time">21.45</p><p class="title">Хърватия - Испания</p>'
+         '<p class="description">4 кръг, Футбол: УЕФА Лига на нациите, директно</p>'
+         '</li></ul></div></body></html>')
+named = {p.channel_raw for p in diemaxtra_bg.parse(
+    diema, day=date(2026, 10, 6), url="https://diemaxtra.nova.bg/schedule")}
+check("diemaxtra_канал_по_подписи_страницы: /schedule — это Diema Sport",
+      named == {"Diema Sport"}
+      and not diemaxtra_bg.parse(diema, day=date(2026, 10, 6),
+                                 url="https://diemaxtra.nova.bg/schedule",
+                                 channels={"Diema Xtra"}), named)
 
 
 class _Result:

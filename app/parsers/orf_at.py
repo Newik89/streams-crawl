@@ -108,8 +108,11 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     # само «übertragung», а его в `data/markers.json` нет (и класть нельзя —
     # у ORF оно стоит и у повтора): отсев не видел маркера, и все строки
     # «Übertragung» молча отсеивались — тот же класс, что `otseülekanne` у
-    # err.ee 03.10 (аудит признаков, обход #204/#205)
-    return mark_first_show(covered, "live") + rest
+    # err.ee 03.10 (аудит признаков, обход #204/#205).
+    # Отдаём в порядке страницы: склейка «угадываемые + остальные» шла
+    # кусками, и самопроверка (#205) видела «время пошло назад» у ORF
+    mark_first_show(covered, "live")
+    return sorted(covered + rest, key=lambda p: p.start)
 
 
 def list_channels(html: str) -> list[str]:

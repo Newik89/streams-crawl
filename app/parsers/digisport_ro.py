@@ -11,7 +11,10 @@
     table > tbody > tr
       td.schedule-icon[data-schedule]  вид передачи: `superliga`, `stiri`…
       td                                `21:30`
-      td                                `<span class="tag">LIVE</span> CFR Cluj - FCSB`
+      td                                `<span class="tag">LIVE</span> CFR Cluj - FCSB<br>Etapa 11`
+
+Под `<br>` — подпись: стадия (`Etapa 11`, `Grupe`) или турнир (`FIBA
+Masculin Europe Cup`). Она идёт в лигу и описание, не в пару (`_cell`).
 
 `data-schedule` — подсказка сайта, что за передача: `stiri` (новости),
 `superliga`, `la liga`, `fotbal european`. Кладём её в лигу — по ней вид
@@ -71,6 +74,29 @@ _STAGE_TAIL = re.compile(
     r"Turul\s*\w+|Manșa\s*\w+)[\s,]*)+$", re.I)
 
 
+def _cell(td) -> tuple[str, str, str]:
+    """Ячейка передачи → (пометка, заголовок, подпись).
+
+    Разметка: `<span class="tag"> Etapa 1 </span> Baschet: CSM CSU
+    Oradea-Fribourg Olympic<br>FIBA Masculin Europe Cup`. Подпись под `<br>` —
+    турнир или стадия. Сплошной текст ячейки (`td.text()`) склеивает её с
+    гостями без пробела: «Fribourg OlympicFIBA Masculin Europe Cup»,
+    «NorvegiaCupa Mondiala» (самопроверка #205, 06.10) — поэтому идём по
+    детям ячейки и режем по `<br>`."""
+    mark = ""
+    parts: list[list[str]] = [[]]
+    for child in td.iter(include_text=True):
+        if child.tag == "br":
+            parts.append([])
+        elif child.tag == "span" and "tag" in (child.attributes.get("class") or "").split():
+            mark = child.text(strip=True)
+        else:
+            parts[-1].append(child.text())
+    title = " ".join(" ".join(parts[0]).split())
+    note = " ".join(" ".join(" ".join(p) for p in parts[1:]).split())
+    return mark, title, note
+
+
 def _pair(text: str) -> str:
     text = _STAGE_TAIL.sub("", text).strip()
     for sep in (" - ", " – ", " vs ", " VS "):
@@ -121,31 +147,31 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         hm = _HHMM.match(cells[1].text(strip=True))
         if not hm:
             continue
-        tag = cells[2].css_first("span.tag")
-        mark = tag.text(strip=True) if tag else ""
-        title = " ".join(cells[2].text().split())
-        if mark:
-            title = title.replace(mark, "", 1).strip()
+        mark, title, note = _cell(cells[2])
         if title:
             days[-1][1].append((hm.group(0),
                                 (cells[0].attributes.get("data-schedule") or "").strip(),
-                                mark, title))
+                                mark, title, note))
 
     out: list[Program] = []
     unknown: list[Program] = []          # пометку вытеснило имя тура — эфир неизвестен
     for current, rows in days:
         moments = daytime.walk_day([r[0] for r in rows], current, tz or TZ)
-        for (raw_time, kind, mark, title), moment in zip(rows, moments):
+        for (raw_time, kind, mark, title, note), moment in zip(rows, moments):
             if moment is None:
                 continue
-            # `Superliga: Rapid-Universitatea CraiovaEtapa 7` — лига до
-            # двоеточия, пара после; двоеточия нет — пару ищем во всём заголовке
+            # `Superliga: Rapid-Universitatea Craiova` — лига до двоеточия,
+            # пара после; двоеточия нет — пару ищем во всём заголовке.
+            # Подпись под заголовком (`FIBA Masculin Europe Cup`, `Cupa
+            # Mondiala, Play-off`) — турнир: в лигу, к паре она не относится
             head, sep, rest = title.partition(":")
             league = f"{kind} {head.strip()}".strip() if sep and rest.strip() else kind
+            if note and not _STAGE_TAIL.fullmatch(note):
+                league = f"{league} {note}".strip()
             pair = _pair(rest) if sep and rest.strip() else _pair(title)
             program = Program(
                 channel_raw=channel, title=title, start=moment,
-                raw_time=raw_time, league_raw=league[:120],
+                raw_time=raw_time, description=note, league_raw=league[:120],
                 live_raw="live" if _LIVE_TAG.search(mark) else "",
                 match_raw=pair, source_url=url,
                 extra={"day": moment.date().isoformat()})

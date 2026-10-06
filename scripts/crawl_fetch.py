@@ -274,13 +274,21 @@ _DAY_LINK = re.compile(
     r'href="([^"?]*?_day-(\d{2})-(\d{2})-(\d{4})_-[0-9a-f]{6,}[^"?]*?\.html)"')
 
 
-def link_days(today: date, days: int, scan: date | None) -> list[date]:
+def link_days(today: date, days: int, scan: date | None,
+              night: bool = False) -> list[date]:
     """Какие дни сайт с `day_links` добирает по ссылкам из страницы канала.
-    Сама страница — «сегодня» САЙТА (`today` по его часам, не UTC): полному
-    обходу — остальные дни окна, скану даты — его день, если он не сегодня."""
+
+    Правила:
+      1. Сама страница — «сегодня» САЙТА (`today` по его часам, не UTC):
+         полному обходу — остальные дни окна, скану даты — его день, если
+         он не сегодня.
+      2. Ночью по часам сайта (`daytime.tv_night`) страница «сегодня» ещё
+         держит вчерашние телесутки — тогда и сегодняшний день берём
+         ссылкой (утренний сбор #205: ORF в 05:15 Вены отдал «Gestern
+         05.10», и дневные передачи 06.10 не скачались вовсе)."""
     if scan:
-        return [scan] if scan != today else []
-    return [today + timedelta(days=i) for i in range(1, days)]
+        return [scan] if (scan != today or night) else []
+    return [today + timedelta(days=i) for i in range(0 if night else 1, days)]
 
 
 def day_link_jobs(job: dict, html: str, wanted: list[date]) -> list[dict]:
@@ -572,7 +580,8 @@ def main() -> int:
             if by_links and job.get("day_links") \
                     and not job.get("_day_from_link"):
                 extra = day_link_jobs(job, page.html, link_days(
-                    daytime.today(пояс.get(job["domain"])), days, scan))
+                    daytime.today(пояс.get(job["domain"])), days, scan,
+                    night=daytime.tv_night(пояс.get(job["domain"]))))
                 if extra:
                     jobs.extend(extra)
                     print(f"     ↳ {job['domain']}: добавлено дней "

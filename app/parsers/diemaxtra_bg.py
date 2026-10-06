@@ -4,7 +4,8 @@
 Разведка отмечала сайт как «нужен браузер», но расписание открывается
 обычным запросом по адресу канала, и в ответе лежит **вся неделя**:
 
-    https://diemaxtra.nova.bg/schedule             — Diema Xtra
+    https://diemaxtra.nova.bg/schedule             — то же, что Diema Sport
+                                                     (не отдельный канал!)
     https://diemaxtra.nova.bg/diemasport/schedule  — Diema Sport
     https://diemaxtra.nova.bg/diemasport2/schedule — Diema Sport 2
     https://diemaxtra.nova.bg/diemasport3/schedule — Diema Sport 3
@@ -85,8 +86,22 @@ def _tab_dates(tree, today: _date) -> dict[str, _date]:
     return out
 
 
+#: имя канала в заголовке страницы: `Програма - Diemasport 2 - Diema xtra`
+_TITLE_CHANNEL = re.compile(r"Diema\s*sport\s*(\d)?", re.I)
+
+
 def _channel(tree, url: str) -> str:
-    """Имя канала: у Diema Xtra оно только в адресе раздела."""
+    """Имя канала — из ПОДПИСИ страницы (`<title>`), адрес — только запасной.
+
+    Адрес врёт: `/schedule` отдаёт ту же страницу, что `/diemasport/schedule`
+    (заголовок «Diemasport», md5 один — самопроверка #205, 06.10), а разбор
+    по адресу звал её «Diema Xtra». Так у всех 11 игр Diema Sport на витрине
+    стоял второй, несуществующий канал «Diema Xtra» (Diema Xtra — имя пакета
+    и сайта, телеканала с таким расписанием нет)."""
+    head = tree.css_first("title")
+    found = _TITLE_CHANNEL.search(head.text() if head else "")
+    if found:
+        return f"Diema Sport {found.group(1)}" if found.group(1) else "Diema Sport"
     for key, name in (("diemasport3", "Diema Sport 3"),
                       ("diemasport2", "Diema Sport 2"),
                       ("diemasport", "Diema Sport")):

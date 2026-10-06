@@ -80,6 +80,19 @@ def today(tz: str | None) -> _date:
     return datetime.now(ZoneInfo(tz) if tz else timezone.utc).date()
 
 
+#: Телесутки начинаются утром: до этого часа по часам сайта его страница
+#: «сегодня» (адрес без даты) ещё держит ВЧЕРАШНИЕ телесутки. Утренний сбор
+#: #205 (03:15 UTC): tv.orf.at в 05:15 Вены отдал «Gestern 05.10» вместо
+#: 06.10, programetv.ro в 06:15 Бухареста — 05.10 07:00 → 06.10 06:30.
+TV_DAY_START_HOUR = 7
+
+
+def tv_night(tz: str | None) -> bool:
+    """Ночь по часам сайта: его страница «сегодня» ещё вчерашняя
+    (`TV_DAY_START_HOUR`) — день «сегодня» надо брать отдельной страницей."""
+    return datetime.now(ZoneInfo(tz) if tz else timezone.utc).hour < TV_DAY_START_HOUR
+
+
 def walk_day(raw_times, day: _date, tz: str | None, *,
              overlap: int = НАЛОЖЕНИЕ,
              window: tuple[int, int] | None = None):
