@@ -223,7 +223,9 @@
   "INTERNAZIONALE MILAN": "INTER MILAN",
   "BROSE": "BAMBERG",
   "HAPOEL TA": "HAPOEL TEL AVIV",
-  "MACCABI TA": "MACCABI TEL AVIV"
+  "MACCABI TA": "MACCABI TEL AVIV",
+  "BODRUM": "BODRUMSPOR",
+  "SIPAY BODRUM": "BODRUMSPOR"
  },
  "_сборные целиком (6е A3): экзоним = всё имя, замена только полным совпадением — SAD нельзя словом, иначе Novi Sad станет Novi USA": {
   "ABD": "USA",

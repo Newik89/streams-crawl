@@ -403,7 +403,7 @@ check("уборка_решённое_не_трогает",
 
 from datetime import datetime, timedelta                       # noqa: E402
 
-from app import sport                                          # noqa: E402
+from app import leagues, sport                                 # noqa: E402
 from app.sport_question import Judge, Question, settle         # noqa: E402
 import games_import                                            # noqa: E402
 
@@ -412,6 +412,11 @@ SPORTS = sport.load(teams=("Galatasaray", "Kasimpasa", "Rytas", "Sabah",
 REF_Q = [
     ref("Galatasaray", "Kasimpasa", "2026-10-09T20:00", "F", "TURKEY: Super Lig"),
     ref("Rytas", "Sabah Baku", "2026-10-06T19:30", "B", CL),
+    # женский матч: в эталоне с меткой W, на sport5 пол — только в турнире
+    {**ref("Israel W", "Switzerland W", "2026-10-09T19:30", "F",
+           "EUROPE: World Cup Women - Qualification"), "fs_id": "il1"},
+    # «Bodrum FK» на beIN — это «Bodrumspor» эталона (data/aliases.json)
+    ref("Bodrumspor", "Keciorengucu", "2026-10-09T17:00", "F", "TURKEY: 1. Lig"),
     # заглушка тура: flashscore ставит весь тур лиги на одну минуту
     *[ref(h, a, "2026-10-10T18:00", "F", "BOSNIA: WWIN liga", f"z{i}")
       for i, (h, a) in enumerate((("Sloga", "Zrinjski"), ("Borac", "Velez"),
@@ -494,6 +499,17 @@ check("В_заглушка_тура_сайт_прав", (a.letter, a.rule) == ("
 a = answer(J, "Serbia Upside Down - Into the Unknown | Extreme Sports (tv2.no)",
            "2026-10-10 20:30", "Serbia Upside Down - Into the Unknown")
 check("Д_нечем_решить_владельцу", a.letter is None and a.plain == "решать владельцу", a)
+a = answer(J, "ישראל - שוויץ | מוקדמות אליפות העולם 27 לנשים | ערוץ הספורט "
+              "(sport5.co.il)", "2026-10-09 19:20",
+           "מוקדמות אליפות העולם 27 לנשים: ישראל - שוויץ, פלייאוף סיבוב 1")
+check("В_ивритское_לנשים_женский_матч_узнан_эталоном",
+      (a.letter, a.rule) == ("F", "правило 2"), a)
+check("метка_пола_לנשים_и_הנשים_но_не_אנשים",
+      [leagues.category(x) for x in ("מוקדמות 27 לנשים", "בכדורגל הנשים",
+                                      "אנשים טובים")] == ["W", "W", ""])
+a = answer(J, "Bodrum FK - A. Keçiörengücü | beIN SPORTS 2 (beinsports.com.tr)",
+           "2026-10-09 17:00", "Bodrum FK - A. Keçiörengücü")
+check("В_Bodrum_FK_это_Bodrumspor_эталона", (a.letter, a.rule) == ("F", "правило 2"), a)
 check("пороги_константы_reference",
       (games_import.sport_question.LIVE_NEAR, games_import.sport_question.REPEAT_AFTER,
        games_import.sport_question.REPEAT_DEPTH)

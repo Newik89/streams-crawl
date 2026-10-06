@@ -233,8 +233,16 @@ class Judge:
         `REPEAT_DEPTH`: ещё дальше — уже другая встреча тех же команд."""
         if not q.pair or q.when is None:
             return [], []
+        # пол и возраст из названия турнира — к именам, как в обходе
+        # (`pipeline.classify`): «ישראל - שוויץ | … לנשים» сверяется с
+        # «Israel W - Switzerland W», а без метки эталон её не узнаёт
+        home, away = q.pair
+        mark = leagues.category(" ".join(x for x in (q.league, q.title) if x))
+        if mark:
+            home = leagues.with_category(home, mark)
+            away = leagues.with_category(away, mark)
         near, far = [], []
-        for entry, when in self.reference.pair_times(*q.pair):
+        for entry, when in self.reference.pair_times(home, away):
             gap = q.when - when              # > 0 — строка позже матча
             if -LIVE_NEAR <= gap <= REPEAT_AFTER \
                     or self.reference.round_placeholder(entry, when):
