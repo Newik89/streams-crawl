@@ -221,6 +221,88 @@ check("очередь_модерации_то_же_правило: при дво
                                     datetime(2026, 10, 10, 14, 0, tzinfo=KYIV),
                                     parse_live.reference_index([ref("2026-10-10T01:30")])))
 
+# ── заглушка тура в эталоне (сбор #205, 06.10) ──────────────────────────────
+# Arena (tvarenasport.ba) ставит матчи тура WWIN liga на пт–вс со своими
+# временами и «Uživo», а flashscore держит весь тур на сб 10.10 18:00 —
+# по такому времени «матч уже сыгран» не доказать. Данные — настоящие (#205)
+print("заглушка тура в эталоне")
+from app.parsers import get as parser_get  # noqa: E402
+
+arena_page = (DATA / "live_flags" / "tvarenaprogram_ba_premium_2026-10-06.html") \
+    .read_text(encoding="utf-8")
+arena = parser_get("tvarenasport.ba")(arena_page, day=date(2026, 10, 6),
+                                      url="https://tvarenaprogram.com/live/v2/ba")
+
+
+class _Payload:
+    def __init__(self, program):
+        self.program = program
+
+
+def site_game(program, source):
+    home, away = program.match_raw.split(" - ", 1)
+    start = program.start.astimezone(KYIV)
+    return merge.Game(entries=[merge.Entry(
+        source=source, channel=program.channel_raw, home=home, away=away,
+        start=start, sport="F",
+        # лига — канон словаря, как у разбора (`league_canon`)
+        league=LEAGUE_CANON.get(program.league_raw, program.league_raw),
+        payload=_Payload(program))])
+
+
+def fs(home, away, league, when):
+    return {"sport": "F", "home": home, "away": away, "league": league,
+            "fs_id": f"{home}-{away}", "start_kyiv": when}
+
+
+WWIN, RS = "BOSNIA AND HERZEGOVINA: WWIN Liga BiH", "BOSNIA AND HERZEGOVINA: Prva Liga - RS"
+LEAGUE_CANON = {"WWIN liga BiH": WWIN, "Prva liga RS": RS}
+round_ref = [fs(h, a, WWIN, "2026-10-10T18:00") for h, a in (
+    ("Borac Banja Luka", "BSK Banja Luka"), ("Celik Zenica", "FK Sarajevo"),
+    ("Radnik Bijeljina", "Zeljeznicar"), ("Sloga Meridian", "Zrinjski"),
+    ("Velez Mostar", "Siroki Brijeg"))] + [fs(h, a, RS, "2026-10-10T16:00") for h, a in (
+    ("Famos Vojkovici", "Sutjeska Foca"), ("Kozara", "Prijedor"), ("Laktasi", "Omarska"),
+    ("Majevica", "Nevesinje"), ("Potkozarje", "Slavija"), ("Romanija Pale", "Leotar"),
+    ("Zvijezda 09", "Drina Zvornik"))]
+live_rows = [p for p in arena if p.title in ("Sloga - Zrinjski", "Čelik - Sarajevo",
+                                              "Kozara - Rudar")]
+check("arena_Uživo_пометка_сайта: три матча вс 11.10 — site_flag=live",
+      len(live_rows) == 3 and all(p.extra.get("site_flag") == "live" for p in live_rows),
+      [(p.title, p.extra) for p in live_rows])
+# пары WWIN, которые без правила 4 сверка с эталоном сводит (у «Kozara -
+# Rudar» эталон пишет «Kozara - Prijedor» — без словаря базы пара не сходится)
+wwin_rows = [p for p in live_rows if p.title != "Kozara - Rudar"]
+games = [site_game(p, "tvarenasport.ba") for p in wwin_rows]
+kept, gone = parse_live.drop_reference_repeats(games, round_ref)
+check("заглушка_тура: «Uživo» вс 11.10 не снят по времени тура сб 10.10 18:00",
+      len(kept) == 2 and not gone, [(g.home, r["start_kyiv"]) for g, r in gone])
+check("round_placeholder: 5 матчей WWIN в 18:00 — заглушка",
+      parse_live.round_placeholder(round_ref[0], datetime(2026, 10, 10, 18, 0),
+                                   parse_live.reference_index(round_ref)))
+quiet = [Program(channel_raw=p.channel_raw, title=p.title, start=p.start,
+                 league_raw=p.league_raw, match_raw=p.match_raw, live_raw="live",
+                 extra={"live_guess": True}) for p in wwin_rows]
+kept, gone = parse_live.drop_reference_repeats(
+    [site_game(p, "tvarenasport.ba") for p in quiet], round_ref)
+check("угаданный_эфир_по_заглушке_снимается_как_раньше (правило 4 — только для "
+      "пометки сайта)", not kept and len(gone) == 2,
+      [(g.home, g.away) for g in kept])
+# Diema Sport 2: «Ипсуич Таун - Фулъм» пн 12.10 16:00 «директно» — повтор
+# субботнего матча; время Премьер-лиги в эталоне настоящее (у тура разные)
+pl = "ENGLAND: Premier League"
+pl_ref = [fs("Ipswich", "Fulham", pl, "2026-10-10T17:00"),
+          fs("Crystal Palace", "Nottingham", pl, "2026-10-11T16:00"),
+          fs("Hull", "Everton", pl, "2026-10-11T16:00"),
+          fs("Coventry", "Newcastle", pl, "2026-10-12T22:00")]
+diema = Program(channel_raw="Diema Sport 2", title="Ипсуич Таун - Фулъм",
+                start=datetime(2026, 10, 12, 16, 0, tzinfo=KYIV),
+                match_raw="Ипсуич Таун - Фулъм", live_raw="live",
+                extra={"site_flag": "live"})
+kept, gone = parse_live.drop_reference_repeats([site_game(diema, "diemaxtra.nova.bg")],
+                                               pl_ref)
+check("настоящее_время_эталона: повтор с «директно» снят и при пометке сайта",
+      not kept and len(gone) == 1)
+
 # ── журнал снятого ───────────────────────────────────────────────────────────
 print("журнал снятого")
 

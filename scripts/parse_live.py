@@ -135,6 +135,11 @@ REPEAT_DEPTH = timedelta(hours=60)
 #: матч эталона в пределах ±3 ч от строки — строка показывает его вживую
 #: (тот же допуск, что у сверки угаданного эфира с эталоном)
 LIVE_NEAR = timedelta(hours=3)
+#: время эталона — «заглушка тура», если у лиги в этот день столько матчей
+#: ровно в одну минуту: WWIN liga BiH 10.10 — все 5 в 18:00, а Arena ставит
+#: их на пт 18:00, сб 18:30, вс 16:00 и 18:30 (самопроверка #205, 06.10).
+#: По такому времени «матч уже сыгран» не доказать (`played_before`, правило 4)
+ROUND_SAME_TIME = 5
 
 
 def add_reference(programs: list, reference: list,
@@ -226,8 +231,28 @@ def reference_index(reference: list) -> dict:
     return по_дням
 
 
+def round_placeholder(ref: dict, when, индекс: dict) -> bool:
+    """Время записи эталона — заглушка тура: у её лиги в этот день не меньше
+    `ROUND_SAME_TIME` матчей ровно в эту минуту (flashscore ставит весь тур
+    на одно время, пока лига не назначила его по матчам)."""
+    league = ref.get("league") or ""
+    if not league:
+        return False
+    same = sum(1 for r, t in индекс.get(when.date(), [])
+               if t == when and (r.get("league") or "") == league)
+    return same >= ROUND_SAME_TIME
+
+
+def site_said_live(game) -> bool:
+    """У игры есть строка, которую эфиром пометил сам сайт (`site_flag` =
+    live, ставит `parsers.site_says`), а не угадал разбор."""
+    from app.parsers import SITE_FLAG, SITE_LIVE
+    return any((getattr(getattr(e.payload, "program", None), "extra", None)
+                or {}).get(SITE_FLAG) == SITE_LIVE for e in game.entries)
+
+
 def played_before(home: str, away: str, league: str, start,
-                  индекс: dict) -> dict | None:
+                  индекс: dict, site_live: bool = False) -> dict | None:
     """Запись эталона, повтором которой является показ, или None.
 
     Правила по порядку:
@@ -242,6 +267,11 @@ def played_before(home: str, away: str, league: str, start,
        (4–60 ч) — матч уже сыгран, показ — повтор. Меньше четырёх часов —
        тот же матч в своём окне (студия, разброс сеток), больше шестидесяти
        — уже новая встреча тех же команд.
+    4. Исключение из правила 3: сайт сам пометил показ эфиром (`site_live`),
+       а время эталона — заглушка тура (`round_placeholder`). Тогда прав,
+       скорее всего, сайт: Arena (tvarenasport.ba) ставит Sloga — Zrinjski
+       на вс 11.10 16:00 «Uživo», а flashscore держит весь тур WWIN liga на
+       сб 10.10 18:00 (самопроверка #205, 06.10).
     """
     if not индекс or not start:
         return None
@@ -264,6 +294,8 @@ def played_before(home: str, away: str, league: str, start,
     for д in (день, день - timedelta(days=1), день - timedelta(days=2)):
         for r, when in индекс.get(д, []):
             if REPEAT_AFTER < start - when <= REPEAT_DEPTH and same_pair(r):
+                if site_live and round_placeholder(r, when, индекс):
+                    continue                                 # правило 4
                 return r                                     # правило 3
     return None
 
@@ -294,7 +326,7 @@ def drop_reference_repeats(games: list, reference: list) -> tuple[list, list]:
     оставили, снятые = [], []
     for g in games:
         матч = played_before(g.home, g.away, g.first.league or "", g.start,
-                             по_дням)
+                             по_дням, site_live=site_said_live(g))
         if матч is None:
             оставили.append(g)
         else:
