@@ -126,6 +126,30 @@ def walk_day(raw_times, day: _date, tz: str | None, *,
     return out
 
 
+def walk_programs(programs: list, day: _date, tz: str | None) -> list:
+    """Дата каждой строки страницы за `day` — по правилу полуночи
+    `walk_day`, отдельно по каждому каналу в порядке страницы. Время суток
+    строки не меняется, меняется только дата (и `extra["day"]`).
+
+    Для сеток, где раньше стояло жёсткое «час < 6 → следующий день» (07.10,
+    сбор #205): ntvplus и trt.net.tr начинают страницу передачей, идущей в
+    начале суток (`02:50` 06.10 на странице 06.10 уезжало на 07.10),
+    oneplaysport и sport5 отдают календарные сутки с `00:20`, а rts.rs
+    кончает страницу `05:43` следующего утра (порог 5 ставил её на сегодня).
+    """
+    by_channel: dict[str, list] = {}
+    for prg in programs:
+        if prg.start is not None:
+            by_channel.setdefault(prg.channel_raw, []).append(prg)
+    for rows in by_channel.values():
+        clock = [prg.start.strftime("%H:%M") for prg in rows]
+        for prg, moment in zip(rows, walk_day(clock, day, tz)):
+            prg.start = moment
+            if isinstance(prg.extra, dict) and "day" in prg.extra:
+                prg.extra["day"] = moment.date().isoformat()
+    return programs
+
+
 def _start_by_window(marks, passed, window: tuple[int, int]) -> int:
     """В какой день стоит первая строка: `0` — в день страницы, `-1` —
     накануне. Правила (шапка, «Окно страницы»):

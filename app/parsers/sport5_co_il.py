@@ -27,7 +27,7 @@ r"""sport5.co.il — Израиль, каналы «Спорт 5»; пять к�
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -92,8 +92,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         if not hm or not title:
             continue
         hour, minute = int(hm.group(1)), int(hm.group(2))
-        # телегид-день начинается утром: ночные часы — уже следующая дата
-        d = base + timedelta(days=1) if hour < 6 else base
+        d = base       # дата — ниже, по порядку страницы
         live = row.css_first('img[src*="img-live"]')
         out.append(Program(
             channel_raw=channel, title=title,
@@ -103,4 +102,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=_pair(title), source_url=url,
             extra={"day": d.isoformat()},
         ))
-    return out
+    # Страница — календарные сутки даты из адреса: `00:20`, `01:50`, потом
+    # `09:30 … 23:50` (сбор #205, 07.10). Признака дня в разметке нет.
+    # Жёсткое «час < 6 → завтра» ставило ночной прямой эфир (Аргентина —
+    # Бенин 07.10 01:50) на сутки позже, и его снимали «повтором». Дата —
+    # общим правилом полуночи: переход только там, где время пошло назад
+    return daytime.walk_programs(out, base, tz or TZ)

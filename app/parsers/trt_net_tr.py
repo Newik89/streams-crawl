@@ -25,7 +25,7 @@ TRT SPOR YILDIZ и общие TRT 1 / TRT 2, где идут матчи сбор
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -151,7 +151,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 head, sep, tail = title.partition(":")
                 rest = tail.strip() if sep and tail.strip() else title
                 league_text = head.strip() if sep and tail.strip() else title
-            d = day + timedelta(days=1) if int(hm.group(1)) < 5 else day
+            d = day    # дата — ниже, по порядку страницы
             out.append(Program(
                 channel_raw=channel, title=title,
                 start=datetime(d.year, d.month, d.day,
@@ -161,4 +161,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 match_raw=_pair(rest),
                 source_url=url, extra={"day": d.isoformat()},
             ))
-    return mark_first_show(out, "canlı")
+    # Сетка канала начинается передачей, идущей в начале суток (`04.58`
+    # TRT 2 — это ещё сегодня), и кончается утром следующих (`05.15`,
+    # `06.30` TRT SPOR — уже завтра): порог «час < 5 → завтра» ошибался на
+    # обоих краях (сбор #205). Дата — общим правилом полуночи, до выбора
+    # первого показа пары
+    return mark_first_show(daytime.walk_programs(out, day, tz or TZ), "canlı")

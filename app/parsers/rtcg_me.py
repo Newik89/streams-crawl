@@ -93,7 +93,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 if home.strip() and away.strip():
                     pair = f"{home.strip()} - {away.strip()}"
                 break
-        d = day + timedelta(days=1) if int(hm.group(1)) < 5 else day
+        d = day    # дата — ниже, по порядку страницы
         out.append(Program(
             channel_raw=channel, title=title,
             start=datetime(d.year, d.month, d.day,
@@ -108,4 +108,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=pair, source_url=url,
             extra={"day": d.isoformat()},
         ))
-    return out
+    # Вместо порога «час < 5 → завтра» — общее правило полуночи по порядку
+    # страницы (07.10, сбор #205: тот же порог у rts.rs и trt.net.tr
+    # ошибался на краях суток)
+    return daytime.walk_programs(out, day, tz or TZ)

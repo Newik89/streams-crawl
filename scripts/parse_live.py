@@ -67,9 +67,11 @@ REPEAT_GUESS_DOMAINS = {"trtspor.com.tr", "allente.no", "programetv.ro",
                         # РТС признака эфира не ставит вовсе; у ΣΚΑΪ
                         # пометка LIVE — про эфир канала, а не про матч
                         "rts.rs", "skai.gr",
-                        # Kanal 1 пишет «Vysielame» всем строкам подряд;
-                        # у port.hu признака эфира нет вовсе
-                        "kanal1sport.sk", "port.hu", "webtv.sk",
+                        # Kanal 1 пишет «Vysielame» всем строкам подряд.
+                        # port.hu выведен 06.10: флаги is_live_mp/is_repeat
+                        # честные, строки без флагов разбор помечает
+                        # live_guess (ветка hu-live — сливать её раньше)
+                        "kanal1sport.sk", "webtv.sk",
                         # литовский телегид tv3.lt эфир не помечает
                         "tv3.lt"}
 
@@ -162,6 +164,52 @@ def add_reference(programs: list, reference: list,
                 "fs_id": (prg.extra or {}).get("fs_id", ""),
                 "start_kyiv": begin.strftime("%Y-%m-%dT%H:%M"),
             })
+
+
+def local_reference(reference_full: list) -> dict:
+    """Местные написания пар эталона (поле `names`: `{"hu": [дом, гости]}`)
+    для сверки угаданного эфира, по дням: `{дата: [(дом, гости, время,
+    письменность, вид спорта)]}`. Написание, совпавшее с английским или с
+    уже взятой локалью, не повторяем: проверка идёт на каждую строку."""
+    from app.canon import _SCRIPT_OF_LANG
+    по_дням: dict = {}
+    for rec in reference_full:
+        try:
+            when = datetime.strptime(rec["start_kyiv"], "%Y-%m-%dT%H:%M") \
+                .replace(tzinfo=daytime.KYIV)
+        except (KeyError, ValueError):
+            continue
+        seen = {(rec.get("home") or "", rec.get("away") or "")}
+        for lang, pair in (rec.get("names") or {}).items():
+            if not (isinstance(pair, (list, tuple)) and len(pair) == 2
+                    and pair[0] and pair[1]):
+                continue
+            home, away = str(pair[0]), str(pair[1])
+            if (home, away) in seen:
+                continue
+            seen.add((home, away))
+            по_дням.setdefault(when.date(), []).append(
+                (home, away, when, _SCRIPT_OF_LANG.get(lang, "lat"),
+                 rec.get("sport") or "F"))
+    return по_дням
+
+
+def in_local_reference(home: str, away: str, start, sport: str,
+                       по_дням: dict) -> bool:
+    """Пара строки есть среди местных написаний эталона: та же письменность
+    (греческое — с греческим, латиница — с латиницей), тот же вид спорта,
+    в пределах ±`LIVE_NEAR`, обе команды, в любом порядке."""
+    from app.canon import _script
+    script = _script(f"{home} {away}")
+    день = start.date()
+    for д in (день - timedelta(days=1), день, день + timedelta(days=1)):
+        for h, a, t, sc, sp in по_дням.get(д, []):
+            if sc != script or sp != sport or abs(start - t) > LIVE_NEAR:
+                continue
+            if (names.same_team(home, h) and names.same_team(away, a)) \
+                    or (names.same_team(home, a) and names.same_team(away, h)):
+                return True
+    return False
 
 
 def reference_index(reference: list) -> dict:
@@ -804,42 +852,21 @@ def main() -> int:
     # местные написания эталона той же письменности (как `canon._sides`):
     # угадайку ERT «Β. Ιρλανδία – Ελλάδα» английские имена не узнавали, и
     # честный live U21 снимался как «повтор без эталона» (01.10). Греческое
-    # сравниваем с греческим flashscore, иврит/кириллицу — со своими
-    from app.canon import _script as _script_of, _SCRIPT_OF_LANG
-    from datetime import datetime as _dt_ref
-    from zoneinfo import ZoneInfo as _Kyiv_ref
-    reference_local: list = []
-    for rec in reference_full:
-        if rec.get("sport", "F") != "F":
-            continue
-        try:
-            t_ref = _dt_ref.strptime(rec["start_kyiv"], "%Y-%m-%dT%H:%M") \
-                .replace(tzinfo=_Kyiv_ref("Europe/Kyiv"))
-        except (KeyError, ValueError):
-            continue
-        for lang, pair in (rec.get("names") or {}).items():
-            if isinstance(pair, (list, tuple)) and len(pair) == 2 \
-                    and pair[0] and pair[1]:
-                reference_local.append((str(pair[0]), str(pair[1]), t_ref,
-                                        _SCRIPT_OF_LANG.get(lang, "lat")))
+    # сравниваем с греческим flashscore, иврит/кириллицу — со своими.
+    # Латиницу тоже (07.10, сбор #205): «Ferencvárosi TC - DVSC» у port.hu
+    # английское «Ferencvaros - Debrecen» не узнавало, а венгерское
+    # «Debreceni VSC» узнаёт. Футбол и баскет/теннис — каждый со своими
+    reference_local = local_reference(reference_full)
 
-    def _in_reference_local(r) -> bool:
-        script = _script_of(f"{r.home} {r.away}")
-        if script == "lat":
-            return False
-        for h, a, t, sc in reference_local:
-            if sc != script or abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
-                continue
-            if (names.same_team(r.home, h) and names.same_team(r.away, a)) \
-                    or (names.same_team(r.home, a) and names.same_team(r.away, h)):
-                return True
-        return False
+    def _in_reference_local(r, sport: str) -> bool:
+        return in_local_reference(r.home, r.away, r.start_kyiv, sport,
+                                  reference_local)
 
     def _in_reference(r) -> bool:
         # пословно, а не побуквенно: «Millwall FC - Newcastle United» у
         # oneplaysport — тот же матч, что «Millwall - Newcastle» эталона,
         # а точное сравнение убивало живую строку как запись (#728, 03.09)
-        if _in_reference_local(r):
+        if _in_reference_local(r, "F"):
             return True
         for h, a, t in reference:
             if abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
@@ -895,6 +922,9 @@ def main() -> int:
                for s in ("B", "T")}
 
     def _in_reference_bt(r) -> bool:
+        # местные написания эталона — как у футбола (07.10)
+        if _in_reference_local(r, r.sport):
+            return True
         for h, a, t, sp in reference_bt:
             if sp != r.sport:
                 continue

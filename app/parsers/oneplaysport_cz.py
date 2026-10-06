@@ -30,7 +30,7 @@ DigitalOcean, см. `ГРАБЛИ.md`). OnePlay пускает обычным з
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -104,9 +104,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             # двоеточия часто нет вовсе (`Borussia Dortmund - Hamburger SV`),
             # и тогда пару ищем прямо в заголовке
             pair = _pair(rest) if rest else _pair(title)
-            # телегид-день идёт с утра: «00:30» на странице за 31.08 — это
-            # уже ночь на 1 сентября
-            d = day + timedelta(days=1) if int(hm.group(1)) < 6 else day
+            d = day    # дата — ниже, по порядку страницы
             out.append(Program(
                 channel_raw=channel, title=title,
                 start=datetime(d.year, d.month, d.day,
@@ -117,4 +115,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 extra={"day": d.isoformat(),
                        "end": (item.attributes.get("data-end") or "").strip()},
             ))
-    return mark_first_show(out, "live")
+    # Страница — календарные сутки: канал идёт `00:00–02:00`, `02:00–09:00`,
+    # `09:00…` подряд (сбор #205, 07.10). Прежнее «час < 6 → завтра» ставило
+    # ночной прямой эфир на сутки позже. Дата — общим правилом полуночи,
+    # и до выбора первого показа пары
+    return mark_first_show(daytime.walk_programs(out, day, tz or TZ), "live")

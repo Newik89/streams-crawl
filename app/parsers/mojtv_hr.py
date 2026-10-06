@@ -24,13 +24,14 @@
 
 Дата дня лежит в инициализации сетки: `'29.8.2026. 6:00:00'` — берём её,
 а не аргумент `day` (страница «sutra» иначе легла бы на сегодня).
-Телегид-день идёт 06:00 → 06:00: времена до 6 утра — следующая дата.
+Телегид-день идёт 06:00 → 06:00: ночь после полуночи — следующая дата
+(`daytime.walk_programs`, по порядку страницы).
 """
 
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -94,7 +95,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                         if home.strip() and away.strip():
                             pair = f"{home.strip()} - {away.strip()}"
                         break
-                d = day + timedelta(days=1) if int(hm.group(1)) < 6 else day
+                d = day    # дата — ниже, по порядку страницы
                 out.append(Program(
                     channel_raw=channel, title=clean,
                     start=datetime(d.year, d.month, d.day,
@@ -109,4 +110,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     match_raw=pair, source_url=url,
                     extra={"day": d.isoformat()},
                 ))
-    return out
+    # Телегид-день 06:00 → 06:00; вместо порога «час < 6 → завтра» — общее
+    # правило полуночи по порядку страницы (07.10, сбор #205: тот же порог
+    # у ntvplus и sport5 ставил ночной эфир на сутки позже)
+    return daytime.walk_programs(out, day, tz or TZ)

@@ -246,5 +246,91 @@ check("текст_записи_эталона_для_журнала",
       parse_live._ref_text(ref("2026-10-09T01:30"))
       == "Instituto - Boca Juniors 09.10 01:30 (fs_id Cv4icMr4)")
 
+# ── ночные строки ТВ-сеток: «час < 6 → завтра» заменён порядком страницы ────
+print("ночные строки телегидов (ntvplus, sport5, общее правило)")
+from app.parsers import ntvplus_tv, sport5_co_il  # noqa: E402
+
+MSK = ZoneInfo("Europe/Moscow")
+viju = ntvplus_tv.parse((DATA / "ntvplus_2026-10-06_viju.html").read_text(encoding="utf-8"),
+                        url="https://ntvplus.tv/tv/ajax/tv?genre=sport&date=06.10.2026"
+                            "&tz=0&search=&channel=&offset=0")
+first = viju[0]
+check("ntvplus_прямой_эфир_02_50_в_начале_страницы_06_10 — это 06.10, как в ts=",
+      "Медельин" in first.title and first.extra.get("ts") == 1791244200
+      and first.start == datetime(2026, 10, 6, 2, 50, tzinfo=MSK),
+      (first.title[:40], first.start))
+check("ntvplus_ts_главнее: время строки = unix-метка ссылки",
+      all(p.start.timestamp() == p.extra["ts"] for p in viju if p.extra.get("ts")))
+check("ntvplus_ночь_в_конце_страницы — уже 07.10 (00:00, 02:15, 04:30)",
+      [p.start.strftime("%m-%d %H:%M") for p in viju[-3:]]
+      == ["10-07 00:00", "10-07 02:15", "10-07 04:30"])
+s5 = sport5_co_il.parse((DATA / "sport5_2026-10-07.html").read_text(encoding="utf-8"),
+                        url="https://www.sport5.co.il/Ajax/GetBroadcastSheetData.aspx"
+                            "?date=07%2F10%2F2026")
+benin = [p for p in s5 if "בנין" in p.title]
+check("sport5_календарные_сутки: Аргентина — Бенин 01:50 на странице 07.10 — это 07.10",
+      len(benin) == 1 and kyiv(benin[0].start) == "2026-10-07 01:50",
+      [kyiv(p.start) for p in benin])
+check("sport5_весь_день_в_дату_страницы (00:20 … 23:50)",
+      {p.start.date() for p in s5} == {date(2026, 10, 7)})
+night = sport5_co_il.parse(
+    '<table><tr class="tr-header"><th><img alt="ערוץ הספורט"></th></tr>'
+    '<tr><td class="date"><div>23:50</div></td><td class="text">א</td></tr>'
+    '<tr><td class="date"><div>00:30</div></td><td class="text">ב</td></tr></table>',
+    url="https://www.sport5.co.il/Ajax/GetBroadcastSheetData.aspx?date=07%2F10%2F2026")
+check("sport5_переход_через_полночь_по_порядку: 23:50, потом 00:30 — уже 08.10",
+      [p.start.strftime("%m-%d %H:%M") for p in night] == ["10-07 23:50", "10-08 00:30"])
+
+
+def tv_rows(times, channel="TRT SPOR"):
+    return [Program(channel_raw=channel, title=t, extra={"day": "2026-10-06"},
+                    start=datetime.fromisoformat(f"2026-10-06 {t}").replace(
+                        tzinfo=ZoneInfo("Europe/Istanbul"))) for t in times]
+
+
+edges = daytime.walk_programs(tv_rows(["04:58", "05:00", "19:00", "23:00", "00:30",
+                                       "05:15", "06:30"]),
+                              date(2026, 10, 6), "Europe/Istanbul")
+check("общее_правило_краёв_суток: 04:58 в начале — сегодня, 05:15/06:30 после полуночи — завтра",
+      [p.start.strftime("%d %H:%M") for p in edges]
+      == ["06 04:58", "06 05:00", "06 19:00", "06 23:00", "07 00:30", "07 05:15", "07 06:30"]
+      and edges[-1].extra["day"] == "2026-10-07")
+
+# ── местные имена эталона и для латиницы ─────────────────────────────────────
+print("местные имена эталона (латиница, баскет/теннис)")
+hu = [{"sport": "F", "home": "Ferencvaros", "away": "Debrecen", "league": "HUNGARY: NB I",
+       "fs_id": "abc", "start_kyiv": "2026-10-10T18:00",
+       "names": {"hu": ["Ferencvárosi TC", "Debreceni VSC"], "de": ["Ferencvaros", "Debrecen"]}},
+      {"sport": "B", "home": "Szolnoki Olajbanyasz", "away": "Falco", "league": "HUNGARY: NB I. A",
+       "fs_id": "bcd", "start_kyiv": "2026-10-10T19:00",
+       "names": {"hu": ["Szolnoki Olajbányász", "Falco-Vulcano Szombathely"]}}]
+local = parse_live.local_reference(hu)
+at = datetime(2026, 10, 10, 17, 55, tzinfo=KYIV)
+check("латиница_DVSC_находит_венгерское_Debreceni_VSC",
+      parse_live.in_local_reference("Ferencvárosi TC", "DVSC", at, "F", local)
+      and parse_live.in_local_reference("DVSC", "Ferencvárosi TC", at, "F", local))
+check("латиница_другой_вид_спорта_и_далеко_по_времени — нет",
+      not parse_live.in_local_reference("Ferencvárosi TC", "DVSC", at, "B", local)
+      and not parse_live.in_local_reference("Ferencvárosi TC", "DVSC",
+                                            datetime(2026, 10, 10, 23, 0, tzinfo=KYIV),
+                                            "F", local))
+check("баскет_по_местным_именам: Szolnoki Olajbányász — Falco-Vulcano",
+      parse_live.in_local_reference("Szolnoki Olajbányász", "Falco-Vulcano Szombathely",
+                                    datetime(2026, 10, 10, 19, 0, tzinfo=KYIV), "B", local))
+check("местное_равное_английскому_не_дублируется",
+      sum(len(v) for v in local.values()) == 2)
+class _Result:
+    """Строка отсева для `parse_live.guessed`: нужен только `.program`."""
+    def __init__(self, program):
+        self.program = program
+
+
+port_guess = Program(channel_raw="Spíler1", title="x", start=at, extra={"live_guess": True})
+port_flag = Program(channel_raw="M4 Sport", title="x", start=at, live_raw="élő")
+check("port.hu_вне_списка_угадаек: угадан только live_guess, флаг сайта — честный",
+      "port.hu" not in parse_live.REPEAT_GUESS_DOMAINS
+      and parse_live.guessed("port.hu", _Result(port_guess))
+      and not parse_live.guessed("port.hu", _Result(port_flag)))
+
 print(f"\nпроверок: {passed + len(failed)}, зелёных: {passed}, красных: {len(failed)}")
 sys.exit(1 if failed else 0)

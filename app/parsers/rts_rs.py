@@ -27,7 +27,7 @@ r"""rts.rs — Сербия, каналы РТС; адрес на канал, в
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime, timedelta
+from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -102,8 +102,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         if not hm or not title:
             continue
         hour, minute = int(hm.group(1)), int(hm.group(2))
-        # день сетки начинается утром: ночные часы — уже следующая дата
-        d = base + timedelta(days=1) if hour < 5 else base
+        d = base   # дата — ниже, по порядку страницы
         kind = mark.attributes.get("class") or ""
         out.append(Program(
             channel_raw=channel, title=title,
@@ -113,4 +112,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=_pair(title), source_url=url,
             extra={"day": d.isoformat()},
         ))
-    return mark_first_show(out, "директан пренос")
+    # День сетки идёт с утра до утра: `… 23:32, 01:53 … 04:45, 05:43` —
+    # порог «час < 5 → завтра» оставлял последнюю `05:43` на сегодня (сбор
+    # #205). Дата — общим правилом полуночи, до выбора первого показа пары
+    return mark_first_show(daytime.walk_programs(out, base, tz or TZ),
+                           "директан пренос")
