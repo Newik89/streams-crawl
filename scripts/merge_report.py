@@ -63,6 +63,16 @@ KNOWN_SAME = [
     ("Leeds United", "Лийдс Юнайтед"),
     ("Olympique Lyon", "Лион"),
     ("Le Havre AC", "Льо Авър"),
+    # клички и сокращения сайтов (самопроверка #205, детектор 7, 06.10)
+    ("QPR", "Queens Park Rangers"),
+    ("QPR", "Куинс Парк Рейнджърс"),
+    ("Barcelona", "Barca"),
+    ("Venezia", "VENEZA"),
+    ("Inter", "Internazionale"),
+    ("United Arab Emirates", "UAE"),
+    ("Hapoel Tel Aviv", "Hapoel TA"),
+    ("Bosnia & Herzegovina U21", "BiH U21"),
+    ("Bamberg", "Brose"),
 ]
 KNOWN_DIFFERENT = [
     ("Manchester United FC", "Manchester City FC"),
@@ -74,6 +84,14 @@ KNOWN_DIFFERENT = [
     ("Levski W", "Levski"),
     ("Спартак Варна", "Спартак Плевен"),
     ("Atalanta BC", "Atletico Madrid"),
+    # соседи новых кличек (06.10): до них «QPR» не доставал, «Queens Park
+    # Rangers» с шотландским Queen's Park сходился на 100 (общая часть)
+    ("Queens Park Rangers", "Queens Park"),
+    ("Hapoel TA", "Maccabi Tel Aviv"),
+    ("Maccabi TA", "Hapoel Tel Aviv"),
+    ("VENEZA", "Venezuela"),
+    ("Internazionale", "Inter Turku"),
+    ("BiH", "Bulgaria"),
 ]
 
 
