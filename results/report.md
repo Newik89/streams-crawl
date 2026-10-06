@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1477. Заняло 4779 с.
+Режим: полный обход, окно 6 суток. Запросов: 1477. Заняло 4894 с.
 
 | Сайт | Результат |
 |---|---|
@@ -8,7 +8,7 @@
 | aspor.com.tr | расписание есть — 1 |
 | atv.com.tr | расписание есть — 6 |
 | bbc.co.uk | расписание есть — 66 |
-| beinsports.com.tr | расписание есть — 27, пусто — 3 |
+| beinsports.com.tr | расписание есть — 24, пусто — 6 |
 | bnt.bg | расписание есть — 1 |
 | canal11.pt | расписание есть — 1 |
 | ceskatelevize.cz | расписание есть — 6 |
@@ -19,20 +19,20 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 17, пусто — 4 |
+| flashscore.mobi | расписание есть — 16, пусто — 5 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
-| jupiter.err.ee | не открылась — 18 |
-| kanal1sport.sk | не открылась — 1 |
+| jupiter.err.ee | расписание есть — 18 |
+| kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 23 |
-| m.eredmenyek.com | расписание есть — 10, пусто — 4 |
+| m.eredmenyek.com | расписание есть — 9, пусто — 5 |
 | m.flashscore.bg | расписание есть — 7 |
 | m.flashscore.com.tr | расписание есть — 3 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 17, пусто — 4 |
+| m.flashscore.gr | расписание есть — 16, пусто — 5 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
 | m.flashscore.pl | расписание есть — 2 |
@@ -40,7 +40,7 @@
 | m.flashscore.ro | расписание есть — 2 |
 | m.flashscore.ru | расписание есть — 3 |
 | m.flashscore.se | расписание есть — 6 |
-| m.flashscore.sk | расписание есть — 9, пусто — 3 |
+| m.flashscore.sk | расписание есть — 8, пусто — 4 |
 | m.flashscore.ua | расписание есть — 2 |
 | m.livesport.cz | расписание есть — 2 |
 | m.rezultati.com | расписание есть — 14 |
@@ -60,9 +60,9 @@
 | primaplay.ro | расписание есть — 1 |
 | programetv.ro | пусто — 11 |
 | programme-tv.net | расписание есть — 48 |
-| raiplay.it | расписание есть — 24 |
+| raiplay.it | расписание есть — 10, не открылась — 11, нет на этот день — 3 |
 | raspored.hrt.hr | расписание есть — 18 |
-| rtcg.me | расписание есть — 20, пусто — 4 |
+| rtcg.me | расписание есть — 16, пусто — 8 |
 | rte.ie | расписание есть — 17 |
 | rtl.de | расписание есть — 48 |
 | rtp.pt | расписание есть — 33 |
@@ -104,35 +104,31 @@
 | tvtid.tv2.dk | расписание есть — 6 |
 | unian.tv | расписание есть — 6 |
 | vsetv.com | расписание есть — 12 |
-| webtv.sk | расписание есть — 42 |
+| webtv.sk | расписание есть — 41, нет на этот день — 1 |
 | ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 19
+## Не открылись — 11
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| jupiter.err.ee | ETV | HTTP 403; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=5&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=6&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=7&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=8&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=9&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=10&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=5&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=6&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=7&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=8&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=9&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=10&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=5&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=6&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=7&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=8&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=9&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=10&month=10&year=2026&channel=etv2 |
-| kanal1sport.sk | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+| raiplay.it | Rai 1 | HTTP 500; браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.raiplay.it/palinsesto/app/rai-1/10-10-2026.json
 Call log:
-  - navigating to "https://www.kanal1sport.sk/tv-program/", waiting until "domcontentloade | https://www.kanal1sport.sk/tv-program/ |
+  - navigat | https://www.raiplay.it/palinsesto/app/rai-1/10-10-2026.json |
+| raiplay.it | Rai 1 | HTTP 500; браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.raiplay.it/palinsesto/app/rai-1/11-10-2026.json
+Call log:
+  - navigat | https://www.raiplay.it/palinsesto/app/rai-1/11-10-2026.json |
+| raiplay.it | Rai 2 | HTTP 500; браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.raiplay.it/palinsesto/app/rai-2/09-10-2026.json
+Call log:
+  - navigat | https://www.raiplay.it/palinsesto/app/rai-2/09-10-2026.json |
+| raiplay.it | Rai 2 | ReadTimeout: HTTPSConnectionPool(host='www.raiplay.it', port=443): Read timed out. (read timeout=30); браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCO | https://www.raiplay.it/palinsesto/app/rai-2/11-10-2026.json |
+| raiplay.it | Rai 3 | ReadTimeout: HTTPSConnectionPool(host='www.raiplay.it', port=443): Read timed out. (read timeout=30); браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCO | https://www.raiplay.it/palinsesto/app/rai-3/07-10-2026.json |
+| raiplay.it | Rai 3 | ReadTimeout: HTTPSConnectionPool(host='www.raiplay.it', port=443): Read timed out. (read timeout=30); браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCO | https://www.raiplay.it/palinsesto/app/rai-3/08-10-2026.json |
+| raiplay.it | Rai 3 | ReadTimeout: HTTPSConnectionPool(host='www.raiplay.it', port=443): Read timed out. (read timeout=30); браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCO | https://www.raiplay.it/palinsesto/app/rai-3/09-10-2026.json |
+| raiplay.it | Rai 3 | ReadTimeout: HTTPSConnectionPool(host='www.raiplay.it', port=443): Read timed out. (read timeout=30); браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCO | https://www.raiplay.it/palinsesto/app/rai-3/10-10-2026.json |
+| raiplay.it | Rai 3 | ReadTimeout: HTTPSConnectionPool(host='www.raiplay.it', port=443): Read timed out. (read timeout=30); браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCO | https://www.raiplay.it/palinsesto/app/rai-3/11-10-2026.json |
+| raiplay.it | Rai Sport | ReadTimeout: HTTPSConnectionPool(host='www.raiplay.it', port=443): Read timed out. (read timeout=30); браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCO | https://www.raiplay.it/palinsesto/app/rai-sport/06-10-2026.json |
+| raiplay.it | Rai Sport | ReadTimeout: HTTPSConnectionPool(host='www.raiplay.it', port=443): Read timed out. (read timeout=30); браузер: браузер: Error: Page.goto: net::ERR_HTTP2_PROTOCO | https://www.raiplay.it/palinsesto/app/rai-sport/07-10-2026.json |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 19 из 1477 страниц (1%), сайтов без удачи 2 из 102 (2%)
+- ✅ обход в норме: не открылись 11 из 1477 страниц (1%), сайтов без удачи 0 из 102 (0%)
