@@ -103,4 +103,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 match_raw=_pair(title), source_url=url,
                 extra={"day": start.date().isoformat()},
             ))
+    # ручка отдаёт передачи канала вразнобой (SVT1: 11:00, 07:00, 12:30…) —
+    # возвращаем по времени, как идут в эфире (самопроверка #205 видела
+    # «время пошло назад»)
+    out.sort(key=lambda p: (p.channel_raw, p.start))
     return mark_first_show(out, "direkt")

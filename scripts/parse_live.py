@@ -335,6 +335,26 @@ def drop_late_repeats(games: list) -> tuple[list, list]:
     return kept, removed
 
 
+def unique_rows(found: list) -> tuple[list, int]:
+    """Строки без копий: одна передача сайта — (домен, канал, начало,
+    заголовок) — одна строка, сколько бы его страниц её ни показали.
+
+    Копии бывают законные: страницы дней перекрываются (dr.dk: передача
+    01:50 есть и на странице 09.10, и на 10.10), а адрес `/schedule` у
+    diemaxtra — копия Diema Sport (самопроверка #205, 06.10). Без этого у
+    игры было два одинаковых канала. Возвращает (строки, сколько убрано)."""
+    seen: set = set()
+    out: list = []
+    for domain, r in found:
+        key = ((domain or "").removeprefix("www."), r.program.channel_raw,
+               r.start_kyiv, r.program.title)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append((domain, r))
+    return out, len(found) - len(out)
+
+
 #: имена фильтров повторов в журнале снятого (ключ «снято» в games.json)
 СНЯТО_ОЧЕРЕДЬ = "очередь: матч уже сыгран"
 СНЯТО_ПОЗДНИЙ_ПОКАЗ = "поздний показ у сайта без флага"
@@ -1001,6 +1021,9 @@ def main() -> int:
     found = [x for x in found if in_window(x[1].start_kyiv.date())]
 
     found.sort(key=lambda x: x[1].start_kyiv)
+    found, копий = unique_rows(found)
+    if копий:
+        print(f"одна передача с нескольких страниц сайта — копий убрано: {копий}")
 
     # Другой вид спорта — тем же окном дней, без склейки: одна строка на
     # (сайт, канал, заголовок, время). Это отдельный список для вкладки
