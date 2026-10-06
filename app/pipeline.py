@@ -149,7 +149,10 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     decision = sports.decide(text, head, (verdict.home, verdict.away),
                              ref=by_ref, ref_team=ref_team, league=league,
                              club=клуб_спорт,
-                             hint=by_hint)
+                             hint=by_hint,
+                             # месяц строки: турнир не в свой месяц — запись
+                             # (правило 1, раздел «сезоны» markers.json)
+                             month=row.start_kyiv.month if row.start_kyiv else 0)
     letter = decision.letter
     row.sport_word = decision.word
     row.sport_source = decision.source

@@ -600,19 +600,69 @@ check("detect с парой: «AFC Wimbledon - Barnet» + Football → F (ста
       SPORTS.detect("AFC Wimbledon - Barnet Football",
                     ("AFC Wimbledon", "Barnet"))[0] == "F")
 
-import review_queue                                           # noqa: E402
+from app.sport_question import Judge, Question                # noqa: E402
 
-очередь = ("Nice - Le Mans | beIN SPORTS 4 (beinsports.com.tr) "
-           "2026-10-06 16:00 | Nice - Le Mans")
+СУДЬЯ = Judge(None, sports=SPORTS, markers=MARKERS)
+
+
+def очередь(raw, suggestion=""):
+    """Ответ программы на вопрос очереди «вид спорта» (без базы)."""
+    return СУДЬЯ.answer(Question.parse(raw, suggestion)).letter
+
+
 check("очередь: «Nice - Le Mans» не закрывается как чужой спорт",
-      review_queue.знаем_спорт(очередь, SPORTS, {}, "Nice - Le Mans") == "")
+      очередь("Nice - Le Mans | beIN SPORTS 4 (beinsports.com.tr)",
+              "2026-10-06 16:00 | Nice - Le Mans") != "-")
 check("очередь: «Dallas Stars - Florida Panthers» — чужой спорт, как раньше",
-      review_queue.знаем_спорт(
-          "Dallas Stars - Florida Panthers | Nova Sport 2 (oneplay.cz)",
-          SPORTS, {}, "Dallas Stars - Florida Panthers") == "-")
+      очередь("Dallas Stars - Florida Panthers | Nova Sport 2 (oneplay.cz)",
+              "2026-10-06 02:00 | Dallas Stars - Florida Panthers") == "-")
 check("очередь: «Kiel - Flensburg | Handball» — чужой спорт, как раньше",
-      review_queue.знаем_спорт("Kiel - Flensburg | Handball | Sport 1",
-                               SPORTS, {}, "Kiel - Flensburg") == "-")
+      очередь("Kiel - Flensburg | Handball | Sport 1 (sport1.de)",
+              "2026-10-06 19:00 | Kiel - Flensburg") == "-")
+
+# ── правило 1: теннисный турнир не в свой месяц — запись (очередь 06.10) ────
+ФИНАЛ_AO = ("Tenisz: Grand Slam Torna Ausztrál Open: Aryna Sabalenka - "
+            "Elena Rybakina nők egyéni döntő")
+сценарии([
+    ("правило 1: финал Australian Open в октябре — запись", "чужой", 1,
+     ФИНАЛ_AO, "", "", "", "", "2026-10-09T19:00"),
+    ("тот же финал в январе — теннис по слову «Tenisz»", "T", 5,
+     ФИНАЛ_AO, "", "", "", "", "2026-01-31T10:30"),
+    ("«AFC Wimbledon» в декабре — не турнир, сезон не судит", "F", 5,
+     "Football: AFC Wimbledon - Barnet", "", "", "", "", "2026-12-05T17:00"),
+], sports=SPORTS)
+
+# ── слова, которых не хватило очереди 06.10 ──────────────────────────────────
+сценарии([
+    ("«Bundesliga» без слова «футбол» (digisport.ro)", "F", 5,
+     "Bundesliga: Lepzig - Freiburg", "Bundesliga"),
+    ("«Basketball Bundesliga» — баскетбол, не футбол", "B", 5,
+     "Basketball Bundesliga: Bamberg - Ulm"),
+    ("«FIBA Liga prvaka» — баскетбол", "B", 5,
+     "FIBA Liga prvaka: Trabzon - Nanterre"),
+    ("ивритская «ליגה אוסטרית» — футбол", "F", 5,
+     "ליגה אוסטרית: גראצר - זלצבורג, מחזור 8"),
+    ("«Forma-1 - Sprintfutam» — автоспорт", "чужой", 4,
+     "Forma-1 - Sprintfutam: Sprintfutam"),
+    ("«WorldSBK … (Superpole)» — мотоспорт", "чужой", 4,
+     "WorldSBK - Tissot Estoril Round (Superpole)"),
+    ("«Power Slap 24» — единоборства", "чужой", 4,
+     "Kanekoa vs Hintz", "Power Slap 24"),
+    ("«CAGE FIGHT» — единоборства", "чужой", 4,
+     "GCF 70 SMASH GYM CAGE FIGHT 14 - Olomouc"),
+    ("«Strzelectwo» — стрельба", "чужой", 4,
+     "Strzelectwo: Mistrzostwa Europy - Malakasa 2026"),
+    ("«Akrobatyka sportowa» — гимнастика", "чужой", 4,
+     "Akrobatyka sportowa: Mistrzostwa Polski - Chorzów 2026"),
+], sports=SPORTS)
+check("обход: «Мировая серия UTMB» — чужой вид (трейл), правило 4",
+      решение("Мировая серия UTMB - основные моменты", sports=SPORTS)
+      == ("чужой", 4))
+UTMB = СУДЬЯ.answer(Question.parse(
+    "Мировая серия UTMB - основные моменты | Eurosport 1 (tv3.lt)",
+    "2026-10-09 22:00 | Мировая серия UTMB - основные моменты"))
+check("очередь: «основные моменты» — запись, не матч (правило А)",
+      (UTMB.letter, UTMB.rule) == ("-", "запись или студия"), UTMB)
 
 print(f"\nпроверок: {passed + len(failed)}, зелёных: {passed}, "
       f"красных: {len(failed)}")

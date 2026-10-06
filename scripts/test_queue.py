@@ -396,6 +396,252 @@ check("уборка_решённое_не_трогает",
       conn.execute("SELECT status FROM moderation WHERE suggestion = 'что-то'"
                    ).fetchone()[0] == "done")
 
+# ── вопрос «Какой это вид спорта?»: программа отвечает сама (очередь 06.10) ──
+# Правила — `app/sport_question.py` (А–Д). Слова — настоящие
+# `data/markers.json`; команды словаря подставлены, чтобы проверка не
+# зависела от выгрузки `data/dictionaries.json`
+
+from datetime import datetime, timedelta                       # noqa: E402
+
+from app import leagues, sport                                 # noqa: E402
+from app.sport_question import Judge, Question, settle         # noqa: E402
+import games_import                                            # noqa: E402
+
+SPORTS = sport.load(teams=("Galatasaray", "Kasimpasa", "Rytas", "Sabah",
+                           "Sloga", "Zrinjski", "Manisa FK", "Besiktas"))
+REF_Q = [
+    ref("Galatasaray", "Kasimpasa", "2026-10-09T20:00", "F", "TURKEY: Super Lig"),
+    ref("Rytas", "Sabah Baku", "2026-10-06T19:30", "B", CL),
+    # женский матч: в эталоне с меткой W, на sport5 пол — только в турнире
+    {**ref("Israel W", "Switzerland W", "2026-10-09T19:30", "F",
+           "EUROPE: World Cup Women - Qualification"), "fs_id": "il1"},
+    # «Bodrum FK» на beIN — это «Bodrumspor» эталона (data/aliases.json)
+    ref("Bodrumspor", "Keciorengucu", "2026-10-09T17:00", "F", "TURKEY: 1. Lig"),
+    # заглушка тура: flashscore ставит весь тур лиги на одну минуту
+    *[ref(h, a, "2026-10-10T18:00", "F", "BOSNIA: WWIN liga", f"z{i}")
+      for i, (h, a) in enumerate((("Sloga", "Zrinjski"), ("Borac", "Velez"),
+                                  ("Sarajevo", "Zeljeznicar"),
+                                  ("Siroki", "Radnik"), ("Posusje", "Igman")))],
+]
+
+
+def judge_for(conn):
+    return Judge(conn, REF_Q, sports=SPORTS)
+
+
+def answer(judge, raw, when="", title=""):
+    """Ответ судьи на вопрос; `when` — «2026-10-09 20:00»."""
+    suggestion = " | ".join(x for x in (when, title) if x)
+    return judge.answer(Question.parse(raw, suggestion))
+
+
+print("Вопрос «вид спорта»: правила А–Д")
+conn = fresh_db()
+# лига из алиасов базы: у неё есть вид спорта
+liga = conn.execute("INSERT INTO leagues (slug, canonical_name, sport) "
+                    "VALUES ('testland-elite', 'TESTLAND: Elite', 'B')").lastrowid
+conn.execute("INSERT INTO league_aliases (league_id, alias) VALUES (?, ?)",
+             (liga, "Elite Liga X"))
+# лига без вида спорта, но канон говорит сам за себя («ATP»)
+atp = conn.execute("INSERT INTO leagues (slug, canonical_name) VALUES "
+                   "('atp-tokyo', 'ATP - SINGLES: Tokyo (Japan), hard')"
+                   ).lastrowid
+conn.execute("INSERT INTO league_aliases (league_id, alias) VALUES (?, ?)",
+             (atp, "Torneo de Tokio"))
+conn.execute("INSERT INTO sport_hints (pair, sport, match_day) "
+             "VALUES ('Alfa - Gamma', 'F', '2026-10-10')")
+conn.commit()
+J = judge_for(conn)
+
+a = answer(J, "Мировая серия UTMB - основные моменты | Eurosport 1 (tv3.lt)",
+           "2026-10-09 22:00", "Мировая серия UTMB - основные моменты")
+check("А_слово_записи_не_матч", (a.letter, a.rule) == ("-", "запись или студия"), a)
+a = answer(J, "Forma-1 - Sprintfutam | Forma-1 - Sprintfutam | M4 Sport+ "
+              "(port.hu)", "2026-10-10 22:15", "Forma-1 - Sprintfutam")
+check("Б_чужой_вид_не_матч", (a.letter, a.rule) == ("-", "правило 4"), a)
+a = answer(J, "Trabzon - Nanterre | Sport Klub 4 (mojtv.hr)",
+           "2026-10-07 19:00", "FIBA Liga prvaka: Trabzon - Nanterre")
+check("Б_слово_вида_спорта_в_заголовке", (a.letter, a.rule) == ("B", "правило 5"), a)
+a = answer(J, "Alfa - Beta | Elite Liga X | Kanal 1 (site.test)",
+           "2026-10-10 18:00", "Alfa - Beta")
+check("Б_лига_из_алиасов_базы", (a.letter, a.rule) == ("B", "правило 6"), a)
+a = answer(J, "Alcaraz - Lehecka | Torneo de Tokio | M+ Deportes "
+              "(movistarplus.es)", "2026-10-08 20:00", "Alcaraz - Lehecka")
+check("Б_канон_лиги_говорит_ATP", (a.letter, a.rule) == ("T", "правило 5"), a)
+a = answer(J, "Alfa - Gamma | Kanal 1 (site.test)", "2026-10-10 18:00",
+           "Alfa - Gamma")
+check("Б_подсказка_владельца_в_срок", (a.letter, a.rule) == ("F", "правило 8"), a)
+a = answer(J, "Alfa - Gamma | Kanal 1 (site.test)", "2026-10-20 18:00",
+           "Alfa - Gamma")
+check("Б_подсказка_владельца_просрочена", a.letter is None, a)
+a = answer(J, "Aryna Sabalenka - Elena Rybakina nők egyéni döntő | Grand "
+              "Slam Torna Ausztrál Open | Eurosport 2 (port.hu)",
+           "2026-10-09 19:00", "Tenisz: Grand Slam Torna Ausztrál Open: "
+           "Aryna Sabalenka - Elena Rybakina nők egyéni döntő")
+check("Б_финал_AO_в_октябре_запись", (a.letter, a.rule) == ("-", "правило 1"), a)
+
+GS = "Galatasaray - Kasımpaşa | beIN SPORTS 1 (beinsports.com.tr)"
+a = answer(J, GS, "2026-10-08 20:00", "Galatasaray - Kasımpaşa")
+check("В_за_сутки_до_матча_не_матч",
+      (a.letter, a.rule) == ("-", "не в час матча") and "09.10 20:00" in a.why, a)
+a = answer(J, GS, "2026-10-10 00:30", "Galatasaray - Kasımpaşa")
+check("В_через_4ч30_после_начала_повтор", (a.letter, a.rule) == ("-", "не в час матча"), a)
+a = answer(J, GS, "2026-10-09 21:00", "Galatasaray - Kasımpaşa")
+check("В_в_час_матча_футбол_по_эталону", (a.letter, a.rule) == ("F", "правило 2"), a)
+a = answer(J, "Rytas - Sabah Baku | Go3 Sport 2 (tv3.lt)", "2026-10-06 23:00",
+           "Rytas - Sabah Baku")
+check("В_через_3ч30_тот_же_матч_в_своём_окне", (a.letter, a.rule) == ("B", "правило 2"), a)
+a = answer(J, GS, "2026-10-13 12:00", "Galatasaray - Kasımpaşa")
+check("В_дальше_60ч_другая_встреча_не_судим", a.letter is None, a)
+a = answer(J, "Sloga - Zrinjski | Arena Sport 1 (tvarenasport.ba)",
+           "2026-10-11 16:00", "Sloga - Zrinjski")
+check("В_заглушка_тура_сайт_прав", (a.letter, a.rule) == ("F", "правило 2"), a)
+a = answer(J, "Serbia Upside Down - Into the Unknown | Extreme Sports (tv2.no)",
+           "2026-10-10 20:30", "Serbia Upside Down - Into the Unknown")
+check("Д_нечем_решить_владельцу", a.letter is None and a.plain == "решать владельцу", a)
+a = answer(J, "ישראל - שוויץ | מוקדמות אליפות העולם 27 לנשים | ערוץ הספורט "
+              "(sport5.co.il)", "2026-10-09 19:20",
+           "מוקדמות אליפות העולם 27 לנשים: ישראל - שוויץ, פלייאוף סיבוב 1")
+check("В_ивритское_לנשים_женский_матч_узнан_эталоном",
+      (a.letter, a.rule) == ("F", "правило 2"), a)
+check("метка_пола_לנשים_и_הנשים_но_не_אנשים",
+      [leagues.category(x) for x in ("מוקדמות 27 לנשים", "בכדורגל הנשים",
+                                      "אנשים טובים")] == ["W", "W", ""])
+a = answer(J, "Bodrum FK - A. Keçiörengücü | beIN SPORTS 2 (beinsports.com.tr)",
+           "2026-10-09 17:00", "Bodrum FK - A. Keçiörengücü")
+check("В_Bodrum_FK_это_Bodrumspor_эталона", (a.letter, a.rule) == ("F", "правило 2"), a)
+check("пороги_константы_reference",
+      (games_import.sport_question.LIVE_NEAR, games_import.sport_question.REPEAT_AFTER,
+       games_import.sport_question.REPEAT_DEPTH)
+      == (timedelta(hours=3), timedelta(hours=4), timedelta(hours=60)))
+
+print("Ответ пишется тем же путём, что кнопки")
+conn = fresh_db()
+for raw, sugg in (
+        ("Trabzon - Nanterre | Sport Klub 4 (mojtv.hr)",
+         "2026-10-07 19:00 | FIBA Liga prvaka: Trabzon - Nanterre"),
+        ("Trabzon - Nanterre | Arena Sport 2 (tvarenasport.com)",
+         "2026-10-07 19:00 | Trabzon - Nanterre"),
+        ("Forma-1 - Sprintfutam | M4 Sport+ (port.hu)",
+         "2026-10-10 22:15 | Forma-1 - Sprintfutam"),
+        ("Serbia Upside Down - Into the Unknown | Extreme Sports (tv2.no)",
+         "2026-10-10 20:30 | Serbia Upside Down - Into the Unknown")):
+    conn.execute("INSERT INTO moderation (kind, raw_value, suggestion) "
+                 "VALUES ('sport', ?, ?)", (raw, sugg))
+conn.commit()
+rows = conn.execute("SELECT id, raw_value, suggestion FROM moderation "
+                    "ORDER BY id").fetchall()
+items = [(r, Question.parse(r["raw_value"], r["suggestion"])) for r in rows]
+out = settle(conn, judge_for(conn), items, apply=False)
+check("settle_без_apply_ничего_не_пишет",
+      conn.execute("SELECT COUNT(*) FROM moderation WHERE status = 'open'"
+                   ).fetchone()[0] == 4 and [a.letter for _, a in out]
+      # вторая копия Trabzon без слова «FIBA» сама не решается — её
+      # закроет ответ первой
+      == ["B", None, "-", None], [a.letter for _, a in out])
+settle(conn, judge_for(conn), items, apply=True)
+st = {r["raw_value"].split(" |")[0] + "/" + r["raw_value"].split("| ")[-1]:
+      (r["status"], r["suggestion"], r["answered_by"] or "")
+      for r in conn.execute("SELECT * FROM moderation")}
+check("settle_наш_вид_как_кнопка_Баскетбол",
+      st["Trabzon - Nanterre/Sport Klub 4 (mojtv.hr)"][:2] == ("done", "B")
+      and st["Trabzon - Nanterre/Sport Klub 4 (mojtv.hr)"][2]
+      .startswith("ответила программа: правило 5"), st)
+check("settle_копия_пары_с_другого_канала_закрыта_тем_же_ответом",
+      st["Trabzon - Nanterre/Arena Sport 2 (tvarenasport.com)"][:2]
+      == ("done", "B"), st)
+check("settle_подсказка_с_днём_матча",
+      tuple(conn.execute("SELECT sport, match_day FROM sport_hints WHERE "
+                         "pair = 'Trabzon - Nanterre'").fetchone())
+      == ("B", "2026-10-07"))
+check("settle_чужой_вид_в_отсеянные_с_пометкой",
+      st["Forma-1 - Sprintfutam/M4 Sport+ (port.hu)"][0] == "skipped"
+      and "Forma-1" in st["Forma-1 - Sprintfutam/M4 Sport+ (port.hu)"][2], st)
+check("settle_нерешённое_остаётся_владельцу",
+      st["Serbia Upside Down - Into the Unknown/Extreme Sports (tv2.no)"]
+      == ("open", "2026-10-10 20:30 | Serbia Upside Down - Into the Unknown", ""),
+      st)
+
+print("Уборка очереди «Вид спорта»: review_queue.py --kind sport")
+conn = fresh_db()
+завтра = datetime.now() + timedelta(days=1)
+вчера = datetime.now() - timedelta(days=1)
+#: матч эталона — послезавтра в 20:00, строка beIN — завтра в 20:00
+REF_NOW = [ref("Galatasaray", "Kasimpasa",
+               (завтра + timedelta(days=1)).strftime("%Y-%m-%dT20:00"),
+               "F", "TURKEY: Super Lig")]
+for raw, when, title in (
+        ("Alfa - Beta | Kanal 1 (site.test)", вчера, "Alfa - Beta"),
+        ("Delta - Epsilon | Kanal 1 (site.test)", завтра, "Delta - Epsilon"),
+        ("Delta - Epsilon | Kanal 2 (site.test)", завтра + timedelta(hours=2),
+         "Delta - Epsilon"),
+        ("Galatasaray - Kasımpaşa | beIN SPORTS 1 (beinsports.com.tr)",
+         завтра.replace(hour=20, minute=0), "Galatasaray - Kasımpaşa"),
+        ("Rytas Vilnius - Sabah | FIBA čempionų lyga | Go3 Sport 2 (tv3.lt)",
+         завтра, "FIBA čempionų lyga. Rytas Vilnius - Sabah"),
+        ("Manisa FK - Besiktas | beIN SPORTS 2 (beinsports.com.tr)", завтра,
+         "Manisa FK - Besiktas")):
+    conn.execute("INSERT INTO moderation (kind, raw_value, suggestion) "
+                 "VALUES ('sport', ?, ?)",
+                 (raw, f"{when:%Y-%m-%d %H:%M} | {title}"))
+conn.commit()
+команды = {(names.readings(x) or ("",))[0]: "F" for x in ("Manisa FK", "Besiktas")}
+review_queue.review_sport(conn, apply=False, judge=Judge(conn, REF_NOW, sports=SPORTS),
+                          команды=команды)
+check("уборка_вид_спорта_без_apply_ничего",
+      conn.execute("SELECT COUNT(*) FROM moderation WHERE status = 'open'"
+                   ).fetchone()[0] == 6)
+review_queue.review_sport(conn, apply=True, judge=Judge(conn, REF_NOW, sports=SPORTS),
+                          команды=команды)
+st = {r["id"]: (r["status"], r["suggestion"], r["answered_by"] or "")
+      for r in conn.execute("SELECT * FROM moderation ORDER BY id")}
+check("уборка_прошло_в_отсеянные_с_причиной",
+      st[1][0] == "skipped" and st[1][2] == "уборка очереди: прошло", st[1])
+check("уборка_дубль_старшая_копия_закрыта_младшая_живёт",
+      st[2][0] == "skipped" and st[2][2] == "уборка очереди: дубль пары"
+      and st[3][0] == "open", (st[2], st[3]))
+check("уборка_повтор_beIN_до_матча_не_матч",
+      st[4][0] == "skipped" and "не в час матча" in st[4][2], st[4])
+check("уборка_FIBA_ответ_баскетбол",
+      st[5][:2] == ("done", "B") and "ответила программа" in st[5][2], st[5])
+check("уборка_обе_команды_известны_ответ",
+      st[6][:2] == ("done", "F") and "обе команды известны" in st[6][2], st[6])
+check("уборка_пишет_строку_в_прогоны",
+      "ответила программа: 2" in (conn.execute(
+          "SELECT log FROM runs ORDER BY id DESC LIMIT 1").fetchone()[0] or ""))
+
+print("Заливка: новый вопрос не задаётся, если программа ответила сама")
+conn = fresh_db()
+unsolved = [
+    {"домен": "mojtv.hr", "канал": "Sport Klub 4", "home": "Trabzon",
+     "away": "Nanterre", "league": "", "start_kyiv": "2026-10-07T19:00",
+     "raw_title": "FIBA Liga prvaka: Trabzon - Nanterre"},
+    {"домен": "tv2.no", "канал": "Extreme Sports", "home": "Serbia Upside Down",
+     "away": "Into the Unknown", "league": "", "start_kyiv": "2026-10-10T20:30",
+     "raw_title": "Serbia Upside Down - Into the Unknown"},
+    {"домен": "beinsports.com.tr", "канал": "beIN SPORTS 1",
+     "home": "Galatasaray", "away": "Kasımpaşa", "league": "",
+     "start_kyiv": "2026-10-08T20:00", "raw_title": "Galatasaray - Kasımpaşa"},
+]
+real_judge = games_import.sport_question.Judge
+games_import.sport_question.Judge = lambda c, r: Judge(c, r, sports=SPORTS)
+try:
+    new, answered = games_import.queue_unsolved(conn, unsolved, REF_Q)
+finally:
+    games_import.sport_question.Judge = real_judge
+открытые = [r["raw_value"] for r in conn.execute(
+    "SELECT raw_value FROM moderation WHERE status = 'open'")]
+check("заливка_владельцу_только_нерешённое",
+      открытые == ["Serbia Upside Down - Into the Unknown | Extreme Sports "
+                   "(tv2.no)"], открытые)
+check("заливка_счёт_вопросов_и_ответов", (new, answered) == (3, 2),
+      (new, answered))
+check("заливка_ответы_с_пометкой_программы",
+      conn.execute("SELECT COUNT(*) FROM moderation WHERE answered_by LIKE "
+                   "'ответила программа:%'").fetchone()[0] == 2)
+again, _ = games_import.queue_unsolved(conn, [unsolved[2]], [])
+check("заливка_отсеянное_не_спрашивается_снова", again == 0)
+
 print(f"\nпроверок: {passed + len(failed)}, зелёных: {passed}, красных: {len(failed)}")
 shutil.rmtree(TMP, ignore_errors=True)
 sys.exit(1 if failed else 0)

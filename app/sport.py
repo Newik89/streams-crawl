@@ -65,6 +65,14 @@ SPORT_NAME_KEY = "вид спорта"
 #: знает матч, но не знает, что канал показывает вместо него разговор о матче
 SHOW_GROUP = "передачи и повторы"
 
+#: раздел `markers.json` → `sport`: теннисные турниры и их месяцы
+#: (Australian Open — январь). Строка с турниром не в его месяц — запись
+SEASONS_KEY = "сезоны"
+
+#: названия месяцев — для слова, по которому решили («идёт в январе»)
+MONTHS = ("январе", "феврале", "марте", "апреле", "мае", "июне", "июле",
+          "августе", "сентябре", "октябре", "ноябре", "декабре")
+
 #: Насколько сторона пары — команда словаря, в имени которой стоит слово
 #: чужого вида. `_EXACT` — сторона читается ровно как команда словаря
 #: («Le Mans», «LE MANS», «Le Mans FC»). `_PART` — имя команды словаря стоит
@@ -101,6 +109,9 @@ class Sports:
     sport_names: dict | None = None
     #: имена команд вместо словаря — для проверок; None — `TEAMS_FILE`
     teams: tuple | None = None
+    #: турниры со своими месяцами: (шаблон написаний, месяцы) — раздел
+    #: `SEASONS_KEY`, правило 1
+    seasons: tuple = ()
     _team_words: dict | None = field(default=None, repr=False, compare=False)
     _team_readings: frozenset | None = field(default=None, repr=False,
                                              compare=False)
@@ -110,7 +121,7 @@ class Sports:
     def decide(self, text: str, head: str = "", pair=None, *, ref: str = "",
                ref_team: bool = False,
                league: tuple[str, str] | None = None, club: str = "",
-               hint: str = "") -> Verdict:
+               hint: str = "", month: int = 0) -> Verdict:
         """Наш вид спорта или чужой. ВСЁ решение — здесь, правила по порядку.
 
         Что приходит (улики собирает `pipeline.classify`):
@@ -126,13 +137,17 @@ class Sports:
                    (`reference.Reference.knows_team`), в любой день;
           league — (буква, название): лига строки нашлась в словаре лиг;
           club   — буква сугубо женского клуба (`leagues.women_team`);
-          hint   — буква из действующей подсказки владельца по этой паре.
+          hint   — буква из действующей подсказки владельца по этой паре;
+          month  — месяц строки (1–12, киевское время); 0 — неизвестен.
 
         Правила. Срабатывает первое подошедшее, его номер — в `Verdict.rule`:
 
           1. Слово жанра — «передача, обзор, повтор» (группа `SHOW_GROUP`).
              Это не матч → Other Sport. Эталон тут не судья: он знает матч,
              а не то, что канал показывает вместо него.
+             Сюда же — теннисный турнир не в свой месяц (раздел
+             `SEASONS_KEY`, когда других чужих слов в строке нет): финал
+             Australian Open на Eurosport в октябре — запись (#2075, #2095).
           2. Эталон flashscore знает эту пару в это время → вид спорта
              эталона. Слова на странице его не оспаривают: «PSG - Le Mans» —
              футбол, хотя «Le Mans» ещё и гонка.
@@ -182,6 +197,10 @@ class Sports:
         for hit in alien:
             if self.group_of(hit) == SHOW_GROUP:
                 return Verdict("-", hit, rule=1, group=SHOW_GROUP)
+        # …или турнир не в свой месяц: финал Australian Open в октябре
+        late = "" if alien else self._out_of_season(text, month)
+        if late:
+            return Verdict("-", late, rule=1, group=SHOW_GROUP)
 
         # 2. эталон flashscore знает эту пару в это время
         if ref:
@@ -258,6 +277,22 @@ class Sports:
         старого плоского списка «чужие» — «другое»."""
         key = greek_plain((word or "").lower()).strip()
         return (self.groups or {}).get(key, "другое")
+
+    def _out_of_season(self, text: str, month: int) -> str:
+        """Турнир из раздела `SEASONS_KEY`, названный в тексте не в свой
+        месяц: «Ausztrál Open — идёт в январе». Пусто — такого нет или месяц
+        строки неизвестен. Фразы из «кроме» → «T» («AFC Wimbledon», «US Open
+        Cup») вырезаются заранее: это не теннис."""
+        if not month or not self.seasons or not text:
+            return ""
+        skip = (self.exclude or {}).get("T")
+        probe = skip.sub(" ", text) if skip else text
+        for pattern, months in self.seasons:
+            m = pattern.search(probe)
+            if m and month not in months:
+                when = ", ".join(MONTHS[x - 1] for x in sorted(months))
+                return f"{m.group(0)} — идёт в {when}"
+        return ""
 
     def _alien_hits(self, text: str) -> list[str]:
         """Все слова чужих видов спорта в тексте, по порядку. Текст — уже
@@ -425,6 +460,17 @@ def load(path: Path | None = None, override: dict | None = None,
         own = node.get(letter)
         return _flatten(own.get(SPORT_NAME_KEY)) if isinstance(own, dict) else []
 
+    # турниры со своими месяцами (правило 1): шаблон написаний → месяцы
+    seasons = []
+    for name, item in (node.get(SEASONS_KEY) or {}).items():
+        if name == "_" or not isinstance(item, dict):
+            continue
+        pattern = _pattern(_flatten(item.get("написания")))
+        months = frozenset(int(x) for x in item.get("месяцы") or ()
+                           if 1 <= int(x) <= 12)
+        if pattern and months:
+            seasons.append((pattern, months))
+
     return Sports(
         alien=_pattern(_flatten(node.get("чужие")) + _flatten(others)),
         kinds={letter: _pattern(_flatten(node.get(letter)))
@@ -435,4 +481,5 @@ def load(path: Path | None = None, override: dict | None = None,
         sport_names={letter: _pattern(sport_name_words(letter))
                      for letter in ("F", "B", "T")},
         teams=tuple(teams) if teams is not None else None,
+        seasons=tuple(seasons),
     )

@@ -208,7 +208,16 @@
     "בונדסליגה",
     "לה ליגה",
     "סרייה א",
-    "ליגה 1"
+    "ליגה 1",
+    "bundesliga",
+    "ליגה אוסטרית",
+    "הליגה האוסטרית",
+    "ליגה בלגית",
+    "הליגה הבלגית",
+    "ליגה סקוטית",
+    "הליגה הסקוטית",
+    "ליגה שוויצרית",
+    "הליגה השוויצרית"
    ]
   },
   "B": {
@@ -293,7 +302,8 @@
     "euroleague",
     "eurocup",
     "eurobasket",
-    "basketligaen"
+    "basketligaen",
+    "fiba"
    ]
   },
   "T": {
@@ -355,7 +365,11 @@
     "ליגה צרפתית בכדורסל",
     "ליגה ספרדית בכדורסל",
     "ליגה איטלקית בכדורסל",
-    "ליגה גרמנית בכדורסל"
+    "ליגה גרמנית בכדורסל",
+    "basketball bundesliga",
+    "basketball-bundesliga",
+    "ליגה אוסטרית בכדורסל",
+    "ליגה בלגית בכדורסל"
    ],
    "чужие": [
     "chl:",
@@ -639,7 +653,12 @@
     "lengvoji atletika",
     "lengvosios atletikos",
     "atletikai",
-    "atletika"
+    "atletika",
+    "utmb",
+    "ultra-trail",
+    "trail running",
+    "трейл",
+    "трейлраннинг"
    ],
    "единоборства": [
     "küzdősport",
@@ -722,7 +741,10 @@
     "ökölvívás",
     "okolvivas",
     "kickbox",
-    "kampsport"
+    "kampsport",
+    "cage fight",
+    "power slap",
+    "slap fighting"
    ],
    "бадминтон и ракетки": [
     "badminton",
@@ -759,7 +781,13 @@
     "trampolino",
     "trampolín",
     "художественная гимнастика",
-    "rhythmic gymnastics"
+    "rhythmic gymnastics",
+    "akrobatyka sportowa",
+    "akrobatyce sportowej",
+    "akrobatyki sportowej",
+    "akrobatyka",
+    "sports acrobatics",
+    "sportovní akrobacie"
    ],
    "конный спорт": [
     "csio",
@@ -997,7 +1025,17 @@
     "formula e",
     "moto 2",
     "moto 3",
-    "virtual gp"
+    "virtual gp",
+    "forma-1",
+    "forma 1",
+    "forma-2",
+    "forma-3",
+    "sprintfutam",
+    "worldsbk",
+    "worldssp",
+    "worldwcr",
+    "superpole",
+    "world superbike"
    ],
    "киберспорт": [
     "esports",
@@ -1194,7 +1232,17 @@
     "crossfit",
     "bodybuilding",
     "бодибилдинг",
-    "skydning"
+    "skydning",
+    "strzelectwo",
+    "strzelectwa",
+    "strzelectwie",
+    "lövészet",
+    "sportlövészet",
+    "sportovní střelba",
+    "streljaštvo",
+    "sportsko streljaštvo",
+    "šaudymas",
+    "σκοποβολή"
    ],
    "другие категории сайтов": [
     "sporte të tjera",
@@ -1447,6 +1495,68 @@
     "ανασκόπηση",
     "ανασκοπηση"
    ]
+  },
+  "сезоны": {
+   "_": "Теннисные турниры, у которых свои месяцы. Строка с таким турниром не в его месяц — запись, а не матч: Eurosport крутит финалы Australian Open в октябре (очередь 06.10, #2075/#2095). `app/sport.py`, правило 1. «месяцы» — номера месяцев (1–12), когда турнир идёт; «написания» — как его зовут сайты, слово ищется целиком. Фразы из «кроме» → «T» («AFC Wimbledon», «US Open Cup») сюда не попадают.",
+   "Australian Open": {
+    "месяцы": [
+     1,
+     2
+    ],
+    "написания": [
+     "australian open",
+     "ausztrál open",
+     "ausztrál nyílt bajnokság",
+     "open d'australie",
+     "abierto de australia",
+     "open de australia",
+     "otwarte mistrzostwa australii",
+     "открытый чемпионат австралии",
+     "відкритий чемпіонат австралії",
+     "αυστραλιανό όπεν",
+     "אליפות אוסטרליה הפתוחה"
+    ]
+   },
+   "Roland Garros": {
+    "месяцы": [
+     5,
+     6
+    ],
+    "написания": [
+     "roland garros",
+     "roland-garros",
+     "french open",
+     "ролан гаррос",
+     "ролан-гаррос",
+     "רולאן גארוס"
+    ]
+   },
+   "Wimbledon": {
+    "месяцы": [
+     6,
+     7
+    ],
+    "написания": [
+     "wimbledon",
+     "wimbledonu",
+     "уимблдон",
+     "вімблдон",
+     "ווימבלדון",
+     "γουίμπλεντον"
+    ]
+   },
+   "US Open": {
+    "месяцы": [
+     8,
+     9
+    ],
+    "написания": [
+     "us open",
+     "u.s. open",
+     "открытый чемпионат сша",
+     "відкритий чемпіонат сша"
+    ]
+   }
   }
  },
  "not_live": {
@@ -1468,7 +1578,11 @@
    "обзор",
    "resúmenes",
    "resumenes",
-   "resumen"
+   "resumen",
+   "основные моменты",
+   "лучшие моменты",
+   "основні моменти",
+   "найкращі моменти"
   ],
   "из ТЗ": [
    "powtórka",

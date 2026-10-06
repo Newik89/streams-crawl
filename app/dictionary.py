@@ -418,8 +418,12 @@ def counts(conn: sqlite3.Connection) -> dict[str, int]:
 
 
 def resolve(conn: sqlite3.Connection, item_id: int, canonical: str,
-            country: str = "") -> None:
-    """Владелец подтвердил имя: закрепляем навсегда и закрываем строку."""
+            country: str = "", answered_by: str = "") -> None:
+    """Владелец подтвердил имя: закрепляем навсегда и закрываем строку.
+
+    `answered_by` — кто ответил, если не владелец: «ответила программа:
+    правило 5 (слово «FIBA»)» (`app/sport_question.py`). Путь записи тот
+    же, что у кнопки, — пометка только видна в админке."""
     item = conn.execute("SELECT * FROM moderation WHERE id = ?",
                         (item_id,)).fetchone()
     if item is None:
@@ -438,8 +442,8 @@ def resolve(conn: sqlite3.Connection, item_id: int, canonical: str,
         # один ответ закрывает ту же пару со всех каналов
         ids = _sport_siblings(conn, item["raw_value"]) or [item_id]
         conn.executemany("UPDATE moderation SET status = 'done', "
-                         "suggestion = ? WHERE id = ?",
-                         [(canonical, i) for i in ids])
+                         "suggestion = ?, answered_by = ? WHERE id = ?",
+                         [(canonical, answered_by or None, i) for i in ids])
         conn.commit()
         return
     if item["kind"] == "channel":
@@ -451,21 +455,23 @@ def resolve(conn: sqlite3.Connection, item_id: int, canonical: str,
             raise ValueError(f"нечего закреплять для вида {item['kind']}")
         remember(conn, item["raw_value"], canonical)
 
-    conn.execute("UPDATE moderation SET status = 'done', suggestion = ? "
-                 "WHERE id = ?", (canonical, item_id))
+    conn.execute("UPDATE moderation SET status = 'done', suggestion = ?, "
+                 "answered_by = ? WHERE id = ?",
+                 (canonical, answered_by or None, item_id))
     conn.commit()
 
 
 def _spread_sport(conn: sqlite3.Connection, item_id: int,
-                  status: str) -> list[int]:
+                  status: str, answered_by: str = "") -> list[int]:
     """У вида спорта статус ставится всей паре: тот же матч висит копиями с
     разных каналов, и решать его дважды незачем (владелец 15.09)."""
     item = conn.execute("SELECT kind, raw_value FROM moderation WHERE id = ?",
                         (item_id,)).fetchone()
     ids = ([item_id] if item is None or item["kind"] != "sport"
            else _sport_siblings(conn, item["raw_value"]) or [item_id])
-    conn.executemany(f"UPDATE moderation SET status = '{status}' "
-                     "WHERE id = ?", [(i,) for i in ids])
+    conn.executemany(f"UPDATE moderation SET status = '{status}', "
+                     "answered_by = ? WHERE id = ?",
+                     [(answered_by or None, i) for i in ids])
     return ids
 
 
@@ -489,29 +495,53 @@ def later_count(conn: sqlite3.Connection) -> int:
                         "WHERE status = 'later'").fetchone()[0]
 
 
-def skip(conn: sqlite3.Connection, item_id: int) -> None:
+def skip(conn: sqlite3.Connection, item_id: int,
+         answered_by: str = "") -> None:
     """«Это не команда» / «не матч» — например заголовок турнира вместо пары
-    клубов. Строку не удаляем: иначе она вернётся следующим же обходом."""
-    _spread_sport(conn, item_id, "skipped")
+    клубов. Строку не удаляем: иначе она вернётся следующим же обходом.
+    `answered_by` — как у `resolve`: пометка, если закрыла программа."""
+    _spread_sport(conn, item_id, "skipped", answered_by)
     conn.commit()
+
+
+#: начало пометки `answered_by`, когда вопрос решила сама программа
+#: (`app/sport_question.py`); уборка («прошло», «дубль») пишет своё
+PROGRAM_MARK = "ответила программа"
+
+
+def auto_answered(conn: sqlite3.Connection, kind: str = "sport",
+                  days: int = 7, limit: int = 100) -> list[sqlite3.Row]:
+    """Что программа за последние `days` дней ответила сама (пометка
+    `PROGRAM_MARK`): и ответы видом спорта, и отсеянное. Вкладка «Ответила
+    программа» на странице «Названия» — владелец видит, что решено без него.
+    `kind` пустой — все виды."""
+    return conn.execute(
+        "SELECT m.*, s.domain, s.country AS source_country FROM moderation m "
+        "LEFT JOIN sources s ON s.id = m.source_id "
+        "WHERE (? = '' OR m.kind = ?) AND m.answered_by LIKE ? "
+        "AND m.status IN ('done', 'skipped') "
+        "AND m.created_at >= datetime('now', ?) "
+        "ORDER BY m.id DESC LIMIT ?",
+        (kind, kind, PROGRAM_MARK + "%", f"-{int(days)} days",
+         limit)).fetchall()
 
 
 def skipped_items(conn: sqlite3.Connection, kind: str = "sport",
                   limit: int = 100) -> list[sqlite3.Row]:
     """Вкладка «Отсеянные»: что закрыто без ответа — рукой («Не матч») или
     автоматической чисткой. Всё видно и возвращается кнопкой «Вернуть» —
-    условие владельца 15.09 к любому автоотсеву."""
+    условие владельца 15.09 к любому автоотсеву. `kind` пустой — все виды."""
     return conn.execute(
         "SELECT m.*, s.domain, s.country AS source_country FROM moderation m "
         "LEFT JOIN sources s ON s.id = m.source_id "
-        "WHERE m.status = 'skipped' AND m.kind = ? "
-        "ORDER BY m.id DESC LIMIT ?", (kind, limit)).fetchall()
+        "WHERE m.status = 'skipped' AND (? = '' OR m.kind = ?) "
+        "ORDER BY m.id DESC LIMIT ?", (kind, kind, limit)).fetchall()
 
 
 def skipped_count(conn: sqlite3.Connection, kind: str = "sport") -> int:
     return conn.execute("SELECT COUNT(*) FROM moderation "
-                        "WHERE status = 'skipped' AND kind = ?",
-                        (kind,)).fetchone()[0]
+                        "WHERE status = 'skipped' AND (? = '' OR kind = ?)",
+                        (kind, kind)).fetchone()[0]
 
 
 def clear_open(conn: sqlite3.Connection, kind: str = "sport") -> int:

@@ -235,7 +235,8 @@ CREATE TABLE IF NOT EXISTS moderation (
     source_id  INTEGER REFERENCES sources(id) ON DELETE SET NULL,
     suggestion TEXT,
     status     TEXT NOT NULL DEFAULT 'open',   -- open | done | skipped | later
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    answered_by TEXT                           -- пусто: владелец; иначе программа и почему
 );
 
 CREATE INDEX IF NOT EXISTS idx_moderation_open ON moderation(status, kind);
