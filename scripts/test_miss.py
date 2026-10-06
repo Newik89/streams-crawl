@@ -255,6 +255,52 @@ check("правило5а_вид_не_датирован_если_дата_адр
       and cov.дни_страницы(Z06, "2026-10-07 01:50") == ["2026-10-06", "2026-10-07"]
       and cov.дни_страницы(Z06, "2026-10-07 21:00") == ["2026-10-07"])
 
+# ── разовая уборка двойников ±24 ч (scripts/clean_shifted_twins.py) ─────────
+print("Уборка двойников ночных игр")
+sys.path.insert(0, str(ROOT / "scripts"))
+import clean_shifted_twins as twins  # noqa: E402
+
+S5, DK = "sport5.co.il", "tvsporten.dk"
+conn = fresh_db()
+for domain in (S5, DK):
+    conn.execute("INSERT INTO sources (domain, name, base_url, country) "
+                 "VALUES (?, ?, ?, 'XX')", (domain, domain, f"https://{domain}/"))
+conn.commit()
+
+
+def s5(home, away, when, title, domain=S5, channel="SPORT 5 STAR"):
+    return {"sport": "B", "league": "", "home": home, "away": away,
+            "start_kyiv": when, "start_utc": "",
+            "entries": [{"source": domain, "channel": channel, "raw_title": title,
+                         "url": f"https://{domain}/day?date={when[:10]}"}]}
+
+
+T1, T2, T3 = "NBA: CHA - BKN", "WNBA: NY - ATL, game 2", "WNBA: NY - ATL, game 3"
+old = [s5("CHA", "BKN", "2026-10-08T02:00", T1),       # двойник: сдвинут на сутки
+       s5("NY", "ATL", "2026-10-11T02:30", T3),        # своя игра: заголовок другой
+       s5("CHI", "MEM", "2026-10-09T03:00", "NBA: CHI - MEM"),
+       s5("CHI", "MEM", "2026-10-09T03:00", "CHI - MEM", domain=DK, channel="TV3"),
+       s5("LAL", "SAC", "2026-10-12T02:00", "NBA: LAL - SAC")]  # −23 ч, не сутки
+fresh = [s5("CHA", "BKN", "2026-10-07T02:00", T1),
+         s5("NY", "ATL", "2026-10-10T02:30", T2),
+         s5("CHI", "MEM", "2026-10-08T03:00", "NBA: CHI - MEM"),
+         s5("LAL", "SAC", "2026-10-11T03:00", "NBA: LAL - SAC")]
+store.save_games(conn, old, now=datetime(2026, 10, 5, 22, 0))
+store.save_games(conn, fresh, now=NOW)
+found = twins.найти(conn, COLLECTED, COLLECTED)
+check("двойник_ровно_на_сутки_с_тем_же_заголовком_найден, прочие — нет "
+      "(игра 3 ≠ игра 2, отметка не только sport5, сдвиг 23 ч)",
+      [(d.start, [t for *_, t in d.отметки]) for d in found]
+      == [("2026-10-08 02:00", [T1])], [(d.start, d.отметки) for d in found])
+gone = twins.погасить(conn, found)
+check("уборка_гасит_отметку_как_заливка_событие_не_удаляет",
+      len(gone) == 1 and miss_of(conn, "SPORT 5 STAR", "CHA") is not None
+      and conn.execute("SELECT miss_count FROM event_channels WHERE id = ?",
+                       (gone[0],)).fetchone()[0] == store.MISS_LIMIT
+      and conn.execute("SELECT COUNT(*) FROM events WHERE start_kyiv = "
+                       "'2026-10-08 02:00'").fetchone()[0] == 1)
+check("уборка_повторно_ничего_не_находит", twins.найти(conn, COLLECTED, COLLECTED) == [])
+
 check("вид_адреса_без_чисел_и_запроса",
       miss.вид_адреса("https://www.teleman.pl/program-tv/stacje/Polsat-Sport-2"
                       "?date=2026-10-06") == "teleman.pl/program-tv/stacje/Polsat-Sport-#"
