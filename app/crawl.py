@@ -34,7 +34,9 @@ GRID_DOMAINS = {"tv.nova.cz", "sporttv.pt", "tvarenasport.com",
                 "tvarenasport.ba", "tvarenasport.hr", "tvarenasport.si",
                 "trtspor.com.tr", "skysports.com", "maxsport.live", "bnt.bg",
                 "tring.al", "football-tv.ru", "rtrs.tv", "trt.net.tr",
-                "mediaklikk.hu", "sports.kz", "primaplay.ro",
+                # mediaklikk.hu выведен 06.10 в DAY_GRID_DOMAINS: страница
+                # `/musorujsag/` держит только сегодня
+                "sports.kz", "primaplay.ro",
                 # пачка 01.09 (четвёртая): словацкий фильтр «Športové» —
                 # 11 спортканалов одной страницей; кипрский fetchLiveSports —
                 # неделя трансляций одним ответом
@@ -146,7 +148,12 @@ DAY_GRID_DOMAINS = {"polsatsport.pl", "allente.no", "ceskatelevize.cz",
                     "tvtid.tv2.dk",
                     # Дания (05.10): справочник «спорт по ТВ» — ручка сайта
                     # отдаёт события дня со всеми каналами (TV3 Sport, See…)
-                    "tvsporten.dk"}
+                    "tvsporten.dk",
+                    # M4 Sport (06.10): ручка программы MTVA — POST на день,
+                    # каналы и дата в полях формы (`post_fields` карточки);
+                    # страница `/musorujsag/` держала только сегодня, и матч
+                    # субботы на 10.10 в обход не попадал (пробы #207, #208)
+                    "mediaklikk.hu"}
 # эталон flashscore.mobi с 02.09 идёт обычным «канал × день»: три раздела
 # (football/basketball/tennis) лежат в source_channels, ?d={DAYNUM} в page_url
 
