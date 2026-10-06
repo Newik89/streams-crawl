@@ -406,6 +406,41 @@ def guessed(domain: str, result) -> bool:
         or _bare_domain(domain) in REPEAT_GUESS_DOMAINS
 
 
+def show_key(domain: str, r) -> tuple:
+    """Пара у сайта для поиска позднего показа: сайт, вид спорта и команды
+    в любом порядке. Вид спорта — чтобы футбольное дерби не сделало
+    баскетбольное того же вечера «поздним показом» (как в `_looks_repeat`)."""
+    return (_bare_domain(domain), r.sport or "",
+            tuple(sorted((r.home.lower(), r.away.lower()))))
+
+
+def first_shows(found: list) -> dict[tuple, datetime]:
+    """Первый показ каждой пары у каждого сайта (ключ — `show_key`).
+
+    Считается по ВСЕМ эфирным строкам пары у сайта — и по угаданным, и по
+    помеченным эфиром самим сайтом (`site_flag=live`). У сайтов со страницей
+    на канал и смешанными пометками (tvpassport, ORF, HRT, err, webtv) иначе
+    угаданный показ на ДРУГОМ канале позже помеченного эфира сам считался
+    первым и в 150 минутах склейки вклеивался в живую игру лишним каналом
+    (проверка 06.10). Снимаются потом только угаданные строки (`guessed`)."""
+    firsts: dict[tuple, datetime] = {}
+    for domain, r in found:
+        key = show_key(domain, r)
+        if key not in firsts or r.start_kyiv < firsts[key]:
+            firsts[key] = r.start_kyiv
+    return firsts
+
+
+def late_show(domain: str, r, firsts: dict[tuple, datetime]) -> datetime | None:
+    """Угаданный эфир позже первого показа той же пары у сайта — запись:
+    вернёт время первого показа (`firsts` — из `first_shows`). Строку,
+    которую сайт пометил сам, и первый показ не трогаем — None."""
+    if not guessed(domain, r):
+        return None
+    first = firsts[show_key(domain, r)]
+    return first if r.start_kyiv > first else None
+
+
 def _looks_repeat(earlier, later) -> bool:
     """Та же игра, показанная позже: пара совпала, а разрыв больше окна
     склейки, но меньше 30 часов."""
@@ -840,24 +875,13 @@ def main() -> int:
 
     # Межфайловые повторы у источников без честного флага (см. константу):
     # та же пара (в любом порядке команд) позже первого показа — запись.
-    def _bare(domain: str) -> str:
-        return domain.removeprefix("www.")
-
-    def _guess_key(domain: str, r) -> tuple:
-        return (_bare(domain), tuple(sorted((r.home.lower(), r.away.lower()))))
-
-    firsts: dict[tuple, object] = {}
-    for domain, r in found:
-        if guessed(domain, r):
-            key = _guess_key(domain, r)
-            if key not in firsts or r.start_kyiv < firsts[key]:
-                firsts[key] = r.start_kyiv
+    # Первый показ — по всем эфирным строкам сайта, снимается только
+    # угаданное (`first_shows`)
+    firsts = first_shows(found)
 
     def _late_show(domain: str, r) -> bool:
-        if not guessed(domain, r):
-            return False
-        first = firsts[_guess_key(domain, r)]
-        if r.start_kyiv <= first:
+        first = late_show(domain, r, firsts)
+        if first is None:
             return False
         снято.append(removed_row(
             СНЯТО_ПОЗДНИЙ_ПОКАЗ, domain, r,

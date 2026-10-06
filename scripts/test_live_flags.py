@@ -303,6 +303,37 @@ check("время trtspor «20:30Z» — местное: 20:30 по Киеву, 
       bourg and bourg[0].start.astimezone(KYIV).strftime("%d.%m %H:%M")
       == "06.10 20:30")
 
+# ── поздний угаданный показ на другом канале (проверка 06.10) ────────────────
+print("parse_live — первый показ пары и по строкам, помеченным сайтом")
+import parse_live                                                # noqa: E402
+
+
+def shown(channel: str, hour: int, pair: str, sport: str = "F",
+          site_live: bool | None = None, guess: bool = False):
+    """Строка `found` у сайта со страницей на канал (tvpassport.com)."""
+    p = Program(channel_raw=channel, title=pair, match_raw=pair,
+                start=datetime(2026, 10, 6, hour, 0, tzinfo=KYIV))
+    site_says(p, site_live)
+    if guess:
+        p.extra["live_guess"] = True
+    home, _, away = pair.partition(" - ")
+    return ("www.tvpassport.com", pipeline.Row(
+        program=p, ok=True, home=home, away=away, sport=sport, start_kyiv=p.start))
+
+
+found = [shown("TSN2", 14, "Scotland - Slovenia", site_live=True),
+         shown("TSN5", 16, "Slovenia - Scotland", guess=True),
+         shown("TSN4", 12, "Canada - Mexico", guess=True),
+         shown("TSN1", 15, "Canada - Mexico", site_live=True),
+         shown("TSN1", 18, "Partizan - Crvena zvezda", site_live=True),
+         shown("TSN3", 20, "Partizan - Crvena zvezda", sport="B", guess=True)]
+firsts = parse_live.first_shows(found)
+late = [r.program.channel_raw for domain, r in found
+        if parse_live.late_show(domain, r, firsts)]
+check("угаданный показ на другом канале позже эфира, помеченного сайтом, — "
+      "запись (TSN5); помеченное, первое угаданное и баскетбол после "
+      "футбольного дерби не трогаются", late == ["TSN5"], late)
+
 # ── самопроверка прогона scripts/audit_run.py ────────────────────────────────
 print("audit_run.py — известные классы ошибок")
 flags = audit_run.raw_flags(page("porthu_290_2026-10-06.json"), MARKERS)
