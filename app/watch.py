@@ -512,6 +512,12 @@ def hm(at: datetime | None) -> str:
     return at.astimezone(KYIV).strftime("%H:%M") if at else "?"
 
 
+def dhm(at: datetime | None) -> str:
+    """Дата и время → `ДД.ММ ЧЧ:ММ` по Киеву: в таблице «GitHub сейчас»
+    вчерашние прогоны стоят рядом с сегодняшними (владелец 08.10)."""
+    return at.astimezone(KYIV).strftime("%d.%m %H:%M") if at else "?"
+
+
 def clock(mark: str) -> str:
     """Отметка (киевская `ГГГГ-ММ-ДД ЧЧ:ММ` или UTC ISO) → `ЧЧ:ММ` по Киеву
     для строк сторожа."""

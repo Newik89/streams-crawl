@@ -645,8 +645,12 @@ _ROUND_HEAD = re.compile(rf"^[^,\-–—]*{_ROUND_WORDS}[^,\-–—]*,\s+", re.I
 _TITLE_TAIL = re.compile(rf"\s*,\s*[^,]*{_ROUND_WORDS}[^,]*$", re.I)
 #: весь матч в одном написании: «EVERTON X WOLVERHAMPTON» (sporttv.pt).
 #: Дефис сюда не входит — он бывает в имени клуба: «Ζλάτε Μόραφτσε -
-#: Βράμπλε» = Z. Moravce-Vrable
-_VERSUS = re.compile(r"\s(?:x|vs\.?|v)\s", re.I)
+#: Βράμπλε» = Z. Moravce-Vrable. Одиночная «v» — «vs» только перед именем
+#: соперника: слово от 3 знаков («Everton v Wolves») или короткое, за
+#: которым есть ещё слово («Rangers v St Mirren»). Голландская пометка
+#: женской сборной тоже « V » («Marokko V WO» = Morocco W WO, 08.10), но
+#: за ней либо конец, либо одинокий короткий ярлык эталона («WO»)
+_VERSUS = re.compile(r"\s(?:x|vs\.?)\s|\sv\s+(?=\S{3}|\S{1,2}\s+\S)", re.I)
 
 
 def bare_title(title: str) -> str:

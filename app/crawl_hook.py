@@ -115,9 +115,13 @@ def running(conn: sqlite3.Connection) -> dict | None:
         return None
     # age — секунд с отметки (05.10): свежей заявке сторож верит, даже если
     # GitHub её ещё не показал (`watch.lock_verdict`)
+    # since_day — то же время с датой («08.10 14:28»): в плашке над витриной
+    # вчерашний и сегодняшний заказ иначе не различить (владелец 08.10)
     return {"state": "заказан" if state == "заявка" else "идёт",
             "state_en": "requested" if state == "заявка" else "running",
-            "since": since, "what": what, "age": age}
+            "since": since, "what": what, "age": age,
+            "since_day": datetime.fromtimestamp(int(ts), KYIV)
+            .strftime("%d.%m %H:%M")}
 
 
 def is_probe(what: str) -> bool:

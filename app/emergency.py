@@ -140,7 +140,7 @@ def _run_line(r: dict, now: datetime, stuck_ids: set) -> dict:
                                                r.get("conclusion") or "?")
     rid = str(r.get("id"))
     return {"id": rid, "number": r.get("run_number"),
-            "what": watch.describe(kind, days), "at": watch.hm(created),
+            "what": watch.describe(kind, days), "at": watch.dhm(created),
             "state": state, "active": status in watch.RUNNING,
             "stuck": rid in stuck_ids}
 

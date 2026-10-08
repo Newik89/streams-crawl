@@ -642,6 +642,43 @@ check("заливка_ответы_с_пометкой_программы",
 again, _ = games_import.queue_unsolved(conn, [unsolved[2]], [])
 check("заливка_отсеянное_не_спрашивается_снова", again == 0)
 
+print("Чистка: закрытое программой старше 7 дней стирается, ответы владельца живут")
+conn = fresh_db()
+from app import dictionary  # noqa: E402
+СТАРОЕ, СВЕЖЕЕ = "-8 days", "-1 days"
+rows = [
+    # (вид, строка, статус, кто закрыл, когда задан) → ждём: стёрта?
+    ("sport", "A - B | X", "done", "ответила программа: правило 1", СТАРОЕ, True),
+    ("sport", "C - D | X", "skipped", "уборка очереди: прошло", СТАРОЕ, True),
+    ("team", "Igokea", "skipped", "уборка очереди: имя уже в словаре", СТАРОЕ, True),
+    ("sport", "E - F | X", "done", None, СТАРОЕ, False),         # ответ владельца
+    ("sport", "G - H | X", "skipped", None, СТАРОЕ, False),      # «Не матч» владельца
+    ("sport", "I - J | X", "done", "ответила программа: правило 2", СВЕЖЕЕ, False),
+    ("sport", "K - L | X", "skipped", "уборка очереди: дубль пары", СВЕЖЕЕ, False),
+    ("sport", "M - N | X", "open", None, СТАРОЕ, False),         # открытое не трогаем
+]
+for kind, raw, status, who, when, _ in rows:
+    conn.execute("INSERT INTO moderation (kind, raw_value, status, answered_by, "
+                 "created_at) VALUES (?, ?, ?, ?, datetime('now', ?))",
+                 (kind, raw, status, who, when))
+conn.commit()
+check("чистка_во_вкладке_отсеянные_только_свежее",
+      [r["raw_value"] for r in dictionary.skipped_items(conn, "")]
+      == ["K - L | X"] and dictionary.skipped_count(conn, "") == 1)
+check("чистка_ответила_программа_только_свежее",
+      [r["raw_value"] for r in dictionary.auto_answered(conn, "")] == ["I - J | X"])
+n = review_queue.purge(conn)
+остались = {r["raw_value"] for r in conn.execute("SELECT raw_value FROM moderation")}
+check("чистка_стёрто_ровно_три_программных_старых", n == 3, n)
+check("чистка_остальное_на_месте",
+      остались == {raw for _, raw, *_, стёрта in rows if not стёрта}, остались)
+check("чистка_пишет_строку_в_прогоны",
+      "стёрто 3 закрытых программой" in (conn.execute(
+          "SELECT log FROM runs ORDER BY id DESC LIMIT 1").fetchone()[0] or ""))
+check("чистка_пусто_не_шумит",
+      review_queue.purge(conn) == 0 and conn.execute(
+          "SELECT COUNT(*) FROM runs").fetchone()[0] == 1)
+
 print(f"\nпроверок: {passed + len(failed)}, зелёных: {passed}, красных: {len(failed)}")
 shutil.rmtree(TMP, ignore_errors=True)
 sys.exit(1 if failed else 0)

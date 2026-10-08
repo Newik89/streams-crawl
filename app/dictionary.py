@@ -530,10 +530,18 @@ def skip(conn: sqlite3.Connection, item_id: int,
 #: начало пометки `answered_by`, когда вопрос решила сама программа
 #: (`app/sport_question.py`); уборка («прошло», «дубль») пишет своё
 PROGRAM_MARK = "ответила программа"
+#: начало пометки уборки очереди (`scripts/review_queue.py`): «уборка
+#: очереди: прошло» — тоже закрыла программа, но без ответа
+CLEANUP_MARK = "уборка очереди"
+#: сколько дней закрытое ПРОГРАММОЙ живёт в базе и видно во вкладках
+#: «Отсеянные» и «Ответила программа» (владелец 06.10: «зачем там столько
+#: информации, которая уже обработана?»; решение 08.10). Ответы владельца
+#: живут бессрочно — это память программы, без них она переспросит
+FRESH_DAYS = 7
 
 
 def auto_answered(conn: sqlite3.Connection, kind: str = "sport",
-                  days: int = 7, limit: int = 100) -> list[sqlite3.Row]:
+                  days: int = FRESH_DAYS, limit: int = 100) -> list[sqlite3.Row]:
     """Что программа за последние `days` дней ответила сама (пометка
     `PROGRAM_MARK`): и ответы видом спорта, и отсеянное. Вкладка «Ответила
     программа» на странице «Названия» — владелец видит, что решено без него.
@@ -550,21 +558,49 @@ def auto_answered(conn: sqlite3.Connection, kind: str = "sport",
 
 
 def skipped_items(conn: sqlite3.Connection, kind: str = "sport",
-                  limit: int = 100) -> list[sqlite3.Row]:
+                  limit: int = 100, days: int = FRESH_DAYS) -> list[sqlite3.Row]:
     """Вкладка «Отсеянные»: что закрыто без ответа — рукой («Не матч») или
     автоматической чисткой. Всё видно и возвращается кнопкой «Вернуть» —
-    условие владельца 15.09 к любому автоотсеву. `kind` пустой — все виды."""
+    условие владельца 15.09 к любому автоотсеву. `kind` пустой — все виды.
+    Показываем только свежее — последние `days` дней (владелец 06.10:
+    вкладка разрослась до 1608 строк); старое в базе остаётся, если это
+    ответ владельца, а закрытое программой стирает `purge_program_closed`."""
     return conn.execute(
         "SELECT m.*, s.domain, s.country AS source_country FROM moderation m "
         "LEFT JOIN sources s ON s.id = m.source_id "
         "WHERE m.status = 'skipped' AND (? = '' OR m.kind = ?) "
-        "ORDER BY m.id DESC LIMIT ?", (kind, kind, limit)).fetchall()
+        "AND m.created_at >= datetime('now', ?) "
+        "ORDER BY m.id DESC LIMIT ?",
+        (kind, kind, f"-{int(days)} days", limit)).fetchall()
 
 
-def skipped_count(conn: sqlite3.Connection, kind: str = "sport") -> int:
+def skipped_count(conn: sqlite3.Connection, kind: str = "sport",
+                  days: int = FRESH_DAYS) -> int:
+    """Счётчик вкладки «Отсеянные» — те же свежие строки, что и в списке."""
     return conn.execute("SELECT COUNT(*) FROM moderation "
-                        "WHERE status = 'skipped' AND (? = '' OR kind = ?)",
-                        (kind, kind)).fetchone()[0]
+                        "WHERE status = 'skipped' AND (? = '' OR kind = ?) "
+                        "AND created_at >= datetime('now', ?)",
+                        (kind, kind, f"-{int(days)} days")).fetchone()[0]
+
+
+def purge_program_closed(conn: sqlite3.Connection,
+                         days: int = FRESH_DAYS) -> int:
+    """Закрытое ПРОГРАММОЙ старше `days` дней — из базы вон (решение
+    владельца 08.10: «а в чём смысл, что оно будет копиться?»).
+
+    Трогаем только строки с пометкой программы (`PROGRAM_MARK`,
+    `CLEANUP_MARK`); ответы владельца (`answered_by` пустой) живут вечно.
+    Память программы лежит не здесь: ответ видом спорта — в `sport_hints`,
+    имя — в словаре, а «не матч» и так молчит лишь ±1,5 суток вокруг игры.
+    Стёртый вопрос программа при нужде задаст и решит заново — тем же
+    правилом, что и в первый раз. Возвращает, сколько строк стёрто."""
+    cur = conn.execute(
+        "DELETE FROM moderation WHERE status IN ('done', 'skipped') "
+        "AND (answered_by LIKE ? OR answered_by LIKE ?) "
+        "AND created_at < datetime('now', ?)",
+        (PROGRAM_MARK + "%", CLEANUP_MARK + "%", f"-{int(days)} days"))
+    conn.commit()
+    return cur.rowcount
 
 
 def clear_open(conn: sqlite3.Connection, kind: str = "sport") -> int:
