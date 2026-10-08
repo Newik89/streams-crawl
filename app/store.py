@@ -671,7 +671,18 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                                  and str(r["ch_first_seen"]) >= channel_edge
                                  and (ch_dt := _dt(str(r["ch_first_seen"])))
                                  and (ev_dt := _dt(str(row["first_seen"] or "")))
-                                 and ch_dt - ev_dt >= FRESH_CHANNEL_GAP)})
+                                 and ch_dt - ev_dt >= FRESH_CHANNEL_GAP),
+                             # то же самое, но БЕЗ срока: владельцу бейдж
+                             # гаснет только его кликом (слово владельца
+                             # 08.10: «чтоб метки не пропадали через время,
+                             # а исчезали, если я клацнул на канал»).
+                             # Гостю остаётся «new» по часам — он не кликает
+                             "new_ever": bool(
+                                 not gone
+                                 and r["ch_first_seen"]
+                                 and (ch_dt2 := _dt(str(r["ch_first_seen"])))
+                                 and (ev_dt2 := _dt(str(row["first_seen"] or "")))
+                                 and ch_dt2 - ev_dt2 >= FRESH_CHANNEL_GAP)})
         # Трансляция турнира без пары игроков («ATP 500 Tokyo — 1/4 Finale»,
         # `app/broadcast.py`): показываем одной строкой без «vs» и как сайт
         # написал — словарь тут только вредит («Tokyo» он знает как клуб).
