@@ -211,6 +211,38 @@ def main() -> int:
                             ("mojtv.hr", "Sport Klub 1")])], now=None)
     проверка("рядом со своим каналом строка агрегатора не берётся",
              пара.not_own, 1)
+
+    # хвосты: отметки агрегатора, которых в файле уже нет, за дни в глубине
+    # хозяина снимаются; за дни дальше — остаются; единственный канал игры —
+    # остаётся
+    conn8 = база()
+    # хвосты рождаются ДО того, как у канала появился хозяин: сначала
+    # заливка без отметки official, потом она ставится
+    conn8.execute("UPDATE sources SET selector_config = NULL WHERE id = 1")
+    conn8.commit()
+    store.save_games(conn8, [
+        игра("2026-10-08", [("mojtv.hr", "Sport Klub 1"),
+                            ("mojtv.hr", "MAX Sport 1")]),   # хвост с соседом
+        игра("2026-10-12", [("mojtv.hr", "Sport Klub 1"),
+                            ("mojtv.hr", "MAX Sport 1")]),   # дальше глубины
+    ], now=None)
+    conn8.execute("UPDATE sources SET selector_config = ? WHERE id = 1",
+                  (json.dumps({channel_owner.ФЛАГ: True}),))
+    conn8.commit()
+    прошлый_сбор(conn8, "2026-10-09", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    хвосты = store.save_games(conn8, [
+        игра("2026-10-10", [("mojtv.hr", "Sport Klub 1")])], now=None)  # одиночка
+    остались = sorted((r["start_kyiv"][:10], r["canonical_name"]) for r in conn8.execute(
+        "SELECT e.start_kyiv, c.canonical_name FROM event_channels ec "
+        "JOIN channels c ON c.id = ec.channel_id JOIN sources s "
+        "ON s.id = ec.source_id JOIN events e ON e.id = ec.event_id "
+        "WHERE s.domain = 'mojtv.hr' AND ec.miss_count = 0"))
+    проверка("хвост в глубине снят, дальний и одиночка остались",
+             остались, [("2026-10-08", "MAX Sport 1"),
+                        ("2026-10-10", "Sport Klub 1"),
+                        ("2026-10-12", "MAX Sport 1"),
+                        ("2026-10-12", "Sport Klub 1")])
+    проверка("снятый хвост посчитан", хвосты.not_own_dropped, 1)
     проверка("заливка: строка для журнала есть",
              "mojtv.hr: 1" in stats.not_own_note, True)
 

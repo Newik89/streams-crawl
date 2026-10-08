@@ -438,6 +438,10 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 gone += _add_miss(conn, mark["id"])
         return gone
 
+    # хвосты агрегаторов по каналам со своим сайтом — строки, которых в этом
+    # файле уже не было (`Хозяева.дочистить`, там же почему гашение их не берёт)
+    stats.not_own_dropped += хозяева.дочистить(conn)
+
     # Канал, подтверждённый у игры хоть одним сайтом, не гаснет ни от
     # какого сайта; остальные отметки игры — по правилам `app/miss.py`
     for event_id, seen in event_seen.items():
