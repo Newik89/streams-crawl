@@ -545,7 +545,10 @@ def create_app() -> Flask:
                 # сломанным, а до тех пор он ходит в обход как обычно
                 conn.execute("UPDATE sources SET status = 'ok', fail_count = 0, "
                              "enabled = 1 WHERE id = ?", (source_id,))
-                said.append("вернул в обход")
+                # владелец 08.10 жал «В обход» и не видел перемен: строка
+                # сбоя в прогоне — история, она и должна остаться
+                said.append("вернул в обход — следующий сбор зайдёт на сайт; "
+                            "строка в этом прогоне останется, это история")
             conn.commit()
             flash(f"{row['domain']}: " + (", ".join(said) or "менять нечего"),
                   "ok" if said else "error")
