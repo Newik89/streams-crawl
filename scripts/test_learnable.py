@@ -65,6 +65,11 @@ def main() -> int:
              о("EVERTON V WOLVERHAMPTON", "Everton"), False)
     проверка("«vs» между именами — по-прежнему матч",
              о("Ajax vs PSV", "Ajax"), False)
+    проверка("соперник с короткого слова («St Mirren») — матч",
+             о("Rangers v St Mirren", "Rangers"), False)
+    проверка("«Al Hilal v Al Nassr» — матч", о("Al Hilal v Al Nassr", "Al Hilal"),
+             False)
+    проверка("два пробела после «v» — матч", о("Lech v  Wisla", "Lech"), False)
     print(f"\nпроверок: {зелёных + красных}, зелёных: {зелёных}, "
           f"красных: {красных}")
     return 1 if красных else 0

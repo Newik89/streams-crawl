@@ -252,7 +252,8 @@ def create_app() -> Flask:
             if run and (run["what"] == f"сайт {req[0]}"
                         or run["what"] == f"site-{req[0]}"):
                 return {"cls": "ok",
-                        "text": f"Обход сайта {req[0]}: идёт с {run['since']}…"}
+                        "text": f"Обход сайта {req[0]}: идёт с "
+                                f"{run.get('since_day') or run['since']}…"}
             if минуло(req[1], 30):
                 return {"cls": "error",
                         "text": f"Обход сайта {req[0]}: заказан в "
@@ -362,6 +363,8 @@ def create_app() -> Flask:
                                       "ждём прогона…"})
         return lines
     app.jinja_env.globals["crawl_status_lines"] = crawl_status_lines
+    # срок «свежего» во вкладках «Названия» — для подсказок в шаблоне
+    app.jinja_env.globals["fresh_days"] = dictionary.FRESH_DAYS
 
     def too_many_attempts(ip: str) -> bool:
         now = time.time()

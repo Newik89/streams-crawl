@@ -73,12 +73,12 @@
   </a>
   <a class="btn{% if rejected %} on{% endif %}"
      href="{{ url_for('moderation_list', rejected=1, kind=kind) if kind else url_for('moderation_list', rejected=1) }}"
-     title="Закрытое без ответа за последние 7 дней — вами («Не матч», «Это не команда») или программой. Можно вернуть">
+     title="Закрытое без ответа за последние {{ fresh_days }} дней — вами («Не матч», «Это не команда») или программой. Можно вернуть">
     Отсеянные{% if rejected_count %} · {{ rejected_count }}{% endif %}
   </a>
   <a class="btn{% if auto %} on{% endif %}"
      href="{{ url_for('moderation_list', auto=1, kind=kind) if kind else url_for('moderation_list', auto=1) }}"
-     title="На что программа ответила сама за неделю и почему">
+     title="На что программа ответила сама за последние {{ fresh_days }} дней и почему">
     Ответила программа{% if auto_count %} · {{ auto_count }}{% endif %}
   </a>
 </div>
