@@ -212,6 +212,18 @@ def create_app() -> Flask:
     app.jinja_env.globals["ACCESS"] = sources.ACCESS
     app.jinja_env.globals["STATUSES"] = sources.STATUSES
 
+    def день_время(stamp: str) -> str:
+        """Отметка «ГГГГ-ММ-ДД ЧЧ:ММ[:СС]» → «ДД.ММ ЧЧ:ММ»: в плашках дата
+        рядом со временем, иначе «заказан в 14:28» вчерашний от сегодняшнего
+        не отличить (владелец 08.10). Непонятное — как есть."""
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+            try:
+                return datetime.strptime((stamp or "").strip(),
+                                         fmt).strftime("%d.%m %H:%M")
+            except ValueError:
+                continue
+        return stamp or "?"
+
     def site_crawl_status() -> dict | None:
         """Строка под шапкой админки про кнопку «Обойти сайт»: заказан →
         идёт → ✅ ВЫПОЛНЕН (владелец 20.09: флеш пропадает при обновлении,
@@ -243,15 +255,16 @@ def create_app() -> Flask:
                         "text": f"Обход сайта {req[0]}: идёт с {run['since']}…"}
             if минуло(req[1], 30):
                 return {"cls": "error",
-                        "text": f"Обход сайта {req[0]}: заказан в {req[1][-5:]}, "
-                                "итог так и не доехал — смотрите «Прогоны»"}
+                        "text": f"Обход сайта {req[0]}: заказан в "
+                                f"{день_время(req[1])}, итог так и не доехал "
+                                "— смотрите «Прогоны»"}
             return {"cls": "ok",
-                    "text": f"Обход сайта {req[0]}: заказан в {req[1][-5:]}, "
-                            "ждём прогона…"}
+                    "text": f"Обход сайта {req[0]}: заказан в "
+                            f"{день_время(req[1])}, ждём прогона…"}
         if res and not минуло(res[1], 24 * 60):
             return {"cls": "ok",
-                    "text": f"Обход сайта {res[0]}: ✅ ВЫПОЛНЕН в {res[1][-5:]}, "
-                            f"отметок каналов: {res[2]}"}
+                    "text": f"Обход сайта {res[0]}: ✅ ВЫПОЛНЕН в "
+                            f"{день_время(res[1])}, отметок каналов: {res[2]}"}
         return None
     app.jinja_env.globals["site_crawl_status"] = site_crawl_status
 
@@ -287,7 +300,7 @@ def create_app() -> Flask:
                          else "заказан, ждём запуска")
                 return [{"cls": "ok",
                          "text": f"{_run_words(run['what'])}: {state} "
-                                 f"с {run['since']}…"}]
+                                 f"с {run.get('since_day') or run['since']}…"}]
             line = health.request_line(conn)
             date_raw = db.get_setting(conn, "date_scan_request")
             date_done = None
@@ -305,15 +318,6 @@ def create_app() -> Flask:
         if site:
             lines.append(site)
 
-        def чч_мм(text: str) -> str:
-            for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
-                try:
-                    return datetime.strptime((text or "").strip(),
-                                             fmt).strftime("%H:%M")
-                except ValueError:
-                    continue
-            return text or "?"
-
         def минуло(stamp: str, минут: int) -> bool:
             try:
                 return now - datetime.strptime(stamp, "%Y-%m-%d %H:%M") \
@@ -328,14 +332,15 @@ def create_app() -> Flask:
             if date_done:
                 lines.append({"cls": "ok",
                               "text": f"{words}: ✅ ВЫПОЛНЕН, влито в "
-                                      f"{чч_мм(date_done)}"})
+                                      f"{день_время(date_done)}"})
             elif минуло(stamp, 30):
                 lines.append({"cls": "error",
-                              "text": f"{words}: заказан в {stamp[-5:]}, итог "
-                                      "так и не доехал — смотрите «Прогоны»"})
+                              "text": f"{words}: заказан в {день_время(stamp)}, "
+                                      "итог так и не доехал — смотрите "
+                                      "«Прогоны»"})
             else:
                 lines.append({"cls": "ok",
-                              "text": f"{words}: заказан в {stamp[-5:]}, "
+                              "text": f"{words}: заказан в {день_время(stamp)}, "
                                       "ждём прогона…"})
         # полный обход «на N дней»
         if line and not минуло(line["asked"], 24 * 60):
@@ -347,12 +352,13 @@ def create_app() -> Flask:
                                       f"{line['crawl']}{tail}"})
             elif минуло(line["asked"], 30):
                 lines.append({"cls": "error",
-                              "text": f"{name}: заказан в {line['asked'][-5:]}, "
-                                      "итог так и не доехал — смотрите "
-                                      "«Прогоны»"})
+                              "text": f"{name}: заказан в "
+                                      f"{день_время(line['asked'])}, итог так "
+                                      "и не доехал — смотрите «Прогоны»"})
             else:
                 lines.append({"cls": "ok",
-                              "text": f"{name}: заказан в {line['asked'][-5:]}, "
+                              "text": f"{name}: заказан в "
+                                      f"{день_время(line['asked'])}, "
                                       "ждём прогона…"})
         return lines
     app.jinja_env.globals["crawl_status_lines"] = crawl_status_lines

@@ -37,8 +37,10 @@ Prague ERA NBK») закрывается по двум бесспорным пр
     venv\Scripts\python.exe scripts/review_queue.py --kind team          # команды: показать
     venv\Scripts\python.exe scripts/review_queue.py --kind team --apply  # команды: закрыть
 
-Закрытая без ответа запись не удаляется: у неё ставится `skipped` (видно
-во вкладке «Отсеянные» с причиной, кнопка «Вернуть» возвращает). Ответ
+Закрытая без ответа запись не удаляется сразу: у неё ставится `skipped`
+(видно во вкладке «Отсеянные» с причиной, кнопка «Вернуть» возвращает).
+Через 7 дней всё закрытое ПРОГРАММОЙ (`--apply` зовёт `purge`) стирается
+из базы — ответы владельца живут вечно (решение владельца 08.10). Ответ
 видом спорта пишется тем же путём, что кнопка админки (`dictionary.resolve`:
 подсказка с днём матча — обход выведет игру в расписание).
 """
@@ -217,7 +219,21 @@ def known_team_sports(conn) -> dict[str, str]:
 
 
 #: пометка `answered_by` у записей, закрытых уборкой без ответа
-УБОРКА = "уборка очереди: {}"
+УБОРКА = dictionary.CLEANUP_MARK + ": {}"
+
+
+def purge(conn) -> int:
+    """Закрытое программой старше недели — из базы (владелец 08.10): такие
+    строки ничему не учат, и вкладки «Отсеянные»/«Ответила программа» от
+    них только пухли. Ответы владельца остаются. Строка в «Прогоны» —
+    только когда что-то стёрто."""
+    n = dictionary.purge_program_closed(conn)
+    if n:
+        watch.note(conn, f"очередь «Названия»: стёрто {n} закрытых программой "
+                         f"старше {dictionary.FRESH_DAYS} дней — ответы "
+                         "владельца на месте", who="автомат")
+    print(f"стёрто закрытых программой старше {dictionary.FRESH_DAYS} дней: {n}")
+    return n
 
 
 def review_sport(conn, apply: bool, days: int = ЖИВЁТ_ДНЕЙ,
@@ -371,8 +387,12 @@ def main() -> int:
     try:
         db.init_db(conn)                     # досыпает свежие колонки
         if args.kind == "team":
-            return review_teams(conn, args.apply)
-        return review_sport(conn, args.apply, args.days)
+            code = review_teams(conn, args.apply)
+        else:
+            code = review_sport(conn, args.apply, args.days)
+        if args.apply:
+            purge(conn)              # закрытое программой старше недели
+        return code
     finally:
         conn.close()
 
