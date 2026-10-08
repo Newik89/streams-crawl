@@ -30847,6 +30847,7 @@
         "Camerun F WO",
         "Camerún F WO",
         "Kameroen V WO",
+        "Kameroen V WO",
         "Kamerun D WO",
         "Kamerun F WO",
         "Kamerun K WO",
@@ -43211,6 +43212,7 @@
       "name": "Denizli IY Gureller",
       "country": null,
       "aliases": [
+        "Denizli İY 1959",
         "Ντενιζλί ΙΓ Γκουρελέρ",
         "Денизли ИЮ Гюрелер",
         "Денізлі ІЮ Гюреллер"
@@ -46761,6 +46763,7 @@
       "name": "Drzewiecki K./Kalender A.",
       "country": null,
       "aliases": [
+        "Alexandrova",
         "Ντρεβιέτσκι Κ./Κάλεντερ Α.",
         "Джевєцкі К./Календер А.",
         "Дзевецки К./Календер А."
@@ -47409,6 +47412,21 @@
         "Duran T. (Тур)",
         "Ντουράν Τ. (Tου)",
         "Дуран Т."
+      ]
+    },
+    {
+      "name": "Duran T. (Tur) RETIRED",
+      "country": null,
+      "aliases": [
+        "Duran T. (Tur) FELADTA",
+        "Duran T. (Tur) GERI ÇEKILDI",
+        "Duran T. (Tur) KRECZ",
+        "Duran T. (Tur) RETRAS",
+        "Duran T. (Tur) SKREČ",
+        "Duran T. (Tur) SKREČ",
+        "Duran T. (Тур) ОТКАЗ",
+        "Ντουράν Τ. (Tου) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Дуран Т. (Tur) ВІДМОВА"
       ]
     },
     {
@@ -51200,6 +51218,7 @@
       "name": "Erciyes 38",
       "country": null,
       "aliases": [
+        "A. Erciyes 38",
         "Ταλασγκούτσου",
         "Таласгюджю",
         "Таласгюджю"
@@ -70071,6 +70090,13 @@
       ]
     },
     {
+      "name": "Hay Al Amir",
+      "country": null,
+      "aliases": [
+        "Хай Ал Амир"
+      ]
+    },
+    {
       "name": "Hayes & Yeading",
       "country": null,
       "aliases": [
@@ -77918,6 +77944,13 @@
       ]
     },
     {
+      "name": "Ittihad Al-Shorta",
+      "country": null,
+      "aliases": [
+        "Итихад Ал-Шорта"
+      ]
+    },
+    {
       "name": "Ittihad Hadramout",
       "country": null,
       "aliases": [
@@ -81926,6 +81959,7 @@
       "name": "Kahta",
       "country": null,
       "aliases": [
+        "Kahta 02 Spor",
         "Καχτά",
         "Кахта",
         "Кахта",
@@ -82735,6 +82769,7 @@
       "name": "Karadeniz Eregli",
       "country": null,
       "aliases": [
+        "K.Ereğli 1980",
         "Karadeniz Ereğli",
         "Καραντενίζ Ερεγκλί",
         "Карадениз Ерегли",
@@ -83170,6 +83205,7 @@
       "name": "Karol M./Paulson A.",
       "country": null,
       "aliases": [
+        "M. Andreeva",
         "Κάρολ Μ./Πόλσον Α.",
         "Кароль М./Паулсон Э.",
         "Кароль М./Полсон Е."
@@ -85253,6 +85289,21 @@
         "Kim D. J. (Kορ)",
         "Kim D. J. (Кор)",
         "Кім Д. Чж."
+      ]
+    },
+    {
+      "name": "Kim D. J. (Kor) RETIRED",
+      "country": null,
+      "aliases": [
+        "Kim D. J. (Kor) FELADTA",
+        "Kim D. J. (Kor) GERI ÇEKILDI",
+        "Kim D. J. (Kor) KRECZ",
+        "Kim D. J. (Kor) RETRAS",
+        "Kim D. J. (Kor) SKREČ",
+        "Kim D. J. (Kor) SKREČ",
+        "Kim D. J. (Kορ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Kim D. J. (Кор) ОТКАЗ",
+        "Кім Д. Чж. (Kor) ВІДМОВА"
       ]
     },
     {
@@ -91015,6 +91066,21 @@
       ]
     },
     {
+      "name": "Lazarenko K. (Ukr) RETIRED",
+      "country": null,
+      "aliases": [
+        "Lazarenko K. (Ukr) FELADTA",
+        "Lazarenko K. (Ukr) GERI ÇEKILDI",
+        "Lazarenko K. (Ukr) KRECZ",
+        "Lazarenko K. (Ukr) RETRAS",
+        "Lazarenko K. (Ukr) SKREČ",
+        "Lazarenko K. (Ukr) SKREČ",
+        "Lazarenko K. (Ουκ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Lazarenko K. (Укр) ОТКАЗ",
+        "Лазаренко К. (Ukr) ВІДМОВА"
+      ]
+    },
+    {
       "name": "Lazarov G.",
       "country": null,
       "aliases": [
@@ -93356,6 +93422,15 @@
         "Li Y./Чжан Ин",
         "Λι Γ./Τζανγκ Γ.",
         "Лі Я./Чжан Ї."
+      ]
+    },
+    {
+      "name": "Li Y./Zhang Y. WO",
+      "country": null,
+      "aliases": [
+        "Li Y./Чжан Ин WO",
+        "Λι Γ./Τζανγκ Γ. WO",
+        "Лі Я./Чжан Ї. WO"
       ]
     },
     {
@@ -97181,6 +97256,7 @@
         "Lucern",
         "Lucerna",
         "Luzern",
+        "Super League 10. Runde, FC Lugano – FC Luzern",
         "Λουκέρνη",
         "Λουκέρνη (Ελβ)",
         "Люцерн",
@@ -106837,6 +106913,7 @@
         "Marokko F WO",
         "Marokko K WO",
         "Marokko V WO",
+        "Marokko V WO",
         "Marokkó N WO",
         "Maroko Ž WO",
         "Maroko Ž WO",
@@ -115765,6 +115842,21 @@
       ]
     },
     {
+      "name": "Oliynykova O. (Ukr) RETIRED",
+      "country": null,
+      "aliases": [
+        "Oliynykova O. (Ukr) FELADTA",
+        "Oliynykova O. (Ukr) GERI ÇEKILDI",
+        "Oliynykova O. (Ukr) KRECZ",
+        "Oliynykova O. (Ukr) RETRAS",
+        "Oliynykova O. (Ukr) SKREČ",
+        "Oliynykova O. (Ukr) SKREČ",
+        "Ολινίκοβα Ο. (Ουκ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Олийникова О. (Укр) ОТКАЗ",
+        "Олійникова О. (Ukr) ВІДМОВА"
+      ]
+    },
+    {
       "name": "Olomouc W",
       "country": null,
       "aliases": [
@@ -116750,6 +116842,7 @@
       "name": "Orduspor 1967",
       "country": null,
       "aliases": [
+        "Orduspor 1967",
         "Ορντουσπόρ",
         "Ордуспор",
         "Ордуспор 1967",
@@ -119756,6 +119849,22 @@
         "Pankin S./Ζουκάγιεφ Μ.",
         "Pankin S./Жукаев Б.",
         "Панькін С./Жукаєв Б."
+      ]
+    },
+    {
+      "name": "Pankratova M.",
+      "country": null,
+      "aliases": [
+        "Pankratova M. (Κοσ)",
+        "Pankratova M. (Мир)"
+      ]
+    },
+    {
+      "name": "Pankratova M./Mikhaylova M.",
+      "country": null,
+      "aliases": [
+        "Pankratova M./Михайлова М.",
+        "Pankratova M./Міхайлова М."
       ]
     },
     {
@@ -142591,6 +142700,7 @@
       "name": "Serik Spor",
       "country": null,
       "aliases": [
+        "Serik Spor",
         "Σερίκ Σπορ",
         "Серик Спор",
         "Серік Спор"
@@ -167644,6 +167754,21 @@
       ]
     },
     {
+      "name": "Veldman K. (Ned) RETIRED",
+      "country": null,
+      "aliases": [
+        "Veldman K. (Ned) FELADTA",
+        "Veldman K. (Ned) GERI ÇEKILDI",
+        "Veldman K. (Ned) KRECZ",
+        "Veldman K. (Ned) RETRAS",
+        "Veldman K. (Ned) SKREČ",
+        "Veldman K. (Ned) SKREČ",
+        "Veldman K. (Ολλ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Veldman K. (Нид) ОТКАЗ",
+        "Велдман К. (Ned) ВІДМОВА"
+      ]
+    },
+    {
       "name": "Veles Moscow",
       "country": null,
       "aliases": [
@@ -183608,6 +183733,7 @@
       "sport": "T",
       "country": null,
       "aliases": [
+        "1/4 Finale",
         "CHALLENGER ERKEKLER - ÇİFT: Braga (Portekiz), toprak",
         "CHALLENGER FÉRFI - PÁROS: Braga (Portugália), salak",
         "CHALLENGER MASCULIN - DUBLU: Braga (Portugalia), zgură",
@@ -192956,6 +193082,23 @@
       ]
     },
     {
+      "name": "ITF MEN - DOUBLES: M15+H Rodez (France), hard (indoor)",
+      "slug": "itf-men-doubles-m15-h-rodez-france-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ITF ERKEKLER - ÇİFT: M15+H Rodez (Fransa), sert (kapalı)",
+        "ITF FÉRFI - PÁROS: M15+H Rodez (Franciaország), kemény (fedettpályás)",
+        "ITF MASCULIN - DUBLU: M15+H Rodez (Franţa), suprafață dură (sală)",
+        "ITF MUŽI - ČTYŘHRY: M15+H Rodez (Francie), tvrdý povrch (hala)",
+        "ITF MUŽI - ŠTVORHRY: M15+H Rodez (Francúzsko), tvrdý povrch (hala)",
+        "ITF MĘŻCZYŹNI - DEBEL: M15+H Rodez (Francja), twarda (w hali)",
+        "ITF ΑΝΔΡΕΣ - ΔΙΠΛΑ: Μ15+Χ Ροντέζ (Γαλλία), σκληρή (κλειστό)",
+        "ITF МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: M15+H Rodez (Франция), хард (в помещении)",
+        "ITF ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: M15+H Rodez (Франція), хард (indoor)"
+      ]
+    },
+    {
       "name": "ITF MEN - DOUBLES: M25 Darwin (Australia), hard",
       "slug": "itf-men-doubles-m25-darwin-australia-hard",
       "sport": "T",
@@ -193353,6 +193496,23 @@
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15+Χ Ροντέζ (Γαλλία), σκληρή",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15+H Rodez (Франция), хард",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15+H Rodez (Франція), хард"
+      ]
+    },
+    {
+      "name": "ITF MEN - SINGLES: M15+H Rodez (France), hard (indoor)",
+      "slug": "itf-men-singles-m15-h-rodez-france-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ITF ERKEKLER - TEK: M15+H Rodez (Fransa), sert (kapalı)",
+        "ITF FÉRFI - EGYÉNI: M15+H Rodez (Franciaország), kemény (fedettpályás)",
+        "ITF MASCULIN - SIMPLU: M15+H Rodez (Franţa), suprafață dură (sală)",
+        "ITF MUŽI - DVOJHRY: M15+H Rodez (Francúzsko), tvrdý povrch (hala)",
+        "ITF MUŽI - DVOUHRY: M15+H Rodez (Francie), tvrdý povrch (hala)",
+        "ITF MĘŻCZYŹNI - SINGIEL: M15+H Rodez (Francja), twarda (w hali)",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15+Χ Ροντέζ (Γαλλία), σκληρή (κλειστό)",
+        "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15+H Rodez (Франция), хард (в помещении)",
+        "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15+H Rodez (Франція), хард (indoor)"
       ]
     },
     {
@@ -193814,6 +193974,23 @@
       ]
     },
     {
+      "name": "ITF WOMEN - DOUBLES: W35 Villeneuve d'Ascq (France), hard (indoor)",
+      "slug": "itf-women-doubles-w35-villeneuve-d-ascq-france-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ITF BAYANLAR - ÇİFT: W35 Villeneuve d'Ascq (Fransa), sert (kapalı)",
+        "ITF FEMININ - DUBLU: W35 Villeneuve d'Ascq (Franţa), suprafață dură (sală)",
+        "ITF KOBIETY - DEBEL: W35 Villeneuve d'Ascq (Francja), twarda (w hali)",
+        "ITF NŐI - PÁROS: W35 Villeneuve d'Ascq (Franciaország), kemény (fedettpályás)",
+        "ITF ŽENY - ČTYŘHRY: W35 Villeneuve d'Ascq (Francie), tvrdý povrch (hala)",
+        "ITF ŽENY - ŠTVORHRY: W35 Villeneuve d'Ascq (Francúzsko), tvrdý povrch (hala)",
+        "ITF ΓΥΝΑΙΚΕΣ - ΔΙΠΛΑ: W35 Βιλνέβ ντ'Ασκ (Γαλλία), σκληρή (κλειστό)",
+        "ITF ЖІНКИ - ПАРНИЙ РОЗРЯД: W35 Villeneuve d'Ascq (Франція), хард (indoor)",
+        "ITF ЖЕНЩИНЫ - ПАРНЫЙ РАЗРЯД: W35 Villeneuve d'Ascq (Франция), хард (в помещении)"
+      ]
+    },
+    {
       "name": "ITF WOMEN - DOUBLES: W35 Wagga Wagga (Australia), hard",
       "slug": "itf-women-doubles-w35-wagga-wagga-australia-hard",
       "sport": "T",
@@ -194268,6 +194445,23 @@
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W35 Βιλνέβ ντ'Ασκ (Γαλλία), σκληρή",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W35 Villeneuve d'Ascq (Франція), хард",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W35 Villeneuve d'Ascq (Франция), хард"
+      ]
+    },
+    {
+      "name": "ITF WOMEN - SINGLES: W35 Villeneuve d'Ascq (France), hard (indoor)",
+      "slug": "itf-women-singles-w35-villeneuve-d-ascq-france-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ITF BAYANLAR - TEK: W35 Villeneuve d'Ascq (Fransa), sert (kapalı)",
+        "ITF FEMININ - SIMPLU: W35 Villeneuve d'Ascq (Franţa), suprafață dură (sală)",
+        "ITF KOBIETY - SINGIEL: W35 Villeneuve d'Ascq (Francja), twarda (w hali)",
+        "ITF NŐI - EGYÉNI: W35 Villeneuve d'Ascq (Franciaország), kemény (fedettpályás)",
+        "ITF ŽENY - DVOJHRY: W35 Villeneuve d'Ascq (Francúzsko), tvrdý povrch (hala)",
+        "ITF ŽENY - DVOUHRY: W35 Villeneuve d'Ascq (Francie), tvrdý povrch (hala)",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W35 Βιλνέβ ντ'Ασκ (Γαλλία), σκληρή (κλειστό)",
+        "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W35 Villeneuve d'Ascq (Франція), хард (indoor)",
+        "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W35 Villeneuve d'Ascq (Франция), хард (в помещении)"
       ]
     },
     {
@@ -204898,6 +205092,7 @@
       "sport": null,
       "country": null,
       "aliases": [
+        "1/4 Finale",
         "Turniej WTA w Pekinie",
         "WTA",
         "WTA - DVOJHRY: Peking (Čína), tvrdý povrch",
@@ -212472,12 +212667,10 @@
     "BSK Banja Luka": "F",
     "BVSC-Zuglo": "F",
     "Bacevac": "F",
-    "Baez S.": "T",
     "Bahcesehir Kol.": "B",
     "Bahia": "F",
     "Balkan": "B",
     "Baltika": "F",
-    "Bartunkova N.": "T",
     "Basaksehir": "F",
     "Basket Napoli": "B",
     "Basket Zivinice": "B",
@@ -212523,7 +212716,6 @@
     "Brentford": "F",
     "Brest": "F",
     "Brighton": "F",
-    "Brisbane Bullets": "B",
     "Bristol City": "F",
     "Brommapojkarna": "F",
     "Brondby": "F",
@@ -212557,7 +212749,6 @@
     "Celta Vigo": "F",
     "Celta Vigo B": "F",
     "Celtic": "F",
-    "Cerundolo J. M.": "T",
     "Ceuta": "F",
     "Chalon/Saone": "B",
     "Charlton": "F",
@@ -212602,6 +212793,7 @@
     "Degerfors": "F",
     "Den Haag": "F",
     "Denizli Basket": "B",
+    "Denizli IY Gureller": "F",
     "Denmark": "F",
     "Denmark W": "F",
     "Dep. A Coruna": "F",
@@ -212642,6 +212834,7 @@
     "Elversberg": "F",
     "Empoli": "F",
     "England W": "F",
+    "Erciyes 38": "F",
     "Errani S./Paolini J.": "T",
     "Erzurumspor": "F",
     "Esbjerg": "F",
@@ -212707,7 +212900,6 @@
     "Germany W": "F",
     "Getafe": "F",
     "Gijon": "F",
-    "Giron M.": "T",
     "Girona": "F",
     "Girona B": "F",
     "Golden State Warriors": "B",
@@ -212797,10 +212989,12 @@
     "KK Bosna": "B",
     "KK Krka Novo mesto": "B",
     "KK Triglav Kranj": "B",
+    "Kahta": "F",
     "Kaiserslautern": "F",
     "Kalamata": "F",
     "Kalmar": "F",
     "Kamaz": "F",
+    "Karadeniz Eregli": "F",
     "Karagumruk": "F",
     "Karlsruher SC": "F",
     "Karmiotissa": "F",
@@ -212907,11 +213101,9 @@
     "Maritimo": "F",
     "Maritimo U23": "F",
     "Marko": "F",
-    "Marozsan F.": "T",
     "Marseille": "F",
     "Mega Basket": "B",
     "Mega MIS W": "B",
-    "Mejia N.": "T",
     "Melbourne United": "B",
     "Memphis Grizzlies": "B",
     "Merida Aguilar D.": "T",
@@ -212935,7 +213127,6 @@
     "Morphou": "B",
     "Motherwell": "F",
     "Motor Lublin": "F",
-    "Muchova K.": "T",
     "Muglaspor": "F",
     "Mura": "F",
     "Murcia": "B",
@@ -212985,6 +213176,7 @@
     "Omonia Aradippou": "F",
     "Once Caldas": "F",
     "Opava": "B",
+    "Orduspor 1967": "F",
     "Orenburg": "F",
     "Orgryte": "F",
     "Orijent": "F",
@@ -213070,7 +213262,6 @@
     "Rodina Moscow": "F",
     "Romania W": "F",
     "Rosario Central": "F",
-    "Royer V.": "T",
     "Rubin Kazan": "F",
     "Ruch Chorzow": "F",
     "Rudar": "F",
@@ -213105,6 +213296,7 @@
     "Sepsi Sf. Gheorghe": "F",
     "Septemvri Sofia": "F",
     "Serbia W": "F",
+    "Serik Spor": "F",
     "Servette": "F",
     "Sesvete": "F",
     "Sevilla": "F",
@@ -213156,7 +213348,6 @@
     "Sunderland": "F",
     "Sundsvall": "F",
     "Sutjeska": "F",
-    "Svajda Z.": "T",
     "Svrcina D.": "T",
     "Swansea": "F",
     "Sweden": "F",
@@ -213204,7 +213395,6 @@
     "Vaerlose": "B",
     "Valerenga": "F",
     "Valladolid": "F",
-    "Vallejo D.": "T",
     "Van De Zandschulp B.": "T",
     "Varazdin": "F",
     "Varese": "B",
