@@ -124,7 +124,8 @@
       {% if r.league %}<li><span class="k">Турнир на сайте:</span> «<span dir="auto">{{ r.league }}</span>»</li>{% endif %}
       {% if r.preview %}<li><span class="k">Как поняла программа (по словарю, может ошибаться):</span> {{ r.preview }}</li>{% endif %}
       <li><span class="k">Канал:</span> {{ r.channel or '—' }}{% if r.site %},
-        <span class="k">сайт</span> {% if r.site_url %}<a href="{{ r.site_url }}" target="_blank" rel="noopener" title="Открыть сайт, где программа нашла эту строку">{{ r.site }} ↗</a>{% else %}{{ r.site }}{% endif %}{% endif %}</li>
+        <span class="k">сайт</span> {% if r.site_url %}<a href="{{ r.site_url }}" target="_blank" rel="noopener" title="Открыть сайт, где программа нашла эту строку">{{ r.site }} ↗</a>{% else %}{{ r.site }}{% endif %}{% endif %}
+        {% if r.page_url %} · <a href="{{ r.page_url }}" target="_blank" rel="noopener" title="Открыть на сайте страницу этого канала на эту дату — там программа увидела строку">страница канала на эту дату ↗</a>{% endif %}</li>
       {% if r.when %}<li><span class="k">Когда:</span> {{ r.when }} (по Киеву)</li>{% endif %}
       {% if r.status in ('open', 'later') %}<li class="muted">На витрине этой игры пока нет — она появится после ответа.</li>{% endif %}
     </ul>
@@ -176,7 +177,7 @@
                   title="Это {{ word|lower }}. Запомнится для этой пары около этой даты (±1,5 суток); игра появится в расписании после следующего сбора">{{ word }}</button>
           {% endfor %}
           <button type="submit" name="action" value="skip"
-                  title="Это не матч: студия, обзор, повтор, фильм или другой вид спорта. Вопрос уйдёт в «Отсеянные», эту пару больше не спросим">Не матч</button>
+                  title="Это не матч: студия, обзор, повтор, фильм или другой вид спорта. Вопрос уйдёт в «Отсеянные»; в эти дни (±1,5 суток) эту пару больше не спросим, а в другой день — спросим заново: та же пара бывает и настоящей игрой">Не матч</button>
           {% if r.status == 'later' %}
           <button type="submit" name="action" value="reopen"
                   title="Вернуть вопрос из «Отложенных» в основной список">Вернуть в список</button>

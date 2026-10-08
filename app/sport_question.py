@@ -85,6 +85,9 @@ class Question:
     domain: str
     when: datetime | None
     title: str
+    #: адрес страницы сайта, где строка найдена (третий кусок подсказки,
+    #: с 08.10); у старых вопросов пусто
+    url: str = ""
 
     @classmethod
     def parse(cls, raw_value: str, suggestion: str = "") -> "Question":
@@ -107,8 +110,14 @@ class Question:
                 when = None
         title = suggestion.split("|", 1)[1].strip() \
             if m and "|" in suggestion else suggestion.strip()
+        # адрес страницы — последний кусок, если он похож на адрес
+        url = ""
+        if "|" in title:
+            head, _, tail = title.rpartition("|")
+            if tail.strip().startswith(("http://", "https://")):
+                title, url = head.strip(), tail.strip()
         return cls(raw_value or "", suggestion, pair, league, channel,
-                   domain, when, title)
+                   domain, when, title, url)
 
     @property
     def pair_text(self) -> str:

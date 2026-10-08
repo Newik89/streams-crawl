@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import re
 import sqlite3
+from datetime import datetime, timedelta
 import unicodedata
 
 KINDS = ("team", "league", "channel", "sport")
@@ -257,6 +258,18 @@ def remember_channel(conn: sqlite3.Connection, raw: str, canonical: str,
     return channel_id
 
 
+#: «Не матч» действует вокруг дня матча: столько в обе стороны
+SKIP_WINDOW = timedelta(hours=36)
+
+
+def _match_moment(suggestion: str | None):
+    """Момент матча из подсказки очереди («2026-10-10 19:30 | …»); нет — None."""
+    try:
+        return datetime.strptime((suggestion or "")[:16], "%Y-%m-%d %H:%M")
+    except ValueError:
+        return None
+
+
 def norm_pair(raw_label: str) -> str:
     """Пара команд из строки очереди: часть до первого « | », схлопнутые
     пробелы. Порядок команд не трогаем — так ключи совместимы с уже
@@ -355,15 +368,25 @@ def _enqueue_sport(conn: sqlite3.Connection, raw_value: str,
                          (suggestion, r["id"]))
             conn.commit()
         return False
-    # «Не матч» (skipped) молчит навсегда — MotoGP футболом не станет.
-    # А вот ответ Ф/Б/Т (done) держит паузу только 7 дней: вид спорта теперь
-    # привязан к дате матча, и ту же пару в новом туре надо спросить заново.
-    for r in conn.execute("SELECT raw_value, status FROM moderation "
+    # «Не матч» (skipped) молчит только вокруг дня того матча (±1,5 суток,
+    # как ответ видом спорта): та же пара в другой день бывает настоящей
+    # игрой — «Le Mans - Lorient» это и гонка-слово, и футбол Лиги 2
+    # (вопрос владельца 08.10). Отсеянное без даты (старые записи) молчит
+    # как раньше, навсегда. Ответ Ф/Б/Т (done) держит паузу 7 дней: вид
+    # спорта привязан к дате матча, в новом туре пару спросят заново.
+    новый_день = _match_moment(suggestion)
+    for r in conn.execute("SELECT raw_value, status, suggestion FROM moderation "
                           "WHERE kind = 'sport' AND (status = 'skipped' OR "
                           "(status = 'done' AND created_at >= "
                           "datetime('now', '-7 days')))"):
-        if norm_pair(r["raw_value"]) == пара:
-            return False
+        if norm_pair(r["raw_value"]) != пара:
+            continue
+        if r["status"] == "skipped":
+            старый_день = _match_moment(r["suggestion"])
+            if новый_день and старый_день and abs(
+                    новый_день - старый_день) > SKIP_WINDOW:
+                continue                 # другой день — спросим заново
+        return False
     conn.execute("INSERT INTO moderation (kind, raw_value, suggestion) "
                  "VALUES ('sport', ?, ?)", (raw_value, suggestion))
     conn.commit()

@@ -227,6 +227,9 @@ def _sport_card(d: dict, team_names: dict, league_names: dict,
     d["channel"] = q.channel
     d["site"] = q.domain
     d["site_url"] = sites.get(q.domain) or ""
+    # страница именно этого канала и дня — владелец открывает её одним
+    # кликом (просьба 08.10); у старых вопросов адреса нет — остаётся сайт
+    d["page_url"] = q.url
     d["when"] = q.when.strftime("%d.%m %H:%M") if q.when else ""
     # строка сайта как есть — всегда, даже когда она равна паре: владелец
     # сверяет по ней перевод (просьба 08.10: «как именно написано на самом

@@ -68,9 +68,12 @@ def queue_unsolved(conn, unsolved: list[dict],
             f"{row.get('home', '')} - {row.get('away', '')}",
             row.get("league") or "",
             f"{row.get('канал', '')} ({row.get('домен', '')})") if x)
+        # третьим куском — адрес страницы сайта (канал и дата), чтобы
+        # владелец открывал её из вопроса одним кликом (просьба 08.10)
         hint = " | ".join(x for x in (
             (row.get("start_kyiv") or "").replace("T", " "),
-            row.get("raw_title") or "") if x)
+            row.get("raw_title") or "",
+            row.get("url") or "") if x)
         if dictionary.enqueue(conn, "sport", label, suggestion=hint):
             queued += 1
         touched.add(dictionary.norm_pair(label))

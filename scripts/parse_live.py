@@ -1251,6 +1251,9 @@ def main() -> int:
                    "start_kyiv": (r.start_kyiv.strftime("%Y-%m-%dT%H:%M")
                                   if r.start_kyiv else ""),
                    "raw_title": (r.program.title or "")[:200],
+                   # адрес страницы, где строка найдена: в вопросе очереди
+                   # владелец открывает по нему сразу канал и дату (08.10)
+                   "url": (r.program.source_url or "")[:500],
                } for domain, r in unsolved],
                # строки, снятые фильтрами повторов, поимённо (сайт, канал,
                # заголовок, время, фильтр, почему) — заливка ключ не читает
