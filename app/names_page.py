@@ -228,17 +228,19 @@ def _sport_card(d: dict, team_names: dict, league_names: dict,
     d["site"] = q.domain
     d["site_url"] = sites.get(q.domain) or ""
     d["when"] = q.when.strftime("%d.%m %H:%M") if q.when else ""
-    # заголовок с сайта — если он говорит больше, чем сама пара
-    d["site_title"] = q.title if q.title and q.title != q.pair_text else ""
+    # строка сайта как есть — всегда, даже когда она равна паре: владелец
+    # сверяет по ней перевод (просьба 08.10: «как именно написано на самом
+    # сайте, чтоб я понимал, правильно переведено или нет»)
+    d["site_title"] = q.title or q.pair_text
     if q.pair:
         перевод = (f"{_english(q.pair[0], team_names)} — "
                    f"{_english(q.pair[1], team_names)}")
     else:
         перевод = _english(q.pair_text, team_names)
     перевод_лиги = _english(q.league, league_names)
-    d["preview"] = ""
-    if перевод.replace(" — ", " - ") != q.pair_text or перевод_лиги != q.league:
-        d["preview"] = " · ".join(x for x in (перевод, перевод_лиги) if x)
+    # и перевод — тоже всегда: совпал со строкой сайта — значит, переводить
+    # было нечего, и это тоже ответ
+    d["preview"] = " · ".join(x for x in (перевод, перевод_лиги) if x)
     # чем программа засомневалась — тем, чего в строке НЕТ
     d["doubt"] = ("На странице не написан вид спорта, а турнир «"
                   f"{q.league}» программе незнаком." if q.league else
