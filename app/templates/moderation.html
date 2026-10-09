@@ -118,7 +118,7 @@
 
   {# ── что увидела программа ── #}
   {% if r.kind == 'sport' %}
-    <div class="q-raw" dir="auto">{{ r.pair }}</div>
+    <div class="q-raw" dir="auto">{{ r.headline or r.pair }}</div>
     <ul class="q-facts">
       {% if r.site_title %}<li><span class="k">На сайте написано:</span> «<span dir="auto">{{ r.site_title }}</span>»</li>{% endif %}
       {% if r.league %}<li><span class="k">Турнир на сайте:</span> «<span dir="auto">{{ r.league }}</span>»</li>{% endif %}
