@@ -127,8 +127,8 @@ def main() -> int:
         # уверенные совпадения — в библиотеку, сомнительные — в очередь.
         # Свежие алиасы тут же применяются к этой же заливке.
         import json as _json
-        reference = _json.loads(path.read_text(encoding="utf-8")) \
-            .get("эталон", [])
+        data = _json.loads(path.read_text(encoding="utf-8"))
+        reference = data.get("эталон", [])
         aligned = {"sure": [], "ask": [], "missed": []}
         if reference:
             # A2 (6е): местные написания эталона → английские по fs_id;
@@ -166,7 +166,9 @@ def main() -> int:
                   "вправе только по правилам app/miss.py")
         stats = store.save_games(conn, games, punish=not args.reimport,
                                  coverage=coverage,
-                                 collected=store.kyiv_from_utc(stamp))
+                                 collected=store.kyiv_from_utc(stamp),
+                                 # строки, удержанные разбором, — не сироты
+                                 withheld=store.withheld_rows(data))
         # другой вид спорта — отдельной таблицей для вкладки «Other Sport»
         # (владелец 03.10); старые файлы ключа не имеют — тогда 0
         other = store.save_other_sport(
@@ -243,7 +245,10 @@ def main() -> int:
               f"каналов погашено (сайт их больше не показывает): {stats.gone}"
               + (f", заголовков турниров сайты больше не показывают "
                  f"(отметок погашено): {stats.titles_gone}"
-                 if stats.titles_gone else ""))
+                 if stats.titles_gone else "")
+              + (f", игр-сирот (сайт перенёс на другой день) — отметок "
+                 f"погашено: {stats.orphans_gone}"
+                 if stats.orphans_gone else ""))
         if stats.not_own_note:
             print(f"   {stats.not_own_note}")
         total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]

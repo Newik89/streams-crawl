@@ -106,6 +106,9 @@ class SaveStats:
     time_off: int = 0   # строки, прилипшие к игре flashscore вопреки времени сайта
     titles_gone: int = 0  # отметки заголовков турниров, которых сайт больше не показывает
     gone: int = 0       # отметки каналов, погашенные этим сбором (`app/miss.py`)
+    #: отметки игр-сирот — игр, которых в файле нет вовсе (сайт перенёс матч
+    #: на другой день, #5104); те же правила `app/miss.py`
+    orphans_gone: int = 0
     #: строки агрегаторов, не взятые потому, что у канала есть свой сайт
     #: (`app/channel_owner.py`), и строка для журнала по сайтам
     not_own: int = 0
@@ -265,10 +268,28 @@ def _league_ids(conn: sqlite3.Connection) -> dict[str, int]:
     return out
 
 
+def withheld_rows(data: dict) -> set[tuple[str, str]]:
+    """Строки сбора, которые разбор ВИДЕЛ, но в игры не пустил: снятые
+    фильтрами («снято») и нерешённые («на_разбор»). (сайт, «ГГГГ-ММ-ДД
+    ЧЧ:ММ» по Киеву) — по ним `save_games` не считает игру сиротой: сайт
+    её показывает, это наш фильтр её удержал (замечание проверки 09.10)."""
+    out: set[tuple[str, str]] = set()
+    for key in ("снято", "на_разбор"):
+        for r in (data.get(key) or []):
+            if not isinstance(r, dict):
+                continue
+            домен = _bare(r.get("домен") or "")
+            когда = (r.get("start_kyiv") or "").replace("T", " ")[:16]
+            if домен and когда:
+                out.add((домен, когда))
+    return out
+
+
 def save_games(conn: sqlite3.Connection, games: list[dict],
                now: datetime | None = None, punish: bool = True,
                coverage: miss.Покрытие | None = None,
-               collected: str = "") -> SaveStats:
+               collected: str = "",
+               withheld: set[tuple[str, str]] | None = None) -> SaveStats:
     """Вливает игры из `games.json`. Формат: список словарей с полями
     sport / league / home / away / start_kyiv / start_utc / entries,
     где entries — строки по сайтам: source / channel / url / raw_title.
@@ -277,7 +298,9 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     правилам `app/miss.py` (там они списком). `punish=False` — повторная
     заливка того же файла; `coverage` — что сбор реально скачал (из
     `report.json`, `miss.покрытие_из_отчёта`), без отчёта не гасится ничего;
-    `collected` — момент сбора по Киеву `ГГГГ-ММ-ДД ЧЧ:ММ`."""
+    `collected` — момент сбора по Киеву `ГГГГ-ММ-ДД ЧЧ:ММ` (без него сироты
+    не гасятся); `withheld` — строки, которые разбор видел, но удержал
+    (`withheld_rows`): их игры сиротами не считаются."""
     now = now or datetime.now()
     stats = SaveStats()
     graces = grace_map(conn)
@@ -460,6 +483,7 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     # #4145). Гасим его отметки от сайтов, которые в этом прогоне отдали
     # расписание на его день и заголовка не показали (владелец 04.10:
     # «появятся имена — должно обновиться») — по тем же правилам
+    заголовки: set[int] = set()
     for r in conn.execute(
             "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
             "FROM events WHERE sport = 'T' "
@@ -468,9 +492,41 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 r["sport"], r["team_home_auto"] or "",
                 r["team_away_auto"] or ""):
             continue
+        заголовки.add(r["id"])
         stats.titles_gone += погасить(conn.execute(
             "SELECT id, channel_id, source_id, source_url FROM event_channels "
             "WHERE event_id = ?", (r["id"],)).fetchall(), r["start_kyiv"], True)
+    # Сироты: будущие игры, которых в файле нет ВОВСЕ — ни один сайт их
+    # не держит. Сайт перенёс матч на другой день (#5104 Motherwell —
+    # Celtic, 09.10: teleman с субботы переставил на воскресенье), и старая
+    # запись висела с живым каналом: штраф выше идёт только по событиям
+    # файла, а правило 2 `miss.py` её не трогало. Слово владельца 09.10:
+    # «если игра не встретилась — проверить её на сайте и снять, хотя бы
+    # канал перечеркнуть». Проверка та же, что у всех: правила 3–6 — сайт
+    # ответил, страница того же вида за день игры цела, игр на день дал
+    # достаточно (правило 6 не даст погасить по неполному сбору).
+    # Две оговорки (проверка 09.10): без метки «собрано» сирот не трогаем —
+    # «будущая» по часам сервера игра могла уже идти по Киеву, и сайт
+    # «остатка дня» её честно не пишет; строку, которую разбор видел, но
+    # удержал фильтром (`withheld`: «снято», «на разбор»), сайт показывает —
+    # её отметка не сирота
+    if punish and coverage is not None and collected:
+        удержано = withheld or set()
+        for r in conn.execute(
+                "SELECT DISTINCT e.id, e.start_kyiv FROM events e "
+                "JOIN event_channels ec ON ec.event_id = e.id "
+                "WHERE e.start_kyiv > ? AND ec.miss_count < ?",
+                (collected, MISS_LIMIT)).fetchall():
+            if r["id"] in event_seen or r["id"] in заголовки:
+                continue
+            когда = (r["start_kyiv"] or "")[:16]
+            marks = [m for m in conn.execute(
+                "SELECT id, channel_id, source_id, source_url "
+                "FROM event_channels WHERE event_id = ? AND miss_count < ?",
+                (r["id"], MISS_LIMIT)).fetchall()
+                if (_bare(гашение.домен_по_id.get(m["source_id"], "")), когда)
+                not in удержано]
+            stats.orphans_gone += погасить(marks, r["start_kyiv"], True)
     conn.commit()
     stats.not_own = sum(хозяева.пропущено.values())
     stats.not_own_note = хозяева.отчёт(stats.not_own_dropped)
