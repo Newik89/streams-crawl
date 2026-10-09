@@ -12,7 +12,7 @@ import os
 import sqlite3
 import sys
 import tempfile
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,6 +37,13 @@ def проверка(имя: str, вышло, ждём) -> None:
     else:
         красных += 1
         print(f"  ✘ {имя}: вышло {вышло!r}, ждём {ждём!r}")
+
+
+def день(n: int) -> str:
+    """Дата заливки от сегодняшнего дня: `save_games(now=None)` смотрит на
+    настоящие часы, и зашитые «2026-10-08» назавтра ушли в прошлое — 09.10
+    тест покраснел сам по себе. 0 — сегодня, 3 — через три дня."""
+    return (date.today() + timedelta(days=n)).isoformat()
 
 
 def база() -> sqlite3.Connection:
@@ -140,13 +147,13 @@ def main() -> int:
     проверка("база: тогда строку агрегатора берём",
              старое.почему(2, 51, "2026-10-08"), 4)
 
-    # сквозная заливка: день 08 октября есть у своего сайта, 11 — только у mojtv
+    # сквозная заливка: «сегодня» (день(0)) есть у своего сайта, +3 дня — только у mojtv
     conn2 = база()
     stats = store.save_games(conn2, [
-        игра("2026-10-08", [("sportklub.hr", "Sport Klub 1"),
+        игра(день(0), [("sportklub.hr", "Sport Klub 1"),
                             ("mojtv.hr", "Sport Klub 1"),
                             ("mojtv.hr", "MAX Sport 1")]),
-        игра("2026-10-11", [("mojtv.hr", "Sport Klub 1")]),
+        игра(день(3), [("mojtv.hr", "Sport Klub 1")]),
     ], now=None)
     отметки = {(r["domain"], r["canonical_name"], r["start_kyiv"][:10])
                for r in conn2.execute(
@@ -155,13 +162,13 @@ def main() -> int:
                    "JOIN channels c ON c.id = ec.channel_id "
                    "JOIN events e ON e.id = ec.event_id")}
     проверка("заливка: свой сайт записан",
-             ("sportklub.hr", "Sport Klub 1", "2026-10-08") in отметки, True)
+             ("sportklub.hr", "Sport Klub 1", день(0)) in отметки, True)
     проверка("заливка: агрегатор по этому каналу и дню НЕ записан",
-             ("mojtv.hr", "Sport Klub 1", "2026-10-08") in отметки, False)
+             ("mojtv.hr", "Sport Klub 1", день(0)) in отметки, False)
     проверка("заливка: чужой канал агрегатора записан",
-             ("mojtv.hr", "MAX Sport 1", "2026-10-08") in отметки, True)
+             ("mojtv.hr", "MAX Sport 1", день(0)) in отметки, True)
     проверка("заливка: дальний день агрегатора записан",
-             ("mojtv.hr", "Sport Klub 1", "2026-10-11") in отметки, True)
+             ("mojtv.hr", "Sport Klub 1", день(3)) in отметки, True)
     проверка("заливка: счётчик непринятых строк", stats.not_own, 1)
 
     # прежняя отметка агрегатора снимается: иначе висела бы вечно — гашение
@@ -169,20 +176,20 @@ def main() -> int:
     # у игры есть и чужой канал агрегатора — значит пустой она не останется
     conn5 = база()
     строки5 = [("mojtv.hr", "Sport Klub 1"), ("mojtv.hr", "MAX Sport 1")]
-    без_правила = store.save_games(conn5, [игра("2026-10-08", строки5)],
+    без_правила = store.save_games(conn5, [игра(день(0), строки5)],
                                    now=None)
     conn5.execute("UPDATE sources SET selector_config = ? WHERE id = 1",
                   (json.dumps({channel_owner.ФЛАГ: True}),))
     conn5.commit()
-    прошлый_сбор(conn5, "2026-10-09", datetime.now().strftime("%Y-%m-%d %H:%M"))
-    с_правилом = store.save_games(conn5, [игра("2026-10-08", строки5)],
+    прошлый_сбор(conn5, день(1), datetime.now().strftime("%Y-%m-%d %H:%M"))
+    с_правилом = store.save_games(conn5, [игра(день(0), строки5)],
                                   now=None)
     осталось = {r["canonical_name"] for r in conn5.execute(
         "SELECT c.canonical_name FROM event_channels ec "
         "JOIN channels c ON c.id = ec.channel_id "
         "JOIN sources s ON s.id = ec.source_id JOIN events e "
         "ON e.id = ec.event_id WHERE s.domain = 'mojtv.hr' "
-        "AND e.start_kyiv LIKE '2026-10-08%'")}
+        f"AND e.start_kyiv LIKE '{день(0)}%'")}
     проверка("прежняя отметка агрегатора снята",
              (без_правила.not_own, с_правилом.not_own_dropped, осталось),
              (0, 1, {"MAX Sport 1"}))
@@ -192,22 +199,22 @@ def main() -> int:
     # у игры только строка агрегатора и других каналов нет — берём её:
     # пустая запись на витрине хуже канала с агрегатора
     conn6 = база()
-    прошлый_сбор(conn6, "2026-10-09", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    прошлый_сбор(conn6, день(1), datetime.now().strftime("%Y-%m-%d %H:%M"))
     один = store.save_games(conn6, [
-        игра("2026-10-08", [("mojtv.hr", "Sport Klub 1")])], now=None)
+        игра(день(0), [("mojtv.hr", "Sport Klub 1")])], now=None)
     есть = conn6.execute(
         "SELECT COUNT(*) FROM event_channels ec JOIN sources s "
         "ON s.id = ec.source_id JOIN events e ON e.id = ec.event_id "
-        "WHERE s.domain = 'mojtv.hr' AND e.start_kyiv LIKE '2026-10-08%'"
+        f"WHERE s.domain = 'mojtv.hr' AND e.start_kyiv LIKE '{день(0)}%'"
     ).fetchone()[0]
     проверка("единственную строку игры правило не отбирает",
              (один.not_own, есть), (0, 1))
 
     # а когда у той же игры есть и свой канал — строку агрегатора не берём
     conn7 = база()
-    прошлый_сбор(conn7, "2026-10-09", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    прошлый_сбор(conn7, день(1), datetime.now().strftime("%Y-%m-%d %H:%M"))
     пара = store.save_games(conn7, [
-        игра("2026-10-08", [("sportklub.hr", "Sport Klub 1"),
+        игра(день(0), [("sportklub.hr", "Sport Klub 1"),
                             ("mojtv.hr", "Sport Klub 1")])], now=None)
     проверка("рядом со своим каналом строка агрегатора не берётся",
              пара.not_own, 1)
@@ -221,27 +228,27 @@ def main() -> int:
     conn8.execute("UPDATE sources SET selector_config = NULL WHERE id = 1")
     conn8.commit()
     store.save_games(conn8, [
-        игра("2026-10-08", [("mojtv.hr", "Sport Klub 1"),
+        игра(день(0), [("mojtv.hr", "Sport Klub 1"),
                             ("mojtv.hr", "MAX Sport 1")]),   # хвост с соседом
-        игра("2026-10-12", [("mojtv.hr", "Sport Klub 1"),
+        игра(день(4), [("mojtv.hr", "Sport Klub 1"),
                             ("mojtv.hr", "MAX Sport 1")]),   # дальше глубины
     ], now=None)
     conn8.execute("UPDATE sources SET selector_config = ? WHERE id = 1",
                   (json.dumps({channel_owner.ФЛАГ: True}),))
     conn8.commit()
-    прошлый_сбор(conn8, "2026-10-09", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    прошлый_сбор(conn8, день(1), datetime.now().strftime("%Y-%m-%d %H:%M"))
     хвосты = store.save_games(conn8, [
-        игра("2026-10-10", [("mojtv.hr", "Sport Klub 1")])], now=None)  # одиночка
+        игра(день(2), [("mojtv.hr", "Sport Klub 1")])], now=None)  # одиночка
     остались = sorted((r["start_kyiv"][:10], r["canonical_name"]) for r in conn8.execute(
         "SELECT e.start_kyiv, c.canonical_name FROM event_channels ec "
         "JOIN channels c ON c.id = ec.channel_id JOIN sources s "
         "ON s.id = ec.source_id JOIN events e ON e.id = ec.event_id "
         "WHERE s.domain = 'mojtv.hr' AND ec.miss_count = 0"))
     проверка("хвост в глубине снят, дальний и одиночка остались",
-             остались, [("2026-10-08", "MAX Sport 1"),
-                        ("2026-10-10", "Sport Klub 1"),
-                        ("2026-10-12", "MAX Sport 1"),
-                        ("2026-10-12", "Sport Klub 1")])
+             остались, [(день(0), "MAX Sport 1"),
+                        (день(2), "Sport Klub 1"),
+                        (день(4), "MAX Sport 1"),
+                        (день(4), "Sport Klub 1")])
     проверка("снятый хвост посчитан", хвосты.not_own_dropped, 1)
     проверка("заливка: строка для журнала есть",
              "mojtv.hr: 1" in stats.not_own_note, True)

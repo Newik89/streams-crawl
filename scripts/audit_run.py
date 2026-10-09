@@ -11,6 +11,12 @@ r"""Самопроверка прогона: ищет ИЗВЕСТНЫЕ кла�
 Запуск:
     python scripts/audit_run.py --dir <папка прогона>
     python scripts/audit_run.py --dir <папка> --prev <папка прошлого прогона> --md audit.md
+    python scripts/audit_run.py --dir <папка> --json audit.json   # для «Прогонов» админки
+
+На GitHub шаг «Самопроверка прогона» (`crawl.yml`) гонит её после разбора и
+кладёт `audit.json` рядом с `games.json` в results/; заливка на сервере
+(`store.log_run`) переносит список в строку «Прогоны» (задание владельца
+06.10: «списком в „Прогонах“, чтобы не ходить кругами»).
 
 Что ищет (номер — класс ошибки; в скобках — где на него уже наступали):
   1. ПРИЗНАК НЕ ЧИТАЕТСЯ. В сырых страницах сайта есть поле/класс/значок
@@ -967,6 +973,8 @@ def main() -> int:
                     help="другой games.json (локальный разбор той же папки); "
                          "по умолчанию — <dir>/games.json")
     ap.add_argument("--md", default="", help="куда записать отчёт")
+    ap.add_argument("--json", default="",
+                    help="куда записать итог для админки (разделы и строки)")
     args = ap.parse_args()
 
     folder = Path(args.dir)
@@ -1023,6 +1031,18 @@ def main() -> int:
     if args.md:
         Path(args.md).write_text(text, encoding="utf-8")
         print(f"отчёт: {args.md}")
+    if args.json:
+        # «собрано» — метка обхода: заливка сверит её с games.json и не
+        # приклеит к прогону чужую самопроверку (store._audit_for)
+        Path(args.json).write_text(json.dumps({
+            "прогон": folder.name,
+            "собрано": (games or {}).get("собрано") or "",
+            "подозрений": total,
+            "разделы": [{"название": title, "строки": items}
+                        for title, items in sections if items],
+            "справка": known + lost_info + canon_info,
+        }, ensure_ascii=False, indent=1), encoding="utf-8")
+        print(f"итог для админки: {args.json}")
     return 0
 
 
