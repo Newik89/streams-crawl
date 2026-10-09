@@ -1135,6 +1135,29 @@ watch.RECOVERY["planned-failed"] = saved_step
 check("таблица RECOVERY — единственное место решения: «planned-failed → alarm» даёт ТРЕВОГУ без досрочного",
       ORDERS == [] and len(alarms_after(edge)) == 1 and "плановый обход 16:15" in alarms_after(edge)[0],
       (ORDERS, notes_after(edge)))
+# причина провала из стука (схема сбоев, шаг 3): сайты закрыли доступ →
+# ТРЕВОГА без досрочного; сеть — как раньше, досрочный
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+conn_r = db.connect()
+crawl_hook.remember_failure(conn_r, "full-2", "fetch-ban", now=K("16:25"))
+conn_r.close()
+edge = last_id()
+tick(K("16:30"))
+check("причина fetch-ban → ТРЕВОГА с причиной словами, досрочного нет",
+      ORDERS == [] and len(alarms_after(edge)) == 1
+      and "сайты закрыли доступ" in alarms_after(edge)[0], (ORDERS, notes_after(edge)))
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+conn_r = db.connect()
+crawl_hook.remember_failure(conn_r, "full-2", "fetch-net", now=K("16:25"))
+conn_r.close()
+edge = last_id()
+tick(K("16:30"))
+check("причина fetch-net → как раньше, досрочный на 6; причина в строке",
+      ORDERS == [6] and any("сеть: сайты не открылись" in n for n in notes_after(edge)),
+      (ORDERS, notes_after(edge)))
+setting(crawl_hook.FAIL_MEMORY, "")
 check("в таблице только шаги early / retry / alarm / close; незнакомый вид сбоя — ТРЕВОГА",
       set(watch.RECOVERY.values()) <= {"early", "retry", "alarm", "close"}
       and watch.recovery("что-то-новое") == "alarm"
