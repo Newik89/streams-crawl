@@ -113,6 +113,9 @@ SPORT_Q2 = sql("INSERT INTO moderation (kind, raw_value, suggestion) VALUES "
                "('sport', 'Serbia Upside Down - Into the Unknown | Extreme "
                "Sports (tv2.no)', '2026-10-10 20:30 | Serbia Upside Down - "
                "Into the Unknown')")
+HEB = sql("INSERT INTO moderation (kind, raw_value, suggestion) VALUES "
+          "('sport', 'הפועל עכו - בני יהודה ת\"א | 5MAX (sport5.co.il)', "
+          "'2026-10-13 18:45 | גביע הטוטו - לאומית: הפועל עכו - בני יהודה ת\"א')")
 AUTO = sql("INSERT INTO moderation (kind, raw_value, suggestion, status, "
            "answered_by) VALUES ('sport', 'Forma-1 - Sprintfutam | M4 Sport+ "
            "(port.hu)', '2026-10-10 22:15 | Forma-1', 'skipped', "
@@ -231,6 +234,14 @@ check("кнопки: Футбол / Баскетбол / Теннис / Не м�
                                "Отложить")))
 check("на витрине игры нет — так и сказано",
       "На витрине этой игры пока нет" in plain)
+# заголовок вопроса — перевод, строка сайта ниже как есть (владелец 09.10)
+import re as _re  # noqa: E402
+heads = _re.findall(r'<div class="q-raw" dir="auto">(.*?)</div>', page)
+иврит = lambda t: bool(_re.search(r"[\u0590-\u05ff]", t))  # noqa: E731
+check("заголовок ивритского вопроса — латиницей (перевод)",
+      heads and not any(иврит(h) for h in heads), heads)
+check("строка сайта на иврите осталась в «На сайте написано»",
+      "הפועל עכו - בני יהודה" in plain)
 r = a.post(f"/names/{SPORT_Q}", data={"canonical": "F", "csrf_token": tok},
            follow_redirects=True)
 hint = one("SELECT sport, match_day FROM sport_hints WHERE pair = "

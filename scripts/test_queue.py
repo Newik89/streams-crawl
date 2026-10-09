@@ -642,6 +642,20 @@ check("заливка_ответы_с_пометкой_программы",
 again, _ = games_import.queue_unsolved(conn, [unsolved[2]], [])
 check("заливка_отсеянное_не_спрашивается_снова", again == 0)
 
+print("Жеребьёвка тура на иврите — не матч, программа закрывает сама (09.10, №2166)")
+жеребьёвка = {"домен": "sport5.co.il", "канал": "5 ספורט+", "home": "הגרלת סיבוב ז'",
+              "away": "גביע המדינה", "league": "", "start_kyiv": "2026-10-14T11:00",
+              "raw_title": "הגרלת סיבוב ז' - גביע המדינה"}
+games_import.sport_question.Judge = lambda c, r: Judge(c, r, sports=SPORTS)
+try:
+    new, answered = games_import.queue_unsolved(conn, [жеребьёвка], [])
+finally:
+    games_import.sport_question.Judge = real_judge
+строка = conn.execute("SELECT status, answered_by FROM moderation WHERE raw_value LIKE 'הגרלת%'").fetchone()
+check("жеребьёвка_закрыта_программой_по_стоп-слову",
+      строка is not None and строка[0] == "skipped" and "הגרלת" in (строка[1] or ""),
+      tuple(строка) if строка else None)
+
 print("Чистка: закрытое программой старше 7 дней стирается, ответы владельца живут")
 conn = fresh_db()
 from app import dictionary  # noqa: E402
