@@ -20,7 +20,9 @@ from . import db
 
 KYIV = ZoneInfo("Europe/Kyiv")
 #: данные считаются несвежими, если заливки не было столько часов
-STALE_HOURS = 26
+#: (владелец 06.10, схема сбоев: 12 вместо 26 — три сбора в день, полдня
+#: без заливки уже значит, что что-то встало)
+STALE_HOURS = 12
 
 
 def _parse(text: str | None) -> datetime | None:
