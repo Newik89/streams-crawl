@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1463. Заняло 4897 с.
+Режим: полный обход, окно 6 суток. Запросов: 1463. Заняло 4602 с.
 
 | Сайт | Результат |
 |---|---|
@@ -19,7 +19,7 @@
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
 | flashscore.mobi | расписание есть — 17, пусто — 4 |
-| football-tv.ru | расписание есть — 1 |
+| football-tv.ru | не открылась — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
@@ -86,12 +86,12 @@
 | trtavaz.com.tr | расписание есть — 6 |
 | trtspor.com.tr | расписание есть — 1 |
 | tv-program.aktuality.sk | расписание есть — 1 |
-| tv.orf.at | расписание есть — 22, не открылась — 2 |
+| tv.orf.at | расписание есть — 24 |
 | tv.sport1.de | расписание есть — 1 |
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 4, пусто — 2 |
+| tv8.com.tr | расписание есть — 3, пусто — 3 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -103,18 +103,17 @@
 | tvpassport.com | расписание есть — 36 |
 | tvsporten.dk | расписание есть — 6 |
 | tvtid.tv2.dk | расписание есть — 6 |
-| unian.tv | расписание есть — 4, пусто — 2 |
+| unian.tv | расписание есть — 3, пусто — 3 |
 | vsetv.com | расписание есть — 12 |
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 2
+## Не открылись — 1
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| tv.orf.at | ORF 2 | ReadTimeout: HTTPSConnectionPool(host='tv.orf.at', port=443): Read timed out. (read timeout=30); браузер: браузер: TimeoutError: Page.goto: Timeout 60000ms exce | https://tv.orf.at/program/orf2/index~_day-13-10-2026_-8250a1b9e510c2e695e2818988a06ecf54df4d26.html |
-| tv.orf.at | ORF SPORT+ | ReadTimeout: HTTPSConnectionPool(host='tv.orf.at', port=443): Read timed out. (read timeout=30); браузер: браузер: TimeoutError: Page.goto: Timeout 60000ms exce | https://tv.orf.at/program/orfs/index~_day-11-10-2026_-0eacfe4b1c59b4917a481ee5cb1e0c156e294079.html |
+| football-tv.ru | сетка | HTTP 403; браузер: HTTP 403 (браузер) | https://www.football-tv.ru/ |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 2 из 1463 страниц (0%), сайтов без удачи 0 из 103 (0%)
+- ✅ обход в норме: не открылись 1 из 1463 страниц (0%), сайтов без удачи 1 из 103 (1%)
