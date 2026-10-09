@@ -333,6 +333,28 @@ jobs:
             python scripts/parse_live.py --days "$W_DAYS" $STRICT
           fi
 
+      - name: Самопроверка прогона
+        # известные классы наших ошибок списком (владелец 06.10: «чтобы не
+        # ходить кругами»): итог едет с результатом (audit.json рядом с
+        # games.json) и ложится строкой в «Прогоны» админки. Полному обходу —
+        # сравнение с прошлым results/games.json (он ещё не заменён). Обход
+        # не краснеет: подозрение — повод посмотреть, а не провал
+        if: always() && steps.guard.outputs.run == '1'
+        continue-on-error: true
+        env:
+          W_MODE: ${{ steps.what.outputs.mode }}
+          W_ONLY: ${{ steps.what.outputs.only }}
+          W_URLS: ${{ steps.what.outputs.urls }}
+          W_DATE: ${{ steps.what.outputs.date }}
+        run: |
+          PREV=""
+          if [ "$W_MODE" = "full" ] && [ -z "$W_ONLY$W_URLS$W_DATE" ] && [ -f results/games.json ]; then
+            PREV="--prev results"
+          fi
+          python scripts/audit_run.py --dir recon/raw_live $PREV --md recon/raw_live/audit.md --json recon/raw_live/audit.json
+          echo ""                       >> $GITHUB_STEP_SUMMARY
+          cat recon/raw_live/audit.md   >> $GITHUB_STEP_SUMMARY || true
+
       - name: AI-слой — самопочинка и запасной разбор (рубильник STREAMS_AI)
         # бесплатная модель GitHub чинит несложные поломки разметки сама и
         # достаёт матчи со страниц, которые парсер не осилил; выключается
@@ -364,6 +386,7 @@ jobs:
           mkdir -p results/day
           cp recon/raw_live/games.json  results/day/ 2>/dev/null || true
           cp recon/raw_live/report.json results/day/ 2>/dev/null || true
+          cp recon/raw_live/audit.json  results/day/ 2>/dev/null || true
           git config user.name  "Обход телесайтов"
           git config user.email "actions@github.com"
           git add results/day/
@@ -393,6 +416,7 @@ jobs:
           mkdir -p results/site
           cp recon/raw_live/games.json  results/site/
           cp recon/raw_live/report.json results/site/
+          cp recon/raw_live/audit.json  results/site/ 2>/dev/null || true
           git config user.name  "Обход телесайтов"
           git config user.email "actions@github.com"
           git add results/site/
@@ -421,6 +445,7 @@ jobs:
           cp recon/raw_live/matches.md results/  2>/dev/null || true
           cp recon/raw_live/report.json results/ 2>/dev/null || true
           cp recon/raw_live/games.json  results/ 2>/dev/null || true
+          cp recon/raw_live/audit.json  results/ 2>/dev/null || true
           git config user.name  "Обход телесайтов"
           git config user.email "actions@github.com"
           git add results/

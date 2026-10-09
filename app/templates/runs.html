@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Прогоны — Streams Schedule{% endblock %}
 {% block body %}
+<style>
+  details.audit > summary { cursor: pointer; color: var(--err); font-weight: 600; }
+  details.audit p.audit-title { margin: 8px 0 2px; font-weight: 600; color: inherit; }
+  details.audit ul { margin: 0 0 6px 18px; padding: 0; font-size: 13px; color: inherit; }
+  .ok { color: var(--ok, #2a7); }
+</style>
 <h1>Прогоны</h1>
 {% include "_emergency.html" %}
 <p class="muted">Строка появляется при каждом вливании обхода в базу
@@ -24,7 +30,18 @@
     <td {% if r.sources_failed %}style="color:var(--err)"{% endif %}>{{ r.sources_failed }}</td>
     <td>{{ r.rows_found }}</td>
     <td>{{ r.events_upserted }}</td>
-    <td class="muted"><code style="font-size:12px">{{ r.log }}</code></td>
+    <td class="muted">
+      {%- if r.audit %}
+      {%- if r.audit['подозрений'] %}
+      <details class="audit"><summary>⚠ самопроверка: подозрений {{ r.audit['подозрений'] }}</summary>
+        {% for s in r.audit['разделы'] %}
+        <p class="audit-title">{{ s['название'] }} — {{ s['строки']|length }}</p>
+        <ul>{% for line in s['строки'] %}<li>{{ line }}</li>{% endfor %}</ul>
+        {% endfor %}
+      </details>
+      {%- else %}<span class="ok">✔ самопроверка: подозрений нет</span>{% endif %}
+      {%- endif %}
+      <code style="font-size:12px">{{ r.log }}</code></td>
   </tr>
   {% endfor %}
 </table>

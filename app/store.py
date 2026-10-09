@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import re
 import sqlite3
 from dataclasses import dataclass
@@ -810,6 +811,25 @@ def kyiv_from_utc(text: str) -> str:
     return ""
 
 
+def _audit_for(folder: Path, crawled: str) -> dict | None:
+    """Самопроверка прогона (`scripts/audit_run.py --json`, лежит рядом с
+    `games.json` как `audit.json`) — в строку «Прогоны». Берём, только если
+    она про этот же обход: метка «собрано» совпадает с заливаемой; иначе
+    (старый файл рядом с новым сбором) — молчим, чужих подозрений не клеим."""
+    try:
+        data = json.loads((folder / "audit.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    if crawled and data.get("собрано") and data["собрано"] != crawled:
+        return None
+    разделы = [{"название": str(r.get("название") or ""),
+                "строки": [str(x) for x in (r.get("строки") or [])]}
+               for r in (data.get("разделы") or []) if isinstance(r, dict)]
+    return {"подозрений": int(data.get("подозрений") or 0), "разделы": разделы}
+
+
 def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
             crawled: str = "", who: str = "") -> None:
     """Строка в `runs` и здоровье источников (ТЗ разд. 14): каждый импорт
@@ -867,6 +887,16 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
     answered = set(ok_by) | set(empty_by)
     worked = {d for d in answered if ok_by.get(d) or parsed.get(d, 0)}
     silent = answered - worked
+    log = {"режим": mode, "кто": who, "новых": stats.new,
+           "обновлено": stats.updated,
+           "сбои": fail_by,
+           "сбои_почему": why_by,
+           "молчат": sorted(silent)}
+    # самопроверка прогона списком — владелец 06.10 («чтобы не ходить
+    # кругами»); шаблон runs.html показывает её раскрывающимся списком
+    audit = _audit_for(Path(report_path).parent, crawled)
+    if audit is not None:
+        log["самопроверка"] = audit
     conn.execute(
         "INSERT INTO runs (finished_at, window_days, sources_ok, "
         "sources_failed, rows_found, events_upserted, log) "
@@ -874,11 +904,7 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
         (when or _iso(datetime.now()), days,
          len(worked), len(set(fail_by) - answered), rows_found,
          stats.new + stats.updated,
-         json.dumps({"режим": mode, "кто": who, "новых": stats.new,
-                     "обновлено": stats.updated,
-                     "сбои": fail_by,
-                     "сбои_почему": why_by,
-                     "молчат": sorted(silent)}, ensure_ascii=False)))
+         json.dumps(log, ensure_ascii=False)))
     now = _iso(datetime.now())
     for domain in worked:
         conn.execute("UPDATE sources SET last_run = ?, last_success = ?, "

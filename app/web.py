@@ -16,6 +16,7 @@ stdlib (сессия Flask + CSRF + ограничение попыток вхо
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import secrets
@@ -1571,12 +1572,22 @@ def create_app() -> Flask:
         (`gh` — список GitHub, `refused` — почему заказ не ушёл)."""
         conn = db.connect()
         try:
-            rows = conn.execute(
-                "SELECT finished_at, window_days, sources_ok, sources_failed, "
-                "rows_found, events_upserted, log FROM runs "
-                "ORDER BY id DESC LIMIT 60").fetchall()
+            rows = [dict(r) for r in conn.execute(
+                "SELECT id, finished_at, window_days, sources_ok, "
+                "sources_failed, rows_found, events_upserted, log FROM runs "
+                "ORDER BY id DESC LIMIT 60")]
         finally:
             conn.close()
+        # самопроверка прогона — отдельным раскрывающимся списком, а не
+        # внутри сырого лога (он показывается кодом и стал бы простынёй)
+        for r in rows:
+            try:
+                log = json.loads(r["log"] or "{}") or {}
+            except (ValueError, TypeError):
+                log = {}
+            r["audit"] = log.pop("самопроверка", None) if isinstance(log, dict) else None
+            if r["audit"] is not None:
+                r["log"] = json.dumps(log, ensure_ascii=False)
         return render_template("runs.html", rows=rows, **extra)
 
     @app.route("/runs")
