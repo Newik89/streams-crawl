@@ -1110,7 +1110,43 @@ RECOVERY = {
     "site-retry-expired": "alarm",
     # сайт на сервере — без повтора: к такому сайту не чаще раза в сутки
     "server-failed": "alarm",
+    # ── по ПРИЧИНЕ провала (схема сбоев, шаг 3; код едет в стуке «закончил»,
+    # `scripts/fail_reason.py`, `crawl_hook.fail_reason`): ключ
+    # «<чей>-failed-<причина>» главнее «<чей>-failed». Сайты закрыли доступ
+    # (fetch-ban) — ещё один сбор по ним только добьёт адрес GitHub; упал наш
+    # разбор (parse) или игр мало (few) — тот же код упадёт снова; план пуст
+    # (plan) — заказывать нечего. Сеть/сайт лёг/зависание/push — как раньше
+    # (досрочный или повтор): дозабор и переразбор — шаги 4–5 схемы
+    "planned-failed-fetch-ban": "alarm",
+    "planned-failed-parse": "alarm",
+    "planned-failed-few": "alarm",
+    "planned-failed-plan": "alarm",
+    "manual-failed-fetch-ban": "alarm",
+    "manual-failed-parse": "alarm",
+    "manual-failed-few": "alarm",
+    "manual-failed-plan": "alarm",
+    "date-failed-fetch-ban": "alarm",
+    "date-failed-parse": "alarm",
+    "site-failed-fetch-ban": "alarm",
+    "site-failed-parse": "alarm",
 }
+
+#: причина провала — словами для строк «Прогонов»
+REASON_WORDS = {
+    "timeout": "прогон отменён GitHub по лимиту времени",
+    "env": "сломано окружение сбора (до обхода)",
+    "plan": "план пуст — обход не сделал ни одного запроса",
+    "fetch-ban": "сайты закрыли доступ (защита, 403/429)",
+    "fetch-down": "сайты не отвечают (5xx)",
+    "fetch-net": "сеть: сайты не открылись",
+    "few": "игр меньше порога — разбор дошёл до конца",
+    "parse": "упал наш разбор",
+    "push": "результат не запушился",
+}
+
+
+def reason_words(reason: str) -> str:
+    return REASON_WORDS.get(reason, reason)
 
 
 def recovery(failure: str) -> str:
@@ -1130,10 +1166,12 @@ def order_who(state: dict) -> str:
 RETRIED = ("manual", "date", "site")
 
 
-def failure_of(state: dict, how: str) -> str:
+def failure_of(state: dict, how: str, reason: str = "") -> str:
     """Вид сбоя текущего заказа для `RECOVERY`: чей он (`order_who`) и как
-    сорвался (failed, expired)."""
-    return f"{order_who(state)}-{how}"
+    сорвался (failed, expired); с причиной провала (`reason`, схема сбоев
+    шаг 3) — ключ с ней, если такой есть в таблице, иначе общий."""
+    key = f"{order_who(state)}-{how}"
+    return f"{key}-{reason}" if reason and f"{key}-{reason}" in RECOVERY else key
 
 
 def lost_slot(conn: sqlite3.Connection, failure: str, slot_at: datetime,

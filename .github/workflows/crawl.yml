@@ -252,6 +252,7 @@ jobs:
           sh scripts/knock.sh start
 
       - name: Самопроверка окружения
+        id: env
         # До обхода: парсеры и разбор должны хотя бы загрузиться. 03.10 о
         # сломанной библиотеке узнали только ПОСЛЕ 80 минут обхода, на шаге
         # разбора. Теперь сломанное окружение краснеет за секунду и к сайтам
@@ -264,11 +265,13 @@ jobs:
           echo "разбор загружается"
 
       - name: Проверка читалок
+        id: readers
         if: github.event_name == 'schedule' || inputs.readers == 'yes'
         continue-on-error: true
         run: python scripts/check_readers.py
 
       - name: Обход
+        id: fetch
         if: steps.guard.outputs.run == '1'
         # значения — только через env и в кавычках (аудит 05.10.2026);
         # `set -f`: в адресах бывают `?` `*` `[` — оболочка не должна
@@ -311,6 +314,7 @@ jobs:
           fi
 
       - name: Разобрать скачанное
+        id: parse
         # `always()`: и после красного обхода разбор нужен — итог и артефакт
         # покажут, что успело прийти. В репозиторий это уже не поедет (ниже).
         # `--strict` (игр меньше порога — красный) — только полному обходу без
@@ -429,6 +433,7 @@ jobs:
           exit 1
 
       - name: Положить результат в репозиторий
+        id: push
         # только ПОЛНЫЙ обход без фильтров: проба (--urls, proba) и точечный
         # `--only` не должны затирать results/ полного дня своим маленьким
         # games.json (02.09 затирали дважды — проба и обкатка flashscore).
@@ -520,6 +525,13 @@ jobs:
           W_DATE: ${{ steps.what.outputs.date }}
           W_ONLY: ${{ steps.what.outputs.only }}
           W_URLS: ${{ steps.what.outputs.urls }}
+          # причина провала — для сторожа (схема сбоев, шаг 3): итоги шагов
+          STEP_ENV: ${{ steps.env.outcome }}
+          STEP_READERS: ${{ steps.readers.outcome }}
+          STEP_FETCH: ${{ steps.fetch.outcome }}
+          STEP_PARSE: ${{ steps.parse.outcome }}
+          STEP_PUSH: ${{ steps.push.outcome }}
+          JOB_STATUS: ${{ job.status }}
         run: |
           WHAT="$W_MODE-$W_DAYS"
           [ -n "$W_DATE" ] && WHAT="date-$W_DATE"
@@ -532,5 +544,11 @@ jobs:
           fi
           export WHAT
           EVENT=done-fail
+          REASON=""
           [ "${{ job.status }}" = "success" ] && EVENT=done-ok
+          # провал: одним словом, почему (scripts/fail_reason.py) — сторож на
+          # сервере по нему решает, заказывать ли ещё один полный сбор
+          [ "$EVENT" = "done-fail" ] && REASON=$(python scripts/fail_reason.py 2>/dev/null || echo unknown)
+          export REASON
+          echo "причина: ${REASON:-—}"
           sh scripts/knock.sh $EVENT

@@ -8,9 +8,14 @@ if [ -z "$HOOK_SECRET" ] || [ -z "$HOOK_URL" ]; then
 fi
 EVENT="$1"
 STAMP=$(date +%s)
-SIGN=$(printf '%s' "$STAMP.$EVENT.$WHAT" | openssl dgst -sha256 -hmac "$HOOK_SECRET" -r | cut -d' ' -f1)
+# REASON (только у done-fail, scripts/fail_reason.py) входит в подпись:
+# «время.событие.что.причина» — без причины подпись прежняя
+MSG="$STAMP.$EVENT.$WHAT"
+[ -n "$REASON" ] && MSG="$MSG.$REASON"
+SIGN=$(printf '%s' "$MSG" | openssl dgst -sha256 -hmac "$HOOK_SECRET" -r | cut -d' ' -f1)
 CODE=$(curl -s -o /tmp/knock -w '%{http_code}' -m 30 -X POST \
   -H "X-Stamp: $STAMP" -H "X-Event: $EVENT" -H "X-What: $WHAT" -H "X-Sign: $SIGN" \
+  -H "X-Reason: $REASON" \
   "$HOOK_URL")
 echo "стук $EVENT ($WHAT): $CODE $(cat /tmp/knock 2>/dev/null)"
 [ "$CODE" = "200" ]

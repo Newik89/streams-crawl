@@ -903,11 +903,13 @@ def create_app() -> Flask:
         удаче сервер ещё и забирает результат (`app/crawl_hook.py`)."""
         event = request.headers.get("X-Event", "")
         what = request.headers.get("X-What", "")[:60]
+        # причина провала (схема сбоев, шаг 3) — входит в подпись
+        reason = request.headers.get("X-Reason", "").strip()[:24]
         conn = db.connect()
         try:
             ok, why = crawl_hook.verify(conn, request.headers.get("X-Stamp", ""),
                                         event, what,
-                                        request.headers.get("X-Sign", ""))
+                                        request.headers.get("X-Sign", ""), reason)
             if not ok:
                 print(f"стук отклонён: {why} ({request.remote_addr})")
                 return jsonify({"ok": False}), 403
@@ -915,6 +917,8 @@ def create_app() -> Flask:
                 crawl_hook.mark(conn, "идёт", what or "обход")
                 return jsonify({"ok": True})
             crawl_hook.clear(conn)
+            if event == "done-fail" and reason:
+                crawl_hook.remember_failure(conn, what, reason)
             if what.startswith("probeurl-"):
                 # итог проверки адреса кнопкой (владелец 20.09): показать на
                 # странице сбоев; результата в репо нет — забор не нужен

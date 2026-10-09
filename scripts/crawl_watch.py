@@ -564,7 +564,13 @@ def close_early(t: Round) -> str:
 def order_failed(t: Round, why: str) -> None:
     """С4г. Заказ сорвался — закрываем его; что дальше, решает таблица
     `watch.RECOVERY` по тому, чей он (ВИДЫ ЗАКАЗОВ в шапке)."""
-    failure = watch.failure_of(t.rec, "failed")
+    # причина провала из стука «закончил» (схема сбоев, шаг 3): по ней
+    # таблица решает, стоит ли ещё один полный сбор
+    ended = (watch._utc(t.run.get("updated_at") or "") if t.run else None) or t.now
+    reason = crawl_hook.fail_reason(t.conn, t.rec.get("what", ""), ended)
+    failure = watch.failure_of(t.rec, "failed", reason)
+    if reason:
+        why = f"{why}; причина: {watch.reason_words(reason)}"
     extra = close_early(t) if t.rec.get("early") else ""
     what = order_words(t)
     t.rec["failed"] = True

@@ -60,13 +60,66 @@ def _secret() -> bytes:
         return b""
 
 
-def sign(secret: bytes, stamp: str, event: str, what: str) -> str:
-    return hmac.new(secret, f"{stamp}.{event}.{what}".encode(),
-                    hashlib.sha256).hexdigest()
+def sign(secret: bytes, stamp: str, event: str, what: str,
+         reason: str = "") -> str:
+    """Подпись стука; причина провала (`reason`, схема сбоев шаг 3) входит в
+    подписанное — иначе её можно было бы подменить и увести сторожа."""
+    msg = f"{stamp}.{event}.{what}" + (f".{reason}" if reason else "")
+    return hmac.new(secret, msg.encode(), hashlib.sha256).hexdigest()
+
+
+#: допустимый код причины провала (`scripts/fail_reason.py`)
+REASON_RE = re.compile(r"^[a-z][a-z-]{0,23}$")
+#: память причин: настройка `crawl_fail_reasons`, последние записи
+FAIL_MEMORY = "crawl_fail_reasons"
+FAIL_KEEP = 30
+#: причина считается «про этот прогон», если стук пришёл в этих минутах
+#: от конца прогона по GitHub (стук идёт последним шагом job'а)
+FAIL_MATCH_MINUTES = 20
+
+
+def remember_failure(conn: sqlite3.Connection, what: str, reason: str,
+                     now: datetime | None = None) -> None:
+    """Стук «закончил» с провалом: запомнить (что, причина, когда UTC) —
+    сторож найдёт по виду и времени (`fail_reason`)."""
+    if not REASON_RE.match(reason or ""):
+        return
+    now = now or datetime.now(timezone.utc)
+    try:
+        items = json.loads(db.get_setting(conn, FAIL_MEMORY) or "[]")
+    except ValueError:
+        items = []
+    items.append({"what": what, "reason": reason,
+                  "at": now.astimezone(timezone.utc).isoformat(timespec="seconds")})
+    db.set_setting(conn, FAIL_MEMORY, json.dumps(items[-FAIL_KEEP:], ensure_ascii=False))
+
+
+def fail_reason(conn: sqlite3.Connection, what: str, ended: datetime,
+                minutes: int = FAIL_MATCH_MINUTES) -> str:
+    """Причина провала прогона вида `what`, кончившегося в `ended` (UTC):
+    ближайший по времени стук того же вида в окне ± `minutes`; нет — пусто."""
+    try:
+        items = json.loads(db.get_setting(conn, FAIL_MEMORY) or "[]")
+    except ValueError:
+        return ""
+    best, gap = "", timedelta(minutes=minutes)
+    for it in items:
+        if it.get("what") != what:
+            continue
+        try:
+            at = datetime.fromisoformat(it.get("at") or "")
+        except ValueError:
+            continue
+        if at.tzinfo is None:
+            at = at.replace(tzinfo=timezone.utc)
+        d = abs(at - ended.astimezone(timezone.utc))
+        if d <= gap:
+            best, gap = it.get("reason") or "", d
+    return best
 
 
 def verify(conn: sqlite3.Connection, stamp: str, event: str, what: str,
-           signature: str) -> tuple[bool, str]:
+           signature: str, reason: str = "") -> tuple[bool, str]:
     """(принят, почему нет). Время подписи запоминается атомарно: из двух
     одинаковых стуков — и из двух воркеров gunicorn — пройдёт один."""
     secret = _secret()
@@ -80,7 +133,10 @@ def verify(conn: sqlite3.Connection, stamp: str, event: str, what: str,
         return False, "время"
     if abs(time.time() - ts) > MAX_SKEW:
         return False, "время"
-    if not hmac.compare_digest(sign(secret, stamp, event, what), signature or ""):
+    if reason and not REASON_RE.match(reason):
+        return False, "причина"
+    if not hmac.compare_digest(sign(secret, stamp, event, what, reason),
+                               signature or ""):
         return False, "подпись"
     conn.execute("INSERT OR IGNORE INTO settings (key, value) "
                  "VALUES ('hook_last_stamp', '0')")
