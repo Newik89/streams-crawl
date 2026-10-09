@@ -127,8 +127,8 @@ def main() -> int:
         # уверенные совпадения — в библиотеку, сомнительные — в очередь.
         # Свежие алиасы тут же применяются к этой же заливке.
         import json as _json
-        reference = _json.loads(path.read_text(encoding="utf-8")) \
-            .get("эталон", [])
+        data = _json.loads(path.read_text(encoding="utf-8"))
+        reference = data.get("эталон", [])
         aligned = {"sure": [], "ask": [], "missed": []}
         if reference:
             # A2 (6е): местные написания эталона → английские по fs_id;
@@ -166,7 +166,9 @@ def main() -> int:
                   "вправе только по правилам app/miss.py")
         stats = store.save_games(conn, games, punish=not args.reimport,
                                  coverage=coverage,
-                                 collected=store.kyiv_from_utc(stamp))
+                                 collected=store.kyiv_from_utc(stamp),
+                                 # строки, удержанные разбором, — не сироты
+                                 withheld=store.withheld_rows(data))
         # другой вид спорта — отдельной таблицей для вкладки «Other Sport»
         # (владелец 03.10); старые файлы ключа не имеют — тогда 0
         other = store.save_other_sport(

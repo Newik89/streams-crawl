@@ -102,13 +102,15 @@ def row(domain, channel="", verdict="расписание есть", day=DAY, ur
     return out
 
 
-def import_twice(first, second, rows, punish=True, collected=COLLECTED):
+def import_twice(first, second, rows, punish=True, collected=COLLECTED,
+                 withheld=None):
     """Первая заливка заводит игры и отметки (отчёта нет — не гасит
     ничего), вторая — проверяемый сбор."""
     conn = fresh_db()
     store.save_games(conn, first, now=NOW)
     store.save_games(conn, second, now=NOW, punish=punish,
-                     coverage=miss.покрытие_из_отчёта(rows), collected=collected)
+                     coverage=miss.покрытие_из_отчёта(rows), collected=collected,
+                     withheld=withheld)
     return conn
 
 
@@ -166,6 +168,24 @@ check("сирота_повторная_заливка_не_гасит", miss_of(
 conn = import_twice(first, [], ok_rows)
 check("сирота_сайт_не_дал_игр_на_день_не_гаснет (правило 6)",
       miss_of(conn, "Max 4", "Arsenal") == 0 and miss_of(conn, "Max 2", "Liverpool") == 0)
+conn = import_twice(first, moved[1:], [row(OTHER)])
+check("сирота_частичный_сбор_чужой_сайт_не_гасит (правило 4)",
+      miss_of(conn, "Max 4", "Arsenal") == 0
+      and miss_of(conn, "Other 1", "Arsenal") == store.MISS_LIMIT)
+conn = import_twice(first, moved[1:], ok_rows, collected="")
+check("сирота_без_метки_сбора_не_гаснет",
+      miss_of(conn, "Max 4", "Arsenal") == 0 and miss_of(conn, "Other 1", "Arsenal") == 0)
+# строку разбор видел, но удержал фильтром («снято»/«на разбор») — сайт её
+# показывает, игра не сирота для этого сайта
+conn = import_twice(first, moved[1:], ok_rows, withheld={(GRID, f"{DAY} 21:45")})
+check("сирота_строка_удержана_разбором_не_гаснет_у_этого_сайта",
+      miss_of(conn, "Max 4", "Arsenal") == 0
+      and miss_of(conn, "Other 1", "Arsenal") == store.MISS_LIMIT)
+check("withheld_rows_читает_снято_и_на_разбор",
+      store.withheld_rows({"снято": [{"домен": "www.grid.test", "start_kyiv": "2026-10-06T21:45"}],
+                           "на_разбор": [{"домен": OTHER, "start_kyiv": "2026-10-07T18:00"}],
+                           "games": []})
+      == {(GRID, "2026-10-06 21:45"), (OTHER, "2026-10-07 18:00")})
 
 # правило 5в: листаемый список (teleman /sport?page=N) — страницы на всё
 # окно, день в отчёте — якорь сбора (#5104, 09.10)
@@ -190,11 +210,11 @@ conn = import_twice(list_first, reached, [row(LIST, url="https://list.test/sport
                                          verdict="не открылась", window=True)])
 check("5в_одна_страница_списка_упала_не_гаснет",
       miss_of(conn, "Lst 1", "Arsenal") == 0)
-conn = import_twice(list_first, reached, [row(LIST, url="https://list.test/sport?live=1&page=1"),
-                                     row(LIST, url="https://list.test/sport?live=1&page=2")])
+conn = import_twice(list_first, reached[:1], [row(LIST, url="https://list.test/sport?live=1&page=1"),
+                                         row(LIST, url="https://list.test/sport?live=1&page=2")])
 check("без_пометки_window_список_считается_страницей_дня_сбора (как раньше)",
-      miss_of(conn, "Lst 1", "Arsenal") == store.MISS_LIMIT
-      and miss_of(conn, "Lst 3", "Juventus") == 0)
+      miss_of(conn, "Lst 1", "Arsenal") == store.MISS_LIMIT     # день сбора покрыт
+      and miss_of(conn, "Lst 3", "Juventus") == 0)              # завтра — не покрыт
 
 conn = import_twice(first, moved, ok_rows, collected=f"{DAY} 22:00")
 check("правило3_игра_началась_до_сбора_не_гаснет",
