@@ -226,6 +226,11 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
                 yield {
                     "domain": source["domain"], "channel": "",
                     "day": first.isoformat(),
+                    # едет в report.json: для гашения (`app/miss.py`, правило
+                    # 5в) такая страница несёт не день-якорь, а всё окно —
+                    # иначе игра на 10.10 из списка teleman считалась «не
+                    # скачанной» и не гасла (#5104, 09.10)
+                    "window": True,
                     "locale": LOCALES.get(source["domain"], "en-GB"),
                     "url": urls.resolve(pattern, source["base_url"],
                                         day=first, tz=пояс, N=str(p),

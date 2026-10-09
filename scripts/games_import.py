@@ -243,7 +243,10 @@ def main() -> int:
               f"каналов погашено (сайт их больше не показывает): {stats.gone}"
               + (f", заголовков турниров сайты больше не показывают "
                  f"(отметок погашено): {stats.titles_gone}"
-                 if stats.titles_gone else ""))
+                 if stats.titles_gone else "")
+              + (f", игр-сирот (сайт перенёс на другой день) — отметок "
+                 f"погашено: {stats.orphans_gone}"
+                 if stats.orphans_gone else ""))
         if stats.not_own_note:
             print(f"   {stats.not_own_note}")
         total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]

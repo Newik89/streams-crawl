@@ -106,6 +106,9 @@ class SaveStats:
     time_off: int = 0   # строки, прилипшие к игре flashscore вопреки времени сайта
     titles_gone: int = 0  # отметки заголовков турниров, которых сайт больше не показывает
     gone: int = 0       # отметки каналов, погашенные этим сбором (`app/miss.py`)
+    #: отметки игр-сирот — игр, которых в файле нет вовсе (сайт перенёс матч
+    #: на другой день, #5104); те же правила `app/miss.py`
+    orphans_gone: int = 0
     #: строки агрегаторов, не взятые потому, что у канала есть свой сайт
     #: (`app/channel_owner.py`), и строка для журнала по сайтам
     not_own: int = 0
@@ -460,6 +463,7 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     # #4145). Гасим его отметки от сайтов, которые в этом прогоне отдали
     # расписание на его день и заголовка не показали (владелец 04.10:
     # «появятся имена — должно обновиться») — по тем же правилам
+    заголовки: set[int] = set()
     for r in conn.execute(
             "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
             "FROM events WHERE sport = 'T' "
@@ -468,9 +472,31 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 r["sport"], r["team_home_auto"] or "",
                 r["team_away_auto"] or ""):
             continue
+        заголовки.add(r["id"])
         stats.titles_gone += погасить(conn.execute(
             "SELECT id, channel_id, source_id, source_url FROM event_channels "
             "WHERE event_id = ?", (r["id"],)).fetchall(), r["start_kyiv"], True)
+    # Сироты: будущие игры, которых в файле нет ВОВСЕ — ни один сайт их
+    # не держит. Сайт перенёс матч на другой день (#5104 Motherwell —
+    # Celtic, 09.10: teleman с субботы переставил на воскресенье), и старая
+    # запись висела с живым каналом: штраф выше идёт только по событиям
+    # файла, а правило 2 `miss.py` её не трогало. Слово владельца 09.10:
+    # «если игра не встретилась — проверить её на сайте и снять, хотя бы
+    # канал перечеркнуть». Проверка та же, что у всех: правила 3–6 — сайт
+    # ответил, страница того же вида за день игры цела, игр на день дал
+    # достаточно (правило 6 не даст погасить по неполному сбору)
+    if punish and coverage is not None:
+        for r in conn.execute(
+                "SELECT DISTINCT e.id, e.start_kyiv FROM events e "
+                "JOIN event_channels ec ON ec.event_id = e.id "
+                "WHERE e.start_kyiv > ? AND ec.miss_count < ?",
+                (collected or _iso(now), MISS_LIMIT)).fetchall():
+            if r["id"] in event_seen or r["id"] in заголовки:
+                continue
+            stats.orphans_gone += погасить(conn.execute(
+                "SELECT id, channel_id, source_id, source_url "
+                "FROM event_channels WHERE event_id = ? AND miss_count < ?",
+                (r["id"], MISS_LIMIT)).fetchall(), r["start_kyiv"], True)
     conn.commit()
     stats.not_own = sum(хозяева.пропущено.values())
     stats.not_own_note = хозяева.отчёт(stats.not_own_dropped)

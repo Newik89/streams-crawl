@@ -62,8 +62,10 @@ def check(name, cond, extra=""):
 GRID = "grid.test"          # сетка: одна страница на все каналы
 PAGES = "pages.test"        # страница на канал и день
 OTHER = "other.test"        # другой сайт, подтверждает, что игра есть
+LIST = "list.test"          # листаемый список на всё окно (teleman /sport?page=N)
 URL = {GRID: "https://grid.test/epg?date=2026-10-06",
-       OTHER: "https://other.test/tv?date=2026-10-06"}
+       OTHER: "https://other.test/tv?date=2026-10-06",
+       LIST: "https://list.test/sport?live=1&page=3"}
 
 
 def page_url(channel: str) -> str:
@@ -76,24 +78,28 @@ def fresh_db():
     os.environ["STREAMS_DB"] = str(TMP / f"test{fresh_db.n}.db")
     conn = db.connect()
     db.init_db(conn)
-    for domain in (GRID, PAGES, OTHER):
+    for domain in (GRID, PAGES, OTHER, LIST):
         conn.execute("INSERT INTO sources (domain, name, base_url, country) "
                      "VALUES (?, ?, ?, 'XX')", (domain, domain, f"https://{domain}/"))
     conn.commit()
     return conn
 
 
-def game(home, away, hhmm, *entries):
+def game(home, away, hhmm, *entries, day=DAY):
     return {"sport": "F", "league": "", "home": home, "away": away,
-            "start_kyiv": f"{DAY}T{hhmm}", "start_utc": "",
+            "start_kyiv": f"{day}T{hhmm}", "start_utc": "",
             "entries": [{"source": domain, "channel": channel,
                          "url": page_url(channel) if domain == PAGES else URL[domain],
                          "raw_title": ""} for domain, channel in entries]}
 
 
-def row(domain, channel="", verdict="расписание есть", day=DAY, url=""):
-    return {"domain": domain, "channel": channel, "day": day, "итог": verdict,
-            "url": url or (page_url(channel) if domain == PAGES else URL[domain])}
+def row(domain, channel="", verdict="расписание есть", day=DAY, url="",
+        window=False):
+    out = {"domain": domain, "channel": channel, "day": day, "итог": verdict,
+           "url": url or (page_url(channel) if domain == PAGES else URL[domain])}
+    if window:
+        out["window"] = True          # листаемый список (crawl_fetch)
+    return out
 
 
 def import_twice(first, second, rows, punish=True, collected=COLLECTED):
@@ -140,9 +146,55 @@ conn = import_twice(first, moved, ok_rows, punish=False)
 check("правило1_повторная_заливка_не_гасит",
       miss_of(conn, "Max 4", "Arsenal") == 0)
 
+# сирота (09.10, #5104): игры в сборе нет вовсе, а страницы её дня у обоих
+# сайтов целы и игры на день они дали — каналы гаснут (слово владельца
+# 09.10: «проверить её на сайте и снять, хотя бы канал перечеркнуть»)
 conn = import_twice(first, moved[1:], ok_rows)
-check("правило2_игры_нет_в_сборе_её_каналы_не_гаснут",
-      miss_of(conn, "Max 4", "Arsenal") == 0)
+check("сирота_игры_нет_в_сборе_страницы_дня_целы_каналы_гаснут",
+      miss_of(conn, "Max 4", "Arsenal") == store.MISS_LIMIT
+      and miss_of(conn, "Other 1", "Arsenal") == store.MISS_LIMIT
+      and miss_of(conn, "Max 2", "Liverpool") == 0,
+      (miss_of(conn, "Max 4", "Arsenal"), miss_of(conn, "Other 1", "Arsenal")))
+conn = import_twice(first, moved[1:], [row(GRID, day="2026-10-07"), row(OTHER)])
+check("сирота_страница_её_дня_не_скачана_канал_живёт",
+      miss_of(conn, "Max 4", "Arsenal") == 0
+      and miss_of(conn, "Other 1", "Arsenal") == store.MISS_LIMIT)
+conn = import_twice(first, moved[1:], ok_rows, collected=f"{DAY} 22:00")
+check("сирота_уже_началась_не_гаснет", miss_of(conn, "Max 4", "Arsenal") == 0)
+conn = import_twice(first, moved[1:], ok_rows, punish=False)
+check("сирота_повторная_заливка_не_гасит", miss_of(conn, "Max 4", "Arsenal") == 0)
+conn = import_twice(first, [], ok_rows)
+check("сирота_сайт_не_дал_игр_на_день_не_гаснет (правило 6)",
+      miss_of(conn, "Max 4", "Arsenal") == 0 and miss_of(conn, "Max 2", "Liverpool") == 0)
+
+# правило 5в: листаемый список (teleman /sport?page=N) — страницы на всё
+# окно, день в отчёте — якорь сбора (#5104, 09.10)
+NEXT = "2026-10-07"
+list_rows = [row(LIST, url="https://list.test/sport?live=1&page=1", window=True),
+             row(LIST, url="https://list.test/sport?live=1&page=2", window=True)]
+list_first = [game(*A1, (LIST, "Lst 1")), game(*A2, (LIST, "Lst 2")),
+         game(*A3, (LIST, "Lst 3"), day=NEXT)]
+reached = [game(*A2, (LIST, "Lst 2")), game(*A3, (LIST, "Lst 3"), day=NEXT)]
+conn = import_twice(list_first, reached, list_rows)
+check("5в_листаемый_список_дошёл_до_следующего_дня_сирота_гаснет",
+      miss_of(conn, "Lst 1", "Arsenal") == store.MISS_LIMIT
+      and miss_of(conn, "Lst 2", "Liverpool") == 0
+      and miss_of(conn, "Lst 3", "Juventus") == 0,
+      (miss_of(conn, "Lst 1", "Arsenal"), miss_of(conn, "Lst 2", "Liverpool")))
+conn = import_twice(list_first, reached[:1], list_rows)
+check("5в_список_оборвался_на_дне_игры_не_гаснет",
+      miss_of(conn, "Lst 1", "Arsenal") == 0)
+conn = import_twice(list_first, reached, [row(LIST, url="https://list.test/sport?live=1&page=1",
+                                         window=True),
+                                     row(LIST, url="https://list.test/sport?live=1&page=2",
+                                         verdict="не открылась", window=True)])
+check("5в_одна_страница_списка_упала_не_гаснет",
+      miss_of(conn, "Lst 1", "Arsenal") == 0)
+conn = import_twice(list_first, reached, [row(LIST, url="https://list.test/sport?live=1&page=1"),
+                                     row(LIST, url="https://list.test/sport?live=1&page=2")])
+check("без_пометки_window_список_считается_страницей_дня_сбора (как раньше)",
+      miss_of(conn, "Lst 1", "Arsenal") == store.MISS_LIMIT
+      and miss_of(conn, "Lst 3", "Juventus") == 0)
 
 conn = import_twice(first, moved, ok_rows, collected=f"{DAY} 22:00")
 check("правило3_игра_началась_до_сбора_не_гаснет",
