@@ -84,6 +84,12 @@ def main() -> int:
     упал = папка(rows=[стр("расписание есть")])
     проверка("разбор упал без games.json → parse", r({**ok, "parse": "failure"}, "failure", упал), "parse")
     проверка("push → push", r({**ok, "push": "failure"}, "failure"), "push")
+    # переразбор (шаг 4): страниц прежнего сбора нет — до разбора
+    проверка("переразбор: прогон не найден → pages", r({**ok, "prior": "failure", "fetch": "skipped"}, "failure"), "pages")
+    проверка("переразбор: артефакт истёк → pages", r({**ok, "pages": "failure", "fetch": "skipped"}, "failure"), "pages")
+    проверка("переразбор: разбор упал → parse (обход пропущен — не причина)",
+             r({**ok, "prior": "success", "pages": "success", "fetch": "skipped", "parse": "failure"}, "failure", упал), "parse")
+    проверка("слова причины pages", "артефакт" in watch.reason_words("pages"), True)
     проверка("шаг пропущен (skipped) — не провал", r({**ok, "readers": "skipped", "push": "skipped"}, "failure"), "unknown")
 
     print("2. подпись стука с причиной")
@@ -124,7 +130,14 @@ def main() -> int:
     проверка("planned + fetch-net → общий ключ (досрочный)",
              (watch.failure_of(st, "failed", "fetch-net"), watch.recovery("planned-failed")), ("planned-failed", "early"))
     проверка("site + fetch-ban → ТРЕВОГА, не повтор", watch.recovery(watch.failure_of({"what": "site-x.test"}, "failed", "fetch-ban")), "alarm")
-    проверка("manual + parse → ТРЕВОГА", watch.recovery(watch.failure_of({"what": "full-2"}, "failed", "parse")), "alarm")
+    # схема сбоев, шаг 4: parse / few / push у полного → переразбор без обхода
+    проверка("manual + parse → переразбор", watch.recovery(watch.failure_of({"what": "full-2"}, "failed", "parse")), "reparse")
+    проверка("planned + few → переразбор", watch.recovery(watch.failure_of(st, "failed", "few")), "reparse")
+    проверка("planned + push → переразбор", watch.recovery(watch.failure_of(st, "failed", "push")), "reparse")
+    проверка("early + parse → переразбор", watch.recovery(watch.failure_of({"what": "full-6", "early": True, "slot": "x"}, "failed", "parse")), "reparse")
+    проверка("date + parse → ТРЕВОГА (переразбор только полного)", watch.recovery(watch.failure_of({"what": "date-2026-10-09"}, "failed", "parse")), "alarm")
+    проверка("переразбор сорвался → ТРЕВОГА", watch.recovery(watch.failure_of({"what": "reparse-123"}, "failed", "parse")), "alarm")
+    проверка("переразбор остановил владелец → close", watch.recovery(watch.failure_of({"what": "reparse-123"}, "stopped")), "close")
     проверка("без причины — как было", watch.failure_of(st, "failed"), "planned-failed")
     проверка("слова причины", watch.reason_words("fetch-ban"), "сайты закрыли доступ (защита, 403/429)")
 

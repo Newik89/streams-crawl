@@ -8,6 +8,9 @@
 #   btn-date-2026-09-10-<ts>   → скан одной даты
 #   btn-site-<домен base32>-<ts> → точечный обход одного сайта (кнопка 20.09)
 #   btn-cancel-<id прогона>-<ts> → отменить зависший прогон обхода (сторож, 05.10)
+#   btn-reparse-<id прогона>[-prev]-<ts> → переразбор страниц упавшего прогона без
+#                                обхода (сторож, схема сбоев шаг 4, 10.10); «prev» —
+#                                кодом прежней версии
 name: Кнопки сайта
 
 on:
@@ -78,6 +81,41 @@ jobs:
             esac
             # окно 6 дней: сайт пересобирается целиком, как утренним обходом
             INPUTS="{\"mode\":\"full\",\"days\":\"6\",\"delay\":\"3\",\"only\":\"$SITE\",\"urls\":\"\"}"
+          elif [ "$KIND" = "reparse" ]; then
+            # переразбор без обхода (сторож, схема сбоев шаг 4): страницы
+            # упавшего прогона разбираются заново, к сайтам не ходим. Номер
+            # прогона — только цифры, иначе отказ. «prev» — кодом прежней
+            # версии: родитель коммита, на котором шёл упавший прогон (каждая
+            # выкладка — слияние в main, родитель слияния — прежний main)
+            RUN_ID=$(echo "$TAG" | cut -d- -f3)
+            FLAG=$(echo "$TAG" | cut -d- -f4)
+            if ! [[ "$RUN_ID" =~ ^[0-9]{1,20}$ ]]; then
+              echo "::error::номер прогона не из одних цифр — заявка отвергнута"; exit 1
+            fi
+            CODE_REF=""
+            if [ "$FLAG" = "prev" ]; then
+              RUN_API="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+              CODE=$(curl -s -o /tmp/run -w "%{http_code}" \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github+json" "$RUN_API")
+              if [ "$CODE" != "200" ]; then
+                echo "::error::прогон $RUN_ID не найден (ответ $CODE)"; exit 1
+              fi
+              SHA=$(jq -r '.head_sha // ""' /tmp/run)
+              if ! [[ "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
+                echo "::error::у прогона $RUN_ID нет коммита — заявка отвергнута"; exit 1
+              fi
+              CODE=$(curl -s -o /tmp/commit -w "%{http_code}" \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$SHA")
+              CODE_REF=$(jq -r '.parents[0].sha // ""' /tmp/commit)
+              if [ "$CODE" != "200" ] || ! [[ "$CODE_REF" =~ ^[0-9a-f]{40}$ ]]; then
+                echo "::error::родитель коммита $SHA не найден (ответ $CODE)"; exit 1
+              fi
+              echo "прежняя версия кода: $CODE_REF (родитель $SHA)"
+            fi
+            INPUTS="{\"mode\":\"full\",\"days\":\"6\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"\",\"from_run\":\"$RUN_ID\",\"code_ref\":\"$CODE_REF\"}"
           elif [ "$KIND" = "cancel" ]; then
             # отмена зависшего прогона обхода сторожем сервера (05.10.2026):
             # у сервера нет ключа GitHub, отменяет этот workflow своим

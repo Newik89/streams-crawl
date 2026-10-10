@@ -27,6 +27,8 @@
   date     скан даты (`date-…`, админка/друзья) 45        один повтор        ТРЕВОГА
   site     «Обойти сайт» на GitHub (`site-…`)   45        один повтор        ТРЕВОГА
   server   «Обойти сайт» на сервере (`server-…`) 45       ТРЕВОГА (к сайту не чаще раза в сутки)
+  reparse  переразбор страниц упавшего сбора    30       ТРЕВОГА           —
+           (сторож, `reparse-<id прогона>`; к сайтам не ходит)
   Потолок — минут хода прогона (`CEILING_MINUTES`; у server — без итога).
   Короткие (date, site) повторяются один раз и больше к сайтам не ходят.
   Проба адреса в книгу не идёт: её только отменяет С3, если повисла.
@@ -129,7 +131,13 @@ GitHub-ом», «Заказать сбор» отказывают с объяс�
          попал на сервер) → закрываем заказ; что дальше — `RECOVERY` по виду
          (ВИДЫ ЗАКАЗОВ): ПЛАНОВЫЙ → слот сорвавшимся, решает С6 (0);
          ДОСРОЧНЫЙ, СЕРВЕРНЫЙ → ТРЕВОГА (0); РУЧНОЙ, ДАТА, САЙТ → один
-         повтор той же заявки (1), сорвался и повтор → ТРЕВОГА (0). Перед
+         повтор той же заявки (1), сорвался и повтор → ТРЕВОГА (0). Полный
+         (плановый, досрочный, ручной) упал по причине parse / few / push
+         (стук «закончил», схема сбоев шаг 3) → не новый сбор, а ПЕРЕРАЗБОР
+         его страниц без обхода (шаг 4: тег `btn-reparse-<id>[-prev]`,
+         `crawl.yml` вход `from_run`, итог в `results/partial/`; prev —
+         прежняя версия кода при parse/few), один на упавший сбор (0 к
+         сайтам); сорвался и переразбор → ТРЕВОГА (0). Перед
          повтором: его дни уже собрал успешный полный, созданный после
          заказа (`collected_by`), → повтора нет (0); в очереди ждёт
          заказанный сбор или в эту проверку уже ушла другая заявка повтора
@@ -367,6 +375,8 @@ API_SILENT_MINUTES = 60
 #: GitHub сам режет на 150). Вид не узнан — самый длинный потолок
 CEILING_MINUTES = {"probe": 20, "site": 45, "date": 45,
                    "full-2": 75, "full-5": 120, "full-6": 140, "schedule": 140,
+                   # переразбор без обхода: качает артефакт и разбирает (~5–10 мин)
+                   "reparse": 30,
                    "unknown": 140}
 #: С3: прогон ждёт в очереди, хотя перед ним никого (обычно GitHub заводит
 #: прогон за минуту). Такой НЕ отменяем: к сайтам он не ходил, а новый заказ
@@ -593,6 +603,8 @@ def parse_what(what: str) -> tuple[str, int]:
         return "site", 0
     if what.startswith("date-"):
         return "date", 0
+    if what.startswith("reparse-"):
+        return "reparse", 0
     m = FULL_RE.fullmatch(what)
     if m:
         return "full", int(m.group(1))
@@ -640,7 +652,7 @@ def run_kind(run: dict) -> tuple[str, int]:
 
 def describe(kind: str, days: int = 0) -> str:
     return {"probe": "проба адреса", "site": "обход одного сайта",
-            "date": "скан одной даты",
+            "date": "скан одной даты", "reparse": "переразбор страниц упавшего сбора",
             "schedule": "запуск по расписанию GitHub"}.get(
         kind, f"обход на {days} сут." if kind == "full" else "обход")
 
@@ -984,7 +996,7 @@ def record_problem(record) -> str:
         if not isinstance(record.get(field), str) or not record.get(field):
             return f"нет поля {field}"
     what = record["what"]
-    if window(what) is None and not what.startswith(("date-", "site-", "server-")):
+    if window(what) is None and not what.startswith(("date-", "site-", "server-", "reparse-")):
         return f"вид «{what}» не узнан"
     if record_at(record) is None:
         return f"время заказа «{record.get('at') or record['order']}» не разобрать"
@@ -1118,13 +1130,30 @@ RECOVERY = {
     # (plan) — заказывать нечего. Сеть/сайт лёг/зависание/push — как раньше
     # (досрочный или повтор): дозабор и переразбор — шаги 4–5 схемы
     "planned-failed-fetch-ban": "alarm",
-    "planned-failed-parse": "alarm",
-    "planned-failed-few": "alarm",
     "planned-failed-plan": "alarm",
     "manual-failed-fetch-ban": "alarm",
-    "manual-failed-parse": "alarm",
-    "manual-failed-few": "alarm",
     "manual-failed-plan": "alarm",
+    # ── переразбор без обхода (схема сбоев, шаг 4; `crawl_watch.reparse`):
+    # полный сбор дошёл до разбора, а упал наш разбор (parse), игр вышло мало
+    # (few) или результат не запушился (push) — страницы уже лежат артефактом
+    # на GitHub, их разбирают заново БЕЗ обхода (0 запросов к сайтам): parse и
+    # few — кодом прежней версии (тот же код упал бы снова), push — текущим.
+    # Итог — в results/partial/, сервер вливает его вдобавок. Один переразбор
+    # на упавший сбор; сорвался и он → ТРЕВОГА
+    "planned-failed-parse": "reparse",
+    "planned-failed-few": "reparse",
+    "planned-failed-push": "reparse",
+    "early-failed-parse": "reparse",
+    "early-failed-few": "reparse",
+    "early-failed-push": "reparse",
+    "manual-failed-parse": "reparse",
+    "manual-failed-few": "reparse",
+    "manual-failed-push": "reparse",
+    "reparse-failed": "alarm",          # С4г: переразбор не стартовал, упал, завис
+    "reparse-expired": "alarm",         # С4д
+    "reparse-refused": "alarm",         # заявка не ушла / разбирать нечего / очередь занята
+    "reparse-lost": "alarm",            # С2: проверку оборвали посреди заказа
+    "reparse-stopped": "close",         # С4а′
     "date-failed-fetch-ban": "alarm",
     "date-failed-parse": "alarm",
     "site-failed-fetch-ban": "alarm",
@@ -1142,6 +1171,7 @@ REASON_WORDS = {
     "few": "игр меньше порога — разбор дошёл до конца",
     "parse": "упал наш разбор",
     "push": "результат не запушился",
+    "pages": "страниц прежнего сбора на GitHub уже нет (артефакт живёт 3 дня)",
 }
 
 
@@ -1592,7 +1622,7 @@ def order_kind(state: dict) -> str:
     early (досрочный сторожа), planned (плановый, пришёл в слот), manual
     (кнопка, повтор ручного)."""
     what = state.get("what") or ""
-    for prefix in ("date", "site", "server"):
+    for prefix in ("date", "site", "server", "reparse"):
         if what.startswith(prefix + "-"):
             return prefix
     if state.get("early"):
@@ -1730,7 +1760,7 @@ def order_covered(what: str, have: tuple[int, int], created: datetime) -> bool:
 
 #: виды прогона, которые ЗАКАЗЫВАЮТ (книга заказов): их ждущий прогон
 #: очередь бережёт. Проба не в счёт — её заказ не ведётся
-ORDERED_KINDS = ("full", "unknown", "date", "site")
+ORDERED_KINDS = ("full", "unknown", "date", "site", "reparse")
 
 
 def collected_by(what: str, since: datetime, runs: list[dict],
@@ -1818,7 +1848,9 @@ def _collected(text: str) -> datetime | None:
 
 #: где лежит результат сбора каждого вида (`crawl.yml`): полный —
 #: results/, скан даты — results/day/, сайт на GitHub — results/site/
-RESULT_DIRS = {"full": "results", "date": "results/day", "site": "results/site"}
+RESULT_DIRS = {"full": "results", "date": "results/day", "site": "results/site",
+               # переразбор без обхода (схема сбоев, шаг 4): частичный итог отдельно
+               "reparse": "results/partial"}
 #: С4: запас на расхождение часов машины GitHub (пишет «собрано») и отметок
 #: API (старт, конец прогона) — у обоих NTP, расходятся на секунды
 RESULT_SKEW_SECONDS = 30

@@ -30,6 +30,7 @@ r"""Сторож заказа обхода — cron сервера раз в 15 
 
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -77,7 +78,7 @@ def pull() -> str:
 def request_args(what: str) -> tuple[str, str]:
     """Вид заказа книги → ключи заявки: `full-6` → days 6, `date-…` → date,
     `site-…` → site."""
-    for prefix, kind in (("date-", "date"), ("site-", "site")):
+    for prefix, kind in (("date-", "date"), ("site-", "site"), ("reparse-", "reparse")):
         if what.startswith(prefix):
             return kind, what[len(prefix):]
     return "days", str((watch.window(what) or (1, 0))[1])
@@ -246,6 +247,15 @@ def resume_retries(t: Round) -> None:
     не успел — ТРЕВОГА («<вид>-retry-lost»). Второго повтора нет в обоих
     случаях: сорвавшийся заказ сохранён закрытым ещё до заявки."""
     for rec in watch.load_orders(t.conn):
+        if rec.get("reparsing"):
+            # то же для переразбора (схема сбоев, шаг 4): пометка `reparsing`
+            t.rec, t.run = rec, None
+            if not watch.find_order(t.conn, reparse_of=rec["id"]):
+                recover(t, "reparse-lost",
+                        f"{order_words(t)}: переразбор заказать не удалось — проверку "
+                        f"оборвали посреди заказа (перезагрузка сервера?)")
+            rec.pop("reparsing", None)
+            t.keep(rec)
         if not rec.get("retrying"):
             continue
         t.rec, t.run = rec, None
@@ -440,6 +450,8 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
     сейчас).
       early — слот в `crawl_missed`, досрочный решит С6 в этой же проверке
       retry — один повтор той же заявки; не ушёл — снова сюда (<вид>-retry-refused)
+      reparse — переразбор страниц упавшего сбора без обхода (схема сбоев,
+              шаг 4); не ушёл — снова сюда (reparse-refused)
       close — только строка (сбор остановил владелец): ничего не заказываем
       alarm — ТРЕВОГА с честным «что дальше»; новых заказов нет"""
     step = watch.recovery(failure)
@@ -453,6 +465,8 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
         t.save("crawl_missed", t.missed)
     elif step == "retry":
         retry(t, what)
+    elif step == "reparse":
+        reparse(t, what)
     elif step == "close":
         t.say(what)
     else:
@@ -510,6 +524,52 @@ def retry(t: Round, what: str) -> None:
                 f"повторить не вышло ({rec['what']}: GitHub не принял заявку)")
 
 
+def reparse(t: Round, what: str) -> None:
+    """Шаг reparse (схема сбоев, шаг 4): страницы упавшего сбора `t.rec`
+    разбираются заново БЕЗ обхода — 0 запросов к сайтам. Тег
+    `btn-reparse-<id прогона>[-prev]` → `queue.yml` → `crawl.yml` с входом
+    `from_run` (страницы — из артефакта того прогона, живёт 3 дня); итог
+    ложится в `results/partial/`, забор вливает его вдобавок к полному.
+    «prev» (код прежней версии — родитель коммита упавшего прогона) — когда
+    упал наш разбор (parse) или игр мало (few): тот же код упал бы снова;
+    результат не запушился (push) — код текущий. Один переразбор на упавший
+    сбор: в книге уже есть «переразбор заказа <id>» — второго нет. Прогона на
+    GitHub нет (не стартовал) — разбирать нечего; в очереди ждёт заказанный
+    сбор — заявка не уходит (вытеснила бы его); заявка не прошла — всё это
+    «reparse-refused», по таблице ТРЕВОГА, повторов нет. Пометка `reparsing`
+    пишется ДО заявки: оборвут проверку посреди неё — С2 второго не закажет."""
+    rec = t.rec
+    if watch.find_order(t.conn, reparse_of=rec["id"]):
+        return
+    run = t.run or {}
+    rid = str(run.get("id") or "")
+    if not re.fullmatch(r"\d+", rid):
+        recover(t, "reparse-refused", f"{what} — переразбирать нечего: прогона "
+                                      f"этого заказа на GitHub нет")
+        return
+    blocker = watch.queue_refusal(t.runs, t.slug) or (
+        "в эту проверку уже ушла другая заявка — второй тег вытеснил бы её в "
+        "очереди GitHub" if t.sent else "")
+    if blocker:
+        recover(t, "reparse-refused", f"{what} — переразбор не заказан: {blocker}")
+        return
+    prev = rec.get("reason") in ("parse", "few")
+    number = run.get("run_number") or "?"
+    t.say(f"{what} — заказываю переразбор страниц прогона #{number} без обхода "
+          f"(0 запросов к сайтам, код {'прежней версии' if prev else 'текущий'}); "
+          f"итог вольётся вдобавок к последнему полному")
+    rec["reparsing"] = watch.when(t.now)
+    t.keep(rec)
+    t.sent = True
+    t.log(order_crawl("reparse", f"{rid}-prev" if prev else rid,
+                      f"--reparse-of={rec['id']}"))
+    rec.pop("reparsing", None)
+    t.keep(rec)
+    if not watch.find_order(t.conn, reparse_of=rec["id"]):
+        recover(t, "reparse-refused",
+                f"переразбор заказать не вышло ({rec['what']}: GitHub не принял заявку)")
+
+
 def deferred_retries(t: Round) -> None:
     """С4г. Отложенные повторы (в очереди GitHub ждал полный обход):
     очередь освободилась — заказываем повтор; ждёт дольше `ORDER_TTL_HOURS`
@@ -547,6 +607,7 @@ def order_words(t: Round) -> str:
         "site": f"обход сайта {tail} от {at}",
         "site-retry": f"повтор обхода сайта {tail}",
         "server": f"обход сайта {tail} на сервере от {at}",
+        "reparse": f"переразбор страниц прогона {tail} (без обхода) от {at}",
     }.get(watch.order_who(rec), f"заказ {what} от {at}")
 
 
@@ -571,6 +632,7 @@ def order_failed(t: Round, why: str) -> None:
     failure = watch.failure_of(t.rec, "failed", reason)
     if reason:
         why = f"{why}; причина: {watch.reason_words(reason)}"
+        t.rec["reason"] = reason
     extra = close_early(t) if t.rec.get("early") else ""
     what = order_words(t)
     t.rec["failed"] = True
