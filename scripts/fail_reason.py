@@ -12,6 +12,8 @@ r"""Причина провала обхода — одним словом дл�
 Коды (раздел Д схемы) и как их узнаём — по порядку:
   timeout    — job отменён GitHub по лимиту времени (`job.status` = cancelled)
   env        — упала самопроверка окружения или проверка читалок (до обхода)
+  pages      — переразбор (шаг 4): страниц прежнего сбора нет (артефакт истёк,
+               прогон не найден или не полный обход) — до разбора
   plan       — обход не сделал ни одного запроса (план пуст)
   fetch-ban  — обход упал, и среди неоткрывшихся страниц половина и больше —
                защита: «заглушка защиты», HTTP 403/429
@@ -26,6 +28,7 @@ r"""Причина провала обхода — одним словом дл�
 Запуск (на GitHub, из crawl.yml):
     STEP_ENV=… STEP_READERS=… STEP_FETCH=… STEP_PARSE=… STEP_PUSH=… JOB_STATUS=… \
       python scripts/fail_reason.py            # печатает код
+    (переразбор: ещё STEP_PRIOR=… STEP_PAGES=…, а STEP_PUSH — итог шага push_partial)
     python scripts/fail_reason.py --report recon/raw_live/report.json
 """
 
@@ -76,6 +79,8 @@ def reason(outcomes: dict, job_status: str, raw: Path = RAW) -> str:
     red = {k for k, v in outcomes.items() if v in ("failure", "cancelled")}
     if "env" in red or "readers" in red:
         return "env"
+    if "prior" in red or "pages" in red:
+        return "pages"
     if "fetch" in red:
         try:
             rows = json.loads((raw / "report.json").read_text(encoding="utf-8")).get("строки") or []
@@ -99,7 +104,7 @@ def main() -> int:
     ap.add_argument("--report", default="", help="папка с report.json/games.json")
     args = ap.parse_args()
     outcomes = {k: os.environ.get(f"STEP_{k.upper()}", "") for k in
-                ("env", "readers", "fetch", "parse", "push")}
+                ("env", "readers", "prior", "pages", "fetch", "parse", "push")}
     raw = Path(args.report).parent if args.report else RAW
     print(reason(outcomes, os.environ.get("JOB_STATUS", ""), raw))
     return 0

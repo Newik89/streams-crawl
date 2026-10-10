@@ -111,13 +111,17 @@ def fake_order(kind: str, value: str, mark: str = "") -> str:
     try:
         crawl_hook.clear(conn)
         stamp_ = watch.stamp(NOW[0])
-        what = f"full-{value}" if kind == "days" else f"{kind}-{value}"
+        what = (f"full-{value}" if kind == "days" else
+                f"reparse-{value.split('-')[0]}" if kind == "reparse" else f"{kind}-{value}")
         if kind == "days":
             db.set_setting(conn, "crawl_request", f"обход {value} сут.|{stamp_}")
         name, _, arg = mark[2:].partition("=")
         if name == "retry-of":
             watch.add_order(conn, what, stamp_, "", "сторож: повтор",
                             retry_of=arg, reordered=True)
+        elif name == "reparse-of":
+            watch.add_order(conn, what, stamp_, "", "сторож: переразбор",
+                            reparse_of=arg, prev=value.endswith("-prev"))
         elif name == "early-for":
             watch.add_order(conn, what, stamp_, arg, "сторож: досрочный", early=True)
         else:
@@ -1158,12 +1162,134 @@ check("причина fetch-net → как раньше, досрочный на
       ORDERS == [6] and any("сеть: сайты не открылись" in n for n in notes_after(edge)),
       (ORDERS, notes_after(edge)))
 setting(crawl_hook.FAIL_MEMORY, "")
-check("в таблице только шаги early / retry / alarm / close; незнакомый вид сбоя — ТРЕВОГА",
-      set(watch.RECOVERY.values()) <= {"early", "retry", "alarm", "close"}
+check("в таблице только шаги early / retry / reparse / alarm / close; незнакомый вид сбоя — ТРЕВОГА",
+      set(watch.RECOVERY.values()) <= {"early", "retry", "reparse", "alarm", "close"}
       and watch.recovery("что-то-новое") == "alarm"
       and [watch.failure_of(s, "failed") for s in
            ({"slot": "x"}, {"early": True, "slot": "x"}, {"slot": ""}, {"slot": "", "reordered": True})]
       == ["planned-failed", "early-failed", "manual-failed", "manual-retry-failed"])
+
+
+def failed_with(reason: str, what: str = "full-2", at: datetime | None = None) -> None:
+    """Стук «закончил» с провалом и причиной — в память причин."""
+    setting(crawl_hook.FAIL_MEMORY, "")           # одна причина на сценарий
+    conn_f = db.connect()
+    try:
+        crawl_hook.remember_failure(conn_f, what, reason, now=at or K("16:25"))
+    finally:
+        conn_f.close()
+
+
+# схема сбоев, шаг 4: упал наш разбор (parse), игр мало (few), результат не
+# запушился (push) → не новый сбор, а переразбор страниц упавшего прогона
+# без обхода — 0 запросов к сайтам
+rid = str(fail2["id"])
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+failed_with("parse")
+edge = last_id()
+tick(K("16:30"))
+rep_orders = [r for r in book() if r.get("what") == f"reparse-{rid}"]
+check("причина parse → не досрочный, а ПЕРЕРАЗБОР страниц упавшего прогона кодом прежней версии (-prev); тревоги нет",
+      ORDERS == [f"reparse-{rid}-prev"] and alarms_after(edge) == []
+      and any("переразбор" in n and "0 запросов" in n for n in notes_after(edge)),
+      (ORDERS, notes_after(edge)))
+check("…в книге один заказ переразбора с пометкой «переразбор заказа <id>» и prev",
+      len(rep_orders) == 1 and rep_orders[0].get("reparse_of") in {r["id"] for r in book() if r.get("failed")}
+      and rep_orders[0].get("prev") is True and rep_orders[0].get("who") == "сторож: переразбор",
+      rep_orders)
+check("…слот сорвавшимся не записан, досрочного нет — С6 ничего не закажет",
+      jget("crawl_missed") == {} and jget("crawl_early") == {}, (jget("crawl_missed"), jget("crawl_early")))
+check("…у сорвавшегося заказа запомнена причина",
+      state_get().get("reason") == "parse" and state_get().get("failed") is True, state_get())
+# прогон переразбора появляется через минуту после тега (как у любой заявки)
+rep_run = mkrun(K("16:31"), ended=K("16:40"), conclusion="success", title=f"Обход reparse-{rid}")
+API["runs"] = [probe, fail2, rep_run]
+RESULT[0] = "picked"
+ticks("16:45")
+check("…следующей проверкой второго переразбора нет",
+      ORDERS == [f"reparse-{rid}-prev"] and len([r for r in book() if r.get("what") == f"reparse-{rid}"]) == 1, ORDERS)
+edge = last_id()
+ticks("17:00")
+rep_orders = [r for r in book() if r.get("what") == f"reparse-{rid}"]
+check("ПЕРЕРАЗБОР дошёл и влит → заказ закрыт «забран», тревоги нет; судьбу результата сторож спрашивал по виду reparse-<id> (папка partial)",
+      rep_orders[0].get("done") is True and alarms_after(edge) == []
+      and any(w == f"reparse-{rid}" for w, _ in RESULT_ASKED)
+      and watch.result_dir(f"reparse-{rid}") == "results/partial", (rep_orders, RESULT_ASKED[-3:], notes_after(edge)))
+NOW[0] = K("20:30")
+setting("crawl_running", "")
+check("…а в 20:30 плановый на 6 идёт как обычно", planned(6) == [("days", "6")])
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+failed_with("few")
+tick(K("16:30"))
+API["runs"] = [probe, fail2, mkrun(K("16:31"), ended=K("16:40"), conclusion="failure",
+                                   title=f"Обход reparse-{rid}")]
+edge = last_id()
+ticks("16:45", "17:00", "17:15", "17:30")
+check("причина few → переразбор -prev; ПЕРЕРАЗБОР упал → одна ТРЕВОГА и ни одного нового заказа",
+      ORDERS == [f"reparse-{rid}-prev"] and len(alarms_after(edge)) == 1
+      and "переразбор страниц прогона" in alarms_after(edge)[0], (ORDERS, notes_after(edge)))
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+failed_with("push")
+edge = last_id()
+tick(K("16:30"))
+check("причина push → переразбор текущим кодом (без -prev), тревоги нет",
+      ORDERS == [f"reparse-{rid}"] and alarms_after(edge) == [], (ORDERS, notes_after(edge)))
+reset(K("16:30"), [probe])
+order_of(f"{DAY} 16:15", 2)
+failed_with("parse")
+edge = last_id()
+tick(K("16:30"))
+check("причина parse, а прогона на GitHub нет (не стартовал) → переразбирать нечего: ТРЕВОГА, заказов нет",
+      ORDERS == [] and len(alarms_after(edge)) == 1 and "переразбирать нечего" in alarms_after(edge)[0],
+      (ORDERS, notes_after(edge)))
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+failed_with("parse")
+cw.order_crawl = refused_order
+edge = last_id()
+tick(K("16:30"))
+check("заявка переразбора не прошла → ТРЕВОГА, второй попытки нет",
+      ORDERS == [f"reparse-{rid}-prev"] and len(alarms_after(edge)) == 1
+      and "GitHub не принял заявку" in alarms_after(edge)[0], (ORDERS, notes_after(edge)))
+cw.order_crawl = fake_order
+ticks("16:45")
+check("…и следующей проверкой тоже", ORDERS == [f"reparse-{rid}-prev"], ORDERS)
+# дни уже собрал удачный полный обход после заказа → переразбор не нужен
+later = mkrun(K("16:20"), ended=K("16:28"), conclusion="success", title="Обход full-6")
+reset(K("16:30"), [probe, fail2, later])
+order_of(f"{DAY} 16:15", 2)
+failed_with("parse")
+edge = last_id()
+tick(K("16:30"))
+check("дни заказа уже собрал удачный полный обход, созданный после него → переразбора нет и тревоги нет",
+      ORDERS == [] and alarms_after(edge) == []
+      and any("переразбор не нужен" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
+# досрочный упал по причине parse → тоже переразбор, а не ТРЕВОГА
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+setting(crawl_hook.FAIL_MEMORY, "")
+tick(K("16:30"))
+early_fail = mkrun(K("16:31"), ended=K("16:50"), conclusion="failure", title="Обход full-6")
+API["runs"] = [probe, fail2, early_fail]
+failed_with("parse", "full-6", K("16:50"))
+edge = last_id()
+ticks("17:00")
+check("ДОСРОЧНЫЙ упал по причине parse → переразбор его страниц, а не ТРЕВОГА",
+      ORDERS == [6, f"reparse-{early_fail['id']}-prev"] and alarms_after(edge) == [],
+      (ORDERS, notes_after(edge)))
+# С2: проверку оборвали посреди заказа переразбора
+reset(K("16:30"), [probe, fail2])
+order_of(f"{DAY} 16:15", 2)
+state_set({"failed": True, "reason": "parse", "reparsing": watch.when(K("16:30"))})
+edge = last_id()
+tick(K("16:45"))
+check("[С2] оборвали посреди заказа переразбора (пометка reparsing, заказа в книге нет) → ТРЕВОГА, второго заказа нет",
+      ORDERS == [] and len(alarms_after(edge)) == 1 and "переразбор заказать не удалось" in alarms_after(edge)[0]
+      and not state_get().get("reparsing"), (ORDERS, notes_after(edge), state_get()))
+setting(crawl_hook.FAIL_MEMORY, "")
 reset(K("16:30"), [probe])
 order_of(f"{DAY} 16:15", 2)
 tick(K("16:30"))
@@ -2474,6 +2600,25 @@ check("заявка cancel: отменяет только прогон crawl.yml
       '!= ".github/workflows/crawl.yml"' in queue)
 check("в queue.yml по-прежнему 3 шага-имени", len(re.findall(r"name: ", queue)) == 3)
 check("crawl.yml называет прогон видом сбора", "run-name:" in crawl and "Обход proba-{0}" in crawl)
+# схема сбоев, шаг 4: переразбор без обхода
+check("crawl.yml: вход from_run, прогон зовётся reparse-<id>, страницы — download-artifact ПО ИМЕНИ (с маской нет артефакта = зелёный), право actions: read",
+      "from_run:" in crawl and "Обход reparse-{0}" in crawl
+      and "actions/download-artifact@v4" in crawl and "actions: read" in crawl
+      and "name: obhod-${{ steps.prior.outputs.number }}" in crawl and "pattern: obhod-" not in crawl)
+check("crawl.yml: при переразборе обход пропущен, итог — в results/partial/, а не results/",
+      "if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run == ''\n" in crawl
+      and "results/partial" in crawl
+      and "steps.what.outputs.date == '' && steps.what.outputs.from_run == ''" in crawl)
+check("crawl.yml: from_run — только цифры, code_ref — только SHA",
+      '[[ "$IN_FROM_RUN" =~ ^[0-9]{0,20}$ ]]' in crawl and '[[ "$IN_CODE_REF" =~ ^([0-9a-f]{40})?$ ]]' in crawl)
+check("queue.yml: заявка reparse — номер только цифры, prev → первый родитель ближайшего слияния в истории прогона",
+      '"$KIND" = "reparse"' in queue and ".parents[0].sha" in queue and "select(.parents | length > 1)" in queue
+      and queue.count('[[ "$RUN_ID" =~ ^[0-9]{1,20}$ ]]') == 2)
+check("сторож: вид reparse-<id> узнаётся, потолок 30 мин, папка результата partial, ждущий переразбор очередь бережёт",
+      watch.parse_what("reparse-123") == ("reparse", 0) and watch.ceiling("reparse") == 30
+      and watch.import_key("reparse-123") == "last_import_stamp:partial"
+      and "reparse" in watch.ORDERED_KINDS
+      and crawl_hook.queue_behind({"what": "reparse-123"}, "days", "2") is True)
 tag_value = "123;echo${IFS}INJECTED_$((1+1))"
 check("«ядовитый» номер не проходит проверку формата",
       re.fullmatch(r"[0-9]{1,20}", tag_value) is None)

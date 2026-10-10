@@ -7,12 +7,15 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     venv/bin/python scripts/request_crawl.py days 2            вечер: дозаправка
     venv/bin/python scripts/request_crawl.py date 2026-09-15   скан одной даты
     venv/bin/python scripts/request_crawl.py site nova.bg      обход одного сайта на GitHub (повтор сторожа)
+    venv/bin/python scripts/request_crawl.py reparse 37966719570-prev   переразбор страниц прогона без обхода
+                                                               (сторож, схема сбоев шаг 4; «-prev» — кодом прежней версии)
     venv/bin/python scripts/request_crawl.py days 2 --check    только сказать, пошла бы заявка
     venv/bin/python scripts/request_crawl.py days 6 --force    без правила «1 час» (ручной заказ)
     … --unlock                                                 снять отметку «сбор идёт», если на GitHub живого сбора нет
     … --locked                                                 общий замок уже держит вызвавший (так заявку зовёт сторож); старта не ждёт
     … --manual                                                 заказ владельца кнопкой: правила те же, но заявка не плановая
     … --retry-of=<id>                                          это повтор сторожа заказа <id> (запись книги)
+    … --reparse-of=<id>                                        это переразбор сторожа за сорвавшийся заказ <id>
     … --early-for=<ГГГГ-ММ-ДД ЧЧ:ММ>                           это досрочный сторожа за сорвавшийся слот
 
 Правила З1–З7, память (настройки `crawl_…`) и все пороги описаны в ОДНОМ
@@ -118,9 +121,9 @@ def main() -> int:
     marks = dict(a[2:].split("=", 1) for a in sys.argv[1:]
                  if a.startswith("--") and "=" in a)
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    if len(args) != 2 or args[0] not in ("days", "date", "site") \
+    if len(args) != 2 or args[0] not in ("days", "date", "site", "reparse") \
             or not flags <= {"--check", "--force", "--unlock", "--locked", "--manual"} \
-            or not set(marks) <= {"retry-of", "early-for"}:
+            or not set(marks) <= {"retry-of", "early-for", "reparse-of"}:
         print(__doc__)
         return 2
     kind, value = args
@@ -132,6 +135,9 @@ def main() -> int:
         return 2
     if kind == "site" and not re.fullmatch(r"[a-z0-9.-]{1,100}", value):
         print("сайт — домен латиницей, например nova.bg")
+        return 2
+    if kind == "reparse" and not re.fullmatch(r"\d{1,20}(-prev)?", value):
+        print("переразбор — id прогона GitHub цифрами, с «-prev» для кода прежней версии")
         return 2
     if flags & {"--check", "--locked"}:
         # «только сказать» ничего не меняет, а у заявки сторожа замок уже
@@ -156,6 +162,8 @@ def who_ordered(flags: set, marks: dict, slot) -> tuple[str, dict]:
     """Кто заказал — для записи книги заказов (её id и пометки)."""
     if marks.get("retry-of"):
         return "сторож: повтор", {"retry_of": marks["retry-of"], "reordered": True}
+    if marks.get("reparse-of"):
+        return "сторож: переразбор", {"reparse_of": marks["reparse-of"]}
     if marks.get("early-for"):
         return "сторож: досрочный", {"early": True}
     if "--manual" in flags:
@@ -315,9 +323,13 @@ def request(kind: str, value: str, flags: set, held: bool,
         # ok None — git не ответил вовремя, а заявка могла дойти (29.09 так и
         # было). Это не срыв: заказ пишем как ушедший, а дошёл ли — решат
         # ожидание старта (З7) и сторож (С4): нет прогона — заказ сорвался
-        what = f"full-{value}" if kind == "days" else f"{kind}-{value}"
+        # переразбор: вид заказа — как имя прогона (`Обход reparse-<id>`),
+        # «-prev» (код прежней версии) едет только в теге
+        what = (f"full-{value}" if kind == "days" else
+                f"reparse-{value.split('-')[0]}" if kind == "reparse" else
+                f"{kind}-{value}")
         if not behind:
-            crawl_hook.mark(conn, "заявка", f"{kind}-{value}")
+            crawl_hook.mark(conn, "заявка", what if kind == "reparse" else f"{kind}-{value}")
         order = {"what": what, "days": int(value) if kind == "days" else 0,
                  "at": watch.utc(now), "stamp": watch.stamp(now)}
         if kind == "days":
@@ -326,6 +338,8 @@ def request(kind: str, value: str, flags: set, held: bool,
         # в книгу заказов: сторож доведёт заказ до итога и узнает из записи,
         # а не по времени, чей он (С4); свой повтор и досрочный — по пометкам
         who, extra = who_ordered(flags, marks, slot)
+        if kind == "reparse":
+            extra["prev"] = value.endswith("-prev")
         watch.add_order(conn, what, order["stamp"],
                         marks.get("early-for") or (watch.stamp(slot) if slot else ""),
                         who, at=now, **extra)
