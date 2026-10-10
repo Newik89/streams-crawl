@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1463. Заняло 4370 с.
+Режим: полный обход, окно 6 суток. Запросов: 1463. Заняло 4366 с.
 
 | Сайт | Результат |
 |---|---|
@@ -73,7 +73,7 @@
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
 | sport5.co.il | расписание есть — 6 |
-| sporteventz.com | расписание есть — 1 |
+| sporteventz.com | не открылась — 1 |
 | sportklub.hr | расписание есть — 10 |
 | sports.kz | расписание есть — 1 |
 | sporttv.pt | расписание есть — 1 |
@@ -91,7 +91,7 @@
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 3, пусто — 3 |
+| tv8.com.tr | расписание есть — 2, пусто — 4 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -103,11 +103,17 @@
 | tvpassport.com | расписание есть — 36 |
 | tvsporten.dk | расписание есть — 6 |
 | tvtid.tv2.dk | расписание есть — 6 |
-| unian.tv | расписание есть — 3, пусто — 3 |
+| unian.tv | расписание есть — 2, пусто — 4 |
 | vsetv.com | расписание есть — 12 |
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
+## Не открылись — 1
+
+| Сайт | Канал | Что ответил | Ссылка |
+|---|---|---|---|
+| sporteventz.com | сетка | SSLError: HTTPSConnectionPool(host='sporteventz.com', port=443): Max retries exceeded with url: /index.php?option=com_magictable&language_code=en&table=1&access | https://sporteventz.com/index.php?option=com_magictable&language_code=en&table=1&accesskey={WARMKEY}&se_date=&se_module=&se_id=&Itemid=211&client_tz_offset=%2B0300 |
+
 ## Оценка
 
-- ✅ обход в норме: не открылись 0 из 1463 страниц (0%), сайтов без удачи 0 из 103 (0%)
+- ✅ обход в норме: не открылись 1 из 1463 страниц (0%), сайтов без удачи 1 из 103 (1%)
