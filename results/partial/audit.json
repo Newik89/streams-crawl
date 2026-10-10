@@ -1,0 +1,68 @@
+{
+ "прогон": "raw_live",
+ "собрано": "2026-10-10 04:52",
+ "подозрений": 10,
+ "разделы": [
+  {
+   "название": "1/9. Признак эфира или повтора есть, а разбор его не читает",
+   "строки": [
+    "kanal1sport.sk: в данных class:is-live ×3 (страниц 1), а честного эфира у разбора 0, угадано 3 — признак не читается",
+    "port.hu: сайт помечает повтор (json:is_repeat=true ×215), а разбор не отличает его, и эфир угадывается — повтор может стать «первым показом»"
+   ]
+  },
+  {
+   "название": "7. Кличка: вторая команда сошлась, эта — нет",
+   "строки": [
+    "digisport.ro: «Universitatea Craiova» ≠ «Univ. Craiova»? — 11.10 18:00 «Csikszereda — Universitatea Craiova» ↔ эталон «Csikszereda M. Ciuc — Univ. Craiova» (ROMANIA: Superliga; у сайта лига «superliga Superliga»)",
+    "ipko.tv: «Batman Petrol Spor A.Ş» ≠ «Batman Petrolspor»? — 10.10 16:00 «9.Hafta Alagöz Holding Iğdır Futbol Kulübü — Batman Petrol Spor A.Ş» ↔ эталон «Igdir FK — Batman Petrolspor» (TURKEY: 1. Lig; у сайта лига «futbolli») — эфир угадан: сверка с эталоном СНИМЕТ строку",
+    "movistarplus.es: «Barça Atlètic» ≠ «Barcelona B»? — 10.10 16:55 «Barça Atlètic — SD Logroñés» ↔ эталон «Barcelona B — SD Logrones» (SPAIN: Segunda RFEF - Group 2; у сайта лига «Segunda Federación») — эфир угадан: сверка с эталоном СНИМЕТ строку",
+    "sportklub.hr: «Kocaeli» ≠ «Kocaelispor»? — 11.10 19:00 «Besiktas — Kocaeli» ↔ эталон «Besiktas — Kocaelispor» (TURKEY: Super Lig; у сайта лига «Turska liga»)",
+    "sportklub.hr: «Rize» ≠ «Rizespor»? — 10.10 19:00 «Rize — Fenerbahce» ↔ эталон «Rizespor — Fenerbahce» (TURKEY: Super Lig; у сайта лига «Turska liga»)",
+    "trtspor.com.tr: «BATMAN PETROL SPOR A.Ş» ≠ «Batman Petrolspor»? — 10.10 16:00 «ALAGÖZ HOLDİNG IĞDIR FUTBOL KULÜBÜ — BATMAN PETROL SPOR A.Ş» ↔ эталон «Igdir FK — Batman Petrolspor» (TURKEY: 1. Lig; у сайта лига «TRENDYOL 1.LİG FUTBOL») — эфир угадан: сверка с эталоном СНИМЕТ строку",
+    "tvarenasport.ba: «Borussia M» ≠ «B. Monchengladbach»? — 11.10 16:30 «Koln — Borussia M» ↔ эталон «FC Koln — B. Monchengladbach» (GERMANY: Bundesliga; у сайта лига «Njemačka liga»)"
+   ]
+  },
+  {
+   "название": "10. Одна страница на разные дни или каналы",
+   "строки": [
+    "movistarplus.es: 1 запрос(ов) впустую — 2 одинаковых (дни 2026-10-09…2026-10-10) — www.movistarplus.es__programacion-tv_multi6_2026-10-09.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу"
+   ]
+  }
+ ],
+ "справка": [
+  "kanal1sport.sk class:live ×65 — проверено: «Vysielame» у всех строк подряд (kanal1sport_sk.py, 01.09)",
+  "mediaklikk.hu class:elo ×100 — проверено: «Élő» спрятана (`display:none`) у всех, кроме идущей сейчас (06.10)",
+  "mediaklikk.hu class:live ×3 — проверено: плеер прямого эфира канала, не передача (06.10)",
+  "skai.gr class:live-img ×30 — проверено: LIVE — эфир канала в этот час, не матч (skai_gr.py)",
+  "skai.gr class:live ×2 — проверено: пункт меню «Live» сайта (06.10)",
+  "unian.tv class:tv-item__now ×1 — проверено: «Зараз в ефірі» — идёт сейчас (unian_tv.py)",
+  "allente.no: угаданных эфиров снято 12 (повтор / нет в эталоне)",
+  "bbc.co.uk: угаданных эфиров снято 1 (повтор / нет в эталоне)",
+  "diemaxtra.nova.bg: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
+  "ert.gr: угаданных эфиров снято 3 (повтор / нет в эталоне)",
+  "ipko.tv: угаданных эфиров снято 15 (повтор / нет в эталоне)",
+  "mediaklikk.hu: угаданных эфиров снято 3 (повтор / нет в эталоне)",
+  "movistarplus.es: угаданных эфиров снято 30 (повтор / нет в эталоне)",
+  "oneplaysport.cz: угаданных эфиров снято 3 (повтор / нет в эталоне)",
+  "port.hu: угаданных эфиров снято 7 (повтор / нет в эталоне)",
+  "raiplay.it: угаданных эфиров снято 2 (повтор / нет в эталоне)",
+  "sports.kz: угаданных эфиров снято 4 (повтор / нет в эталоне)",
+  "sporttv.pt: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
+  "trt.net.tr: угаданных эфиров снято 8 (повтор / нет в эталоне)",
+  "trtspor.com.tr: угаданных эфиров снято 2 (повтор / нет в эталоне)",
+  "tv2.no: угаданных эфиров снято 1 (повтор / нет в эталоне)",
+  "tv3.lt: угаданных эфиров снято 14 (повтор / нет в эталоне)",
+  "tvpassport.com: угаданных эфиров снято 2 (повтор / нет в эталоне)",
+  "vsetv.com: угаданных эфиров снято 3 (повтор / нет в эталоне)",
+  "webtv.sk: угаданных эфиров снято 1 (повтор / нет в эталоне)",
+  "sportklub.hr: «Trabzon» ≠ «Trabzonspor» — проверено, в словарь не кладём: есть и «1461 Trabzon» — одно слово сводило бы оба клуба (06.10)",
+  "tvarenasport.com: «BSK 1926» ≠ «Bacevac» — проверено, в словарь не кладём: BSK — ещё Borča и Banja Luka, а год чистка снимает (06.10)",
+  "digisport.ro: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "epg.cyta.com.cy: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "oneplay.cz: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "teleman.pl: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "tvarenasport.ba: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "tvarenasport.com: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "tvsporten.dk: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)"
+ ]
+}
