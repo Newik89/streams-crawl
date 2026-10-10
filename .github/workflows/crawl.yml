@@ -323,6 +323,8 @@ jobs:
           DAYS=""
           case "$TITLE" in
             "Обход full-"[1-7]*) DAYS=${TITLE#Обход full-}; DAYS=${DAYS%%[!0-9]*} ;;
+            # плановый cron GitHub («Обход по расписанию») — всегда полный на 6
+            "Обход по расписанию") DAYS=6 ;;
           esac
           if [ -z "$DAYS" ]; then
             echo "::error::переразбор только полного обхода (full-N), а это «$TITLE»"; exit 1
@@ -335,14 +337,15 @@ jobs:
         id: pages
         # артефакт obhod-<номер> того прогона (шаг «Забрать страницы и
         # отчёты», живёт 3 дня) — в ту же папку, куда кладёт их обход.
-        # Артефакта уже нет — шаг красный, причина стука «pages»
+        # По имени, не по маске: с маской и нулём совпадений шаг зелёный
+        # («0 artifacts»), а по имени — красный, причина стука «pages»
+        # (проверка 10.10)
         if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != ''
         uses: actions/download-artifact@v4
         with:
           run-id: ${{ steps.what.outputs.from_run }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: obhod-*
-          merge-multiple: true
+          name: obhod-${{ steps.prior.outputs.number }}
           path: recon/raw_live
 
       - name: Обход

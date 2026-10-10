@@ -85,8 +85,12 @@ jobs:
             # переразбор без обхода (сторож, схема сбоев шаг 4): страницы
             # упавшего прогона разбираются заново, к сайтам не ходим. Номер
             # прогона — только цифры, иначе отказ. «prev» — кодом прежней
-            # версии: родитель коммита, на котором шёл упавший прогон (каждая
-            # выкладка — слияние в main, родитель слияния — прежний main)
+            # версии: каждая выкладка — слияние в main, а поверх слияния
+            # ложатся коммиты бота (results/, словари) — поэтому не родитель
+            # коммита прогона, а первый родитель БЛИЖАЙШЕГО слияния в его
+            # истории (= main до той выкладки; проверка 10.10). Слияний нет
+            # (код пушили напрямую) — родитель последнего коммита, трогавшего
+            # app/ или scripts/
             RUN_ID=$(echo "$TAG" | cut -d- -f3)
             FLAG=$(echo "$TAG" | cut -d- -f4)
             if ! [[ "$RUN_ID" =~ ^[0-9]{1,20}$ ]]; then
@@ -105,15 +109,33 @@ jobs:
               if ! [[ "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
                 echo "::error::у прогона $RUN_ID нет коммита — заявка отвергнута"; exit 1
               fi
-              CODE=$(curl -s -o /tmp/commit -w "%{http_code}" \
+              COMMITS="https://api.github.com/repos/$GITHUB_REPOSITORY/commits"
+              CODE=$(curl -s -o /tmp/history -w "%{http_code}" \
                 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                 -H "Accept: application/vnd.github+json" \
-                "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$SHA")
-              CODE_REF=$(jq -r '.parents[0].sha // ""' /tmp/commit)
-              if [ "$CODE" != "200" ] || ! [[ "$CODE_REF" =~ ^[0-9a-f]{40}$ ]]; then
-                echo "::error::родитель коммита $SHA не найден (ответ $CODE)"; exit 1
+                "$COMMITS?sha=$SHA&per_page=60")
+              if [ "$CODE" != "200" ]; then
+                echo "::error::история коммита $SHA не прочиталась (ответ $CODE)"; exit 1
               fi
-              echo "прежняя версия кода: $CODE_REF (родитель $SHA)"
+              MERGE=$(jq -r '[.[] | select(.parents | length > 1)][0].sha // ""' /tmp/history)
+              if [[ "$MERGE" =~ ^[0-9a-f]{40}$ ]]; then
+                CODE_REF=$(jq -r --arg m "$MERGE" '.[] | select(.sha == $m) | .parents[0].sha // ""' /tmp/history)
+                echo "ближайшее слияние в истории $SHA: $MERGE"
+              else
+                LAST=""
+                for P in app scripts; do
+                  curl -s -o /tmp/touch -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                    -H "Accept: application/vnd.github+json" "$COMMITS?sha=$SHA&path=$P&per_page=1"
+                  ONE=$(jq -r '.[0] | "\(.commit.committer.date) \(.parents[0].sha // "")"' /tmp/touch 2>/dev/null)
+                  [ "$ONE" \> "$LAST" ] && LAST="$ONE"
+                done
+                CODE_REF=${LAST##* }
+                echo "слияний нет — родитель последнего коммита по коду: $LAST"
+              fi
+              if ! [[ "$CODE_REF" =~ ^[0-9a-f]{40}$ ]]; then
+                echo "::error::прежняя версия кода для $SHA не найдена"; exit 1
+              fi
+              echo "прежняя версия кода: $CODE_REF"
             fi
             INPUTS="{\"mode\":\"full\",\"days\":\"6\",\"delay\":\"3\",\"only\":\"\",\"urls\":\"\",\"from_run\":\"$RUN_ID\",\"code_ref\":\"$CODE_REF\"}"
           elif [ "$KIND" = "cancel" ]; then

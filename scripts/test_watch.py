@@ -1257,6 +1257,16 @@ check("заявка переразбора не прошла → ТРЕВОГА,
 cw.order_crawl = fake_order
 ticks("16:45")
 check("…и следующей проверкой тоже", ORDERS == [f"reparse-{rid}-prev"], ORDERS)
+# дни уже собрал удачный полный обход после заказа → переразбор не нужен
+later = mkrun(K("16:20"), ended=K("16:28"), conclusion="success", title="Обход full-6")
+reset(K("16:30"), [probe, fail2, later])
+order_of(f"{DAY} 16:15", 2)
+failed_with("parse")
+edge = last_id()
+tick(K("16:30"))
+check("дни заказа уже собрал удачный полный обход, созданный после него → переразбора нет и тревоги нет",
+      ORDERS == [] and alarms_after(edge) == []
+      and any("переразбор не нужен" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
 # досрочный упал по причине parse → тоже переразбор, а не ТРЕВОГА
 reset(K("16:30"), [probe, fail2])
 order_of(f"{DAY} 16:15", 2)
@@ -2591,17 +2601,18 @@ check("заявка cancel: отменяет только прогон crawl.yml
 check("в queue.yml по-прежнему 3 шага-имени", len(re.findall(r"name: ", queue)) == 3)
 check("crawl.yml называет прогон видом сбора", "run-name:" in crawl and "Обход proba-{0}" in crawl)
 # схема сбоев, шаг 4: переразбор без обхода
-check("crawl.yml: вход from_run, прогон зовётся reparse-<id>, страницы — download-artifact, право actions: read",
+check("crawl.yml: вход from_run, прогон зовётся reparse-<id>, страницы — download-artifact ПО ИМЕНИ (с маской нет артефакта = зелёный), право actions: read",
       "from_run:" in crawl and "Обход reparse-{0}" in crawl
-      and "actions/download-artifact@v4" in crawl and "actions: read" in crawl)
+      and "actions/download-artifact@v4" in crawl and "actions: read" in crawl
+      and "name: obhod-${{ steps.prior.outputs.number }}" in crawl and "pattern: obhod-" not in crawl)
 check("crawl.yml: при переразборе обход пропущен, итог — в results/partial/, а не results/",
       "if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run == ''\n" in crawl
       and "results/partial" in crawl
       and "steps.what.outputs.date == '' && steps.what.outputs.from_run == ''" in crawl)
 check("crawl.yml: from_run — только цифры, code_ref — только SHA",
       '[[ "$IN_FROM_RUN" =~ ^[0-9]{0,20}$ ]]' in crawl and '[[ "$IN_CODE_REF" =~ ^([0-9a-f]{40})?$ ]]' in crawl)
-check("queue.yml: заявка reparse — номер только цифры, prev → родитель коммита прогона",
-      '"$KIND" = "reparse"' in queue and ".parents[0].sha" in queue
+check("queue.yml: заявка reparse — номер только цифры, prev → первый родитель ближайшего слияния в истории прогона",
+      '"$KIND" = "reparse"' in queue and ".parents[0].sha" in queue and "select(.parents | length > 1)" in queue
       and queue.count('[[ "$RUN_ID" =~ ^[0-9]{1,20}$ ]]') == 2)
 check("сторож: вид reparse-<id> узнаётся, потолок 30 мин, папка результата partial, ждущий переразбор очередь бережёт",
       watch.parse_what("reparse-123") == ("reparse", 0) and watch.ceiling("reparse") == 30

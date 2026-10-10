@@ -547,6 +547,18 @@ def reparse(t: Round, what: str) -> None:
         recover(t, "reparse-refused", f"{what} — переразбирать нечего: прогона "
                                       f"этого заказа на GitHub нет")
         return
+    # дни заказа уже собрал удачный полный обход, созданный после заказа
+    # (кнопка владельца, следующий плановый) — старые страницы не нужны:
+    # partial со свежей меткой «собрано» лёг бы поверх более новых данных
+    # (проверка 10.10)
+    cover = watch.collected_by(rec["what"], watch.record_at(rec) or t.now, t.runs,
+                               skip_id=run.get("id"))
+    if cover is not None:
+        rec["collected_by"] = cover.get("run_number")
+        t.keep(rec)
+        t.say(f"{what} — переразбор не нужен: эти дни уже собрал обход "
+              f"#{cover.get('run_number')} ({watch.run_what(cover)})")
+        return
     blocker = watch.queue_refusal(t.runs, t.slug) or (
         "в эту проверку уже ушла другая заявка — второй тег вытеснил бы её в "
         "очереди GitHub" if t.sent else "")
