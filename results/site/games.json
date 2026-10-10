@@ -1,491 +1,72 @@
 {
- "собрано": "2026-10-06 19:17",
- "игр": 10,
- "окно": 2,
+ "собрано": "2026-10-10 21:44",
+ "игр": 49,
+ "окно": 6,
  "по_окнам": {
-  "2": 10,
+  "2": 610,
   "5": 528,
-  "6": 646
+  "6": 49
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "tvmatchen.nu": 37,
-  "tvmatsit.com": 35
+  "sportklub.hr": 738
  },
  "другие_виды": [
   {
-   "домен": "tvmatchen.nu",
-   "канал": "Viaplay Sport",
-   "заголовок": "Plzen - Skellefteå AIK",
-   "лига": "Champions Hockey League",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-06T18:30",
-   "start_utc": "2026-10-06T15:30"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 10",
+   "заголовок": "Moto GP Indonesia: Moto 3: Utrka - on board 1",
+   "лига": "Moto 3",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto GP",
+   "start_kyiv": "2026-10-11T07:00",
+   "start_utc": "2026-10-11T04:00"
   },
   {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Vinter",
-   "заголовок": "Hc Liberec - Frölunda HC",
-   "лига": "Champions Hockey League",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-06T19:00",
-   "start_utc": "2026-10-06T16:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 10",
+   "заголовок": "Moto GP Indonesia: Moto 2: Utrka - on board 1",
+   "лига": "Moto 2",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto GP",
+   "start_kyiv": "2026-10-11T08:15",
+   "start_utc": "2026-10-11T05:15"
   },
   {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport Vinter FI",
-   "заголовок": "Liberec - Frölunda HC",
-   "лига": "CHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-06T19:00",
-   "start_utc": "2026-10-06T16:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 10",
+   "заголовок": "Moto GP Indonesia: Utrka - on board 1",
+   "лига": "Moto GP Indonesia",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto GP",
+   "start_kyiv": "2026-10-11T10:00",
+   "start_utc": "2026-10-11T07:00"
   },
   {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Extra",
-   "заголовок": "Rögle BK - Hc Davos",
-   "лига": "Champions Hockey League",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-06T20:00",
-   "start_utc": "2026-10-06T17:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 3",
+   "заголовок": "Rukomet - Njemačka liga: Kiel - Hamburg",
+   "лига": "Njemačka liga",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "гандбол",
+   "слово": "Rukomet",
+   "start_kyiv": "2026-10-11T16:00",
+   "start_utc": "2026-10-11T13:00"
   },
   {
-   "домен": "tvmatchen.nu",
-   "канал": "TV10",
-   "заголовок": "Växjö Lakers - Genève-Servette HC",
-   "лига": "Champions Hockey League",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-06T20:00",
-   "start_utc": "2026-10-06T17:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "Viaplay TV (FI)",
-   "заголовок": "Växjo - Genève-Servette HC",
-   "лига": "CHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-06T20:00",
-   "start_utc": "2026-10-06T17:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport 1 Suomi",
-   "заголовок": "KAC Klagenfurt - Kookoo",
-   "лига": "CHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-06T20:15",
-   "start_utc": "2026-10-06T17:15"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport+ Suomi",
-   "заголовок": "Graz99ers - SaiPa",
-   "лига": "CHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-06T21:20",
-   "start_utc": "2026-10-06T18:20"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Live 1 SE",
-   "заголовок": "Montreal Canadiens - Carolina Hurricanes",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Montreal Canadiens",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Extra",
-   "заголовок": "Detroit Red Wings - Ottawa Senators",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Detroit Red Wings",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Live 2 SE",
-   "заголовок": "New Jersey Devils - Utah Mammoth",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "New Jersey Devils",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Premium",
-   "заголовок": "Buffalo Sabres - Minnesota Wild",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Buffalo Sabres",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport 1 Suomi",
-   "заголовок": "Toronto Maple Leafs - Nashville Predators",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Toronto Maple Leafs",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport Live 1 FI",
-   "заголовок": "Montreal Canadiens - Carolina Hurricanes",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Montreal Canadiens",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport Live 2 FI",
-   "заголовок": "New Jersey Devils - Utah Mammoth",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "New Jersey Devils",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport Premium FI",
-   "заголовок": "Buffalo Sabres - Minnesota Wild",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Buffalo Sabres",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport 2 Suomi",
-   "заголовок": "Buffalo Sabres - Minnesota Wild",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Buffalo Sabres",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Vinter",
-   "заголовок": "New York Rangers - New York Islanders",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "New York Rangers",
-   "start_kyiv": "2026-10-07T02:30",
-   "start_utc": "2026-10-06T23:30"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport Vinter FI",
-   "заголовок": "NY Rangers - New York Islanders",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "New York Islanders",
-   "start_kyiv": "2026-10-07T02:30",
-   "start_utc": "2026-10-06T23:30"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport 1",
-   "заголовок": "Chicago Blackhawks - St. Louis Blues",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Chicago Blackhawks",
-   "start_kyiv": "2026-10-07T03:00",
-   "start_utc": "2026-10-07T00:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport 1 FI",
-   "заголовок": "Chicago Blackhawks - St. Louis Blues",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Chicago Blackhawks",
-   "start_kyiv": "2026-10-07T03:00",
-   "start_utc": "2026-10-07T00:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Live 3 SE",
-   "заголовок": "Seattle Kraken - Vegas Golden Knights",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Seattle Kraken",
-   "start_kyiv": "2026-10-07T04:40",
-   "start_utc": "2026-10-07T01:40"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport Live 3 FI",
-   "заголовок": "Seattle Kraken - Vegas Golden Knights",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Seattle Kraken",
-   "start_kyiv": "2026-10-07T04:40",
-   "start_utc": "2026-10-07T01:40"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Premium",
-   "заголовок": "Los Angeles Kings - Florida Panthers",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Los Angeles Kings",
-   "start_kyiv": "2026-10-07T05:00",
-   "start_utc": "2026-10-07T02:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport Premium FI",
-   "заголовок": "Los Angeles Kings - Florida Panthers",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Los Angeles Kings",
-   "start_kyiv": "2026-10-07T05:00",
-   "start_utc": "2026-10-07T02:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "MTV Urheilu 2",
-   "заголовок": "Jukurit - Ässät",
-   "лига": "Liiga",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-07T12:00",
-   "start_utc": "2026-10-07T09:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "MTV Max",
-   "заголовок": "Kärpät - Kiekko-Espoo",
-   "лига": "Liiga",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-07T18:30",
-   "start_utc": "2026-10-07T15:30"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "MTV Urheilu 2",
-   "заголовок": "Sport - Ilves",
-   "лига": "Liiga",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-07T18:30",
-   "start_utc": "2026-10-07T15:30"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport 1 Suomi",
-   "заголовок": "Tappara - Storhamar",
-   "лига": "CHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-07T18:30",
-   "start_utc": "2026-10-07T15:30"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "TV4 Sport Live 2",
-   "заголовок": "BIK Karlskoga - Mora IK",
-   "лига": "Hockeyallsvenskan",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-07T20:00",
-   "start_utc": "2026-10-07T17:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "TV4 Sport Live 1",
-   "заголовок": "Leksands IF - Nybro Vikings IF",
-   "лига": "Hockeyallsvenskan",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-07T20:00",
-   "start_utc": "2026-10-07T17:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "TV4 Hockey",
-   "заголовок": "Modo Hockey - Södertälje SK",
-   "лига": "Hockeyallsvenskan",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-07T20:00",
-   "start_utc": "2026-10-07T17:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "TV4 Sportkanalen",
-   "заголовок": "IK Oskarshamn - AIK",
-   "лига": "Hockeyallsvenskan",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-07T20:00",
-   "start_utc": "2026-10-07T17:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "TV4 Sport Live 3",
-   "заголовок": "Västerås IK - Östersunds IK",
-   "лига": "Hockeyallsvenskan",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-07T20:00",
-   "start_utc": "2026-10-07T17:00"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "TV4 Sport Live 4",
-   "заголовок": "Vimmerby HC - Kalmar HC",
-   "лига": "Hockeyallsvenskan",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Ishockey",
-   "start_kyiv": "2026-10-07T20:00",
-   "start_utc": "2026-10-07T17:00"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "Viaplay TV (FI)",
-   "заголовок": "Kölner Haie - Herning Blue Fox",
-   "лига": "CHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-07T20:30",
-   "start_utc": "2026-10-07T17:30"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "MTV Urheilu 1",
-   "заголовок": "Lausanne - Lugano",
-   "лига": "National League",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Jääkiekko",
-   "start_kyiv": "2026-10-07T20:45",
-   "start_utc": "2026-10-07T17:45"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Extra",
-   "заголовок": "Washington Capitals - Pittsburgh Penguins",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Washington Capitals",
-   "start_kyiv": "2026-10-08T02:30",
-   "start_utc": "2026-10-07T23:30"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Vinter",
-   "заголовок": "Winnipeg Jets - Colorado Avalanche",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Winnipeg Jets",
-   "start_kyiv": "2026-10-08T02:30",
-   "start_utc": "2026-10-07T23:30"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport 2 Suomi",
-   "заголовок": "Washington Capitals - Pittsburgh Penguins",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Washington Capitals",
-   "start_kyiv": "2026-10-08T02:30",
-   "start_utc": "2026-10-07T23:30"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport Vinter FI",
-   "заголовок": "Winnipeg Jets - Colorado Avalanche",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Winnipeg Jets",
-   "start_kyiv": "2026-10-08T02:30",
-   "start_utc": "2026-10-07T23:30"
-  },
-  {
-   "домен": "tvmatsit.com",
-   "канал": "V Sport 1 Suomi",
-   "заголовок": "Winnipeg Jets - Colorado Avalanche",
-   "лига": "NHL",
-   "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-   "вид": "хоккей",
-   "слово": "Winnipeg Jets",
-   "start_kyiv": "2026-10-08T02:30",
-   "start_utc": "2026-10-07T23:30"
-  },
-  {
-   "домен": "tvmatchen.nu",
-   "канал": "V Sport Premium",
-   "заголовок": "Anaheim Ducks - Edmonton Oilers",
-   "лига": "NHL",
-   "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-   "вид": "хоккей",
-   "слово": "Anaheim Ducks",
-   "start_kyiv": "2026-10-08T05:00",
-   "start_utc": "2026-10-08T02:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 9",
+   "заголовок": "Rukomet - Njemačka liga: Fuchse - Lemgo",
+   "лига": "Njemačka liga",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "гандбол",
+   "слово": "Rukomet",
+   "start_kyiv": "2026-10-11T19:00",
+   "start_utc": "2026-10-11T16:00"
   }
  ],
  "на_разбор": [],
@@ -494,200 +75,839 @@
   {
    "guess": 0,
    "sport": "T",
-   "league": "ATP",
-   "home": "Carlos Alcaraz",
-   "away": "Jiri Lehecka",
-   "start_kyiv": "2026-10-06T12:00",
-   "start_utc": "2026-10-06T09:00",
+   "league": "ATP Masters Shanghai",
+   "home": "Shelton",
+   "away": "Gea",
+   "start_kyiv": "2026-10-11T07:00",
+   "start_utc": "2026-10-11T04:00",
    "entries": [
     {
-     "source": "tvmatchen.nu",
-     "channel": "TV4 Sport Live 1",
-     "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-     "raw_title": "Carlos Alcaraz - Jiri Lehecka"
-    },
-    {
-     "source": "tvmatchen.nu",
-     "channel": "TV4 Tennis",
-     "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-     "raw_title": "Carlos Alcaraz - Jiri Lehecka"
-    },
-    {
-     "source": "tvmatsit.com",
-     "channel": "MTV Urheilu 1",
-     "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-     "raw_title": "Carlos Alcaraz - Jiri Lehecka"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Shelton - Gea"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "ATP",
-   "home": "Novak Djokovic",
-   "away": "Alex de Minaur",
-   "start_kyiv": "2026-10-06T14:00",
-   "start_utc": "2026-10-06T11:00",
+   "league": "ATP Masters Shanghai",
+   "home": "Khachanov",
+   "away": "Mannarino",
+   "start_kyiv": "2026-10-11T07:00",
+   "start_utc": "2026-10-11T04:00",
    "entries": [
     {
-     "source": "tvmatchen.nu",
-     "channel": "TV4 Sportkanalen",
-     "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-     "raw_title": "Novak Djokovic - Alex de Minaur"
-    },
-    {
-     "source": "tvmatsit.com",
-     "channel": "MTV Urheilu 2",
-     "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-     "raw_title": "Novak Djokovic - Alex de Minaur"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Kazakhstan",
-   "away": "Färsaaret",
-   "start_kyiv": "2026-10-06T17:00",
-   "start_utc": "2026-10-06T14:00",
-   "entries": [
-    {
-     "source": "tvmatsit.com",
-     "channel": "MTV Max",
-     "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-     "raw_title": "Kazakhstan - Färsaaret"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Kroatien",
-   "away": "Spanien",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "tvmatchen.nu",
-     "channel": "Viaplay Sport",
-     "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-     "raw_title": "Kroatien - Spanien"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "England",
-   "away": "Tjeckien",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "tvmatchen.nu",
-     "channel": "V Sport Premium",
-     "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-     "raw_title": "England - Tjeckien"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Kroatia",
-   "away": "Espanja",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "tvmatsit.com",
-     "channel": "MTV Urheilu 1",
-     "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-     "raw_title": "Kroatia - Espanja"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Englanti",
-   "away": "Tšekki",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "tvmatsit.com",
-     "channel": "MTV Urheilu 2",
-     "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-     "raw_title": "Englanti - Tšekki"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "UEFA Nations League",
-   "home": "Valko-Venäjä",
-   "away": "Suomi",
-   "start_kyiv": "2026-10-06T21:45",
-   "start_utc": "2026-10-06T18:45",
-   "entries": [
-    {
-     "source": "tvmatsit.com",
-     "channel": "Yle TV2",
-     "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FHelsinki",
-     "raw_title": "Valko-Venäjä - Suomi"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Träningslandskamp",
-   "home": "Argentina",
-   "away": "Benin",
-   "start_kyiv": "2026-10-07T02:00",
-   "start_utc": "2026-10-06T23:00",
-   "entries": [
-    {
-     "source": "tvmatchen.nu",
-     "channel": "Viaplay Sport",
-     "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-06&dayBreakHour=5&tz=Europe%2FStockholm",
-     "raw_title": "Argentina - Benin"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Khachanov - Mannarino"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "T",
-   "league": "ATP",
-   "home": "ATP Shanghai",
-   "away": "tournament",
-   "start_kyiv": "2026-10-07T07:00",
-   "start_utc": "2026-10-07T04:00",
+   "league": "ATP Masters Shanghai",
+   "home": "R. Cash/Erler",
+   "away": "Miedler/Oberleitner",
+   "start_kyiv": "2026-10-11T07:00",
+   "start_utc": "2026-10-11T04:00",
    "entries": [
     {
-     "source": "tvmatchen.nu",
-     "channel": "TV4 Sport Live 1",
-     "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-     "raw_title": "Shanghai Masters"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: R. Cash/Erler - Miedler/Oberleitner"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "Polmans/Zielinski",
+   "away": "Jiang/Zhang",
+   "start_kyiv": "2026-10-11T07:00",
+   "start_utc": "2026-10-11T04:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Polmans/Zielinski - Jiang/Zhang"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "Arribage/Olivetti",
+   "away": "Borges/Doumbia",
+   "start_kyiv": "2026-10-11T08:20",
+   "start_utc": "2026-10-11T05:20",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Arribage/Olivetti - Borges/Doumbia (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "Hurkacz",
+   "away": "Zhou",
+   "start_kyiv": "2026-10-11T08:45",
+   "start_utc": "2026-10-11T05:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Hurkacz - Zhou"
     },
     {
-     "source": "tvmatchen.nu",
-     "channel": "TV4 Tennis",
-     "url": "https://www.tvmatchen.nu/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FStockholm",
-     "raw_title": "Shanghai Masters"
-    },
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Hurkacz - Zhou (UKLJUČENJE)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "Darderi/Etcheverry",
+   "away": "J. Cash/Glasspool",
+   "start_kyiv": "2026-10-11T08:45",
+   "start_utc": "2026-10-11T05:45",
+   "entries": [
     {
-     "source": "tvmatsit.com",
-     "channel": "MTV Urheilu 1",
-     "url": "https://tvmatsit.com/api/fixtures/bydate?day=2026-10-07&dayBreakHour=5&tz=Europe%2FHelsinki",
-     "raw_title": "Shanghai Masters"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Darderi/Etcheverry - J. Cash/Glasspool (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "De Minaur",
+   "away": "Sakamoto",
+   "start_kyiv": "2026-10-11T09:00",
+   "start_utc": "2026-10-11T06:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: De Minaur - Sakamoto"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "Bolelli/Vavassori",
+   "away": "Krajicek/Mektić",
+   "start_kyiv": "2026-10-11T10:30",
+   "start_utc": "2026-10-11T07:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Bolelli/Vavassori - Krajicek/Mektić (parovi)"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "F. Cerundolo",
+   "away": "Mensik",
+   "start_kyiv": "2026-10-11T10:45",
+   "start_utc": "2026-10-11T07:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: F. Cerundolo - Mensik"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(parovi) FINALE",
+   "home": "Siniakova/Zhang",
+   "away": "Dabrowski/Stefani",
+   "start_kyiv": "2026-10-11T11:30",
+   "start_utc": "2026-10-11T08:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: (parovi) FINALE: Siniakova/Zhang - Dabrowski/Stefani"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "Bublik",
+   "away": "Nakashima",
+   "start_kyiv": "2026-10-11T12:30",
+   "start_utc": "2026-10-11T09:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Bublik - Nakashima"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "Zverev",
+   "away": "Halys",
+   "start_kyiv": "2026-10-11T13:00",
+   "start_utc": "2026-10-11T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Zverev - Halys"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Real Madrid",
+   "away": "Manresa",
+   "start_kyiv": "2026-10-11T13:00",
+   "start_utc": "2026-10-11T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Real Madrid - Manresa"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Grčka liga",
+   "home": "Olympiacos",
+   "away": "Kolossos",
+   "start_kyiv": "2026-10-11T13:00",
+   "start_utc": "2026-10-11T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Grčka liga: Olympiacos - Kolossos"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Trabzon",
+   "away": "Bandirma",
+   "start_kyiv": "2026-10-11T13:00",
+   "start_utc": "2026-10-11T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Trabzon - Bandirma"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Nizozemska liga",
+   "home": "Utrecht",
+   "away": "Willem II",
+   "start_kyiv": "2026-10-11T13:15",
+   "start_utc": "2026-10-11T10:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Nizozemska liga: Utrecht - Willem II"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Murcia",
+   "away": "Tenerife",
+   "start_kyiv": "2026-10-11T13:30",
+   "start_utc": "2026-10-11T10:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Murcia - Tenerife"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Škotski Premiership",
+   "home": "Motherwell",
+   "away": "Celtic",
+   "start_kyiv": "2026-10-11T14:00",
+   "start_utc": "2026-10-11T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Škotski Premiership: Motherwell - Celtic"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "St. Pauli",
+   "away": "Karlsruher",
+   "start_kyiv": "2026-10-11T14:30",
+   "start_utc": "2026-10-11T11:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: St. Pauli - Karlsruher"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 1000 Peking",
+   "home": "Zheng",
+   "away": "M. Andreeva",
+   "start_kyiv": "2026-10-11T14:30",
+   "start_utc": "2026-10-11T11:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 1000 Peking: Zheng - M. Andreeva"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Hertha",
+   "away": "Greuther Furth",
+   "start_kyiv": "2026-10-11T14:30",
+   "start_utc": "2026-10-11T11:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Hertha - Greuther Furth"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Shanghai",
+   "home": "Davidovich-Fokina",
+   "away": "Tiafoe",
+   "start_kyiv": "2026-10-11T14:45",
+   "start_utc": "2026-10-11T11:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Shanghai: Davidovich-Fokina - Tiafoe"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Elche",
+   "away": "Celta",
+   "start_kyiv": "2026-10-11T15:00",
+   "start_utc": "2026-10-11T12:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Elche - Celta"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Efes",
+   "away": "Denizli",
+   "start_kyiv": "2026-10-11T15:30",
+   "start_utc": "2026-10-11T12:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Efes - Denizli"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Škotski Premiership",
+   "home": "Aberdeen",
+   "away": "St. Johnstone",
+   "start_kyiv": "2026-10-11T16:00",
+   "start_utc": "2026-10-11T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Škotski Premiership: Aberdeen - St. Johnstone"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Slovenska 1. liga",
+   "home": "Nafta",
+   "away": "Bravo",
+   "start_kyiv": "2026-10-11T16:00",
+   "start_utc": "2026-10-11T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Slovenska 1. liga: Nafta - Bravo"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bundesliga",
+   "home": "Koln",
+   "away": "Monchengladbach",
+   "start_kyiv": "2026-10-11T16:30",
+   "start_utc": "2026-10-11T13:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Koln - Monchengladbach"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Danska liga",
+   "home": "Brondby",
+   "away": "Lyngby",
+   "start_kyiv": "2026-10-11T17:00",
+   "start_utc": "2026-10-11T14:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Danska liga: Brondby - Lyngby"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Sociedad",
+   "away": "La Coruna",
+   "start_kyiv": "2026-10-11T17:15",
+   "start_utc": "2026-10-11T14:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Sociedad - La Coruna"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bugarska liga",
+   "home": "Cherno More",
+   "away": "Levski",
+   "start_kyiv": "2026-10-11T17:30",
+   "start_utc": "2026-10-11T14:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarska liga: Cherno More - Levski"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Austrijska liga",
+   "home": "LASK",
+   "away": "Rapid",
+   "start_kyiv": "2026-10-11T18:00",
+   "start_utc": "2026-10-11T15:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Austrijska liga: LASK - Rapid"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Turk Telekom",
+   "away": "Besiktas",
+   "start_kyiv": "2026-10-11T18:00",
+   "start_utc": "2026-10-11T15:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Turk Telekom - Besiktas"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bundesliga",
+   "home": "Freiburg",
+   "away": "Schalke",
+   "start_kyiv": "2026-10-11T18:30",
+   "start_utc": "2026-10-11T15:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Freiburg - Schalke"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Slovenska 1. liga",
+   "home": "Brinje",
+   "away": "Maribor",
+   "start_kyiv": "2026-10-11T18:30",
+   "start_utc": "2026-10-11T15:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Slovenska 1. liga: Brinje - Maribor"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Turska liga",
+   "home": "Besiktas",
+   "away": "Kocaeli",
+   "start_kyiv": "2026-10-11T19:00",
+   "start_utc": "2026-10-11T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Turska liga: Besiktas - Kocaeli"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Danska liga",
+   "home": "Midtjylland",
+   "away": "Copenhagen",
+   "start_kyiv": "2026-10-11T19:00",
+   "start_utc": "2026-10-11T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Danska liga: Midtjylland - Copenhagen"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Grčka liga",
+   "home": "Aris",
+   "away": "Volos",
+   "start_kyiv": "2026-10-11T19:00",
+   "start_utc": "2026-10-11T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Grčka liga: Aris - Volos"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Betis",
+   "away": "Osasuna",
+   "start_kyiv": "2026-10-11T19:30",
+   "start_utc": "2026-10-11T16:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Betis - Osasuna"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Barcelona",
+   "away": "Valencia",
+   "start_kyiv": "2026-10-11T20:00",
+   "start_utc": "2026-10-11T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Barcelona - Valencia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bugarska liga",
+   "home": "CSKA 1948",
+   "away": "CSKA",
+   "start_kyiv": "2026-10-11T20:00",
+   "start_utc": "2026-10-11T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarska liga: CSKA 1948 - CSKA"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Fortuna Dusseldorf",
+   "away": "Verl",
+   "start_kyiv": "2026-10-11T20:30",
+   "start_utc": "2026-10-11T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Fortuna Dusseldorf - Verl"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Grčka liga",
+   "home": "Olympiacos",
+   "away": "Panathinaikos",
+   "start_kyiv": "2026-10-11T21:00",
+   "start_utc": "2026-10-11T18:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Grčka liga: Olympiacos - Panathinaikos"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Racing",
+   "away": "Valencia",
+   "start_kyiv": "2026-10-11T22:00",
+   "start_utc": "2026-10-11T19:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Racing - Valencia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LP Azije ELITE",
+   "home": "Pakhtakor",
+   "away": "Qadsiah",
+   "start_kyiv": "2026-10-12T16:45",
+   "start_utc": "2026-10-12T13:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - LP Azije ELITE: Pakhtakor - Qadsiah"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LP Azije ELITE",
+   "home": "Wasl",
+   "away": "Ahli",
+   "start_kyiv": "2026-10-12T19:00",
+   "start_utc": "2026-10-12T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - LP Azije ELITE: Wasl - Ahli"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LP Azije ELITE",
+   "home": "Nassr",
+   "away": "Neftchi",
+   "start_kyiv": "2026-10-12T21:15",
+   "start_utc": "2026-10-12T18:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - LP Azije ELITE: Nassr - Neftchi"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LP Azije ELITE",
+   "home": "Shanghai Port",
+   "away": "Daejon",
+   "start_kyiv": "2026-10-13T13:00",
+   "start_utc": "2026-10-13T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - LP Azije ELITE: Shanghai Port - Daejon"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "LP Azije ELITE",
+   "home": "Buriram United",
+   "away": "Peking",
+   "start_kyiv": "2026-10-13T15:15",
+   "start_utc": "2026-10-13T12:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1791590400000&toTime=1792195199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - LP Azije ELITE: Buriram United - Peking"
     }
    ]
   }
