@@ -49,6 +49,13 @@ r"""Самопроверка прогона: ищет ИЗВЕСТНЫЕ кла�
      слово: параметр дня сайт не слышит (kolla.tv `?dat=` — шесть дат, один
      файл, 06.10) или адрес канала отдаёт чужую страницу (diemaxtra
      `/schedule` = Diema Sport; movistarplus `multi6` — страница La 1).
+ 11. СТОП-СЛОВО В ИМЕНИ. Строку, которую сайт сам пометил эфиром, отсев снял
+     стоп-словом, её пара есть в эталоне flashscore в ±3 ч, и ТО ЖЕ слово
+     стоит в самом эталоне — в названии турнира или команды: слово — часть
+     имени, а не жанр передачи (11.10: «conference» снимал всю Лигу
+     конференций — Univ. Craiova — Getafe на digisport.ro). Без слова в
+     эталоне это настоящая студия про тот же матч («ANTEVISÃO …», «Studio
+     før …») — не подозрение. Лечение — имя в `keep_names` (`markers.json`).
 
 Правила:
   * подозрение — строка «сайт: что не так — пример»; решение принимает
@@ -315,6 +322,8 @@ class Site:
         self.repeat_guess = 0      # угадыванием снято как повтор
         self.unknown_raw: collections.Counter = collections.Counter()
         self.rows: list = []       # (Row, page_name) прошедшие отсев, F/B/T
+        # (Program, стоп-слово) — эфир сайта, снятый стоп-словом (проверка 11)
+        self.stopped: list = []
         self.errors: list[str] = []
         self.day_shift: list[str] = []
         self.time_back: list[str] = []
@@ -491,7 +500,79 @@ def collect(folder: Path, markers, sports) -> dict[str, Site]:
                               pair_sports):
             if r.ok and r.sport in ("F", "B", "T") and r.start_kyiv:
                 site.rows.append((r, name))
+            elif r.reason.startswith(STOP_REASONS) and r.program.live_raw \
+                    and not (r.program.extra or {}).get("live_guess"):
+                site.stopped.append((r.program, r.reason.rsplit(":", 1)[-1].strip()))
     return sites
+
+
+#: причины отсева «стоп-словом» (`live.check`) — их судит проверка 11
+STOP_REASONS = ("стоп-слово в заголовке", "стоп-жанр в рубрике",
+                "стоп-слово или запись в паре")
+#: допуск по времени для проверки 11: сетка ставит блок раньше матча
+STOP_REF_HOURS = 3
+_TEAM_CANON: dict[str, str] = {}
+
+
+def team_canon(name: str) -> str:
+    # Имя команды → имя словаря (`data/dictionaries.json`, выгрузка базы —
+    # едет в git): на GitHub базы владельца нет, и «Universitatea Craiova»
+    # без словаря не сходится с эталонным «Univ. Craiova» (75 при пороге 85)
+    if not _TEAM_CANON:
+        try:
+            d = json.loads((ROOT / "data" / "dictionaries.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            d = {}
+        for t in d.get("teams") or []:
+            canon_name = t.get("name") or ""
+            for alias in [canon_name] + list(t.get("aliases") or []):
+                if isinstance(alias, str) and alias:
+                    _TEAM_CANON.setdefault(alias.strip().lower(), canon_name)
+        _TEAM_CANON.setdefault("", "")
+    return _TEAM_CANON.get(name.strip().lower(), name)
+
+
+def check_stopped(sites: dict[str, Site], games: dict | None) -> list[str]:
+    # 11: эфир сайта снят стоп-словом, а пара есть в эталоне в ±3 ч
+    if games is None:
+        return []
+    refs = []
+    for ref in games.get("эталон") or []:
+        try:
+            refs.append((datetime.fromisoformat(ref["start_kyiv"]), ref))
+        except (KeyError, TypeError, ValueError):
+            continue
+    out = []
+    for domain, s in sorted(sites.items()):
+        hits: dict[str, list] = collections.defaultdict(list)
+        for p, word in s.stopped:
+            pair = live.split_teams(p.match_raw or p.title or "")
+            start = p.start
+            if not pair or start is None:
+                continue
+            when = start.astimezone(ZoneInfo("Europe/Kyiv")).replace(tzinfo=None)
+            for at, ref in refs:
+                if abs((when - at).total_seconds()) > STOP_REF_HOURS * 3600:
+                    continue
+                if max(_pair_score({"home": pair[0], "away": pair[1]}, ref),
+                       _pair_score({"home": team_canon(pair[0]),
+                                    "away": team_canon(pair[1])}, ref)) \
+                        < names.SIMILAR_ENOUGH:
+                    continue
+                # слово — часть имени, только если оно есть и в самом эталоне
+                # (турнир или команда); иначе это студия про тот же матч
+                named = " ".join(str(ref.get(k) or "") for k in ("league", "home", "away"))
+                if word.lower() in live.greek_plain(named).lower():
+                    hits[word.lower()].append((when, p, ref))
+                break
+        for word, found in sorted(hits.items(), key=lambda x: -len(x[1])):
+            ex = "; ".join(f"{w:%d.%m %H:%M} {p.channel_raw} «{p.title[:60]}» "
+                           f"(эталон {ref.get('home')} — {ref.get('away')}, "
+                           f"{ref.get('league') or '?'})" for w, p, ref in found[:EXAMPLES])
+            out.append(f"{domain}: {len(found)} строк(и) с пометкой эфира сняты "
+                       f"стоп-словом «{word}», а пара есть в эталоне — слово, "
+                       f"похоже, часть имени (keep_names в markers.json) — {ex}")
+    return out
 
 
 # ---- проверки ---------------------------------------------------------------
@@ -1006,6 +1087,7 @@ def main() -> int:
         ("7. Кличка: вторая команда сошлась, эта — нет", alias),
         ("8. Время сайта отличается от эталона на целые часы", zones),
         ("10. Одна страница на разные дни или каналы", check_same_pages(sites)),
+        ("11. Эфир с парой из эталона снят стоп-словом", check_stopped(sites, games)),
     ]
     errors = [f"{d}: {e}" for d, s in sorted(sites.items()) for e in s.errors[:2]]
     if errors:

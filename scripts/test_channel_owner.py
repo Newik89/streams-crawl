@@ -39,6 +39,12 @@ def проверка(имя: str, вышло, ждём) -> None:
         print(f"  ✘ {имя}: вышло {вышло!r}, ждём {ждём!r}")
 
 
+#: часы заливки — сегодня в полдень, а не настоящие: игры теста стоят на
+#: 20:00, и после 20:00 заливка (`save_games`) законно не брала «уже
+#: прошедшую» игру — тест краснел сам по себе каждый вечер (11.10.2026)
+ЧАСЫ = datetime.combine(date.today(), datetime.min.time()).replace(hour=12)
+
+
 def день(n: int) -> str:
     """Дата заливки от сегодняшнего дня: `save_games(now=None)` смотрит на
     настоящие часы, и зашитые «2026-10-08» назавтра ушли в прошлое — 09.10
@@ -154,7 +160,7 @@ def main() -> int:
                             ("mojtv.hr", "Sport Klub 1"),
                             ("mojtv.hr", "MAX Sport 1")]),
         игра(день(3), [("mojtv.hr", "Sport Klub 1")]),
-    ], now=None)
+    ], now=ЧАСЫ)
     отметки = {(r["domain"], r["canonical_name"], r["start_kyiv"][:10])
                for r in conn2.execute(
                    "SELECT s.domain, c.canonical_name, e.start_kyiv "
@@ -177,13 +183,13 @@ def main() -> int:
     conn5 = база()
     строки5 = [("mojtv.hr", "Sport Klub 1"), ("mojtv.hr", "MAX Sport 1")]
     без_правила = store.save_games(conn5, [игра(день(0), строки5)],
-                                   now=None)
+                                   now=ЧАСЫ)
     conn5.execute("UPDATE sources SET selector_config = ? WHERE id = 1",
                   (json.dumps({channel_owner.ФЛАГ: True}),))
     conn5.commit()
     прошлый_сбор(conn5, день(1), datetime.now().strftime("%Y-%m-%d %H:%M"))
     с_правилом = store.save_games(conn5, [игра(день(0), строки5)],
-                                  now=None)
+                                  now=ЧАСЫ)
     осталось = {r["canonical_name"] for r in conn5.execute(
         "SELECT c.canonical_name FROM event_channels ec "
         "JOIN channels c ON c.id = ec.channel_id "
@@ -201,7 +207,7 @@ def main() -> int:
     conn6 = база()
     прошлый_сбор(conn6, день(1), datetime.now().strftime("%Y-%m-%d %H:%M"))
     один = store.save_games(conn6, [
-        игра(день(0), [("mojtv.hr", "Sport Klub 1")])], now=None)
+        игра(день(0), [("mojtv.hr", "Sport Klub 1")])], now=ЧАСЫ)
     есть = conn6.execute(
         "SELECT COUNT(*) FROM event_channels ec JOIN sources s "
         "ON s.id = ec.source_id JOIN events e ON e.id = ec.event_id "
@@ -215,7 +221,7 @@ def main() -> int:
     прошлый_сбор(conn7, день(1), datetime.now().strftime("%Y-%m-%d %H:%M"))
     пара = store.save_games(conn7, [
         игра(день(0), [("sportklub.hr", "Sport Klub 1"),
-                            ("mojtv.hr", "Sport Klub 1")])], now=None)
+                            ("mojtv.hr", "Sport Klub 1")])], now=ЧАСЫ)
     проверка("рядом со своим каналом строка агрегатора не берётся",
              пара.not_own, 1)
 
@@ -232,13 +238,13 @@ def main() -> int:
                             ("mojtv.hr", "MAX Sport 1")]),   # хвост с соседом
         игра(день(4), [("mojtv.hr", "Sport Klub 1"),
                             ("mojtv.hr", "MAX Sport 1")]),   # дальше глубины
-    ], now=None)
+    ], now=ЧАСЫ)
     conn8.execute("UPDATE sources SET selector_config = ? WHERE id = 1",
                   (json.dumps({channel_owner.ФЛАГ: True}),))
     conn8.commit()
     прошлый_сбор(conn8, день(1), datetime.now().strftime("%Y-%m-%d %H:%M"))
     хвосты = store.save_games(conn8, [
-        игра(день(2), [("mojtv.hr", "Sport Klub 1")])], now=None)  # одиночка
+        игра(день(2), [("mojtv.hr", "Sport Klub 1")])], now=ЧАСЫ)  # одиночка
     остались = sorted((r["start_kyiv"][:10], r["canonical_name"]) for r in conn8.execute(
         "SELECT e.start_kyiv, c.canonical_name FROM event_channels ec "
         "JOIN channels c ON c.id = ec.channel_id JOIN sources s "

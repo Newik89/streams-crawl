@@ -19,6 +19,11 @@
 Сами слова лежат в `data/markers.json`, а не в коде: список пополняется по
 мере подключения сайтов. У источника их можно перекрыть через
 `selector_config` → `markers`.
+
+Стоп-слово бывает частью имени: «Conference League» (турнир), «Studio
+Zagreb» (клуб). Такие имена перечислены в `keep_names` и вырезаются из
+текста перед любым поиском (`Markers.found`) — 11.10.2026 слово
+«conference» молча снимало все матчи Лиги конференций.
 """
 
 from __future__ import annotations
@@ -117,6 +122,8 @@ class Markers:
     not_live: re.Pattern | None
     stop_title: re.Pattern | None
     stop_genre: re.Pattern | None = None
+    #: имена со стоп-словом внутри (`keep_names`): вырезаются перед поиском
+    keep: re.Pattern | None = None
 
     def found(self, pattern, text: str) -> str:
         if not pattern or not text:
@@ -124,7 +131,12 @@ class Markers:
         # словарь хранит греческие слова без ударений (`_pattern`) — текст
         # перед поиском приводим так же, иначе «ζωντανά» не находил само
         # себя, и 11.09 все греческие сайты разом дали ноль строк
-        m = pattern.search(greek_plain(text))
+        text = greek_plain(text)
+        if self.keep is not None:
+            # «Conference League», «Studio Zagreb» — имя, а не жанр: его
+            # слова не стоп-слова (шапка модуля, 11.10.2026)
+            text = self.keep.sub(" ", text)
+        m = pattern.search(text)
         return m.group(0) if m else ""
 
 
@@ -136,7 +148,8 @@ def load(path: Path | None = None, override: dict | None = None) -> Markers:
     return Markers(live=_pattern(_flatten(data.get("live"))),
                    not_live=_pattern(_flatten(data.get("not_live"))),
                    stop_title=_pattern(_flatten(data.get("stop_title"))),
-                   stop_genre=_pattern(_flatten(data.get("stop_genre"))))
+                   stop_genre=_pattern(_flatten(data.get("stop_genre"))),
+                   keep=_pattern(_flatten(data.get("keep_names"))))
 
 
 def split_teams(raw: str) -> tuple[str, str] | None:
