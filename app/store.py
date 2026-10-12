@@ -98,12 +98,27 @@ def db_time(text: str) -> str:
 
 def normalize_times(conn: sqlite3.Connection) -> int:
     # Самопочинка: время с «T», записанное в базу в обход `db_time`, — к
-    # общему виду. Зовётся в начале каждой заливки (`save_games`)
+    # общему виду, и время UTC — к киевскому (киевское главное: по нему
+    # витрина сортирует и показывает). Зовётся на каждом заборе
+    # (`games_import`, до «файл не менялся») и в начале заливки. 12.10:
+    # #5904 с «T» стояла в конце дня на витрине (сортировка текстом), а её
+    # UTC отстал на час — старая ночная чистка двигала только киевское
+    from zoneinfo import ZoneInfo
     n = 0
     for column in ("start_kyiv", "start_utc"):
         n += conn.execute(
             f"UPDATE events SET {column} = substr(replace({column}, 'T', ' '), 1, 16) "
             f"WHERE {column} LIKE '%T%'").rowcount
+    kyiv = ZoneInfo("Europe/Kyiv")
+    for row in conn.execute("SELECT id, start_kyiv, start_utc FROM events").fetchall():
+        try:
+            want = _iso(datetime.fromisoformat(row["start_kyiv"]).replace(tzinfo=kyiv)
+                        .astimezone(timezone.utc))
+        except (TypeError, ValueError):
+            continue
+        if (row["start_utc"] or "") != want:
+            n += conn.execute("UPDATE events SET start_utc = ? WHERE id = ?",
+                              (want, row["id"])).rowcount
     if n:
         conn.commit()
     return n
@@ -406,8 +421,14 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             stats.repeats += 1
             continue
         start_kyiv = _iso(_parse_dt(game["start_kyiv"]))
-        start_utc = _iso(_parse_dt(game["start_utc"])) if game.get("start_utc") \
-            else start_kyiv
+        # нет UTC в файле — из киевского по календарю (раньше клали киевское
+        # как есть: UTC врал на 3 ч — нашёл тест самопочинки, 12.10)
+        if game.get("start_utc"):
+            start_utc = _iso(_parse_dt(game["start_utc"]))
+        else:
+            from zoneinfo import ZoneInfo
+            start_utc = _iso(_parse_dt(start_kyiv).replace(
+                tzinfo=ZoneInfo("Europe/Kyiv")).astimezone(timezone.utc))
         league = game.get("league") or ""
         if found is None:
             cur = conn.execute(
@@ -702,7 +723,8 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             "LEFT JOIN leagues l ON l.id = e.league_id "
             "LEFT JOIN teams th ON th.id = e.team_home_id "
             "LEFT JOIN teams ta ON ta.id = e.team_away_id "
-            "ORDER BY e.start_kyiv"):
+            # время в общем виде: запись с «T» иначе уезжала в конец дня
+            "ORDER BY replace(e.start_kyiv, 'T', ' ')"):
         start = _parse_dt(row["start_kyiv"])
         ends = start + timedelta(
             minutes=grace_for(row["sport"], row["grace_minutes"], graces))
