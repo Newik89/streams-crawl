@@ -75,26 +75,53 @@ def call(token: str, method: str, path: str, body: dict | None = None):
             return e.code, text
 
 
-def ensure_label(token: str, slug: str) -> None:
+def call_retry(token: str, method: str, path: str, body: dict | None = None,
+               tries: int = 3, pause: float = 5, sleep=None):
+    """`call` с повторами (тревоги сервера, 12.10): сбой связи или 5xx — ещё
+    раз через `pause` с; после `tries` попыток — последний ответ, сбой
+    связи — код 0."""
+    import time
+    sleep = sleep or time.sleep
+    status, answer = 0, None
+    for n in range(tries):
+        if n:
+            sleep(pause)
+        try:
+            status, answer = call(token, method, path, body)
+        except Exception as e:                  # noqa: BLE001 — нет связи, таймаут
+            status, answer = 0, f"{type(e).__name__}: {e}"
+            continue
+        if status < 500:
+            break
+    return status, answer
+
+
+def ensure_label(token: str, slug: str, label: str = LABEL,
+                 about: str = "обход телесайтов упал или прерван — смотреть прогон"
+                 ) -> None:
     """Метка нужна заранее: issue с несуществующей меткой GitHub не примет."""
     status, _ = call(token, "POST", f"/repos/{slug}/labels",
-                     {"name": LABEL, "color": "b60205",
-                      "description": "обход телесайтов упал или прерван — смотреть прогон"})
+                     {"name": label, "color": "b60205", "description": about})
     if status not in (201, 422):            # 422 — уже есть, это норма
-        print(f"метка «{LABEL}»: GitHub ответил {status}")
+        print(f"метка «{label}»: GitHub ответил {status}")
 
 
-def open_issue(token: str, slug: str) -> int:
-    """Номер открытой issue с нашей меткой, 0 — нет такой."""
-    query = urllib.parse.urlencode({"labels": LABEL, "state": "open",
-                                    "per_page": 5})
+def open_issues(token: str, slug: str, label: str = LABEL) -> list[dict] | None:
+    """Открытые issue с меткой `label`, свежие первыми; None — GitHub не
+    ответил (не путать с «открытых нет»)."""
+    query = urllib.parse.urlencode({"labels": label, "state": "open",
+                                    "per_page": 10})
     status, items = call(token, "GET", f"/repos/{slug}/issues?{query}")
     if status != 200 or not isinstance(items, list):
-        return 0
-    for item in items:                      # этот список отдаёт и PR-ы
-        if "pull_request" not in item:
-            return int(item["number"])
-    return 0
+        return None
+    return [item for item in items           # этот список отдаёт и PR-ы
+            if "pull_request" not in item]
+
+
+def open_issue(token: str, slug: str, label: str = LABEL) -> int:
+    """Номер открытой issue с меткой `label`, 0 — нет такой."""
+    items = open_issues(token, slug, label) or []
+    return int(items[0]["number"]) if items else 0
 
 
 def _load(folder: Path, name: str) -> dict:

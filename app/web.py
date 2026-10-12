@@ -181,7 +181,8 @@ def create_app() -> Flask:
         # 05.10: метка посетителя, откуда пришёл, язык; маячок витрины пишет
         # свой файл и в общий журнал не идёт
         own_look = request.endpoint == "visits_list" and session.get("admin")
-        if request.endpoint not in ("static", "beacon") and not own_look:
+        # «/alive» — проверка GitHub-а раз в час, не посетитель
+        if request.endpoint not in ("static", "beacon", "alive") and not own_look:
             visits.log_request(request, resp, session)
         return resp
 
@@ -378,7 +379,8 @@ def create_app() -> Flask:
     PUBLIC = {"login", "logout", "static", "schedule", "schedule_other",
               "schedule_run", "schedule_date", "beacon",
               "crawl_hook_in",
-              "api_events", "api_leagues", "api_channels", "api_status"}
+              "api_events", "api_leagues", "api_channels", "api_status",
+              "alive"}
 
     @app.before_request
     def require_login():
@@ -1423,6 +1425,18 @@ def create_app() -> Flask:
         finally:
             conn.close()
         return jsonify({"channels": rows})
+
+    @app.route("/alive")
+    def alive():
+        """Жив ли сервер (схема сбоев шаг 9, `app/alive.py`): открывает GitHub
+        (`scripts/server_alive.py`). Публичная, без ключа: отдаёт только,
+        кто из сторожей сервера давно молчит."""
+        from . import alive as alive_rules
+        conn = db.connect()
+        try:
+            return jsonify(alive_rules.report(conn, datetime.now(timezone.utc)))
+        finally:
+            conn.close()
 
     @app.route("/api/v1/status")
     def api_status():

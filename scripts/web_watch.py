@@ -17,7 +17,25 @@ r"""Сторож витрины: сайт завис — перезапусти�
   В4. Перезапуски за час исчерпаны → одна ТРЕВОГА в час (строка «ТРЕВОГА —
       …» в «Прогонах»), больше ничего: три перезапуска не помогли — дело не
       в зависании, нужен человек.
-Память — настройка `web_watch` (JSON {restarts: [UTC ISO…], alarm_at}).
+Дальше — схема сбоев, шаг 9 (12.10.2026), тоже на каждом запуске:
+  В5. Сторож заказов (`crawl_watch.py`, cron */15) молчит дольше порога
+      `app/alive.py` (40 мин; правила Ж1–Ж3 — `alive.silent_minutes`) →
+      запустить его самому (в фоне, журнал тот же, с `alive.KICKED_ENV`:
+      такой запуск отметку «жив» не ставит), не чаще раза в час (`kick_at`).
+      Первый пинок за этот раз молчания — ТРЕВОГА (`episode_at`), следующие —
+      простая строка «всё ещё молчит» (о долгом молчании владельцу напомнит
+      GitHub через /alive, раз в сутки). Своя прошлая отметка тоже старше
+      своего порога — лежал весь сервер (или код только приехал): молчание
+      сторожа заказов считаем заново с этой минуты (`resume_at`), иначе
+      после перезагрузки была бы ложная ТРЕВОГА «cron не запускает».
+  В6. Новые ТРЕВОГИ из «Прогонов» — письмом владельцу (`app/alarm_mail.py`,
+      правила М1–М4), в том числе написанные этим же запуском.
+  В7. Последним — своя отметка «жив» (`alive.beat`): по ней сервер (/alive)
+      и GitHub видят, что сторож витрины ходит.
+Два запуска разом не идут: замок `web-watch.lock` рядом с базой; занят
+(прошлый ещё ждёт витрину или GitHub) — этот выходит молча.
+Память — настройка `web_watch` (JSON {restarts: [UTC ISO…], alarm_at,
+kick_at, episode_at, resume_at}).
 
 Cron (deploy/cron.d/streams-schedule): */5 * * * *  web_watch.py
     venv/bin/python scripts/web_watch.py           # проверить и действовать
@@ -40,7 +58,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import db, watch  # noqa: E402
+from app import alarm_mail, alive, db, watch  # noqa: E402
 
 #: адрес страницы витрины у самого gunicorn (deploy/systemd/streams-web.service)
 URL = os.environ.get("STREAMS_WEB_URL", "http://127.0.0.1:8000/schedule")
@@ -56,6 +74,12 @@ ALARM_EVERY = timedelta(hours=1)
 SERVICE = "streams-web"
 KEY = "web_watch"
 WHO = "автомат"
+#: сторож заказов: как его запустить самому (В5) и куда писать его вывод —
+#: тот же журнал, что у cron
+WATCH_SCRIPT = ROOT / "scripts" / "crawl_watch.py"
+WATCH_LOG = "/var/log/streams-watch.log"
+#: запускать молчащего сторожа и тревожить о нём — не чаще (В5)
+KICK_EVERY = timedelta(hours=1)
 
 
 def probe(url: str = URL, timeout: int = TIMEOUT) -> tuple[bool, str]:
@@ -99,9 +123,53 @@ def verdict(state: dict, now: datetime, first: tuple[bool, str],
                      f"перезапуска за час не помогли; сервер нужен человеку"), new
 
 
+def watch_silence(state: dict, now: datetime, silent_for: int,
+                  web_was_down: bool) -> tuple[str, str, dict]:
+    """Правило В5. `silent_for` — сколько минут молчит сторож заказов
+    (`alive.silent_minutes`); `web_was_down` — своя прошлая отметка старше
+    своего порога или её нет. Возвращает (что делать: ok / quiet / kick —
+    запустить со строкой / alarm — запустить с ТРЕВОГОЙ, слова, новая память)."""
+    name, limit = alive.BEATS["crawl_watch"]
+    new = dict(state)
+    if web_was_down:
+        new["resume_at"] = watch.when(now)
+    resume = watch.moment(new.get("resume_at") or "")
+    if resume is not None:
+        silent_for = min(silent_for, alive.minutes_since(resume, now))
+    if silent_for <= limit:
+        new.pop("episode_at", None)
+        return "ok", "", new
+    last = watch.moment(state.get("kick_at") or "")
+    if last and watch.utc(last) > now - KICK_EVERY:
+        return "quiet", "", new
+    new["kick_at"] = watch.when(now)
+    if new.get("episode_at"):
+        return "kick", (f"{name} всё ещё молчит ({silent_for} мин) — снова "
+                        f"запустил его сам"), new
+    new["episode_at"] = watch.when(now)
+    return "alarm", (f"ТРЕВОГА — {name} молчит {silent_for} мин: cron его не "
+                     f"запускает или он падает. Запустил его сам; журнал — "
+                     f"{WATCH_LOG}"), new
+
+
 def restart() -> str:
     r = subprocess.run(["systemctl", "restart", SERVICE], capture_output=True, text=True)
     return "ok" if r.returncode == 0 else (r.stderr or r.stdout or "?").strip()[:200]
+
+
+def kick() -> str:
+    """Запустить сторожа заказов в фоне (В5): он может ждать общий замок до
+    7 мин — дольше, чем живёт этот запуск."""
+    env = dict(os.environ)
+    env[alive.KICKED_ENV] = "1"           # пинок отметку «жив» не ставит
+    try:
+        with open(WATCH_LOG, "ab") as log:
+            subprocess.Popen([sys.executable, str(WATCH_SCRIPT)], cwd=ROOT,
+                             stdout=log, stderr=subprocess.STDOUT, env=env,
+                             start_new_session=True)
+    except OSError as e:
+        return f"не запустился: {e}"[:200]
+    return "запущен"
 
 
 def main() -> int:
@@ -109,24 +177,55 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--check", action="store_true", help="только сказать, не делать")
     args = ap.parse_args()
+    lock = db.db_path().with_name("web-watch.lock")
+    fd = os.open(lock, os.O_RDWR | os.O_CREAT, 0o600)
+    try:
+        if not watch._try_lock(fd):      # прошлый запуск ещё идёт
+            if args.check:
+                print("идёт запуск из cron — проверка не сделана, повторите позже")
+            return 0
+        try:
+            return _run(args.check)
+        finally:
+            watch._unlock(fd)
+    finally:
+        os.close(fd)
+
+
+def _run(check: bool) -> int:
     now = datetime.now(timezone.utc)
-    conn = db.connect()
+    stamp = now.astimezone(watch.KYIV).strftime("%d.%m %H:%M")
+    # 30 с, как у прочих скриптов: заливка игр держит базу долго, а запись
+    # памяти и отметки «жив» не должна из-за неё падать
+    conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
     try:
         state = watch.load_json(conn, KEY) or {}
-        what, words, new = verdict(
+        own = alive.beat_at(conn, "web_watch")      # до своей новой отметки (В7)
+        web_was_down = own is None or (alive.minutes_since(own, now)
+                                       > alive.BEATS["web_watch"][1])
+        what, words, new = verdict(                                # В1–В4
             state, now, probe(),
             lambda: (time.sleep(RETRY_SECONDS), probe())[1])
-        stamp = now.astimezone(watch.KYIV).strftime("%d.%m %H:%M")
-        if what == "ok":
-            return 0
-        print(f"{stamp} {what}: {words}")
-        if args.check:
-            return 0
-        if what == "restart":
-            words += f"; systemctl: {restart()}"
-        if what in ("restart", "alarm"):
-            watch.note(conn, words, who=WHO)
-        watch.save_json(conn, KEY, new)
+        if what != "ok":
+            print(f"{stamp} {what}: {words}")
+            if not check:
+                if what == "restart":
+                    words += f"; systemctl: {restart()}"
+                if what in ("restart", "alarm"):
+                    watch.note(conn, words, who=WHO)
+        silent_for, _ = alive.silent_minutes(conn, "crawl_watch", now, write=not check)
+        what, words, new = watch_silence(new, now, silent_for, web_was_down)  # В5
+        if what in ("kick", "alarm"):
+            print(f"{stamp} {what}: {words}")
+            if not check:
+                watch.note(conn, f"{words}; запуск: {kick()}", who=WHO)
+        if not check and new != state:
+            watch.save_json(conn, KEY, new)
+        mail = alarm_mail.flush(conn, now, check=check)            # В6
+        if mail:
+            print(f"{stamp} {mail}")
+        if not check:
+            alive.beat(conn, "web_watch", now)                     # В7
         return 0
     finally:
         conn.close()

@@ -1,0 +1,34 @@
+# Тревога сервера — письмом владельцу (схема сбоев, шаг 9, 12.10.2026).
+# Ключа GitHub на сервере нет: сервер пушит деплой-ключом аннотированный тег
+# alarm-<ts>, в сообщении тега — текст новых тревог (app/alarm_mail.py).
+# Этот workflow разбирает ВСЕ теги alarm-* (старые первыми): заводит issue
+# «Тревоги сервера — ДД.ММ.ГГГГ» (одна на день, дальше комментарии) и
+# удаляет тег только после того, как GitHub принял текст. Прогон, отменённый
+# в очереди или упавший, доберёт следующий. Правила — scripts/alarm_issue.py.
+name: Тревога сервера
+
+on:
+  push:
+    tags: ["alarm-*"]
+
+permissions:
+  contents: write   # прочитать и удалить теги-письма
+  issues: write
+
+concurrency:
+  group: alarm
+  cancel-in-progress: false
+
+jobs:
+  mail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+
+      - name: Завести issue и убрать разобранные теги
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/alarm_issue.py

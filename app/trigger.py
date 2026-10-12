@@ -131,6 +131,67 @@ def push_request_tag(kind: str, value: str) -> tuple[bool | None, str]:
     return False, "заявка не прошла: " + (r.stderr or "?").strip()[:160]
 
 
+def has_alarm_workflow(cwd: Path = ROOT) -> bool:
+    """Есть ли `alarm.yml` в текущем коммите — его GitHub и запустит на тег."""
+    has = subprocess.run(["git", "cat-file", "-e", "HEAD:.github/workflows/alarm.yml"],
+                         capture_output=True, cwd=cwd, timeout=30)
+    return has.returncode == 0
+
+
+def make_tag_object(text: str, tag: str, moment: int,
+                    cwd: Path = ROOT) -> tuple[str, str]:
+    """Объект аннотированного тега `tag` на текущий коммит с сообщением
+    `text` — в базе git, без локального тега. (sha объекта, слова ошибки)."""
+    head = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
+                          text=True, cwd=cwd, timeout=30).stdout.strip()
+    if not head:
+        return "", "git не назвал текущий коммит"
+    body = (f"object {head}\ntype commit\ntag {tag}\n"
+            f"tagger streams-server <streams-server@localhost> {moment} +0000\n"
+            f"\n{text.rstrip()}\n")
+    made = subprocess.run(["git", "mktag"], input=body.encode("utf-8"),
+                          capture_output=True, cwd=cwd, timeout=30)
+    sha = made.stdout.decode("ascii", "replace").strip()
+    if made.returncode != 0 or not sha:
+        return "", "git mktag: " + made.stderr.decode("utf-8", "replace").strip()[:160]
+    return sha, ""
+
+
+def push_alarm_tag(text: str) -> tuple[bool | None, str]:
+    """Тревога письмом (схема сбоев шаг 9, `app/alarm_mail.py`): тег
+    `alarm-<время>` С ТЕКСТОМ — аннотированный, текст тревоги в его
+    сообщении. Тег-объект собирается `git mktag` без локального тега и
+    пушится тем же деплой-ключом, что заявки кнопок; workflow `alarm.yml`
+    читает текст, заводит issue (письмо владельцу) и удаляет тег.
+    (ушёл ли, слова) — как у `push_request_tag`."""
+    import time as _time
+    moment = int(_time.time())
+    tag = f"alarm-{moment}"
+    try:
+        # тег ставится на текущий коммит сервера, и GitHub берёт alarm.yml
+        # из него же: нет там workflow — письмо не уйдёт, а тег повиснет в
+        # публичном репозитории. Ждём кода с ним (М4 повторит)
+        if not has_alarm_workflow():
+            return False, "в коде сервера ещё нет alarm.yml — жду обновления"
+        sha, error = make_tag_object(text, tag, moment)
+        if not sha:
+            return False, error
+        env = dict(os.environ)
+        env["GIT_SSH_COMMAND"] = (f"ssh -i {_BUTTON_KEY} "
+                                  "-o StrictHostKeyChecking=accept-new")
+        r = subprocess.run(
+            ["git", "push", f"git@github.com:{_repo_slug()}.git",
+             f"{sha}:refs/tags/{tag}"],
+            capture_output=True, text=True, cwd=ROOT, env=env, timeout=90)
+    except subprocess.TimeoutExpired:
+        return None, "GitHub не ответил за 90 с"
+    except (OSError, RuntimeError) as e:
+        return False, f"{type(e).__name__}: {e}"[:160]
+    if r.returncode == 0:
+        return True, f"тег {tag} ушёл"
+    return False, "тег не прошёл: " + (r.stderr or "?").strip()[:160]
+
+
 def dispatch_crawl(days: int, date: str = "", only: str = "") -> tuple[bool, str]:
     """Полный обход на `days` суток; `date` — скан одной даты ГГГГ-ММ-ДД
     (календарь владельца); `only` — точечный прогон одного сайта (кнопка
