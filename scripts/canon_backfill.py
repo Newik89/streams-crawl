@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from app import broadcast, canon, db, dictionary, names  # noqa: E402
+from app import broadcast, canon, db, dictionary, names, store  # noqa: E402
 from parse_live import REPEAT_GUESS_DOMAINS   # noqa: E402
 
 DEFAULT = ROOT / "results" / "games.json"
@@ -329,11 +329,16 @@ def main() -> int:
                              ", ".join(f"{k}=?" for k in sets) +
                              " WHERE id=?", (*sets.values(), r["id"]))
                 stamped += 1
-        # подтянутое время — обратно в базу по id игры
+        # подтянутое время — обратно в базу по id игры. Время в базе —
+        # через пробел (`store.db_time`): с «T» поиск игры его не видит, и
+        # следующая заливка заводит дубль (#5904/#6039, 12.10). И время UTC
+        # вместе с киевским: раньше двигалось только киевское
         for game, ref, _ in aligned["sure"]:
             conn.execute("UPDATE events SET start_kyiv=?, "
+                         "start_utc = COALESCE(?, start_utc), "
                          "flags = COALESCE(flags, ?) WHERE id=?",
-                         (game["start_kyiv"],
+                         (store.db_time(game["start_kyiv"]),
+                          store.db_time(game.get("start_utc") or "") or None,
                           f"fs:{ref['fs_id']}" if ref.get("fs_id") else None,
                           game["id"]))
         conn.commit()

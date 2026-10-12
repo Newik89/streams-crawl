@@ -126,12 +126,12 @@ def source_settings(plan_path: Path) -> dict[str, dict]:
 LATE_REPEAT = timedelta(hours=30)
 
 
-# Пороги «показ в час матча или повтор» (REPEAT_AFTER 4 ч, REPEAT_DEPTH
+# Пороги «показ в час матча или повтор» (repeat_after: футбол 3 ч, прочее 4 ч; REPEAT_DEPTH
 # 60 ч, LIVE_NEAR ±3 ч, ROUND_SAME_TIME — заглушка тура) живут в
 # `app/reference.py`: по ним же очередь «Вид спорта» отличает повтор от
 # матча (`app/sport_question.py`). Смысл каждого — там.
-from app.reference import (LIVE_NEAR, REPEAT_AFTER, REPEAT_DEPTH,  # noqa: E402
-                           ROUND_SAME_TIME)
+from app.reference import (LIVE_NEAR, REPEAT_DEPTH,  # noqa: E402
+                           ROUND_SAME_TIME, repeat_after)
 
 
 def add_reference(programs: list, reference: list,
@@ -244,7 +244,8 @@ def site_said_live(game) -> bool:
 
 
 def played_before(home: str, away: str, league: str, start,
-                  индекс: dict, site_live: bool = False) -> dict | None:
+                  индекс: dict, site_live: bool = False,
+                  sport: str = "") -> dict | None:
     """Запись эталона, повтором которой является показ, или None.
 
     Правила по порядку:
@@ -255,10 +256,10 @@ def played_before(home: str, away: str, league: str, start,
        показывает этот матч вживую, это не повтор, даже если та же пара
        встречалась и раньше (сбор #205: эталон держал Instituto — Boca
        Juniors и 09.10, и 10.10, и живой эфир 10.10 снимался «записью»).
-    3. Та же пара в эталоне раньше строки на `REPEAT_AFTER`…`REPEAT_DEPTH`
-       (4–60 ч) — матч уже сыгран, показ — повтор. Меньше четырёх часов —
-       тот же матч в своём окне (студия, разброс сеток), больше шестидесяти
-       — уже новая встреча тех же команд.
+    3. Та же пара в эталоне раньше строки на `repeat_after`…`REPEAT_DEPTH`
+       (футбол 3–60 ч, баскетбол и теннис 4–60 ч) — матч уже сыгран, показ
+       — повтор. Раньше — тот же матч в своём окне (студия, разброс
+       сеток), больше шестидесяти — уже новая встреча тех же команд.
     4. Исключение из правила 3: сайт сам пометил показ эфиром (`site_live`),
        а время эталона — заглушка тура (`round_placeholder`). Тогда прав,
        скорее всего, сайт: Arena (tvarenasport.ba) ставит Sloga — Zrinjski
@@ -275,6 +276,11 @@ def played_before(home: str, away: str, league: str, start,
     день = start.date()
 
     def same_pair(r) -> bool:
+        # вид спорта игры известен — матч эталона другого вида не в счёт:
+        # баскетбольное дерби тех же клубов через 3 ч после футбольного —
+        # не повтор футбола (независимая проверка 12.10)
+        if sport and (r.get("sport") or "F") != sport:
+            return False
         пара = {"home": home, "away": away, "league": league,
                 "sport": r.get("sport", "F")}
         return canon._pair_score(пара, r) >= names.SIMILAR_ENOUGH
@@ -285,7 +291,8 @@ def played_before(home: str, away: str, league: str, start,
                 return None                                  # правило 2
     for д in (день, день - timedelta(days=1), день - timedelta(days=2)):
         for r, when in индекс.get(д, []):
-            if REPEAT_AFTER < start - when <= REPEAT_DEPTH and same_pair(r):
+            if repeat_after(r.get("sport", "F")) < start - when <= REPEAT_DEPTH \
+                    and same_pair(r):
                 if site_live and round_placeholder(r, when, индекс):
                     continue                                 # правило 4
                 return r                                     # правило 3
@@ -318,7 +325,8 @@ def drop_reference_repeats(games: list, reference: list) -> tuple[list, list]:
     оставили, снятые = [], []
     for g in games:
         матч = played_before(g.home, g.away, g.first.league or "", g.start,
-                             по_дням, site_live=site_said_live(g))
+                             по_дням, site_live=site_said_live(g),
+                             sport=g.sport or "")
         if матч is None:
             оставили.append(g)
         else:
@@ -948,7 +956,19 @@ def main() -> int:
     # Латиницу тоже (07.10, сбор #205): «Ferencvárosi TC - DVSC» у port.hu
     # английское «Ferencvaros - Debrecen» не узнавало, а венгерское
     # «Debreceni VSC» узнаёт. Футбол и баскет/теннис — каждый со своими
-    reference_local = local_reference(reference_full)
+    # Скан даты берёт эталон и за ДЕНЬ ДО неё (`crawl_fetch.targets`) —
+    # чтобы фильтр «матч уже сыгран» видел вчерашний матч. Угаданный эфир
+    # дня подтверждают только матчи, начавшиеся в сам день (по Киеву):
+    # иначе ночной повтор «Frosinone — Sassuolo» 00:30 (port.hu) сходил за
+    # эфир матча 16.10 21:45 — полный сбор снимает его фильтром «пара уже
+    # шла у другого сайта», а скан строк вчерашнего дня не разбирает (12.10)
+    confirm_full, confirm = reference_full, reference
+    if args.date:
+        confirm_full = [x for x in reference_full
+                        if (x.get("start_kyiv") or "")[:10] >= args.date]
+        confirm = [(h, a, t) for h, a, t in reference
+                   if t.strftime("%Y-%m-%d") >= args.date]
+    reference_local = local_reference(confirm_full)
 
     def _in_reference_local(r, sport: str) -> bool:
         return in_local_reference(r.home, r.away, r.start_kyiv, sport,
@@ -960,7 +980,7 @@ def main() -> int:
         # а точное сравнение убивало живую строку как запись (#728, 03.09)
         if _in_reference_local(r, "F"):
             return True
-        for h, a, t in reference:
+        for h, a, t in confirm:
             if abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
                 continue
             if (names.same_team(r.home, h) and names.same_team(r.away, a))                     or (names.same_team(r.home, a)
@@ -1002,7 +1022,7 @@ def main() -> int:
     from datetime import datetime as _dt_kls
     from zoneinfo import ZoneInfo as _Kyiv
     reference_bt = []
-    for rec in reference_full:
+    for rec in confirm_full:        # скан даты — только матчи самого дня
         if rec.get("sport") in ("B", "T"):
             try:
                 t = _dt_kls.strptime(rec["start_kyiv"], "%Y-%m-%dT%H:%M") \

@@ -944,14 +944,19 @@ def retime(aligned: dict) -> int:
     """Подтянуть время к эталону (решение владельца 31.08: «время важно,
     сверять по flashscore»). Случай Cosmote 03.09: их гид ставил Эспаньол —
     Севилью на 19:00 при настоящих 22:00, и игра висела дублем — окно
-    склейки её не догоняло. Правим только ОДИНОЧНЫЕ игры (1–2 источника):
+    склейки её не догоняло. Правим только ОДИНОЧНЫЕ игры (1–2 САЙТА):
     когда время подтверждают три сайта и больше, а эталон спорит — верим
-    большинству и не трогаем."""
+    большинству и не трогаем. Считаются сайты, а не строки: 12.10 у
+    Lokomotiv — Krasnodar было 4 строки, но два сайта, и две из строк —
+    один канал «Матч ТВ» под двумя именами на ntvplus; «большинство» за
+    18:30 вышло мнимым, время не подтянулось к 19:30, и игра легла дублем."""
     from datetime import timedelta as _td
     from zoneinfo import ZoneInfo as _Z
     fixed = 0
     for game, ref, _ in aligned["sure"]:
-        if len(game.get("entries") or []) > 2:
+        sites = {(e.get("source") or "").strip().lower()
+                 for e in game.get("entries") or []}
+        if len(sites - {""}) > 2:
             continue
         ours, its = _parse(game.get("start_kyiv") or ""), \
             _parse(ref.get("start_kyiv") or "")
@@ -971,10 +976,12 @@ def stamp(conn: sqlite3.Connection, aligned: dict) -> int:
     stamped = 0
     for game, ref, _ in aligned["sure"]:
         if ref.get("fs_id"):
+            # время в базе — через пробел, в файле — через «T»: сравниваем
+            # в общем виде, иначе метка не ставилась ни одной игре (12.10)
             stamped += conn.execute(
                 "UPDATE events SET flags = ? WHERE team_home_auto = ? "
-                "AND team_away_auto = ? AND start_kyiv = ?",
+                "AND team_away_auto = ? AND replace(start_kyiv, 'T', ' ') = ?",
                 (f"fs:{ref['fs_id']}", game["home"], game["away"],
-                 game["start_kyiv"])).rowcount
+                 (game["start_kyiv"] or "").replace("T", " ")[:16])).rowcount
     conn.commit()
     return stamped

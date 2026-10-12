@@ -86,6 +86,29 @@ def _iso(dt: datetime) -> str:
     return dt.strftime("%Y-%m-%d %H:%M")
 
 
+def db_time(text: str) -> str:
+    # Время в БАЗЕ — всегда «ГГГГ-ММ-ДД ЧЧ:ММ» (через пробел): поиск игры
+    # (`_find_event`) и окна сравнивают его как ТЕКСТ. В файлах сбора время
+    # пишется через «T» («2026-10-17T19:30») — в базу оно идёт только через
+    # эту функцию. 12.10.2026: ночная чистка записала #5904 с «T», заливка
+    # скана даты не нашла его в окне («T» > « » по алфавиту) и завела дубль
+    # #6039, а каналы #5904 погасли
+    return (text or "").replace("T", " ").replace("Z", "").strip()[:16]
+
+
+def normalize_times(conn: sqlite3.Connection) -> int:
+    # Самопочинка: время с «T», записанное в базу в обход `db_time`, — к
+    # общему виду. Зовётся в начале каждой заливки (`save_games`)
+    n = 0
+    for column in ("start_kyiv", "start_utc"):
+        n += conn.execute(
+            f"UPDATE events SET {column} = substr(replace({column}, 'T', ' '), 1, 16) "
+            f"WHERE {column} LIKE '%T%'").rowcount
+    if n:
+        conn.commit()
+    return n
+
+
 def _parse_dt(text: str) -> datetime:
     return datetime.fromisoformat(text.replace("Z", "").strip())
 
@@ -115,6 +138,8 @@ class SaveStats:
     not_own_note: str = ""
     #: снятые прежние отметки тех же агрегаторов по тем же каналам
     not_own_dropped: int = 0
+    #: время игр, записанное в базу с «T», приведено к общему виду (`db_time`)
+    times_fixed: int = 0
 
 
 def _хозяева_канала(conn: sqlite3.Connection, games: list[dict],
@@ -165,9 +190,11 @@ def _find_event(conn: sqlite3.Connection, game: dict) -> sqlite3.Row | None:
     incoming = merge.Entry(source="", channel="", home=game["home"],
                            away=game["away"], start=start,
                            sport=game.get("sport", ""))
+    # replace: время, записанное с «T» в обход `db_time`, тоже в окне
     for row in conn.execute(
             "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
-            "FROM events WHERE start_kyiv BETWEEN ? AND ?", (lo, hi)):
+            "FROM events WHERE replace(start_kyiv, 'T', ' ') BETWEEN ? AND ?",
+            (lo, hi)):
         stored = merge.Entry(source="", channel="",
                              home=row["team_home_auto"] or "",
                              away=row["team_away_auto"] or "",
@@ -176,6 +203,23 @@ def _find_event(conn: sqlite3.Connection, game: dict) -> sqlite3.Row | None:
         if merge._same_game(stored, incoming, names.SIMILAR_ENOUGH):
             return row
     return None
+
+
+def _fs_event(conn: sqlite3.Connection, game: dict) -> sqlite3.Row | None:
+    """Игра базы с той же меткой flashscore, что дала этой игре сверка с
+    эталоном (`game["fs_id"]` ставит `games_import` по уверенной паре
+    `canon.align`). Ищется ПЕРВОЙ: имена на разных языках и время сайта,
+    расходящееся с эталоном, сюда не мешают. Разбор владельца 12.10: скан
+    даты завёл дубли «Нюкасъл Юнайтед — Астън Вила» рядом с «Newcastle United
+    FC — Aston Villa FC» (#5756) и Lokomotiv — Krasnodar рядом с #5904, а
+    каналы прежних игр погасли. Кандидат должен быть ровно один."""
+    fs = (game.get("fs_id") or "").strip()
+    if not fs:
+        return None
+    rows = conn.execute(
+        "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
+        "FROM events WHERE flags = ?", (f"fs:{fs}",)).fetchall()
+    return rows[0] if len(rows) == 1 else None
 
 
 def _fs_twin(conn: sqlite3.Connection, game: dict,
@@ -303,6 +347,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     (`withheld_rows`): их игры сиротами не считаются."""
     now = now or datetime.now()
     stats = SaveStats()
+    # время с «T» в базе — к общему виду, иначе поиск игры его не видит
+    stats.times_fixed = normalize_times(conn)
     graces = grace_map(conn)
     # до записи игр: правилу 6 нужны отметки, жившие до этой заливки
     гашение = miss.Гашение(conn, coverage, punish, collected, MISS_LIMIT)
@@ -326,9 +372,21 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
         if _parse_dt(game["start_kyiv"]) + timedelta(
                 minutes=grace_for(game.get("sport", ""), None, graces)) < now:
             continue
-        found = _find_event(conn, game)
+        # сперва — по метке flashscore от сверки (`_fs_event`), потом — по
+        # именам и окну времени, потом — по канону команд
+        found = _fs_event(conn, game)
         time_off = 0
         via_twin = False
+        fs_start = ""
+        if found is not None:
+            # по метке: время игры — эталонное (`fs_start` из сверки), а
+            # красная пометка — если время САЙТА от него дальше окна склейки
+            fs_start = db_time(game.get("fs_start") or "") or db_time(found["start_kyiv"])
+            gap = abs(_parse_dt(game["start_kyiv"]) - _parse_dt(fs_start))
+            time_off = int(gap > timedelta(minutes=merge.WINDOW_MINUTES))
+            stats.time_off += time_off
+        else:
+            found = _find_event(conn, game)
         if found is None:
             found = _fs_twin(conn, game, team_ids)
             if found is not None:
@@ -368,7 +426,13 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             # свежий прогон точнее базы: время могло сдвинуться, лига — уточниться
             sets = {"last_seen": _iso(now), "start_utc": start_utc,
                     "start_kyiv": start_kyiv}
-            if via_twin:
+            if fs_start:
+                # нашли по метке flashscore: время — эталонное
+                from zoneinfo import ZoneInfo
+                sets["start_kyiv"] = start_kyiv = fs_start
+                sets["start_utc"] = _iso(_parse_dt(fs_start).replace(
+                    tzinfo=ZoneInfo("Europe/Kyiv")).astimezone(timezone.utc))
+            elif via_twin:
                 # прилипли по канону к игре эталона: время остаётся эталонным
                 del sets["start_utc"], sets["start_kyiv"]
                 start_kyiv = found["start_kyiv"]

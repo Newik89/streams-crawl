@@ -479,8 +479,14 @@ try:
     flash = source("flashscore.mobi", "Etc/GMT-2", "https://www.flashscore.mobi/?d={DAYNUM}",
                    "football")
     got = jobs_of([flash], 1, start=date(2026, 10, 6), single=True)
-    check("скан_даты_06_10_в_22_30_UTC_просит_у_сайта_d0 (#204 просил d=1 и получил 07.10)",
-          [u for *_, u in got] == ["https://www.flashscore.mobi/?d=0"], got)
+    # с 12.10 скан даты берёт эталон и за день до неё (d=-1): фильтр «матч
+    # уже сыгран» видит вчерашний матч (S Sport, Deportivo — Levante)
+    check("скан_даты_06_10_в_22_30_UTC_просит_у_сайта_d0 и вчера d-1 (#204 просил d=1 и получил 07.10)",
+          [(d, u) for _, d, u in got] == [("2026-10-05", "https://www.flashscore.mobi/?d=-1"),
+                                          ("2026-10-06", "https://www.flashscore.mobi/?d=0")], got)
+    other = source("tvarenasport.com", "Europe/Belgrade", "https://example.test/{DD.MM.YYYY}", "")
+    got = jobs_of([other], 1, start=date(2026, 10, 6), single=True)
+    check("скан_даты: прочие сайты — только сам день", [d for _, d, _ in got] == ["2026-10-06"], got)
     got = jobs_of([POLAND, API_UTC, SYDNEY])
     check("полный_обход_в_22_30_UTC: окно каждого сайта — с его «сегодня»",
           got == [("pages.pl", "2026-10-06", "https://pages.pl/kanal?date=2026-10-06"),

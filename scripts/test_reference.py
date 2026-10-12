@@ -207,9 +207,28 @@ kept, gone = parse_live.drop_reference_repeats([direto, record], reference_full)
 check("настоящий_повтор_снят: запись в 14:00 после матча в 01:30",
       kept == [direto] and len(gone) == 1 and gone[0][0] is record
       and gone[0][1]["start_kyiv"] == "2026-10-10T01:30", gone)
-studio = game("Instituto", "Boca Juniors", "2026-10-10 05:00")
-kept, gone = parse_live.drop_reference_repeats([studio], [ref("2026-10-10T01:30")])
-check("меньше_4_часов_после_матча_не_повтор (как раньше)", kept == [studio])
+# футбол: дыры между «в час матча» (±3 ч) и «повтором» больше нет — 12.10
+# S Sport пометил «canlı» показ Deportivo — Levante 17.10 01:30 после матча
+# 16.10 22:00 (3,5 ч), и скан даты завёл дубль
+night = game("Instituto", "Boca Juniors", "2026-10-10 05:00")
+kept, gone = parse_live.drop_reference_repeats([night], [ref("2026-10-10T01:30")])
+check("футбол_3_5_часа_после_матча_уже_повтор (дыра 3–4 ч закрыта)",
+      kept == [] and len(gone) == 1, (kept, gone))
+edge = game("Instituto", "Boca Juniors", "2026-10-10 04:30")
+kept, gone = parse_live.drop_reference_repeats([edge], [ref("2026-10-10T01:30")])
+check("футбол_ровно_3_часа_после_начала_ещё_в_час_матча", kept == [edge], gone)
+basket = merge.Game(entries=[merge.Entry(
+    source="sporttv.pt", channel="SPORT.TV2", home="Benfica", away="Porto",
+    start=datetime.fromisoformat("2026-10-10 05:00").replace(tzinfo=KYIV),
+    sport="B", league="LIGA BETCLIC")])
+kept, gone = parse_live.drop_reference_repeats(
+    [basket], [dict(ref("2026-10-10T01:30", home="Benfica", away="Porto"), sport="B")])
+check("баскетбол_3_5_часа_после_матча_ещё_не_повтор (порог 4 ч)", kept == [basket], gone)
+# баскетбольное дерби тех же клубов через 3,5 ч после футбольного — не повтор
+# футбола: матч эталона другого вида спорта не в счёт (проверка 12.10)
+kept, gone = parse_live.drop_reference_repeats(
+    [basket], [ref("2026-10-10T01:30", home="Benfica", away="Porto")])
+check("баскет_после_футбольного_матча_тех_же_клубов_не_снят", kept == [basket], gone)
 tbc = game("Instituto", "TBC", "2026-10-10 14:00")
 kept, gone = parse_live.drop_reference_repeats([tbc], reference_full)
 check("соперник_не_назван_не_судим", kept == [tbc])
