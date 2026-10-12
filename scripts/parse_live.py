@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import (broadcast, canon, daytime, db, dictionary,  # noqa: E402
-                 leagues, live, merge, names, pipeline, sport, store)
+                 leagues, live, merge, names, pipeline, redo, sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers import flashscore_mobi                     # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
@@ -569,7 +569,8 @@ def main() -> int:
             conn.close()
     except sqlite3.Error as e:
         print(f"словарь имён из базы не подключён ({e}) — работаем по aliases.json")
-    rows = json.loads(report.read_text(encoding="utf-8"))["строки"]
+    report_data = json.loads(report.read_text(encoding="utf-8"))
+    rows = report_data["строки"]
 
     found: list = []
     maybe: list = []          # пара есть, вида спорта нет — решает склейка
@@ -1301,6 +1302,10 @@ def main() -> int:
                                             "title", "") or "",
                    } for e in g.entries],
                } for g in games]}
+    # дозабор (схема сбоев, шаг 5; app/redo.py, Д7): отчёт с разделом
+    # «дозабор» → в games.json «режим»: «дозабор» — по нему сервер вливает
+    # итог «только добавить», ничего не гася. Прочим отчётам — ничего
+    payload.update(redo.games_mark(report_data))
     games_out = out.parent / "games.json"
     games_out.write_text(json.dumps(payload, ensure_ascii=False, indent=1),
                          encoding="utf-8")

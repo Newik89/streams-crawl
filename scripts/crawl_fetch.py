@@ -16,6 +16,10 @@ r"""Живой обход по плану: скачать страницы и с
     --probe   по одному адресу на сайт (4 запроса) — проба площадки
     --full    весь план целиком (62 адреса при окне 2 суток)
     --assess  без сети: оценить готовый report.json — провальный ли обход
+    --redo    дозабор (схема сбоев, шаг 5; правила — `app/redo.py`): по
+              report.json дошедшего сбора заново качаются ТОЛЬКО его упавшие
+              адреса класса down/net (не больше 40), report.json
+              переписывается — упавшие строки свежими, раздел «дозабор»
 
 Провал (аудит 07.09, A4): полный обход без фильтров, где не открылась
 больше четверти страниц или пятая часть сайтов не открылась ни разу,
@@ -30,12 +34,14 @@ r"""Живой обход по плану: скачать страницы и с
     python scripts/crawl_fetch.py --probe
     python scripts/crawl_fetch.py --full --days 2
     python scripts/crawl_fetch.py --assess results/report.json
+    python scripts/crawl_fetch.py --redo recon/raw_live/report.json --from-run 123 --out recon/raw_live
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 import time
@@ -47,8 +53,8 @@ sys.path.insert(0, str(ROOT))
 
 from urllib.parse import urljoin, urlsplit          # noqa: E402
 
-from app import daytime, fetch, protection, timemarks, urls   # noqa: E402
-from app.parsers import flashscore_mobi                      # noqa: E402
+from app import daytime, fetch, protection, redo, timemarks, urls   # noqa: E402
+from app.parsers import flashscore_mobi                            # noqa: E402
 
 PLAN = ROOT / "data" / "crawl_plan.json"
 
@@ -465,6 +471,110 @@ def _mark(note: str) -> str:
     return "✅ " + note
 
 
+def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
+               budget_minutes: float = redo.REDO_FETCH_MINUTES,
+               clock=time.monotonic) -> tuple[int, dict, list[str]]:
+    """Дозабор (схема сбоев, шаг 5; правило Д6 — шапка `app/redo.py`).
+    Заново качаются ТОЛЬКО строки `redo.pick` — упавшие down/net, не больше
+    `redo.REDO_MAX_URLS`, — обычным путём с запасным браузером (как первый
+    заход обхода; второго захода нет). Открылась — страница ложится в `out`
+    под тем же именем, что дал бы обход, и строка отчёта свежая; не
+    открылась — строка тоже свежая (с новой причиной). Не успели за
+    `budget_minutes` — оставшиеся строки остаются как были. Ссылки дней из
+    докачанной страницы канала (ORF, `day_links`) не добираются — только
+    отобранные адреса; недостающие дни возьмёт следующий сбор.
+    Возвращает (код, отчёт, строки для report.md). Код 1 — дозабирать
+    нечего (упавших ноль или массовый сбой — сервер такой дозабор не
+    заказывает): отчёт прежний, файлы не тронуты."""
+    choice = redo.pick(report)
+    if choice.mass:
+        print(f"::error::упавших адресов (сайт лёг / нет ответа) {choice.total} — "
+              f"больше {redo.REDO_MASS}: это массовый сбой, а не дозабор")
+        return 1, report, []
+    if not choice.rows:
+        print("::error::дозабирать нечего: упавших адресов класса down/net в отчёте нет")
+        return 1, report, []
+    skipped = ", ".join(f"{k} — {v}" for k, v in choice.skipped.items()) or "—"
+    print(f"дозабор из прогона {from_run}: упало (сайт лёг / нет ответа) "
+          f"{choice.total}, качаю заново {len(choice.rows)}; не берём: {skipped}\n")
+    fresh: dict[int, dict] = {}
+    lines = ["| Сайт | Канал | Было | Стало | Ссылка |", "|---|---|---|---|---|"]
+    started = clock()
+    for n, (index, row) in enumerate(zip(choice.index, choice.rows), 1):
+        if clock() - started > budget_minutes * 60:
+            print(f"\nвремя дозабора вышло ({budget_minutes:.0f} мин) — остальные "
+                  f"{len(choice.rows) - n + 1} строк остаются как были")
+            break
+        job = redo.job_of(row)
+        # сайт с пометкой `browser` — сразу браузером, как в обходе
+        fetcher.browser_only = bool(job.get("browser"))
+        page = fetcher.get_with_fallback(job["url"],
+                                         locale=job.get("locale") or "en-GB",
+                                         post=job.get("post"),
+                                         warmup=job.get("warmup") or "",
+                                         post_json=job.get("post_json"),
+                                         extra=job.get("headers"))
+        new = {**job, **verdict(page)}
+        if page.ok:
+            name = fetch.cache_name(job["url"],
+                                    job.get("post") or job.get("post_json")).name
+            (out / name).write_text(page.html, encoding="utf-8")
+            new["файл"] = name
+            new["почему"] = (new["почему"] or "") + " (дозабор)"
+        elif page.body:
+            name = fetch.cache_name(job["url"]).name.replace(".html", ".otkaz.html")
+            (out / name).write_text(page.body, encoding="utf-8")
+            new["файл отказа"] = name
+        fresh[index] = new
+        was = str(row.get("почему") or row.get("итог") or "").replace("|", "/")[:60]
+        got = (new["итог"] if new["итог"] not in BROKEN
+               else f"{new['итог']}: {new['почему']}").replace("|", "/")[:80]
+        print(f"{str(n).rjust(3)}/{len(choice.rows)}  {job['domain'].ljust(12)} "
+              f"{(job.get('channel') or 'сетка')[:18].ljust(18)} было: {was[:40]} → {got[:50]}")
+        lines.append(f"| {job['domain']} | {(job.get('channel') or 'сетка').replace('|', '/')} "
+                     f"| {was} | {got} | {job['url']} |")
+    merged = redo.merge(report, fresh, choice, from_run, os.environ.get("GITHUB_RUN_ID", ""))
+    # сайт с короткой программой не сломан (как в обходе): 404 при живом сайте
+    soften_short_depth(merged["строки"])
+    section = merged[redo.SECTION]
+    print(f"\nдозабор выправил: {section['выправилось']} из {section['адресов']}")
+    head = [f"## Дозабор из прогона {from_run} (схема сбоев, шаг 5)", "",
+            f"Упало (сайт лёг / нет ответа): {section['упавших']}, скачано заново: "
+            f"{section['адресов']}, выправилось: {section['выправилось']}.", ""]
+    return 0, merged, head + lines
+
+
+def redo_main(args) -> int:
+    """`--redo <report.json>`: дозабор упавших адресов дошедшего сбора
+    (`redo_fetch`) — отчёт переписывается в `--out`, итог дописывается в
+    report.md. План обхода не нужен: адреса берутся из самого отчёта."""
+    path = Path(args.redo)
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        print(f"::error::отчёта сбора нет или он битый ({path}): {e}")
+        return 1
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    fetch.DELAY = args.delay
+    fetcher = fetch.Fetcher(offline=False, use_cache=False,
+                            browser_fallback=not args.no_browser,
+                            browser_only=args.browser)
+    code, merged, lines = redo_fetch(report, out, fetcher, args.from_run)
+    if code:
+        return code
+    (out / "report.json").write_text(
+        json.dumps(merged, ensure_ascii=False, indent=1), encoding="utf-8")
+    md = out / "report.md"
+    try:
+        before = md.read_text(encoding="utf-8")
+    except OSError:
+        before = "# Итог обхода\n"
+    md.write_text(before.rstrip("\n") + "\n\n" + "\n".join(lines) + "\n", encoding="utf-8")
+    print(f"отчёт дозабора: {out / 'report.json'}")
+    return 0
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
@@ -501,6 +611,12 @@ def main() -> int:
     ap.add_argument("--scheduled", action="store_true",
                     help="обход по расписанию, а не по кнопке: сайты с "
                          "пометкой «только по кнопке» пропускаются")
+    ap.add_argument("--redo", default="",
+                    help="дозабор (схема сбоев, шаг 5; app/redo.py): report.json "
+                         "дошедшего сбора — заново качаются только его упавшие "
+                         "адреса down/net (≤40), отчёт переписывается в --out")
+    ap.add_argument("--from-run", default="",
+                    help="дозабор: id прогона GitHub, чей отчёт дозабираем (в раздел «дозабор»)")
     ap.add_argument("--plan", default=str(PLAN))
     ap.add_argument("--out", default=str(OUT))
     args = ap.parse_args()
@@ -508,6 +624,8 @@ def main() -> int:
     if args.age:
         print(age_hours(Path(args.age)))
         return 0
+    if args.redo:
+        return redo_main(args)
     if args.assess:
         # обкатка порогов на прошлом прогоне и на нарочно испорченной копии
         report = json.loads(Path(args.assess).read_text(encoding="utf-8"))
@@ -703,7 +821,11 @@ def main() -> int:
     softened = soften_short_depth(report)
     if softened:
         print(f"дальние дни без программы (не поломка): {softened} стр.")
-    payload = {"когда": str(date.today()), "режим": mode, "строки": report,
+    # «прогон» — id прогона GitHub (`GITHUB_RUN_ID`; вне GitHub пусто): по
+    # нему сторож сервера сверяет, что отчёт в results/ — того самого сбора,
+    # чьи упавшие адреса он дозабирает (`app/redo.py`, Д2)
+    payload = {"когда": str(date.today()), "режим": mode,
+               "прогон": os.environ.get("GITHUB_RUN_ID", ""), "строки": report,
                "дозор": {d: memory.get(d, {}) for d in sorted(DAILY_PROBE)}}
     code, notes = assess(payload) if strict else (0, [])
     payload["оценка"] = {"код": code, "строки": notes, "строгая": strict}

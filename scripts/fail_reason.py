@@ -28,7 +28,8 @@ r"""Причина провала обхода — одним словом дл�
 Запуск (на GitHub, из crawl.yml):
     STEP_ENV=… STEP_READERS=… STEP_FETCH=… STEP_PARSE=… STEP_PUSH=… JOB_STATUS=… \
       python scripts/fail_reason.py            # печатает код
-    (переразбор: ещё STEP_PRIOR=… STEP_PAGES=…, а STEP_PUSH — итог шага push_partial)
+    (переразбор: ещё STEP_PRIOR=… STEP_PAGES=…, а STEP_PUSH — итог шага push_partial;
+     дозабор, шаг 5: вдобавок STEP_FETCH — итог шага «Дозабор» вместо обхода)
     python scripts/fail_reason.py --report recon/raw_live/report.json
 """
 
@@ -37,21 +38,24 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "recon" / "raw_live"
+sys.path.insert(0, str(ROOT))
+
+from app import redo  # noqa: E402  класс строки — один с дозабором (схема сбоев, шаг 5)
 
 #: доля неоткрывшихся страниц одного класса, с которой класс — причина
+#: (регулярки 5xx и 403/429 переехали в `app/redo.py`, `row_class`)
 ШАРЕ = 0.5
-_5XX = re.compile(r"\b5\d\d\b")
-_BAN = re.compile(r"\b(403|429)\b")
 
 
 def classify_rows(rows: list[dict]) -> str:
-    """fetch-ban / fetch-down / fetch-net / plan — по строкам report.json."""
+    """fetch-ban / fetch-down / fetch-net / plan — по строкам report.json.
+    Класс каждой строки — `redo.row_class` (тот же отбирает адреса для
+    дозабора, шаг 5): ban — заглушка или 403/429, down — 5xx, net — прочее."""
     if not rows:
         return "plan"
     broken = [r for r in rows if r.get("итог") in ("не открылась", "заглушка защиты")]
@@ -59,10 +63,10 @@ def classify_rows(rows: list[dict]) -> str:
         return "fetch-net"
     ban = down = 0
     for r in broken:
-        why = str(r.get("почему") or "")
-        if r.get("итог") == "заглушка защиты" or _BAN.search(why):
+        kind = redo.row_class(r)
+        if kind == "ban":
             ban += 1
-        elif _5XX.search(why):
+        elif kind == "down":
             down += 1
     if ban >= len(broken) * ШАРЕ:
         return "fetch-ban"

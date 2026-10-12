@@ -15,9 +15,10 @@ name: Обход телесайтов
 # Название прогона говорит, что это за сбор (05.10.2026): сторож сервера по
 # открытому API отличает пробу от обхода на 6 дней (потолок длительности,
 # «идёт ли полный не меньшей глубины») — `app/watch.run_kind`. Слова те же,
-# что у стука «начали»: proba-2, full-6, site-…, date-…. Это только надпись:
-# в команды она не попадает.
-run-name: ${{ github.event_name != 'workflow_dispatch' && 'Обход по расписанию' || inputs.from_run != '' && format('Обход reparse-{0}', inputs.from_run) || inputs.mode == 'proba' && format('Обход proba-{0}', inputs.days) || inputs.only != '' && format('Обход site-{0}', inputs.only) || inputs.date != '' && format('Обход date-{0}', inputs.date) || format('Обход {0}-{1}', inputs.mode, inputs.days) }}
+# что у стука «начали»: proba-2, full-6, site-…, date-…, reparse-…, redo-…
+# (дозабор упавших адресов, схема сбоев шаг 5). Это только надпись: в
+# команды она не попадает.
+run-name: ${{ github.event_name != 'workflow_dispatch' && 'Обход по расписанию' || inputs.from_run != '' && inputs.redo == '1' && format('Обход redo-{0}', inputs.from_run) || inputs.from_run != '' && format('Обход reparse-{0}', inputs.from_run) || inputs.mode == 'proba' && format('Обход proba-{0}', inputs.days) || inputs.only != '' && format('Обход site-{0}', inputs.only) || inputs.date != '' && format('Обход date-{0}', inputs.date) || format('Обход {0}-{1}', inputs.mode, inputs.days) }}
 
 on:
   # 09:17 UTC = 12:17 по Киеву летом / 11:17 зимой (06.10.2026; было 04:17
@@ -84,6 +85,9 @@ on:
       code_ref:
         description: "Переразбор кодом другой версии: SHA коммита (пусто — текущий main). Сторож даёт родителя коммита упавшего прогона, когда упал наш разбор"
         default: ""
+      redo:
+        description: "Дозабор (схема сбоев, шаг 5): 1 — вместе с from_run дошедшего прогона качать заново только его упавшие адреса (сайт лёг / нет ответа, ≤40), разобрать вместе с его страницами, итог — в results/partial/ («только добавить»)"
+        default: ""
 
 permissions:
   contents: write        # чтобы обход мог сам положить результат в results/
@@ -128,6 +132,7 @@ jobs:
           IN_DATE: ${{ inputs.date }}
           IN_FROM_RUN: ${{ inputs.from_run }}
           IN_CODE_REF: ${{ inputs.code_ref }}
+          IN_REDO: ${{ inputs.redo }}
         run: |
           if [ "$EVENT" = "schedule" ]; then echo "по расписанию — параметры свои"; exit 0; fi
           # один адрес: http(s), без пробелов, кавычек, `$`, обратной косой,
@@ -146,6 +151,12 @@ jobs:
           # переразбор: id прогона — только цифры, версия кода — только SHA
           [[ "$IN_FROM_RUN" =~ ^[0-9]{0,20}$ ]] || BAD="$BAD from_run"
           [[ "$IN_CODE_REF" =~ ^([0-9a-f]{40})?$ ]] || BAD="$BAD code_ref"
+          # дозабор (шаг 5): только «1» или пусто; «1» — только вместе с
+          # from_run и кодом текущего main (без code_ref)
+          [[ "$IN_REDO" =~ ^1?$ ]] || BAD="$BAD redo"
+          if [ "$IN_REDO" = "1" ] && { [ -z "$IN_FROM_RUN" ] || [ -n "$IN_CODE_REF" ]; }; then
+            BAD="$BAD redo"
+          fi
           [[ "$IN_POST" =~ $RE_POST ]] && [ ${#IN_POST} -le 1000 ] || BAD="$BAD post"
           if [ -n "$IN_WARMUP" ]; then
             [[ "$IN_WARMUP" =~ $RE_URL ]] && [ ${#IN_WARMUP} -le 1000 ] || BAD="$BAD warmup"
@@ -222,6 +233,7 @@ jobs:
           IN_DATE: ${{ inputs.date }}
           IN_FROM_RUN: ${{ inputs.from_run }}
           IN_CODE_REF: ${{ inputs.code_ref }}
+          IN_REDO: ${{ inputs.redo }}
         run: |
           # По расписанию — всегда полный обход. Руками — как выбрали в форме.
           if [ "${{ github.event_name }}" = "schedule" ]; then
@@ -240,6 +252,7 @@ jobs:
             echo "date="     >> $GITHUB_OUTPUT
             echo "from_run=" >> $GITHUB_OUTPUT
             echo "code_ref=" >> $GITHUB_OUTPUT
+            echo "redo="     >> $GITHUB_OUTPUT
           else
             echo "mode=$IN_MODE"     >> $GITHUB_OUTPUT
             echo "days=$IN_DAYS"     >> $GITHUB_OUTPUT
@@ -252,6 +265,7 @@ jobs:
             echo "date=$IN_DATE"     >> $GITHUB_OUTPUT
             echo "from_run=$IN_FROM_RUN" >> $GITHUB_OUTPUT
             echo "code_ref=$IN_CODE_REF" >> $GITHUB_OUTPUT
+            echo "redo=$IN_REDO"         >> $GITHUB_OUTPUT
           fi
 
       - name: Стук серверу — начали
@@ -267,11 +281,14 @@ jobs:
           W_DATE: ${{ steps.what.outputs.date }}
           W_ONLY: ${{ steps.what.outputs.only }}
           W_FROM_RUN: ${{ steps.what.outputs.from_run }}
+          W_REDO: ${{ steps.what.outputs.redo }}
         run: |
           WHAT="$W_MODE-$W_DAYS"
           [ -n "$W_DATE" ] && WHAT="date-$W_DATE"
           [ -n "$W_ONLY" ] && WHAT="site-$W_ONLY"
           [ -n "$W_FROM_RUN" ] && WHAT="reparse-$W_FROM_RUN"
+          # дозабор (шаг 5): тот же from_run, но вид — redo-<id>
+          [ -n "$W_FROM_RUN" ] && [ "$W_REDO" = "1" ] && WHAT="redo-$W_FROM_RUN"
           export WHAT
           sh scripts/knock.sh start
 
@@ -301,7 +318,8 @@ jobs:
         # артефакта упавшего прогона. Окно дней — из его названия («Обход
         # full-6»): переразбор только полного обхода (у него и страницы, и
         # порог). Прогон другого workflow или не полный — красный, к сайтам
-        # всё равно не идём
+        # всё равно не идём. Тот же шаг — у дозабора (шаг 5, redo=1): его
+        # прогон тоже полный, страницы и отчёт берутся отсюда же
         if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -348,9 +366,27 @@ jobs:
           name: obhod-${{ steps.prior.outputs.number }}
           path: recon/raw_live
 
+      - name: Дозабор упавших адресов
+        id: redo
+        # схема сбоев, шаг 5 (сторож сервера, правило С7; правила Д1–Д9 —
+        # `app/redo.py`): страницы и report.json ДОШЕДШЕГО сбора уже лежат
+        # в recon/raw_live (шаг выше). Заново качаются ТОЛЬКО адреса, что не
+        # открылись по классу down/net (сайт лёг, нет ответа; не больше 40 —
+        # `redo.pick`), обычным путём с запасным браузером, не дольше 30 мин.
+        # report.json переписывается: упавшие строки — свежими, остальные как
+        # были, плюс раздел «дозабор». Шаг «Обход» при этом пропущен.
+        # Значения — только через env (аудит 05.10.2026)
+        if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != '' && steps.what.outputs.redo == '1'
+        env:
+          W_DELAY: ${{ steps.what.outputs.delay }}
+          W_FROM_RUN: ${{ steps.what.outputs.from_run }}
+        run: |
+          python scripts/crawl_fetch.py --redo recon/raw_live/report.json --from-run "$W_FROM_RUN" --out recon/raw_live --delay "$W_DELAY"
+
       - name: Обход
         id: fetch
-        # при переразборе пропущен: страницы уже на месте, к сайтам не ходим
+        # при переразборе пропущен: страницы уже на месте, к сайтам не ходим;
+        # при дозаборе — тоже (упавшие адреса качает шаг «Дозабор»)
         if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run == ''
         # значения — только через env и в кавычках (аудит 05.10.2026);
         # `set -f`: в адресах бывают `?` `*` `[` — оболочка не должна
@@ -412,8 +448,10 @@ jobs:
           if [ "$W_MODE" = "full" ] && [ -z "$W_ONLY$W_URLS$W_DATE$W_FROM_RUN" ]; then
             STRICT="--strict"
           fi
-          # переразбор: окно — того сбора, чьи страницы разбираем; без
-          # --strict (итог частичный, его порог не судит) — в results/partial/
+          # переразбор и дозабор: окно — того сбора, чьи страницы разбираем;
+          # без --strict (итог частичный, его порог не судит) — в results/partial/.
+          # У дозабора report.json несёт раздел «дозабор» — разбор кладёт в
+          # games.json «режим»: «дозабор» (app/redo.py, Д7)
           DAYS="$W_DAYS"
           [ -n "$W_FROM_RUN" ] && DAYS="$P_DAYS"
           if [ -n "$W_DATE" ]; then
@@ -564,12 +602,23 @@ jobs:
         # того же сбора. Без `always()`: упал разбор — класть нечего.
         # Код мог быть взят с прежнего коммита (code_ref) — коммит кладём
         # поверх свежего main, а не поверх старого кода
+        # Дозабор (шаг 5) едет той же папкой: сервер узнаёт его по пометке
+        # «режим»: «дозабор» в самом games.json и вливает «только добавить»
+        # (ничего не гасит) — без пометки дозабор не кладём вовсе
         if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != ''
         env:
           P_NUMBER: ${{ steps.prior.outputs.number }}
+          W_REDO: ${{ steps.what.outputs.redo }}
         run: |
           if [ ! -f recon/raw_live/games.json ] || [ ! -f recon/raw_live/report.json ]; then
             echo "::error::пары games+report нет — переразбор ничего не дал"; exit 1
+          fi
+          TITLE="Переразбор"
+          if [ "$W_REDO" = "1" ]; then
+            TITLE="Дозабор"
+            if ! grep -q '"режим": "дозабор"' recon/raw_live/games.json; then
+              echo "::error::в games.json дозабора нет пометки «режим»: «дозабор» — сервер влил бы его как переразбор и гасил бы каналы; не кладу"; exit 1
+            fi
           fi
           rm -rf /tmp/partial && mkdir -p /tmp/partial
           cp recon/raw_live/games.json  /tmp/partial/
@@ -582,12 +631,12 @@ jobs:
           mkdir -p results/partial
           cp /tmp/partial/* results/partial/
           git add results/partial/
-          git diff --cached --quiet || git commit -m "Переразбор сбора #$P_NUMBER — $(date -u +%d.%m.%Y\ %H:%M) UTC"
+          git diff --cached --quiet || git commit -m "$TITLE сбора #$P_NUMBER — $(date -u +%d.%m.%Y\ %H:%M) UTC"
           for i in 1 2 3; do
             git push origin HEAD:main && exit 0
             git pull --rebase origin main
           done
-          echo "::error::переразбор не запушился за 3 попытки"
+          echo "::error::$TITLE не запушился за 3 попытки"
           exit 1
 
       - name: Забрать страницы и отчёты
@@ -621,8 +670,11 @@ jobs:
         # Письмо GitHub о красном прогоне приходит не всегда: запуск от бота
         # queue.yml (кнопки сайта) — никому. Issue с меткой «обход-упал»
         # доходит письмом всегда; открытая уже есть — туда комментарий.
-        # `cancelled()` — таймаут job'а тоже провал (аудит 07.09, A4)
-        if: (failure() || cancelled()) && steps.guard.outputs.run == '1'
+        # `cancelled()` — таймаут job'а тоже провал (аудит 07.09, A4).
+        # Дозабор (шаг 5) issue не пишет: данные основного сбора уже влиты,
+        # его срыв — только строка сторожа в «Прогонах» (RECOVERY: close),
+        # лишних писем владельцу не плодим
+        if: (failure() || cancelled()) && steps.guard.outputs.run == '1' && steps.what.outputs.redo != '1'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           W_MODE: ${{ steps.what.outputs.mode }}
@@ -650,6 +702,7 @@ jobs:
           W_ONLY: ${{ steps.what.outputs.only }}
           W_URLS: ${{ steps.what.outputs.urls }}
           W_FROM_RUN: ${{ steps.what.outputs.from_run }}
+          W_REDO: ${{ steps.what.outputs.redo }}
           # причина провала — для сторожа (схема сбоев, шаг 3): итоги шагов
           STEP_ENV: ${{ steps.env.outcome }}
           STEP_READERS: ${{ steps.readers.outcome }}
@@ -660,6 +713,8 @@ jobs:
           STEP_PRIOR: ${{ steps.prior.outcome }}
           STEP_PAGES: ${{ steps.pages.outcome }}
           STEP_PUSH_PARTIAL: ${{ steps.push_partial.outcome }}
+          # дозабор (шаг 5): его шаг «Дозабор» — вместо обхода
+          STEP_REDO: ${{ steps.redo.outcome }}
           JOB_STATUS: ${{ job.status }}
         run: |
           WHAT="$W_MODE-$W_DAYS"
@@ -669,6 +724,10 @@ jobs:
             WHAT="reparse-$W_FROM_RUN"
             # у переразбора свой шаг пуша — его итог и есть «push» для причины
             export STEP_PUSH="$STEP_PUSH_PARTIAL"
+            if [ "$W_REDO" = "1" ]; then
+              WHAT="redo-$W_FROM_RUN"
+              export STEP_FETCH="$STEP_REDO"
+            fi
           fi
           if [ -n "$W_URLS" ]; then
             # проверка адреса кнопкой админки (владелец 20.09): в стук кладём

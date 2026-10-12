@@ -191,9 +191,11 @@ def queue_behind(busy: dict, kind: str, value: str) -> bool:
     текущим (`concurrency` в crawl.yml); раньше 2-дневный сбор кнопкой,
     шедший в 20:30, отменял плановый на 6 дней — тот просто не заказывался.
     Скан даты и «Обойти сайт» по-прежнему держат замок."""
-    if is_probe(busy.get("what", "")) or busy.get("what", "").startswith("reparse-"):
+    if is_probe(busy.get("what", "")) or busy.get("what", "").startswith(("reparse-", "redo-")):
         # переразбор без обхода (схема сбоев, шаг 4) короткий и к сайтам не
-        # ходит — заявку не держит, как и проба
+        # ходит — заявку не держит, как и проба; дозабор упавших адресов
+        # (шаг 5) — не больше 40 адресов и часа хода: заявка встаёт в
+        # очередь за ним, а не отменяется
         return True
     m = re.fullmatch(r"(?:days|full)-(\d+)", busy.get("what", ""))
     return kind == "days" and bool(m) and int(m.group(1)) < int(value)

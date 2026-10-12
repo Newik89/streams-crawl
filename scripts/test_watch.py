@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""Проверки сторожа обхода (владелец 05.10 и 06.10.2026). Разделы идут по
-правилам из шапки `app/watch.py`: З1–З7 — заявка, С1–С6 — сторож. Имя каждой
+правилам из шапки `app/watch.py`: З1–З7 — заявка, С1–С7 — сторож. Имя каждой
 проверки начинается с номера правила, которое она держит: `[С4г] плановый
 упал → …`. В конце файл сам сверяет, что на каждое правило шапки есть хотя
 бы одна проверка.
@@ -122,6 +122,8 @@ def fake_order(kind: str, value: str, mark: str = "") -> str:
         elif name == "reparse-of":
             watch.add_order(conn, what, stamp_, "", "сторож: переразбор",
                             reparse_of=arg, prev=value.endswith("-prev"))
+        elif name == "redo-of":
+            watch.add_order(conn, what, stamp_, "", "сторож: дозабор", redo_of=arg)
         elif name == "early-for":
             watch.add_order(conn, what, stamp_, arg, "сторож: досрочный", early=True)
         else:
@@ -143,6 +145,11 @@ import inspect  # noqa: E402
 REAL_PULL_SRC = inspect.getsource(cw.pull)  # настоящий забор — для правила С4б
 cw.order_crawl = fake_order
 cw.pull = lambda: "тест: забор запущен"
+# результат последнего сбора на «сервере» (С7, дозабор) — своя пустая папка:
+# настоящий results/ рабочей копии проверки не трогают
+RESULTS_DIR = TMP / "results"
+RESULTS_DIR.mkdir()
+cw.RESULTS = RESULTS_DIR
 
 passed, failed = 0, []
 TAG = ["основа"]
@@ -1864,6 +1871,76 @@ check("…без свежего «2 дня» один «6 дней с 3-го» �
                          [probe, rest], K("16:45"))[0] == "behind")
 
 
+# ── С7. дозабор упавших адресов (схема сбоев, шаг 5; подробно — test_redo.py) ─
+rule("С7", "дошедший сбор с упавшими адресами — через час один дозабор только их")
+
+
+def redo_results(run: dict, rows: list[dict], collected: datetime) -> None:
+    """«Сервер» забрал результат сбора `run`: results/report.json и games.json
+    одного коммита (С7 сверяет по ним, что отчёт — того самого прогона)."""
+    (RESULTS_DIR / "report.json").write_text(json.dumps(
+        {"прогон": str(run["id"]), "строки": rows}, ensure_ascii=False), encoding="utf-8")
+    (RESULTS_DIR / "games.json").write_text(json.dumps(
+        {"собрано": collected.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M")}),
+        encoding="utf-8")
+
+
+def bad_row(n: int, why: str = "HTTP 503") -> dict:
+    return {"domain": f"s{n}.test", "channel": "", "day": DAY,
+            "url": f"https://s{n}.test/{n}", "итог": "не открылась", "почему": why}
+
+
+morning = mkrun(K("08:16"), ended=K("09:50"), title="Обход full-6")
+rid7 = str(morning["id"])
+reset(K("09:55"), [yday, morning])
+order_of(f"{DAY} 08:15", 6)
+redo_results(morning, [bad_row(1), bad_row(2, "ConnectTimeout"), bad_row(3, "HTTP 403"),
+                       {"domain": "ok.test", "итог": "расписание есть", "url": "https://ok.test/"}],
+             K("09:40"))
+edge = last_id()
+ticks("10:00", "10:30")
+check("плановый дошёл и забран, а 2 адреса упали (503, таймаут) — с конца 40 мин: молча ждём",
+      ORDERS == [] and len(notes_after(edge)) == 1 and "забран" in notes_after(edge)[0]
+      and state_get().get("done") is True and not state_get().get("redo"),
+      (ORDERS, notes_after(edge), state_get()))
+edge = last_id()
+tick(K("11:00"))
+redo_rec = [r for r in book() if r.get("what") == f"redo-{rid7}"]
+check("…через 70 мин → ОДИН дозабор только упавших down/net (403 не берём): заявка redo <id прогона>, строка, без тревоги",
+      ORDERS == [f"redo-{rid7}"] and alarms_after(edge) == []
+      and any("ДОЗАБОР" in n and "все 2" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
+check("…в книге запись redo-<id> с пометкой «дозабор заказа <id записи сбора>», у сбора — redo",
+      len(redo_rec) == 1 and redo_rec[0].get("who") == "сторож: дозабор"
+      and redo_rec[0].get("redo_of") == next(r["id"] for r in book() if r.get("what") == "full-6")
+      and state_get().get("redo") == "заказан" and not state_get().get("redoing"),
+      (redo_rec, state_get()))
+# прогон дозабора появляется через минуту после тега (как у любой заявки)
+redo_go = mkrun(K("11:01"), status="in_progress", title=f"Обход redo-{rid7}")
+API["runs"] = [yday, morning, redo_go]
+edge = last_id()
+ticks("11:15")
+check("…следующей проверкой второго дозабора нет; идущий дозабор — не «чужой», молча",
+      ORDERS == [f"redo-{rid7}"] and notes_after(edge) == [], (ORDERS, notes_after(edge)))
+redo_run = finished(redo_go, K("11:40"))
+API["runs"] = [yday, morning, redo_run]
+RESULT[0] = "picked"
+edge = last_id()
+ticks("11:55")
+redo_rec = [r for r in book() if r.get("what") == f"redo-{rid7}"]
+check("ДОЗАБОР дошёл и влит → его заказ закрыт «забран» (папка partial), тревоги нет",
+      redo_rec[0].get("done") is True and alarms_after(edge) == []
+      and any(w == f"redo-{rid7}" for w, _ in RESULT_ASKED), (redo_rec, notes_after(edge)))
+# тот же дозабор, но его прогон упал: запись книги снова открыта
+API["runs"] = [yday, morning, finished(redo_run, K("11:40"), "failure")]
+jset(watch.order_key(redo_rec[0]), {k: v for k, v in redo_rec[0].items() if k != "done"})
+edge = last_id()
+ticks("12:00")
+check("ДОЗАБОР упал → только строка «данные основного сбора уже влиты», без ТРЕВОГИ и без новых заказов",
+      ORDERS == [f"redo-{rid7}"] and alarms_after(edge) == []
+      and any("дозабор упавших адресов прогона" in n and "уже влиты" in n for n in notes_after(edge)),
+      (ORDERS, notes_after(edge)))
+
+
 # ── сценарии независимой проверки 06.10 (S1–S6) и находки 5–8 ──────────────
 rule("сценарии", "сценарии проверяющего 06.10 и его находки")
 import subprocess as _sp  # noqa: E402
@@ -2613,12 +2690,26 @@ check("crawl.yml: from_run — только цифры, code_ref — тольк�
       '[[ "$IN_FROM_RUN" =~ ^[0-9]{0,20}$ ]]' in crawl and '[[ "$IN_CODE_REF" =~ ^([0-9a-f]{40})?$ ]]' in crawl)
 check("queue.yml: заявка reparse — номер только цифры, prev → первый родитель ближайшего слияния в истории прогона",
       '"$KIND" = "reparse"' in queue and ".parents[0].sha" in queue and "select(.parents | length > 1)" in queue
-      and queue.count('[[ "$RUN_ID" =~ ^[0-9]{1,20}$ ]]') == 2)
+      and queue.count('[[ "$RUN_ID" =~ ^[0-9]{1,20}$ ]]') == 3)
 check("сторож: вид reparse-<id> узнаётся, потолок 30 мин, папка результата partial, ждущий переразбор очередь бережёт",
       watch.parse_what("reparse-123") == ("reparse", 0) and watch.ceiling("reparse") == 30
       and watch.import_key("reparse-123") == "last_import_stamp:partial"
       and "reparse" in watch.ORDERED_KINDS
       and crawl_hook.queue_behind({"what": "reparse-123"}, "days", "2") is True)
+# схема сбоев, шаг 5: дозабор упавших адресов (подробно — test_redo.py)
+check("дозабор: тег btn-redo — номер только цифры, code_ref пуст, вход redo=1; прогон зовётся redo-<id> раньше reparse",
+      '"$KIND" = "redo"' in queue and '\\"code_ref\\":\\"\\",\\"redo\\":\\"1\\"' in queue
+      and "redo:" in crawl and "Обход redo-{0}" in crawl
+      and crawl.index("Обход redo-{0}") < crawl.index("Обход reparse-{0}"))
+check("дозабор: шаг «Дозабор» только при from_run и redo=1; issue владельцу дозабор не пишет",
+      "steps.what.outputs.from_run != '' && steps.what.outputs.redo == '1'" in crawl
+      and "--redo recon/raw_live/report.json" in crawl
+      and "&& steps.what.outputs.redo != '1'" in crawl)
+check("сторож: вид redo-<id> узнаётся, потолок 60 мин, папка partial, ждущий дозабор очередь бережёт, заявку не держит",
+      watch.parse_what("redo-123") == ("redo", 0) and watch.ceiling("redo") == 60
+      and watch.import_key("redo-123") == "last_import_stamp:partial"
+      and "redo" in watch.ORDERED_KINDS and "redo" not in watch.FULL_KINDS
+      and crawl_hook.queue_behind({"what": "redo-123"}, "days", "2") is True)
 tag_value = "123;echo${IFS}INJECTED_$((1+1))"
 check("«ядовитый» номер не проходит проверку формата",
       re.fullmatch(r"[0-9]{1,20}", tag_value) is None)
@@ -2630,9 +2721,9 @@ top = re.findall(r"^  ([ЗС]\d)\. ", head, re.M)
 sub = ["С4" + letter for letter in re.findall(r"^      ([а-я])\) ", head, re.M)]
 rules = [r for r in top if r != "С4"] + sub
 missing = [r for r in rules if r not in COVERED]
-check("в шапке 7 правил заявки, 6 правил сторожа и 5 веток С4",
+check("в шапке 7 правил заявки, 7 правил сторожа (С7 — дозабор) и 5 веток С4",
       [r for r in top if r[0] == "З"] == [f"З{i}" for i in range(1, 8)]
-      and [r for r in top if r[0] == "С"] == [f"С{i}" for i in range(1, 7)]
+      and [r for r in top if r[0] == "С"] == [f"С{i}" for i in range(1, 8)]
       and sub == ["С4а", "С4б", "С4в", "С4г", "С4д"], (top, sub))
 check("на каждое правило шапки есть проверка с его номером", missing == [], missing)
 memory = re.findall(r"^  (crawl_[a-z]+) — ", head, re.M)

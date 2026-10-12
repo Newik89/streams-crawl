@@ -287,6 +287,9 @@ def create_app() -> Flask:
             return f"Обход сайта {what[5:]}"
         if what.startswith("сайт "):
             return f"Обход сайта {what[5:]}"
+        if what.startswith("redo-"):
+            # схема сбоев, шаг 5: сторож докачивает упавшие адреса сбора
+            return "Дозабор упавших адресов"
         return "Обход"
 
     def crawl_status_lines() -> list[dict]:

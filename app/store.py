@@ -348,7 +348,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                now: datetime | None = None, punish: bool = True,
                coverage: miss.Покрытие | None = None,
                collected: str = "",
-               withheld: set[tuple[str, str]] | None = None) -> SaveStats:
+               withheld: set[tuple[str, str]] | None = None,
+               add_only: bool = False) -> SaveStats:
     """Вливает игры из `games.json`. Формат: список словарей с полями
     sport / league / home / away / start_kyiv / start_utc / entries,
     где entries — строки по сайтам: source / channel / url / raw_title.
@@ -359,14 +360,19 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     `report.json`, `miss.покрытие_из_отчёта`), без отчёта не гасится ничего;
     `collected` — момент сбора по Киеву `ГГГГ-ММ-ДД ЧЧ:ММ` (без него сироты
     не гасятся); `withheld` — строки, которые разбор видел, но удержал
-    (`withheld_rows`): их игры сиротами не считаются."""
+    (`withheld_rows`): их игры сиротами не считаются. `add_only` — файл
+    дозабора (схема сбоев, шаг 5, `app/redo.py` Д7): только добавить и
+    обновить — не гасится ничего (`miss`, правило 0), сироты не ищутся,
+    отметки агрегаторов не снимаются (строку агрегатора, которую не пускает
+    правило «свой сайт важнее», дозабор просто не берёт)."""
     now = now or datetime.now()
     stats = SaveStats()
     # время с «T» в базе — к общему виду, иначе поиск игры его не видит
     stats.times_fixed = normalize_times(conn)
     graces = grace_map(conn)
     # до записи игр: правилу 6 нужны отметки, жившие до этой заливки
-    гашение = miss.Гашение(conn, coverage, punish, collected, MISS_LIMIT)
+    гашение = miss.Гашение(conn, coverage, punish, collected, MISS_LIMIT,
+                           дописать=add_only)
     # чей канал: у канала со своим сайтом строки агрегаторов не берём, пока
     # свой сайт этот день показывает (`app/channel_owner.py`, правила там)
     хозяева = _хозяева_канала(conn, games, now)
@@ -509,11 +515,14 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 # у канала есть свой сайт, и он этот день показывает — строку
                 # агрегатора не берём (слово владельца 07.10), а прежнюю его
                 # отметку снимаем: гашение её не возьмёт (шапка
-                # `app/channel_owner.py`), и она висела бы вечно
-                stats.not_own_dropped += conn.execute(
-                    "DELETE FROM event_channels WHERE event_id = ? "
-                    "AND channel_id = ? AND source_id = ?",
-                    (event_id, channel_id, source["id"])).rowcount
+                # `app/channel_owner.py`), и она висела бы вечно. Дозабор
+                # (`add_only`) только дописывает — строку не берёт, но и
+                # прежнюю отметку не снимает: это сделал сам сбор
+                if not add_only:
+                    stats.not_own_dropped += conn.execute(
+                        "DELETE FROM event_channels WHERE event_id = ? "
+                        "AND channel_id = ? AND source_id = ?",
+                        (event_id, channel_id, source["id"])).rowcount
                 continue
             seen_channel_ids.add(channel_id)
             гашение.учесть(source["id"], start_kyiv[:10], event_id, channel_id)
@@ -548,8 +557,10 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
         return gone
 
     # хвосты агрегаторов по каналам со своим сайтом — строки, которых в этом
-    # файле уже не было (`Хозяева.дочистить`, там же почему гашение их не берёт)
-    stats.not_own_dropped += хозяева.дочистить(conn)
+    # файле уже не было (`Хозяева.дочистить`, там же почему гашение их не берёт).
+    # Дозабор (`add_only`) ничего не снимает — хвосты дочистил сам сбор
+    if not add_only:
+        stats.not_own_dropped += хозяева.дочистить(conn)
 
     # Канал, подтверждённый у игры хоть одним сайтом, не гаснет ни от
     # какого сайта; остальные отметки игры — по правилам `app/miss.py`
@@ -594,8 +605,9 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     # «будущая» по часам сервера игра могла уже идти по Киеву, и сайт
     # «остатка дня» её честно не пишет; строку, которую разбор видел, но
     # удержал фильтром (`withheld`: «снято», «на разбор»), сайт показывает —
-    # её отметка не сирота
-    if punish and coverage is not None and collected:
+    # её отметка не сирота. Дозабор (`add_only`) сирот не ищет вовсе: в его
+    # файле только то, что сбор уже влил, плюс докачанное (`miss`, правило 0)
+    if punish and not add_only and coverage is not None and collected:
         удержано = withheld or set()
         for r in conn.execute(
                 "SELECT DISTINCT e.id, e.start_kyiv FROM events e "
@@ -972,7 +984,7 @@ def _audit_for(folder: Path, crawled: str) -> dict | None:
 
 
 def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
-            crawled: str = "", who: str = "") -> None:
+            crawled: str = "", who: str = "", add_only: bool = False) -> None:
     """Строка в `runs` и здоровье источников (ТЗ разд. 14): каждый импорт
     отмечает, кто из сайтов отработал, а кто нет. Отчёта нет — не беда,
     запишем только счётчики игр.
@@ -980,7 +992,10 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
     `crawled` — метка «собрано» обхода (UTC). В отчёте обхода есть только
     дата, и на витрине три сбора за день выглядели одинаково: владелец
     просил видеть, какой сбор во сколько был (18.09). `who` — чей сбор,
-    если не плановый GitHub: «сервер mojtv.hr»."""
+    если не плановый GitHub: «сервер mojtv.hr». `add_only` — дозабор
+    (схема сбоев, шаг 5): его отчёт — тот же сбор плюс докачанное, и сбой
+    сайта сбор уже засчитал; второй раз счётчик сбоев не растёт (ожившему
+    сайту дозабор, как и сбор, отметку «работает» ставит)."""
     ok_by: dict[str, int] = {}          # страниц с расписанием
     empty_by: dict[str, int] = {}       # открылись, но матчей нет
     fail_by: dict[str, int] = {}        # не открылись вовсе
@@ -1058,6 +1073,8 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
         conn.execute("UPDATE sources SET last_run = ?, fail_count = 0 "
                      "WHERE domain = ?", (now, domain))
     for domain in set(fail_by) - answered:
+        if add_only:
+            continue          # дозабор: этот сбой сбор уже засчитал
         conn.execute("UPDATE sources SET last_run = ?, "
                      "fail_count = fail_count + 1 WHERE domain = ?", (now, domain))
     # три сбоя подряд — источник на страницу «Сломанные» (ТЗ разд. 11);
