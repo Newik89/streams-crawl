@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # удалить тег-заявку
+  contents: write   # удалить тег-заявку и разобранные теги-письма
   issues: write
 
 concurrency:
@@ -37,7 +37,6 @@ jobs:
         env:
           CRAWL_HOOK_URL: ${{ secrets.CRAWL_HOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           if [[ "$GITHUB_REF" == refs/tags/alive-proba-down-* ]]; then
@@ -53,3 +52,22 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/git/${GITHUB_REF}" \
             -o /dev/null || true
+
+  # Теги-письма тревог, чей прогон alarm.yml упал (сбой GitHub), иначе
+  # ждали бы следующей тревоги. Та же группа `alarm`, что у alarm.yml, —
+  # два разборщика разом не идут; разбирать нечего — один запрос и выход
+  mail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: alarm
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+
+      - name: Подобрать оставшиеся теги-письма
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/alarm_issue.py

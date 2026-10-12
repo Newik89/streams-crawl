@@ -84,36 +84,50 @@ def строка(conn, текст, кто="сторож", когда="2026-10-12
 def сторожа_жизни(conn):
     print("Ж1–Ж4. app/alive.py — кто молчит")
     чистая_база()
-    r = alive.report(conn, NOW)
+    r = alive.report(conn, NOW, uptime=None)
     проверка("Ж3 отметок нет — в порядке, отсчёт пошёл", (r["жив"], r["минут"]),
              (True, {"crawl_watch": 0, "web_watch": 0}))
-    r = alive.report(conn, NOW + timedelta(minutes=30))
+    r = alive.report(conn, NOW + timedelta(minutes=30), uptime=None)
     проверка("Ж3 нет 30 мин: сторож витрины (порог 20) молчит, заказов (40) — нет",
              r["молчат"], ["сторож витрины молчит 30 мин (отметок не было ни одной)"])
-    r = alive.report(conn, NOW + timedelta(minutes=41))
+    r = alive.report(conn, NOW + timedelta(minutes=41), uptime=None)
     проверка("Ж3 нет 41 мин — молчат оба", len(r["молчат"]), 2)
     отметить(conn, "crawl_watch", 10)
     отметить(conn, "web_watch", 3)
-    r = alive.report(conn, NOW)
+    r = alive.report(conn, NOW, uptime=None)
     проверка("Ж1 свежие — жив", (r["жив"], r["молчат"]), (True, []))
     проверка("Ж1 минуты", r["минут"], {"crawl_watch": 10, "web_watch": 3})
     отметить(conn, "crawl_watch", 41)
-    r = alive.report(conn, NOW)
+    r = alive.report(conn, NOW, uptime=None)
     проверка("Ж2 сторож заказов 41 мин > 40", (r["жив"], r["молчат"]),
              (False, ["сторож заказов молчит 41 мин"]))
     отметить(conn, "crawl_watch", 40)
-    проверка("Ж1 ровно 40 мин — ещё в порядке", alive.report(conn, NOW)["жив"], True)
+    проверка("Ж1 ровно 40 мин — ещё в порядке", alive.report(conn, NOW, uptime=None)["жив"], True)
     отметить(conn, "web_watch", 21)
-    проверка("Ж2 сторож витрины 21 мин > 20", alive.report(conn, NOW)["молчат"],
+    проверка("Ж2 сторож витрины 21 мин > 20", alive.report(conn, NOW, uptime=None)["молчат"],
              ["сторож витрины молчит 21 мин"])
     отметить(conn, "web_watch", 1)
     watch.save_json(conn, alarm_mail.KEY, {
         "last_id": 1, "waiting_since": watch.when(NOW - timedelta(minutes=61))})
-    проверка("Ж4 письма не уходят 61 мин", alive.report(conn, NOW)["молчат"],
+    проверка("Ж4 письма не уходят 61 мин", alive.report(conn, NOW, uptime=None)["молчат"],
              ["письма тревог не уходят 61 мин"])
     watch.save_json(conn, alarm_mail.KEY, {
         "last_id": 1, "waiting_since": watch.when(NOW - timedelta(minutes=30))})
-    проверка("Ж4 ждут 30 мин — ещё в порядке", alive.report(conn, NOW)["жив"], True)
+    проверка("Ж4 ждут 30 мин — ещё в порядке", alive.report(conn, NOW, uptime=None)["жив"], True)
+    отметить(conn, "crawl_watch", 183)
+    r = alive.report(conn, NOW, uptime=None)
+    проверка("«кто» — имена молчащих для GitHub", r["кто"], ["crawl_watch"])
+    r = alive.report(conn, NOW, uptime=7)
+    проверка("Ж3б сервер работает 7 мин после простоя — отметке 183 мин, но это не молчание",
+             (r["жив"], r["минут"]["crawl_watch"]), (True, 7))
+    проверка("аптайм читается из файла", alive.uptime_minutes(TMP / "нет-такого"), None)
+    (TMP / "uptime").write_text("5432.10 999.0\n", encoding="utf-8")
+    проверка("аптайм 5432 с = 90 мин", alive.uptime_minutes(TMP / "uptime"), 90)
+    conn.execute("DELETE FROM settings WHERE key LIKE 'beat%'")
+    conn.commit()
+    alive.silent_minutes(conn, "crawl_watch", NOW, write=False, uptime=None)
+    проверка("--check не пишет «нет отметки с …»",
+             db.get_setting(conn, alive.MISSING_PREFIX + "crawl_watch"), "")
 
 
 def письма(conn):
@@ -237,8 +251,12 @@ def гитхаб_жив():
     проверка("Ж4 с 16.10 — беда «отвечает не тем»",
              server_alive.verdict("old", "HTTP 404", после)[0], "wrong")
     проверка("Ж3 молчат", server_alive.verdict(
-        "ok", {"жив": False, "молчат": ["сторож заказов молчит 50 мин"]}, до),
-             ("silent", "сервер отвечает, но сторож заказов молчит 50 мин"))
+        "ok", {"жив": False, "молчат": ["сторож заказов молчит 50 мин"],
+               "кто": ["crawl_watch"]}, до),
+             ("silent:crawl_watch", "сервер отвечает, но сторож заказов молчит 50 мин"))
+    проверка("Ж3 вид — состав по алфавиту", server_alive.verdict(
+        "ok", {"жив": False, "молчат": ["…", "…"], "кто": ["mail", "crawl_watch"]}, до)[0],
+             "silent:crawl_watch+mail")
     проверка("Ж2 не отвечает", server_alive.verdict("down", "TimeoutError", до),
              ("down", "сервер не отвечает (TimeoutError)"))
     пробы, сны = [], []
@@ -259,12 +277,12 @@ def гитхаб_жив():
     проверка("look: три мимо — down с последней причиной", (итог, len(пробы), сны),
              (("down", "c"), 3, [60, 60]))
     print("  — что делать с issue")
-    тело = server_alive.body_text("silent", "сервер отвечает, но …", NOW, "", "Newik89", False)
+    тело = server_alive.body_text("silent:web_watch", "сервер отвечает, но …", NOW, "", "Newik89", False)
 
     def issue(вид, часов):
         return {"number": 7, "body": server_alive.body_text(вид, "…", NOW, "", "", False),
                 "updated_at": (NOW - timedelta(hours=часов)).strftime("%Y-%m-%dT%H:%M:%SZ")}
-    проверка("вид беды хранится в теле", server_alive.issue_kind({"body": тело}), "silent")
+    проверка("вид беды хранится в теле", server_alive.issue_kind({"body": тело}), "silent:web_watch")
     проверка("жив, issue нет — ничего", server_alive.action("", [], NOW), ("none", 0))
     проверка("жив, issue открыта — закрыть", server_alive.action("", [issue("down", 2)], NOW),
              ("close", 7))
@@ -274,7 +292,13 @@ def гитхаб_жив():
     проверка("та же беда старше суток — напомнить",
              server_alive.action("down", [issue("down", 25)], NOW), ("remind", 7))
     проверка("молчали сторожа, а теперь лёг весь сервер — письмо сразу",
-             server_alive.action("down", [issue("silent", 1)], NOW), ("change", 7))
+             server_alive.action("down", [issue("silent:crawl_watch", 1)], NOW), ("change", 7))
+    проверка("к молчащему сторожу добавились письма — письмо сразу",
+             server_alive.action("silent:crawl_watch+mail", [issue("silent:crawl_watch", 1)], NOW),
+             ("change", 7))
+    проверка("тот же состав — молчим",
+             server_alive.action("silent:crawl_watch+mail",
+                                 [issue("silent:crawl_watch+mail", 1)], NOW), ("none", 0))
     проверка("заголовок «не отвечает»",
              server_alive.title_text("down", "…", NOW, False), "Сервер не отвечает — 12.10.2026 22:00")
     проверка("заголовок по первым словам беды",
@@ -306,6 +330,23 @@ def гитхаб_тревога():
              "стук с <адрес> не дошёл")
     проверка("длинный текст обрезан",
              alarm_issue.clean("я" * (alarm_issue.MAX_CHARS + 50)).endswith("…(обрезано)"), True)
+    print("  — Т5: метка письма, второго письма по тому же тегу нет")
+    проверка("метка письма", alarm_issue.mark("alarm-1760300100"), "<!-- tag:alarm-1760300100 -->")
+    ответы_api = {
+        "/repos/s/issues/9/comments?per_page=100&page=1":
+            (200, [{"body": "текст\n\n<!-- tag:alarm-1760300100 -->"}]),
+    }
+    прежний_api = alarm_issue.api
+    alarm_issue.api = lambda token, method, path, body=None: ответы_api.get(path, (500, None))
+    try:
+        найдено = alarm_issue.sent_marks("t", "s", [{"number": 9,
+                                                     "body": "<!-- tag:alarm-1760300050 -->"}])
+        сбой = alarm_issue.sent_marks("t", "s", [{"number": 10, "body": ""}])
+    finally:
+        alarm_issue.api = прежний_api
+    проверка("метки из тела и комментариев",
+             найдено, {"<!-- tag:alarm-1760300050 -->", "<!-- tag:alarm-1760300100 -->"})
+    проверка("GitHub не отдал комментарии — None (письма не шлём вслепую)", сбой, None)
     print("  — повторы запросов к API")
     ответы = iter([OSError("нет связи"), (502, "плохо"), (201, {"number": 1})])
     сны = []

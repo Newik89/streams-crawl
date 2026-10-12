@@ -16,6 +16,12 @@ r"""Тревога сервера → issue → письмо владельцу 
       а открытые за прошлые дни — молча закрыть.
   Т4. Тег удаляется ТОЛЬКО после того, как GitHub принял issue или
       комментарий (201). Не принял → стоп, красный прогон.
+  Т5. В каждом письме — метка `<!-- tag:alarm-… -->`: тег, который после
+      сбоя (не удалился, прогон оборвали между письмом и удалением) снова
+      попал в разбор, второго письма не даёт — только удаляется. Не
+      удалился → красный прогон.
+Подбирает и workflow `alive.yml` (по своему расписанию, в той же группе
+`alarm`): тег, чей прогон упал, иначе ждал бы следующей тревоги.
 Запросы к API повторяются до `TRIES` раз при сбое связи или 5xx. Адреса
 IPv4 в тексте заменяются на «<адрес>»: репозиторий публичный.
 
@@ -53,6 +59,7 @@ except Exception:                               # noqa: BLE001 — нет баз
 
 _IP_RE = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?\b")
 _TAG_RE = re.compile(r"^alarm-[0-9A-Za-z_-]{1,40}$")
+_MARK_RE = re.compile(r"<!-- tag:alarm-[0-9A-Za-z_-]{1,40} -->")
 
 
 def api(token: str, method: str, path: str, body: dict | None = None):
@@ -128,6 +135,10 @@ def main() -> int:
     issues = [i for i in issues if "pull_request" not in i]
     title = today_title(datetime.now(timezone.utc))
     number, old = plan(issues, title)
+    sent = sent_marks(token, slug, issues)
+    if sent is None:
+        print("GitHub не отдал комментарии issue — письма не ушли")
+        return 1
     for tag in tags:
         text = tag_text(token, slug, tag)
         if text is None:
@@ -138,7 +149,10 @@ def main() -> int:
             continue
         text = clean(text or f"Сервер прислал тревогу (тег {tag}), но текста в "
                              f"теге нет — смотреть «Прогоны» в админке.")
-        if number:
+        text += f"\n\n{mark(tag)}"
+        if mark(tag) in sent:                   # Т5: уже писали — только убрать тег
+            status, answer, what = 201, {}, "уже отправлено раньше"
+        elif number:
             status, answer = api(token, "POST",
                                  f"/repos/{slug}/issues/{number}/comments",
                                  {"body": text})
@@ -162,11 +176,41 @@ def main() -> int:
             print(f"{tag}: {what} — GitHub ответил {status}: {str(answer)[:300]}; "
                   f"стоп, тег остаётся")
             return 1
+        sent.add(mark(tag))
         url = answer.get("html_url", "") if isinstance(answer, dict) else ""
         status, _ = api(token, "DELETE", f"/repos/{slug}/git/refs/tags/"
                                          f"{urllib.parse.quote(tag, safe='')}")
         print(f"{tag}: {what} {url}; тег удалён: {status == 204}")
+        if status not in (204, 404, 422):
+            # тег остался: письмо уже ушло, повтора не будет (Т5), но причину
+            # (права, защита тегов) должен увидеть человек — красный прогон
+            print(f"{tag}: тег не удалился ({status}) — стоп")
+            return 1
     return 0
+
+
+def mark(tag: str) -> str:
+    """Т5: метка письма в тексте — по ней тег, оставшийся после сбоя, не
+    уйдёт вторым письмом."""
+    return f"<!-- tag:{tag} -->"
+
+
+def sent_marks(token: str, slug: str, issues: list[dict]) -> set[str] | None:
+    """Т5: метки уже отправленных писем — из тел и комментариев открытых
+    issue тревог; None — GitHub не ответил."""
+    found: set[str] = set()
+    for issue in issues:
+        found.update(_MARK_RE.findall(issue.get("body") or ""))
+        for page in (1, 2, 3):                  # issue на день: сотня-другая — с запасом
+            status, comments = api(token, "GET", f"/repos/{slug}/issues/"
+                                   f"{issue['number']}/comments?per_page=100&page={page}")
+            if status != 200 or not isinstance(comments, list):
+                return None
+            for c in comments:
+                found.update(_MARK_RE.findall(c.get("body") or ""))
+            if len(comments) < 100:
+                break
+    return found
 
 
 if __name__ == "__main__":

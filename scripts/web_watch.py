@@ -180,8 +180,10 @@ def main() -> int:
     lock = db.db_path().with_name("web-watch.lock")
     fd = os.open(lock, os.O_RDWR | os.O_CREAT, 0o600)
     try:
-        if not watch._try_lock(fd):
-            return 0                     # прошлый запуск ещё идёт
+        if not watch._try_lock(fd):      # прошлый запуск ещё идёт
+            if args.check:
+                print("идёт запуск из cron — проверка не сделана, повторите позже")
+            return 0
         try:
             return _run(args.check)
         finally:
@@ -211,7 +213,7 @@ def _run(check: bool) -> int:
                     words += f"; systemctl: {restart()}"
                 if what in ("restart", "alarm"):
                     watch.note(conn, words, who=WHO)
-        silent_for, _ = alive.silent_minutes(conn, "crawl_watch", now)
+        silent_for, _ = alive.silent_minutes(conn, "crawl_watch", now, write=not check)
         what, words, new = watch_silence(new, now, silent_for, web_was_down)  # В5
         if what in ("kick", "alarm"):
             print(f"{stamp} {what}: {words}")

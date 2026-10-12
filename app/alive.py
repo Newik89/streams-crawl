@@ -22,14 +22,20 @@ issue (письмо)». Сторожей сервера запускает cron.
       первого раза, когда её не нашли (настройка `beat_missing:<имя>`
       ставится тогда же): до порога — в порядке, дальше — «молчит, отметок
       не было ни одной». Сторож, падающий с первого запуска, так не спрячется.
+  Ж3б. Молчание не длиннее времени работы сервера с загрузки
+      (`uptime_minutes`, /proc/uptime): после долгого простоя отметке часы,
+      но сторожа просто ещё не успели пройти — это не их вина.
   Ж4. Письма тревог (`app/alarm_mail.py`) не уходят дольше
       `MAIL_SILENT_MINUTES` → «письма тревог не уходят N мин».
+В ответе и слова для человека («молчат»), и имена для GitHub («кто»: имена
+сторожей и `mail`) — по смене состава GitHub пишет письмо сразу.
 """
 
 from __future__ import annotations
 
 import sqlite3
 from datetime import datetime, timezone
+from pathlib import Path
 
 from . import db, watch
 
@@ -47,6 +53,7 @@ BEAT_PREFIX = "beat:"
 MISSING_PREFIX = "beat_missing:"
 #: переменная окружения запуска «пинком» (В5): такой запуск отметку не ставит
 KICKED_ENV = "STREAMS_KICKED"
+UPTIME_FILE = Path("/proc/uptime")
 
 
 def beat(conn: sqlite3.Connection, name: str, now: datetime | None = None) -> None:
@@ -66,34 +73,58 @@ def minutes_since(at: datetime | None, now: datetime) -> int | None:
     return int((watch.utc(now) - watch.utc(at)).total_seconds() // 60)
 
 
-def silent_minutes(conn: sqlite3.Connection, name: str,
-                   now: datetime) -> tuple[int, bool]:
-    """Ж1–Ж3: (сколько минут сторож `name` молчит, были ли отметки вообще).
-    Отметки нет — с первого раза, когда её не нашли (и запомнить этот раз)."""
+def uptime_minutes(path: Path = UPTIME_FILE) -> int | None:
+    """Сколько минут сервер работает с загрузки (Ж3б); None — не узнать
+    (не Linux, нет файла)."""
+    try:
+        return int(float(path.read_text().split()[0]) // 60)
+    except (OSError, ValueError, IndexError):
+        return None
+
+
+def silent_minutes(conn: sqlite3.Connection, name: str, now: datetime,
+                   write: bool = True, uptime: int | None = -1) -> tuple[int, bool]:
+    """Ж1–Ж3б: (сколько минут сторож `name` молчит, были ли отметки вообще).
+    Отметки нет — с первого раза, когда её не нашли (и запомнить этот раз,
+    если `write`; `--check` не пишет). `uptime` — минуты с загрузки (по
+    умолчанию — с сервера; None — не ограничивать)."""
+    if uptime == -1:
+        uptime = uptime_minutes()
     at = beat_at(conn, name)
     if at is not None:
-        return minutes_since(at, now), True
-    first = watch.moment(db.get_setting(conn, MISSING_PREFIX + name))
-    if first is None:
-        db.set_setting(conn, MISSING_PREFIX + name, watch.when(now))
-        return 0, False
-    return minutes_since(first, now), False
+        age, seen = minutes_since(at, now), True
+    else:
+        seen = False
+        first = watch.moment(db.get_setting(conn, MISSING_PREFIX + name))
+        if first is None:
+            if write:
+                db.set_setting(conn, MISSING_PREFIX + name, watch.when(now))
+            age = 0
+        else:
+            age = minutes_since(first, now)
+    if uptime is not None:
+        age = min(age, uptime)
+    return age, seen
 
 
-def report(conn: sqlite3.Connection, now: datetime) -> dict:
+def report(conn: sqlite3.Connection, now: datetime, uptime: int | None = -1) -> dict:
     """Ответ страницы `/alive`: {"жив": всё ли в порядке, "молчат": [слова],
-    "минут": {имя: сколько минут молчит}}. Правила Ж1–Ж4."""
+    "кто": [имена молчащих], "минут": {имя: сколько минут молчит}}.
+    Правила Ж1–Ж4."""
     silent: list[str] = []
+    who: list[str] = []
     ages: dict[str, int] = {}
     for name, (words, limit) in BEATS.items():
-        age, seen = silent_minutes(conn, name, now)
+        age, seen = silent_minutes(conn, name, now, uptime=uptime)
         ages[name] = age
         if age > limit:                                           # Ж2, Ж3
+            who.append(name)
             silent.append(f"{words} молчит {age} мин"
                           + ("" if seen else " (отметок не было ни одной)"))
     from . import alarm_mail                                       # Ж4
     waiting = minutes_since(watch.moment(
         watch.load_json(conn, alarm_mail.KEY).get("waiting_since") or ""), now)
     if waiting is not None and waiting > MAIL_SILENT_MINUTES:
+        who.append("mail")
         silent.append(f"письма тревог не уходят {waiting} мин")
-    return {"жив": not silent, "молчат": silent, "минут": ages}
+    return {"жив": not silent, "молчат": silent, "кто": who, "минут": ages}

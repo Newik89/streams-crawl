@@ -11,8 +11,9 @@ r"""Жив ли сервер — смотрит GitHub (схема сбоев, �
       комментарий «снова в порядке» (второе письмо) и закрыть.
   Ж2. Не ответил ни на одну из `TRIES` проб (`GAP` с между ними; 5xx — тоже
       не ответ: nginx жив, а витрина нет) → беда вида `down`.
-  Ж3. Ответил, но кто-то молчит → беда вида `silent` (слова с сервера:
-      сторож заказов или витрины молчит, письма тревог не уходят).
+  Ж3. Ответил, но кто-то молчит → беда вида `silent:<кто>` (слова с
+      сервера: сторож заказов или витрины молчит, письма тревог не уходят;
+      в виде — состав молчащих, `кто` из ответа /alive).
   Ж4. Ответил не JSON или 4xx (страницы /alive нет) → до `OLD_GRACE_UNTIL`
       (код с ней едет на сервер) — в порядке с предупреждением; потом — беда
       вида `wrong` «сервер отвечает не тем»: на его адресе чужой сайт,
@@ -73,7 +74,7 @@ except Exception:                               # noqa: BLE001 — нет баз
     KYIV = timezone.utc
 
 _IP_RE = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?\b")
-_KIND_RE = re.compile(r"<!-- вид:(\w+) -->")
+_KIND_RE = re.compile(r"<!-- вид:([\w:+?]+) -->")
 TITLES = {"down": "не отвечает", "wrong": "отвечает не тем"}
 
 
@@ -132,7 +133,10 @@ def verdict(kind: str, data, today: date) -> tuple[str, str]:
         if data.get("жив") is True:                                # Ж1
             return "", ""
         silent = "; ".join(str(s) for s in data.get("молчат") or []) or "?"
-        return "silent", f"сервер отвечает, но {silent}"           # Ж3
+        # вид — с составом молчащих: добавился «письма не уходят» к «сторож
+        # молчит» — это новая беда, письмо сразу
+        names = "+".join(sorted(str(n) for n in data.get("кто") or [])) or "?"
+        return f"silent:{names}", f"сервер отвечает, но {silent}"  # Ж3
     if kind == "old":                                              # Ж4
         if today <= OLD_GRACE_UNTIL:
             print(f"::warning::страницы /alive на сервере нет ({data}) — "
@@ -254,8 +258,13 @@ def main() -> int:
                                     {"body": f"{lead}: {words} ({kyiv(now)} по Киеву)"})
         if status == 201 and what == "change":
             body = _KIND_RE.sub("", issues[0].get("body") or "").rstrip()
-            call_retry(token, "PATCH", f"/repos/{slug}/issues/{number}",
-                       {"body": f"{body}\n\n<!-- вид:{bad} -->"})
+            patched, _ = call_retry(token, "PATCH", f"/repos/{slug}/issues/{number}",
+                                    {"body": f"{body}\n\n<!-- вид:{bad} -->"})
+            if patched != 200:
+                # старая метка осталась — следующая проверка снова написала бы
+                # «Теперь: …»; красный прогон покажет, что тут что-то не так
+                print(f"метку вида в #{number} обновить не вышло ({patched})")
+                return 1
     elif what == "close":
         status, answer = call_retry(token, "POST",
                                     f"/repos/{slug}/issues/{number}/comments",
