@@ -39,7 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import crawl_hook, db, trigger, watch  # noqa: E402
+from app import alive, crawl_hook, db, trigger, watch  # noqa: E402
 
 
 def _now() -> datetime:
@@ -754,6 +754,7 @@ def main() -> int:
             print(f"{_now():%d.%m %H:%M} общий замок занят дольше "
                   f"{watch.LOCK_WAIT_WATCH // 60} мин — эту проверку пропускаю, "
                   f"следующая по расписанию")
+            _beat()                   # сторож жив: замок держит другой
             return 0
         return _run(check=False)
 
@@ -762,7 +763,19 @@ def _run(check: bool) -> int:
     conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
     try:
         tick(conn, _now(), check)     # часы — после ожидания замка
+        if not check:
+            # отметка «жив» — только после удачной проверки: сторож, который
+            # падает на каждом запуске, должен выглядеть молчащим (app/alive.py)
+            alive.beat(conn, "crawl_watch")
         return 0
+    finally:
+        conn.close()
+
+
+def _beat() -> None:
+    conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
+    try:
+        alive.beat(conn, "crawl_watch")
     finally:
         conn.close()
 

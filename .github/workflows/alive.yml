@@ -1,0 +1,55 @@
+# Сервер жив? (схема сбоев, шаг 9, 12.10.2026). Лёгший сервер сам о себе
+# не напишет — поэтому GitHub по расписанию открывает его страницу /alive
+# (app/alive.py). Не ответил или его сторожа молчат — issue с меткой
+# «сервер-лёг», GitHub шлёт владельцу письмо; ожил — «снова в порядке» и
+# issue закрывается. Правила — в шапке scripts/server_alive.py.
+#   тег alive-<ts>             → проверить сейчас (тег потом удаляется)
+#   тег alive-proba-down-<ts>  → проба письма: закрытый порт вместо сервера
+name: Сервер жив?
+
+on:
+  schedule:
+    # частота — слово владельца; минута некруглая: в :00 у GitHub толпа,
+    # такие запуски он чаще пропускает и сдвигает
+    - cron: "17 * * * *"
+  push:
+    tags: ["alive-*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # удалить тег-заявку
+  issues: write
+
+concurrency:
+  group: alive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+
+      - name: Открыть /alive сервера
+        env:
+          CRAWL_HOOK_URL: ${{ secrets.CRAWL_HOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/alive-proba-down-* ]]; then
+            python3 scripts/server_alive.py --proba-down --run-url "$RUN_URL"
+          else
+            python3 scripts/server_alive.py --run-url "$RUN_URL"
+          fi
+
+      - name: Удалить тег-заявку
+        if: always() && startsWith(github.ref, 'refs/tags/alive-')
+        run: |
+          curl -s --globoff -X DELETE \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/git/${GITHUB_REF}" \
+            -o /dev/null || true
