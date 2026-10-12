@@ -144,7 +144,12 @@ def cmd_dispatch(args) -> int:
 
 
 def _runs(slug: str, limit: int = 5) -> list[dict]:
-    status, answer = call("GET", f"/repos/{slug}/actions/runs?per_page={limit}")
+    """Прогоны ОБХОДА (crawl.yml), свежие первыми. Только его: в общем списке
+    репозитория идут и `queue.yml`, и `alarm.yml`, и ежечасный `alive.yml`
+    (12.10) — `wait` «дождался» бы чужого прогона, а `fetch` не нашёл бы
+    утренний сбор среди последних 30."""
+    status, answer = call("GET", f"/repos/{slug}/actions/workflows/crawl.yml/runs"
+                                 f"?per_page={limit}")
     return answer.get("workflow_runs", []) if status == 200 else []
 
 

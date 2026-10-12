@@ -7,24 +7,30 @@ r"""Жив ли сервер — смотрит GitHub (схема сбоев, �
 Беда — issue с меткой `сервер-лёг`, и GitHub шлёт владельцу письмо.
 
 Правила (`verdict` и `action`), по порядку:
-  Ж1. `/alive` ответил «жив» (или 404 и не JSON — код с этой страницей ещё
-      не приехал на сервер, но сервер отвечает) → в порядке. Открыта issue
-      `сервер-лёг` → комментарий «снова в порядке» (второе письмо) и закрыть.
+  Ж1. `/alive` ответил «жив» → в порядке. Открыта issue `сервер-лёг` →
+      комментарий «снова в порядке» (второе письмо) и закрыть.
   Ж2. Не ответил ни на одну из `TRIES` проб (`GAP` с между ними; 5xx — тоже
-      не ответ: nginx жив, а витрина нет) → беда «сервер не отвечает».
-  Ж3. Ответил, но кто-то молчит → беда «сервер отвечает, но …» (слова с
-      сервера: сторож заказов или витрины молчит, письма тревог не уходят).
-  Беда: открытой issue нет → новая (письмо). Есть → молчим, пока с её
-  последнего обновления не прошло `REMIND_HOURS`; потом комментарий «всё
-  ещё …» (ещё письмо). GitHub не отдал список issue → ничего не делаем.
+      не ответ: nginx жив, а витрина нет) → беда вида `down`.
+  Ж3. Ответил, но кто-то молчит → беда вида `silent` (слова с сервера:
+      сторож заказов или витрины молчит, письма тревог не уходят).
+  Ж4. Ответил не JSON или 4xx (страницы /alive нет) → до `OLD_GRACE_UNTIL`
+      (код с ней едет на сервер) — в порядке с предупреждением; потом — беда
+      вида `wrong` «сервер отвечает не тем»: на его адресе чужой сайт,
+      заглушка или nginx не пускает.
+  Беда: открытой issue нет → новая (письмо). Есть, и вид беды тот же →
+  молчим, пока с её последнего обновления не прошло `REMIND_HOURS`; потом
+  комментарий «всё ещё …». Вид сменился (молчали сторожа — лёг весь сервер)
+  → комментарий сразу (письмо). Вид беды хранится в теле issue меткой
+  `<!-- вид:… -->` (`issue_kind`). GitHub не отдал список issue → красный
+  прогон (о нём GitHub пишет тому, кто правил расписание).
 
 Адрес сервера — из секрета `CRAWL_HOOK_URL` (туда же стучит обход); в журнал
 он не выводится (`::add-mask::`), в текст issue не попадает (`hide`).
 
     python scripts/server_alive.py               проверить (в alive.yml)
     python scripts/server_alive.py --proba-down  проба письма: стучимся в
-        закрытый порт сервера → «не отвечает» с пометкой ПРОБА (тег
-        `alive-proba-down-…`); следующая обычная проверка её закроет
+        закрытый порт сервера и заводим ОТДЕЛЬНУЮ issue «ПРОБА: …», которую
+        тут же закрываем (тег `alive-proba-down-…`); открытые беды не трогаем
 Только стандартная библиотека.
 """
 
@@ -39,12 +45,12 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from crawl_alarm import _slug, _token, call, ensure_label, open_issues  # noqa: E402
+from crawl_alarm import _slug, _token, call_retry, ensure_label  # noqa: E402
 
 LABEL = "сервер-лёг"
 #: проб до вывода «не отвечает» и пауза между ними, с
@@ -52,10 +58,13 @@ TRIES = 3
 GAP = 60
 #: ждать ответа одной пробы, с
 TIMEOUT = 30
-#: открытая беда: напоминать письмом не чаще
+#: открытая беда того же вида: напоминать письмом не чаще
 REMIND_HOURS = 24
 #: закрытый порт для пробы письма (`--proba-down`)
 PROBA_PORT = 1
+#: до этого дня (включительно) «страницы /alive нет» — ещё не беда (Ж4):
+#: код с ней едет на сервер обычным забором
+OLD_GRACE_UNTIL = date(2026, 10, 15)
 
 try:
     from zoneinfo import ZoneInfo
@@ -64,6 +73,8 @@ except Exception:                               # noqa: BLE001 — нет баз
     KYIV = timezone.utc
 
 _IP_RE = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?\b")
+_KIND_RE = re.compile(r"<!-- вид:(\w+) -->")
+TITLES = {"down": "не отвечает", "wrong": "отвечает не тем"}
 
 
 def base_url(hook_url: str) -> str:
@@ -84,7 +95,7 @@ def hide(text: str, base: str) -> str:
 
 def probe(url: str, timeout: int = TIMEOUT) -> tuple[str, object]:
     """Одна проба: ("ok", ответ-словарь) / ("old", слова) — сервер ответил,
-    но страницы /alive у него нет / ("down", почему не ответил)."""
+    но не JSON страницы /alive / ("down", почему не ответил)."""
     request = urllib.request.Request(url, headers={"User-Agent": "streams-alive"})
     try:
         with urllib.request.urlopen(request, timeout=timeout) as r:
@@ -114,16 +125,21 @@ def look(url: str, tries: int = TRIES, gap: int = GAP, sleep=time.sleep,
     return kind, data
 
 
-def verdict(kind: str, data) -> tuple[bool, str]:
-    """Правила Ж1–Ж3: (в порядке ли, слова беды)."""
-    if kind == "old":                                              # Ж1
-        return True, ""
+def verdict(kind: str, data, today: date) -> tuple[str, str]:
+    """Правила Ж1–Ж4: (вид беды — "" если в порядке, "down", "silent",
+    "wrong"; слова беды)."""
     if kind == "ok":
-        if data.get("жив", True):                                  # Ж1
-            return True, ""
+        if data.get("жив") is True:                                # Ж1
+            return "", ""
         silent = "; ".join(str(s) for s in data.get("молчат") or []) or "?"
-        return False, f"сервер отвечает, но {silent}"              # Ж3
-    return False, f"сервер не отвечает ({data})"                   # Ж2
+        return "silent", f"сервер отвечает, но {silent}"           # Ж3
+    if kind == "old":                                              # Ж4
+        if today <= OLD_GRACE_UNTIL:
+            print(f"::warning::страницы /alive на сервере нет ({data}) — "
+                  f"код с ней ещё не приехал")
+            return "", ""
+        return "wrong", f"сервер отвечает не тем ({data}) — страницы /alive нет"
+    return "down", f"сервер не отвечает ({data})"                  # Ж2
 
 
 def _at(text: str) -> datetime | None:
@@ -133,14 +149,23 @@ def _at(text: str) -> datetime | None:
         return None
 
 
-def action(ok: bool, issues: list[dict], now: datetime) -> tuple[str, int]:
-    """Что делать с issue: ("close", номер) / ("open", 0) / ("remind", номер)
-    / ("none", 0). `issues` — открытые с меткой, свежие первыми."""
-    if ok:
+def issue_kind(issue: dict) -> str:
+    """Вид беды, о котором issue писала последним (метка в теле)."""
+    found = _KIND_RE.findall(issue.get("body") or "")
+    return found[-1] if found else ""
+
+
+def action(bad: str, issues: list[dict], now: datetime) -> tuple[str, int]:
+    """Что делать с issue: ("close", номер) / ("open", 0) / ("change", номер)
+    / ("remind", номер) / ("none", 0). `bad` — вид беды ("" — в порядке);
+    `issues` — открытые с меткой, свежие первыми."""
+    if not bad:
         return ("close", int(issues[0]["number"])) if issues else ("none", 0)
     if not issues:
         return "open", 0
     newest = issues[0]
+    if issue_kind(newest) != bad:
+        return "change", int(newest["number"])
     updated = _at(newest.get("updated_at") or "") or now
     if now - updated >= timedelta(hours=REMIND_HOURS):
         return "remind", int(newest["number"])
@@ -151,14 +176,23 @@ def kyiv(now: datetime) -> str:
     return now.astimezone(KYIV).strftime("%d.%m.%Y %H:%M")
 
 
-def body_text(words: str, now: datetime, run_url: str, owner: str,
+def title_text(bad: str, words: str, now: datetime, proba: bool) -> str:
+    """Заголовок: «Сервер не отвечает — …» или первые слова беды."""
+    if bad in TITLES:
+        what = f"Сервер {TITLES[bad]}"
+    else:
+        what = "Сервер: " + words.removeprefix("сервер отвечает, но ").split(";")[0]
+    return (("ПРОБА: " if proba else "") + f"{what} — {kyiv(now)}")[:200]
+
+
+def body_text(bad: str, words: str, now: datetime, run_url: str, owner: str,
               proba: bool) -> str:
     lines = []
     if owner:
         lines.append(f"@{owner} — письмо проверки «Сервер жив?» (GitHub).")
     if proba:
         lines += ["", "**ПРОБА письма** — сервер в порядке, это проверка, что "
-                      "письмо доходит. Следующая обычная проверка закроет её."]
+                      "письмо доходит. Закрываю её сразу."]
     lines += ["", f"**Что:** {words}", f"**Когда:** {kyiv(now)} по Киеву"]
     if run_url:
         lines.append(f"**Проверка:** {run_url}")
@@ -166,7 +200,7 @@ def body_text(words: str, now: datetime, run_url: str, owner: str,
                   "«сервер лёг» — дальше он сделает сам. Не поднимается вовсе — "
                   "панель DigitalOcean → Droplet → Power cycle.",
               "Когда сервер снова ответит, сюда придёт «снова в порядке», и "
-              "issue закроется сама."]
+              "issue закроется сама.", "", f"<!-- вид:{bad} -->"]
     return "\n".join(lines)
 
 
@@ -183,50 +217,54 @@ def main() -> int:
     print(f"::add-mask::{base}")
     print(f"::add-mask::{host}")
     print(f"::add-mask::{host.split(':')[0]}")
-    url = base + "/alive"
+    now = datetime.now(timezone.utc)
     if args.proba_down:
         bare = urllib.parse.urlsplit(base)
-        url = f"{bare.scheme}://{bare.hostname}:{PROBA_PORT}/alive"
-        kind, data = look(url, tries=1)
+        kind, data = look(f"{bare.scheme}://{bare.hostname}:{PROBA_PORT}/alive", tries=1)
     else:
-        kind, data = look(url)
-    ok, words = verdict(kind, data)
+        kind, data = look(base + "/alive")
+    bad, words = verdict(kind, data, now.astimezone(KYIV).date())
     words = hide(words, base)
-    now = datetime.now(timezone.utc)
-    print("итог:", "в порядке" if ok else words)
+    print("итог:", words or "в порядке")
 
     token, slug = _token(), _slug()
-    issues = open_issues(token, slug, LABEL)
-    if issues is None:
-        # красный прогон — запасное письмо: о красном прогоне по расписанию
-        # GitHub пишет тому, кто последним правил расписание
-        print("GitHub не отдал список issue — в этот раз ничего не делаю")
-        return 0 if ok else 1
-    what, number = action(ok, issues, now)
     owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
+    if args.proba_down:
+        return proba(token, slug, bad or "down", words or "проба", now,
+                     args.run_url, owner)
+    status, issues = call_retry(token, "GET", f"/repos/{slug}/issues?" + urllib.parse.urlencode(
+        {"labels": LABEL, "state": "open", "per_page": 10}))
+    if status != 200 or not isinstance(issues, list):
+        print(f"GitHub не отдал список issue ({status}) — в этот раз ничего не делаю")
+        return 0 if not bad else 1
+    issues = [i for i in issues if "pull_request" not in i]
+    what, number = action(bad, issues, now)
     if what == "open":
         ensure_label(token, slug, LABEL,
                      "сервер не отвечает или его сторожа молчат — письмо владельцу")
-        short = "не отвечает" if kind == "down" else "молчат сторожа"
-        title = (("ПРОБА: " if args.proba_down else "")
-                 + f"Сервер {short} — {kyiv(now)}")
-        status, answer = call(token, "POST", f"/repos/{slug}/issues",
-                              {"title": title[:200], "labels": [LABEL],
-                               "body": body_text(words, now, args.run_url,
-                                                 owner, args.proba_down)})
-    elif what == "remind":
-        status, answer = call(token, "POST",
-                              f"/repos/{slug}/issues/{number}/comments",
-                              {"body": f"Всё ещё: {words} ({kyiv(now)} по Киеву)"})
+        status, answer = call_retry(token, "POST", f"/repos/{slug}/issues",
+                                    {"title": title_text(bad, words, now, False),
+                                     "labels": [LABEL],
+                                     "body": body_text(bad, words, now, args.run_url,
+                                                       owner, False)})
+    elif what in ("remind", "change"):
+        lead = "Всё ещё" if what == "remind" else "Теперь"
+        status, answer = call_retry(token, "POST",
+                                    f"/repos/{slug}/issues/{number}/comments",
+                                    {"body": f"{lead}: {words} ({kyiv(now)} по Киеву)"})
+        if status == 201 and what == "change":
+            body = _KIND_RE.sub("", issues[0].get("body") or "").rstrip()
+            call_retry(token, "PATCH", f"/repos/{slug}/issues/{number}",
+                       {"body": f"{body}\n\n<!-- вид:{bad} -->"})
     elif what == "close":
-        status, answer = call(token, "POST",
-                              f"/repos/{slug}/issues/{number}/comments",
-                              {"body": f"Сервер снова в порядке — {kyiv(now)} "
-                                       f"по Киеву. Закрываю."})
+        status, answer = call_retry(token, "POST",
+                                    f"/repos/{slug}/issues/{number}/comments",
+                                    {"body": f"Сервер снова в порядке — {kyiv(now)} "
+                                             f"по Киеву. Закрываю."})
         if status == 201:
             for item in issues:
-                call(token, "PATCH", f"/repos/{slug}/issues/{item['number']}",
-                     {"state": "closed", "state_reason": "completed"})
+                call_retry(token, "PATCH", f"/repos/{slug}/issues/{item['number']}",
+                           {"state": "closed", "state_reason": "completed"})
     else:
         print("issue: ничего нового")
         return 0
@@ -235,6 +273,26 @@ def main() -> int:
         return 1
     print(f"issue ({what}):", answer.get("html_url", "") if isinstance(answer, dict) else "")
     return 0                  # письмо ушло issue; красный прогон дал бы второе
+
+
+def proba(token: str, slug: str, bad: str, words: str, now: datetime,
+          run_url: str, owner: str) -> int:
+    """Проба письма: отдельная issue «ПРОБА: …» — завести и тут же закрыть.
+    Открытые настоящие беды не трогаем."""
+    ensure_label(token, slug, LABEL,
+                 "сервер не отвечает или его сторожа молчат — письмо владельцу")
+    status, answer = call_retry(token, "POST", f"/repos/{slug}/issues",
+                                {"title": title_text(bad, words, now, True),
+                                 "labels": [LABEL],
+                                 "body": body_text(bad, words, now, run_url, owner, True)})
+    if status != 201 or not isinstance(answer, dict):
+        print(f"проба: GitHub ответил {status}: {str(answer)[:300]}")
+        return 1
+    number = answer.get("number")
+    call_retry(token, "PATCH", f"/repos/{slug}/issues/{number}",
+               {"state": "closed", "state_reason": "completed"})
+    print("проба:", answer.get("html_url", ""), "— закрыта")
+    return 0
 
 
 if __name__ == "__main__":

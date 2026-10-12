@@ -30,6 +30,7 @@ r"""Сторож заказа обхода — cron сервера раз в 15 
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 import sys
@@ -754,7 +755,8 @@ def main() -> int:
             print(f"{_now():%d.%m %H:%M} общий замок занят дольше "
                   f"{watch.LOCK_WAIT_WATCH // 60} мин — эту проверку пропускаю, "
                   f"следующая по расписанию")
-            _beat()                   # сторож жив: замок держит другой
+            # отметки «жив» нет: замок, занятый 40+ мин подряд, — тоже беда
+            # (законно его держат минуты), пусть /alive и В5 её заметят
             return 0
         return _run(check=False)
 
@@ -763,19 +765,12 @@ def _run(check: bool) -> int:
     conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
     try:
         tick(conn, _now(), check)     # часы — после ожидания замка
-        if not check:
-            # отметка «жив» — только после удачной проверки: сторож, который
-            # падает на каждом запуске, должен выглядеть молчащим (app/alive.py)
+        if not check and not os.environ.get(alive.KICKED_ENV):
+            # отметка «жив» — только после удачной проверки и только из cron:
+            # сторож, который падает на каждом запуске, и мёртвый cron за
+            # пинками сторожа витрины должны выглядеть молчащими (app/alive.py)
             alive.beat(conn, "crawl_watch")
         return 0
-    finally:
-        conn.close()
-
-
-def _beat() -> None:
-    conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
-    try:
-        alive.beat(conn, "crawl_watch")
     finally:
         conn.close()
 

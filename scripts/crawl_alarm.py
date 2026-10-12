@@ -75,6 +75,27 @@ def call(token: str, method: str, path: str, body: dict | None = None):
             return e.code, text
 
 
+def call_retry(token: str, method: str, path: str, body: dict | None = None,
+               tries: int = 3, pause: float = 5, sleep=None):
+    """`call` с повторами (тревоги сервера, 12.10): сбой связи или 5xx — ещё
+    раз через `pause` с; после `tries` попыток — последний ответ, сбой
+    связи — код 0."""
+    import time
+    sleep = sleep or time.sleep
+    status, answer = 0, None
+    for n in range(tries):
+        if n:
+            sleep(pause)
+        try:
+            status, answer = call(token, method, path, body)
+        except Exception as e:                  # noqa: BLE001 — нет связи, таймаут
+            status, answer = 0, f"{type(e).__name__}: {e}"
+            continue
+        if status < 500:
+            break
+    return status, answer
+
+
 def ensure_label(token: str, slug: str, label: str = LABEL,
                  about: str = "обход телесайтов упал или прерван — смотреть прогон"
                  ) -> None:

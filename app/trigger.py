@@ -131,6 +131,13 @@ def push_request_tag(kind: str, value: str) -> tuple[bool | None, str]:
     return False, "заявка не прошла: " + (r.stderr or "?").strip()[:160]
 
 
+def has_alarm_workflow(cwd: Path = ROOT) -> bool:
+    """Есть ли `alarm.yml` в текущем коммите — его GitHub и запустит на тег."""
+    has = subprocess.run(["git", "cat-file", "-e", "HEAD:.github/workflows/alarm.yml"],
+                         capture_output=True, cwd=cwd, timeout=30)
+    return has.returncode == 0
+
+
 def make_tag_object(text: str, tag: str, moment: int,
                     cwd: Path = ROOT) -> tuple[str, str]:
     """Объект аннотированного тега `tag` на текущий коммит с сообщением
@@ -161,6 +168,11 @@ def push_alarm_tag(text: str) -> tuple[bool | None, str]:
     moment = int(_time.time())
     tag = f"alarm-{moment}"
     try:
+        # тег ставится на текущий коммит сервера, и GitHub берёт alarm.yml
+        # из него же: нет там workflow — письмо не уйдёт, а тег повиснет в
+        # публичном репозитории. Ждём кода с ним (М4 повторит)
+        if not has_alarm_workflow():
+            return False, "в коде сервера ещё нет alarm.yml — жду обновления"
         sha, error = make_tag_object(text, tag, moment)
         if not sha:
             return False, error

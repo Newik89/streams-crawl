@@ -29,6 +29,7 @@ workflow `alarm.yml` на GitHub (`scripts/alarm_issue.py`) заводит issue
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 from datetime import datetime
 
@@ -38,8 +39,11 @@ KEY = "alarm_mail"
 WORD = "ТРЕВОГА"
 #: строк тревоги в одном письме; остальные — числом
 MAX_LINES = 20
-#: знаков в одной строке письма
-LINE_CHARS = 500
+#: знаков в одной строке письма: 20 строк по 250 укладываются в предел
+#: комментария `scripts/alarm_issue.py` (MAX_CHARS 6000) вместе с шапкой
+LINE_CHARS = 250
+#: адрес IPv4 — вон из письма: тег и issue лежат в ПУБЛИЧНОМ репозитории
+_IP_RE = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?\b")
 
 
 def last_row_id(conn: sqlite3.Connection) -> int:
@@ -72,7 +76,7 @@ def message(alarms: list[dict]) -> str:
     for alarm in alarms[:MAX_LINES]:
         at = alarm["at"]
         when = f"{at[8:10]}.{at[5:7]} {at[11:16]}" if len(at) >= 16 else at
-        lines.append(f"{when} {alarm['text'][:LINE_CHARS]}")
+        lines.append(f"{when} {_IP_RE.sub('<адрес>', alarm['text'])[:LINE_CHARS]}")
     if len(alarms) > MAX_LINES:
         lines.append(f"…и ещё {len(alarms) - MAX_LINES} — в «Прогонах» админки")
     return "\n".join(lines)

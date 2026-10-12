@@ -2,16 +2,17 @@
 """Схема сбоев, шаг 9: «сервер лёг» и тревога письмом — сценарий на каждое
 правило.
 
-  Ж1–Ж4  `app/alive.py`           кто из сторожей молчит (страница /alive)
-  М1–М4  `app/alarm_mail.py`      новые ТРЕВОГИ → тег-письмо
-  В5     `scripts/web_watch.py`   сторож заказов молчит → запустить, ТРЕВОГА
-  Ж1–Ж3  `scripts/server_alive.py` GitHub: проба /alive → issue
-  Т1–Т2  `scripts/alarm_issue.py`  тег-письмо → issue на день
-  тег    `trigger.make_tag_object` текст с кириллицей доезжает в тег целым
+  Ж1–Ж4  `app/alive.py`            кто из сторожей молчит (страница /alive)
+  М1–М4  `app/alarm_mail.py`       новые ТРЕВОГИ → тег-письмо
+  В5     `scripts/web_watch.py`    сторож заказов молчит → запустить, ТРЕВОГА
+  Ж1–Ж4  `scripts/server_alive.py` GitHub: проба /alive → issue
+  Т1–Т4  `scripts/alarm_issue.py`  теги-письма → issue на день
+  тег    `trigger.make_tag_object` текст с кириллицей доезжает в тег целым;
+         `trigger.has_alarm_workflow` — без alarm.yml в коде тег не шлём
   /alive страница публичная и не пишется в «Посещения»
 
 В сеть не ходит, GitHub не трогает: база — временная, пробы и отправка
-подменены. Запуск:
+подменены. Адреса в тесте — из документационных сетей (203.0.113.x). Запуск:
 
     venv\\Scripts\\python.exe scripts/test_alive.py
 """
@@ -23,7 +24,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -39,6 +40,7 @@ os.environ.pop("STREAMS_LOCAL", None)
 
 from app import alarm_mail, alive, db, trigger, visits, watch, web  # noqa: E402
 import alarm_issue  # noqa: E402
+import crawl_alarm  # noqa: E402
 import server_alive  # noqa: E402
 import web_watch  # noqa: E402
 
@@ -60,8 +62,8 @@ NOW = datetime(2026, 10, 12, 19, 0, tzinfo=timezone.utc)      # 22:00 по Ки�
 
 def чистая_база():
     conn = db.connect()
-    conn.execute("DELETE FROM settings WHERE key LIKE 'beat:%' OR key = ?",
-                 (alarm_mail.KEY,))
+    conn.execute("DELETE FROM settings WHERE key LIKE 'beat:%' "
+                 "OR key LIKE 'beat_missing:%' OR key = ?", (alarm_mail.KEY,))
     conn.execute("DELETE FROM runs")
     conn.commit()
     return conn
@@ -83,8 +85,13 @@ def сторожа_жизни(conn):
     print("Ж1–Ж4. app/alive.py — кто молчит")
     чистая_база()
     r = alive.report(conn, NOW)
-    проверка("Ж3 отметок нет — в порядке", (r["жив"], r["минут"]["crawl_watch"]),
-             (True, None))
+    проверка("Ж3 отметок нет — в порядке, отсчёт пошёл", (r["жив"], r["минут"]),
+             (True, {"crawl_watch": 0, "web_watch": 0}))
+    r = alive.report(conn, NOW + timedelta(minutes=30))
+    проверка("Ж3 нет 30 мин: сторож витрины (порог 20) молчит, заказов (40) — нет",
+             r["молчат"], ["сторож витрины молчит 30 мин (отметок не было ни одной)"])
+    r = alive.report(conn, NOW + timedelta(minutes=41))
+    проверка("Ж3 нет 41 мин — молчат оба", len(r["молчат"]), 2)
     отметить(conn, "crawl_watch", 10)
     отметить(conn, "web_watch", 3)
     r = alive.report(conn, NOW)
@@ -131,7 +138,8 @@ def письма(conn):
     проверка("М2 строка без тревоги — молчим",
              (alarm_mail.flush(conn, NOW, послать((True, ""))), отправлено), ("", []))
     строка(conn, "ТРЕВОГА — витрина не отвечает", кто="автомат", когда="2026-10-12 21:57")
-    строка(conn, "ТРЕВОГА — GitHub молчит 60 мин", когда="2026-10-12 21:58")
+    строка(conn, "ТРЕВОГА — GitHub молчит 60 мин; адрес 203.0.113.5:8000",
+           когда="2026-10-12 21:58")
     alarm_mail.flush(conn, NOW, послать((False, "нет связи")))
     память = watch.load_json(conn, alarm_mail.KEY)
     проверка("М4 не ушло — память не сдвинулась", "waiting_since" in память, True)
@@ -147,21 +155,24 @@ def письма(conn):
     отправлено.clear()
     слова = alarm_mail.flush(conn, NOW, послать((True, "тег alarm-1 ушёл")))
     проверка("М3 ушло одно письмо", len(отправлено), 1)
-    проверка("М3 в письме обе тревоги со временем",
+    проверка("М3 в письме обе тревоги со временем, адрес скрыт",
              [s for s in отправлено[0].splitlines() if "ТРЕВОГА" in s],
              ["12.10 21:57 автомат: ТРЕВОГА — витрина не отвечает",
-              "12.10 21:58 сторож: ТРЕВОГА — GitHub молчит 60 мин"])
+              "12.10 21:58 сторож: ТРЕВОГА — GitHub молчит 60 мин; адрес <адрес>"])
     проверка("М3 память сдвинута, ожидание снято",
              watch.load_json(conn, alarm_mail.KEY),
              {"last_id": alarm_mail.last_row_id(conn), "sent_at": watch.when(NOW)})
     проверка("М2 после отправки — повторно не шлём",
              alarm_mail.flush(conn, NOW, послать((True, ""))), "")
     for n in range(alarm_mail.MAX_LINES + 3):
-        строка(conn, f"ТРЕВОГА — номер {n}")
+        строка(conn, f"ТРЕВОГА — номер {n} " + "я" * 400)
     отправлено.clear()
     alarm_mail.flush(conn, NOW, послать((True, "")))
     проверка("М3 больше MAX_LINES — остальные числом",
              отправлено[0].splitlines()[-1], "…и ещё 3 — в «Прогонах» админки")
+    проверка("М3 полное письмо влезает в комментарий целиком",
+             len(alarm_issue.clean(отправлено[0])) <= alarm_issue.MAX_CHARS
+             and "обрезано" not in alarm_issue.clean(отправлено[0]), True)
     строка(conn, "ТРЕВОГА — для --check")
     до = watch.load_json(conn, alarm_mail.KEY)
     отправлено.clear()
@@ -171,49 +182,65 @@ def письма(conn):
              ("письмо тревог ушло бы: 1 шт.", [], True))
 
 
-def сторож_витрины(conn):
+def сторож_витрины():
     print("В5. scripts/web_watch.py — сторож заказов молчит")
-    beat = NOW - timedelta(minutes=10)
-    what, words, st = web_watch.watch_silence({}, NOW, beat)
-    проверка("свежая отметка — ok", (what, st), ("ok", {}))
-    what, words, st = web_watch.watch_silence({}, NOW, NOW - timedelta(minutes=55))
-    проверка("55 мин — запустить и ТРЕВОГА", (what, words.startswith("ТРЕВОГА — сторож заказов молчит 55 мин")),
-             ("kick", True))
-    проверка("время запуска запомнено", st.get("kick_at"), watch.when(NOW))
-    what, _, st2 = web_watch.watch_silence(st, NOW + timedelta(minutes=30),
-                                           NOW - timedelta(minutes=55))
+    ws = web_watch.watch_silence
+    what, words, st = ws({}, NOW, 10, False)
+    проверка("10 мин — ok", (what, st), ("ok", {}))
+    what, words, st = ws({}, NOW, 55, False)
+    проверка("55 мин — запустить и ТРЕВОГА",
+             (what, words.startswith("ТРЕВОГА — сторож заказов молчит 55 мин")),
+             ("alarm", True))
+    проверка("запуск и начало молчания запомнены",
+             (st.get("kick_at"), st.get("episode_at")), (watch.when(NOW), watch.when(NOW)))
+    what, _, _ = ws(st, NOW + timedelta(minutes=30), 85, False)
     проверка("через 30 мин всё молчит — тишина (раз в час)", what, "quiet")
-    what, _, _ = web_watch.watch_silence(st, NOW + timedelta(minutes=61),
-                                         NOW - timedelta(minutes=55))
-    проверка("через час — снова запуск и ТРЕВОГА", what, "kick")
-    what, _, st = web_watch.watch_silence({}, NOW, None)
-    проверка("отметки нет — ok, запомнили, с какого времени",
-             (what, st.get("missing_since")), ("ok", watch.when(NOW)))
-    what, _, st3 = web_watch.watch_silence(st, NOW + timedelta(minutes=30), None)
-    проверка("нет 30 мин — ещё ждём", what, "ok")
-    what, words, _ = web_watch.watch_silence(st, NOW + timedelta(minutes=45), None)
-    проверка("нет 45 мин — запустить и ТРЕВОГА",
-             (what, "отметки «жив» нет ни одной" in words), ("kick", True))
-    what, _, st4 = web_watch.watch_silence(st, NOW, NOW - timedelta(minutes=1))
-    проверка("отметка появилась — память «нет отметки» снята",
-             (what, "missing_since" in st4), ("ok", False))
+    what, words, st2 = ws(st, NOW + timedelta(minutes=61), 116, False)
+    проверка("через час — снова запуск, но без ТРЕВОГИ (уже сказали)",
+             (what, "ТРЕВОГА" in words, "всё ещё молчит" in words), ("kick", False, True))
+    what, _, st3 = ws(st2, NOW + timedelta(minutes=70), 3, False)
+    проверка("ожил — молчание кончилось, следующее снова с ТРЕВОГОЙ",
+             (what, "episode_at" in st3), ("ok", False))
+    what, _, st4 = ws(st3, NOW + timedelta(minutes=200), 60, False)
+    проверка("новое молчание — снова ТРЕВОГА", what, "alarm")
+    print("  — лежал весь сервер (своя отметка тоже старая)")
+    what, _, st = ws({}, NOW, 180, True)
+    проверка("после перезагрузки 180 мин — не тревога, отсчёт заново",
+             (what, st.get("resume_at")), ("ok", watch.when(NOW)))
+    what, _, _ = ws(st, NOW + timedelta(minutes=30), 210, False)
+    проверка("30 мин после перезагрузки — ещё ждём", what, "ok")
+    what, _, _ = ws(st, NOW + timedelta(minutes=45), 225, False)
+    проверка("45 мин после перезагрузки сторож так и молчит — ТРЕВОГА", what, "alarm")
+    what, _, _ = ws(st, NOW + timedelta(minutes=45), 5, False)
+    проверка("а если отметился — ok", what, "ok")
+    print("  — пинок не ставит отметку «жив» (иначе мёртвый cron спрятался бы)")
+    проверка("пинок помечен переменной окружения", alive.KICKED_ENV, "STREAMS_KICKED")
+    исходник = (ROOT / "scripts" / "crawl_watch.py").read_text(encoding="utf-8")
+    проверка("сторож заказов не отмечается при пинке",
+             "not os.environ.get(alive.KICKED_ENV)" in исходник, True)
+    проверка("и при пропуске из-за замка",
+             исходник.count("alive.beat(") == 1, True)
 
 
 def гитхаб_жив():
-    print("Ж1–Ж3. scripts/server_alive.py — проба с GitHub")
-    проверка("адрес из секрета", server_alive.base_url("http://1.2.3.4/crawl-hook"),
-             "http://1.2.3.4")
-    проверка("адрес скрыт", server_alive.hide("отказ http://1.2.3.4 и 1.2.3.4:80 и 5.6.7.8",
-                                              "http://1.2.3.4"),
+    print("Ж1–Ж4. scripts/server_alive.py — проба с GitHub")
+    проверка("адрес из секрета", server_alive.base_url("http://203.0.113.5/crawl-hook"),
+             "http://203.0.113.5")
+    проверка("адрес скрыт",
+             server_alive.hide("отказ http://203.0.113.5 и 203.0.113.5:80 и 198.51.100.7",
+                               "http://203.0.113.5"),
              "отказ <сервер> и <сервер>:80 и <адрес>")
-    проверка("Ж1 жив", server_alive.verdict("ok", {"жив": True}), (True, ""))
-    проверка("Ж1 страницы /alive ещё нет (404)", server_alive.verdict("old", "HTTP 404"),
-             (True, ""))
+    до, после = date(2026, 10, 15), date(2026, 10, 16)
+    проверка("Ж1 жив", server_alive.verdict("ok", {"жив": True}, до), ("", ""))
+    проверка("Ж4 страницы /alive нет — до 15.10 ещё не беда",
+             server_alive.verdict("old", "HTTP 404", до), ("", ""))
+    проверка("Ж4 с 16.10 — беда «отвечает не тем»",
+             server_alive.verdict("old", "HTTP 404", после)[0], "wrong")
     проверка("Ж3 молчат", server_alive.verdict(
-        "ok", {"жив": False, "молчат": ["сторож заказов молчит 50 мин"]}),
-             (False, "сервер отвечает, но сторож заказов молчит 50 мин"))
-    проверка("Ж2 не отвечает", server_alive.verdict("down", "TimeoutError"),
-             (False, "сервер не отвечает (TimeoutError)"))
+        "ok", {"жив": False, "молчат": ["сторож заказов молчит 50 мин"]}, до),
+             ("silent", "сервер отвечает, но сторож заказов молчит 50 мин"))
+    проверка("Ж2 не отвечает", server_alive.verdict("down", "TimeoutError", до),
+             ("down", "сервер не отвечает (TimeoutError)"))
     пробы, сны = [], []
 
     def проба(ответы):
@@ -232,48 +259,85 @@ def гитхаб_жив():
     проверка("look: три мимо — down с последней причиной", (итог, len(пробы), сны),
              (("down", "c"), 3, [60, 60]))
     print("  — что делать с issue")
-    свежая = {"number": 7, "updated_at": (NOW - timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M:%SZ")}
-    старая = {"number": 7, "updated_at": (NOW - timedelta(hours=25)).strftime("%Y-%m-%dT%H:%M:%SZ")}
-    проверка("жив, issue нет — ничего", server_alive.action(True, [], NOW), ("none", 0))
-    проверка("жив, issue открыта — закрыть", server_alive.action(True, [свежая], NOW),
+    тело = server_alive.body_text("silent", "сервер отвечает, но …", NOW, "", "Newik89", False)
+
+    def issue(вид, часов):
+        return {"number": 7, "body": server_alive.body_text(вид, "…", NOW, "", "", False),
+                "updated_at": (NOW - timedelta(hours=часов)).strftime("%Y-%m-%dT%H:%M:%SZ")}
+    проверка("вид беды хранится в теле", server_alive.issue_kind({"body": тело}), "silent")
+    проверка("жив, issue нет — ничего", server_alive.action("", [], NOW), ("none", 0))
+    проверка("жив, issue открыта — закрыть", server_alive.action("", [issue("down", 2)], NOW),
              ("close", 7))
-    проверка("беда, issue нет — новая", server_alive.action(False, [], NOW), ("open", 0))
-    проверка("беда, issue свежая — молчим", server_alive.action(False, [свежая], NOW),
-             ("none", 0))
-    проверка("беда, issue старше суток — напомнить",
-             server_alive.action(False, [старая], NOW), ("remind", 7))
-    текст = server_alive.body_text("сервер не отвечает", NOW, "", "Newik89", True)
+    проверка("беда, issue нет — новая", server_alive.action("down", [], NOW), ("open", 0))
+    проверка("та же беда, issue свежая — молчим",
+             server_alive.action("down", [issue("down", 2)], NOW), ("none", 0))
+    проверка("та же беда старше суток — напомнить",
+             server_alive.action("down", [issue("down", 25)], NOW), ("remind", 7))
+    проверка("молчали сторожа, а теперь лёг весь сервер — письмо сразу",
+             server_alive.action("down", [issue("silent", 1)], NOW), ("change", 7))
+    проверка("заголовок «не отвечает»",
+             server_alive.title_text("down", "…", NOW, False), "Сервер не отвечает — 12.10.2026 22:00")
+    проверка("заголовок по первым словам беды",
+             server_alive.title_text("silent", "сервер отвечает, но письма тревог не уходят 61 мин; сторож витрины молчит 25 мин",
+                                     NOW, False),
+             "Сервер: письма тревог не уходят 61 мин — 12.10.2026 22:00")
+    текст = server_alive.body_text("down", "сервер не отвечает", NOW, "", "Newik89", True)
     проверка("письмо: упоминание владельца, ПРОБА, киевское время",
              ("@Newik89" in текст, "ПРОБА" in текст, "12.10.2026 22:00" in текст),
              (True, True, True))
 
 
 def гитхаб_тревога():
-    print("Т1–Т2. scripts/alarm_issue.py — issue на день")
-    проверка("заголовок по Киеву: 21:30 UTC 12.10 = 13.10",
+    print("Т1–Т4. scripts/alarm_issue.py — теги-письма → issue на день")
+    refs = [{"ref": "refs/tags/alarm-1760300200"}, {"ref": "refs/tags/alarm-1760300100"},
+            {"ref": "refs/tags/alarm-proba-1760300150"}, {"ref": "refs/tags/alarm-1 ;rm"},
+            {"ref": "refs/tags/btn-days-2-1"}]
+    проверка("Т1 все теги-письма, старые первыми, чужие — мимо", alarm_issue.pending_tags(refs),
+             ["alarm-1760300100", "alarm-proba-1760300150", "alarm-1760300200"])
+    проверка("Т3 заголовок по Киеву: 21:30 UTC 12.10 = 13.10",
              alarm_issue.today_title(datetime(2026, 10, 12, 21, 30, tzinfo=timezone.utc)),
              "Тревоги сервера — 13.10.2026")
     title = "Тревоги сервера — 12.10.2026"
     issues = [{"number": 9, "title": title}, {"number": 5, "title": "Тревоги сервера — 11.10.2026"}]
-    проверка("сегодняшняя есть — комментарий в неё", alarm_issue.plan(issues, title), (9, [5]))
-    проверка("сегодняшней нет — новая, вчерашнюю закрыть",
+    проверка("Т3 сегодняшняя есть — комментарий в неё", alarm_issue.plan(issues, title), (9, [5]))
+    проверка("Т3 сегодняшней нет — новая, вчерашнюю закрыть",
              alarm_issue.plan(issues[1:], title), (0, [5]))
-    проверка("адрес в тексте скрыт", alarm_issue.clean("стук с 157.245.77.140 не дошёл"),
+    проверка("адрес в тексте скрыт", alarm_issue.clean("стук с 203.0.113.5 не дошёл"),
              "стук с <адрес> не дошёл")
     проверка("длинный текст обрезан",
              alarm_issue.clean("я" * (alarm_issue.MAX_CHARS + 50)).endswith("…(обрезано)"), True)
-    проверка("чужое имя тега отвергается", bool(alarm_issue._TAG_RE.match("alarm-1 ;rm")), False)
-    проверка("своё имя тега годится", bool(alarm_issue._TAG_RE.match("alarm-1760300000")), True)
+    print("  — повторы запросов к API")
+    ответы = iter([OSError("нет связи"), (502, "плохо"), (201, {"number": 1})])
+    сны = []
+
+    def звонок(token, method, path, body=None):
+        r = next(ответы)
+        if isinstance(r, Exception):
+            raise r
+        return r
+    прежний = crawl_alarm.call
+    crawl_alarm.call = звонок
+    try:
+        итог = crawl_alarm.call_retry("t", "POST", "/x", {}, tries=3, pause=5, sleep=сны.append)
+    finally:
+        crawl_alarm.call = прежний
+    проверка("сбой связи и 502 — повтор, третья попытка прошла", (итог[0], сны), (201, [5, 5]))
 
 
 def тег_с_текстом():
-    print("тег. trigger.make_tag_object — кириллица доезжает целой")
+    print("тег. trigger — кириллица доезжает целой, без alarm.yml не шлём")
     repo = TMP / "repo"
     repo.mkdir()
     run = lambda *a: subprocess.run(["git", *a], cwd=repo, capture_output=True, text=True)
     run("init", "-q")
     run("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q",
         "--allow-empty", "-m", "пусто")
+    проверка("в коде без alarm.yml — тег не шлём", trigger.has_alarm_workflow(repo), False)
+    (repo / ".github" / "workflows").mkdir(parents=True)
+    (repo / ".github" / "workflows" / "alarm.yml").write_text("name: x\n", encoding="utf-8")
+    run("add", ".github/workflows/alarm.yml")
+    run("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "alarm")
+    проверка("alarm.yml в коде есть — можно", trigger.has_alarm_workflow(repo), True)
     текст = "Тревоги сервера Streams Schedule: 1\n\n12.10 21:57 автомат: ТРЕВОГА — витрина"
     sha, ошибка = trigger.make_tag_object(текст, "alarm-1760300000", 1760300000, cwd=repo)
     проверка("объект тега создан", (bool(sha), ошибка), (True, ""))
@@ -306,7 +370,7 @@ def main() -> int:
         письма(conn)
     finally:
         conn.close()
-    сторож_витрины(None)
+    сторож_витрины()
     гитхаб_жив()
     гитхаб_тревога()
     тег_с_текстом()
