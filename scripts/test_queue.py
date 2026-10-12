@@ -514,6 +514,9 @@ check("пороги_константы_reference",
       (games_import.sport_question.LIVE_NEAR, games_import.sport_question.REPEAT_AFTER,
        games_import.sport_question.REPEAT_DEPTH)
       == (timedelta(hours=3), timedelta(hours=4), timedelta(hours=60)))
+check("порог_повтора_по_виду_спорта: футбол 3 ч, баскет 4 ч (как у обхода)",
+      (games_import.sport_question.repeat_after("F"), games_import.sport_question.repeat_after("B"))
+      == (timedelta(hours=3), timedelta(hours=4)))
 
 print("Ответ пишется тем же путём, что кнопки")
 conn = fresh_db()

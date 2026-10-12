@@ -56,6 +56,10 @@ r"""Самопроверка прогона: ищет ИЗВЕСТНЫЕ кла�
      конференций — Univ. Craiova — Getafe на digisport.ro). Без слова в
      эталоне это настоящая студия про тот же матч («ANTEVISÃO …», «Studio
      før …») — не подозрение. Лечение — имя в `keep_names` (`markers.json`).
+ 12. ЖЕНСКАЯ ЛИГА БЕЗ ПОЛА. Строка шла мужской, с эталоном не сходится, а с
+     женским матчем эталона ±30 мин сходится, если дописать W, и лига сайта —
+     ядро той же женской лиги («Liga BPI» ↔ «PORTUGAL: Liga BPI Women»,
+     canal11.pt, 12.10). Лечение — турнир в `_WOMEN_LEAGUES` (`leagues.py`).
 
 Правила:
   * подозрение — строка «сайт: что не так — пример»; решение принимает
@@ -530,6 +534,50 @@ def team_canon(name: str) -> str:
                     _TEAM_CANON.setdefault(alias.strip().lower(), canon_name)
         _TEAM_CANON.setdefault("", "")
     return _TEAM_CANON.get(name.strip().lower(), name)
+
+
+def _plain_league(name: str) -> str:
+    # «PORTUGAL: Liga BPI Women» → «liga bpi»: без страны, стадии и пола
+    core = name.split(":", 1)[1] if ":" in name else name
+    core = re.sub(r"\s+-\s+.*$", "", core)
+    return " ".join(re.sub(r"\bwomen\b", " ", core, flags=re.I).split()).lower()
+
+
+def check_women_leagues(sites: dict[str, Site], games: dict | None) -> list[str]:
+    # 12: женская лига, у которой пол в названии не пишут. Строка прошла
+    # отсев мужской (без W), с эталоном не сходится, а с ЖЕНСКИМ матчем
+    # эталона в ±30 мин сходится, если дописать W обеим командам, и лига
+    # сайта — ядро той же женской лиги эталона («Liga BPI» ↔ «PORTUGAL: Liga
+    # BPI Women», canal11.pt, владелец 12.10). Лечение — турнир в
+    # `_WOMEN_LEAGUES` (`app/leagues.py`)
+    if games is None or not games.get("эталон"):
+        return []
+    index = _ref_index(games)
+    found: dict = collections.defaultdict(list)
+    for domain, s in sorted(sites.items()):
+        for r, _ in s.rows:
+            if r.sport not in ("F", "B") or "W" in names.category(f"{r.home} {r.away}").split():
+                continue
+            league_raw = " ".join(x for x in (r.league, r.program.league_raw) if x)
+            for ref, _t in _near(index, r.start_kyiv, timedelta(minutes=30)):
+                league = ref.get("league") or ""
+                if not re.search(r"\bwomen\b", league, re.I) or (ref.get("sport") or "F") != r.sport:
+                    continue
+                core = _plain_league(league)
+                if not core or core not in league_raw.lower():
+                    continue
+                if _score(r.home, r.away, r.sport, ref) >= names.SIMILAR_ENOUGH:
+                    continue
+                if _score(f"{r.home} W", f"{r.away} W", r.sport, ref) >= names.SIMILAR_ENOUGH:
+                    found[(domain, league)].append(r)
+                    break
+    out = []
+    for (domain, league), rows in sorted(found.items()):
+        ex = "; ".join(f"{r.start_kyiv:%d.%m %H:%M} «{r.home} — {r.away}»" for r in rows[:EXAMPLES])
+        out.append(f"{domain}: {len(rows)} строк(и) лиги «{_plain_league(league)}» шли мужскими, "
+                   f"а эталон знает их женскими ({league}) — турнир в _WOMEN_LEAGUES "
+                   f"(app/leagues.py) — {ex}")
+    return out
 
 
 def check_stopped(sites: dict[str, Site], games: dict | None) -> list[str]:
@@ -1088,6 +1136,8 @@ def main() -> int:
         ("8. Время сайта отличается от эталона на целые часы", zones),
         ("10. Одна страница на разные дни или каналы", check_same_pages(sites)),
         ("11. Эфир с парой из эталона снят стоп-словом", check_stopped(sites, games)),
+        ("12. Женская лига без слова «женская»: команды шли мужскими",
+         check_women_leagues(sites, games)),
     ]
     errors = [f"{d}: {e}" for d, s in sorted(sites.items()) for e in s.errors[:2]]
     if errors:

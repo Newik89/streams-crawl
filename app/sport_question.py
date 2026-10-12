@@ -48,7 +48,8 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from . import dictionary, leagues, live, pipeline, sport
-from .reference import (LIVE_NEAR, REPEAT_AFTER, REPEAT_DEPTH, Reference)
+from .reference import (LIVE_NEAR, REPEAT_AFTER, REPEAT_DEPTH, Reference,
+                        repeat_after)
 
 #: какое правило `Sports.decide` сработало — словами, для пометки владельцу
 RULE_WORDS = {
@@ -253,7 +254,9 @@ class Judge:
         near, far = [], []
         for entry, when in self.reference.pair_times(home, away):
             gap = q.when - when              # > 0 — строка позже матча
-            if -LIVE_NEAR <= gap <= REPEAT_AFTER \
+            # порог «уже повтор» — по виду спорта матча эталона, как у фильтра
+            # повторов обхода (`reference.repeat_after`: футбол 3 ч, 12.10)
+            if -LIVE_NEAR <= gap <= repeat_after(entry.get("sport") or "F") \
                     or self.reference.round_placeholder(entry, when):
                 near.append((entry, when))
             elif abs(gap) <= REPEAT_DEPTH:

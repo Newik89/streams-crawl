@@ -53,7 +53,10 @@ _EDGE = " -–—:.,/|"
 #: пишет «UEFA UNDER - 21 EURO», и матч оставался без возраста, а значит
 #: не сходился с эталоном и жил двойней рядом со своей же игрой
 #: (жалоба владельца 25.09: Cyprus — Romania, каналы разъехались)
-_AGE = re.compile(r"\bU-?\s?(\d{2})\b|\bunder[\s-]{0,3}(\d{2})\b", re.I)
+#: «Sub-19», «Sub 23» — так возраст пишут португальские и испанские сайты
+#: (canal11.pt, sporttv.pt, movistarplus): без него «Liga BPI Sub-19» шла
+#: взрослой (12.10)
+_AGE = re.compile(r"\bU-?\s?(\d{2})\b|\b(?:under|sub)[\s-]{0,3}(\d{2})\b(?![.:]\d)", re.I)
 _WOMEN = re.compile(
     r"\bwomen'?s?\b|\bkobiet\w*\b|\bfem[ei]nin[ao]?\b|\bжени\b|\bженск\w*\b"
     r"|\bdonne\b|\bfrauen\w*\b|\bkadınlar\b|\bžensk\w*\b|\bzensk\w*\b|\bfemminil\w*\b"
@@ -97,7 +100,16 @@ _WOMEN_LEAGUES = re.compile(
     # высшая женская лига Финляндии зовётся «Kansallinen Liiga» (мужская —
     # Veikkausliiga), вторая женская лига Швеции — «Elitettan»; пола в
     # названии нет, и без списка их команды шли бы мужскими
-    r"|\bkansallinen liiga\b|\belitettan\b", re.I)
+    r"|\bkansallinen liiga\b|\belitettan\b"
+    # Португалия: «Liga BPI» — высшая женская (мужская — Liga Portugal
+    # Betclic); canal11.pt пишет «Liga BPI» без пола, и Rio Ave — Porto
+    # 17.10 не сводился с эталоном «Rio Ave W — Porto W» (владелец 12.10).
+    # Следующую такую лигу найдёт самопроверка сбора, проверка 12
+    r"|\bliga bpi\b"
+    # Испания: «Liga F» — высшая женская (movistarplus: Athletic — Valencia
+    # 17.10 шёл мужским; нашла проверка 12 в первый же прогон, 12.10).
+    # «Liga Futsal» не задевает: после «f» нужна граница слова
+    r"|\bliga f\b", re.I)
 
 #: турниры, которые бывают ТОЛЬКО молодёжными, а возраст в названии сайт не
 #: пишет (как `_WOMEN_LEAGUES` для пола). Значение — возраст, под которым

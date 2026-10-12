@@ -246,12 +246,22 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
         window = [first] if (source["grid"] or source.get("days_inline")
                              or probe) else \
             [first + timedelta(days=i) for i in range(span)]
+        # скан даты: эталон и за ДЕНЬ ДО неё — иначе фильтр «матч уже
+        # сыгран» не видит вчерашнего матча, и ночной повтор с пометкой
+        # «canlı» (S Sport, Deportivo — Levante 17.10 01:30 после игры
+        # 16.10 22:00) ложится новой игрой рядом с настоящей (разбор
+        # владельца 12.10). Цена — три запроса к flashscore на скан.
+        # Добавляется ПОСЛЕ обрезки окна по `channel_days`: иначе предел 1
+        # оставил бы вчера, а саму дату срезал
+        вчера = single and not probe and source["domain"] == REFERENCE_DOMAIN
         свои_дни = source.get("channel_days") or {}
         for channel in channels:
             окно = window
             предел = свои_дни.get(channel["name"] or "")
             if предел and len(окно) > предел:
                 окно = окно[:предел]
+            if вчера:
+                окно = [first - timedelta(days=1)] + окно
             for day in окно:
                 # {N} — номер дня от СЕГОДНЯ (дневные сетки вроде polsatsport.pl:
                 # page1 — сегодня, page2 — завтра); остальным метка не мешает.

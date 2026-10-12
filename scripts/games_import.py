@@ -143,6 +143,15 @@ def main() -> int:
             fixed, queued = canon.apply(conn, aligned)
             names.set_overrides(dictionary.team_overrides(conn))
             retimed = canon.retime(aligned)
+            # метка матча — игре файла: заливка ищет игру базы сначала по ней
+            # (`store._fs_event`), и имена на другом языке не плодят дубль
+            # и время матча по эталону: игра, найденная по метке, встаёт на
+            # него (а не замирает на прежнем времени базы — независимая
+            # проверка 12.10)
+            for game, ref, _ in aligned["sure"]:
+                if ref.get("fs_id"):
+                    game["fs_id"] = ref["fs_id"]
+                    game["fs_start"] = ref.get("start_kyiv") or ""
             print(f"канон по flashscore: имён закреплено {fixed}, "
                   f"в очередь на подтверждение {queued}, "
                   f"время подтянуто к эталону у {retimed}, "
@@ -238,6 +247,9 @@ def main() -> int:
             db.set_setting(conn, "last_crawl", stamp)
         store.log_run(conn, path.parent / "report.json", stats,
                       crawled=stamp, who=args.who)
+        if stats.times_fixed:
+            print(f"время игр с «T» в базе приведено к общему виду: {stats.times_fixed} "
+                  "(кто-то записал его в обход store.db_time — найти и поправить)")
         print(f"в файле игр: {len(games)}; новых: {stats.new}, "
               f"обновлено: {stats.updated}, отметок каналов: {stats.channels}, "
               f"повторов не пущено: {stats.repeats}, "

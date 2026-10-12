@@ -64,7 +64,7 @@ SPORTS = sport.load()                       # слова и словарь ко�
     "Le Mans", "Le Mans FC", "Remo", "Gimnasia y Esgrima La Plata",
     "UFC Fehring", "Box Hill", "Shooting Stars", "Dakar SC", "Marathon",
     "Enduro FC", "Πολόνια Βαρσοβίας", "Flamengo", "Boca Juniors",
-    "Preston Lions"))
+    "Preston Lions", "AMIX Florbal MB", "HDT.cz Florbal Vary Bohemians"))
 БЕЗ_КОМАНД = sport.load(teams=())
 #: маленький эталон flashscore: то, что он знает на вечер 10.10 и на 07.10
 ЭТАЛОН = Reference([
@@ -284,6 +284,11 @@ print("Правило 4 — слово чужого вида спорта, ко�
     ("гонка: сторона — команда словаря, но рядом «závod»", "чужой", 4,
      "Le Mans - Závod"),
     ("гонка: GP", "чужой", 4, "GP Monza - Race", "Formula 1"),
+    # одно слово чужого вида в ОБЕИХ командах — вид спорта клубов, даже если
+    # обе — команды словаря и турнир зовётся «Superliga» (ČT sport, #5213)
+    ("флорбол: «Florbal» в обеих командах", "чужой", 4,
+     "Livesport Superliga 2026/2027", "Livesport Superliga", "",
+     "AMIX Florbal MB - HDT.cz Florbal Vary Bohemians"),
     ("ралли", "чужой", 4, "Rally Dakar - Etapa 5"),
     ("гребля у команды-тёзки", "чужой", 4, "Remo - Final A", "World Rowing Cup"),
     ("марафон у команды-тёзки", "чужой", 4, "Marathon - Olimpia", "Atletismo"),
