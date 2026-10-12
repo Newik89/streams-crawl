@@ -112,6 +112,12 @@ def main() -> int:
         db.init_db(conn)
         gone = store.purge_expired(conn)
         print(f"отжило и убрано: {gone}")
+        # время игр к общему виду — на каждом заборе, даже когда файл не
+        # менялся и заливка дальше пропускается (#5904 стояла в конце дня)
+        fixed = store.normalize_times(conn)
+        if fixed:
+            print(f"время игр приведено к общему виду: {fixed} "
+                  "(кто-то записал его в обход store.db_time — найти и поправить)")
         if args.purge_only:
             return 0
 

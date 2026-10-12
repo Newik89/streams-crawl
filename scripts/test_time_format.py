@@ -172,6 +172,26 @@ def main() -> int:
     проверка("одна метка у двух игр — поиск по метке не выбирает наугад", store._fs_event(conn, болг), None)
     conn.close()
 
+    print("8. витрина и время UTC (#5904 в конце дня, 12.10)")
+    os.environ["STREAMS_DB"] = str(TMP / "t4.db")
+    conn = база()
+    store.save_games(conn, [игра("Lokomotiv Moscow", "19:30", СТРОКИ),
+                            dict(игра("Spartak", "23:30", СТРОКИ), away="Zenit")], now=ЧАСЫ)
+    ids = dict(conn.execute("SELECT team_home_auto, id FROM events").fetchall())
+    conn.execute("UPDATE events SET start_kyiv = ?, start_utc = ? WHERE id = ?",
+                 (f"{ДЕНЬ}T19:30", f"{ДЕНЬ} 15:30", ids["Lokomotiv Moscow"]))
+    conn.commit()
+    порядок = [g["id"] for g in store.schedule(conn) if g["date"].isoformat() == ДЕНЬ]
+    проверка("витрина: игра с «T» стоит на своё время, а не в конце дня",
+             порядок.index(ids["Lokomotiv Moscow"]) < порядок.index(ids["Spartak"]), True)
+    проверка("самопочинка: «T» и разошедшееся UTC — две правки", store.normalize_times(conn), 2)
+    проверка("UTC пересчитан из киевского",
+             conn.execute("SELECT start_kyiv, start_utc FROM events WHERE id = ?",
+                          (ids["Lokomotiv Moscow"],)).fetchone()[1],
+             f"{ДЕНЬ} 16:30" if date.fromisoformat(ДЕНЬ).month in range(4, 11) else f"{ДЕНЬ} 17:30")
+    проверка("повторная самопочинка ничего не трогает", store.normalize_times(conn), 0)
+    conn.close()
+
     print("7. возраст «Sub» и мелочи")
     from app import leagues, names
     проверка("«Sub 19.30» (время рядом) — не возраст", (leagues.category("MTV Sub 19.30"), names.category("MTV Sub 19:30")), ("", ""))
