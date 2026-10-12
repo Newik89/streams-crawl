@@ -29,7 +29,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
 
-from . import broadcast, channel_owner, merge, miss, names
+from . import broadcast, channel_owner, league_words, merge, miss, names
 
 # Грейс после начала, минуты (ТЗ разд. 10). Число-уговор, не измерение;
 # правится в админке («Настройки»), здесь только значения по умолчанию.
@@ -878,12 +878,11 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             "sport": row["sport"],
             "league": (row["league_canon"]
                        or league_names.get((row["league_auto"] or "").strip())
-                       # лига не переведена и написана не латиницей — хотя бы
-                       # транслит, а не иврит как есть (владелец 15.09);
-                       # латинскую не трогаем, чтобы не менять регистр
-                       or (names.suggest_canonical(row["league_auto"])
-                           if any(ord(c) > 0x2FF for c in row["league_auto"] or "")
-                           else row["league_auto"] or "")),
+                       # лига не переведена — автоперевод спортивных слов
+                       # (владелец 12.10: «Кубок» → Cup, «плей-офф» →
+                       # Playoff), остальное не латиницей — транслит
+                       # (владелец 15.09); латиница без совпадений как есть
+                       or league_words.auto_english(row["league_auto"])),
             "league_id": row["league_id"],
             "league_slug": row["league_slug"] or "",
             "league_auto": row["league_auto"] or "",
