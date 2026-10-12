@@ -25,7 +25,7 @@ import re
 import sqlite3
 from datetime import datetime, timedelta
 
-from . import dictionary, names, store
+from . import dictionary, league_words, names, store
 from .sport_question import Question
 
 #: С какого сходства догадку программы показываем готовым ответом (кнопка
@@ -247,7 +247,9 @@ def _sport_card(d: dict, team_names: dict, league_names: dict,
                    f"{_english(q.pair[1], team_names)}")
     else:
         перевод = _english(q.pair_text, team_names)
-    перевод_лиги = _english(q.league, league_names)
+    # лига: словарь лиг, иначе автоперевод спортивных слов (владелец 12.10)
+    перевод_лиги = (league_names.get((q.league or "").strip())
+                    or league_words.auto_english(q.league))
     # заголовок карточки — перевод, а не строка сайта (владелец 09.10: «всё
     # должно быть переведено автопереводом минимум»); строка сайта как есть
     # остаётся ниже, в «На сайте написано»

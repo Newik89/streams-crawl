@@ -31,6 +31,8 @@ data/*
 !data/crawl_plan.json
 !data/aliases.json
 !data/dictionaries.json
+# автоперевод названий лиг: словарь спортивных слов (владелец 12.10.2026)
+!data/league_words.json
 
 # служебное для Claude Code
 .claude/
