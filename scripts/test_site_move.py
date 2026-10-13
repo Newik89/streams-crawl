@@ -517,8 +517,43 @@ said = server_crawl.разовая_проверка(conn, "once.tv", now=T3 + ti
 проверка("--once по сайту «качает сервер» — нечего",
          server_crawl.разовая_проверка(conn, "srv.tv", now=T3, fetch_one=кач, plan=ПЛАН_ДОМЕНЫ,
                                        lock=_свободно, free=lambda: 800)[0].endswith("проверять нечего"))
-проверка("замок заливки без fcntl (не Linux) — свободно, иначе строка",
-         isinstance(server_crawl.замок_заливки().__enter__(), str))
+путь_замка = str(TMP / "streams-update.lock")     # не настоящий /run/…
+
+
+class Флок:
+    """Подмена модуля fcntl (на Windows его нет): flock по имени файла."""
+    LOCK_EX, LOCK_NB, LOCK_UN = 2, 4, 8
+
+    def __init__(self):
+        self.держат, self.снято = set(), 0
+
+    def flock(self, файл, op):
+        if op & self.LOCK_UN:
+            self.держат.discard(файл.name)
+            self.снято += 1
+            return
+        if файл.name in self.держат:
+            raise BlockingIOError("занят")
+        self.держат.add(файл.name)
+
+
+настоящий = sys.modules.get("fcntl")
+флок = sys.modules["fcntl"] = Флок()
+try:
+    with server_crawl.замок_заливки(путь_замка) as первый:
+        проверка("замок заливки свободен — он наш (пусто)", первый, "")
+        with server_crawl.замок_заливки(путь_замка) as второй:
+            проверка("пока замок держим, второй заход видит «идёт заливка»",
+                     второй.startswith("идёт заливка"))
+    проверка("после захода замок отпущен", (флок.держат, флок.снято), (set(), 1))
+    with server_crawl.замок_заливки(str(TMP / "нет-папки" / "x.lock")) as третий:
+        проверка("замок не открылся — тоже «нельзя», с причиной",
+                 третий.startswith("замок заливки не открылся"))
+finally:
+    if настоящий is None:
+        sys.modules.pop("fcntl", None)
+    else:
+        sys.modules["fcntl"] = настоящий
 
 
 # ── П3. глубина ─────────────────────────────────────────────────────────────
