@@ -43,6 +43,8 @@ data/*
 *.exe
 *.msi
 *.zip
+# срезы страниц сборов для книги случаев — кладутся нарочно (kniga/README.md)
+!kniga/slices/*.zip
 recon/vsetv_channels.json
 
 # память серверного обхода (scripts/server_crawl.py): живёт только на сервере

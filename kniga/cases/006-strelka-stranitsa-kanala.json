@@ -1,0 +1,61 @@
+{
+ "номер": 6,
+ "дата": "2026-10-13",
+ "вид": "жалоба",
+ "суть": "↗ ведёт на страницу канала на день игры, а не на машинный адрес (Sport Klub 2 вёл на API → 401)",
+ "владелец": "#6018: кнопка ↗ у Sport Klub 2 открыла api-web.ug-be.cdn.united.cloud и ошибку 401",
+ "правило": "↗ = страница канала на день игры по часам сайта (шаблоны data/channel_pages.json); ночной показ телегида — на странице прошлого дня; машинный адрес человеку не отдаём",
+ "коммит": "0587314",
+ "проверка": "ссылка",
+ "ждём": [
+  {
+   "сайт": "sportklub.hr",
+   "канал": "Sport Klub 2",
+   "время": "2026-10-13 18:50",
+   "адрес_отметки": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1791849600000&toTime=1792454399999&communityIdentifier=sk_hr&languageId=181",
+   "адрес_источника": "https://sportklub.hr/tv-program/",
+   "часы_utc": "2026-10-13 15:00",
+   "ссылка": "https://sportklub.hr/tv-program/"
+  },
+  {
+   "сайт": "teleman.pl",
+   "канал": "TVP Sport",
+   "время": "2026-10-13 18:55",
+   "пояс": "Europe/Warsaw",
+   "адрес_отметки": "https://www.teleman.pl/sport?live=1&stations=all&page=2",
+   "адрес_источника": "https://www.teleman.pl/program-tv/stacje/Eleven-Sports-2?date=2026-02-23",
+   "часы_utc": "2026-10-13 15:00",
+   "ссылка": "https://www.teleman.pl/program-tv/stacje/TVP-Sport?date=2026-10-13"
+  },
+  {
+   "сайт": "teleman.pl",
+   "канал": "TVP Sport",
+   "время": "2026-10-16 03:00",
+   "пояс": "Europe/Warsaw",
+   "адрес_отметки": "https://www.teleman.pl/sport?live=1&stations=all&page=2",
+   "адрес_источника": "https://www.teleman.pl/program-tv/stacje/Eleven-Sports-2?date=2026-02-23",
+   "часы_utc": "2026-10-13 15:00",
+   "ссылка": "https://www.teleman.pl/program-tv/stacje/TVP-Sport?date=2026-10-15"
+  },
+  {
+   "сайт": "raiplay.it",
+   "канал": "Rai 2",
+   "время": "2026-10-13 19:05",
+   "пояс": "Europe/Rome",
+   "адрес_отметки": "https://www.raiplay.it/palinsesto/app/rai-2/13-10-2026.json",
+   "адрес_источника": "https://www.raiplay.it/guidatv/index.html?channel=raiplay&date=13-11-2025",
+   "часы_utc": "2026-10-13 15:00",
+   "ссылка": "https://www.raiplay.it/guidatv/index.html?channel=rai-2&date=13-10-2026"
+  },
+  {
+   "сайт": "sporting.pt",
+   "канал": "SPORT TV 5",
+   "время": "2026-10-13 19:45",
+   "пояс": "Europe/Lisbon",
+   "адрес_отметки": "https://www.sporting.pt/pt/ical",
+   "адрес_источника": "https://www.sporting.pt/pt/agenda/listagem",
+   "часы_utc": "2026-10-13 15:00",
+   "ссылка": "https://www.sporting.pt/pt/agenda/listagem?d=2026-10"
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+#!/bin/sh
+# Шлагбаум выкладки (книга случаев, 13.10.2026): push в main — только с
+# зелёной проверкой на GitHub и на компьютере. Правила — scripts/push_gate.py.
+# Включение (один раз на копию репозитория): git config core.hooksPath scripts/hooks
+# Ветки и теги идут без шлагбаума — их и проверяет GitHub.
+
+root="$(git rev-parse --show-toplevel)"
+# питон с библиотеками проекта: из настройки репозитория (её видят и рабочие
+# копии-ветки во временных папках), иначе окружение рядом с кухней, иначе общий
+py="$(git -C "$root" config --get streams.python)"
+[ -n "$py" ] || py="$root/../Streams Schedule/venv/Scripts/python.exe"
+[ -x "$py" ] || py=python3
+
+status=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$remote_ref" = "refs/heads/main" ] || continue
+  case "$local_sha" in 0000000000000000000000000000000000000000) continue ;; esac
+  "$py" -X utf8 "$root/scripts/push_gate.py" "$local_sha" || status=1
+done
+exit $status
