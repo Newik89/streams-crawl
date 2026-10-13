@@ -445,8 +445,10 @@ def unique_rows(found: list) -> tuple[list, int]:
 СНЯТО_ГРЯЗНЫЕ_МИНУТЫ = "угаданный эфир не на ровной минуте"
 #: заставка перед матчем: эфирный блок начинается за столько минут до
 #: начала по эталону — и «нечётная» минута тогда не признак записи
-#: (movistarplus: ЛЧ в 19:38 и 21:53 при начале 19:45 и 22:00, книга 050)
-ЗАСТАВКА = timedelta(minutes=15)
+#: (сбор #249: movistarplus ставит ЛЧ на 19:38/21:53 при начале 19:45/22:00,
+#: Liga Endesa — за 9 мин, mediaklikk M4 Sport — за 2–3 мин; а студия
+#: «Previa Euroliga» — за 14 мин, это не эфир; книга 050)
+ЗАСТАВКА = timedelta(minutes=10)
 
 
 def odd_minute_record(start: datetime, kickoff: datetime | None) -> bool:
@@ -454,7 +456,7 @@ def odd_minute_record(start: datetime, kickoff: datetime | None) -> bool:
     1. начало на :00/:05/…/:55 — не запись (прямые трансляции так стоят);
     2. показ за 0–ЗАСТАВКА до начала ТОГО ЖЕ матча по эталону — заставка
        перед эфиром, не запись (сбор #249: 12 живых ЛЧ/ЛЕ/Liga Endesa у
-       movistarplus снимались, а записей среди снятых не было ни одной);
+       movistarplus и 8 матчей M4 Sport у mediaklikk снимались);
     3. иначе — запись: повтор стартует, где кончился прошлый блок
        (`Man Utd - Ipswich` в 00:17 у movistarplus, владелец 02.09)."""
     if start.minute % 5 == 0:
