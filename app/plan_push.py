@@ -107,9 +107,14 @@ def probe_url(domain: str) -> str:
     return ""
 
 
-def set_mode(conn, domain: str, by_server: bool) -> str:
+def set_mode(conn, domain: str, by_server: bool, by: str = "owner",
+             why: str = "") -> str:
     """Перевести источник: True — качает сервер, False — обычный GitHub-обход.
+    `by` — кто переводит: owner (кнопка владельца, по умолчанию) или auto
+    (`app/site_move.py`, схема сбоев шаг 11); `why` — слова для коммита
+    плана. Счёт срывов и пометки перевода ведёт `site_move.on_mode_change`.
     Возвращает строку для показа владельцу."""
+    from . import site_move
     row = conn.execute("SELECT id, selector_config FROM sources "
                        "WHERE domain = ?", (domain,)).fetchone()
     if row is None:
@@ -121,6 +126,8 @@ def set_mode(conn, domain: str, by_server: bool) -> str:
     else:
         config.pop("by_server", None)
         config.pop("manual_only", None)
+    # кто и когда перевёл, счёт срывов GitHub — с нуля (шаг 11 схемы сбоев)
+    site_move.on_mode_change(config, by_server, by)
     conn.execute("UPDATE sources SET selector_config = ? WHERE id = ?",
                  (json.dumps(config, ensure_ascii=False), row["id"]))
     conn.commit()
@@ -128,5 +135,6 @@ def set_mode(conn, domain: str, by_server: bool) -> str:
         else "обычный обход с GitHub"
     if not _edit_plan(domain, by_server):
         return f"{domain} → {kuda}; в плане обхода домена нет — только база"
-    sent = _push_plan(f"{domain}: {'качает сервер' if by_server else 'вернулся в GitHub-обход'} (кнопка владельца)")
+    sent = _push_plan(f"{domain}: {'качает сервер' if by_server else 'вернулся в GitHub-обход'} "
+                      f"({why or 'кнопка владельца'})")
     return f"{domain} → {kuda}; {sent}"

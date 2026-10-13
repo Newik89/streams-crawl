@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
-                 redo, sport_question, store, watch)
+                 redo, site_move, sport_question, store, watch)
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -284,6 +284,16 @@ def main() -> int:
             db.set_setting(conn, "last_crawl", stamp)
         store.log_run(conn, path.parent / "report.json", stats,
                       crawled=stamp, who=who, add_only=add_only)
+        # схема сбоев, шаг 11 (`app/site_move.py`, П1 и П4): счёт сборов
+        # GitHub, где сайт не дался, и итог недельной пробы вернуть сайт на
+        # GitHub. Ошибка здесь заливку не роняет — игры уже в базе
+        try:
+            for line in site_move.after_import(conn, path.parent / "report.json",
+                                               who=who):
+                print(f"перевод сайтов: {line}")
+        except Exception as beda:             # noqa: BLE001 — см. выше
+            print(f"перевод сайтов: ошибка {type(beda).__name__}: {beda} — "
+                  "счёт срывов сайтов в эту заливку не обновлён")
         if stats.times_fixed:
             print(f"время игр с «T» в базе приведено к общему виду: {stats.times_fixed} "
                   "(кто-то записал его в обход store.db_time — найти и поправить)")
