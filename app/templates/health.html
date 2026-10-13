@@ -55,6 +55,26 @@
   {% endfor %}
 </table>
 
+{% if moves %}
+<h2 style="margin-top:26px">На сервере и срывы на GitHub <span class="muted">({{ moves|length }})</span></h2>
+<p class="muted">Сайт, который GitHub не скачал 3 сбора подряд, утром (06:40)
+  проверяет сервер одним адресом: открылся — сайт сам переводится на сервер.
+  Раз в неделю GitHub пробует его снова одним адресом: открылся — сайт сам
+  возвращается на GitHub. Всё это — строками в «Прогонах».</p>
+<div style="overflow-x:auto">
+<table>
+  <tr><th>Сайт</th><th>Что с ним</th><th>Сервер последний раз скачал</th></tr>
+  {% for m in moves %}
+  <tr>
+    <td><a href="{{ url_for('source_edit', source_id=m.id) }}"><b>{{ m.domain }}</b></a></td>
+    <td style="overflow-wrap:anywhere">{{ m.mark }}</td>
+    <td class="muted">{{ m.server_ok or '—' }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endif %}
+
 <h2 style="margin-top:26px">Молчат <span class="muted">({{ silent|length }})</span></h2>
 <p class="muted">Сайт отвечает, но матчей с него давно не было: {{ silent_days }}
   суток и больше. Обычно это значит, что сайт поменял разметку и разбор

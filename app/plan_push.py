@@ -44,15 +44,21 @@ def _on_server() -> bool:
     return Path("/etc/streams-schedule.env").exists()
 
 
-def _edit_plan(domain: str, by_server: bool) -> bool:
-    """Два поля одного домена в файле плана. Домена в плане нет — False."""
+def _edit_plan(domain: str, by_server: bool, manual_only: bool | None = None,
+               max_days: int | None = None) -> bool:
+    """Поля одного домена в файле плана: by_server и manual_only (без
+    `manual_only` — как by_server), `max_days` — если задан (возврат с
+    восстановлением режима, `app/site_move.py`). Домена в плане нет —
+    False."""
     raw = PLAN.read_text(encoding="utf-8")
     plan = json.loads(raw)
     hit = False
     for s in plan.get("sources") or []:
         if s.get("domain") == domain:
             s["by_server"] = by_server
-            s["manual_only"] = by_server
+            s["manual_only"] = by_server if manual_only is None else manual_only
+            if max_days is not None:
+                s["max_days"] = max_days
             hit = True
     if hit:
         PLAN.write_text(json.dumps(plan, ensure_ascii=False, indent=1)
@@ -107,26 +113,48 @@ def probe_url(domain: str) -> str:
     return ""
 
 
-def set_mode(conn, domain: str, by_server: bool) -> str:
+def set_mode(conn, domain: str, by_server: bool, by: str = "owner",
+             why: str = "", restore: dict | None = None) -> str:
     """Перевести источник: True — качает сервер, False — обычный GitHub-обход.
+    `by` — кто переводит: owner (кнопка владельца, по умолчанию) или auto
+    (`app/site_move.py`, схема сбоев шаг 11); `why` — слова для коммита
+    плана; `restore` — при возврате на GitHub вернуть режим владельца
+    {manual_only, max_days} (автоматический возврат, `site_move.restore_of`;
+    без него «только по кнопке» снимается, как кнопкой). Счёт срывов,
+    пометки перевода и режим до перевода ведёт `site_move.on_mode_change`.
     Возвращает строку для показа владельцу."""
+    from . import site_move
     row = conn.execute("SELECT id, selector_config FROM sources "
                        "WHERE domain = ?", (domain,)).fetchone()
     if row is None:
         return f"источника {domain} нет в базе"
     config = json.loads(row["selector_config"] or "{}") or {}
+    # ДО смены пометок: кто и когда перевёл, режим до перевода, счёт срывов
+    # GitHub — с нуля (шаг 11 схемы сбоев)
+    site_move.on_mode_change(config, by_server, by)
+    manual, cap = None, None
     if by_server:
         config["by_server"] = True
         config["manual_only"] = True
     else:
         config.pop("by_server", None)
         config.pop("manual_only", None)
+        if restore is not None:
+            manual = bool(restore.get("manual_only"))
+            cap = int(restore.get("max_days") or 0)
+            if manual:
+                config["manual_only"] = True
+            if cap:
+                config["max_days"] = cap
+            else:
+                config.pop("max_days", None)
     conn.execute("UPDATE sources SET selector_config = ? WHERE id = ?",
                  (json.dumps(config, ensure_ascii=False), row["id"]))
     conn.commit()
     kuda = "качает сервер (раз в сутки, 06:40)" if by_server \
         else "обычный обход с GitHub"
-    if not _edit_plan(domain, by_server):
+    if not _edit_plan(domain, by_server, manual_only=manual, max_days=cap):
         return f"{domain} → {kuda}; в плане обхода домена нет — только база"
-    sent = _push_plan(f"{domain}: {'качает сервер' if by_server else 'вернулся в GitHub-обход'} (кнопка владельца)")
+    sent = _push_plan(f"{domain}: {'качает сервер' if by_server else 'вернулся в GitHub-обход'} "
+                      f"({why or 'кнопка владельца'})")
     return f"{domain} → {kuda}; {sent}"

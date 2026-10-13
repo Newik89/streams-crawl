@@ -21,6 +21,11 @@ r"""Живой обход по плану: скачать страницы и с
               адреса класса down/net (не больше 40), report.json
               переписывается — упавшие строки свежими, раздел «дозабор»
 
+Полный обход без фильтров на самом GitHub раз в 7 дней пробует каждый сайт
+«качает сервер» ОДНИМ адресом (схема сбоев, шаг 11, `app/site_move.py`,
+П4): итог — раздел «проба_возврата» отчёта, не «строки»; память —
+`results/vozvrat.json`.
+
 Провал (аудит 07.09, A4): полный обход без фильтров, где не открылась
 больше четверти страниц или пятая часть сайтов не открылась ни разу,
 кончается кодом 2 — прогон на GitHub красный, результат в репозиторий не
@@ -53,7 +58,7 @@ sys.path.insert(0, str(ROOT))
 
 from urllib.parse import urljoin, urlsplit          # noqa: E402
 
-from app import daytime, fetch, protection, redo, timemarks, urls   # noqa: E402
+from app import daytime, fetch, protection, redo, site_move, timemarks, urls   # noqa: E402
 from app.parsers import flashscore_mobi                            # noqa: E402
 
 PLAN = ROOT / "data" / "crawl_plan.json"
@@ -463,6 +468,70 @@ def verdict(page: fetch.Page) -> dict:
                 "байт": len(page.html), "меток времени": 0, "чем": page.via}
     return {"итог": "расписание есть", "почему": "",
             "байт": len(page.html), "меток времени": marks, "чем": page.via}
+
+
+#: проба вернуть на GitHub сайт «качает сервер» (схема сбоев, шаг 11,
+#: `app/site_move.py`, П4): когда пробовали каждый (файл едет в репозиторий
+#: вместе с results/, как `dozor.json`)
+VOZVRAT_MEMORY = ROOT / "results" / "vozvrat.json"
+
+
+def один_адрес(source: dict) -> dict | None:
+    """ОДИН адрес сайта — как в пробе площадки (`--probe`): первая страница
+    плана на «сегодня» сайта (первый канал / первая страница сводника /
+    сетка). Им сервер проверяет кандидата на перевод (П2), а GitHub —
+    сайт `by_server` раз в неделю (П4). Нет адреса — None."""
+    jobs = list(targets({"sources": [source]}, days=1, probe=True,
+                        only={source["domain"]}))
+    return jobs[0] if jobs else None
+
+
+def проба_одним_адресом(source: dict, fetcher) -> dict:
+    """Скачать `один_адрес` сайта (обычный запрос, отказали — браузер, как в
+    обходе) и сказать, что пришло: строка отчёта без сохранения страницы —
+    в разбор она не идёт (`app/site_move.py`, П2, П4, П6)."""
+    job = один_адрес(source)
+    if job is None:
+        return {"domain": source.get("domain", ""), "url": "",
+                "итог": "не дошли", "почему": "в плане у сайта нет адреса"}
+    было = fetcher.browser_only
+    fetcher.browser_only = было or bool(job.get("browser"))
+    try:
+        page = fetcher.get_with_fallback(job["url"],
+                                         locale=job.get("locale") or "en-GB",
+                                         post=job.get("post"),
+                                         warmup=job.get("warmup") or "",
+                                         post_json=job.get("post_json"),
+                                         extra=job.get("headers"))
+    finally:
+        fetcher.browser_only = было
+    return {"domain": job["domain"], "url": job["url"], **verdict(page)}
+
+
+def проба_возврата(plan: dict, fetcher, now: datetime | None = None,
+                   путь: Path | None = None) -> dict:
+    """П4 (`app/site_move.py`): сайтам «качает сервер», которым пора
+    (`site_move.return_due`, раз в 7 дней), — по одному адресу. Итог —
+    раздел «проба_возврата» report.json ({домен: запись}), НЕ «строки»:
+    дозабор, счёт сбоев и порог провала его не видят (П7). Память —
+    `VOZVRAT_MEMORY`. Зовётся только в полном обходе без фильтров на
+    самом GitHub."""
+    now = now or datetime.now(timezone.utc)
+    путь = путь or VOZVRAT_MEMORY
+    по_серверу = [s for s in plan.get("sources") or [] if s.get("by_server")]
+    пора, память = site_move.return_due(по_серверу, site_move.return_memory(путь), now)
+    раздел = {}
+    for source in по_серверу:
+        if source["domain"] not in пора:
+            continue
+        row = проба_одним_адресом(source, fetcher)
+        раздел[source["domain"]] = site_move.return_item(row, now)
+        site_move.return_remember(память, source["domain"], row, now)
+        print(f"проба вернуть на GitHub: {source['domain']} — {row['итог']} "
+              f"{row.get('почему') or ''}")
+    путь.parent.mkdir(parents=True, exist_ok=True)
+    путь.write_text(json.dumps(память, ensure_ascii=False, indent=1), encoding="utf-8")
+    return раздел
 
 
 #: сайт отдал расписание на ближние дни, а на дальний не дал ничего: у него
@@ -913,6 +982,14 @@ def main() -> int:
     # оценка провала — только полному обходу без фильтров (см. FAIL_*);
     # едет в report.json, чтобы шаг-тревога crawl_alarm.py её показал
     strict = bool(args.full) and not (args.only or args.urls or args.date)
+    # проба вернуть на GitHub сайты «качает сервер» (схема сбоев, шаг 11,
+    # `app/site_move.py`, П4): по одному адресу раз в 7 дней — только в
+    # полном обходе без фильтров и только на самом GitHub (с сервера проба
+    # сказала бы «открылся» и вернула сайт зря)
+    возврат = {}
+    if strict and site_move.on_github():
+        fetcher.browser_only = args.browser
+        возврат = проба_возврата(plan, fetcher)
     # сайт с короткой программой не сломан: смягчаем до оценки провала,
     # иначе он потянет обход в «красные» и займёт место в «Сломанных»
     softened = soften_short_depth(report)
@@ -928,6 +1005,8 @@ def main() -> int:
                "прогон": os.environ.get("GITHUB_RUN_ID", ""),
                "начат_киев": начат_киев, "пояса": пояс, "строки": report,
                "дозор": {d: memory.get(d, {}) for d in sorted(DAILY_PROBE)}}
+    if возврат:
+        payload[site_move.SECTION] = возврат
     code, notes = assess(payload) if strict else (0, [])
     payload["оценка"] = {"код": code, "строки": notes, "строгая": strict}
     (out / "report.json").write_text(

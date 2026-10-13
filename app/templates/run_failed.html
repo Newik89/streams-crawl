@@ -37,6 +37,7 @@
       {% if s.why %}<span class="tag bad" style="white-space:normal; overflow-wrap:anywhere">{{ s.why[:90] }}</span>
       {% else %}<span class="muted">—</span>{% endif %}
       {% if s.by_server %}<div class="muted">сейчас качает сервер</div>{% endif %}
+      {% if s.moved %}<div class="muted">{{ s.moved }}</div>{% endif %}
     </td>
     <td>
       {% if s.status %}<span class="tag {{ 'bad' if s.status in ('broken', 'closed') else '' }}">{{ s.status }}</span>{% endif %}
