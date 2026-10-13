@@ -169,7 +169,7 @@ def local_reference(reference_full: list) -> dict:
     для сверки угаданного эфира, по дням: `{дата: [(дом, гости, время,
     письменность, вид спорта)]}`. Написание, совпавшее с английским или с
     уже взятой локалью, не повторяем: проверка идёт на каждую строку."""
-    from app.canon import _SCRIPT_OF_LANG
+    from app.canon import _SCRIPT_OF_LANG, local_pairs
     по_дням: dict = {}
     for rec in reference_full:
         try:
@@ -178,11 +178,8 @@ def local_reference(reference_full: list) -> dict:
         except (KeyError, ValueError):
             continue
         seen = {(rec.get("home") or "", rec.get("away") or "")}
-        for lang, pair in (rec.get("names") or {}).items():
-            if not (isinstance(pair, (list, tuple)) and len(pair) == 2
-                    and pair[0] and pair[1]):
-                continue
-            home, away = str(pair[0]), str(pair[1])
+        # пометки пола и возраста — уже наши: «Italia D» → «Italia W» (13.10)
+        for lang, home, away in local_pairs(rec):
             if (home, away) in seen:
                 continue
             seen.add((home, away))
@@ -197,17 +194,69 @@ def in_local_reference(home: str, away: str, start, sport: str,
     """Пара строки есть среди местных написаний эталона: та же письменность
     (греческое — с греческим, латиница — с латиницей), тот же вид спорта,
     в пределах ±`LIVE_NEAR`, обе команды, в любом порядке."""
+    return local_reference_time(home, away, start, sport, по_дням) is not None
+
+
+def local_reference_time(home: str, away: str, start, sport: str,
+                         по_дням: dict):
+    """Начало матча по эталону для строки (местные написания, правила
+    `in_local_reference`): ближайшее к строке, None — эталон пары не знает."""
     from app.canon import _script
     script = _script(f"{home} {away}")
     день = start.date()
+    best = None
     for д in (день - timedelta(days=1), день, день + timedelta(days=1)):
         for h, a, t, sc, sp in по_дням.get(д, []):
             if sc != script or sp != sport or abs(start - t) > LIVE_NEAR:
                 continue
             if (names.same_team(home, h) and names.same_team(away, a)) \
                     or (names.same_team(home, a) and names.same_team(away, h)):
-                return True
-    return False
+                if best is None or abs(start - t) < abs(start - best):
+                    best = t
+    return best
+
+
+#: показы одной пары у сайта, начавшиеся почти одновременно (разные каналы
+#: одного вещателя ведут один эфир) — одинаково близки к матчу
+SAME_SHOW = timedelta(minutes=15)
+
+
+def nearest_shows(found: list, kickoff_of, guessed_of) -> tuple[list, list]:
+    """Эфир — показ, ближайший к началу матча (13.10, вопрос владельца:
+    Италия W — Беларусь W). У сайта без честного флага одна пара бывает
+    дважды рядом с матчем: Rai Sport в 17:25 крутил запись ПЕРВОГО матча
+    («Bielorussia - Italia»), а Rai 2 в 19:05 — живой ответный (эталон
+    19:15). Правила списком:
+    1. Смотрим только угаданный эфир (`guessed_of`) с началом матча по
+       эталону (`kickoff_of`) — остальное правило не трогает.
+    2. Пара у сайта — `show_key` (команды в любом порядке, вид спорта).
+    3. Из показов пары живой — ближайший к началу матча; показы, начавшиеся
+       не дальше `SAME_SHOW` от него, — тоже (одновременный эфир на двух
+       каналах). Остальные — записи.
+    Возвращает (оставленные, снятые с текстом причины)."""
+    groups: dict[tuple, list] = {}
+    for item in found:
+        domain, r = item
+        if not guessed_of(domain, r):
+            continue
+        kick = kickoff_of(r)
+        if kick is not None:
+            groups.setdefault(show_key(domain, r), []).append(
+                (abs(r.start_kyiv - kick), item, kick))
+    drop: dict[int, str] = {}
+    for rows in groups.values():
+        if len(rows) < 2:
+            continue
+        best = min(rows, key=lambda x: x[0])
+        for gap, item, kick in rows:
+            if abs(item[1].start_kyiv - best[1][1].start_kyiv) > SAME_SHOW:
+                drop[id(item)] = (
+                    f"у сайта есть показ ближе к началу матча "
+                    f"({kick.strftime('%d.%m %H:%M')}): "
+                    f"{best[1][1].start_kyiv.strftime('%d.%m %H:%M')}")
+    kept = [item for item in found if id(item) not in drop]
+    gone = [(item, drop[id(item)]) for item in found if id(item) in drop]
+    return kept, gone
 
 
 def reference_index(reference: list) -> dict:
@@ -390,6 +439,7 @@ def unique_rows(found: list) -> tuple[list, int]:
 #: имена фильтров повторов в журнале снятого (ключ «снято» в games.json)
 СНЯТО_ОЧЕРЕДЬ = "очередь: матч уже сыгран"
 СНЯТО_ПОЗДНИЙ_ПОКАЗ = "поздний показ у сайта без флага"
+СНЯТО_НЕ_БЛИЖАЙШИЙ = "показ пары дальше от матча, чем другой показ у сайта"
 СНЯТО_НЕТ_В_ЭТАЛОНЕ = "угаданный эфир без эталона"
 СНЯТО_НЕТ_В_ЭТАЛОНЕ_БТ = "угаданный эфир без эталона (баскет/теннис)"
 СНЯТО_ГРЯЗНЫЕ_МИНУТЫ = "угаданный эфир не на ровной минуте"
@@ -936,22 +986,6 @@ def main() -> int:
     if unsolved:
         print(f"не разобрано — уйдёт в модерацию: {len(unsolved)} строк(и)")
 
-    # Межфайловые повторы у источников без честного флага (см. константу):
-    # та же пара (в любом порядке команд) позже первого показа — запись.
-    # Первый показ — по всем эфирным строкам сайта, снимается только
-    # угаданное (`first_shows`)
-    firsts = first_shows(found)
-
-    def _late_show(domain: str, r) -> bool:
-        first = late_show(domain, r, firsts)
-        if first is None:
-            return False
-        снято.append(removed_row(
-            СНЯТО_ПОЗДНИЙ_ПОКАЗ, domain, r,
-            f"та же пара у этого сайта раньше: {first.strftime('%d.%m %H:%M')}"))
-        return True
-
-    found = [(domain, r) for domain, r in found if not _late_show(domain, r)]
 
     # Топовая лига от «угадаек» без подтверждения эталоном — запись.
     # Повторы АПЛ/ЛаЛиги/ЛЧ крутят днём все европейские пакеты (Spurs -
@@ -1070,6 +1104,56 @@ def main() -> int:
     if before - len(found):
         print("повторы без эталона (баскет/теннис): "
               f"убрано {before - len(found)}")
+
+    # Ближайший к матчу показ — эфир, остальные показы пары у сайта рядом с
+    # матчем — записи (`nearest_shows`, 13.10: запись первого матча 17:25
+    # у Rai Sport и живой ответный 19:05 у Rai 2 — оба в ±3 ч эталона)
+    def _kickoff(r):
+        sport = r.sport or "F"
+        times = []
+        local = local_reference_time(r.home, r.away, r.start_kyiv, sport,
+                                     reference_local)
+        if local is not None:
+            times.append(local)
+        pool = ([(h, a, t) for h, a, t in confirm] if sport == "F" else
+                [(h, a, t) for h, a, t, sp in reference_bt if sp == sport])
+        for h, a, t in pool:
+            if abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
+                continue
+            if (names.same_team(r.home, h) and names.same_team(r.away, a)) \
+                    or (names.same_team(r.home, a)
+                        and names.same_team(r.away, h)):
+                times.append(t)
+        return min(times, key=lambda t: abs(r.start_kyiv - t)) if times else None
+
+    found, ушли = nearest_shows(found, _kickoff, guessed)
+    for (domain, r), почему in ушли:
+        снято.append(removed_row(СНЯТО_НЕ_БЛИЖАЙШИЙ, domain, r, почему))
+    if ушли:
+        print(f"показы пары дальше от матча, чем другой показ сайта: "
+              f"убрано {len(ушли)}")
+
+    # Поздний показ — ПОСЛЕ сверки с эталоном (13.10, вопрос владельца:
+    # Италия W — Беларусь W на Rai 2): запись первого матча 17:25 у
+    # Rai Sport сама снята как «эфир без эталона», но успевала стать
+    # «первым показом» пары и снимала живой эфир 19:05 как повтор.
+    # Первым показом пары считается только строка, оставшаяся эфиром.
+    # Межфайловые повторы у источников без честного флага (см. константу):
+    # та же пара (в любом порядке команд) позже первого показа — запись.
+    # Первый показ — по всем эфирным строкам сайта, снимается только
+    # угаданное (`first_shows`)
+    firsts = first_shows(found)
+
+    def _late_show(domain: str, r) -> bool:
+        first = late_show(domain, r, firsts)
+        if first is None:
+            return False
+        снято.append(removed_row(
+            СНЯТО_ПОЗДНИЙ_ПОКАЗ, domain, r,
+            f"та же пара у этого сайта раньше: {first.strftime('%d.%m %H:%M')}"))
+        return True
+
+    found = [(domain, r) for domain, r in found if not _late_show(domain, r)]
 
     # «Грязные» минуты у угаданного эфира — признак записи: прямые
     # трансляции начинаются на :00/:05/…/:55, а повтор в сетке стартует

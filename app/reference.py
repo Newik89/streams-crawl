@@ -101,11 +101,9 @@ class Reference:
             self._entries.append((entry, start))
             # английское написание и все местные: строка сайта может быть на
             # любом языке, и сравнивать её будут со «своим» написанием
-            sides = [(home, away)]
-            for pair in (entry.get("names") or {}).values():
-                if isinstance(pair, (list, tuple)) and len(pair) == 2 \
-                        and pair[0] and pair[1]:
-                    sides.append((str(pair[0]), str(pair[1])))
+            # (пометки пола и возраста местных — уже наши, `canon.local_name`)
+            sides = [(home, away)] + [(h, a) for _lang, h, a
+                                      in canon.local_pairs(entry)]
             for h, a in sides:
                 for name in (h, a):
                     self._teams.update(r for r in names.readings(name)

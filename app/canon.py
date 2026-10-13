@@ -294,6 +294,46 @@ def _same_category(game: dict, ref: dict) -> bool:
     return моя == его
 
 
+#: как flashscore на своём языке помечает женскую команду, которую по-
+#: английски он пишет с «W»: «Italia D», «Polska K», «Polen F», «Polen V»,
+#: «Lengyelország N». Кириллица «(Ж)», чешская «Ž» и греческая «Γ» — уже
+#: пометки `names._WOMEN_RE`. Буквы опасны в общем словаре («Real Madrid
+#: C»), поэтому переводятся ТОЛЬКО у написаний flashscore и ТОЛЬКО когда
+#: английское имя женское (13.10: «Italia W - Bielorussia W» с Rai 2 не
+#: узнавало итальянское «Italia D - Bielorussia D», и эфир снимался как
+#: запись; так же терялись польские, немецкие, французские… написания)
+_LOCAL_WOMEN = {"it": "D", "sv": "D", "pl": "K", "tr": "K", "da": "K",
+                "ro": "F", "de": "F", "pt": "F", "fr": "F", "es": "F",
+                "nl": "V", "hu": "N"}
+#: французский возраст «Biélorussie -17» — у нас «U17»
+_LOCAL_AGE = re.compile(r"(?<!\w)-(\d{2})(?=\s|$)")
+
+
+def local_name(local: str, english: str, lang: str) -> str:
+    """Местное написание flashscore с пометками пола и возраста, как пишем
+    мы: «Italia D» → «Italia W», «Bielorussia U19 D» → «Bielorussia U19 W»,
+    «Biélorussie -17» → «Biélorussie U17». Мужское английское — без
+    перемен: буква в конце тогда часть имени."""
+    name = " ".join((local or "").split())
+    letter = _LOCAL_WOMEN.get(lang)
+    if letter and "W" in names.category(english or "").split():
+        name = re.sub(rf"(?<=\s){letter}$", "W", name)
+    return _LOCAL_AGE.sub(lambda m: f"U{m.group(1)}", name)
+
+
+def local_pairs(ref: dict) -> list[tuple[str, str, str]]:
+    """Все местные написания пары эталона — (язык, хозяева, гости), уже с
+    нашими пометками пола и возраста (`local_name`)."""
+    out = []
+    en_home, en_away = ref.get("home") or "", ref.get("away") or ""
+    for lang, pair in (ref.get("names") or {}).items():
+        if isinstance(pair, (list, tuple)) and len(pair) == 2 \
+                and pair[0] and pair[1]:
+            out.append((lang, local_name(str(pair[0]), en_home, lang),
+                        local_name(str(pair[1]), en_away, lang)))
+    return out
+
+
 def _sides(ref: dict, script: str = "lat") -> list[tuple[str, str]]:
     """Написания пары в эталоне той же письменности, что и у игры: для
     греческой строки Cosmote — греческое написание flashscore (`names`:
@@ -301,14 +341,8 @@ def _sides(ref: dict, script: str = "lat") -> list[tuple[str, str]]:
     для латиницы — венгерское, румынское, турецкое, польское, чешское.
     Сравнивать по-своему честнее, чем с английским через транслит — там и
     ловились 45 % игр без канона (03.09)."""
-    out = []
-    for lang, pair in (ref.get("names") or {}).items():
-        if _SCRIPT_OF_LANG.get(lang, "lat") != script:
-            continue
-        if isinstance(pair, (list, tuple)) and len(pair) == 2 \
-                and pair[0] and pair[1]:
-            out.append((str(pair[0]).strip(), str(pair[1]).strip()))
-    return out
+    return [(home, away) for lang, home, away in local_pairs(ref)
+            if _SCRIPT_OF_LANG.get(lang, "lat") == script]
 
 
 def _best_side(game: dict, ref: dict) -> int:
