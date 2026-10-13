@@ -65,27 +65,24 @@ def human_url(source_url: str | None, base_url: str | None, *,
 
 def site_names(conn: sqlite3.Connection) -> dict[tuple[int, int], list[str]]:
     """Имена канала, как их пишет сайт: (источник, канал) → [список
-    каналов источника, написания этого источника, общие написания].
-    Одним проходом на всю витрину, а не запросом на каждый канал."""
-    out: dict[tuple[int, int], list[str]] = {}
-    общие: dict[int, list[str]] = {}
+    каналов источника, написания этого источника]; (None, канал) — общие
+    написания без сайта. Одним проходом на всю витрину, а не запросом на
+    каждый канал."""
+    out: dict[tuple, list[str]] = {}
     for r in conn.execute("SELECT source_id, channel_id, raw_name FROM source_channels "
                           "WHERE channel_id IS NOT NULL ORDER BY include DESC, id"):
         out.setdefault((r[0], r[1]), []).append(r[2] or "")
     for r in conn.execute("SELECT source_id, channel_id, alias FROM channel_aliases "
                           "ORDER BY id"):
-        if r[0] is None:
-            общие.setdefault(r[1], []).append(r[2] or "")
-        else:
-            out.setdefault((r[0], r[1]), []).append(r[2] or "")
-    for (source_id, channel_id), names in out.items():
-        names.extend(общие.get(channel_id, []))
+        out.setdefault((r[0], r[1]), []).append(r[2] or "")
     return out
 
 
 def channel_names(names: dict, source_id, channel_id, shown: str) -> tuple:
-    """Имена для `human_url`: как на сайте, затем имя витрины."""
-    return tuple(n for n in (*names.get((source_id, channel_id), ()), shown) if n)
+    """Имена для `human_url` по порядку: как на этом сайте, имя витрины,
+    общие написания."""
+    return tuple(n for n in (*names.get((source_id, channel_id), ()), shown,
+                             *names.get((None, channel_id), ())) if n)
 
 
 def grace_map(conn: sqlite3.Connection) -> dict[str, int]:

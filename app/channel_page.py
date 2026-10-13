@@ -27,15 +27,16 @@ cid=923…` и отвечала 401: старая проверка не узна
 Машинный адрес (`is_machine`) — хватает одного признака:
   а. в пути: `/api/`, `/tvapi`, `/epg/`, `/cache/`, `/wp-json/`,
      `/wp-content/`, `/wp-admin/`, `/data-feed/`, `/partial/`,
-     `/integrationlayer/`, часть пути `ajax` или `…-ajax.php`, файл
-     `.json`/`.xml`;
+     `/integrationlayer/`, часть пути `ajax`, файл-ручка со словом ajax
+     (`admin-ajax.php`, `getAjaxData.aspx`), файл `.json`/`.xml`;
   б. в запросе: `ajax=`/`isajax=`, `accesskey=`, `format=json`;
   в. в имени хоста слово `api` (`api.…`, `api-web.…`, `mwapi-prod.…`,
      `…-epg-api.…`);
   г. хост чужого домена — не сайт источника (`tvarenaprogram.com` у
      `tvarenasport.ba`, `kolla.tv` у `dagenstv.com`).
-Слово `ajax` — только целой частью пути или параметром: канал клуба Ajax
-(`/channels/ajax-tv/`) — страница для человека.
+Слово `ajax` — только целой частью пути, именем файла-ручки или параметром:
+канал клуба Ajax (`/channels/ajax-tv/`) — страница для человека.
+Ошибка внутри правил пишется в журнал (`logging`) один раз за запуск.
 
 Шаблоны выясняются пробами с GitHub (`github_run.py dispatch --urls`), не с
 компьютера владельца. Сторож — `scripts/test_channel_page.py`: каждый
@@ -45,7 +46,9 @@ cid=923…` и отвечала 401: старая проверка не узна
 from __future__ import annotations
 
 import json
+import logging
 import re
+import threading
 import time
 import unicodedata
 from datetime import date as _date, datetime, timedelta
@@ -61,7 +64,8 @@ PAGES_FILE = Path(__file__).resolve().parent.parent / "data" / "channel_pages.js
 #: признак а — путь адреса
 _MACHINE_PATH = re.compile(
     r"/(api|tvapi|epg|cache|wp-json|wp-content|wp-admin|data-feed|partial|"
-    r"integrationlayer|ajax|[\w-]*-ajax\.php)(/|$)|\.(json|xml)$", re.I)
+    r"integrationlayer|ajax)(/|$)|/[\w-]*ajax[\w-]*\.(php|aspx?)$"
+    r"|\.(json|xml)$", re.I)
 #: признак б — строка запроса
 _MACHINE_QUERY = re.compile(r"(^|&)(is)?ajax=|accesskey=|format=json", re.I)
 #: признак в — слово `api` частью имени хоста (`mwapi-prod` у cosmotetv.gr)
@@ -136,31 +140,38 @@ def _prepare(rule: dict) -> dict:
 
 
 _cache: dict = {"mtime": None, "checked": 0.0, "pages": {}}
+_log = logging.getLogger(__name__)
+_logged: list = []          # ошибку правил пишем в журнал один раз за запуск
+_lock = threading.Lock()
 
 
 def pages() -> dict[str, dict]:
     """Шаблоны из `data/channel_pages.json` (перечитываются, если файл
     поменялся). Ключи с `_` — пояснения, не сайты. Файл битый — остаются
-    прежние шаблоны (или никаких): витрина живёт без них по правилам 2–3."""
-    now = time.monotonic()
-    if now - _cache["checked"] < _RECHECK_SECONDS:
+    прежние шаблоны (или никаких): витрина живёт без них по правилам 2–3,
+    а файл перечитывается при следующей проверке — недописанный во время
+    `git pull` подхватится, как только допишется."""
+    if time.monotonic() - _cache["checked"] < _RECHECK_SECONDS:
         return _cache["pages"]
-    _cache["checked"] = now
-    try:
-        mtime = PAGES_FILE.stat().st_mtime
-    except OSError:
-        _cache.update(mtime=None, pages={})
-        return {}
-    if _cache["mtime"] != mtime:
-        _cache["mtime"] = mtime
+    with _lock:               # потоки витрины ждут первую загрузку, а не берут {}
+        if time.monotonic() - _cache["checked"] < _RECHECK_SECONDS:
+            return _cache["pages"]
         try:
-            raw = json.loads(PAGES_FILE.read_text(encoding="utf-8-sig"))
-            if not isinstance(raw, dict):
-                raise ValueError("не словарь")
-            _cache["pages"] = {_bare(k): _prepare(v) for k, v in raw.items()
-                               if not k.startswith("_") and isinstance(v, dict)}
-        except (OSError, ValueError, AttributeError):
-            pass                      # прежние шаблоны остаются
+            mtime = PAGES_FILE.stat().st_mtime
+        except OSError:
+            _cache.update(mtime=None, pages={}, checked=time.monotonic())
+            return {}
+        if _cache["mtime"] != mtime:
+            try:
+                raw = json.loads(PAGES_FILE.read_text(encoding="utf-8-sig"))
+                if not isinstance(raw, dict):
+                    raise ValueError("не словарь")
+                _cache["pages"] = {_bare(k): _prepare(v) for k, v in raw.items()
+                                   if not k.startswith("_") and isinstance(v, dict)}
+                _cache["mtime"] = mtime           # только после удачного разбора
+            except (OSError, ValueError, AttributeError):
+                pass                              # прежние шаблоны остаются
+        _cache["checked"] = time.monotonic()
     return _cache["pages"]
 
 
@@ -268,10 +279,16 @@ def from_template(rule: dict, source_url: str, channel: str | tuple,
         if "://" in key:
             page = key                       # словарь дал страницу целиком
         elif key:
-            marks["CH"] = quote(key, safe="-_.~/:")
+            # `%` — значения словаря бывают уже закодированы (`caf%C3%A9`)
+            marks["CH"] = quote(key, safe="-_.~/:%")
         else:
             page = rule.get("else") or ""
+    # «сегодня» сайта — с тем же началом суток `night`, что и день игры:
+    # иначе в 02:00 у телегида номер дня {DAYNUM} вышел бы -1
+    night = int(rule.get("night") or 0)
     сегодня = daytime.today(tz)
+    if night and datetime.now(_zone(tz) or _KYIV).hour < night:
+        сегодня -= timedelta(days=1)
     d = day or сегодня
     marks["DAYNUM"] = str((d - сегодня).days)
     days = rule.get("days")
@@ -300,6 +317,10 @@ def link(source_url: str | None, *, domain: str = "", base_url: str = "",
             return source_url                                   # 2
         return schedule_page(base_url, domain)                  # 3, 4
     except Exception:  # noqa: BLE001 — ссылка не стоит упавшей витрины
+        if not _logged:
+            _logged.append(True)
+            _log.exception("ссылка ↗: ошибка правил (%s, %s) — даю страницу сайта",
+                           domain, source_url)
         try:
             return schedule_page(base_url, domain)
         except Exception:  # noqa: BLE001

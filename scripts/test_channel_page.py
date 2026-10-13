@@ -15,6 +15,8 @@ r"""Кнопка ↗ «Открыть расписание канала» (жа�
 from __future__ import annotations
 
 import json
+import os
+import time
 import sys
 from datetime import date, timedelta
 from pathlib import Path
@@ -68,6 +70,8 @@ for адрес, домен, ждём in (
         ("https://napi.hu/tv/musor", "napi.hu", False),
         ("https://www.novasports.gr/wp-admin/admin-ajax.php?action=x", "novasports.gr", True),
         ("https://ntvplus.tv/tv/ajax/tv?genre=sport", "ntvplus.tv", True),
+        ("https://x.ru/ajax.php?day=1", "x.ru", True),
+        ("https://x.ru/services/getAjaxData.aspx?d=1", "x.ru", True),
         ("https://www.sport5.co.il/Ajax/GetBroadcastSheetData.aspx?date=1", "sport5.co.il", True),
         ("https://www.bbc.co.uk/schedules/p00fzl6p/2026/10/15", "bbc.co.uk", False)):
     проверка(f"{адрес[:70]} → {'машинный' if ждём else 'для человека'}",
@@ -200,6 +204,22 @@ with tempfile.TemporaryDirectory() as папка:
             вышло = f"упало: {ошибка!r}"
         ждём = "https://x.sk/ok" if имя == "BOM Блокнота" else "https://x.sk/program"
         проверка(f"файл шаблонов: {имя}", вышло, ждём)
+    # файл не прочитался один раз (занят во время git pull) — новое
+    # содержимое всё равно подхватывается при следующей проверке
+    файл = Path(папка) / "ab.json"
+    cp.PAGES_FILE = файл
+    cp._cache.update(mtime=None, checked=0.0, pages={})
+    файл.write_text('{"x.sk": {"page": "https://x.sk/A"}}', encoding="utf-8")
+    первый = cp.link("", domain="x.sk")
+    файл.write_text('{"x.sk": {"page": "https://x.sk/', encoding="utf-8")   # недописан
+    cp._cache["checked"] = 0.0
+    второй = cp.link("", domain="x.sk")
+    файл.write_text('{"x.sk": {"page": "https://x.sk/B"}}', encoding="utf-8")
+    os.utime(файл, (time.time() + 5, time.time() + 5))    # новое время файла
+    cp._cache["checked"] = 0.0
+    третий = cp.link("", domain="x.sk")
+    проверка("недописанный файл: прежний шаблон, затем новый",
+             (первый, второй, третий), ("https://x.sk/A", "https://x.sk/A", "https://x.sk/B"))
 cp.PAGES_FILE = настоящий
 cp._cache.update(mtime=None, checked=0.0, pages={})
 
@@ -214,6 +234,9 @@ print("7. имя канала — как на сайте; ночь телеги�
 проверка("имя как на сайте раньше имени владельца («YES Sport 3» ← «Sport1 4»)",
          cp.from_template({"page": "https://s.il/?ch={CH}", "ch": "name", "map": {"Sport1 4": "4"}},
                           "", ("Sport1 4", "YES Sport 3"), день, None), "https://s.il/?ch=4")
+проверка("уже закодированное значение словаря не кодируется второй раз",
+         cp.from_template({"page": "https://x.fr/{CH}", "ch": "name", "map": {"Café": "caf%C3%A9"}},
+                          "", "Café", день, None), "https://x.fr/caf%C3%A9")
 проверка("канал в адресе кодируется",
          cp.from_template({"page": "https://x.pl/s/{CH}", "ch": "name"}, "", "Canal Sport", день, None),
          "https://x.pl/s/Canal%20Sport")
