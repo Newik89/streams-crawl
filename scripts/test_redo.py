@@ -360,6 +360,11 @@ check("причина провала (`fail_reason.classify_rows`) считае�
       and fail_reason.classify_rows([down(1), down(2), net(3)]) == "fetch-down"
       and fail_reason.classify_rows([net(1), net(2), ban(3)]) == "fetch-net"
       and fail_reason.classify_rows([]) == "plan")
+check("битый отчёт отбор не роняет: не словарь, строки не списком, строка не словарь или без адреса",
+      redo.pick([1, 2]).total == 0 and redo.pick({"строки": "x"}).total == 0
+      and redo.pick({"строки": ["x", 5, None, dict(down(1), url=None), down(2)], "дозор": [1]}).index == [4]
+      and redo.pick({"строки": ["x", 5, dict(down(1), url=None)]}).skipped == {"строка отчёта битая": 3}
+      and redo.row_class("x") == "" and redo.pick(None).total == 0)
 check("отбор — ОДНА функция на сервер и GitHub: её зовут и сторож, и crawl_fetch --redo",
       "redo.pick(" in inspect.getsource(cw.redo_facts)
       and "redo.pick(" in inspect.getsource(cf.redo_fetch))
@@ -970,6 +975,51 @@ tick(K("11:30"))
 check("дозабор остановил владелец кнопкой → закрыт строкой «остановил владелец», без ТРЕВОГИ",
       record(stop_rec["id"]).get("stopped") is True and alarms_after(edge) == []
       and any("остановил владелец" in n for n in notes_after(edge)), notes_after(edge))
+
+reset([morning])
+rec = done_order(morning)
+(RESULTS_DIR / "report.json").write_text('[1, "битый", {"строки": 5}]', encoding="utf-8")
+(RESULTS_DIR / "games.json").write_text("не JSON", encoding="utf-8")
+edge = last_id()
+tick(K("11:00"))
+check("битый results/report.json на сервере → проверка не падает, дозабора нет, ни строки",
+      redo_orders() == [] and notes_after(edge) == [] and record(rec["id"]).get("redo"),
+      (ORDERS, notes_after(edge)))
+morning2 = mkrun(K("08:21"), ended=K("09:55"))
+reset([morning, morning2])
+rec = done_order(morning)
+second = done_order(morning2, at="08:20", slot=False)
+server_has(morning, [down(1)])
+real_plan = redo.plan
+calls = []
+
+
+def exploding_plan(**k):
+    calls.append(1)
+    if len(calls) == 1:
+        raise ValueError("битые данные")
+    return real_plan(**k)
+
+
+redo.plan = exploding_plan
+edge = last_id()
+crashed = None
+try:
+    tick(K("11:00"))
+except Exception as error:                                     # noqa: BLE001
+    crashed = error
+finally:
+    redo.plan = real_plan
+edge_rows = notes_after(edge)
+check("С7 упал на одной записи → одна строка-предупреждение (не ТРЕВОГА), остальные записи и проверка идут дальше",
+      crashed is None and len([n for n in edge_rows if "разбор упал" in n]) == 1
+      and alarms_after(edge) == [] and len(calls) == 2
+      and "разбор упал" in record(rec["id"]).get("redo", "") + record(second["id"]).get("redo", ""),
+      (crashed, edge_rows))
+edge = last_id()
+tick(K("11:15"))
+check("…следующей проверкой строка про упавший разбор не повторяется",
+      not any("разбор упал" in n for n in notes_after(edge)), notes_after(edge))
 
 # ════════════════════════════════════════════════════════════════════════════
 rule("Д9", "на каждое правило шапки app/redo.py есть проверка")

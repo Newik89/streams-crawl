@@ -167,8 +167,8 @@ def row_class(row: dict) -> str:
     «нет на этот день»); ban — заглушка защиты или HTTP 403/429; down —
     HTTP 5xx (в т. ч. 520–524); net — прочее «не открылась»: нет ответа,
     DNS, таймаут. Тот же класс считает причина провала
-    (`fail_reason.classify_rows`)."""
-    if row.get("итог") not in BROKEN:
+    (`fail_reason.classify_rows`). Не словарь (битый отчёт) — пусто."""
+    if not isinstance(row, dict) or row.get("итог") not in BROKEN:
         return ""
     why = str(row.get("почему") or "")
     if row.get("итог") == "заглушка защиты" or _BAN.search(why):
@@ -181,9 +181,13 @@ def row_class(row: dict) -> str:
 def skip_reason(row: dict, never=frozenset()) -> str:
     """Д2: почему строку НЕ дозабираем; пусто — берём (класс down или net).
     `never` — сайты дозора (без www): их пробуют раз в сутки, не чаще."""
+    if not isinstance(row, dict):
+        return "строка отчёта битая"
     kind = row_class(row)
     if not kind:
         return "открылась"
+    if not isinstance(row.get("url"), str) or not row.get("url"):
+        return "строка отчёта битая"
     if _bare(row.get("domain")) in never:
         return "сайт дозора"
     if kind == "ban":
@@ -214,9 +218,14 @@ class Pick:
 def pick(report: dict) -> Pick:
     """Д2 + Д4: какие строки отчёта сбора качать заново. ОДНА функция на
     сервер (сторож: сколько упало, не массовый ли сбой) и GitHub
-    (`crawl_fetch.py --redo`: что качать)."""
-    rows = (report or {}).get("строки") or []
-    never = {_bare(d) for d in ((report or {}).get("дозор") or {})}
+    (`crawl_fetch.py --redo`: что качать). Битый отчёт (не словарь, строки
+    не списком, строка не словарь) проверку не роняет: такие строки — в
+    `skipped` («строка отчёта битая»), не отчёт — ноль упавших."""
+    report = report if isinstance(report, dict) else {}
+    rows = report.get("строки")
+    rows = rows if isinstance(rows, list) else []
+    dozor = report.get("дозор")
+    never = {_bare(d) for d in (dozor if isinstance(dozor, dict) else {})}
     take: list[int] = []
     skipped: dict[str, int] = {}
     for i, row in enumerate(rows):

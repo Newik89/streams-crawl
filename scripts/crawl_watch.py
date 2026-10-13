@@ -774,36 +774,66 @@ def order_redo(t: Round) -> None:
     """С7. По каждому ДОШЕДШЕМУ полному сбору книги (Д1) решает `redo.plan`
     (Д2–Д4); здесь — факты для решения (`redo_facts`) и действие: молча
     ждать, строка, отсрочка (строка один раз) или заявка (`redo_send`, Д5).
-    Решённый сбор помечается `redo` — второй раз сторож по нему не решает."""
+    Решённый сбор помечается `redo` — второй раз сторож по нему не решает.
+    Разбор одного сбора упал (битый отчёт на сервере) — одна строка-
+    предупреждение (`broken_redo`), проверка идёт дальше: забытые заказы
+    чистятся, отметка «жив» ставится."""
     records = watch.load_orders(t.conn)
     for rec in records:
-        if not redo.eligible(watch.order_kind(rec), rec):                 # Д1
-            continue
-        if watch.find_order(t.conn, redo_of=rec["id"]):                   # Д4: один на сбор
-            continue
-        t.rec, t.run = rec, run_of(t, rec)
-        decision, words = redo_facts(t, rec, t.run, records)
-        head = order_words(t) + (f", обход #{t.run.get('run_number')}" if t.run else "")
-        if decision == "wait" or t.dry:
-            t.log(f"дозабор: {head} — {decision}: {words}")
-            continue
-        if decision == "order":
-            redo_send(t, rec, head, words)
-            continue
-        if decision == "defer":
-            # строка — один раз; следующая проверка решает заново
-            if not rec.get("redo_deferred"):
-                t.say(f"{head}: {words}")
-                rec["redo_deferred"] = watch.when(t.now)
-            t.keep(rec)
-            continue
-        if decision == "skip":
+        try:
+            redo_one(t, rec, records)
+        except Exception as error:                                        # noqa: BLE001
+            broken_redo(t, rec, error)
+
+
+def broken_redo(t: Round, rec: dict, error: Exception) -> None:
+    """С7: решать дозабор по сбору `rec` не вышло (исключение — битый
+    results/report.json и т. п.). Одна строка без ТРЕВОГИ: дозабор — не
+    главное, данные сбора уже влиты; по этому сбору больше не решаем —
+    строка не повторяется каждые 15 минут."""
+    t.say(f"{rec.get('what')} от {rec.get('order')}: дозабор не решён — разбор упал "
+          f"({type(error).__name__}: {error}); по этому сбору дозабор не заказываю, "
+          f"остальное сторож делает как обычно")
+    if t.dry:
+        return
+    try:
+        rec["redo"] = f"не заказан: разбор упал ({type(error).__name__})"
+        rec.pop("redoing", None)
+        watch.save_order(t.conn, rec)
+    except Exception:                                                     # noqa: BLE001
+        pass                    # запись совсем странная — её разберёт С4 (карантин)
+
+
+def redo_one(t: Round, rec: dict, records: list[dict]) -> None:
+    """С7 для одной записи книги: годится ли (Д1), решение (Д2–Д4),
+    действие."""
+    if not redo.eligible(watch.order_kind(rec), rec):                 # Д1
+        return
+    if watch.find_order(t.conn, redo_of=rec["id"]):                   # Д4: один на сбор
+        return
+    t.rec, t.run = rec, run_of(t, rec)
+    decision, words = redo_facts(t, rec, t.run, records)
+    head = order_words(t) + (f", обход #{t.run.get('run_number')}" if t.run else "")
+    if decision == "wait" or t.dry:
+        t.log(f"дозабор: {head} — {decision}: {words}")
+        return
+    if decision == "order":
+        redo_send(t, rec, head, words)
+        return
+    if decision == "defer":
+        # строка — один раз; следующая проверка решает заново
+        if not rec.get("redo_deferred"):
             t.say(f"{head}: {words}")
-        else:                                                             # quiet
-            t.log(f"дозабор: {head} — {words}")
-        rec["redo"] = f"не заказан: {words}"
-        rec.pop("redo_deferred", None)
+            rec["redo_deferred"] = watch.when(t.now)
         t.keep(rec)
+        return
+    if decision == "skip":
+        t.say(f"{head}: {words}")
+    else:                                                             # quiet
+        t.log(f"дозабор: {head} — {words}")
+    rec["redo"] = f"не заказан: {words}"
+    rec.pop("redo_deferred", None)
+    t.keep(rec)
 
 
 def redo_facts(t: Round, rec: dict, run: dict | None,
