@@ -1157,20 +1157,30 @@ def _channel_key(name: str) -> str:
     return re.sub(r"[\W_]+", "", (name or "").casefold())
 
 
-def _site_on_game(domain: str, channel: str, ref: dict, start: datetime,
-                  shown: list) -> bool:
-    """У игры витрины, которая и есть этот матч эталона, есть канал сайта —
-    или тот же канал с другого сайта (Prima Sport 1 у primaplay.ro и у
-    programetv.ro — зритель его видит, потери нет)?"""
+def _names_in(text: str, cores: set) -> bool:
+    return any(_seen_word(text, h) and _seen_word(text, a) for h, a in cores)
+
+
+def _site_on_game(domain: str, channel: str, ref: dict, cores: set,
+                  start: datetime, shown: list) -> bool:
+    """Строка сайта про этот матч дошла до витрины? Отметка у игры в ±3 ч —
+    от этого сайта или тот же канал с другого (Prima Sport 1 у primaplay.ro
+    и у programetv.ro — зритель его видит) — и это тот же матч: в подписи
+    отметки (`raw_title`) стоят обе команды эталона, или пара игры та же.
+    Подпись нужна, потому что имена игры витрины бывают другими: «Lille
+    OSC — Stade Brestois 29» с эталонным «Lille — Brest» дают 76 < 85."""
     lo = bisect.bisect_left(shown, start - SEEN_GAME_WINDOW, key=lambda x: x[0])
     key = _channel_key(channel)
     for g_start, g in shown[lo:]:
         if g_start > start + SEEN_GAME_WINDOW:
             break
-        if not any(bare(e.get("source") or "") == domain
-                   or (key and _channel_key(e.get("channel") or "") == key)
-                   for e in g.get("entries") or []):
+        mine = [e for e in g.get("entries") or []
+                if bare(e.get("source") or "") == domain
+                or (key and _channel_key(e.get("channel") or "") == key)]
+        if not mine:
             continue
+        if any(_names_in((e.get("raw_title") or "").casefold(), cores) for e in mine):
+            return True
         if _pair_score(g, ref) >= SEEN_PAIR:
             return True
     return False
@@ -1208,16 +1218,18 @@ def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
                 for h, a in cores:
                     if (h.split()[0] in words and a.split()[0] in words
                             and _seen_word(text, h) and _seen_word(text, a)):
-                        hits[fs] = (p, ref, start)
+                        hits[fs] = (p, ref, start, cores)
                         break
-        for fs, (p, ref, start) in sorted(hits.items(), key=lambda x: x[1][2]):
-            if _site_on_game(domain, p.channel_raw, ref, start, shown):
-                continue
-            out.append(f"{domain}: {p.start.astimezone(KYIV):%d.%m %H:%M} "
-                       f"{p.channel_raw} «{(p.title or p.match_raw or '')[:70]}» — "
-                       f"эталон знает {ref['home']} — {ref['away']} "
-                       f"{start:%d.%m %H:%M} ({fs}), а у игры на витрине канала "
-                       f"этого сайта нет")
+        lost = [f"{p.start.astimezone(KYIV):%d.%m %H:%M} {p.channel_raw} "
+                f"«{(p.title or p.match_raw or '')[:60]}» = эталон {ref['home']} — "
+                f"{ref['away']} {start:%H:%M} ({fs})"
+                for fs, (p, ref, start, cores) in sorted(hits.items(), key=lambda x: x[1][2])
+                if not _site_on_game(domain, p.channel_raw, ref, cores, start, shown)]
+        if lost:
+            # строка на сайт, как у прочих проверок: сайт — число — примеры
+            out.append(f"{domain}: {len(lost)} матч(а/ей) эталона сайт показал в "
+                       f"эфир, а канала у игры на витрине нет — "
+                       + "; ".join(lost[:EXAMPLES]))
     return out
 
 
