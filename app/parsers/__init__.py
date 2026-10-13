@@ -213,7 +213,8 @@ def all_parsers() -> dict[str, object]:
 
 def _load_all():
     """Ленивый импорт всех модулей: они наполняют REGISTRY через `register`."""
-    from . import (aktuality_sk, allente_no, aspor_com_tr,  # noqa: F401
+    from . import (aktuality_sk, alkass_net, allente_no,  # noqa: F401
+                   aspor_com_tr,
                    atv_com_tr,
                    bbc_co_uk, beinsports_com_tr, bnt_bg,
                    canal11_pt, ceskatelevize_cz, cosmotetv_gr, cyta_com_cy,
