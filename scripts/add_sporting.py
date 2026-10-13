@@ -11,7 +11,8 @@ r"""Завести источник sporting.pt и его каналы (прос
 проекта): SPORT TV 1–7 и SPORT TV + — те же каналы, что дают sporttv.pt;
 «SPORT TV» без номера — сайт не уточнил; Sporting TV — канал клуба (дубль,
 женщины, волейбол); FPB TV — трансляции Федерации баскетбола; canal11.pt —
-сайт канала Canal 11 (футзал).
+сайт канала Canal 11 (футзал);
+RTP1/RTP2 — бесплатные каналы (кубок), привязаны к уже заведённым.
 
 Идемпотентен: повторный запуск ничего не дублирует. Гонять в ОБЕИХ базах:
     venv\Scripts\python.exe scripts/add_sporting.py --apply
@@ -42,7 +43,33 @@ CHANNELS = [
     ("FPB TV", "FPB TV"),
     ("CANAL11.PT", "Canal 11"),
     ("CANAL 11", "Canal 11"),
+    # бесплатные каналы — кубковые игры (замечание проверки 13.10); в базе
+    # они уже есть под именами владельца («PT| RTP 1») — ищем по написанию
+    ("RTP1", "RTP 1"),
+    ("RTP 1", "RTP 1"),
+    ("RTP2", "RTP2"),
+    ("RTP 2", "RTP2"),
 ]
+
+
+def _existing(conn, raw: str, canon: str) -> int | None:
+    """Канал Португалии, который в базе уже есть: по имени или написанию,
+    без учёта регистра и пробелов («RTP1» = «PT| RTP 1» через написание)."""
+    def key(text: str) -> str:
+        # «+» — словом: «SPORT TV +» и «SPORT TV» — разные каналы
+        text = (text or "").replace("+", " plus ").casefold()
+        return "".join(c for c in text if c.isalnum())
+    want = {key(raw), key(canon)}
+    for r in conn.execute("SELECT id, canonical_name FROM channels WHERE country = ?",
+                          (COUNTRY,)):
+        if key(r["canonical_name"]) in want or key(r["canonical_name"]).removeprefix("pt") in want:
+            return r["id"]
+    for r in conn.execute("SELECT a.channel_id, a.alias FROM channel_aliases a "
+                          "JOIN channels c ON c.id = a.channel_id WHERE c.country = ?",
+                          (COUNTRY,)):
+        if key(r["alias"]) in want:
+            return r["channel_id"]
+    return None
 
 SOURCE = {
     "domain": "sporting.pt",
@@ -96,8 +123,14 @@ def main() -> int:
             (src["domain"], src["name"], src["base"], COUNTRY, ZONE,
              src["pattern"], src["notes"])).lastrowid
     for raw, canon in CHANNELS:
-        channel_id = dictionary.remember_channel(conn, raw, canon, COUNTRY,
-                                                 source_id=source_id)
+        channel_id = _existing(conn, raw, canon)
+        if channel_id is None:
+            channel_id = dictionary.remember_channel(conn, raw, canon, COUNTRY,
+                                                     source_id=source_id)
+        else:
+            conn.execute("INSERT OR IGNORE INTO channel_aliases (channel_id, "
+                          "alias, source_id) VALUES (?, ?, ?)",
+                          (channel_id, raw, source_id))
         got = conn.execute("SELECT id FROM source_channels WHERE source_id = ? "
                            "AND raw_name = ?", (source_id, raw)).fetchone()
         if got:

@@ -196,8 +196,15 @@ def _хозяева_канала(conn: sqlite3.Connection, games: list[dict],
 
 
 def _sources_by_domain(conn: sqlite3.Connection) -> dict[str, sqlite3.Row]:
-    return {r["domain"]: r for r in conn.execute(
-        "SELECT id, domain, country FROM sources")}
+    # и под именем с `www.`: в файле пробы (`dispatch --urls`) источник
+    # записан хостом адреса — без этого отметки каналов молча терялись
+    # (грабля «проба — только посмотреть», проверка sporting.pt 13.10)
+    out: dict[str, sqlite3.Row] = {}
+    for r in conn.execute("SELECT id, domain, country FROM sources"):
+        out[r["domain"]] = r
+    for domain, r in list(out.items()):
+        out.setdefault("www." + domain, r)
+    return out
 
 
 def _is_latin(name: str) -> bool:

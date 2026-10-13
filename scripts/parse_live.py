@@ -603,7 +603,9 @@ def main() -> int:
                 problems.append(f"{row['domain']} {row.get('channel') or 'сетка'}: "
                                 f"{row['итог']} — {row['почему']}")
             continue
-        setting = settings.get(row["domain"], {})
+        # в пробе (`dispatch --urls`) домен — хост адреса, с `www.`
+        setting = (settings.get(row["domain"])
+                   or settings.get(row["domain"].removeprefix("www."), {}))
         # своего разбора нет — берём подобранный из готовых (`autoparse.py`)
         parse = parser_for(row["domain"], setting.get("parser") or "")
         if parse is None:

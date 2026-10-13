@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT))
 sys.stdout.reconfigure(encoding="utf-8")
 
 from app import leagues, parsers  # noqa: E402
+from app.parsers import sporting_pt  # noqa: E402
 from app.parsers import SITE_FLAG, SITE_LIVE  # noqa: E402
 
 зелёных = красных = 0
@@ -87,9 +88,17 @@ print("правило 2: канал — как написал сайт")
          по_паре["Brøndby IF - SPORTING CP"].channel_raw, "SPORTING TV")
 проверка("«em canal11.pt» → CANAL11.PT",
          по_паре["Vitória SC - SPORTING CP"].channel_raw, "CANAL11.PT")
-проверка("фильтр каналов карточки",
-         [p.match_raw for p in parse(КАЛЕНДАРЬ, channels={"SPORT TV 5"})],
-         ["RC Lens - SPORTING CP"])
+проверка("канал не из карточки не выбрасывается — помечен новым",
+         sorted((p.channel_raw, p.extra["новый_канал"])
+                for p in parse(КАЛЕНДАРЬ, channels={"SPORT TV 5"})),
+         [("CANAL11.PT", True), ("SPORT TV 5", False), ("SPORTING TV", True)])
+for фраза, ждём in (
+        ("SPORT TV 1 E NA SPORTING TV", ["SPORT TV 1", "SPORTING TV"]),
+        ("Sporting TV - em sinal aberto", ["SPORTING TV"]),
+        ("RTP1 (canal aberto)", ["RTP1"]),
+        ("SPORT TV 1 / SPORT TV 2", ["SPORT TV 1", "SPORT TV 2"]),
+        ("SPORT TV 1 e em BTV", ["SPORT TV 1", "BTV"])):
+    проверка(f"«{фраза}» → {ждём}", sporting_pt.channels_of(фраза), ждём)
 
 print("правило 3: время с поясом календаря")
 lens = по_паре["RC Lens - SPORTING CP"]
@@ -100,14 +109,38 @@ lens = по_паре["RC Lens - SPORTING CP"]
 print("правило 4: вид спорта — слово до скобки")
 проверка("Futebol → futebol", lens.sport_raw, "futebol")
 
-print("правило 5: пол и возраст — суффиксы W и U19")
+print("правило 5: турнир без стадии")
+for место, ждём in (
+        ("2.ª jornada da Fase de Liga da Liga dos Campeões da UEFA",
+         ("Liga dos Campeões da UEFA", "2.ª jornada da Fase de Liga")),
+        ("8.ª jornada da Liga Portugal 2", ("Liga Portugal 2", "8.ª jornada")),
+        ("3.ª jornada da 1.ª fase / Zona 2 / Fase inicial / Série B do Campeonato Regional Sub-15",
+         ("Campeonato Regional Sub-15", "3.ª jornada da 1.ª fase / Zona 2 / Fase inicial / Série B")),
+        ("4.ª jornada do Grupo C da Fase regular da Europe Cup da FIBA",
+         ("Europe Cup da FIBA", "4.ª jornada do Grupo C da Fase regular")),
+        ("1.ª mão da 2.ª Pré-eliminatória da Europa Cup da UEFA",
+         ("Europa Cup da UEFA", "1.ª mão da 2.ª Pré-eliminatória")),
+        ("Quartos-de-final da Allianz Cup", ("Allianz Cup", "Quartos-de-final")),
+        ("2.ª jornada da fase de grupos / Grupo D da Liga dos Campeões da EHF",
+         ("Liga dos Campeões da EHF", "2.ª jornada da fase de grupos / Grupo D")),
+        ("3.º / 4.º lugares do Torneio Internacional de Basquetebol Cidade de Viana do Castelo",
+         ("Torneio Internacional de Basquetebol Cidade de Viana do Castelo", "3.º / 4.º lugares")),
+        ("Final do Torneio Sanjoanense / Daniel Pinho",
+         ("Torneio Sanjoanense / Daniel Pinho", "Final")),
+        ("Troféu Stromp", ("Troféu Stromp", ""))):
+    проверка(f"{место[:50]} → {ждём[0][:40]}", sporting_pt.competition(место), ждём)
+проверка("в лиге игры — турнир, стадия — в описании",
+         (lens.league_raw, lens.description.startswith("2.ª jornada da Fase de Liga")),
+         ("Liga dos Campeões da UEFA", True))
+
+print("правило 6: пол и возраст — суффиксы W и U19")
 проверка("мужская первая команда — без суффикса", leagues.category(lens.league_raw), "")
 проверка("женская команда — W",
          leagues.category(по_паре["Brøndby IF - SPORTING CP"].league_raw), "W")
 проверка("юниорки Sub-19 — U19 W",
          leagues.category(по_паре["Vitória SC - SPORTING CP"].league_raw), "U19 W")
 
-print("правило 6: эфир — пометка сайта")
+print("правило 7: эфир — пометка сайта")
 проверка("live_raw = directo, флаг сайта", (lens.live_raw, lens.extra.get(SITE_FLAG)),
          ("directo", SITE_LIVE))
 

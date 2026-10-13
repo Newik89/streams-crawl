@@ -71,6 +71,9 @@ for адрес, домен, ждём in (
         ("https://www.novasports.gr/wp-admin/admin-ajax.php?action=x", "novasports.gr", True),
         ("https://ntvplus.tv/tv/ajax/tv?genre=sport", "ntvplus.tv", True),
         ("https://x.ru/ajax.php?day=1", "x.ru", True),
+        # календарь клуба (sporting.pt, 13.10) — файл для программы, не страница
+        ("https://www.sporting.pt/pt/ical", "sporting.pt", True),
+        ("https://club.example/agenda.ics", "club.example", True),
         ("https://x.ru/services/getAjaxData.aspx?d=1", "x.ru", True),
         ("https://www.sport5.co.il/Ajax/GetBroadcastSheetData.aspx?date=1", "sport5.co.il", True),
         ("https://www.bbc.co.uk/schedules/p00fzl6p/2026/10/15", "bbc.co.uk", False)):
@@ -244,6 +247,11 @@ print("7. имя канала — как на сайте; ночь телеги�
          cp.site_day("2026-10-16 03:00", "Europe/Warsaw", 6), date(2026, 10, 15))
 проверка("ночь телегида: 07:00 по Варшаве — свой день",
          cp.site_day("2026-10-16 08:00", "Europe/Warsaw", 6), date(2026, 10, 16))
+проверка("sporting.pt: календарь → афиша месяца игры (файл шаблонов)",
+         cp.link("https://www.sporting.pt/pt/ical", domain="sporting.pt",
+                 base_url="https://www.sporting.pt/pt/agenda/listagem",
+                 start_kyiv="2026-11-01 01:30", tz="Europe/Lisbon", channel="SPORT TV 1"),
+         "https://www.sporting.pt/pt/agenda/listagem?d=2026-10")
 
 print("8. сторож: машинные адреса плана и последнего сбора")
 шаблоны = cp.pages()
