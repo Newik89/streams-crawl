@@ -16,11 +16,15 @@ r"""Сторож заказа обхода — cron сервера раз в 15 
     С4  follow_order   КАЖДЫЙ открытый заказ книги: ждать / забрать / закрыть / сорвался / состарился
     С5  audit_slot     плановая заявка на слот не приходила → слот сорвавшийся
     С6  order_early    сорвавшийся слот → один досрочный обход либо ТРЕВОГА
+    С7  order_redo     дошедший сбор с упавшими адресами → через час один
+                       дозабор только их (правила Д1–Д9 — шапка app/redo.py)
 
 Что делать после сбоя, решает ОДНА таблица `watch.RECOVERY` («вид сбоя →
 шаг»); здесь её шаг исполняет `recover`. Сторож сам заказывает сбор только
 в двух местах: повтор (шаг retry) и досрочный (С6) — оба через
 `order_crawl`. На один плановый слот — не больше одного заказа сторожа.
+Через `order_crawl` же уходят переразбор (шаг reparse) и дозабор (С7) — к
+сайтам первый не ходит вовсе, второй — только к упавшим адресам (≤ 40).
 Каждое решение — строка «сторож: …» в «Прогонах» админки и в журнале cron
 (`/var/log/streams-watch.log`). Проверка идёт под общим с заявкой замком
 (`watch.order_lock`, правило З1). Запросов к API GitHub за проверку: один
@@ -30,17 +34,22 @@ r"""Сторож заказа обхода — cron сервера раз в 15 
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import alive, crawl_hook, db, trigger, watch  # noqa: E402
+from app import alive, crawl_hook, db, redo, trigger, watch  # noqa: E402
+
+#: С7: где на сервере лежит результат последнего влитого полного сбора
+#: (`git pull` в streams-update.sh): отчёт и игры едут одним коммитом
+RESULTS = ROOT / "results"
 
 
 def _now() -> datetime:
@@ -50,11 +59,12 @@ def _now() -> datetime:
 
 def order_crawl(kind: str, value: str, mark: str) -> str:
     """Заказать сбор сейчас: `request_crawl.py <kind> <value> --force
-    --unlock --locked <mark>` (kind — days, date или site). --force — без
+    --unlock --locked <mark>` (kind — days, date, site, reparse или redo). --force — без
     правила «1 час» (сторож уже решил, что сбор нужен); --unlock — снять
     отметку «сбор идёт» (по списку GitHub прежний прогон мёртв или
     отменяется); --locked — общий замок уже держит сторож; `mark` —
-    `--retry-of=<id>` или `--early-for=<слот>`: заявка кладёт заказ в книгу
+    `--retry-of=<id>`, `--reparse-of=<id>`, `--redo-of=<id>` или
+    `--early-for=<слот>`: заявка кладёт заказ в книгу
     с этой пометкой, и сторож находит СВОЙ заказ по ней (`watch.find_order`),
     а не по виду — чужой заказ той же минуты с ним не спутать. Не уложилась
     в срок — не падаем: проверка должна дописать свою память."""
@@ -79,7 +89,8 @@ def pull() -> str:
 def request_args(what: str) -> tuple[str, str]:
     """Вид заказа книги → ключи заявки: `full-6` → days 6, `date-…` → date,
     `site-…` → site."""
-    for prefix, kind in (("date-", "date"), ("site-", "site"), ("reparse-", "reparse")):
+    for prefix, kind in (("date-", "date"), ("site-", "site"), ("reparse-", "reparse"),
+                         ("redo-", "redo")):
         if what.startswith(prefix):
             return kind, what[len(prefix):]
     return "days", str((watch.window(what) or (1, 0))[1])
@@ -168,6 +179,7 @@ def tick(conn, now: datetime, check: bool = False) -> None:
     deferred_retries(t)                                                   # С4г
     audit_slot(t)                                                         # С5
     order_early(t)                                                        # С6
+    order_redo(t)                                                         # С7
     if not t.dry:
         watch.prune_orders(conn, t.now)
 
@@ -257,6 +269,16 @@ def resume_retries(t: Round) -> None:
                         f"оборвали посреди заказа (перезагрузка сервера?)")
             rec.pop("reparsing", None)
             t.keep(rec)
+        if rec.get("redoing"):
+            # то же для дозабора (схема сбоев, шаг 5, С7): пометка `redoing`;
+            # второго не будет — пометка `redo` записана до заявки
+            t.rec, t.run = rec, None
+            if not watch.find_order(t.conn, redo_of=rec["id"]):
+                recover(t, "redo-lost",
+                        f"{order_words(t)}: дозабор заказать не удалось — проверку "
+                        f"оборвали посреди заказа (перезагрузка сервера?)")
+            rec.pop("redoing", None)
+            t.keep(rec)
         if not rec.get("retrying"):
             continue
         t.rec, t.run = rec, None
@@ -292,7 +314,9 @@ def cancel_stuck(t: Round) -> None:
             # что будет с заказом после отмены — по той же таблице RECOVERY (С4г)
             own[str(run.get("id"))] = {
                 "early": "вместо него сейчас закажу ближайший плановый досрочно",
-                "retry": "сейчас закажу его заново"}.get(
+                "retry": "сейчас закажу его заново",
+                # сорвавшийся дозабор (С7): данные основного сбора уже влиты
+                "close": "больше не заказываю — данные основного сбора уже влиты"}.get(
                 watch.recovery(watch.failure_of(rec, "failed")),
                 "больше не заказываю, подаю тревогу")
     for action, rid, words in watch.queue_decisions(t.runs, t.now, t.queue, t.slug):
@@ -453,7 +477,8 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
       retry — один повтор той же заявки; не ушёл — снова сюда (<вид>-retry-refused)
       reparse — переразбор страниц упавшего сбора без обхода (схема сбоев,
               шаг 4); не ушёл — снова сюда (reparse-refused)
-      close — только строка (сбор остановил владелец): ничего не заказываем
+      close — только строка (сбор остановил владелец; сорвался дозабор — с
+              добавкой `watch.CLOSE_TAIL`): ничего не заказываем, без ТРЕВОГИ
       alarm — ТРЕВОГА с честным «что дальше»; новых заказов нет"""
     step = watch.recovery(failure)
     if step == "early":
@@ -469,7 +494,7 @@ def recover(t: Round, failure: str, what: str, extra: str = "",
     elif step == "reparse":
         reparse(t, what)
     elif step == "close":
-        t.say(what)
+        t.say(what + watch.CLOSE_TAIL.get(failure, ""))
     else:
         # какой плановый пойдёт следующим, считаем от СЕЙЧАС: заменяемый
         # слот мог уже пройти, пока досрочный шёл (З3, пометка skipped)
@@ -621,6 +646,7 @@ def order_words(t: Round) -> str:
         "site-retry": f"повтор обхода сайта {tail}",
         "server": f"обход сайта {tail} на сервере от {at}",
         "reparse": f"переразбор страниц прогона {tail} (без обхода) от {at}",
+        "redo": f"дозабор упавших адресов прогона {tail} от {at}",
     }.get(watch.order_who(rec), f"заказ {what} от {at}")
 
 
@@ -724,6 +750,9 @@ def order_early(t: Round) -> None:
     t.save("crawl_early", t.early)
     t.missed["state"] = "handled"
     t.save("crawl_missed", t.missed)
+    # тег досрочного ушёл (или мог уйти): второй заявки в эту проверку нет —
+    # дозабор (С7) вытеснил бы его в очереди GitHub
+    t.sent = True
     t.log(order_crawl("days", str(plan["days"]), f"--early-for={plan['for']}"))
     rec = early_order(t)
     if not rec:
@@ -737,6 +766,156 @@ def order_early(t: Round) -> None:
         return
     t.early.update(ordered_at=rec["order"], order_at=rec.get("at", ""), state="ordered")
     t.save("crawl_early", t.early)
+
+
+# ── С7. дозабор упавших адресов (схема сбоев, шаг 5; правила — app/redo.py) ──
+
+def order_redo(t: Round) -> None:
+    """С7. По каждому ДОШЕДШЕМУ полному сбору книги (Д1) решает `redo.plan`
+    (Д2–Д4); здесь — факты для решения (`redo_facts`) и действие: молча
+    ждать, строка, отсрочка (строка один раз) или заявка (`redo_send`, Д5).
+    Решённый сбор помечается `redo` — второй раз сторож по нему не решает.
+    Разбор одного сбора упал (битый отчёт на сервере) — одна строка-
+    предупреждение (`broken_redo`), проверка идёт дальше: забытые заказы
+    чистятся, отметка «жив» ставится."""
+    records = watch.load_orders(t.conn)
+    for rec in records:
+        try:
+            redo_one(t, rec, records)
+        except Exception as error:                                        # noqa: BLE001
+            broken_redo(t, rec, error)
+
+
+def broken_redo(t: Round, rec: dict, error: Exception) -> None:
+    """С7: решать дозабор по сбору `rec` не вышло (исключение — битый
+    results/report.json и т. п.). Одна строка без ТРЕВОГИ: дозабор — не
+    главное, данные сбора уже влиты; по этому сбору больше не решаем —
+    строка не повторяется каждые 15 минут."""
+    t.say(f"{rec.get('what')} от {rec.get('order')}: дозабор не решён — разбор упал "
+          f"({type(error).__name__}: {error}); по этому сбору дозабор не заказываю, "
+          f"остальное сторож делает как обычно")
+    if t.dry:
+        return
+    try:
+        rec["redo"] = f"не заказан: разбор упал ({type(error).__name__})"
+        rec.pop("redoing", None)
+        watch.save_order(t.conn, rec)
+    except Exception:                                                     # noqa: BLE001
+        pass                    # запись совсем странная — её разберёт С4 (карантин)
+
+
+def redo_one(t: Round, rec: dict, records: list[dict]) -> None:
+    """С7 для одной записи книги: годится ли (Д1), решение (Д2–Д4),
+    действие."""
+    if not redo.eligible(watch.order_kind(rec), rec):                 # Д1
+        return
+    if watch.find_order(t.conn, redo_of=rec["id"]):                   # Д4: один на сбор
+        return
+    t.rec, t.run = rec, run_of(t, rec)
+    decision, words = redo_facts(t, rec, t.run, records)
+    head = order_words(t) + (f", обход #{t.run.get('run_number')}" if t.run else "")
+    if decision == "wait" or t.dry:
+        t.log(f"дозабор: {head} — {decision}: {words}")
+        return
+    if decision == "order":
+        redo_send(t, rec, head, words)
+        return
+    if decision == "defer":
+        # строка — один раз; следующая проверка решает заново
+        if not rec.get("redo_deferred"):
+            t.say(f"{head}: {words}")
+            rec["redo_deferred"] = watch.when(t.now)
+        t.keep(rec)
+        return
+    if decision == "skip":
+        t.say(f"{head}: {words}")
+    else:                                                             # quiet
+        t.log(f"дозабор: {head} — {words}")
+    rec["redo"] = f"не заказан: {words}"
+    rec.pop("redo_deferred", None)
+    t.keep(rec)
+
+
+def redo_facts(t: Round, rec: dict, run: dict | None,
+               records: list[dict]) -> tuple[str, str]:
+    """С7: факты для `redo.plan` по дошедшему сбору `rec` и его прогону
+    `run` — только чтение: конец сбора; отчёт и метка «собрано» на сервере
+    (`RESULTS`) — того ли прогона (Д2); отбор адресов (`redo.pick`, Д2, Д4);
+    более новый полный — дошёл (`watch.collected_by`) или идёт
+    (`covering_crawl`); ближайший слот и ночь; сколько дозаборов за сутки;
+    свободна ли очередь GitHub (Д3)."""
+    if run is None or run.get("conclusion") != "success":
+        return "quiet", "прогона сбора нет среди последних на GitHub — судить не по чему"
+    end = watch._utc(run.get("updated_at") or "")
+    created = watch._utc(run.get("created_at") or "")
+    if end is None or created is None:
+        return "quiet", "у прогона сбора нет времени конца — судить не по чему"
+    start = watch.effective_start(run, watch.crawl_only(t.runs, t.slug)) or created
+    skew = timedelta(seconds=watch.RESULT_SKEW_SECONDS)
+    report = read_json(RESULTS / "report.json")
+    games = read_json(RESULTS / "games.json")
+    cover = watch.collected_by(rec["what"], watch.record_at(rec) or created, t.runs,
+                               skip_id=run.get("id"))
+    going = covering_crawl(t, rec, created)
+    blocker = watch.queue_refusal(t.runs, t.slug) or (
+        "в эту проверку уже ушла другая заявка — второй тег вытеснил бы её в "
+        "очереди GitHub" if t.sent else "")
+    return redo.plan(
+        end=end, now=t.now, choice=redo.pick(report or {}, now=t.now),
+        same=redo.same_run(report, games, run.get("id"), start + skew, end + skew),
+        night=watch.in_night(t.now),
+        # слот ещё `REDO_SLOT_GRACE_MINUTES` после своего времени — «ближайший»:
+        # в 16:15:05 ближайший — 16:15, а не 20:30 (Д3)
+        next_slot=watch.next_slot(
+            t.now - timedelta(minutes=redo.REDO_SLOT_GRACE_MINUTES))[0],
+        collected=(f"#{cover.get('run_number')} ({watch.run_what(cover)})" if cover else ""),
+        going=(f"#{going.get('run_number')} ({watch.run_what(going)})" if going else ""),
+        today=redo.redo_today(records, t.now, watch.record_at),
+        blocker=blocker, deferred=bool(rec.get("redo_deferred")))
+
+
+def read_json(path: Path):
+    """Файл JSON с диска сервера; нет его или битый — None."""
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def covering_crawl(t: Round, rec: dict, created) -> dict | None:
+    """Д3: идёт или ждёт очереди ЛЮБОЙ полный обход, созданный позже сбора
+    `rec` (`created` — создание его прогона), — тогда дозабор молча ждёт
+    его итога: дойдёт — его результат ляжет в results/, и `same_run`
+    скажет «отчёт другого прогона»; упадёт — дозабор пойдёт по нашему."""
+    for r in watch.active_crawls(t.runs, t.slug):
+        rc = watch._utc(r.get("created_at") or "")
+        if rc is not None and rc > created and watch.run_kind(r)[0] in watch.FULL_KINDS:
+            return r
+    return None
+
+
+def redo_send(t: Round, rec: dict, head: str, words: str) -> None:
+    """Д5: заявка дозабора — `request_crawl.py redo <id прогона>
+    --redo-of=<id записи>` (тег `btn-redo-…`). Пометки — ДО заявки: `redo`
+    (по этому сбору решено, второго дозабора нет) и `redoing` (оборвут
+    проверку посреди заявки — С2 скажет строкой, второго не закажет).
+    Заявка не ушла (записи «дозабор заказа <id>» в книге нет) — RECOVERY
+    «redo-refused»: только строка."""
+    t.say(f"{head}: {words}")
+    rec["redo"] = "заказан"
+    rec.pop("redo_deferred", None)
+    rec["redoing"] = watch.when(t.now)
+    t.keep(rec)
+    t.sent = True
+    t.log(order_crawl("redo", str(t.run.get("id")), f"--redo-of={rec['id']}"))
+    rec.pop("redoing", None)
+    if not watch.find_order(t.conn, redo_of=rec["id"]):
+        rec["redo"] = "заявка не ушла"
+        t.keep(rec)
+        recover(t, "redo-refused",
+                f"{head}: дозабор заказать не вышло (GitHub не принял заявку)")
+        return
+    t.keep(rec)
 
 
 def main() -> int:

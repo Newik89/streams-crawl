@@ -9,6 +9,8 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     venv/bin/python scripts/request_crawl.py site nova.bg      обход одного сайта на GitHub (повтор сторожа)
     venv/bin/python scripts/request_crawl.py reparse 37966719570-prev   переразбор страниц прогона без обхода
                                                                (сторож, схема сбоев шаг 4; «-prev» — кодом прежней версии)
+    venv/bin/python scripts/request_crawl.py redo 37966719570  дозабор упавших адресов дошедшего прогона
+                                                               (сторож, С7, схема сбоев шаг 5 — app/redo.py)
     venv/bin/python scripts/request_crawl.py days 2 --check    только сказать, пошла бы заявка
     venv/bin/python scripts/request_crawl.py days 6 --force    без правила «1 час» (ручной заказ)
     … --unlock                                                 снять отметку «сбор идёт», если на GitHub живого сбора нет
@@ -16,6 +18,7 @@ r"""Заявка обхода с сервера (владелец 14.09.2026): �
     … --manual                                                 заказ владельца кнопкой: правила те же, но заявка не плановая
     … --retry-of=<id>                                          это повтор сторожа заказа <id> (запись книги)
     … --reparse-of=<id>                                        это переразбор сторожа за сорвавшийся заказ <id>
+    … --redo-of=<id>                                           это дозабор сторожа за дошедший заказ <id>
     … --early-for=<ГГГГ-ММ-ДД ЧЧ:ММ>                           это досрочный сторожа за сорвавшийся слот
 
 Правила З1–З7, память (настройки `crawl_…`) и все пороги описаны в ОДНОМ
@@ -121,9 +124,9 @@ def main() -> int:
     marks = dict(a[2:].split("=", 1) for a in sys.argv[1:]
                  if a.startswith("--") and "=" in a)
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    if len(args) != 2 or args[0] not in ("days", "date", "site", "reparse") \
+    if len(args) != 2 or args[0] not in ("days", "date", "site", "reparse", "redo") \
             or not flags <= {"--check", "--force", "--unlock", "--locked", "--manual"} \
-            or not set(marks) <= {"retry-of", "early-for", "reparse-of"}:
+            or not set(marks) <= {"retry-of", "early-for", "reparse-of", "redo-of"}:
         print(__doc__)
         return 2
     kind, value = args
@@ -138,6 +141,9 @@ def main() -> int:
         return 2
     if kind == "reparse" and not re.fullmatch(r"\d{1,20}(-prev)?", value):
         print("переразбор — id прогона GitHub цифрами, с «-prev» для кода прежней версии")
+        return 2
+    if kind == "redo" and not re.fullmatch(r"\d{1,20}", value):
+        print("дозабор — id прогона GitHub цифрами")
         return 2
     if flags & {"--check", "--locked"}:
         # «только сказать» ничего не меняет, а у заявки сторожа замок уже
@@ -164,6 +170,8 @@ def who_ordered(flags: set, marks: dict, slot) -> tuple[str, dict]:
         return "сторож: повтор", {"retry_of": marks["retry-of"], "reordered": True}
     if marks.get("reparse-of"):
         return "сторож: переразбор", {"reparse_of": marks["reparse-of"]}
+    if marks.get("redo-of"):
+        return "сторож: дозабор", {"redo_of": marks["redo-of"]}
     if marks.get("early-for"):
         return "сторож: досрочный", {"early": True}
     if "--manual" in flags:

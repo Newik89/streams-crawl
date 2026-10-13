@@ -9,6 +9,16 @@
     python scripts/games_import.py               # results/games.json
     python scripts/games_import.py --file recon/raw_live/games.json
     python scripts/games_import.py --purge-only  # только срок жизни
+
+Файл дозабора (схема сбоев, шаг 5: в games.json «режим»: «дозабор»,
+`app/redo.py` Д7) вливается «только добавить» и только докачанное
+(записи с пометкой «дозабор» — с перекачанных и открывшихся страниц,
+`redo.only_redone`): добавляются НОВЫЕ игры и НОВЫЕ отметки; существующие
+игры и отметки не трогаются (погашенная не оживает), НИЧЕГО не гасится и
+не снимается, о сайтах — только по перекачанным строкам, метка
+последнего сбора (`last_crawl`) не двигается, «кто» — «дозабор». Режим
+берётся из самого файла: строка `streams-update.sh` для results/partial/
+одна на переразбор и дозабор.
 """
 
 from __future__ import annotations
@@ -21,7 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
-                 sport_question, store, watch)
+                 redo, sport_question, store, watch)
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -134,6 +144,20 @@ def main() -> int:
         # Свежие алиасы тут же применяются к этой же заливке.
         import json as _json
         data = _json.loads(path.read_text(encoding="utf-8"))
+        # дозабор (схема сбоев, шаг 5; app/redo.py, Д7): пометка в самом
+        # файле → «только добавить», ничего не гасить; «кто» — «дозабор»
+        add_only = redo.is_add_only(data)
+        who = redo.WHO if add_only else args.who
+        if add_only:
+            # только записи с перекачанных и открывшихся страниц (пометка
+            # разбора): старое и дописанное в файл после разбора — мимо
+            всего = len(games)
+            data = redo.only_redone(data)
+            games = data["games"]
+            print(f"файл дозабора («режим»: «дозабор») — только добавляю докачанное: "
+                  f"игр с докачанных страниц {len(games)} из {всего}; ничего не гашу и "
+                  f"не снимаю, существующие игры и отметки не трогаю, сбои сайтов и "
+                  f"метку сбора не двигаю")
         reference = data.get("эталон", [])
         aligned = {"sure": [], "ask": [], "missed": []}
         if reference:
@@ -183,11 +207,13 @@ def main() -> int:
                                  coverage=coverage,
                                  collected=store.kyiv_from_utc(stamp),
                                  # строки, удержанные разбором, — не сироты
-                                 withheld=store.withheld_rows(data))
+                                 withheld=store.withheld_rows(data),
+                                 add_only=add_only)
         # другой вид спорта — отдельной таблицей для вкладки «Other Sport»
         # (владелец 03.10); старые файлы ключа не имеют — тогда 0
+        # (дозабор — только строки с докачанных страниц, `data` уже отобран)
         other = store.save_other_sport(
-            conn, _json.loads(path.read_text(encoding="utf-8"))
+            conn, (data if add_only else _json.loads(path.read_text(encoding="utf-8")))
             .get("другие_виды") or [])
         if other:
             print(f"другой вид спорта — во вкладку «Other Sport»: {other}")
@@ -225,13 +251,15 @@ def main() -> int:
             db.set_setting(conn, "site_crawl_result",
                            f"{дом}|{_dt.now().strftime('%Y-%m-%d %H:%M')}|"
                            f"{stats.channels}")
-        if aligned["sure"]:
+        # дозабор существующих событий не трогает — метку fs: им поставит
+        # canon_backfill.py (streams-update.sh, сразу после заливки)
+        if aligned["sure"] and not add_only:
             canon.stamp(conn, aligned)
 
         # Нерешённые строки обхода — человеку в очередь «Вид спорта»
         # (правило владельца 04.09: непонятное не убивать, а на разбор)
         import json as _json
-        unsolved = _json.loads(path.read_text(encoding="utf-8")) \
+        unsolved = (data if add_only else _json.loads(path.read_text(encoding="utf-8"))) \
             .get("на_разбор", [])
         queued_review, answered = queue_unsolved(conn, unsolved, reference)
         if unsolved:
@@ -248,11 +276,14 @@ def main() -> int:
         # назад метку не двигаем: серверный сбор одного сайта (mojtv.hr в
         # 06:40) и повторная заливка старого файла иначе затирают метку
         # последнего полного обхода, и страница «Сбор расписания» краснеет
-        # «итог так и не доехал», хотя обход прошёл (07.10)
-        if stamp and stamp > (db.get_setting(conn, "last_crawl") or ""):
+        # «итог так и не доехал», хотя обход прошёл (07.10).
+        # Дозабор метку не двигает: это не новый сбор, а докачка упавших
+        # адресов прежнего — «расписание могло устареть» считается от него
+        if stamp and stamp > (db.get_setting(conn, "last_crawl") or "") \
+                and not add_only:
             db.set_setting(conn, "last_crawl", stamp)
         store.log_run(conn, path.parent / "report.json", stats,
-                      crawled=stamp, who=args.who)
+                      crawled=stamp, who=who, add_only=add_only)
         if stats.times_fixed:
             print(f"время игр с «T» в базе приведено к общему виду: {stats.times_fixed} "
                   "(кто-то записал его в обход store.db_time — найти и поправить)")
