@@ -1,0 +1,47 @@
+{
+ "номер": 50,
+ "дата": "2026-10-13",
+ "вид": "находка",
+ "суть": "movistarplus: эфир ЛЧ и ЛЕ с заставкой (19:38 при начале 19:45) снимался как «запись на нечётной минуте»",
+ "владелец": "нашла самопроверка №13 на сборе #249: 12 живых матчей movistar (Lens — Sporting, Galatasaray — Barcelona, Arsenal — Lille, LASK — Liverpool…) без каналов M+ Liga de Campeones",
+ "правило": "нечётная минута угаданного эфира — запись (правило владельца 02.09: Man Utd — Ipswich в 00:17), КРОМЕ показа за 0–15 мин до начала того же матча по эталону",
+ "проверка": "разбор",
+ "срез": "sbor-249-movistar",
+ "ждём": [
+  {
+   "игра": "Lens - Sporting CP",
+   "время": "2026-10-13 19:45",
+   "канал": "M+ Liga de Campeones 2",
+   "сайт": "movistarplus.es"
+  },
+  {
+   "игра": "Galatasaray - Barcelona",
+   "время": "2026-10-13 22:00",
+   "канал": "M+ Liga de Campeones 2",
+   "сайт": "movistarplus.es"
+  },
+  {
+   "игра": "Arsenal - Lille",
+   "время": "2026-10-13 22:00",
+   "канал": "M+ Liga de Campeones 5",
+   "сайт": "movistarplus.es"
+  },
+  {
+   "игра": "LASK - Liverpool",
+   "время": "2026-10-14 19:45",
+   "канал": "M+ Liga de Campeones 2",
+   "сайт": "movistarplus.es"
+  },
+  {
+   "игра": "Union Saint-Gilloise - Real Sociedad",
+   "время": "2026-10-15 19:45",
+   "канал": "M+ Liga de Campeones",
+   "сайт": "movistarplus.es"
+  },
+  {
+   "снято": "Lens - Sporting Portugal",
+   "время": "2026-10-14 01:30",
+   "сайт": "movistarplus.es"
+  }
+ ]
+}
