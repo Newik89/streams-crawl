@@ -477,17 +477,22 @@ tick(K("15:20"))
 check("до планового 16:15 меньше часа → не заказываю, строка «он их и соберёт»",
       redo_orders() == [] and any("16:15" in n and "соберёт" in n for n in notes_after(edge)),
       (ORDERS, notes_after(edge)))
-manual_s = mkrun(K("13:31"), ended=K("15:10"))
+manual_s = mkrun(K("14:01"), ended=K("15:20"))
 reset([manual_s])
-done_order(manual_s, at="13:30", slot=False)
+rec_s = done_order(manual_s, at="14:00", slot=False)
 server_has(manual_s, [down(1)])
 edge = last_id()
 tick(K("16:15") + timedelta(seconds=5))
-check("сторож пришёл в минуту слота 16:15:05 (плановой заявки GitHub ещё не показал) → не заказываю, строка «прямо сейчас»",
-      redo_orders() == [] and any("16:15" in n and "прямо сейчас" in n for n in notes_after(edge)),
-      (ORDERS, notes_after(edge)))
-check("…и так 30 мин после слота: в 16:40 «ближайший» всё ещё 16:15; в 16:50 — уже 20:30",
-      redo.plan(now=K("16:40"), **dict(base, end=K("15:10"), next_slot=K("16:15")))[0] == "skip"
+tick(K("16:30"))
+check("сторож пришёл в минуту слота 16:15:05 и в 16:30 → молча ждём, пойдёт ли плановый; решение НЕ окончательное",
+      redo_orders() == [] and notes_after(edge) == [] and not record(rec_s["id"]).get("redo"),
+      (ORDERS, notes_after(edge), record(rec_s["id"])))
+tick(K("16:46"))
+check("…плановый 16:15 так и не пошёл (правило «1 час» или его заменил досрочный) → в 16:46 дозабор заказан",
+      redo_orders() == [f"redo-{manual_s['id']}"], (ORDERS, notes_after(edge)))
+check("…то же в plan(): сбор кончился 15:20 — в 16:30 ждём (ближайший ещё 16:15), в 16:45 (ближайший 20:30) — заказ",
+      redo.plan(now=K("16:30"), **dict(base, end=K("15:20"), next_slot=K("16:15")))[0] == "wait"
+      and redo.plan(now=K("16:45"), **dict(base, end=K("15:20"), next_slot=K("20:30")))[0] == "order"
       and watch.next_slot(K("16:40") - timedelta(minutes=redo.REDO_SLOT_GRACE_MINUTES))[0] == K("16:15")
       and watch.next_slot(K("16:50") - timedelta(minutes=redo.REDO_SLOT_GRACE_MINUTES))[0] == K("20:30"))
 newer = mkrun(K("10:01"), ended=K("10:50"), title="Обход full-6")
