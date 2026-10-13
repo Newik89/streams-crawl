@@ -143,17 +143,27 @@ def explained(game: dict, site: str = "") -> str:
     return ""
 
 
-def renamed(gone: dict, fresh: list[dict]) -> dict | None:
-    """Та же игра под новым именем (словарь перевёл, сверка поправила): то же
-    начало ±10 мин и пара та же по сравнению разбора."""
+#: та же пара сдвинулась во времени не дальше этого — переезд, а не потеря
+#: (сбор #249: Al Ittihad — Al Shabab 19:55 → 20:55, ближе к эталону)
+СДВИГ_Ч = 3
+
+
+def twin(gone: dict, fresh: list[dict]) -> tuple[dict | None, str]:
+    """Та же игра в новом разборе, если не нашлась по имени и времени:
+    «имя» — пара та же (словарь перевёл, сверка поправила), начало ±10 мин;
+    «время» — пара та же, начало сдвинулось не дальше СДВИГ_Ч."""
     from app import canon
     when = kniga.kyiv(gone["start_kyiv"])
-    for g in fresh:
-        if abs(kniga.kyiv(g["start_kyiv"]) - when) > timedelta(minutes=kniga.ДОПУСК_МИН):
-            continue
-        if canon._pair_score(gone, {"home": g["home"], "away": g["away"]}) >= kniga.ПОРОГ_ПАРЫ:
-            return g
-    return None
+    same = [g for g in fresh
+            if canon._pair_score(gone, {"home": g["home"], "away": g["away"]}) >= kniga.ПОРОГ_ПАРЫ]
+    near = sorted(same, key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when))
+    for g in near:
+        shift = abs(kniga.kyiv(g["start_kyiv"]) - when)
+        if shift <= timedelta(minutes=kniga.ДОПУСК_МИН):
+            return g, "имя"
+        if shift <= timedelta(hours=СДВИГ_Ч):
+            return g, "время"
+    return None, ""
 
 
 def compare(old: dict, new: dict) -> list[str]:
@@ -165,11 +175,13 @@ def compare(old: dict, new: dict) -> list[str]:
     pairs = [(a[k], b[k]) for k in sorted(set(a) & set(b))]
     fresh = [b[k] for k in sorted(set(b) - set(a))]
     for k in sorted(set(a) - set(b)):
-        twin = renamed(a[k], fresh)
-        if twin:
-            fresh.remove(twin)
-            print(f"  ~ имя: {kniga._show(a[k])} → {twin['home']} — {twin['away']}")
-            pairs.append((a[k], twin))
+        same, how = twin(a[k], fresh)
+        if same:
+            fresh.remove(same)
+            to = (f"{same['home']} — {same['away']}" if how == "имя"
+                  else same["start_kyiv"].replace("T", " "))
+            print(f"  ~ {how}: {kniga._show(a[k])} → {to}")
+            pairs.append((a[k], same))
             continue
         why = explained(a[k])
         if why:
@@ -199,8 +211,10 @@ def compare(old: dict, new: dict) -> list[str]:
     return losses
 
 
-def compare_run(folder: Path, base: str) -> list[str]:
-    """Правило 4. → потери без объяснения."""
+def compare_run(folder: Path, base: str, keep: Path | None = None) -> list[str]:
+    """Правило 4. → потери без объяснения. `keep` — сохранить оба разбора
+    (`old.json`, `new.json`), чтобы сравнить ещё раз без 10 минут разбора:
+    `--compare <keep>/old.json <keep>/new.json`."""
     games = json.loads((folder / "games.json").read_text(encoding="utf-8"))
     clock, window = games["собрано"], int(games.get("окно") or 6)
     sha = _git("rev-parse", "--short", base)
@@ -213,6 +227,10 @@ def compare_run(folder: Path, base: str) -> list[str]:
             fo = pool.submit(parse_with, old_tree, folder, clock, window, tmp / "out-old")
             fn = pool.submit(parse_with, ROOT, folder, clock, window, tmp / "out-new")
             old, new = fo.result(), fn.result()
+        if keep:
+            keep.mkdir(parents=True, exist_ok=True)
+            shutil.copy(tmp / "out-old" / "games.json", keep / "old.json")
+            shutil.copy(tmp / "out-new" / "games.json", keep / "new.json")
         return compare(old, new)
     finally:
         _git("worktree", "remove", "--force", str(old_tree))
@@ -224,14 +242,25 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sravnit", help="папка скачанного сбора (report.json, games.json, страницы)")
     ap.add_argument("--base", default="origin/main", help="старый код для сравнения")
+    ap.add_argument("--keep", help="сохранить оба разбора сбора в эту папку")
+    ap.add_argument("--compare", nargs=2, metavar=("OLD", "NEW"),
+                    help="только сравнить два сохранённых разбора (games.json)")
     args = ap.parse_args()
+
+    if args.compare:
+        old, new = (json.loads(Path(p).read_text(encoding="utf-8")) for p in args.compare)
+        losses = compare(old, new)
+        print(f"\nпотерь без случая в книге: {len(losses)}")
+        return 1 if losses else 0
 
     print("— тесты —")
     red_tests, yellow_tests = run_tests()
     orphans = tests_without_case()
     print("\n— книга случаев —")
     total, red_cases, yellow_cases = kniga.run_book()
-    losses = compare_run(Path(args.sravnit), args.base) if args.sravnit else []
+    losses = (compare_run(Path(args.sravnit), args.base,
+                          Path(args.keep) if args.keep else None)
+              if args.sravnit else [])
 
     red = []
     if red_tests:
