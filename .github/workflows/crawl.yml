@@ -375,6 +375,9 @@ jobs:
         # `redo.pick`), обычным путём с запасным браузером, не дольше 30 мин.
         # report.json переписывается: упавшие строки — свежими, остальные как
         # были, плюс раздел «дозабор». Шаг «Обход» при этом пропущен.
+        # Дозабирать оказалось нечего (за 5–10 мин с заказа у сайта наступила
+        # полночь или теленочь, отбор пуст или массовый) — это не сбой: шаг
+        # зелёный, выход `nothing=1`, разбор и push_partial не идут.
         # Значения — только через env (аудит 05.10.2026)
         if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != '' && steps.what.outputs.redo == '1'
         env:
@@ -433,8 +436,9 @@ jobs:
         # `always()`: и после красного обхода разбор нужен — итог и артефакт
         # покажут, что успело прийти. В репозиторий это уже не поедет (ниже).
         # `--strict` (игр меньше порога — красный) — только полному обходу без
-        # фильтров, как и оценка в самом crawl_fetch.py
-        if: always() && steps.guard.outputs.run == '1'
+        # фильтров, как и оценка в самом crawl_fetch.py. Дозабору, которому
+        # дозабирать оказалось нечего (`steps.redo.outputs.nothing`), — не нужен
+        if: always() && steps.guard.outputs.run == '1' && steps.redo.outputs.nothing != '1'
         env:
           W_MODE: ${{ steps.what.outputs.mode }}
           W_DAYS: ${{ steps.what.outputs.days }}
@@ -604,8 +608,9 @@ jobs:
         # поверх свежего main, а не поверх старого кода
         # Дозабор (шаг 5) едет той же папкой: сервер узнаёт его по пометке
         # «режим»: «дозабор» в самом games.json и вливает «только добавить»
-        # (ничего не гасит) — без пометки дозабор не кладём вовсе
-        if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != ''
+        # (ничего не гасит) — без пометки дозабор не кладём вовсе; дозабирать
+        # оказалось нечего (`steps.redo.outputs.nothing`) — не кладём ничего
+        if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != '' && steps.redo.outputs.nothing != '1'
         env:
           P_NUMBER: ${{ steps.prior.outputs.number }}
           W_REDO: ${{ steps.what.outputs.redo }}

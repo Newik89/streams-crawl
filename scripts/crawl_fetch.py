@@ -489,18 +489,21 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
     `budget_minutes` — оставшиеся строки остаются как были. Ссылки дней из
     докачанной страницы канала (ORF, `day_links`) не добираются — только
     отобранные адреса; недостающие дни возьмёт следующий сбор.
-    Возвращает (код, отчёт, строки для report.md). Код 1 — дозабирать
-    нечего (упавших ноль или массовый сбой — сервер такой дозабор не
-    заказывает): отчёт прежний, файлы не тронуты."""
+    Возвращает (код, отчёт, строки для report.md). Дозабирать нечего —
+    (0, None, [почему]): отбор пуст или это массовый сбой. Сторож такой
+    дозабор не заказал бы, но на GitHub отбор идёт на 5–10 мин позже — за
+    это время у сайта могли наступить полночь или теленочь (ночное
+    правило); это не сбой: прогон зелёный, отчёт и файлы не тронуты,
+    `redo_main` говорит шагу «nothing=1», и push_partial не идёт."""
     # ночью и в другие сутки — только адреса с датой (`redo.night_strict`)
     choice = redo.pick(report, now=_now())
     if choice.mass:
-        print(f"::error::упавших адресов (сайт лёг / нет ответа) {choice.failed} — "
-              f"больше {redo.REDO_MASS}: это массовый сбой, а не дозабор")
-        return 1, report, []
+        return 0, None, [f"упавших адресов (сайт лёг / нет ответа) {choice.failed} — "
+                         f"больше {redo.REDO_MASS}: это массовый сбой, а не дозабор"]
     if not choice.rows:
-        print("::error::дозабирать нечего: упавших адресов класса down/net в отчёте нет")
-        return 1, report, []
+        skipped = ", ".join(f"{k} — {v}" for k, v in choice.skipped.items()) or "—"
+        return 0, None, [f"упавших адресов класса down/net, которые можно взять сейчас, "
+                         f"нет (не берём: {skipped})"]
     skipped = ", ".join(f"{k} — {v}" for k, v in choice.skipped.items()) or "—"
     print(f"дозабор из прогона {from_run}: упало (сайт лёг / нет ответа) "
           f"{choice.total}, качаю заново {len(choice.rows)}; не берём: {skipped}\n")
@@ -566,6 +569,14 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
     return 0, merged, head + lines
 
 
+def step_output(name: str, value: str) -> None:
+    """Выход шага GitHub Actions (`$GITHUB_OUTPUT`); вне GitHub — ничего."""
+    path = os.environ.get("GITHUB_OUTPUT")
+    if path:
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(f"{name}={value}\n")
+
+
 def redo_main(args) -> int:
     """`--redo <report.json>`: дозабор упавших адресов дошедшего сбора
     (`redo_fetch`) — отчёт переписывается в `--out`, итог дописывается в
@@ -585,6 +596,12 @@ def redo_main(args) -> int:
     code, merged, lines = redo_fetch(report, out, fetcher, args.from_run)
     if code:
         return code
+    if merged is None:
+        # дозабирать нечего — не сбой: прогон зелёный, отчёт не трогаем,
+        # шаг говорит crawl.yml «nothing=1» (разбор и push_partial не идут)
+        print(f"дозабирать нечего: {' '.join(lines)}")
+        step_output("nothing", "1")
+        return 0
     (out / "report.json").write_text(
         json.dumps(merged, ensure_ascii=False, indent=1), encoding="utf-8")
     md = out / "report.md"

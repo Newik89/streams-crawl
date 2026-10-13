@@ -64,6 +64,7 @@ watch.github_runs = fake_runs
 watch.result_state = lambda root, start, end, what, imported, cache=None: RESULT[0]
 trigger.push_request_tag = lambda kind, value: (TAGS.append((kind, value)) or (True, "тест"))
 trigger._repo_slug = lambda: SLUG
+real_fetcher_cls = fetch.Fetcher          # настоящий класс — вернуть после подмен
 db.init_db()
 
 
@@ -754,10 +755,33 @@ check("…в дозаборе: у lying.test спрошены 2 адреса и�
       and merged_s["дозабор"]["адресов"] == 3 and any("не трогали" in x for x in md_s),
       (fake_lying.asked, merged_s["дозабор"]))
 fake_none = FakeFetcher({})
-code_m, _, _ = cf.redo_fetch({"когда": DAY, "строки": [down(i) for i in range(81)]}, OUT, fake_none, "1")
-code_z, _, _ = cf.redo_fetch({"когда": DAY, "строки": [ok(1), ban(2)]}, OUT, fake_none, "1")
-check("массовый сбой или ноль упавших — код 1 и ни одного запроса (сервер такой и не закажет)",
-      code_m == 1 and code_z == 1 and fake_none.asked == [])
+code_m, merged_m, why_m = cf.redo_fetch({"когда": DAY, "строки": [down(i) for i in range(81)]},
+                                        OUT, fake_none, "1")
+code_z, merged_z, why_z = cf.redo_fetch({"когда": DAY, "строки": [ok(1), ban(2)]}, OUT, fake_none, "1")
+check("массовый сбой или ноль упавших на GitHub — дозабирать нечего: код 0 (не сбой), отчёт не тронут, ни одного запроса",
+      code_m == 0 and merged_m is None and "массовый сбой" in why_m[0]
+      and code_z == 0 and merged_z is None and "нет" in why_z[0] and fake_none.asked == [],
+      (code_m, why_m, code_z, why_z))
+nothing_dir = TMP / "raw_nothing"
+nothing_dir.mkdir()
+night_only = {"когда": DAY, "строки": [ok(1), down(2)]}           # адрес без даты
+(nothing_dir / "report.json").write_text(json.dumps(night_only, ensure_ascii=False), encoding="utf-8")
+out_file = TMP / "github_output.txt"
+os.environ["GITHUB_OUTPUT"] = str(out_file)
+NOW[0] = K("03:05", NEXT)                         # к докачке наступила ночь
+fetch.Fetcher = lambda **k: FakeFetcher({})
+try:
+    code_nothing = cf.redo_main(argparse.Namespace(
+        redo=str(nothing_dir / "report.json"), out=str(nothing_dir), delay=0.0,
+        no_browser=False, browser=False, from_run="555"))
+finally:
+    fetch.Fetcher = real_fetcher_cls
+    os.environ.pop("GITHUB_OUTPUT", None)
+    NOW[0] = K("11:00")
+check("…--redo: к докачке у сайта ночь, брать нечего → выход 0, шагу «nothing=1», отчёт как был",
+      code_nothing == 0 and out_file.read_text(encoding="utf-8") == "nothing=1\n"
+      and json.loads((nothing_dir / "report.json").read_text(encoding="utf-8")) == night_only,
+      (code_nothing, out_file.read_text(encoding="utf-8") if out_file.exists() else None))
 NOW[0] = K("03:05", NEXT)
 fake_night = FakeFetcher({})
 code_n, merged_n, _ = cf.redo_fetch(night_report, TMP, fake_night, "1")
@@ -833,12 +857,14 @@ def step_runs(cond: str, outputs: dict, event: str, status: str) -> bool:
     return result if has_status else result and status == "success"
 
 
-def run_plan(mode: dict, event="workflow_dispatch", fail_at: str = "") -> list[str]:
+def run_plan(mode: dict, event="workflow_dispatch", fail_at: str = "",
+             redo_out: dict | None = None) -> list[str]:
     """Какие шаги crawl.yml пойдут: `mode` — выходы шага «Что запускаем»,
-    `fail_at` — id шага, который краснеет (дальше статус failure)."""
+    `fail_at` — id шага, который краснеет (дальше статус failure),
+    `redo_out` — выходы шага «Дозабор» (`nothing`)."""
     outputs = {"guard": {"run": "1"}, "what": dict(
         {"mode": "full", "days": "6", "delay": "3", "only": "", "urls": "", "date": "",
-         "from_run": "", "code_ref": "", "redo": ""}, **mode)}
+         "from_run": "", "code_ref": "", "redo": ""}, **mode), "redo": redo_out or {}}
     status, went = "success", []
     for step in crawl_steps(crawl_yml):
         label = step.get("name") or step.get("uses")
@@ -862,6 +888,11 @@ check("режим redo: страницы прежнего сбора → Доз�
           "Какой сбор переразбираем", "Страницы прежнего сбора", "Дозабор упавших адресов"] + TAIL
       + ["Положить переразбор в репозиторий", "Стук серверу — закончили"],
       run_plan({"from_run": "123", "redo": "1"}))
+check("…дозабирать оказалось нечего (nothing=1) → прогон зелёный: ни разбора, ни push_partial, ни issue; стук идёт",
+      run_plan({"from_run": "123", "redo": "1"}, redo_out={"nothing": "1"}) == HEAD + [
+          "Какой сбор переразбираем", "Страницы прежнего сбора", "Дозабор упавших адресов",
+          "Самопроверка прогона", "Показать итог прямо здесь", "Стук серверу — закончили"],
+      run_plan({"from_run": "123", "redo": "1"}, redo_out={"nothing": "1"}))
 check("…упал «Дозабор» → разбор и стук идут, push_partial и issue владельцу — нет",
       run_plan({"from_run": "123", "redo": "1"}, fail_at="redo") == HEAD + [
           "Какой сбор переразбираем", "Страницы прежнего сбора", "Дозабор упавших адресов"] + TAIL
@@ -1264,6 +1295,20 @@ tick(K("11:30"))
 check("дозабор остановил владелец кнопкой → закрыт строкой «остановил владелец», без ТРЕВОГИ",
       record(stop_rec["id"]).get("stopped") is True and alarms_after(edge) == []
       and any("остановил владелец" in n for n in notes_after(edge)), notes_after(edge))
+green_empty = mkrun(K("11:01"), ended=K("11:20"), title="Обход redo-556")
+reset([morning, green_empty])
+conn = db.connect()
+noth = watch.add_order(conn, "redo-556", f"{DAY} 11:00", "", "сторож: дозабор", at=K("11:00"))
+conn.close()
+RESULT[0] = "none"                     # partial на GitHub не появился
+edge = last_id()
+tick(K("11:35"))
+tick(K("11:50"))
+check("прогон дозабора зелёный, partial не пришёл (дозабирать оказалось нечего) → закрыт строкой «оказалось "
+      "нечего», не «сорвался»; заборов и тревог нет",
+      record(noth["id"]).get("done") is True and not record(noth["id"]).get("pulls")
+      and alarms_after(edge) == [] and any("оказалось нечего" in n for n in notes_after(edge))
+      and not any("сорвался" in n for n in notes_after(edge)), notes_after(edge))
 
 reset([morning])
 rec = done_order(morning)
