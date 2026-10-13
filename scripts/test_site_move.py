@@ -794,6 +794,20 @@ site_move.return_turn(conn, T3, set_mode_запись)
          (настройки("wasbtn.tv").get("manual_only"), настройки("wasbtn.tv").get("max_days"),
           в_плане("wasbtn.tv")["manual_only"], в_плане("wasbtn.tv")["by_server"]),
          (True, 3, True, False))
+проверка("потолок: нынешний, если стоит (владелец поставил на сервере)",
+         site_move.restore_of({"before_move": {"manual_only": False, "max_days": 3},
+                               "max_days": 5})["max_days"], 5)
+проверка("потолок: нынешнего нет — прежний из before_move",
+         site_move.restore_of({"before_move": {"manual_only": False, "max_days": 3}})["max_days"], 3)
+источник("capnew.tv")                                # без потолка до перевода
+записать_план(сайт_плана("capnew.tv"))
+plan_push.set_mode(conn, "capnew.tv", True, by="auto")
+поправить("capnew.tv", max_days=5, gh_return="2026-10-20 09:30")   # владелец, пока на сервере
+site_move.return_turn(conn, T3, set_mode_запись)
+проверка("возврат: потолок 5, поставленный владельцем на сервере, — на месте (база и план)",
+         (настройки("capnew.tv").get("max_days"), в_плане("capnew.tv")["max_days"],
+          настройки("capnew.tv").get("manual_only")), (5, 5, None))
+записать_план(сайт_плана("wasfree.tv"), сайт_плана("wasbtn.tv", manual_only=True, max_days=3))
 plan_push.set_mode(conn, "wasfree.tv", True, by="auto")
 plan_push.set_mode(conn, "wasfree.tv", False)        # кнопка «Вернуть на GitHub»
 проверка("кнопка владельца «Вернуть на GitHub» — пометки сняты, как раньше",
