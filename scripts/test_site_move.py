@@ -460,6 +460,35 @@ site_move.server_turn(conn, T3, кач, ПЛАН_ДОМЕНЫ, plan_push.set_mod
          (кач.спросили, any("noplan.tv: в плане обхода сайта нет" in s for s in строки_прогонов(до))),
          ([], True))
 
+print("П2. Сбой внутри захода его не обрывает")
+источник("boom.tv", gh_fail_streak=3, gh_fail_last_slot="370", gh_fail_why="x")
+источник("boom2.tv", gh_fail_streak=3, gh_fail_last_slot="370", gh_fail_why="x")
+
+
+def взрыв(source: dict) -> dict:
+    if source["domain"] == "boom.tv":
+        raise ConnectionError("сеть упала")
+    return {"итог": "расписание есть", "почему": ""}
+
+
+def set_mode_сбой(c, домен, by_server, by="owner", why=""):
+    raise TimeoutError("git завис")
+
+
+до = последний_прогон()
+site_move.server_turn(conn, datetime(2026, 10, 18, 6, 40, tzinfo=KYIV), взрыв,
+                      {"boom.tv": сайт_плана("boom.tv"), "boom2.tv": сайт_плана("boom2.tv")},
+                      set_mode_сбой, free=lambda: 800, limit=10)
+новые = строки_прогонов(до)
+проверка("качалка упала — «не дошли» с причиной, заход идёт дальше",
+         any(s.startswith("перевод сайтов: ТРЕВОГА — boom.tv") and "ConnectionError" in s
+             for s in новые))
+проверка("set_mode упал — строка «перевод не доделан», сайт не на сервере",
+         (any("boom2.tv" in s and "перевод не доделан: TimeoutError" in s for s in новые),
+          настройки("boom2.tv").get("by_server")), (True, None))
+for d in ("boom.tv", "boom2.tv"):
+    поправить(d, gh_fail_streak=None)
+
 print("П2. --once руками")
 источник("once.tv", gh_fail_streak=1, gh_fail_last_slot="340")
 

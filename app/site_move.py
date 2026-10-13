@@ -547,14 +547,23 @@ def decide_check(domain: str, config: dict, row: dict) -> tuple[str, str]:
                     f"{day_month(config['server_fail_alarm'])}")
 
 
+def call_set_mode(set_mode, conn, domain: str, by_server: bool, why: str) -> str:
+    """П2/П4: `plan_push.set_mode(..., by="auto")`; его сбой (git завис,
+    база занята) не обрывает заход — слова сбоя идут в строку владельцу."""
+    try:
+        return set_mode(conn, domain, by_server, by="auto", why=why)
+    except Exception as beda:              # noqa: BLE001 — см. выше
+        return f"перевод не доделан: {type(beda).__name__}: {beda}"[:200]
+
+
 def move_to_server(conn, source_id: int, domain: str, now: datetime,
                    set_mode) -> str:
     """П2: перевод на сервер: `set_mode(conn, домен, True, by="auto")`
     (база + план + push; счёт обнуляет `on_mode_change`), отметка «сервер
     скачал», клеймо «сломан» снято (как у кнопки «Качать сервером»).
     Возвращает слова `set_mode`."""
-    said = set_mode(conn, domain, True, by="auto",
-                    why=f"автоматически: {FAILS_TO_MOVE}+ сбора подряд не дался GitHub")
+    said = call_set_mode(set_mode, conn, domain, True,
+                         f"автоматически: {FAILS_TO_MOVE}+ сбора подряд не дался GitHub")
     row = conn.execute("SELECT selector_config FROM sources WHERE id = ?",
                        (source_id,)).fetchone()
     config = load_config(row) if row else {}
@@ -617,7 +626,10 @@ def server_turn(conn, now: datetime, fetch_one, plan_sources: dict,
             note(conn, text)
             said.append(text)
             break
-        row = fetch_one(source)
+        try:
+            row = fetch_one(source)
+        except Exception as beda:          # noqa: BLE001 — остальные кандидаты идут дальше
+            row = {"итог": "не дошли", "почему": f"{type(beda).__name__}: {beda}"[:160]}
         taken += 1
         today += 1
         remember_check(conn, domain, row, now)
@@ -783,8 +795,8 @@ def return_turn(conn, now: datetime, set_mode, busy: str = "") -> list[str]:
         return [text]
     for source, config in todo:
         when = config.get("gh_return")
-        words = set_mode(conn, source["domain"], False, by="auto",
-                         why="автоматически: недельная проба GitHub открылась")
+        words = call_set_mode(set_mode, conn, source["domain"], False,
+                              "автоматически: недельная проба GitHub открылась")
         text = (f"{source['domain']}: проба с GitHub {day_month(when)} открылась — "
                 f"сайт ВОЗВРАЩЁН в обход GitHub, сервер его больше не качает "
                 f"({words})")
