@@ -267,6 +267,9 @@ def compare_run(folder: Path, base: str, keep: Path | None = None) -> list[str]:
     """Правило 4. → потери без объяснения. `keep` — сохранить оба разбора
     (`old.json`, `new.json`), чтобы сравнить ещё раз без 10 минут разбора:
     `--compare <keep>/old.json <keep>/new.json`."""
+    # полный путь: старый код разбирается из своей папки (первый прогон на
+    # GitHub упал на относительном «sbor» — старый разбор его не нашёл)
+    folder = Path(folder).resolve()
     games = json.loads((folder / "games.json").read_text(encoding="utf-8"))
     clock, window = games["собрано"], int(games.get("окно") or 6)
     sha = _git("rev-parse", "--short", base)
