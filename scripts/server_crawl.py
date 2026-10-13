@@ -195,6 +195,27 @@ def разовая_проверка(conn, домен: str, now=None, fetch_one=N
             free=free or site_move.free_mb)
 
 
+#: свободная память, МБ (MemAvailable) — перед каждым сайтом обычного хода;
+#: проверки подменяют
+свободно_мб = site_move.free_mb
+
+
+def отложил(домен: str, свободно: int) -> None:
+    """Мало памяти перед сайтом: строка в журнал и в «Прогоны», без
+    падения — остальные сайты пробуем дальше (память могла освободиться)."""
+    строка = (f"мало памяти (свободно {свободно} МБ, нужно не меньше "
+              f"{site_move.MIN_FREE_MB}), сайт {домен} откладываю")
+    print(f"{домен}: {строка}")
+    try:
+        conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
+        try:
+            site_move.note(conn, строка)
+        finally:
+            conn.close()
+    except Exception as беда:                    # noqa: BLE001 — только строка
+        print(f"   строку в «Прогоны» не записал: {type(беда).__name__}")
+
+
 def шаг(команда: list[str], тег: str) -> bool:
     print(f"   {тег}…", flush=True)
     готово = subprocess.run(команда, cwd=str(ROOT), capture_output=True,
@@ -252,6 +273,13 @@ def main() -> int:
         if not пора(домен, помню, args.force):
             было = (помню.get(домен) or {}).get("когда")
             print(f"{домен}: ходили {было} — ждём {ЖДЁМ_ЧАСОВ} ч, пропуск")
+            continue
+        # сервер на 1 ГБ (схема сбоев, шаг 11): перед КАЖДЫМ сайтом —
+        # свободно ли MemAvailable ≥ site_move.MIN_FREE_MB; мало — сайт
+        # откладываем (в память не пишем: следующий запуск возьмёт его)
+        свободно = свободно_мб()
+        if site_move.memory_short(свободно):
+            отложил(домен, свободно)
             continue
         куда = РАБОЧАЯ / домен
         print(f"{домен}: обход на {дней} дн. → {куда}")

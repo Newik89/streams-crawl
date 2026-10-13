@@ -103,6 +103,12 @@
       (домен, True)` (база + поле одного домена в плане + push плана, без
       пересборки), `moved_by=auto`, `moved_at`, клеймо «сломан» снято;
       строка владельцу — уведомление без тревоги.
+      ПОТОЛОК (`auto_moved`, `cap_note`): переведённых автоматически
+      и всё ещё на сервере уже `AUTO_MOVED_MAX` → не переводим; одна
+      ТРЕВОГА в киевские сутки (не на каждый сайт) «на сервер просится
+      шестой сайт — проверьте, не режут ли сеть GitHub»; дальше в те же
+      сутки — строка без тревоги. Сервер на 1 ГБ, и столько сайтов разом
+      скорее значит беду с сетью GitHub, чем с сайтами.
       Сервер тоже не скачал → не переводим; строка «не отвечает ни GitHub,
       ни серверу». Первая такая в серии — ТРЕВОГА (письмо владельцу): сайт
       3+ сбора без данных, и сервер ничего сам сделать не может — схема,
@@ -187,8 +193,15 @@ OWNER_STATUSES = ("closed", "parked")
 SITES_PER_RUN = 3
 #: …и стольких разовых проверок в киевские сутки (схема, уточнения 06.10)
 CHECKS_PER_DAY = 5
-#: П2: проверку начинаем, только если свободно не меньше (MemAvailable, МБ)
+#: П2: проверку начинаем, только если свободно не меньше (MemAvailable, МБ);
+#: тот же порог — перед каждым сайтом обычного хода `server_crawl.py`
 MIN_FREE_MB = 400
+#: П2: потолок — не больше стольких сайтов, переведённых автоматически и
+#: всё ещё на сервере; дальше ТРЕВОГА раз в сутки (независимая проверка
+#: шага 11, 13.10)
+AUTO_MOVED_MAX = 5
+#: П2: память «ТРЕВОГА о потолке сегодня уже была» (настройка: дата)
+CAP_ALARM_KEY = "site_move_cap_alarm"
 #: П2: к одному сайту с сервера — не чаще (= `crawl_hook.SITE_GAP_HOURS`,
 #: «даже кнопкой не больше одного раза в сутки», владелец 10.09;
 #: совпадение сверяет test_site_move.py)
@@ -516,6 +529,46 @@ def free_mb() -> int | None:
     return None
 
 
+def memory_short(free: int | None) -> bool:
+    """Обычный ход `server_crawl.py`: свободной памяти меньше `MIN_FREE_MB`
+    — сайт откладываем. Неизвестно (не Linux) — не мешаем ежедневному
+    сбору: так он шёл и до 13.10. (Разовой проверке неизвестность — отказ,
+    `check_refusal`: она новая и не обязательная.)"""
+    return free is not None and free < MIN_FREE_MB
+
+
+def auto_moved(conn) -> list[str]:
+    """П2 (потолок): сайты, переведённые автоматически и всё ещё на сервере."""
+    out = []
+    for source in schedule_sources(conn):
+        config = load_config(source)
+        if config.get("by_server") and config.get("moved_by") == "auto":
+            out.append(source["domain"])
+    return out
+
+
+def cap_note(conn, waiting: list[str], moved: list[str], now: datetime) -> str:
+    """П2 (потолок): сайты `waiting` сервер скачал, но перевести нельзя —
+    автоматически уже переведены `moved`. ТРЕВОГА одна в киевские сутки;
+    дальше в те же сутки — строка без тревоги. Возвращает слова строки."""
+    from . import db
+    day = now.astimezone(KYIV).strftime("%Y-%m-%d")
+    names = ", ".join(waiting)
+    if db.get_setting(conn, CAP_ALARM_KEY) != day:
+        db.set_setting(conn, CAP_ALARM_KEY, day)
+        text = (f"ТРЕВОГА — на сервер просится {len(moved) + 1}-й сайт ({names}): "
+                f"GitHub не дал его {FAILS_TO_MOVE}+ сбора подряд, сервер скачал, но "
+                f"автоматически переведено уже {len(moved)} ({', '.join(moved)}) — "
+                f"предел {AUTO_MOVED_MAX}, не перевожу. Проверьте, не режут ли сеть "
+                f"GitHub")
+    else:
+        text = (f"{names}: сервер скачал, но не перевожу — предел {AUTO_MOVED_MAX} "
+                f"сайтов, переведённых автоматически; письмо об этом сегодня уже "
+                f"уходило")
+    note(conn, text)
+    return text
+
+
 def checks_today(conn, now: datetime) -> int:
     """П2: сколько разовых проверок уже было в эти киевские сутки."""
     from . import db
@@ -652,6 +705,7 @@ def server_turn(conn, now: datetime, fetch_one, plan_sources: dict,
         return [text]
     today = checks_today(conn, now)
     taken = 0                  # сколько сайтов скачано в этот заход
+    capped: list[str] = []     # сервер скачал, но упёрлись в AUTO_MOVED_MAX
     for place, cand in enumerate(queue):
         domain, config = cand["domain"], cand["config"]
         source = plan_sources.get(domain) or plan_sources.get(bare(domain))
@@ -691,10 +745,15 @@ def server_turn(conn, now: datetime, fetch_one, plan_sources: dict,
         if action == "alarm":
             config["server_fail_alarm"] = stamp(now)
         save_config(conn, cand["id"], config)
+        if action == "move" and len(auto_moved(conn)) >= AUTO_MOVED_MAX:
+            capped.append(domain)          # потолок: ТРЕВОГА одна, после цикла
+            continue
         if action == "move":
             text += f" ({move_to_server(conn, cand['id'], domain, now, set_mode)})"
         note(conn, text)
         said.append(text)
+    if capped:
+        said.append(cap_note(conn, capped, auto_moved(conn), now))
     return said
 
 

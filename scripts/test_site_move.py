@@ -524,6 +524,51 @@ site_move.server_turn(conn, datetime(2026, 10, 18, 6, 40, tzinfo=KYIV), взры
 for d in ("boom.tv", "boom2.tv"):
     поправить(d, gh_fail_streak=None)
 
+print("П2. Потолок: не больше 5 сайтов, переведённых автоматически")
+уже = site_move.auto_moved(conn)
+заполнители = [f"auto{i}.tv" for i in range(site_move.AUTO_MOVED_MAX - len(уже))]
+for d in заполнители:
+    источник(d, by_server=True, manual_only=True, moved_by="auto", moved_at="2026-10-10 06:40")
+проверка("на сервере автоматически ровно 5", len(site_move.auto_moved(conn)), 5)
+for d in ("cap1.tv", "cap2.tv", "cap3.tv"):
+    источник(d, gh_fail_streak=3, gh_fail_last_slot="390", gh_fail_why="x")
+план_потолка = {d: сайт_плана(d) for d in ("cap1.tv", "cap2.tv", "cap3.tv")}
+вызовы_потолка = []
+
+
+def set_mode_потолок(c, домен, by_server, by="owner", why="", restore=None):
+    вызовы_потолка.append(домен)
+    return "не должен звать"
+
+
+T5 = datetime(2026, 10, 19, 6, 40, tzinfo=KYIV)
+до = последний_прогон()
+кач = Качалка({d: ("расписание есть", "") for d in план_потолка})
+site_move.server_turn(conn, T5, кач, {d: план_потолка[d] for d in ("cap1.tv", "cap2.tv")},
+                      set_mode_потолок, free=lambda: 800, limit=10)
+новые = строки_прогонов(до)
+проверка("сервер скачал cap1 и cap2, но перевода нет", (кач.спросили, вызовы_потолка,
+         настройки("cap1.tv").get("by_server")), (["cap1.tv", "cap2.tv"], [], None))
+проверка("одна ТРЕВОГА на обоих: «просится 6-й сайт … не режут ли сеть GitHub»",
+         [s for s in новые if "ТРЕВОГА" in s].__len__() == 1 and
+         any("просится 6-й сайт (cap1.tv, cap2.tv)" in s and "не режут ли сеть GitHub" in s
+             for s in новые))
+до = последний_прогон()
+site_move.server_turn(conn, T5 + timedelta(hours=1), кач, {"cap3.tv": план_потолка["cap3.tv"]},
+                      set_mode_потолок, free=lambda: 800, limit=10)
+новые = строки_прогонов(до)
+проверка("в те же сутки — строка без ТРЕВОГИ",
+         (any("cap3.tv" in s and "предел 5" in s for s in новые),
+          any("ТРЕВОГА" in s for s in новые)), (True, False))
+до = последний_прогон()
+site_move.server_turn(conn, T5 + timedelta(days=1), кач, план_потолка, set_mode_потолок,
+                      free=lambda: 800, limit=10)
+проверка("на следующие сутки — снова одна ТРЕВОГА",
+         sum("ТРЕВОГА" in s for s in строки_прогонов(до)), 1)
+for d in заполнители + ["cap1.tv", "cap2.tv", "cap3.tv"]:
+    conn.execute("UPDATE sources SET enabled = 0 WHERE domain = ?", (d,))
+conn.commit()
+
 print("П2. --once руками")
 источник("once.tv", gh_fail_streak=1, gh_fail_last_slot="340")
 
@@ -846,6 +891,18 @@ server_crawl.шаг = lambda команда, тег: команды.append(ко�
 server_crawl.проверить_адрес = Качалка({})
 server_crawl.замок_заливки = _свободно
 sys.argv = ["server_crawl.py", "--force"]
+server_crawl.свободно_мб = lambda: 350
+до = последний_прогон()
+server_crawl.main()
+проверка("обычный ход: свободно 350 МБ — ни один сайт не качаем, без падения",
+         [к for к in команды if "crawl_fetch.py" in " ".join(к)], [])
+проверка("…строка «мало памяти, сайт … откладываю» на каждый сайт",
+         sum("мало памяти" in s and "откладываю" in s for s in строки_прогонов(до)),
+         len(dict(server_crawl.сайты())))
+проверка("…в память сбора не записаны — следующий запуск возьмёт их",
+         server_crawl.память(), {})
+команды.clear()
+server_crawl.свободно_мб = lambda: 800
 server_crawl.main()
 качали = [к for к in команды if "crawl_fetch.py" in " ".join(к)]
 проверка("ежедневный ход качает только by_server, каждый — с --only <домен>",
