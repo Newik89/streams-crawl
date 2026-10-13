@@ -69,8 +69,14 @@
         нейтрально — только «пусто», «нет на этот день», 4xx: счёт не
                      трогаем (пустое расписание — не поломка).
       Не считаются: сайты `by_server`, дозорные (раздел «дозор» отчёта,
-      `crawl_fetch.DAILY_PROBE`), выключенные и не-расписания (справочники
-      — сервер их не качает).
+      `crawl_fetch.DAILY_PROBE`), выключенные, не-расписания (справочники
+      — сервер их не качает) и закрытые владельцем (`status` closed,
+      parked — по ним его решение).
+      МАССОВЫЙ СБОЙ (`is_mass`): в сборе судили не меньше `MASS_MIN_SITES`
+      сайтов и не дались больше `MASS_SHARE` из них (тот же порог, что
+      «провал» обхода, `crawl_fetch.FAIL_DOMAINS_SHARE`) — это сеть
+      раннера GitHub, а не сайты: срывы этого сбора не считаются (удачи —
+      обнуляют), строка в журнал заливки.
       Счёт дошёл ровно до `FAILS_TO_MOVE` → строка «кандидат: утром сервер
       проверит одним адресом» (уведомление).
   П2. Кандидат (`gh_fail_streak` ≥ `FAILS_TO_MOVE`, не `by_server`) —
@@ -150,6 +156,15 @@ KYIV = ZoneInfo("Europe/Kyiv")
 #: П1/П2: столько сборов GitHub подряд сайт не дался → кандидат на перевод
 #: (решение владельца 06.10: 3, а не 4, как предлагал проектировщик)
 FAILS_TO_MOVE = 3
+#: П1: массовый сбой — не дались больше этой доли судимых сайтов (= порог
+#: провала обхода `crawl_fetch.FAIL_DOMAINS_SHARE`; схема, «Д. Классы»:
+#: «>20 % доменов net из разных стран → сеть раннера»; сверяет тест)…
+MASS_SHARE = 0.20
+#: …если судили хотя бы столько сайтов (кнопка «Обойти сайт» — один сайт,
+#: у неё «доли» нет)
+MASS_MIN_SITES = 10
+#: П1: статусы источника, по которым есть решение владельца — не считаем
+OWNER_STATUSES = ("closed", "parked")
 #: П2: сервер на 1 ГБ — не больше стольких сайтов за один заход…
 SITES_PER_RUN = 3
 #: …и стольких разовых проверок в киевские сутки (схема, уточнения 06.10)
@@ -244,7 +259,7 @@ def save_config(conn, source_id: int, config: dict) -> None:
 def schedule_sources(conn) -> list:
     """Включённые источники расписания — их качает обход и может качать
     сервер (`server_crawl.py` берёт только `role = 'schedule'`)."""
-    return conn.execute("SELECT id, domain, selector_config FROM sources "
+    return conn.execute("SELECT id, domain, status, selector_config FROM sources "
                         "WHERE enabled = 1 AND role = 'schedule' "
                         "ORDER BY domain").fetchall()
 
@@ -327,6 +342,18 @@ def site_verdicts(rows, parsed: dict | None = None,
     return out
 
 
+def is_mass(rows, verdicts: dict, never=frozenset()) -> bool:
+    """П1: массовый сбой сбора — судили не меньше `MASS_MIN_SITES` сайтов
+    (все сайты строк отчёта, кроме дозорных) и не дались больше
+    `MASS_SHARE` из них."""
+    sites = {bare(r.get("domain")) for r in (rows if isinstance(rows, list) else [])
+             if isinstance(r, dict) and r.get("domain")} - set(never)
+    if len(sites) < MASS_MIN_SITES:
+        return False
+    failed = sum(1 for v in verdicts.values() if v.get("итог") == "fail")
+    return failed / len(sites) > MASS_SHARE
+
+
 def apply_probe(config: dict, verdict: dict, crawl: str, now: datetime) -> str:
     """П1: учесть итог сайта в сборе `crawl`. Возвращает событие:
     reset — серия обнулена; fail — срыв засчитан (+1); same — срыв этого
@@ -388,15 +415,21 @@ def after_import(conn, report_path, who: str = "",
                 save_config(conn, source["id"], config)
         return said
     crawl = crawl_id(report)
+    mass = kind == "сбор" and is_mass(rows, verdicts, never)
+    if mass:
+        said.append(f"сбор {crawl}: не дались {sum(v['итог'] == 'fail' for v in verdicts.values())} "
+                    f"сайтов — массовый сбой (сеть GitHub), срывы этого сбора не считаю")
     for source in schedule_sources(conn):
         config = load_config(source)
         if config.get("by_server"):
             continue                       # П1/П7: его качает сервер
+        if source["status"] in OWNER_STATUSES:
+            continue                       # закрыт владельцем — его решение
         verdict = verdicts.get(bare(source["domain"]))
         if not verdict:
             continue
-        if verdict["итог"] == "fail" and kind != "сбор":
-            continue                       # скан и дозабор только обнуляют
+        if verdict["итог"] == "fail" and (kind != "сбор" or mass):
+            continue                       # скан, дозабор, массовый — только обнуляют
         event = apply_probe(config, verdict, crawl, now)
         if not event or event == "same":
             continue
@@ -426,7 +459,7 @@ def candidates(conn, now: datetime) -> list[dict]:
     out = []
     for source in schedule_sources(conn):
         config = load_config(source)
-        if config.get("by_server"):
+        if config.get("by_server") or source["status"] in OWNER_STATUSES:
             continue
         if int(config.get("gh_fail_streak") or 0) < FAILS_TO_MOVE:
             continue

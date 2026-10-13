@@ -284,6 +284,31 @@ site_move.after_import(conn, папка("сервер", отчёт("", [стро
 проверка("server_ok_last у srv.tv", настройки("srv.tv").get("server_ok_last"), "2026-10-13 09:30")
 проверка("счёт у srv.tv не появился", настройки("srv.tv").get("gh_fail_streak"), None)
 
+print("П1. Массовый сбой (сеть GitHub) и закрытые владельцем")
+проверка("порог массового = порог провала обхода (FAIL_DOMAINS_SHARE)",
+         site_move.MASS_SHARE, crawl_fetch.FAIL_DOMAINS_SHARE)
+источник("mass1.tv")
+хорошие = [строка(f"g{i}.tv", "расписание есть") for i in range(8)]
+site_move.after_import(conn, папка("масс", отчёт("801", [строка("mass1.tv", "не открылась", NET)]
+                                                + [строка(f"m{i}.tv", "не открылась", NET)
+                                                   for i in range(3)] + хорошие)), now=T0)
+проверка("12 сайтов, не дались 4 (33 %) — массовый: срыв не засчитан",
+         настройки("mass1.tv").get("gh_fail_streak"), None)
+site_move.after_import(conn, папка("норм", отчёт("802", [строка("mass1.tv", "не открылась", NET)]
+                                                + хорошие + [строка(f"h{i}.tv", "пусто")
+                                                             for i in range(3)])), now=T0)
+проверка("12 сайтов, не дался 1 — обычный сбор: срыв засчитан",
+         настройки("mass1.tv").get("gh_fail_streak"), 1)
+проверка("кнопка «Обойти сайт» (один сайт) — не массовый",
+         site_move.is_mass([строка("x.tv", "не открылась", NET)], {"x.tv": {"итог": "fail"}}), False)
+источник("closed.tv")
+conn.execute("UPDATE sources SET status = 'closed' WHERE domain = 'closed.tv'")
+conn.commit()
+site_move.after_import(conn, папка("закрыт", отчёт("803", [строка("closed.tv", "не открылась", BAN)])),
+                       now=T0)
+проверка("закрытый владельцем (status closed) — не считается",
+         настройки("closed.tv").get("gh_fail_streak"), None)
+
 print("П1. Сквозная заливка games_import.py (тот же путь, что на сервере)")
 источник("e2e.tv")
 путь = папка("e2e", отчёт("777", [строка("e2e.tv", "не открылась", NET)]))
