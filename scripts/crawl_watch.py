@@ -863,7 +863,11 @@ def redo_facts(t: Round, rec: dict, run: dict | None,
     return redo.plan(
         end=end, now=t.now, choice=redo.pick(report or {}),
         same=redo.same_run(report, games, run.get("id"), start + skew, end + skew),
-        night=watch.in_night(t.now), next_slot=watch.next_slot(t.now)[0],
+        night=watch.in_night(t.now),
+        # слот ещё `REDO_SLOT_GRACE_MINUTES` после своего времени — «ближайший»:
+        # в 16:15:05 ближайший — 16:15, а не 20:30 (Д3)
+        next_slot=watch.next_slot(
+            t.now - timedelta(minutes=redo.REDO_SLOT_GRACE_MINUTES))[0],
         collected=(f"#{cover.get('run_number')} ({watch.run_what(cover)})" if cover else ""),
         going=(f"#{going.get('run_number')} ({watch.run_what(going)})" if going else ""),
         today=redo.redo_today(records, t.now, watch.record_at),

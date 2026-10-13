@@ -428,6 +428,19 @@ tick(K("15:20"))
 check("до планового 16:15 меньше часа → не заказываю, строка «он их и соберёт»",
       redo_orders() == [] and any("16:15" in n and "соберёт" in n for n in notes_after(edge)),
       (ORDERS, notes_after(edge)))
+manual_s = mkrun(K("13:31"), ended=K("15:10"))
+reset([manual_s])
+done_order(manual_s, at="13:30", slot=False)
+server_has(manual_s, [down(1)])
+edge = last_id()
+tick(K("16:15") + timedelta(seconds=5))
+check("сторож пришёл в минуту слота 16:15:05 (плановой заявки GitHub ещё не показал) → не заказываю, строка «прямо сейчас»",
+      redo_orders() == [] and any("16:15" in n and "прямо сейчас" in n for n in notes_after(edge)),
+      (ORDERS, notes_after(edge)))
+check("…и так 30 мин после слота: в 16:40 «ближайший» всё ещё 16:15; в 16:50 — уже 20:30",
+      redo.plan(now=K("16:40"), **dict(base, end=K("15:10"), next_slot=K("16:15")))[0] == "skip"
+      and watch.next_slot(K("16:40") - timedelta(minutes=redo.REDO_SLOT_GRACE_MINUTES))[0] == K("16:15")
+      and watch.next_slot(K("16:50") - timedelta(minutes=redo.REDO_SLOT_GRACE_MINUTES))[0] == K("20:30"))
 newer = mkrun(K("10:01"), ended=K("10:50"), title="Обход full-6")
 reset([morning, newer])
 done_order(morning)
@@ -473,7 +486,7 @@ server_has(manual, [down(1)])
 jset("crawl_missed", {"slot": f"{DAY} 16:15", "days": 2, "at": watch.when(K("16:20")),
                       "why": "тест", "state": "missed"})
 edge = last_id()
-tick(K("16:30"))
+tick(K("16:50"))
 check("в эту проверку уже ушла заявка досрочного (С6) → дозабор отложен, второй тег не шлём",
       ORDERS == ["days-6"] and any("уже ушла другая заявка" in n for n in notes_after(edge)),
       (ORDERS, notes_after(edge)))
