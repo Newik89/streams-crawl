@@ -175,6 +175,9 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # одолженный; отсюда V Sport 1/Extra/Premium/Vinter/Golf/Motor/
           # Football/Live, TV4 Sport, MTV Urheilu, Eurosport SE и FI
           "tvmatchen.nu", "tvmatsit.com",
+          # 13.10 (ссылка владельца): календарь «Спортинга» — игры клуба
+          # с каналом трансляции (SPORT TV, Sporting TV, FPB TV, Canal 11)
+          "sporting.pt",
           ]
 # СПРАВОЧНИКИ, не источники: liveonsat.com (решение 01.09) и
 # sporteventz.com (решение 02.09) в ежедневный обход не входят. Оба —

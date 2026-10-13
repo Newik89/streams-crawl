@@ -64,6 +64,9 @@ GRID_DOMAINS = {"tv.nova.cz", "sporttv.pt", "tvarenasport.com",
                 "news.by",
                 # OneSoccer: одна страница ближайших трансляций
                 "onesoccer.ca",
+                # «Спортинг» (владелец 13.10): календарь клуба iCal — весь
+                # сезон одним файлом, канал назван в описании игры
+                "sporting.pt",
                 # фид flashscore: календарь футбола дня одним ответом (эталон)
                 "global.flashscore.ninja"}
 

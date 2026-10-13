@@ -233,7 +233,7 @@ def _load_all():
                    skai_gr, skysports_com,
                    sport1_de, sport1_maariv, sport1tv_cz, sport5_co_il,
                    sportdigital_de,
-                   sporteventz_com, sportklub_hr,
+                   sporteventz_com, sporting_pt, sportklub_hr,
                    sports_kz, sporttv_pt,
                    srf_ch, ssport_tv,
                    teleman_pl,

@@ -167,6 +167,9 @@
   ],
   "else": "https://rtcg.me/tv/programska-sema.html?broadcastId={CH}&typeId=0"
  },
+ "sporting.pt": {
+  "page": "https://www.sporting.pt/pt/agenda/listagem?d={YYYY}-{MM}"
+ },
  "teleman.pl": {
   "page": "https://www.teleman.pl/program-tv/stacje/{CH}?date={YYYY-MM-DD}",
   "ch": "name",
