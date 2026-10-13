@@ -1,0 +1,87 @@
+# Проверка перед выкладкой — книга случаев (владелец 13.10.2026: «чтобы не
+# повторялись ошибки и не ходить кругами»; «чтоб новое не ломало старое»).
+# Идёт на КАЖДЫЙ push кода в любую ветку: все тесты + книга случаев +
+# разбор последнего сбора старым и новым кодом (scripts/proverka.py).
+# Красный — в main не выкладывать; шлагбаум scripts/push_gate.py на
+# компьютере не пустит в main коммит без зелёной проверки здесь.
+# Итоги сборов (results/, recon/) проверку не запускают — их пишет обход.
+name: Проверка перед выкладкой
+run-name: ${{ format('Проверка {0} {1}', github.ref_name, github.sha) }}
+
+on:
+  push:
+    branches: ["**"]
+    paths-ignore:
+      - "results/**"
+      - "recon/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read      # скачать страницы последнего сбора (артефакт обхода)
+
+concurrency:
+  group: proverka-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  proverka:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # старый код для сравнения — из истории
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Библиотеки (точные версии)
+        run: pip install -r requirements-crawl.txt -r requirements-proverka.txt
+
+      - name: Страницы последнего полного сбора
+        # артефакты живут 3 дня; берём самый свежий удачный полный обход
+        # (плановый или заказ сервера), у которого архив ещё есть. Не нашёлся —
+        # шаг не краснеет сам, но итог ниже будет красным (сравнения нет)
+        id: sbor
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run list --workflow crawl.yml --status success --limit 30 \
+            --json databaseId,number,displayTitle \
+            --jq '.[] | select(.displayTitle | test("^Обход (по расписанию|full-)")) | "\(.databaseId) \(.number)"' > runs.txt
+          while read -r id num; do
+            if gh run download "$id" -n "obhod-$num" -D sbor 2>/dev/null; then
+              echo "dir=sbor" >> "$GITHUB_OUTPUT"
+              echo "сбор #$num"
+              exit 0
+            fi
+          done < runs.txt
+          echo "::warning::нет живого архива полного сбора — сравнение пропущено"
+
+      - name: Тесты, книга случаев, старый и новый код на сборе
+        env:
+          BEFORE: ${{ github.event.before }}
+          SBOR: ${{ steps.sbor.outputs.dir }}
+        run: |
+          # старый код: для main — прежняя голова main; для ветки — общий
+          # предок с main (иначе свежий код main посчитается потерей ветки)
+          base=$(git merge-base origin/main HEAD)
+          if [ "$GITHUB_REF_NAME" = "main" ] && [ -n "$BEFORE" ] && \
+             [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            base="$BEFORE"
+          fi
+          if [ -n "$SBOR" ]; then
+            python scripts/proverka.py --sravnit "$SBOR" --base "$base" | tee proverka.txt
+            code=${PIPESTATUS[0]}
+          else
+            python scripts/proverka.py | tee proverka.txt
+            code=${PIPESTATUS[0]}
+            # без сравнения на сборе проверка неполная — шлагбаум её не примет
+            echo "✗ сравнение на последнем сборе НЕ СДЕЛАНО: нет живого архива полного обхода" | tee -a proverka.txt
+            code=1
+          fi
+          { echo '```'; tail -60 proverka.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit $code

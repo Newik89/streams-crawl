@@ -60,6 +60,17 @@ r"""Самопроверка прогона: ищет ИЗВЕСТНЫЕ кла�
      женским матчем эталона ±30 мин сходится, если дописать W, и лига сайта —
      ядро той же женской лиги («Liga BPI» ↔ «PORTUGAL: Liga BPI Women»,
      canal11.pt, 12.10). Лечение — турнир в `_WOMEN_LEAGUES` (`leagues.py`).
+ 13. ПОКАЗАЛ, А НЕ НА ВИТРИНЕ. Эталон знает матч (футбол, баскет), сайт
+     показал его пару в подписи передачи рядом с началом (от часа до матча
+     до 15 мин после — это эфир, а не запись), а у игры на витрине канала
+     этого сайта нет вовсе. Пару ищем по написаниям эталона на всех языках
+     без пометок пола и возраста («Polska K» → «polska»), поэтому ловится
+     и строка, из которой разбор пару не взял (13.10: teleman «rewanżowy
+     mecz barażowy: Polska - Belgia» на TVP Sport; raiplay «Italia -
+     Bielorussia» на Rai 2 — книга случаев 001, 002). Тот же канал у игры
+     с другого сайта — не потеря (Prima Sport 1: primaplay.ro и
+     programetv.ro). Первый же прогон на сборе #249 нашёл movistarplus:
+     эфир ЛЧ с 19:38 снимался как «не на ровной минуте».
 
 Правила:
   * подозрение — строка «сайт: что не так — пример»; решение принимает
@@ -74,6 +85,7 @@ r"""Самопроверка прогона: ищет ИЗВЕСТНЫЕ кла�
 from __future__ import annotations
 
 import argparse
+import bisect
 import collections
 import hashlib
 import html as _html
@@ -326,6 +338,9 @@ class Site:
         self.repeat_guess = 0      # угадыванием снято как повтор
         self.unknown_raw: collections.Counter = collections.Counter()
         self.rows: list = []       # (Row, page_name) прошедшие отсев, F/B/T
+        # все передачи со временем, ДО отсева (проверка 13: сайт мог показать
+        # матч строкой, из которой разбор не взял пару)
+        self.shows: list = []
         # (Program, стоп-слово) — эфир сайта, снятый стоп-словом (проверка 11)
         self.stopped: list = []
         self.errors: list[str] = []
@@ -500,6 +515,7 @@ def collect(folder: Path, markers, sports) -> dict[str, Site]:
                 site.repeat_guess += 1
         if domain in REFERENCE_DOMAINS:
             continue
+        site.shows += [p for p in programs if p.start is not None]
         for r in pipeline.run(programs, markers, sports, league_sports,
                               pair_sports):
             if r.ok and r.sport in ("F", "B", "T") and r.start_kyiv:
@@ -1093,6 +1109,130 @@ def check_aliases_and_zones(sites: dict[str, Site], games: dict | None
     return alias_out, zone_out, skipped + canon_info
 
 
+#: проверка 13: показ пары в этом окне вокруг начала матча — прямой эфир
+#: (сетка ставит блок раньше: teleman 18:55 при 19:00; бывает и за час)
+SEEN_BEFORE = timedelta(minutes=60)
+SEEN_AFTER = timedelta(minutes=15)
+#: имя короче — не ищем: «Ac», «Ud» совпадут с чем угодно
+SEEN_MIN_NAME = 3
+#: игра витрины — тот же матч эталона: пара та же (как у разбора) в ±3 ч
+SEEN_PAIR = 85
+SEEN_GAME_WINDOW = timedelta(hours=3)
+#: пометка пола или возраста в конце имени эталона на любом языке:
+#: «Polska K», «Italia D», «Польша (Ж)», «Ιταλία Γ», «Spain U21», «Brazil -17»
+_SEEN_MARK = re.compile(r"\s+(?:\(?[^\W\d_]\)?|u-?\d{2}|-\d{2})$", re.I)
+_SEEN_TOKEN = re.compile(r"\w+")
+
+
+def _seen_core(name: str) -> str:
+    """Имя без пометки пола/возраста, в нижнем регистре."""
+    return _SEEN_MARK.sub("", (name or "").strip()).casefold()
+
+
+def _seen_word(text: str, name: str) -> bool:
+    """Имя стоит в подписи целыми словами («Italia», не «Italiano»)."""
+    return re.search(rf"(?<!\w){re.escape(name)}(?!\w)", text) is not None
+
+
+def _seen_refs(games: dict) -> list[tuple]:
+    """Эталон F/B по времени: [(начало, запись, {(дом, гость)})] — написания
+    на всех языках без пометок пола и возраста."""
+    out = []
+    for ref in games.get("эталон") or []:
+        if ref.get("sport") not in ("F", "B") or not ref.get("start_kyiv"):
+            continue
+        sides = {(ref.get("home") or "", ref.get("away") or "")}
+        sides.update(tuple(x) for x in (ref.get("names") or {}).values() if len(x) == 2)
+        cores = {(_seen_core(h), _seen_core(a)) for h, a in sides}
+        cores = {(h, a) for h, a in cores
+                 if len(h) >= SEEN_MIN_NAME and len(a) >= SEEN_MIN_NAME}
+        if cores:
+            out.append((datetime.fromisoformat(ref["start_kyiv"][:16]), ref, cores))
+    out.sort(key=lambda x: x[0])
+    return out
+
+
+def _channel_key(name: str) -> str:
+    """«SPORT.TV5» = «SPORT TV 5»: имя канала без знаков и регистра."""
+    return re.sub(r"[\W_]+", "", (name or "").casefold())
+
+
+def _names_in(text: str, cores: set) -> bool:
+    return any(_seen_word(text, h) and _seen_word(text, a) for h, a in cores)
+
+
+def _site_on_game(domain: str, channel: str, ref: dict, cores: set,
+                  start: datetime, shown: list) -> bool:
+    """Строка сайта про этот матч дошла до витрины? Отметка у игры в ±3 ч —
+    от этого сайта или тот же канал с другого (Prima Sport 1 у primaplay.ro
+    и у programetv.ro — зритель его видит) — и это тот же матч: в подписи
+    отметки (`raw_title`) стоят обе команды эталона, или пара игры та же.
+    Подпись нужна, потому что имена игры витрины бывают другими: «Lille
+    OSC — Stade Brestois 29» с эталонным «Lille — Brest» дают 76 < 85."""
+    lo = bisect.bisect_left(shown, start - SEEN_GAME_WINDOW, key=lambda x: x[0])
+    key = _channel_key(channel)
+    for g_start, g in shown[lo:]:
+        if g_start > start + SEEN_GAME_WINDOW:
+            break
+        mine = [e for e in g.get("entries") or []
+                if bare(e.get("source") or "") == domain
+                or (key and _channel_key(e.get("channel") or "") == key)]
+        if not mine:
+            continue
+        if any(_names_in((e.get("raw_title") or "").casefold(), cores) for e in mine):
+            return True
+        if _pair_score(g, ref) >= SEEN_PAIR:
+            return True
+    return False
+
+
+def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
+                         markers) -> list[str]:
+    """13: сайт показал матч эталона рядом с началом, а канала у игры нет."""
+    if not games:
+        return []
+    refs = _seen_refs(games)
+    starts = [r[0] for r in refs]
+    shown = sorted(((datetime.fromisoformat(g["start_kyiv"][:16]), g)
+                    for g in games.get("games") or []), key=lambda x: x[0])
+    days = run_window(games)
+    out = []
+    for domain, s in sorted(sites.items()):
+        hits: dict[str, tuple] = {}
+        for p in s.shows:
+            when = p.start.astimezone(KYIV).replace(tzinfo=None)
+            if when.date() not in days:
+                continue
+            text = " ".join(x for x in (p.title, p.match_raw, p.league_raw) if x).casefold()
+            if not text or markers.found(markers.not_live, p.signals()):
+                continue                  # запись, повтор, обзор — не эфир
+            words = set(_SEEN_TOKEN.findall(text))
+            # матчи, у которых этот показ — в окне эфира: начало матча
+            # между «показ − 15 мин» и «показ + час»
+            lo = bisect.bisect_left(starts, when - SEEN_AFTER)
+            hi = bisect.bisect_right(starts, when + SEEN_BEFORE)
+            for start, ref, cores in refs[lo:hi]:
+                fs = ref.get("fs_id") or f"{ref.get('home')}-{ref.get('away')}-{start:%d%H%M}"
+                if fs in hits:
+                    continue
+                for h, a in cores:
+                    if (h.split()[0] in words and a.split()[0] in words
+                            and _seen_word(text, h) and _seen_word(text, a)):
+                        hits[fs] = (p, ref, start, cores)
+                        break
+        lost = [f"{p.start.astimezone(KYIV):%d.%m %H:%M} {p.channel_raw} "
+                f"«{(p.title or p.match_raw or '')[:60]}» = эталон {ref.get('home')} — "
+                f"{ref.get('away')} {start:%H:%M} ({fs})"
+                for fs, (p, ref, start, cores) in sorted(hits.items(), key=lambda x: x[1][2])
+                if not _site_on_game(domain, p.channel_raw, ref, cores, start, shown)]
+        if lost:
+            # строка на сайт, как у прочих проверок: сайт — число — примеры
+            out.append(f"{domain}: {len(lost)} матч(а/ей) эталона сайт показал в "
+                       f"эфир, а канала у игры на витрине нет — "
+                       + "; ".join(lost[:EXAMPLES]))
+    return out
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
@@ -1138,6 +1278,8 @@ def main() -> int:
         ("11. Эфир с парой из эталона снят стоп-словом", check_stopped(sites, games)),
         ("12. Женская лига без слова «женская»: команды шли мужскими",
          check_women_leagues(sites, games)),
+        ("13. Сайт показал матч эталона в эфир, а канала у игры на витрине нет",
+         check_seen_not_shown(sites, games, markers)),
     ]
     errors = [f"{d}: {e}" for d, s in sorted(sites.items()) for e in s.errors[:2]]
     if errors:
