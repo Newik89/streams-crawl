@@ -349,6 +349,90 @@ def day_link_jobs(job: dict, html: str, wanted: list[date]) -> list[dict]:
     return out
 
 
+def дни_по_ссылкам(job: dict, html: str, days: int, scan: date | None,
+                   пояс_сайта: str | None) -> list[dict]:
+    """Задания на дни, которые сайт с `day_links` (ORF) даёт только ссылками
+    из открывшейся страницы канала (`link_days` + `day_link_jobs`); у прочих
+    страниц и у самих добранных страниц дней — пусто. Один путь на оба
+    захода: страница, открывшаяся лишь со второго, добирает дни так же
+    (сбор 07.10 22:08: ORF 1 со второго захода остался без дней 08–12.10)."""
+    if not job.get("day_links") or job.get("_day_from_link"):
+        return []
+    return day_link_jobs(job, html, link_days(
+        daytime.today(пояс_сайта), days, scan,
+        night=daytime.tv_night(пояс_сайта)))
+
+
+def сохранить_страницу(out: Path, job: dict, page: fetch.Page, row: dict) -> None:
+    """Открылась — страница ложится в `out` под именем обхода (`row["файл"]`);
+    не открылась, но сайт что-то ответил — это «что-то» рядом как
+    `.otkaz.html` (`row["файл отказа"]`): по нему видно, кто закрыл — сам
+    сайт, Cloudflare или Imperva, и владелец откроет отказ своими глазами."""
+    if page.ok:
+        name = fetch.cache_name(job["url"],
+                                job.get("post") or job.get("post_json")).name
+        (out / name).write_text(page.html, encoding="utf-8")
+        row["файл"] = name
+    elif page.body:
+        name = fetch.cache_name(job["url"]).name.replace(".html", ".otkaz.html")
+        (out / name).write_text(page.body, encoding="utf-8")
+        row["файл отказа"] = name
+
+
+def второй_заход(retry: list[dict], report: list[dict], fetcher, out: Path,
+                 добор) -> int:
+    """Второй заход по упавшим страницам (владелец 09.09). Паузу и способ
+    (сразу браузером) ставит вызывающий — здесь только порядок:
+      1. Упавшая страница (`retry`: задание и его строка отчёта) качается
+         заново; снова упала — строка остаётся как была.
+      2. Открылась — строка отчёта переписывается свежей, «(со второго
+         захода)».
+      3. Открывшаяся страница добирает дни по ссылкам (`добор(job, html)`,
+         в обходе это `дни_по_ссылкам`) — сразу же, тем же заходом. Каждая
+         добранная страница дня — НОВАЯ строка отчёта, и упавшая тоже
+         (третьего захода нет): тогда гашение (`app/miss.py`, правило 5)
+         видит, что страница канала на этот день упала, а не пропала.
+    Возвращает, сколько упавших страниц выправилось."""
+    healed = 0
+    for n, item in enumerate(retry, 1):
+        job = item["job"]
+        page = fetcher.get_with_fallback(job["url"],
+                                         locale=job.get("locale") or "en-GB",
+                                         post=job.get("post"),
+                                         warmup=job.get("warmup") or "",
+                                         post_json=job.get("post_json"),
+                                         extra=job.get("headers"))
+        fresh = {**job, **verdict(page)}
+        if fresh["итог"] in BROKEN:
+            print(f"{str(n).rjust(3)}/{len(retry)}  {job['domain'].ljust(12)} "
+                  f"снова {fresh['итог']}: {fresh['почему'][:60]}")
+            continue
+        сохранить_страницу(out, job, page, fresh)
+        fresh["почему"] = (fresh["почему"] or "") + " (со второго захода)"
+        item["row"].clear()
+        item["row"].update(fresh)
+        healed += 1
+        print(f"{str(n).rjust(3)}/{len(retry)}  {job['domain'].ljust(12)} "
+              f"{fresh['итог']} — выправилось со второго захода")
+        дни = добор(job, page.html)
+        if дни:
+            print(f"     ↳ {job['domain']}: добавлено дней по ссылкам из "
+                  f"страницы: {len(дни)}")
+        for day_job in дни:
+            day_page = fetcher.get_with_fallback(
+                day_job["url"], locale=day_job.get("locale") or "en-GB",
+                post=day_job.get("post"), warmup=day_job.get("warmup") or "",
+                post_json=day_job.get("post_json"), extra=day_job.get("headers"))
+            row = {**day_job, **verdict(day_page)}
+            сохранить_страницу(out, day_job, day_page, row)
+            if day_page.ok:
+                row["почему"] = (row["почему"] or "") + " (со второго захода)"
+            report.append(row)
+            print(f"     ↳ {day_job['domain'].ljust(12)} {day_job['day']} "
+                  f"{row['итог']} {row['почему'][:60]}")
+    return healed
+
+
 def verdict(page: fetch.Page) -> dict:
     """Что пришло со страницы: пустили ли нас и есть ли на ней расписание."""
     if not page.ok:
@@ -741,6 +825,13 @@ def main() -> int:
     by_links = not (args.urls or args.probe)
     scan = date.fromisoformat(args.date) if args.date else None
     пояс = {s["domain"]: site_tz(s) for s in plan["sources"]}
+
+    def добор(job: dict, html: str) -> list[dict]:
+        """Дни по ссылкам из страницы канала — одинаково в обоих заходах."""
+        if not by_links:
+            return []
+        return дни_по_ссылкам(job, html, days, scan, пояс.get(job["domain"]))
+
     # киевские сутки начала сбора — по ним дозабор решает, не другие ли
     # сутки на дворе (ночное правило, `app/redo.py`, Д2)
     начат_киев = datetime.now(redo.KYIV).date().isoformat()
@@ -763,27 +854,13 @@ def main() -> int:
                                          extra=job.get("headers"))
         row = {**job, **verdict(page)}
         report.append(row)
+        сохранить_страницу(out, job, page, row)
         if page.ok:
-            name = fetch.cache_name(job["url"],
-                                    job.get("post") or job.get("post_json")).name
-            (out / name).write_text(page.html, encoding="utf-8")
-            row["файл"] = name
-            if by_links and job.get("day_links") \
-                    and not job.get("_day_from_link"):
-                extra = day_link_jobs(job, page.html, link_days(
-                    daytime.today(пояс.get(job["domain"])), days, scan,
-                    night=daytime.tv_night(пояс.get(job["domain"]))))
-                if extra:
-                    jobs.extend(extra)
-                    print(f"     ↳ {job['domain']}: добавлено дней "
-                          f"по ссылкам из страницы: {len(extra)}")
-        elif page.body:
-            # Сайт отказал, но что-то ответил — сохраняем это «что-то».
-            # По нему видно, кто закрыл: сам сайт, Cloudflare или Imperva, —
-            # и владелец может открыть страницу отказа своими глазами.
-            name = fetch.cache_name(job["url"]).name.replace(".html", ".otkaz.html")
-            (out / name).write_text(page.body, encoding="utf-8")
-            row["файл отказа"] = name
+            extra = добор(job, page.html)
+            if extra:
+                jobs.extend(extra)
+                print(f"     ↳ {job['domain']}: добавлено дней "
+                      f"по ссылкам из страницы: {len(extra)}")
         print(f"{str(i).rjust(3)}/{len(jobs)}  {job['domain'].ljust(12)} "
               f"{(job['channel'] or 'сетка')[:18].ljust(18)} "
               f"{row['итог'].ljust(16)} {row['меток времени']:>5} меток  "
@@ -808,30 +885,8 @@ def main() -> int:
               f"пауза {pause} с, сразу браузером\n")
         fetch.DELAY = pause
         fetcher.browser_only = True
-        healed = 0
-        for n, item in enumerate(retry, 1):
-            job = item["job"]
-            page = fetcher.get_with_fallback(job["url"],
-                                             locale=job.get("locale") or "en-GB",
-                                             post=job.get("post"),
-                                             warmup=job.get("warmup") or "",
-                                             post_json=job.get("post_json"),
-                                             extra=job.get("headers"))
-            fresh = {**job, **verdict(page)}
-            if fresh["итог"] in BROKEN:
-                print(f"{str(n).rjust(3)}/{len(retry)}  {job['domain'].ljust(12)} "
-                      f"снова {fresh['итог']}: {fresh['почему'][:60]}")
-                continue
-            name = fetch.cache_name(job["url"],
-                                    job.get("post") or job.get("post_json")).name
-            (out / name).write_text(page.html, encoding="utf-8")
-            fresh["файл"] = name
-            fresh["почему"] = (fresh["почему"] or "") + " (со второго захода)"
-            item["row"].clear()
-            item["row"].update(fresh)
-            healed += 1
-            print(f"{str(n).rjust(3)}/{len(retry)}  {job['domain'].ljust(12)} "
-                  f"{fresh['итог']} — выправилось со второго захода")
+        # выправившаяся страница канала добирает и дни по ссылкам (ORF)
+        healed = второй_заход(retry, report, fetcher, out, добор)
         print(f"\nвторой заход выправил: {healed} из {len(retry)}")
         fetch.DELAY = args.delay
         fetcher.browser_only = args.browser
