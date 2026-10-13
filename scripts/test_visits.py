@@ -831,8 +831,11 @@ def test_speed():
         r = admin.get("/visits", environ_base=aenv)
         best = min(best, time.perf_counter() - t0)
     print(f"  /visits на {len(lines)} строках: {best * 1000:.0f} мс")
-    check(r.status_code == 200 and best < 1.0,
-          f"страница на 10 днях × 3000 строк — быстрее секунды ({best:.2f} с)")
+    # «скорость:» в имени — замер, зависящий от машины: книга случаев
+    # (`scripts/kniga.py`) считает его сбой жёлтым, а не красным
+    check(r.status_code == 200, "страница на 10 днях × 3000 строк открывается")
+    check(best < 1.0,
+          f"скорость: страница на 10 днях × 3000 строк — быстрее секунды ({best:.2f} с)")
     # 05.10 «не листать»: тысячи адресов в разметке есть (ничего не удалено),
     # но сразу видно не больше сотни строк — остальное в свёрнутых блоках
     page = r.get_data(as_text=True)
@@ -852,7 +855,8 @@ def test_speed():
     shape = page_shape(page)
     print(f"  фильтр «сканеры»: {took * 1000:.0f} мс, строк таблиц {shape['total']}, "
           f"видно сразу {shape['visible']}")
-    check(r.status_code == 200 and took < 1.5, f"фильтр «сканеры» открывается ({took:.2f} с)")
+    check(r.status_code == 200, "фильтр «сканеры» открывается")
+    check(took < 1.5, f"скорость: фильтр «сканеры» быстрее 1,5 с ({took:.2f} с)")
     check(shape["total"] > 3000 and shape["visible"] <= 150,
           f"сканеры: видно сразу не больше 150 строк из {shape['total']} (вышло {shape['visible']})")
     check(block(shape, "Сканеры и мусор —") == [False], "сканеры свёрнуты")
@@ -871,7 +875,7 @@ def test_speed():
                      "schedule", CHROME_WIN, vid="A" * 16)
     per = (time.perf_counter() - t0) / 2000
     print(f"  запись строки: {per * 1e6:.0f} мкс")
-    check(per < 0.002, f"запись строки не тормозит запрос ({per * 1e6:.0f} мкс)")
+    check(per < 0.002, f"скорость: запись строки не тормозит запрос ({per * 1e6:.0f} мкс)")
 
 
 # ── настоящий журнал ─────────────────────────────────────────────────────────
