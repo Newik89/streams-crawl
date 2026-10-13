@@ -86,6 +86,7 @@ def main() -> int:
             conn.commit()
             print("готово; пересоберите план: scripts/crawl_plan.py")
             return 0
+        прежний = dict(config)        # режим до правки — для site_move
         if args.auto:
             config.pop("max_days", None)
             config.pop("manual_only", None)
@@ -110,10 +111,12 @@ def main() -> int:
             print("менять нечего")
             return 0
         if стало["by_server"] != было["by_server"]:
-            # перевёл руками — как кнопкой: кто/когда и счёт срывов GitHub
-            # с нуля (схема сбоев, шаг 11, `app/site_move.py`)
+            # перевёл руками — как кнопкой: кто/когда, режим до перевода
+            # и счёт срывов GitHub с нуля (схема сбоев, шаг 11,
+            # `app/site_move.py`)
             from app import site_move
-            site_move.on_mode_change(config, стало["by_server"], "owner")
+            site_move.on_mode_change(config, стало["by_server"], "owner",
+                                     before=прежний)
         print(f"станет: потолок {стало['max_days'] or 'нет'}, "
               f"только по кнопке: {'да' if стало['manual_only'] else 'нет'}, "
               f"качает сервер: {'да' if стало['by_server'] else 'нет'}")

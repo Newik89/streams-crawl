@@ -308,6 +308,20 @@ site_move.after_import(conn, папка("закрыт", отчёт("803", [ст�
                        now=T0)
 проверка("закрытый владельцем (status closed) — не считается",
          настройки("closed.tv").get("gh_fail_streak"), None)
+источник("bein.tv", manual_only=True)          # как beinsports.com.tr (08.10)
+for n, прогон in enumerate(("811", "812", "813")):
+    site_move.after_import(conn, папка(f"bein{прогон}",
+                                       отчёт(прогон, [строка("bein.tv", "не открылась", BAN)])),
+                           now=T0 + timedelta(minutes=20 * n))
+проверка("«только по кнопке» (beinsports): три срыва — счёт не ведётся",
+         настройки("bein.tv").get("gh_fail_streak"), None)
+поправить("bein.tv", gh_fail_streak=3, gh_fail_last_slot="813")
+проверка("…и даже со счётом 3 — не кандидат на перевод",
+         "bein.tv" in [c["domain"] for c in site_move.candidates(conn, T0)], False)
+проверка("…и --once его не переводит",
+         "решил владелец" in site_move.server_turn(conn, T0, lambda s: {}, {}, None,
+                                                   only="bein.tv")[0])
+поправить("bein.tv", gh_fail_streak=None, gh_fail_last_slot=None)
 
 print("П1. Сквозная заливка games_import.py (тот же путь, что на сервере)")
 источник("e2e.tv")
@@ -471,7 +485,7 @@ def взрыв(source: dict) -> dict:
     return {"итог": "расписание есть", "почему": ""}
 
 
-def set_mode_сбой(c, домен, by_server, by="owner", why=""):
+def set_mode_сбой(c, домен, by_server, by="owner", why="", restore=None):
     raise TimeoutError("git завис")
 
 
@@ -663,9 +677,14 @@ print("П4. Утро: возврат на GitHub (настоящий set_mode, �
 вызовы = []
 
 
-def set_mode_запись(c, домен, by_server, by="owner", why=""):
+def set_mode_запись(c, домен, by_server, by="owner", why="", restore=None):
     вызовы.append((домен, by_server, by))
-    return plan_push.set_mode(c, домен, by_server, by=by, why=why)
+    return plan_push.set_mode(c, домен, by_server, by=by, why=why, restore=restore)
+
+
+def в_плане(домен: str) -> dict:
+    return next(s for s in json.loads(ПЛАН.read_text(encoding="utf-8"))["sources"]
+                if s["domain"] == домен)
 
 
 said = site_move.return_turn(conn, T3, set_mode_запись, busy="идёт заливка (streams-update.sh)")
@@ -674,20 +693,48 @@ said = site_move.return_turn(conn, T3, set_mode_запись, busy="идёт з�
 said = site_move.return_turn(conn, T3, set_mode_запись)
 проверка("вернули только own.tv (и переведённый владельцем)", вызовы, [("own.tv", False, "auto")])
 c = настройки("own.tv")
-проверка("в базе: не by_server, без «только по кнопке», пометки сняты",
-         (c.get("by_server"), c.get("manual_only"), c.get("gh_return"), c.get("moved_by")),
-         (None, None, None, None))
-проверка("потолок владельца max_days остался", c.get("max_days"), 4)
-проверка("в плане own.tv снова GitHub",
-         next(s for s in json.loads(ПЛАН.read_text(encoding="utf-8"))["sources"]
-              if s["domain"] == "own.tv")["by_server"], False)
-проверка("строка владельцу «ВОЗВРАЩЁН», без ТРЕВОГИ",
-         (any("own.tv" in s and "ВОЗВРАЩЁН" in s for s in строки_прогонов(до)),
+проверка("в базе: не by_server, пометки перевода сняты",
+         (c.get("by_server"), c.get("gh_return"), c.get("moved_by")), (None, None, None))
+проверка("как mojtv.hr (режим до перевода неизвестен): «только по кнопке» и "
+         "потолок 4 дн. на месте", (c.get("manual_only"), c.get("max_days")), (True, 4))
+проверка("в плане own.tv: не by_server, «только по кнопке», потолок 4",
+         (в_плане("own.tv")["by_server"], в_плане("own.tv")["manual_only"],
+          в_плане("own.tv")["max_days"]), (False, True, 4))
+проверка("строка владельцу «ВОЗВРАЩЁН … режим владельца сохранён», без ТРЕВОГИ",
+         (any("own.tv" in s and "ВОЗВРАЩЁН" in s and "«только по кнопке», потолок 4 дн." in s
+              for s in строки_прогонов(до)),
           any("ТРЕВОГА" in s for s in строки_прогонов(до))), (True, False))
+
+print("П4. Возврат восстанавливает режим ДО перевода (before_move)")
+источник("wasfree.tv")                              # обычный сайт, без пометок
+источник("wasbtn.tv", manual_only=True, max_days=3)  # «только по кнопке», потолок 3
+записать_план(сайт_плана("wasfree.tv"), сайт_плана("wasbtn.tv", manual_only=True, max_days=3))
+plan_push.set_mode(conn, "wasfree.tv", True, by="auto")
+plan_push.set_mode(conn, "wasbtn.tv", True)          # кнопкой владельца
+проверка("перевод запомнил режим до него",
+         (настройки("wasfree.tv").get("before_move"), настройки("wasbtn.tv").get("before_move")),
+         ({"manual_only": False, "max_days": 0}, {"manual_only": True, "max_days": 3}))
+поправить("wasfree.tv", gh_return="2026-10-20 09:30")
+поправить("wasbtn.tv", gh_return="2026-10-20 09:30")
+вызовы.clear()
+site_move.return_turn(conn, T3, set_mode_запись)
+проверка("переведённый автоматически обычный сайт — снова в обычных сборах",
+         (настройки("wasfree.tv").get("manual_only"), в_плане("wasfree.tv")["manual_only"],
+          настройки("wasfree.tv").get("before_move")), (None, False, None))
+проверка("переведённый владельцем «только по кнопке» — вернулся «только по кнопке», потолок 3",
+         (настройки("wasbtn.tv").get("manual_only"), настройки("wasbtn.tv").get("max_days"),
+          в_плане("wasbtn.tv")["manual_only"], в_плане("wasbtn.tv")["by_server"]),
+         (True, 3, True, False))
+plan_push.set_mode(conn, "wasfree.tv", True, by="auto")
+plan_push.set_mode(conn, "wasfree.tv", False)        # кнопка «Вернуть на GitHub»
+проверка("кнопка владельца «Вернуть на GitHub» — пометки сняты, как раньше",
+         (настройки("wasfree.tv").get("manual_only"), настройки("wasfree.tv").get("before_move")),
+         (None, None))
+вызовы.clear()
 поправить("ok.tv", gh_return="2026-10-20 09:30")
 site_move.return_turn(conn, T3, set_mode_запись)
 проверка("владелец вернул сам — пометку снимаем молча, set_mode не зовём",
-         (настройки("ok.tv").get("gh_return"), len(вызовы)), (None, 1))
+         (настройки("ok.tv").get("gh_return"), len(вызовы)), (None, 0))
 
 print("П4. Утренний ход server_crawl целиком (возврат, потом проверки)")
 поправить("srv.tv", gh_return="2026-10-21 09:30")

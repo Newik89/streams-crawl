@@ -34,6 +34,8 @@
                      (одна на серию)
   moved_by           auto — перевёл этот модуль, owner — владелец кнопкой
   moved_at           когда переведён на сервер
+  before_move        режим сайта ДО перевода: {manual_only, max_days} —
+                     его восстанавливает автоматический возврат (П4)
   gh_probe_last      когда GitHub последний раз пробовал его вернуть
   gh_return          проба открылась, когда — утром сервер вернёт сайт
 
@@ -70,8 +72,11 @@
                      трогаем (пустое расписание — не поломка).
       Не считаются: сайты `by_server`, дозорные (раздел «дозор» отчёта,
       `crawl_fetch.DAILY_PROBE`), выключенные, не-расписания (справочники
-      — сервер их не качает) и закрытые владельцем (`status` closed,
-      parked — по ним его решение).
+      — сервер их не качает) и те, о которых решил владелец
+      (`owner_decided`): `status` closed / parked и «только по кнопке»
+      (`manual_only` без `by_server`, напр. beinsports.com.tr, 08.10) —
+      иначе три нажатия кнопки по сломанному сайту увели бы его на сервер
+      без слова владельца.
       МАССОВЫЙ СБОЙ (`is_mass`): в сборе судили не меньше `MASS_MIN_SITES`
       сайтов и не дались больше `MASS_SHARE` из них (тот же порог, что
       «провал» обхода, `crawl_fetch.FAIL_DOMAINS_SHARE`) — это сеть
@@ -79,7 +84,8 @@
       обнуляют), строка в журнал заливки.
       Счёт дошёл ровно до `FAILS_TO_MOVE` → строка «кандидат: утром сервер
       проверит одним адресом» (уведомление).
-  П2. Кандидат (`gh_fail_streak` ≥ `FAILS_TO_MOVE`, не `by_server`) —
+  П2. Кандидат (`gh_fail_streak` ≥ `FAILS_TO_MOVE`, не `by_server`, не
+      `owner_decided`) —
       проверка с сервера ОДНИМ адресом: `candidates`, `check_refusal`,
       `decide_check`, `move_to_server`, `server_turn`. Зовёт утренний
       `server_crawl.py` (06:40, тихий час: заливок и сборов нет) или руками
@@ -116,7 +122,15 @@
       «проба_возврата» report.json. Заливка: «расписание есть» (из одного
       адреса открылся — больше половины) → `gh_return` и строка; иначе —
       строка «остаётся на сервере, следующая проба через неделю».
-      Утром `return_turn`: `set_mode(False)` + строка владельцу.
+      Утром `return_turn`: `set_mode(False)` + строка владельцу. Режим
+      владельца при этом НЕ теряется (`restore_of`): «только по кнопке» и
+      потолок дней — какими были ДО перевода (`before_move`, его пишет
+      `on_mode_change` при любом переводе на сервер, и кнопкой); до
+      перевода неизвестно (mojtv.hr, rtrs.tv — переведены до 13.10) —
+      «только по кнопке» остаётся включённым, потолок — нынешний
+      (осторожно: решение владельца автоматика не снимает). Кнопка
+      владельца «Вернуть на GitHub» — его слово, она снимает пометки, как
+      раньше.
   П5. Владелец видит всё: строки «Прогонов» (`note`, кто — `WHO`);
       пометка у сайта (`mark`) — на странице сбоев прогона, и раздел «На
       сервере» на «Сломанных» (`overview`).
@@ -254,6 +268,15 @@ def save_config(conn, source_id: int, config: dict) -> None:
     conn.execute("UPDATE sources SET selector_config = ? WHERE id = ?",
                  (json.dumps(config, ensure_ascii=False), source_id))
     conn.commit()
+
+
+def owner_decided(source, config: dict) -> bool:
+    """П1/П2: о сайте решил владелец — счёт срывов и перевод его не
+    касаются: `status` closed / parked или «только по кнопке» без
+    `by_server` (`manual_only`)."""
+    if source["status"] in OWNER_STATUSES:
+        return True
+    return bool(config.get("manual_only")) and not config.get("by_server")
 
 
 def schedule_sources(conn) -> list:
@@ -423,8 +446,8 @@ def after_import(conn, report_path, who: str = "",
         config = load_config(source)
         if config.get("by_server"):
             continue                       # П1/П7: его качает сервер
-        if source["status"] in OWNER_STATUSES:
-            continue                       # закрыт владельцем — его решение
+        if owner_decided(source, config):
+            continue                       # закрыт / «только по кнопке» — его решение
         verdict = verdicts.get(bare(source["domain"]))
         if not verdict:
             continue
@@ -459,7 +482,7 @@ def candidates(conn, now: datetime) -> list[dict]:
     out = []
     for source in schedule_sources(conn):
         config = load_config(source)
-        if config.get("by_server") or source["status"] in OWNER_STATUSES:
+        if config.get("by_server") or owner_decided(source, config):
             continue
         if int(config.get("gh_fail_streak") or 0) < FAILS_TO_MOVE:
             continue
@@ -547,11 +570,16 @@ def decide_check(domain: str, config: dict, row: dict) -> tuple[str, str]:
                     f"{day_month(config['server_fail_alarm'])}")
 
 
-def call_set_mode(set_mode, conn, domain: str, by_server: bool, why: str) -> str:
-    """П2/П4: `plan_push.set_mode(..., by="auto")`; его сбой (git завис,
-    база занята) не обрывает заход — слова сбоя идут в строку владельцу."""
+def call_set_mode(set_mode, conn, domain: str, by_server: bool, why: str,
+                  restore: dict | None = None) -> str:
+    """П2/П4: `plan_push.set_mode(..., by="auto")`; `restore` — режим,
+    который вернуть сайту при возврате на GitHub (`restore_of`). Сбой
+    (git завис, база занята) не обрывает заход — слова сбоя идут в строку
+    владельцу."""
     try:
-        return set_mode(conn, domain, by_server, by="auto", why=why)
+        if restore is None:
+            return set_mode(conn, domain, by_server, by="auto", why=why)
+        return set_mode(conn, domain, by_server, by="auto", why=why, restore=restore)
     except Exception as beda:              # noqa: BLE001 — см. выше
         return f"перевод не доделан: {type(beda).__name__}: {beda}"[:200]
 
@@ -596,6 +624,9 @@ def server_turn(conn, now: datetime, fetch_one, plan_sources: dict,
             config = load_config(row)
             if config.get("by_server"):
                 return [f"{only}: уже качает сервер — проверять нечего"]
+            if owner_decided(row, config):
+                return [f"{only}: о сайте решил владелец (закрыт или «только по "
+                        f"кнопке») — автоматика его не переводит"]
             last = parse_stamp(config.get("server_check_last"))
             if last is not None and now - last < timedelta(hours=CHECK_GAP_HOURS):
                 return [f"{only}: сервер проверял его {config['server_check_last']} — "
@@ -795,29 +826,54 @@ def return_turn(conn, now: datetime, set_mode, busy: str = "") -> list[str]:
         return [text]
     for source, config in todo:
         when = config.get("gh_return")
+        restore = restore_of(config)
         words = call_set_mode(set_mode, conn, source["domain"], False,
-                              "автоматически: недельная проба GitHub открылась")
+                              "автоматически: недельная проба GitHub открылась",
+                              restore=restore)
+        mode = ("«только по кнопке»" if restore["manual_only"] else "в обычные сборы")
+        if restore["max_days"]:
+            mode += f", потолок {restore['max_days']} дн."
         text = (f"{source['domain']}: проба с GitHub {day_month(when)} открылась — "
-                f"сайт ВОЗВРАЩЁН в обход GitHub, сервер его больше не качает "
-                f"({words})")
+                f"сайт ВОЗВРАЩЁН на GitHub, режим владельца сохранён: {mode}; "
+                f"сервер его больше не качает ({words})")
         note(conn, text)
         said.append(text)
     return said
 
 
+def restore_of(config: dict) -> dict:
+    """П4: какой режим вернуть сайту при АВТОМАТИЧЕСКОМ возврате на GitHub:
+    {manual_only, max_days} из `before_move`; до перевода неизвестно
+    (переведён до 13.10) — «только по кнопке» остаётся, потолок — нынешний
+    (решение владельца автоматика не снимает)."""
+    before = config.get("before_move")
+    if isinstance(before, dict):
+        return {"manual_only": bool(before.get("manual_only")),
+                "max_days": int(before.get("max_days") or 0)}
+    return {"manual_only": True, "max_days": int(config.get("max_days") or 0)}
+
+
 def on_mode_change(config: dict, by_server: bool, by: str = "owner",
-                   now: datetime | None = None) -> None:
+                   now: datetime | None = None, before: dict | None = None) -> None:
     """П2/П4: перевод в любую сторону (`plan_push.set_mode`, и кнопкой) —
     счёт срывов и пометки возврата с нуля; на сервер — кто и когда
-    перевёл (`moved_by`, `moved_at`); на GitHub — их снимаем."""
+    перевёл (`moved_by`, `moved_at`) и режим ДО перевода (`before_move`:
+    «только по кнопке», потолок дней — его вернёт `restore_of`); на
+    GitHub — всё это снимаем. `before` — настройки до перемены (по
+    умолчанию — сам `config`: зовите ДО того, как правите by_server)."""
     now = now or datetime.now(KYIV)
+    before = config if before is None else before
+    was_on_server = bool(before.get("by_server"))
     for key in STREAK_FIELDS + ("gh_fail_last_slot", "gh_return"):
         config.pop(key, None)
     if by_server:
+        if not was_on_server:
+            config["before_move"] = {"manual_only": bool(before.get("manual_only")),
+                                     "max_days": int(before.get("max_days") or 0)}
         config["moved_by"] = "auto" if by == "auto" else "owner"
         config["moved_at"] = stamp(now)
     else:
-        for key in ("moved_by", "moved_at", "gh_probe_last"):
+        for key in ("moved_by", "moved_at", "gh_probe_last", "before_move"):
             config.pop(key, None)
 
 
