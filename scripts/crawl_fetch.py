@@ -498,6 +498,10 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
     print(f"дозабор из прогона {from_run}: упало (сайт лёг / нет ответа) "
           f"{choice.total}, качаю заново {len(choice.rows)}; не берём: {skipped}\n")
     fresh: dict[int, dict] = {}
+    #: сайт → сколько его адресов подряд снова не открылось; дошло до
+    #: `redo.REDO_SITE_FAILS` — остальные его адреса не трогаем (`passed`)
+    fails: dict[str, int] = {}
+    passed: list[dict] = []
     lines = ["| Сайт | Канал | Было | Стало | Ссылка |", "|---|---|---|---|---|"]
     started = clock()
     for n, (index, row) in enumerate(zip(choice.index, choice.rows), 1):
@@ -506,6 +510,15 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
                   f"{len(choice.rows) - n + 1} строк остаются как были")
             break
         job = redo.job_of(row)
+        if redo.site_down(fails, job["domain"]):
+            # строка остаётся как была; причина — в разделе «дозабор»
+            passed.append({"domain": job["domain"], "url": job["url"],
+                           "почему": redo.SITE_STILL_DOWN})
+            print(f"{str(n).rjust(3)}/{len(choice.rows)}  {job['domain'].ljust(12)} "
+                  f"не трогаю — {redo.SITE_STILL_DOWN} ({redo.REDO_SITE_FAILS} адреса подряд)")
+            lines.append(f"| {job['domain']} | {(job.get('channel') or 'сетка').replace('|', '/')} "
+                         f"| — | не трогали: {redo.SITE_STILL_DOWN} | {job['url']} |")
+            continue
         # сайт с пометкой `browser` — сразу браузером, как в обходе
         fetcher.browser_only = bool(job.get("browser"))
         page = fetcher.get_with_fallback(job["url"],
@@ -526,6 +539,7 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
             (out / name).write_text(page.body, encoding="utf-8")
             new["файл отказа"] = name
         fresh[index] = new
+        redo.count_fail(fails, job["domain"], new["итог"] in BROKEN)
         was = str(row.get("почему") or row.get("итог") or "").replace("|", "/")[:60]
         got = (new["итог"] if new["итог"] not in BROKEN
                else f"{new['итог']}: {new['почему']}").replace("|", "/")[:80]
@@ -533,7 +547,8 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
               f"{(job.get('channel') or 'сетка')[:18].ljust(18)} было: {was[:40]} → {got[:50]}")
         lines.append(f"| {job['domain']} | {(job.get('channel') or 'сетка').replace('|', '/')} "
                      f"| {was} | {got} | {job['url']} |")
-    merged = redo.merge(report, fresh, choice, from_run, os.environ.get("GITHUB_RUN_ID", ""))
+    merged = redo.merge(report, fresh, choice, from_run, os.environ.get("GITHUB_RUN_ID", ""),
+                        passed)
     # сайт с короткой программой не сломан (как в обходе): 404 при живом сайте
     soften_short_depth(merged["строки"])
     section = merged[redo.SECTION]

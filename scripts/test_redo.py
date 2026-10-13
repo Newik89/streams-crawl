@@ -633,7 +633,8 @@ check("не выправившаяся — тоже свежая (новая п�
       and merged["строки"][0] == report6["строки"][0] and merged["строки"][2] == report6["строки"][2]
       and merged["строки"][4] == report6["строки"][4])
 check("раздел «дозабор»: из прогона, адресов, выправилось; «прогон» — этот, «режим» с пометкой, окно цело",
-      merged["дозабор"] == {"из прогона": "555", "адресов": 2, "выправилось": 1, "отобрано": 2, "упавших": 2}
+      merged["дозабор"] == {"из прогона": "555", "адресов": 2, "выправилось": 1, "отобрано": 2, "упавших": 2,
+                            "пропущено": []}
       and merged["прогон"] == "777" and merged["режим"].startswith("дозабор")
       and "окно 6" in merged["режим"] and report6["прогон"] == "555", merged.get("дозабор"))
 clock_values = iter([0, 0, 1700, 2000, 9999])
@@ -643,6 +644,24 @@ code_b, merged_b, _ = cf.redo_fetch({"строки": [down(1), down(2), down(3)]
 check("не успели за 30 мин — оставшиеся строки остаются как были",
       code_b == 0 and len(fake_slow.asked) == 2 and merged_b["строки"][2] == down(3)
       and merged_b["дозабор"]["адресов"] == 2, fake_slow.asked)
+fails: dict = {}
+redo.count_fail(fails, "www.s1.test", True)
+first_down = redo.site_down(fails, "s1.test")
+redo.count_fail(fails, "s1.test", True)
+second_down = redo.site_down(fails, "www.s1.test")
+redo.count_fail(fails, "s1.test", False)
+check("предел на сайт: 2 адреса подряд не открылись — сайт «всё ещё лежит»; открылся — счёт с нуля",
+      not first_down and second_down and not redo.site_down(fails, "s1.test")
+      and redo.REDO_SITE_FAILS == 2)
+same_site = [row(i, why="HTTP 503", domain="lying.test") for i in range(1, 5)] + [down(9)]
+fake_lying = FakeFetcher({down(9)["url"]: (page_html, "")})
+code_s, merged_s, md_s = cf.redo_fetch({"строки": same_site}, OUT, fake_lying, "1")
+check("…в дозаборе: у lying.test спрошены 2 адреса из 4, остальные 2 — как были, причина в разделе; другой сайт качается",
+      code_s == 0 and fake_lying.asked == [same_site[0]["url"], same_site[1]["url"], down(9)["url"]]
+      and merged_s["строки"][2] == same_site[2] and merged_s["строки"][3] == same_site[3]
+      and [p["почему"] for p in merged_s["дозабор"]["пропущено"]] == [redo.SITE_STILL_DOWN] * 2
+      and merged_s["дозабор"]["адресов"] == 3 and any("не трогали" in x for x in md_s),
+      (fake_lying.asked, merged_s["дозабор"]))
 fake_none = FakeFetcher({})
 code_m, _, _ = cf.redo_fetch({"строки": [down(i) for i in range(81)]}, OUT, fake_none, "1")
 code_z, _, _ = cf.redo_fetch({"строки": [ok(1), ban(2)]}, OUT, fake_none, "1")

@@ -64,7 +64,10 @@
       — в `results/partial/` (`watch.RESULT_DIRS`).
   Д6. `job_of`, `merge` — GitHub (`crawl_fetch.py --redo`): качает ТОЛЬКО
       строки `pick` обычным путём с запасным браузером, не дольше
-      `REDO_FETCH_MINUTES` (не успели — строки остаются как были), страницы
+      `REDO_FETCH_MINUTES` (не успели — строки остаются как были); у сайта
+      подряд не открылось `REDO_SITE_FAILS` адресов — остальные его адреса
+      не трогаем (`site_down`, `count_fail`; строки как были, в разделе
+      «дозабор» — «пропущено: сайт всё ещё лежит»). Страницы
       кладёт в ту же папку, где лежат страницы сбора, и пишет report.json:
       упавшие строки заменены свежими, остальные как были, плюс раздел
       «дозабор» (из какого прогона, сколько адресов, сколько выправилось).
@@ -83,6 +86,19 @@
       «полный сбор»: его прогон не отвечает за слот, не накрывает дни и не
       вытесняет ждущих (`watch.FULL_KINDS` и окна дней его не знают).
   Д9. Проверки — `scripts/test_redo.py`: сценарий на каждое правило.
+
+ОТКАТ (git revert этой выкладки). Старый `games_import.py` пометки
+«режим»: «дозабор» не знает и вольёт results/partial/ дозабора как
+переразбор — С ГАШЕНИЕМ каналов. Поэтому ПЕРЕД откатом на сервере:
+  1. посмотреть, дозабор ли лежит в results/partial/games.json (ключ
+     «режим»: «дозабор»); нет — откатывать можно;
+  2. если дозабор — убедиться, что он уже влит: метка «собрано» файла
+     равна `last_import_stamp:partial` в базе
+     (`venv/bin/python -c "from app import db; c = db.connect();
+     print(db.get_setting(c, 'last_import_stamp:partial'))"`) — тогда
+     старый код его второй раз не вольёт (одинаковую метку он пропускает);
+  3. не влит (метки разные) — убрать файл из репозитория отдельным
+     коммитом (`git rm results/partial/games.json`) и только потом откат.
 
 Модуль — только стандартная библиотека: его зовут и сервер, и обход на
 GitHub (`crawl_fetch.py`, `parse_live.py`, `fail_reason.py`).
@@ -350,18 +366,42 @@ def plan(*, end: datetime, now: datetime, choice: Pick, same: str, night: bool,
 
 # ── Д6. GitHub: качаем заново и пишем отчёт ──────────────────────────────────
 
+#: Д6: столько раз ПОДРЯД адрес сайта не открылся при дозаборе — остальные
+#: его адреса в этот раз не трогаем: сайт всё ещё лежит, а каждый адрес с
+#: запасным браузером — до минуты (замечание 13.10)
+REDO_SITE_FAILS = 2
+#: Д6: причина в разделе «дозабор» у адресов, которые не трогали
+SITE_STILL_DOWN = "сайт всё ещё лежит"
+
+
+def site_down(fails: dict, domain: str) -> bool:
+    """Д6: пропустить ли адрес сайта `domain`: подряд не открылось уже
+    `REDO_SITE_FAILS` его адресов (`fails` — счёт `count_fail`)."""
+    return fails.get(_bare(domain), 0) >= REDO_SITE_FAILS
+
+
+def count_fail(fails: dict, domain: str, failed: bool) -> None:
+    """Д6: учесть итог адреса сайта: не открылся — +1 к счёту подряд,
+    открылся — счёт сайта с нуля."""
+    key = _bare(domain)
+    fails[key] = fails.get(key, 0) + 1 if failed else 0
+
+
 def job_of(row: dict) -> dict:
     """Д6: строка отчёта → задание обхода (адрес, канал, день, POST-поля…)
     — без полей проверки страницы (`VERDICT_FIELDS`)."""
     return {k: v for k, v in row.items() if k not in VERDICT_FIELDS}
 
 
-def merge(report: dict, fresh: dict, choice: Pick, from_run, run_id="") -> dict:
+def merge(report: dict, fresh: dict, choice: Pick, from_run, run_id="",
+          passed=()) -> dict:
     """Д6: отчёт дозабора — строки сбора, где упавшие (номера из `fresh`)
     заменены свежими, остальные как были; раздел «дозабор»: из какого
     прогона, сколько адресов скачано заново, сколько выправилось, сколько
-    было отобрано и сколько всего упало down/net. «режим» — с пометкой
-    «дозабор» (окно дней в нём остаётся — по нему заливка пишет глубину)."""
+    было отобрано и сколько всего упало down/net; «пропущено» — адреса,
+    которые не трогали (`passed`: [{domain, url, почему}], сайт всё ещё
+    лежит). «режим» — с пометкой «дозабор» (окно дней в нём остаётся — по
+    нему заливка пишет глубину)."""
     rows = list((report or {}).get("строки") or [])
     for i, row in fresh.items():
         rows[i] = row
@@ -372,7 +412,7 @@ def merge(report: dict, fresh: dict, choice: Pick, from_run, run_id="") -> dict:
     out["прогон"] = str(run_id or "")
     out[SECTION] = {"из прогона": str(from_run), "адресов": len(fresh),
                     "выправилось": healed, "отобрано": len(choice.rows),
-                    "упавших": choice.total}
+                    "упавших": choice.total, "пропущено": list(passed)}
     return out
 
 
