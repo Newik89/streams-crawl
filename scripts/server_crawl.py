@@ -126,7 +126,8 @@ def замок_заливки(путь: str = site_move.UPDATE_LOCK):
                 fcntl.flock(файл, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except OSError:
                 файл.close()
-                файл, почему = None, "идёт заливка (streams-update.sh)"
+                файл, почему = None, ("идёт заливка (замок streams-update.sh "
+                                      "занят — заливкой или другой проверкой)")
     try:
         yield почему
     finally:

@@ -692,6 +692,22 @@ print("П5. Пометки и страницы админки")
 проверка("«Сломанные»: ban.tv на сервере (авто), e2e.tv со срывом",
          ("автоматически" in обзор["ban.tv"]["mark"], "1 сбор подряд" in обзор["e2e.tv"]["mark"]),
          (True, True))
+источник("hand.tv", gh_fail_streak=2, gh_fail_last_slot="380", gh_fail_why="x")
+
+
+def source_mode(*аргументы) -> None:
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "source_mode.py"), *аргументы],
+                   capture_output=True, text=True, encoding="utf-8", env=os.environ)
+
+
+source_mode("hand.tv", "--by-server", "--apply")
+c = настройки("hand.tv")
+проверка("source_mode.py --by-server: перевёл владелец, счёт срывов снят",
+         (c.get("by_server"), c.get("moved_by"), c.get("gh_fail_streak")), (True, "owner", None))
+source_mode("hand.tv", "--auto", "--apply")
+c = настройки("hand.tv")
+проверка("source_mode.py --auto: пометки перевода сняты",
+         (c.get("by_server"), c.get("moved_by"), c.get("moved_at")), (None, None, None))
 from app import web  # noqa: E402
 
 app = web.create_app()

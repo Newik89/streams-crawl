@@ -109,6 +109,11 @@ def main() -> int:
         if стало == было:
             print("менять нечего")
             return 0
+        if стало["by_server"] != было["by_server"]:
+            # перевёл руками — как кнопкой: кто/когда и счёт срывов GitHub
+            # с нуля (схема сбоев, шаг 11, `app/site_move.py`)
+            from app import site_move
+            site_move.on_mode_change(config, стало["by_server"], "owner")
         print(f"станет: потолок {стало['max_days'] or 'нет'}, "
               f"только по кнопке: {'да' if стало['manual_only'] else 'нет'}, "
               f"качает сервер: {'да' if стало['by_server'] else 'нет'}")
