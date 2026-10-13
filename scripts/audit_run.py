@@ -65,7 +65,10 @@ r"""Самопроверка прогона: ищет ИЗВЕСТНЫЕ кла�
      до 15 мин после — это эфир, а не запись), а у игры на витрине канала
      этого сайта нет вовсе. Пару ищем по написаниям эталона на всех языках
      без пометок пола и возраста («Polska K» → «polska»), поэтому ловится
-     и строка, из которой разбор пару не взял (13.10: teleman «rewanżowy
+     и строка, из которой разбор пару не взял; для языков, которых у
+     flashscore нет (иврит, норвежский, албанский, литовский…), — по НАШЕМУ
+     словарю: написания команды из `dictionaries.json` и перевод подписи
+     словарём слов (владелец 13.10) (13.10: teleman «rewanżowy
      mecz barażowy: Polska - Belgia» на TVP Sport; raiplay «Italia -
      Bielorussia» на Rai 2 — книга случаев 001, 002). Тот же канал у игры
      с другого сайта — не потеря (Prima Sport 1: primaplay.ro и
@@ -1134,22 +1137,69 @@ def _seen_word(text: str, name: str) -> bool:
     return re.search(rf"(?<!\w){re.escape(name)}(?!\w)", text) is not None
 
 
+_SEEN_DICT: dict[str, set] = {}
+#: письменность не латиница — подпись ещё и переводится словарём слов
+#: (`names.to_english`: «מכבי תל אביב - הפועל באר שבע» → «Maccabi Tel Aviv -
+#: Hapoel Beer Sheva»)
+_NOT_LATIN = re.compile(r"[\u0370-\u03ff\u0400-\u04ff\u0590-\u05ff\u0600-\u06ff]")
+
+
+def _dict_forms(name: str) -> set:
+    """Написания команды из НАШЕГО словаря (`data/dictionaries.json` —
+    выгрузка базы: сводит написания всех языков к английскому имени
+    эталона). Нужен для языков, которых у flashscore нет: иврит, норвежский,
+    албанский, литовский, эстонский, финский, сербская кириллица (владелец
+    13.10: «у нас есть библиотека-словарь — оттуда брать»). Ищем только по
+    имени команды, не по кличке: одна кличка бывает у нескольких клубов."""
+    if not _SEEN_DICT:
+        try:
+            d = json.loads((ROOT / "data" / "dictionaries.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            d = {}
+        for t in d.get("teams") or []:
+            if not isinstance(t.get("name"), str) or not t["name"].strip():
+                continue
+            forms = {t["name"]} | {x for x in t.get("aliases") or []
+                                   if isinstance(x, str) and x.strip()}
+            _SEEN_DICT.setdefault(t["name"].strip().casefold(), set()).update(forms)
+        _SEEN_DICT.setdefault("", set())
+    return _SEEN_DICT.get((name or "").strip().casefold(), set())
+
+
+def _seen_side(ref: dict, side: str, index: int) -> set:
+    """Все написания одной стороны матча без пометок пола и возраста:
+    эталон (английский и 19 языков flashscore) + наш словарь."""
+    names_ = {ref.get(side) or ""}
+    names_.update(x[index] for x in (ref.get("names") or {}).values() if len(x) == 2)
+    names_ |= _dict_forms(ref.get(side) or "")
+    return {c for c in (_seen_core(x) for x in names_) if len(c) >= SEEN_MIN_NAME}
+
+
 def _seen_refs(games: dict) -> list[tuple]:
-    """Эталон F/B по времени: [(начало, запись, {(дом, гость)})] — написания
-    на всех языках без пометок пола и возраста."""
+    """Эталон F/B по времени: [(начало, запись, (дома, гости))] — у каждой
+    стороны все её написания."""
     out = []
     for ref in games.get("эталон") or []:
         if ref.get("sport") not in ("F", "B") or not ref.get("start_kyiv"):
             continue
-        sides = {(ref.get("home") or "", ref.get("away") or "")}
-        sides.update(tuple(x) for x in (ref.get("names") or {}).values() if len(x) == 2)
-        cores = {(_seen_core(h), _seen_core(a)) for h, a in sides}
-        cores = {(h, a) for h, a in cores
-                 if len(h) >= SEEN_MIN_NAME and len(a) >= SEEN_MIN_NAME}
-        if cores:
-            out.append((datetime.fromisoformat(ref["start_kyiv"][:16]), ref, cores))
+        sides = (_seen_side(ref, "home", 0), _seen_side(ref, "away", 1))
+        if sides[0] and sides[1]:
+            out.append((datetime.fromisoformat(ref["start_kyiv"][:16]), ref, sides))
     out.sort(key=lambda x: x[0])
     return out
+
+
+def _texts(raw: str) -> list[str]:
+    """Подпись как есть и — если письменность не латиница — переведённая
+    словарём слов на английский."""
+    text = (raw or "").casefold()
+    if not text:
+        return []
+    if _NOT_LATIN.search(text):
+        english = (names.to_english(raw) or "").casefold()
+        if english and english != text:
+            return [text, english]
+    return [text]
 
 
 def _channel_key(name: str) -> str:
@@ -1157,11 +1207,16 @@ def _channel_key(name: str) -> str:
     return re.sub(r"[\W_]+", "", (name or "").casefold())
 
 
-def _names_in(text: str, cores: set) -> bool:
-    return any(_seen_word(text, h) and _seen_word(text, a) for h, a in cores)
+def _names_in(text: str, sides: tuple) -> bool:
+    """В подписи есть и хозяева, и гости — любым их написанием. Сперва
+    быстрый отсев по первому слову имени, потом целыми словами."""
+    words = set(_SEEN_TOKEN.findall(text))
+    home, away = sides
+    return (any(h.split()[0] in words and _seen_word(text, h) for h in home)
+            and any(a.split()[0] in words and _seen_word(text, a) for a in away))
 
 
-def _site_on_game(domain: str, channel: str, ref: dict, cores: set,
+def _site_on_game(domain: str, channel: str, ref: dict, sides: tuple,
                   start: datetime, shown: list) -> bool:
     """Строка сайта про этот матч дошла до витрины? Отметка у игры в ±3 ч —
     от этого сайта или тот же канал с другого (Prima Sport 1 у primaplay.ro
@@ -1179,7 +1234,7 @@ def _site_on_game(domain: str, channel: str, ref: dict, cores: set,
                 or (key and _channel_key(e.get("channel") or "") == key)]
         if not mine:
             continue
-        if any(_names_in((e.get("raw_title") or "").casefold(), cores) for e in mine):
+        if any(_names_in(t, sides) for e in mine for t in _texts(e.get("raw_title") or "")):
             return True
         if _pair_score(g, ref) >= SEEN_PAIR:
             return True
@@ -1203,28 +1258,24 @@ def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
             when = p.start.astimezone(KYIV).replace(tzinfo=None)
             if when.date() not in days:
                 continue
-            text = " ".join(x for x in (p.title, p.match_raw, p.league_raw) if x).casefold()
-            if not text or markers.found(markers.not_live, p.signals()):
+            if markers.found(markers.not_live, p.signals()):
                 continue                  # запись, повтор, обзор — не эфир
-            words = set(_SEEN_TOKEN.findall(text))
             # матчи, у которых этот показ — в окне эфира: начало матча
             # между «показ − 15 мин» и «показ + час»
             lo = bisect.bisect_left(starts, when - SEEN_AFTER)
             hi = bisect.bisect_right(starts, when + SEEN_BEFORE)
-            for start, ref, cores in refs[lo:hi]:
+            if lo >= hi:
+                continue
+            texts = _texts(" ".join(x for x in (p.title, p.match_raw, p.league_raw) if x))
+            for start, ref, sides in refs[lo:hi]:
                 fs = ref.get("fs_id") or f"{ref.get('home')}-{ref.get('away')}-{start:%d%H%M}"
-                if fs in hits:
-                    continue
-                for h, a in cores:
-                    if (h.split()[0] in words and a.split()[0] in words
-                            and _seen_word(text, h) and _seen_word(text, a)):
-                        hits[fs] = (p, ref, start, cores)
-                        break
+                if fs not in hits and any(_names_in(t, sides) for t in texts):
+                    hits[fs] = (p, ref, start, sides)
         lost = [f"{p.start.astimezone(KYIV):%d.%m %H:%M} {p.channel_raw} "
                 f"«{(p.title or p.match_raw or '')[:60]}» = эталон {ref.get('home')} — "
                 f"{ref.get('away')} {start:%H:%M} ({fs})"
-                for fs, (p, ref, start, cores) in sorted(hits.items(), key=lambda x: x[1][2])
-                if not _site_on_game(domain, p.channel_raw, ref, cores, start, shown)]
+                for fs, (p, ref, start, sides) in sorted(hits.items(), key=lambda x: x[1][2])
+                if not _site_on_game(domain, p.channel_raw, ref, sides, start, shown)]
         if lost:
             # строка на сайт, как у прочих проверок: сайт — число — примеры
             out.append(f"{domain}: {len(lost)} матч(а/ей) эталона сайт показал в "

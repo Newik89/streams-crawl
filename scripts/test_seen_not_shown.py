@@ -102,6 +102,42 @@ raiplay = сайт("raiplay.it", показ("Rai 2", "Calcio: Qualificazioni Mon
 проверка("одна команда в подписи — не пара",
          сторож(сайт("x.it", показ("Rai 2", "Speciale Italia", "2026-10-13T19:05")), витрина()), [])
 
+print("1б. языки, которых у flashscore нет, — по нашему словарю (владелец 13.10)")
+словарь = {"finland": {"Finland", "Suomi"}, "norway": {"Norway", "Norja"},
+           "joventut badalona": {"Joventut Badalona", "חובנטוד בדאלונה"},
+           "barcelona": {"Barcelona", "ברצלונה"}, "racing club": {"Racing Club", "Racing"}}
+сохранено = dict(audit_run._SEEN_DICT)
+audit_run._SEEN_DICT.clear()
+audit_run._SEEN_DICT.update({k: set(v) for k, v in словарь.items()}, **{"": set()})
+суоми = {"sport": "F", "home": "Finland", "away": "Norway", "fs_id": "fiNo",
+         "start_kyiv": "2026-10-13T19:45", "names": {}}
+проверка("финская подпись «Suomi - Norja» — по словарю (финского у flashscore нет)",
+         len(сторож(сайт("tvmatsit.com", показ("MTV Urheilu 1", "Jalkapallo: Suomi - Norja",
+                                               "2026-10-13T19:40")), витрина(эталон=(суоми,)))), 1)
+ховентуд = {"sport": "B", "home": "Joventut Badalona", "away": "Barcelona", "fs_id": "6D24t3Bm",
+            "start_kyiv": "2026-10-18T20:00", "names": {}}
+проверка("ивритская подпись — по словарю",
+         len(сторож(сайт("sport1.maariv.co.il", показ("Sport1 5", "חובנטוד בדאלונה - ברצלונה",
+                                                       "2026-10-18T19:55")),
+                    витрина(эталон=(ховентуд,)))), 1)
+маккаби = {"sport": "F", "home": "Maccabi Tel Aviv", "away": "Hapoel Beer Sheva", "fs_id": "mtaHbs",
+           "start_kyiv": "2026-10-14T20:30", "names": {}}
+проверка("иврит без записи в словаре команд — переводом подписи словарём слов",
+         len(сторож(сайт("sport5.co.il", показ("ספורט 5", "מכבי תל אביב - הפועל באר שבע",
+                                                "2026-10-14T20:25")),
+                    витрина(эталон=(маккаби,)))), 1)
+проверка("словарь ищется по имени команды, не по кличке («Racing» — не Racing Club)",
+         audit_run._dict_forms("Racing"), set())
+битая = игра("Joventut", "Joventut Badalona", "2026-10-18T18:55", ("sport1.maariv.co.il", "Sport1 5"))
+битая["sport"] = "B"
+битая["entries"][0]["raw_title"] = "חובנטוד בדאלונה - ברצלונה (משולב)"
+проверка("отметка сайта при игре (узнана по ивритской подписи, хоть имя игры битое) — тихо",
+         сторож(сайт("sport1.maariv.co.il", показ("Sport1 5", "חובנטוד בדאלונה - ברצלונה",
+                                                  "2026-10-18T19:55")),
+                витрина(битая, эталон=(ховентуд,))), [])
+audit_run._SEEN_DICT.clear()
+audit_run._SEEN_DICT.update(сохранено)
+
 print("2. окно эфира: от часа до начала до 15 мин после")
 проверка("показ за 95 мин (запись 17:25 у Rai Sport) — не эфир",
          сторож(сайт("raiplay.it", показ("Rai Sport", "Bielorussia - Italia", "2026-10-13T17:40")),
