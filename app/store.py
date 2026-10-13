@@ -27,9 +27,8 @@ import re
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from urllib.parse import urlsplit
 
-from . import broadcast, channel_owner, league_words, merge, miss, names, redo
+from . import broadcast, channel_owner, channel_page, league_words, merge, miss, names, redo
 
 # Грейс после начала, минуты (ТЗ разд. 10). Число-уговор, не измерение;
 # правится в админке («Настройки»), здесь только значения по умолчанию.
@@ -51,24 +50,39 @@ OTHER_SPORT_GRACE_MIN = 180  # начавшееся на вкладке «Other 
 #: самой — иначе каждый канал свежей игры носил бы бейдж
 FRESH_CHANNEL_GAP = timedelta(hours=3)
 
-#: адрес, которым программу читала МАШИНА: API-ручка или файл выгрузки.
-#: Человеку такая ссылка показывает сырой JSON или ошибку (кейс PPV2/PPV3
-#: у #686, 04.09) — кнопка ↗ ведёт тогда на обычную страницу источника
-_MACHINE_URL_RE = re.compile(
-    r"/api/|ajax|tvapi|\.json(\?|$)|\.xml(\?|$)|data-feed|/cache/|/epg/",
-    re.I)
+def human_url(source_url: str | None, base_url: str | None, *,
+              domain: str = "", start_kyiv: str | None = None,
+              tz: str | None = None, channel: str | tuple = "") -> str:
+    """Ссылка кнопки ↗ «Открыть расписание канала» — страница канала на
+    день игры на сайте. Правила — `app/channel_page.py` (13.10: машинный
+    адрес Sport Klub вёл человека на ошибку 401). `channel` — имя канала
+    или несколько (`site_names`): словари сайтов знают имя, как его пишет
+    САЙТ, а на витрине стоит имя владельца («YES Sport 3» ← «Sport1 4»)."""
+    return channel_page.link(source_url, domain=domain or "",
+                             base_url=base_url or "", start_kyiv=start_kyiv,
+                             tz=tz, channel=channel or "")
 
 
-def human_url(source_url: str | None, base_url: str | None) -> str:
-    """Ссылка «Открыть расписание канала»: страница как есть, а вместо
-    API-ручки — страница источника без query (в base_url бывают старые
-    даты из закладок, без них главная всегда живая)."""
-    if not source_url or not _MACHINE_URL_RE.search(source_url):
-        return source_url or ""
-    if not base_url:
-        return ""
-    p = urlsplit(base_url)
-    return f"{p.scheme}://{p.netloc}{p.path}" if p.scheme else base_url
+def site_names(conn: sqlite3.Connection) -> dict[tuple[int, int], list[str]]:
+    """Имена канала, как их пишет сайт: (источник, канал) → [список
+    каналов источника, написания этого источника]; (None, канал) — общие
+    написания без сайта. Одним проходом на всю витрину, а не запросом на
+    каждый канал."""
+    out: dict[tuple, list[str]] = {}
+    for r in conn.execute("SELECT source_id, channel_id, raw_name FROM source_channels "
+                          "WHERE channel_id IS NOT NULL ORDER BY include DESC, id"):
+        out.setdefault((r[0], r[1]), []).append(r[2] or "")
+    for r in conn.execute("SELECT source_id, channel_id, alias FROM channel_aliases "
+                          "ORDER BY id"):
+        out.setdefault((r[0], r[1]), []).append(r[2] or "")
+    return out
+
+
+def channel_names(names: dict, source_id, channel_id, shown: str) -> tuple:
+    """Имена для `human_url` по порядку: как на этом сайте, имя витрины,
+    общие написания."""
+    return tuple(n for n in (*names.get((source_id, channel_id), ()), shown,
+                             *names.get((None, channel_id), ())) if n)
 
 
 def grace_map(conn: sqlite3.Connection) -> dict[str, int]:
@@ -741,6 +755,8 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
     # переименование лиги действует сразу, не дожидаясь следующего импорта:
     # событие ещё держит league_auto, а показываем уже канон из алиаса
     league_names = dictionary.league_overrides(conn)
+    # имена каналов, как их пишут сайты, — для ссылки ↗ (13.10)
+    names_on_site = site_names(conn)
 
     # Что уже лежит в очереди на подтверждение (страница «Имена»): по этим
     # играм ответ найден, но ждёт вашего слова. Раньше витрина о них молчала,
@@ -814,7 +830,8 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                 "SELECT c.id, c.canonical_name AS name, c.country, "
                 "       c.custom_name, c.note, ec.first_seen AS ch_first_seen, "
                 "       ec.source_url, s.base_url, s.created_at, ec.time_off, "
-                "       ec.miss_count, ec.seen AS ch_seen, ec.raw_title "
+                "       ec.miss_count, ec.seen AS ch_seen, ec.raw_title, "
+                "       s.domain, s.timezone, ec.source_id "
                 "FROM event_channels ec "
                 "JOIN channels c ON c.id = ec.channel_id "
                 "LEFT JOIN sources s ON s.id = ec.source_id "
@@ -852,7 +869,13 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                              # его, без приставки (уточнение 10.09 к
                              # правилу 05.09 «канал копируется со страной»)
                              "custom": bool(r["custom_name"] or r["note"]),
-                             "url": human_url(r["source_url"], r["base_url"]),
+                             "url": human_url(r["source_url"], r["base_url"],
+                                              domain=r["domain"],
+                                              start_kyiv=row["start_kyiv"],
+                                              tz=r["timezone"],
+                                              channel=channel_names(
+                                                  names_on_site, r["source_id"],
+                                                  r["id"], r["name"])),
                              # сайт канала пишет другое время, чем flashscore
                              # (14.09) — красным, «перепроверить»
                              # у «снятого» канала служебные пометки гасим:
@@ -1182,15 +1205,14 @@ def other_sport_schedule(conn: sqlite3.Connection,
     # Ссылка «открыть расписание канала» — тот же принцип, что у матчей
     # (`human_url`; владелец 04.10). Строки, залитые до правки, адреса
     # страницы не знают — им даём страницу расписания самого сайта
-    base = {_bare(r["domain"]): r["base_url"] or "" for r in conn.execute(
-        "SELECT domain, base_url FROM sources")}
+    base = {_bare(r["domain"]): (r["base_url"] or "", r["timezone"])
+            for r in conn.execute("SELECT domain, base_url, timezone FROM sources")}
 
-    def link(domain: str, source_url: str | None) -> str:
-        home = base.get(_bare(domain), "")
-        p = urlsplit(home)
-        # в base_url бывают старые даты из закладок — берём без query
-        page = f"{p.scheme}://{p.netloc}{p.path}" if p.scheme else home
-        return human_url(source_url, home) or page
+    def link(domain: str, source_url: str | None, start_kyiv: str,
+             channel: str) -> str:
+        home, tz = base.get(_bare(domain), ("", None))
+        return human_url(source_url, home, domain=domain,
+                         start_kyiv=start_kyiv, tz=tz, channel=channel)
 
     out: dict[tuple[str, str, str], dict] = {}
     for r in rows:
@@ -1205,7 +1227,8 @@ def other_sport_schedule(conn: sqlite3.Connection,
                 "channels": [], "words": [], "domains": [], "links": []}
         if r["channel"] and r["channel"] not in item["channels"]:
             item["links"].append({"name": r["channel"],
-                                  "url": link(r["domain"], r["source_url"])})
+                                  "url": link(r["domain"], r["source_url"],
+                                              r["start_kyiv"], r["channel"])})
         for field, value in (("channels", r["channel"]), ("words", r["word"]),
                              ("domains", r["domain"])):
             if value and value not in item[field]:

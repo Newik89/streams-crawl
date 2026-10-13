@@ -33,6 +33,8 @@ data/*
 !data/dictionaries.json
 # автоперевод названий лиг: словарь спортивных слов (владелец 12.10.2026)
 !data/league_words.json
+# кнопка ↗: страница канала на дату по сайтам (владелец 13.10.2026)
+!data/channel_pages.json
 
 # служебное для Claude Code
 .claude/
