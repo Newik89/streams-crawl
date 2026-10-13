@@ -471,6 +471,12 @@ def _mark(note: str) -> str:
     return "✅ " + note
 
 
+def _now() -> datetime:
+    """Часы докачки дозабора отдельной функцией — проверки ставят нужное
+    время (ночное правило отбора, `redo.night_strict`)."""
+    return datetime.now(timezone.utc)
+
+
 def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
                budget_minutes: float = redo.REDO_FETCH_MINUTES,
                clock=time.monotonic) -> tuple[int, dict, list[str]]:
@@ -486,7 +492,8 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
     Возвращает (код, отчёт, строки для report.md). Код 1 — дозабирать
     нечего (упавших ноль или массовый сбой — сервер такой дозабор не
     заказывает): отчёт прежний, файлы не тронуты."""
-    choice = redo.pick(report)
+    # ночью и в другие сутки — только адреса с датой (`redo.night_strict`)
+    choice = redo.pick(report, now=_now())
     if choice.mass:
         print(f"::error::упавших адресов (сайт лёг / нет ответа) {choice.total} — "
               f"больше {redo.REDO_MASS}: это массовый сбой, а не дозабор")
@@ -717,6 +724,9 @@ def main() -> int:
     by_links = not (args.urls or args.probe)
     scan = date.fromisoformat(args.date) if args.date else None
     пояс = {s["domain"]: site_tz(s) for s in plan["sources"]}
+    # киевские сутки начала сбора — по ним дозабор решает, не другие ли
+    # сутки на дворе (ночное правило, `app/redo.py`, Д2)
+    начат_киев = datetime.now(redo.KYIV).date().isoformat()
 
     report = []
     started = time.monotonic()
@@ -839,8 +849,12 @@ def main() -> int:
     # «прогон» — id прогона GitHub (`GITHUB_RUN_ID`; вне GitHub пусто): по
     # нему сторож сервера сверяет, что отчёт в results/ — того самого сбора,
     # чьи упавшие адреса он дозабирает (`app/redo.py`, Д2)
+    # «начат_киев» и «пояса» (пояс каждого сайта, как у `site_tz`) — для
+    # ночного правила дозабора: страница без даты в адресе после полуночи
+    # или в теленочь сайта дала бы другой день (`app/redo.py`, Д2)
     payload = {"когда": str(date.today()), "режим": mode,
-               "прогон": os.environ.get("GITHUB_RUN_ID", ""), "строки": report,
+               "прогон": os.environ.get("GITHUB_RUN_ID", ""),
+               "начат_киев": начат_киев, "пояса": пояс, "строки": report,
                "дозор": {d: memory.get(d, {}) for d in sorted(DAILY_PROBE)}}
     code, notes = assess(payload) if strict else (0, [])
     payload["оценка"] = {"код": code, "строки": notes, "строгая": strict}

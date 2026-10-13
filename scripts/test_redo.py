@@ -38,7 +38,7 @@ TMP = Path(tempfile.mkdtemp(prefix="redo-test-"))
 WATCH_DB = TMP / "watch.db"
 os.environ["STREAMS_DB"] = str(WATCH_DB)
 
-from app import channel_owner, crawl_hook, db, fetch, miss, redo, store, trigger, watch  # noqa: E402
+from app import channel_owner, crawl_hook, daytime, db, fetch, miss, redo, store, trigger, watch  # noqa: E402
 import fail_reason  # noqa: E402
 
 SLUG = "Newik89/streams-crawl"
@@ -79,6 +79,7 @@ rc = load("request_crawl")
 cf = load("crawl_fetch")
 cw._now = lambda: NOW[0]
 rc._now = lambda: NOW[0]
+cf._now = lambda: NOW[0]               # часы докачки дозабора на GitHub
 RESULTS_DIR = TMP / "results"
 RESULTS_DIR.mkdir()
 cw.RESULTS = RESULTS_DIR
@@ -271,7 +272,7 @@ def server_has(run: dict, rows: list[dict], collected: datetime | None = None,
                run_field: bool = True) -> None:
     """На «сервере» лежит результат сбора `run`: results/report.json и
     games.json одного коммита (метка «собрано» — UTC, до минуты)."""
-    report = {"строки": rows, "дозор": {"liveonsat.com": {}}}
+    report = {"строки": rows, "дозор": {"liveonsat.com": {}}, "начат_киев": DAY}
     if run_field:
         report["прогон"] = str(run["id"])
     made = collected or (watch._utc(run["updated_at"]) - timedelta(minutes=10))
@@ -403,22 +404,70 @@ check("больше 6 ч после конца — не нужен, молча; 
       redo.plan(now=K("16:00"), **base)[0] == "quiet"
       and redo.plan(now=K("16:00"), **dict(base, deferred=True))[0] == "skip"
       and redo.REDO_LATE_HOURS == watch.ORDER_TTL_HOURS)
-check("ночь, дни уже собраны, до слота меньше часа — строка без заказа; идёт накрывающий обход — молча ждём",
-      redo.plan(now=K("11:00"), **dict(base, night=True))[0] == "skip"
-      and redo.plan(now=K("11:00"), **dict(base, collected="#7 (full-6)"))[0] == "skip"
+check("дни уже собраны, до слота меньше часа — строка без заказа; идёт более новый обход — молча ждём",
+      redo.plan(now=K("11:00"), **dict(base, collected="#7 (full-6)"))[0] == "skip"
       and redo.plan(now=K("15:20"), **base)[0] == "skip"
       and redo.plan(now=K("11:00"), **dict(base, going="#8 (full-6)"))[0] == "wait")
 check("очередь GitHub занята или заявка уже ушла — отложить",
       redo.plan(now=K("11:00"), **dict(base, blocker="очередь"))[0] == "defer")
+night_base =dict(base, end=K("21:50"), night=True, next_slot=K("08:15", NEXT))
+check("НОЧЬ (владелец 13.10): сбор кончился в 21:50 → в 23:00 и в 02:45 молча ждём, в 03:00 — заказ",
+      redo.plan(now=K("23:00"), **night_base)[0] == "wait"
+      and redo.plan(now=K("02:45", NEXT), **night_base)[0] == "wait"
+      and redo.plan(now=K("03:00", NEXT), **night_base)[0] == "order"
+      and redo.REDO_NIGHT_AT == "03:00")
+check("…предел 6 ч ночному не мешает: сбор кончился в 21:00 → в 03:00 ещё можно, в 03:15 уже поздно",
+      redo.plan(now=K("03:00", NEXT), **dict(night_base, end=K("21:00")))[0] == "order"
+      and redo.plan(now=K("03:15", NEXT), **dict(night_base, end=K("21:00")))[0] == "quiet")
+check("…утром ночь кончается слотом: в 07:30 до 08:15 меньше часа — не заказываю",
+      redo.plan(now=K("07:30", NEXT), **dict(night_base, end=K("02:00", NEXT)))[0] == "skip")
+check("дата в адресе — все форматы: ГГГГ-ММ-ДД, ДД.ММ.ГГГГ, ГГГГММДД, ДД-ММ-ГГГГ, %2F, ГГГГ/ММ/ДД, day=&month=&year=, тело POST",
+      all(redo.dated(dict(row(1), url=u)) for u in (
+          "https://a.test/x?date=2026-11-10", "https://a.test/x/10.11.2026", "https://a.test/epg-20261110.json",
+          "https://a.test/x?d=10-11-2026", "https://a.test/x?date=10%2F11%2F2026", "https://a.test/2026/11/10/",
+          "https://a.test/x?day=10&month=11&year=2026", "https://a.test/x?date=10/11/2026"))
+      and redo.dated(dict(row(1), url="https://a.test/post", post={"datum": "10.11.2026"}))
+      and redo.dated(dict(row(1), url="https://a.test/api", post_json={"q": {"from": "2026-11-10T00:00"}}))
+      and redo.dated(dict(row(1), day="2026-11-05", url="https://a.test/x?d=5.11.2026")))
+check("…без даты: «сегодня», ?d=0, day=0, метка UNIX, ЧУЖАЯ дата, строка без дня",
+      not any(redo.dated(dict(row(1), url=u)) for u in (
+          "https://a.test/today", "https://a.test/x?d=0", "https://a.test/x?day=0",
+          "https://a.test/x?ts=1762732800", "https://a.test/x?date=2026-11-11",
+          "https://a.test/x?date=2026-11-100"))
+      and not redo.dated(dict(row(1), day="", url="https://a.test/x?date=2026-11-10")))
+check("теленочь сайта — по его поясу: Бухарест в 03:00 Киева — ночь, в 11:00 — день; Нью-Йорк в 11:00 Киева — ночь",
+      redo.site_night("Europe/Bucharest", K("03:00", NEXT)) and not redo.site_night("Europe/Bucharest", K("11:00"))
+      and redo.site_night("America/New_York", K("11:00")) and redo.site_night("Нет/Пояса", K("08:30"))
+      and redo.TV_DAY_START_HOUR == daytime.TV_DAY_START_HOUR)
+zones = {"s1.test": "Europe/Bucharest", "s2.test": "Europe/Bucharest", "us.test": "America/New_York"}
+night_report = {"начат_киев": DAY, "пояса": zones, "строки": [
+    dict(down(1), url=f"https://s1.test/tv?date={DAY}"), down(2),
+    dict(net(3), domain="us.test", url="https://us.test/today"),
+    dict(net(4), domain="us.test", url=f"https://us.test/tv/{DAY}")]}
+at_night = redo.pick(night_report, now=K("03:00", NEXT))
+by_day = redo.pick(night_report, now=K("11:00"))
+check("отбор ночью (другие сутки): только адреса с датой, прочие — «ночью — адрес без даты»",
+      at_night.index == [0, 3] and at_night.skipped == {redo.NIGHT_UNDATED: 2}, at_night)
+check("…днём в те же сутки: сайт без теленочи — как раньше, сайт в теленочи (Нью-Йорк) — только с датой",
+      by_day.index == [0, 1, 3] and by_day.skipped == {redo.NIGHT_UNDATED: 1}, by_day)
+check("…без «пояса» сайта — по Киеву; без «начат_киев» — по «когда»; без обоих — строго",
+      redo.night_strict({"когда": DAY}, down(2), K("11:00")) is False
+      and redo.night_strict({"когда": DAY}, down(2), K("06:30")) is True
+      and redo.night_strict({}, down(2), K("11:00")) is True)
 evening = mkrun(K("20:31"), ended=K("21:50"))
 reset([evening])
 done_order(evening, at="20:30")
-server_has(evening, [down(1), net(2)])
+server_has(evening, night_report["строки"])
 edge = last_id()
 tick(K("23:00"))
-check("сбор 20:30 кончился в 21:50 → в 23:00 ночь: дозабор не заказываю, строка про утренний 08:15",
-      redo_orders() == [] and len(notes_after(edge)) == 1 and "ночь" in notes_after(edge)[0]
-      and "08:15" in notes_after(edge)[0] and alarms_after(edge) == [], (ORDERS, notes_after(edge)))
+check("сбор 20:30 кончился в 21:50 → в 23:00 ночь: молча ждём 03:00, строк нет",
+      redo_orders() == [] and notes_after(edge) == [], (ORDERS, notes_after(edge)))
+tick(K("03:00", NEXT))
+redo7 = [r for r in book() if r["what"] == f"redo-{evening['id']}"]
+check("…в 03:00 заказан дозабор только адресов с датой (2 из 4); сутки предела — сутки заказа",
+      redo_orders() == [f"redo-{evening['id']}"] and any("все 2" in n for n in notes_after(edge))
+      and redo.redo_today(redo7, K("10:00", NEXT), watch.record_at) == 1
+      and redo.redo_today(redo7, K("23:00"), watch.record_at) == 0, (ORDERS, notes_after(edge)))
 afternoon = mkrun(K("12:31"), ended=K("14:10"))
 reset([afternoon])
 done_order(afternoon, at="12:30", slot=False)
@@ -617,6 +666,7 @@ check("потолок хода покрывает докачку: установ
 
 # ════════════════════════════════════════════════════════════════════════════
 rule("Д6", "GitHub: качаем ТОЛЬКО отобранные, report.json — упавшие строки свежими")
+NOW[0] = K("11:00")                    # докачка днём, в те же сутки, что сбор
 
 
 class FakeFetcher:
@@ -662,7 +712,7 @@ check("раздел «дозабор»: из прогона, адресов, в�
       and "окно 6" in merged["режим"] and report6["прогон"] == "555", merged.get("дозабор"))
 clock_values = iter([0, 0, 1700, 2000, 9999])
 fake_slow = FakeFetcher({})
-code_b, merged_b, _ = cf.redo_fetch({"строки": [down(1), down(2), down(3)]}, OUT, fake_slow, "1",
+code_b, merged_b, _ = cf.redo_fetch({"когда": DAY, "строки": [down(1), down(2), down(3)]}, OUT, fake_slow, "1",
                                     budget_minutes=30, clock=lambda: next(clock_values))
 check("не успели за 30 мин — оставшиеся строки остаются как были",
       code_b == 0 and len(fake_slow.asked) == 2 and merged_b["строки"][2] == down(3)
@@ -678,7 +728,7 @@ check("предел на сайт: 2 адреса подряд не открыл
       and redo.REDO_SITE_FAILS == 2)
 same_site = [row(i, why="HTTP 503", domain="lying.test") for i in range(1, 5)] + [down(9)]
 fake_lying = FakeFetcher({down(9)["url"]: (page_html, "")})
-code_s, merged_s, md_s = cf.redo_fetch({"строки": same_site}, OUT, fake_lying, "1")
+code_s, merged_s, md_s = cf.redo_fetch({"когда": DAY, "строки": same_site}, OUT, fake_lying, "1")
 check("…в дозаборе: у lying.test спрошены 2 адреса из 4, остальные 2 — как были, причина в разделе; другой сайт качается",
       code_s == 0 and fake_lying.asked == [same_site[0]["url"], same_site[1]["url"], down(9)["url"]]
       and merged_s["строки"][2] == same_site[2] and merged_s["строки"][3] == same_site[3]
@@ -686,10 +736,17 @@ check("…в дозаборе: у lying.test спрошены 2 адреса и�
       and merged_s["дозабор"]["адресов"] == 3 and any("не трогали" in x for x in md_s),
       (fake_lying.asked, merged_s["дозабор"]))
 fake_none = FakeFetcher({})
-code_m, _, _ = cf.redo_fetch({"строки": [down(i) for i in range(81)]}, OUT, fake_none, "1")
-code_z, _, _ = cf.redo_fetch({"строки": [ok(1), ban(2)]}, OUT, fake_none, "1")
+code_m, _, _ = cf.redo_fetch({"когда": DAY, "строки": [down(i) for i in range(81)]}, OUT, fake_none, "1")
+code_z, _, _ = cf.redo_fetch({"когда": DAY, "строки": [ok(1), ban(2)]}, OUT, fake_none, "1")
 check("массовый сбой или ноль упавших — код 1 и ни одного запроса (сервер такой и не закажет)",
       code_m == 1 and code_z == 1 and fake_none.asked == [])
+NOW[0] = K("03:05", NEXT)
+fake_night = FakeFetcher({})
+code_n, merged_n, _ = cf.redo_fetch(night_report, TMP, fake_night, "1")
+check("ночью на GitHub (докачка в 03:05) спрошены те же 2 адреса с датой, что выбрал сторож (одна функция отбора)",
+      code_n == 0 and fake_night.asked == [night_report["строки"][0]["url"], night_report["строки"][3]["url"]],
+      fake_night.asked)
+NOW[0] = K("11:00")
 made: list[dict] = []
 real_fetcher = fetch.Fetcher
 

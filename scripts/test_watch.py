@@ -1879,7 +1879,8 @@ def redo_results(run: dict, rows: list[dict], collected: datetime) -> None:
     """«Сервер» забрал результат сбора `run`: results/report.json и games.json
     одного коммита (С7 сверяет по ним, что отчёт — того самого прогона)."""
     (RESULTS_DIR / "report.json").write_text(json.dumps(
-        {"прогон": str(run["id"]), "строки": rows}, ensure_ascii=False), encoding="utf-8")
+        {"прогон": str(run["id"]), "начат_киев": DAY, "строки": rows}, ensure_ascii=False),
+        encoding="utf-8")
     (RESULTS_DIR / "games.json").write_text(json.dumps(
         {"собрано": collected.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M")}),
         encoding="utf-8")

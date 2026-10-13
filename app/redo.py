@@ -32,14 +32,25 @@
       ban (заглушка защиты, 403, 429 — к закрывшим не ходим), страницу
       защиты с кодом 5xx («защита: …» в причине), прочие ответы 4xx (сайт
       ответил «нет такой страницы» — повтор не поможет), сайты дозора
-      (раздел «дозор» отчёта — их пробуют раз в сутки). Отбор — ОДНА функция
+      (раздел «дозор» отчёта — их пробуют раз в сутки). НОЧЬЮ (`night_strict`:
+      дозабор идёт не в те киевские сутки, в которые начат сбор, или сайт
+      строки сейчас в своей теленочи — до `TV_DAY_START_HOUR` по его поясу
+      из раздела «пояса» отчёта) берём только строки, чей адрес или тело
+      POST ЯВНО несёт дату дня строки (`dated`: ГГГГ-ММ-ДД, ДД.ММ.ГГГГ,
+      ГГГГММДД, ДД-ММ-ГГГГ, ДД/ММ/ГГГГ, ГГГГ/ММ/ДД, %2F-варианты,
+      day=…&month=…&year=…); прочие — в `skipped` «ночью — адрес без даты,
+      возьмёт утренний сбор»: страница «сегодня», `?d=0`, одна сетка на все
+      дни после полуночи дала бы ДРУГОЙ день. Отбор — ОДНА функция
       `pick`: её зовут и сторож (сколько упало, массовый ли сбой), и GitHub
-      (какие адреса качать) — считают одинаково по одному и тому же отчёту.
+      (какие адреса качать) — считают одинаково по одному и тому же отчёту
+      (часы у каждого свои: сторож — время решения, GitHub — время докачки).
   Д3. `plan` (время и отказы). Не раньше `REDO_AFTER_MINUTES` после конца
       сбора (сайт лёг — дать ему подняться; раньше — молча ждём) и не позже
-      `REDO_LATE_HOURS`. Не заказываем, строка в «Прогоны»: ночь (сайты до
-      утра отдают вчерашние телесутки — как у досрочного, С6); дни уже
-      собрал более новый удачный полный (`watch.collected_by`); до
+      `REDO_LATE_HOURS`. НОЧЬ (владелец 13.10): срок пришёлся на ночь (с
+      22:30 до утреннего слота, `watch.in_night`) — дозабор молча ждёт
+      `REDO_NIGHT_AT` (03:00 по Киеву) и идёт только по адресам с датой (Д2);
+      сутки предела (Д4) — сутки заказа. Не заказываем, строка в «Прогоны»:
+      дни уже собрал более новый удачный полный (`watch.collected_by`); до
       ближайшего планового слота меньше `REDO_SLOT_GAP_MINUTES` (он сам всё
       соберёт; слот считается ближайшим ещё `REDO_SLOT_GRACE_MINUTES` после
       своего времени — сторож приходит в одну минуту с плановой заявкой, и
@@ -118,10 +129,12 @@ GitHub (`crawl_fetch.py`, `parse_live.py`, `fail_reason.py`).
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from zoneinfo import ZoneInfo
+from datetime import date, datetime, timezone
+from urllib.parse import unquote
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 KYIV = ZoneInfo("Europe/Kyiv")
 
@@ -134,8 +147,18 @@ REDO_KINDS = ("planned", "early", "manual")
 #: подняться (схема сбоев: «T+60–90: дозабор упавших адресов»)
 REDO_AFTER_MINUTES = 60
 #: Д3: не позже стольких часов после конца сбора — тот же срок, что у заказа
-#: книги (`watch.ORDER_TTL_HOURS`; совпадение сверяет test_redo.py)
+#: книги (`watch.ORDER_TTL_HOURS`; совпадение сверяет test_redo.py). Ночному
+#: дозабору хватает: срок попадает в ночь, только если сбор кончился после
+#: 21:30, — до 03:00 от него меньше 5,5 ч
 REDO_LATE_HOURS = 6
+#: Д3: ночной дозабор (правило владельца 13.10) — в это время по Киеву.
+#: Ночь — с `watch.EARLY_NIGHT_FROM` (22:30) до утреннего слота (`in_night`);
+#: в её вечерней половине, до 03:00, дозабор молча ждёт
+REDO_NIGHT_AT = "03:00"
+#: Д2 (ночь): до этого часа по часам сайта его страница «сегодня» — ещё
+#: вчерашние телесутки (= `daytime.TV_DAY_START_HOUR`; совпадение сверяет
+#: test_redo.py)
+TV_DAY_START_HOUR = 7
 #: Д3: до ближайшего планового слота меньше стольких минут — дозабор не
 #: нужен, слот соберёт сам
 REDO_SLOT_GAP_MINUTES = 60
@@ -213,9 +236,78 @@ def row_class(row: dict) -> str:
     return "net"
 
 
-def skip_reason(row: dict, never=frozenset()) -> str:
+#: Д2 (ночь): причина в `skipped` у строки без даты в адресе
+NIGHT_UNDATED = "ночью — адрес без даты, возьмёт утренний сбор"
+
+
+def _date_forms(day: date) -> set[str]:
+    """Д2 (ночь): как дата `day` пишется в адресах: ГГГГ-ММ-ДД, ДД.ММ.ГГГГ,
+    ГГГГММДД, ДД-ММ-ГГГГ, ДД/ММ/ГГГГ, ГГГГ/ММ/ДД (день и месяц — и с
+    нулём, и без)."""
+    y = f"{day.year:04d}"
+    out = {f"{y}{day.month:02d}{day.day:02d}"}
+    for m in {f"{day.month:02d}", str(day.month)}:
+        for d in {f"{day.day:02d}", str(day.day)}:
+            out |= {f"{y}-{m}-{d}", f"{d}.{m}.{y}", f"{d}-{m}-{y}",
+                    f"{d}/{m}/{y}", f"{y}/{m}/{d}"}
+    return out
+
+
+def dated(row: dict) -> bool:
+    """Д2 (ночь): адрес строки или тело её POST-запроса (`post`,
+    `post_json`) ЯВНО несёт дату дня строки (`day`): форматы — `_date_forms`
+    (в адресе — и раскодированные `%2F`), либо поля day=ДД, month=ММ,
+    year=ГГГГ. Номер дня (`?d=0`, `day=0`), «сегодня», метка UNIX — даты
+    нет (осторожно: такой адрес после полуночи даст другой день)."""
+    try:
+        day = date.fromisoformat(str(row.get("day") or ""))
+    except ValueError:
+        return False
+    text = " ".join([unquote(str(row.get("url") or "")),
+                     json.dumps(row.get("post") or "", ensure_ascii=False),
+                     json.dumps(row.get("post_json") or "", ensure_ascii=False)])
+    for form in _date_forms(day):
+        if re.search(rf"(?<!\d){re.escape(form)}(?!\d)", text):
+            return True
+    parts = (("day", day.day), ("month", day.month), ("year", day.year))
+    return all(re.search(rf"(?<![a-z]){name}[\"']?\s*[=:]\s*[\"']?0?{value}(?!\d)",
+                         text, re.I) for name, value in parts)
+
+
+def site_night(tz, now: datetime) -> bool:
+    """Д2 (ночь): у сайта с поясом `tz` сейчас теленочь — его страница
+    «сегодня» ещё держит вчерашние телесутки (`TV_DAY_START_HOUR`, как
+    `daytime.tv_night`; пояса нет — UTC, как `daytime.today`)."""
+    zone = timezone.utc
+    if tz:
+        try:
+            zone = ZoneInfo(str(tz))
+        except (ValueError, KeyError, ZoneInfoNotFoundError):
+            zone = timezone.utc
+    return now.astimezone(zone).hour < TV_DAY_START_HOUR
+
+
+def night_strict(report: dict, row: dict, now: datetime) -> bool:
+    """Д2 (ночь): брать строку только с явной датой в адресе (`dated`)?
+    Да, если дозабор идёт НЕ в те киевские сутки, в которые начат сбор
+    («начат_киев» отчёта; старый отчёт — «когда»), или сайт строки сейчас
+    в своей теленочи (`site_night`; пояс — раздел «пояса» отчёта, сайта в
+    нём нет — по Киеву). Перекачка страницы без даты дала бы другой день,
+    чем записан в строке."""
+    crawl_day = str(report.get("начат_киев") or report.get("когда") or "")
+    if now.astimezone(KYIV).date().isoformat() != crawl_day:
+        return True
+    zones = report.get("пояса")
+    zones = zones if isinstance(zones, dict) else {}
+    domain = row.get("domain")
+    tz = zones[domain] if domain in zones else "Europe/Kyiv"
+    return site_night(tz, now)
+
+
+def skip_reason(row: dict, never=frozenset(), strict: bool = False) -> str:
     """Д2: почему строку НЕ дозабираем; пусто — берём (класс down или net).
-    `never` — сайты дозора (без www): их пробуют раз в сутки, не чаще."""
+    `never` — сайты дозора (без www): их пробуют раз в сутки, не чаще;
+    `strict` — ночь (`night_strict`): брать только адрес с датой."""
     if not isinstance(row, dict):
         return "строка отчёта битая"
     kind = row_class(row)
@@ -232,6 +324,8 @@ def skip_reason(row: dict, never=frozenset()) -> str:
         return "страница защиты"
     if _4XX.search(why):
         return "ответ 4xx"
+    if strict and not dated(row):
+        return NIGHT_UNDATED
     return ""
 
 
@@ -250,12 +344,15 @@ class Pick:
     skipped: dict = field(default_factory=dict)
 
 
-def pick(report: dict) -> Pick:
+def pick(report: dict, now: datetime | None = None) -> Pick:
     """Д2 + Д4: какие строки отчёта сбора качать заново. ОДНА функция на
     сервер (сторож: сколько упало, не массовый ли сбой) и GitHub
-    (`crawl_fetch.py --redo`: что качать). Битый отчёт (не словарь, строки
-    не списком, строка не словарь) проверку не роняет: такие строки — в
-    `skipped` («строка отчёта битая»), не отчёт — ноль упавших."""
+    (`crawl_fetch.py --redo`: что качать). `now` — когда дозабор качает
+    (сторож — время решения, GitHub — время докачки): ночью и в другие
+    сутки (`night_strict`) берутся только адреса с датой (`dated`). Битый
+    отчёт (не словарь, строки не списком, строка не словарь) проверку не
+    роняет: такие строки — в `skipped` («строка отчёта битая»), не отчёт —
+    ноль упавших."""
     report = report if isinstance(report, dict) else {}
     rows = report.get("строки")
     rows = rows if isinstance(rows, list) else []
@@ -264,7 +361,9 @@ def pick(report: dict) -> Pick:
     take: list[int] = []
     skipped: dict[str, int] = {}
     for i, row in enumerate(rows):
-        why = skip_reason(row, never)
+        strict = (now is not None and isinstance(row, dict)
+                  and night_strict(report, row, now))
+        why = skip_reason(row, never, strict)
         if why == "открылась":
             continue
         if why:
@@ -319,13 +418,16 @@ def plan(*, end: datetime, now: datetime, choice: Pick, same: str, night: bool,
          next_slot: datetime, collected: str, going: str, today: int,
          blocker: str, deferred: bool) -> tuple[str, str]:
     """Дозабор успешного сбора, кончившегося в `end`, — что делать сейчас
-    (Д3, Д4): (решение, слова). Проверки — в этом порядке:
-      wait  — рано (меньше `REDO_AFTER_MINUTES` с конца сбора) или идёт
-              полный обход, накрывающий эти дни (`going`): молча ждём;
+    (Д3, Д4): (решение, слова). `night` — сейчас ночь (`watch.in_night`):
+    в её вечерней половине, до `REDO_NIGHT_AT` (03:00), ждём; после — можно,
+    а что брать, уже решил отбор (`choice`: ночью — только адреса с датой).
+    Проверки — в этом порядке:
+      wait  — рано (меньше `REDO_AFTER_MINUTES` с конца сбора), ночь до
+              03:00 или идёт более новый полный обход (`going`): молча ждём;
       quiet — дозабор не нужен, молча: поздно и заявку не откладывали,
               отчёт на сервере не этого прогона (`same`), упавших down/net
-              ноль;
-      skip  — не заказываем, строка: массовый сбой, ночь, дни уже собраны
+              (ночью — с датой в адресе) ноль;
+      skip  — не заказываем, строка: массовый сбой, дни уже собраны
               (`collected`), до слота `next_slot` меньше часа, предел суток
               (`today`), так и не ушёл после отсрочек (`deferred`);
       defer — отложен (`blocker`: очередь GitHub занята, заявка уже ушла):
@@ -341,19 +443,22 @@ def plan(*, end: datetime, now: datetime, choice: Pick, same: str, night: bool,
     if minutes < REDO_AFTER_MINUTES:
         return "wait", (f"с конца сбора {minutes:.0f} мин — дозабор не раньше чем "
                         f"через {REDO_AFTER_MINUTES}")
+    if night and not (REDO_NIGHT_AT <= hm(now) < "12:00"):
+        # вечерняя половина ночи: ждём 03:00 (правило владельца 13.10)
+        return "wait", (f"ночь — дозабор в {REDO_NIGHT_AT} по Киеву, только по "
+                        f"адресам с датой дня")
     if same:
         return "quiet", f"{same} — дозабор не заказываю"
     if choice.total == 0:
         return "quiet", "упавших адресов, которые стоит повторить (сайт лёг, нет ответа), нет"
     count = f"не открылись {choice.total} адр. (сайт лёг или не ответил)"
+    if choice.skipped.get(NIGHT_UNDATED):
+        count += (f" с датой в адресе; ещё {choice.skipped[NIGHT_UNDATED]} без даты "
+                  f"сейчас не трогаю — их возьмёт утренний сбор")
     if choice.mass:
         return "skip", (f"{count} — больше {REDO_MASS}: это массовый сбой, а не "
                         f"дозабор. Дозабор не заказываю; следующий плановый "
                         f"{hm(next_slot)} соберёт всё")
-    if night:
-        return "skip", (f"{count}, но сейчас ночь — дозабор не заказываю: сайты до "
-                        f"утра отдают вчерашние телесутки. Их соберёт утренний "
-                        f"плановый {hm(next_slot)}")
     if collected:
         return "skip", f"{count}, но эти дни уже собрал обход {collected} — дозабор не нужен"
     if going:

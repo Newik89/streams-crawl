@@ -861,7 +861,7 @@ def redo_facts(t: Round, rec: dict, run: dict | None,
         "в эту проверку уже ушла другая заявка — второй тег вытеснил бы её в "
         "очереди GitHub" if t.sent else "")
     return redo.plan(
-        end=end, now=t.now, choice=redo.pick(report or {}),
+        end=end, now=t.now, choice=redo.pick(report or {}, now=t.now),
         same=redo.same_run(report, games, run.get("id"), start + skew, end + skew),
         night=watch.in_night(t.now),
         # слот ещё `REDO_SLOT_GRACE_MINUTES` после своего времени — «ближайший»:
