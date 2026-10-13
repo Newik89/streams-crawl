@@ -10,10 +10,14 @@ r"""Проверка перед выкладкой — одной командо
    возможность без случая в книге — красный («добавь случай»).
 3. Книга случаев (`scripts/kniga.py`) — все случаи зелёные.
 4. С `--sravnit <папка сбора>` — последний сбор разбирается старым кодом
-   (`--base`, по умолчанию origin/main) и новым, с часами на моменте сбора.
-   Новое и изменённое — печатается. ПОТЕРЯ (игра пропала или у игры пропал
-   канал) — красный, если её не объясняет случай книги с «нет» или «снято»
-   (та же пара ±3 ч, тот же сайт): задуманное снятие сперва пишется в книгу.
+   (`--base`; на GitHub — общий предок ветки и main) и новым, с часами на
+   моменте сбора. Новое и изменённое — печатается. Та же игра узнаётся по
+   паре или по каналам (переименование), переезд во времени (до 3 ч) —
+   только если ближе к эталону, двойня, склеенная в прежнюю игру, — не
+   потеря. ПОТЕРЯ (у игры пропал канал; пропала игра = пропали все её
+   каналы) — красный, если каждый пропавший канал не объясняет случай книги
+   на сохранённых страницах с «нет» или «снято» (та же пара ±3 ч, тот же
+   сайт): задуманное снятие сперва пишется в книгу.
 
 В сеть не ходит (сбор берётся готовым: `github_run.py fetch --run N`).
     python scripts/proverka.py                     # тесты + книга, ~3 мин
@@ -100,7 +104,9 @@ def _git(*args: str) -> str:
 
 def parse_with(tree: Path, folder: Path, clock: str, window: int, out: Path) -> dict:
     out.mkdir(parents=True, exist_ok=True)
-    env = dict(os.environ, PYTHONIOENCODING="utf-8", STREAMS_DB=str(out / "none.db"))
+    # часы — как у разбора на GitHub (UTC), где этот сбор и разбирался
+    env = dict(os.environ, PYTHONIOENCODING="utf-8", STREAMS_DB=str(out / "none.db"),
+               **kniga.PARSE_CLOCK)
     run = subprocess.run([sys.executable, "-X", "utf8", "-c", _PARSE_AT, str(tree),
                           str(folder), clock, str(window), str(out)],
                          capture_output=True, text=True, encoding="utf-8",
@@ -122,60 +128,97 @@ def _chans(g: dict) -> set:
             for e in g.get("entries") or []}
 
 
-def explained(game: dict, site: str = "") -> str:
-    """Номер случая книги, который объясняет потерю этой игры (или канала
-    этого сайта у неё): «нет»/«снято» с той же парой ±3 ч и тем же сайтом."""
+def explained(game: dict, site: str) -> str:
+    """Номер случая книги, который объясняет потерю канала сайта `site` у
+    этой игры: «нет»/«снято» с той же парой ±3 ч и тем же сайтом. Берутся
+    только случаи на сохранённых страницах («разбор»): их «нет»/«снято»
+    книга сама проверяет, и они не зелены при любом коде."""
     when = kniga.kyiv(game["start_kyiv"])
     for case in kniga.load_cases():
+        if case.get("проверка") != "разбор":
+            continue
         for exp in case.get("ждём") or []:
             text = exp.get("нет") or exp.get("снято")
-            if not text or not exp.get("время"):
+            if not text or not exp.get("время") or not exp.get("сайт"):
+                continue
+            if kniga.bare(exp["сайт"]) != site:
                 continue
             if abs(kniga.kyiv(exp["время"]) - when) > timedelta(hours=kniga.ОКНО_НЕТ_Ч):
-                continue
-            if exp.get("сайт") and site and kniga.bare(exp["сайт"]) != site:
-                continue
-            if exp.get("сайт") and not site and not any(
-                    s == kniga.bare(exp["сайт"]) for _, s in _chans(game)):
                 continue
             if kniga.pair_score(game, text) >= kniga.ПОРОГ_ПАРЫ:
                 return str(case.get("номер"))
     return ""
 
 
-#: та же пара сдвинулась во времени не дальше этого — переезд, а не потеря
-#: (сбор #249: Al Ittihad — Al Shabab 19:55 → 20:55, ближе к эталону)
+#: та же пара сдвинулась во времени не дальше этого — переезд, а не потеря,
+#: если новое время ближе к эталону (сбор #249: Al Ittihad — Al Shabab
+#: 19:55 → 20:55 при эталоне 21:00); дальше от эталона — ошибка пояса
 СДВИГ_Ч = 3
 
 
-def twin(gone: dict, fresh: list[dict]) -> tuple[dict | None, str]:
-    """Та же игра в новом разборе, если не нашлась по имени и времени:
-    «имя» — пара та же (словарь перевёл, сверка поправила), начало ±10 мин;
-    «время» — пара та же, начало сдвинулось не дальше СДВИГ_Ч."""
+def _same_pair(one: dict, two: dict) -> bool:
     from app import canon
+    return canon._pair_score(one, {"home": two["home"], "away": two["away"]}) >= kniga.ПОРОГ_ПАРЫ
+
+
+def ref_time(game: dict, refs: list[dict]):
+    """Начало того же матча по эталону (±3 ч) или None."""
+    when = kniga.kyiv(game["start_kyiv"])
+    near = [kniga.kyiv(r["start_kyiv"]) for r in refs
+            if r.get("start_kyiv") and r.get("home") and r.get("away")
+            and abs(kniga.kyiv(r["start_kyiv"]) - when) <= timedelta(hours=СДВИГ_Ч)
+            and _same_pair(game, r)]
+    return min(near, key=lambda t: abs(t - when)) if near else None
+
+
+def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, str]:
+    """Та же игра среди НОВЫХ записей нового разбора:
+    «имя» — пара та же (словарь перевёл, сверка поправила) или все каналы
+    старой игры при ней, начало ±10 мин;
+    «время» — пара та же, начало сдвинулось не дальше СДВИГ_Ч И стало ближе
+    к эталону. Уехала дальше от эталона или эталона нет — не переезд."""
     when = kniga.kyiv(gone["start_kyiv"])
-    same = [g for g in fresh
-            if canon._pair_score(gone, {"home": g["home"], "away": g["away"]}) >= kniga.ПОРОГ_ПАРЫ]
-    near = sorted(same, key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when))
+    # та же пара — или те же каналы: имя игры могло взяться у нового сайта
+    # («Olympique de Marsella» у movistarplus вместо «Olympique Marseille»,
+    # сбор #249), а все отметки старой игры на месте
+    chans = _chans(gone)
+    near = sorted((g for g in fresh if _same_pair(gone, g)
+                   or (chans and chans <= _chans(g))),
+                  key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when))
+    kick = ref_time(gone, refs)
     for g in near:
-        shift = abs(kniga.kyiv(g["start_kyiv"]) - when)
+        new_when = kniga.kyiv(g["start_kyiv"])
+        shift = abs(new_when - when)
         if shift <= timedelta(minutes=kniga.ДОПУСК_МИН):
             return g, "имя"
-        if shift <= timedelta(hours=СДВИГ_Ч):
+        if (shift <= timedelta(hours=СДВИГ_Ч) and kick is not None
+                and abs(new_when - kick) < abs(when - kick)):
             return g, "время"
     return None, ""
+
+
+def absorbed(gone: dict, kept: list[dict]) -> dict | None:
+    """Двойня, склеенная в игру, которая была и в старом разборе: та же пара
+    ±3 ч (случай 036: дубль Lokomotiv — Krasnodar). Её каналы сверяются с
+    каналами пропавшей — недостающий канал всё равно потеря."""
+    when = kniga.kyiv(gone["start_kyiv"])
+    hosts = [g for g in kept if _same_pair(gone, g)
+             and abs(kniga.kyiv(g["start_kyiv"]) - when) <= timedelta(hours=СДВИГ_Ч)]
+    return min(hosts, key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when)) if hosts else None
 
 
 def compare(old: dict, new: dict) -> list[str]:
     """Печатает разницу, → потери без объяснения в книге."""
     a = {_key(g): g for g in old.get("games") or []}
     b = {_key(g): g for g in new.get("games") or []}
+    refs = new.get("эталон") or []
     print(f"игр: старым кодом {len(a)}, новым {len(b)}")
     losses = []
     pairs = [(a[k], b[k]) for k in sorted(set(a) & set(b))]
+    kept = [b[k] for k in sorted(set(a) & set(b))]
     fresh = [b[k] for k in sorted(set(b) - set(a))]
     for k in sorted(set(a) - set(b)):
-        same, how = twin(a[k], fresh)
+        same, how = twin(a[k], fresh, refs)
         if same:
             fresh.remove(same)
             to = (f"{same['home']} — {same['away']}" if how == "имя"
@@ -183,12 +226,21 @@ def compare(old: dict, new: dict) -> list[str]:
             print(f"  ~ {how}: {kniga._show(a[k])} → {to}")
             pairs.append((a[k], same))
             continue
-        why = explained(a[k])
-        if why:
-            print(f"  − пропала (так и надо, случай {why}): {kniga._show(a[k])}")
-        else:
-            print(f"  ✗ ПРОПАЛА: {kniga._show(a[k])}")
+        host = absorbed(a[k], kept)
+        if host:
+            print(f"  ~ склеена: {kniga._show(a[k])} → {kniga._show(host)}")
+            pairs.append((a[k], host))
+            continue
+        # пропала: потеря КАЖДОГО её канала, и каждый сайт объясняется сам —
+        # случай про один сайт не оправдывает остальные
+        bad = [(ch, site) for ch, site in sorted(_chans(a[k])) if not explained(a[k], site)]
+        if bad:
+            print(f"  ✗ ПРОПАЛА: {kniga._show(a[k])} — без случая в книге: "
+                  + ", ".join(f"{ch}/{site}" for ch, site in bad))
             losses.append(f"пропала игра {kniga._show(a[k])}")
+        else:
+            cases = sorted({explained(a[k], site) for _, site in _chans(a[k])})
+            print(f"  − пропала (так и надо, случай {', '.join(cases)}): {kniga._show(a[k])}")
     for g in fresh:
         print(f"  + новая игра: {kniga._show(g)}")
     for was, now in pairs:

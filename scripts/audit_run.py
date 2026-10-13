@@ -1212,7 +1212,7 @@ def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
             lo = bisect.bisect_left(starts, when - SEEN_AFTER)
             hi = bisect.bisect_right(starts, when + SEEN_BEFORE)
             for start, ref, cores in refs[lo:hi]:
-                fs = ref.get("fs_id") or f"{ref['home']}-{ref['away']}"
+                fs = ref.get("fs_id") or f"{ref.get('home')}-{ref.get('away')}-{start:%d%H%M}"
                 if fs in hits:
                     continue
                 for h, a in cores:
@@ -1221,8 +1221,8 @@ def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
                         hits[fs] = (p, ref, start, cores)
                         break
         lost = [f"{p.start.astimezone(KYIV):%d.%m %H:%M} {p.channel_raw} "
-                f"«{(p.title or p.match_raw or '')[:60]}» = эталон {ref['home']} — "
-                f"{ref['away']} {start:%H:%M} ({fs})"
+                f"«{(p.title or p.match_raw or '')[:60]}» = эталон {ref.get('home')} — "
+                f"{ref.get('away')} {start:%H:%M} ({fs})"
                 for fs, (p, ref, start, cores) in sorted(hits.items(), key=lambda x: x[1][2])
                 if not _site_on_game(domain, p.channel_raw, ref, cores, start, shown)]
         if lost:
