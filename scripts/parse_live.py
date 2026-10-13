@@ -571,6 +571,12 @@ def main() -> int:
         print(f"словарь имён из базы не подключён ({e}) — работаем по aliases.json")
     report_data = json.loads(report.read_text(encoding="utf-8"))
     rows = report_data["строки"]
+    # дозабор (схема сбоев, шаг 5; app/redo.py, Д7): разбираем все страницы
+    # (старые — контекст склейки и повторов), а в games.json кладём только
+    # записи со страниц, которые дозабор перекачал и которые открылись —
+    # их узнаём по ИМЕНИ ФАЙЛА из раздела «дозабор» отчёта
+    redo_mode = bool(redo.games_mark(report_data))
+    redone = redo.redone_files(report_data)
 
     found: list = []
     maybe: list = []          # пара есть, вида спорта нет — решает склейка
@@ -622,6 +628,8 @@ def main() -> int:
             problems.append(f"{row['domain']}: парсер упал — "
                             f"{type(e).__name__}: {e}")
             continue
+        if redo_mode and name in redone:
+            redo.tag_programs(programs)          # Д7: страница перекачана дозабором
         bare = _bare_domain(row["domain"])
         parsed_counts[bare] = parsed_counts.get(bare, 0) + len(programs)
         if row["domain"] in FS_LOCALES:
@@ -1099,6 +1107,9 @@ def main() -> int:
     # «Other Sport» админки, с футболом/баскетом/теннисом не смешивается
     # (владелец 03.10); вид спорта словами — из раздела «другие» markers.json
     other_rows = [x for x in other_rows if in_window(x[1].start_kyiv.date())]
+    if redo_mode:
+        # дозабор (Д7): только строки с перекачанных страниц
+        other_rows = [x for x in other_rows if redo.program_redone(x[1].program)]
     seen_other: set = set()
     other_out: list[dict] = []
     for domain, r in sorted(other_rows, key=lambda x: x[1].start_kyiv):
@@ -1120,6 +1131,7 @@ def main() -> int:
             "start_kyiv": r.start_kyiv.strftime("%Y-%m-%dT%H:%M"),
             "start_utc": (r.start_utc.strftime("%Y-%m-%dT%H:%M")
                           if r.start_utc else ""),
+            **redo.marker(redo_mode),
         })
     if other_out:
         kinds = len({x["вид"] for x in other_out})
@@ -1239,6 +1251,17 @@ def main() -> int:
     out = Path(args.md) if args.md else folder / "matches.md"
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+    if redo_mode:
+        # дозабор (Д7): в games.json — только докачанное: у игр — записи с
+        # перекачанных и открывшихся страниц (игра без них выбрасывается),
+        # «на разбор» — тоже только с них. Склейка и повторы уже посчитаны
+        # по всем страницам — старые страницы были только контекстом
+        было_игр = len(games)
+        games = redo.keep_redone_games(games)
+        unsolved = [(d, r) for d, r in unsolved if redo.program_redone(r.program)]
+        print(f"дозабор: в games.json только докачанное — игр {len(games)} из "
+              f"{было_игр} (страниц перекачано и открылось: {len(redone)})")
+
     # Машиночитаемый двойник отчёта: его забирает `scripts/games_import.py`
     # и кладёт игры в базу для сайта (этап 4). Человеку — matches.md, коду — это.
     window = args.days or plan_days(Path(args.plan))
@@ -1275,6 +1298,7 @@ def main() -> int:
                    # адрес страницы, где строка найдена: в вопросе очереди
                    # владелец открывает по нему сразу канал и дату (08.10)
                    "url": (r.program.source_url or "")[:500],
+                   **redo.marker(redo_mode),
                } for domain, r in unsolved],
                # строки, снятые фильтрами повторов, поимённо (сайт, канал,
                # заголовок, время, фильтр, почему) — заливка ключ не читает
@@ -1300,12 +1324,18 @@ def main() -> int:
                                       "source_url", "") or "",
                        "raw_title": getattr(getattr(e.payload, "program", None),
                                             "title", "") or "",
+                       # дозабор (Д7): запись с перекачанной страницы
+                       **redo.marker(redo_mode and redo.program_redone(
+                           getattr(e.payload, "program", None))),
                    } for e in g.entries],
                } for g in games]}
     # дозабор (схема сбоев, шаг 5; app/redo.py, Д7): отчёт с разделом
     # «дозабор» → в games.json «режим»: «дозабор» — по нему сервер вливает
-    # итог «только добавить», ничего не гася. Прочим отчётам — ничего
+    # итог «только добавить», ничего не гася; и только помеченное. Прочим
+    # отчётам — ничего
     payload.update(redo.games_mark(report_data))
+    if redo_mode:
+        payload = redo.only_redone(payload)
     games_out = out.parent / "games.json"
     games_out.write_text(json.dumps(payload, ensure_ascii=False, indent=1),
                          encoding="utf-8")

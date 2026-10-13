@@ -29,7 +29,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
 
-from . import broadcast, channel_owner, league_words, merge, miss, names
+from . import broadcast, channel_owner, league_words, merge, miss, names, redo
 
 # Грейс после начала, минуты (ТЗ разд. 10). Число-уговор, не измерение;
 # правится в админке («Настройки»), здесь только значения по умолчанию.
@@ -361,10 +361,12 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     `collected` — момент сбора по Киеву `ГГГГ-ММ-ДД ЧЧ:ММ` (без него сироты
     не гасятся); `withheld` — строки, которые разбор видел, но удержал
     (`withheld_rows`): их игры сиротами не считаются. `add_only` — файл
-    дозабора (схема сбоев, шаг 5, `app/redo.py` Д7): только добавить и
-    обновить — не гасится ничего (`miss`, правило 0), сироты не ищутся,
-    отметки агрегаторов не снимаются (строку агрегатора, которую не пускает
-    правило «свой сайт важнее», дозабор просто не берёт)."""
+    дозабора (схема сбоев, шаг 5, `app/redo.py` Д7): только ДОБАВИТЬ —
+    новые игры и новые отметки; у существующей игры не меняется ничего
+    (время, лига, last_seen), существующая отметка не обновляется и
+    погашенная не оживает; не гасится ничего (`miss`, правило 0), сироты не
+    ищутся, отметки агрегаторов не снимаются (строку агрегатора, которую не
+    пускает правило «свой сайт важнее», дозабор просто не берёт)."""
     now = now or datetime.now()
     stats = SaveStats()
     # время с «T» в базе — к общему виду, иначе поиск игры его не видит
@@ -448,6 +450,13 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                  start_utc, start_kyiv, _iso(now)))
             event_id = cur.lastrowid
             stats.new += 1
+        elif add_only:
+            # дозабор (`app/redo.py`, Д7): игра уже в базе — её не трогаем
+            # вовсе (ни время, ни лигу, ни last_seen): более новый сбор мог
+            # перенести матч, а дозабор старого сбора откатил бы это. Ниже —
+            # только новые отметки каналов
+            event_id = found["id"]
+            start_kyiv = db_time(found["start_kyiv"])
         else:
             event_id = found["id"]
             # свежий прогон точнее базы: время могло сдвинуться, лига — уточниться
@@ -526,6 +535,19 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 continue
             seen_channel_ids.add(channel_id)
             гашение.учесть(source["id"], start_kyiv[:10], event_id, channel_id)
+            if add_only:
+                # дозабор (Д7): только НОВАЯ отметка; живую не обновляем,
+                # погашенную (miss_count) не оживляем — это решил более
+                # новый сбор, а не старый
+                stats.channels += conn.execute(
+                    "INSERT INTO event_channels (event_id, channel_id, source_id, "
+                    "source_url, raw_title, last_seen, miss_count, time_off) "
+                    "VALUES (?, ?, ?, ?, ?, ?, 0, ?) "
+                    "ON CONFLICT (event_id, channel_id, source_id) DO NOTHING",
+                    (event_id, channel_id, source["id"] if source else None,
+                     entry.get("url") or "", entry.get("raw_title") or "",
+                     _iso(now), time_off)).rowcount
+                continue
             conn.execute(
                 "INSERT INTO event_channels (event_id, channel_id, source_id, "
                 "source_url, raw_title, last_seen, miss_count, time_off) "
@@ -1013,7 +1035,9 @@ def log_run(conn: sqlite3.Connection, report_path, stats: SaveStats,
         got = re.search(r"окно (\d+)", mode)
         if got:
             days = int(got.group(1))
-        for row in report.get("строки", []):
+        # дозабор (`app/redo.py`, Д7): о сайтах судим только по строкам,
+        # которые он перекачал, — остальные уже засчитал сам сбор
+        for row in (redo.redone_rows(report) if add_only else report.get("строки", [])):
             rows_found += 1
             domain = _bare(row["domain"])
             verdict = row.get("итог")

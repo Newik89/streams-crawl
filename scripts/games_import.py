@@ -11,11 +11,14 @@
     python scripts/games_import.py --purge-only  # только срок жизни
 
 Файл дозабора (схема сбоев, шаг 5: в games.json «режим»: «дозабор»,
-`app/redo.py` Д7) вливается «только добавить»: новые игры и отметки
-добавляются и обновляются, НИЧЕГО не гасится и не снимается, счётчики
-сбоев сайтов и метка последнего сбора (`last_crawl`) не двигаются, «кто» —
-«дозабор». Режим берётся из самого файла: строка `streams-update.sh` для
-results/partial/ одна на переразбор и дозабор.
+`app/redo.py` Д7) вливается «только добавить» и только докачанное
+(записи с пометкой «дозабор» — с перекачанных и открывшихся страниц,
+`redo.only_redone`): добавляются НОВЫЕ игры и НОВЫЕ отметки; существующие
+игры и отметки не трогаются (погашенная не оживает), НИЧЕГО не гасится и
+не снимается, о сайтах — только по перекачанным строкам, метка
+последнего сбора (`last_crawl`) не двигается, «кто» — «дозабор». Режим
+берётся из самого файла: строка `streams-update.sh` для results/partial/
+одна на переразбор и дозабор.
 """
 
 from __future__ import annotations
@@ -146,8 +149,15 @@ def main() -> int:
         add_only = redo.is_add_only(data)
         who = redo.WHO if add_only else args.who
         if add_only:
-            print("файл дозабора («режим»: «дозабор») — только добавляю: ничего не "
-                  "гашу и не снимаю, сбои сайтов и метку сбора не двигаю")
+            # только записи с перекачанных и открывшихся страниц (пометка
+            # разбора): старое и дописанное в файл после разбора — мимо
+            всего = len(games)
+            data = redo.only_redone(data)
+            games = data["games"]
+            print(f"файл дозабора («режим»: «дозабор») — только добавляю докачанное: "
+                  f"игр с докачанных страниц {len(games)} из {всего}; ничего не гашу и "
+                  f"не снимаю, существующие игры и отметки не трогаю, сбои сайтов и "
+                  f"метку сбора не двигаю")
         reference = data.get("эталон", [])
         aligned = {"sure": [], "ask": [], "missed": []}
         if reference:
@@ -201,8 +211,9 @@ def main() -> int:
                                  add_only=add_only)
         # другой вид спорта — отдельной таблицей для вкладки «Other Sport»
         # (владелец 03.10); старые файлы ключа не имеют — тогда 0
+        # (дозабор — только строки с докачанных страниц, `data` уже отобран)
         other = store.save_other_sport(
-            conn, _json.loads(path.read_text(encoding="utf-8"))
+            conn, (data if add_only else _json.loads(path.read_text(encoding="utf-8")))
             .get("другие_виды") or [])
         if other:
             print(f"другой вид спорта — во вкладку «Other Sport»: {other}")
@@ -240,13 +251,15 @@ def main() -> int:
             db.set_setting(conn, "site_crawl_result",
                            f"{дом}|{_dt.now().strftime('%Y-%m-%d %H:%M')}|"
                            f"{stats.channels}")
-        if aligned["sure"]:
+        # дозабор существующих событий не трогает — метку fs: им поставит
+        # canon_backfill.py (streams-update.sh, сразу после заливки)
+        if aligned["sure"] and not add_only:
             canon.stamp(conn, aligned)
 
         # Нерешённые строки обхода — человеку в очередь «Вид спорта»
         # (правило владельца 04.09: непонятное не убивать, а на разбор)
         import json as _json
-        unsolved = _json.loads(path.read_text(encoding="utf-8")) \
+        unsolved = (data if add_only else _json.loads(path.read_text(encoding="utf-8"))) \
             .get("на_разбор", [])
         queued_review, answered = queue_unsolved(conn, unsolved, reference)
         if unsolved:

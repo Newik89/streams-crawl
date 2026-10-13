@@ -463,7 +463,29 @@ API["runs"] = [morning, finished(going, K("11:40"))]
 tick(K("11:45"))
 check("…он дошёл → дни собраны, дозабор не нужен",
       redo_orders() == [] and any("уже собрал обход" in n for n in notes_after(edge)), notes_after(edge))
-ahead = mkrun(K("10:50"), status="in_progress", title="Обход full-2")
+two_going = mkrun(K("10:40"), status="in_progress", title="Обход full-2")
+reset([morning, two_going])
+rec = done_order(morning)
+server_has(morning, [down(1)])
+edge = last_id()
+tick(K("11:00"))
+check("идёт более новый обход НА 2 ДНЯ (не накрывает 6) → тоже молча ждём его итога",
+      redo_orders() == [] and notes_after(edge) == [] and not record(rec["id"]).get("redo"),
+      (ORDERS, notes_after(edge)))
+API["runs"] = [morning, finished(two_going, K("11:30"))]
+server_has(finished(two_going, K("11:30")), [ok(1)])          # его результат лёг в results/
+tick(K("11:45"))
+check("…он дошёл и его результат на сервере → «отчёт другого прогона»: дозабор не заказываю, молча",
+      redo_orders() == [] and notes_after(edge) == []
+      and "другого прогона" in record(rec["id"]).get("redo", ""), (ORDERS, record(rec["id"])))
+reset([morning, finished(two_going, K("11:30"), "failure")])
+done_order(morning)
+server_has(morning, [down(1)])
+tick(K("11:45"))
+check("…а упал он — результат на сервере наш, дозабор заказан",
+      redo_orders() == [f"redo-{morning['id']}"], ORDERS)
+# впереди идёт скан даты (не полный обход — его итога дозабор не ждёт)
+ahead = mkrun(K("10:50"), status="in_progress", title="Обход date-2026-11-11")
 waiting = mkrun(K("10:55"), status="queued", title="Обход date-2026-11-12")
 reset([morning, ahead, waiting])
 rec = done_order(morning)
@@ -633,8 +655,9 @@ check("не выправившаяся — тоже свежая (новая п�
       and merged["строки"][0] == report6["строки"][0] and merged["строки"][2] == report6["строки"][2]
       and merged["строки"][4] == report6["строки"][4])
 check("раздел «дозабор»: из прогона, адресов, выправилось; «прогон» — этот, «режим» с пометкой, окно цело",
-      merged["дозабор"] == {"из прогона": "555", "адресов": 2, "выправилось": 1, "отобрано": 2, "упавших": 2,
-                            "пропущено": []}
+      {k: v for k, v in merged["дозабор"].items() if k != "строки"}
+      == {"из прогона": "555", "адресов": 2, "выправилось": 1, "отобрано": 2, "упавших": 2,
+          "пропущено": []}
       and merged["прогон"] == "777" and merged["режим"].startswith("дозабор")
       and "окно 6" in merged["режим"] and report6["прогон"] == "555", merged.get("дозабор"))
 clock_values = iter([0, 0, 1700, 2000, 9999])
@@ -795,34 +818,82 @@ parse_src = (ROOT / "scripts" / "parse_live.py").read_text(encoding="utf-8")
 check("parse_live.py кладёт пометку в games.json, push_partial без неё дозабор не кладёт",
       "payload.update(redo.games_mark(report_data))" in parse_src
       and "grep -q '\"режим\": \"дозабор\"' recon/raw_live/games.json" in crawl_yml)
+check("раздел «дозабор» отчёта несёт перекачанные строки С ИМЕНАМИ ФАЙЛОВ; «открылись» — по файлу",
+      [r.get("файл") for r in merged["дозабор"]["строки"]] == [fresh2["файл"], None]
+      and merged["дозабор"]["строки"][0]["url"] == down(2)["url"]
+      and redo.redone_files(merged) == {fresh2["файл"]} and redo.redone_files({"строки": []}) == set()
+      and redo.redone_rows({"дозабор": {"строки": ["x", {"domain": "a"}]}}) == [{"domain": "a"}])
+
+
+class P:                                           # передача разбора (app.parsers.Program)
+    def __init__(self, extra=None):
+        self.extra = extra
+
+
+def E(program):                                    # запись склейки (merge.Entry)
+    return type("E", (), {"payload": type("R", (), {"program": program})()})()
+
+
+class G:                                           # игра склейки (merge.Game)
+    def __init__(self, *entries):
+        self.entries = list(entries)
+
+
+new_prog, old_prog, none_prog = P({"fs_id": "x"}), P(), P(None)
+redo.tag_programs([new_prog, none_prog])
+kept = redo.keep_redone_games([G(E(new_prog), E(old_prog)), G(E(old_prog)), G(E(none_prog))])
+check("разбор: передачи перекачанной страницы помечены (прочее в extra цело), у игр остаются только их записи",
+      new_prog.extra == {"fs_id": "x", redo.ENTRY_KEY: True} and redo.program_redone(none_prog)
+      and not redo.program_redone(old_prog) and len(kept) == 2
+      and [len(g.entries) for g in kept] == [1, 1] and kept[0].entries[0].payload.program is new_prog)
+payload7 = {"собрано": "x", "игр": 3, "эталон": [1],
+            "games": [{"home": "A", "entries": [{"source": "a", **redo.marker(True)}, {"source": "b"}]},
+                      {"home": "B", "entries": [{"source": "b"}]}, "битая"],
+            "другие_виды": [{"домен": "a", **redo.marker(True)}, {"домен": "b"}],
+            "на_разбор": [{"домен": "b"}]}
+only = redo.only_redone(payload7)
+check("отбор games.json (одна функция для разбора и заливки): только помеченные записи, игра без них — прочь",
+      only["игр"] == 1 and only["games"] == [{"home": "A", "entries": [{"source": "a", redo.ENTRY_KEY: True}]}]
+      and only["другие_виды"] == [{"домен": "a", redo.ENTRY_KEY: True}] and only["на_разбор"] == []
+      and only["эталон"] == [1] and payload7["игр"] == 3)
+check("parse_live.py: метит передачи перекачанных файлов, оставляет их записи, отбирает games.json",
+      "redo.tag_programs(programs)" in parse_src and "games = redo.keep_redone_games(games)" in parse_src
+      and "payload = redo.only_redone(payload)" in parse_src
+      and "redo.redone_files(report_data)" in parse_src)
 
 IMPORT_DB = TMP / "import.db"
-GRID, OTHER = "grid.test", "other.test"
+GRID, OTHER, DEAD = "grid.test", "other.test", "dead.test"
 GAME_DAY = (date.today() + timedelta(days=3)).isoformat()
-URL = {GRID: f"https://grid.test/epg?date={GAME_DAY}", OTHER: f"https://other.test/tv?date={GAME_DAY}"}
+URL = {GRID: f"https://grid.test/epg?date={GAME_DAY}", OTHER: f"https://other.test/tv?date={GAME_DAY}",
+       DEAD: f"https://dead.test/tv?date={GAME_DAY}"}
 
 
 def gm(home, away, hhmm, *entries):
+    """Игра games.json; запись — (сайт, канал) или (сайт, канал, True) —
+    с пометкой «с перекачанной страницы» (`redo.ENTRY_KEY`)."""
     return {"sport": "F", "league": "", "home": home, "away": away,
             "start_kyiv": f"{GAME_DAY}T{hhmm}", "start_utc": "",
-            "entries": [{"source": d, "channel": ch, "url": URL[d], "raw_title": ""}
-                        for d, ch in entries]}
+            "entries": [dict({"source": e[0], "channel": e[1], "url": URL[e[0]], "raw_title": ""},
+                             **redo.marker(len(e) > 2 and e[2])) for e in entries]}
 
 
 def import_file(folder: str, games: list, rows: list, mode: bool, who: str = "переразбор",
-                minutes_ago: int = 0) -> str:
+                minutes_ago: int = 0, redone: list | None = None) -> str:
     """games.json + report.json в папке `folder` → `games_import.py --file …`
     отдельным процессом на временной базе (как на сервере). «Собрано» —
-    `minutes_ago` минут назад (UTC)."""
+    `minutes_ago` минут назад (UTC); `mode` — файл дозабора, `redone` —
+    перекачанные строки его раздела «дозабор»."""
     path = TMP / "imp" / folder
     path.mkdir(parents=True, exist_ok=True)
     made = datetime.now(timezone.utc) - timedelta(minutes=minutes_ago)
     payload = {"собрано": made.strftime("%Y-%m-%d %H:%M"), "игр": len(games), "games": games}
+    report = {"режим": "полный обход, окно 6 суток", "строки": rows}
     if mode:
-        payload.update(redo.games_mark({"дозабор": {"из прогона": "1", "адресов": 1}}))
+        report["дозабор"] = {"из прогона": "1", "адресов": len(redone or []),
+                             "строки": redone or []}
+        payload.update(redo.games_mark(report))
     (path / "games.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
-    (path / "report.json").write_text(json.dumps(
-        {"режим": "полный обход, окно 6 суток", "строки": rows}, ensure_ascii=False), encoding="utf-8")
+    (path / "report.json").write_text(json.dumps(report, ensure_ascii=False), encoding="utf-8")
     env = dict(os.environ, STREAMS_DB=str(IMPORT_DB))
     done = subprocess.run([sys.executable, str(ROOT / "scripts" / "games_import.py"),
                            "--file", str(path / "games.json"), "--who", who],
@@ -842,44 +913,100 @@ def miss_of(conn, channel: str) -> int | None:
     return r[0] if r else None
 
 
+def event_time(conn, home: str) -> str:
+    r = conn.execute("SELECT start_kyiv FROM events WHERE team_home_auto = ?", (home,)).fetchone()
+    return (r[0] or "")[11:16] if r else ""
+
+
+def page_row(domain: str, verdict: str = "расписание есть", why: str = "", file: str = "") -> dict:
+    row = {"domain": domain, "channel": "", "day": GAME_DAY, "итог": verdict, "почему": why,
+           "url": URL[domain]}
+    if file:
+        row["файл"] = file
+    return row
+
+
+def last_success(conn, domain: str):
+    return conn.execute("SELECT last_success FROM sources WHERE domain = ?", (domain,)).fetchone()[0]
+
+
 conn = import_db()
 db.init_db(conn)
-for d in (GRID, OTHER, "dead.test"):
+for d in (GRID, OTHER, DEAD):
     conn.execute("INSERT INTO sources (domain, name, base_url, country) VALUES (?, ?, ?, 'XX')",
                  (d, d, f"https://{d}/"))
 conn.commit()
 conn.close()
 os.environ["STREAMS_DB"] = str(WATCH_DB)
-A1 = ("Arsenal", "Chelsea", "21:45")
-A2 = ("Liverpool", "Everton", "20:00")
-A3 = ("Juventus", "Milan", "19:00")
-good_rows = [{"domain": GRID, "channel": "", "day": GAME_DAY, "итог": "расписание есть", "url": URL[GRID]},
-             {"domain": OTHER, "channel": "", "day": GAME_DAY, "итог": "расписание есть", "url": URL[OTHER]},
-             {"domain": "dead.test", "channel": "", "day": GAME_DAY, "итог": "не открылась",
-              "почему": "HTTP 503", "url": "https://dead.test/x"}]
-first = [gm(*A1, (GRID, "Max 4"), (OTHER, "Other 1")), gm(*A2, (GRID, "Max 2"), (OTHER, "Other 2"))]
-moved = [gm(*A1, (GRID, "Max 1"), (OTHER, "Other 1")), gm(*A2, (GRID, "Max 2"), (OTHER, "Other 2"))]
-out1 = import_file("results", first, good_rows, mode=False, who="", minutes_ago=30)
+rows_t = [page_row(GRID), page_row(OTHER), page_row(DEAD, "не открылась", "HTTP 503")]
+# 1. сбор T: Arsenal — Chelsea 21:45 на Max 4; dead.test не открылся
+out1 = import_file("results", [gm("Arsenal", "Chelsea", "21:45", (GRID, "Max 4"), (OTHER, "Other 1")),
+                               gm("Liverpool", "Everton", "20:00", (GRID, "Max 2"), (OTHER, "Other 2"))],
+                   rows_t, mode=False, who="", minutes_ago=40)
+# 2. более новая заливка (кнопка сайта): матч перенесён на 21:15 и на Max 1
+out2 = import_file("site", [gm("Arsenal", "Chelsea", "21:15", (GRID, "Max 1"), (OTHER, "Other 1")),
+                            gm("Liverpool", "Everton", "20:00", (GRID, "Max 2"), (OTHER, "Other 2"))],
+                   [page_row(GRID), page_row(OTHER)], mode=False, who="кнопка", minutes_ago=20)
 conn = import_db()
-crawl_before = db.get_setting(conn, "last_crawl")
-fails_before = conn.execute("SELECT fail_count FROM sources WHERE domain = 'dead.test'").fetchone()[0]
+before = {"max4": miss_of(conn, "Max 4"), "time": event_time(conn, "Arsenal"),
+          "grid_ok": last_success(conn, GRID), "crawl": db.get_setting(conn, "last_crawl"),
+          "dead_fails": conn.execute("SELECT fail_count FROM sources WHERE domain = ?",
+                                     (DEAD,)).fetchone()[0]}
 conn.close()
-out2 = import_file("partial", moved + [gm(*A3, (GRID, "Max 3"))], good_rows, mode=True,
-                   minutes_ago=10)
+check("подготовка: сбор T дал Max 4 в 21:45, более новая заливка перенесла на 21:15 и Max 1 → Max 4 погашен",
+      before["max4"] == store.MISS_LIMIT and before["time"] == "21:15" and before["dead_fails"] == 1,
+      (before, out2[-400:]))
+# 3. дозабор сбора T: dead.test открылся. В файле (как будто без отбора
+# разбора) — и весь старый сбор, и дописанное после разбора (AI): помечено
+# только докачанное
+out3 = import_file("partial", [
+    gm("Arsenal", "Chelsea", "21:45", (GRID, "Max 4"), (OTHER, "Other 1"), (DEAD, "Dead 2", True)),
+    gm("Liverpool", "Everton", "20:00", (GRID, "Max 2"), (OTHER, "Other 2")),
+    gm("Juventus", "Milan", "19:00", (DEAD, "Dead 1", True)),
+    gm("Roma", "Lazio", "18:00", (GRID, "Max 7"))],
+    [page_row(GRID), page_row(OTHER), page_row(DEAD, file="dead.html")], mode=True, minutes_ago=10,
+    redone=[page_row(DEAD, file="dead.html")])
 conn = import_db()
-log2 = json.loads(conn.execute("SELECT log FROM runs ORDER BY id DESC LIMIT 1").fetchone()[0])
-check("файл дозабора: Max 4 (его нет в файле) НЕ погашен, новый канал Max 1 и новая игра добавлены",
-      miss_of(conn, "Max 4") == 0 and miss_of(conn, "Max 1") == 0 and miss_of(conn, "Max 3") == 0
-      and "только добавляю" in out2, out2[-600:])
-check("…«кто» — «дозабор» (хотя streams-update.sh пишет --who переразбор); метка сбора и счётчик сбоев сайта не сдвинулись",
-      log2.get("кто") == "дозабор" and db.get_setting(conn, "last_crawl") == crawl_before
-      and conn.execute("SELECT fail_count FROM sources WHERE domain = 'dead.test'").fetchone()[0]
-      == fails_before and fails_before == 1, (log2.get("кто"), fails_before))
+log3 = json.loads(conn.execute("SELECT log FROM runs ORDER BY id DESC LIMIT 1").fetchone()[0])
+rows3 = conn.execute("SELECT rows_found FROM runs ORDER BY id DESC LIMIT 1").fetchone()[0]
+check("дозабор старого сбора НЕ откатывает новое: Max 4 остаётся погашенным, время — 21:15",
+      miss_of(conn, "Max 4") == store.MISS_LIMIT and event_time(conn, "Arsenal") == "21:15"
+      and "только добавляю докачанное" in out3, (miss_of(conn, "Max 4"), event_time(conn, "Arsenal"), out3[-700:]))
+check("…новая игра и новая отметка с перекачанной страницы добавлены; старое и непомеченное (AI) — нет",
+      miss_of(conn, "Dead 1") == 0 and miss_of(conn, "Dead 2") == 0 and event_time(conn, "Juventus") == "19:00"
+      and miss_of(conn, "Max 7") is None and event_time(conn, "Roma") == "",
+      (miss_of(conn, "Dead 2"), miss_of(conn, "Max 7")))
+check("…строка «Прогонов»: кто — дозабор, строк отчёта 1 (только перекачанные), новых 1, обновлено 0",
+      log3.get("кто") == "дозабор" and rows3 == 1 and log3.get("новых") == 1 and log3.get("обновлено") == 0,
+      (log3, rows3))
+check("…last_success — только перекачанному сайту, его счётчик сбоев снят; метка сбора не сдвинулась",
+      last_success(conn, GRID) == before["grid_ok"] and last_success(conn, DEAD)
+      and conn.execute("SELECT fail_count FROM sources WHERE domain = ?", (DEAD,)).fetchone()[0] == 0
+      and db.get_setting(conn, "last_crawl") == before["crawl"],
+      (last_success(conn, GRID), before["grid_ok"], last_success(conn, DEAD)))
+max1_seen = conn.execute("SELECT ec.last_seen FROM event_channels ec JOIN channel_aliases ca "
+                         "ON ca.channel_id = ec.channel_id AND ca.source_id = ec.source_id "
+                         "WHERE ca.alias = 'Max 1'").fetchone()[0]
+later = datetime.now() + timedelta(hours=1)
+ao = store.save_games(conn, [gm("Arsenal", "Chelsea", "21:45", (GRID, "Max 4", True), (GRID, "Max 1", True))],
+                      now=later, add_only=True)
+check("save_games «только добавить» и с помеченной записью: погашенную Max 4 не оживляет, живую Max 1 не "
+      "обновляет, время игры не трогает",
+      miss_of(conn, "Max 4") == store.MISS_LIMIT and event_time(conn, "Arsenal") == "21:15"
+      and conn.execute("SELECT ec.last_seen FROM event_channels ec JOIN channel_aliases ca "
+                       "ON ca.channel_id = ec.channel_id AND ca.source_id = ec.source_id "
+                       "WHERE ca.alias = 'Max 1'").fetchone()[0] == max1_seen
+      and ao.channels == 0 and ao.updated == 0 and ao.new == 0, (miss_of(conn, "Max 4"), ao))
 conn.close()
-out3 = import_file("results2", moved, good_rows, mode=False)
+# 4. обычная заливка (переразбор, без пометки): Max 2 больше не показан → гаснет как раньше
+out4 = import_file("results2", [
+    gm("Arsenal", "Chelsea", "21:15", (GRID, "Max 1"), (OTHER, "Other 1"), (DEAD, "Dead 2")),
+    gm("Liverpool", "Everton", "20:00", (GRID, "Max 5"), (OTHER, "Other 2")),
+    gm("Juventus", "Milan", "19:00", (DEAD, "Dead 1"))],
+    [page_row(GRID), page_row(OTHER), page_row(DEAD)], mode=False)
 conn = import_db()
-check("обычная заливка (переразбор, без пометки) гасит как раньше: Max 4 погашен",
-      miss_of(conn, "Max 4") == store.MISS_LIMIT and "только добавляю" not in out3, out3[-600:])
+check("обычная заливка (переразбор, без пометки) гасит как раньше: Max 2 погашен",
+      miss_of(conn, "Max 2") == store.MISS_LIMIT and "только добавляю" not in out4, out4[-600:])
 conn.close()
 os.environ["STREAMS_DB"] = str(WATCH_DB)
 check("правило 0 гашения: дозабор только дописывает — раньше всех прочих",

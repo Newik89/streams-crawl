@@ -43,8 +43,10 @@
       ближайшего планового слота меньше `REDO_SLOT_GAP_MINUTES` (он сам всё
       соберёт; слот считается ближайшим ещё `REDO_SLOT_GRACE_MINUTES` после
       своего времени — сторож приходит в одну минуту с плановой заявкой, и
-      её прогона GitHub ещё не видно). Ждём молча: идёт или ждёт очереди полный обход, чьё окно
-      накрывает эти дни (дойдёт — дни собраны). Откладываем — строка один
+      её прогона GitHub ещё не видно). Ждём молча: идёт или ждёт очереди
+      ЛЮБОЙ более новый полный обход (не только накрывающий все дни): дойдёт
+      — его итог ляжет в results/ и дальше решит `same_run`, упадёт —
+      дозабор пойдёт по отчёту нашего сбора. Откладываем — строка один
       раз, следующая проверка пробует снова: в очереди GitHub ждёт
       заказанный сбор (`watch.queue_refusal`) или в эту проверку уже ушла
       заявка (`t.sent`); так и не ушёл до `REDO_LATE_HOURS` — строка.
@@ -71,14 +73,24 @@
       кладёт в ту же папку, где лежат страницы сбора, и пишет report.json:
       упавшие строки заменены свежими, остальные как были, плюс раздел
       «дозабор» (из какого прогона, сколько адресов, сколько выправилось).
-  Д7. `games_mark`, `is_add_only` — заливка. Разбор (`parse_live.py`) кладёт
-      в games.json «режим»: «дозабор», если в report.json есть раздел
-      «дозабор»; `games_import.py` по этой пометке вливает «только
-      добавить»: новые игры и отметки добавляет и обновляет, НИЧЕГО не
-      гасит (ни отметок каналов, ни сирот — `app/miss.py`, правило 0; ни
-      отметок агрегаторов — `store.save_games`), счётчики сбоев сайтов и
-      метку последнего сбора не двигает; «кто» = «дозабор» (`WHO`). Файл
-      переразбора (без пометки) вливается ровно как раньше.
+  Д7. `games_mark`, `is_add_only`, `redone_files`, `tag_programs`,
+      `keep_redone_games`, `only_redone`, `redone_rows` — ДОПИСАТЬ ТОЛЬКО
+      ДОКАЧАННОЕ. Разбор (`parse_live.py`) разбирает все страницы (старые —
+      лишь контекст склейки и повторов), но в games.json кладёт «режим»:
+      «дозабор» и только записи со страниц, которые дозабор перекачал и
+      которые ОТКРЫЛИСЬ (по ИМЕНИ ФАЙЛА из раздела «дозабор»: адреса мало —
+      у POST-сайтов он общий на все дни); игра без таких записей
+      выбрасывается. `games_import.py` по пометке «режим» вливает «только
+      добавить» и ещё раз оставляет только помеченное (`only_redone`):
+      добавляет НОВЫЕ игры и НОВЫЕ отметки; у существующих игр не трогает
+      ни время, ни лигу, ни last_seen, существующую отметку не обновляет и
+      погашенную не оживляет; НИЧЕГО не гасит (ни отметок каналов, ни
+      сирот — `app/miss.py`, правило 0; ни отметок агрегаторов); о сайтах
+      судит только по перекачанным строкам (`redone_rows`: last_success —
+      их сайтам, счётчик сбоев не растёт); метку последнего сбора не
+      двигает; «кто» = «дозабор» (`WHO`). Так более свежие данные (новый
+      сбор, скан даты, кнопка сайта) дозабор старого сбора не откатывает.
+      Файл переразбора (без пометки) вливается ровно как раньше.
   Д8. Сбой дозабора — не стартовал, упал, завис, не ушёл, оборвали
       проверку, остановлен кнопкой — по таблице RECOVERY (`app/watch.py`):
       «redo-…» → close, только строка в «Прогоны» (данные основного сбора
@@ -345,7 +357,8 @@ def plan(*, end: datetime, now: datetime, choice: Pick, same: str, night: bool,
     if collected:
         return "skip", f"{count}, но эти дни уже собрал обход {collected} — дозабор не нужен"
     if going:
-        return "wait", f"{count}; идёт обход {going}, он соберёт и эти дни — жду его итога"
+        return "wait", (f"{count}; идёт более новый обход {going} — жду его итога "
+                        f"(дойдёт — его результат главнее)")
     if next_slot <= now:
         return "skip", (f"{count}, но плановый {hm(next_slot)} заказывается прямо "
                         f"сейчас — он их и соберёт, дозабор не заказываю")
@@ -412,8 +425,17 @@ def merge(report: dict, fresh: dict, choice: Pick, from_run, run_id="",
     out["прогон"] = str(run_id or "")
     out[SECTION] = {"из прогона": str(from_run), "адресов": len(fresh),
                     "выправилось": healed, "отобрано": len(choice.rows),
-                    "упавших": choice.total, "пропущено": list(passed)}
+                    "упавших": choice.total, "пропущено": list(passed),
+                    # перекачанные строки С ИМЕНАМИ ФАЙЛОВ (у открывшихся):
+                    # по файлу разбор узнаёт докачанное — адреса мало, у
+                    # POST-сайтов он общий на все дни (Д7)
+                    "строки": [{k: row[k] for k in REDONE_FIELDS if k in row}
+                               for _, row in sorted(fresh.items())]}
     return out
+
+
+#: Д6: поля перекачанной строки, что едут в раздел «дозабор» отчёта
+REDONE_FIELDS = ("domain", "channel", "day", "url", "итог", "почему", "файл")
 
 
 # ── Д7. заливка «только добавить» ────────────────────────────────────────────
@@ -431,3 +453,78 @@ def is_add_only(games) -> bool:
     """Д7: games.json — дозабора («режим»: «дозабор»): вливать «только
     добавить»."""
     return isinstance(games, dict) and games.get(MODE_KEY) == MODE
+
+
+#: Д7: пометка записи (строки-отметки игры, строки «других видов» и «на
+#: разбор») с перекачанной и ОТКРЫВШЕЙСЯ страницы — в games.json дозабора.
+#: Заливка дозабора берёт только помеченное (`only_redone`); страницы
+#: прежнего сбора нужны разбору лишь как контекст склейки и повторов
+ENTRY_KEY = "дозабор"
+
+
+def redone_rows(report) -> list[dict]:
+    """Д7: перекачанные строки (раздел «дозабор» отчёта, `merge`); не
+    отчёт дозабора — пусто. По ним одним заливка дозабора судит о сайтах
+    (`store.log_run`)."""
+    section = report.get(SECTION) if isinstance(report, dict) else None
+    rows = section.get("строки") if isinstance(section, dict) else None
+    return [r for r in rows if isinstance(r, dict)] if isinstance(rows, list) else []
+
+
+def redone_files(report) -> set[str]:
+    """Д7: имена файлов страниц, которые дозабор перекачал и которые
+    ОТКРЫЛИСЬ (у не открывшейся файла нет)."""
+    return {str(r["файл"]) for r in redone_rows(report) if r.get("файл")}
+
+
+def tag_programs(programs) -> None:
+    """Д7 (разбор): передачи со страницы, которую дозабор перекачал, —
+    пометка `ENTRY_KEY` в `extra` передачи."""
+    for program in programs:
+        program.extra = dict(program.extra or {}, **{ENTRY_KEY: True})
+
+
+def program_redone(program) -> bool:
+    """Д7: передача — с перекачанной страницы (`tag_programs`)?"""
+    return bool((getattr(program, "extra", None) or {}).get(ENTRY_KEY))
+
+
+def keep_redone_games(games: list) -> list:
+    """Д7 (разбор): у каждой склеенной игры остаются только записи с
+    перекачанных страниц; игра без них выбрасывается. Время, имена и лига
+    игры считаются уже по оставшимся записям (это свойства игры)."""
+    out = []
+    for game in games:
+        game.entries = [e for e in game.entries
+                        if program_redone(getattr(e.payload, "program", None))]
+        if game.entries:
+            out.append(game)
+    return out
+
+
+def marker(on: bool) -> dict:
+    """Д7: поле пометки для строки games.json — {ENTRY_KEY: True} или ничего."""
+    return {ENTRY_KEY: True} if on else {}
+
+
+def only_redone(payload: dict) -> dict:
+    """Д7 (разбор и заливка — одна функция): games.json дозабора → только
+    помеченные записи (`ENTRY_KEY`): у игр — строки-отметки, игра без них
+    выбрасывается; «другие_виды» и «на_разбор» — тоже только помеченные.
+    Так в базу не попадает ничего, кроме докачанного, — даже строки,
+    дописанные в файл после разбора (AI-слой). Прочие ключи — как были."""
+    out = dict(payload)
+    games = []
+    for game in payload.get("games") or []:
+        if not isinstance(game, dict):
+            continue
+        entries = [e for e in game.get("entries") or []
+                   if isinstance(e, dict) and e.get(ENTRY_KEY)]
+        if entries:
+            games.append(dict(game, entries=entries))
+    out["games"] = games
+    out["игр"] = len(games)
+    for key in ("другие_виды", "на_разбор"):
+        out[key] = [x for x in payload.get(key) or []
+                    if isinstance(x, dict) and x.get(ENTRY_KEY)]
+    return out

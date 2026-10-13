@@ -883,14 +883,13 @@ def read_json(path: Path):
 
 
 def covering_crawl(t: Round, rec: dict, created) -> dict | None:
-    """Д3: идёт или ждёт очереди полный обход, созданный позже сбора `rec`
-    (`created` — создание его прогона), чьё окно накрывает его дни, — тогда
-    дозабор молча ждёт его итога (дойдёт — дни собраны, `collected_by`)."""
+    """Д3: идёт или ждёт очереди ЛЮБОЙ полный обход, созданный позже сбора
+    `rec` (`created` — создание его прогона), — тогда дозабор молча ждёт
+    его итога: дойдёт — его результат ляжет в results/, и `same_run`
+    скажет «отчёт другого прогона»; упадёт — дозабор пойдёт по нашему."""
     for r in watch.active_crawls(t.runs, t.slug):
         rc = watch._utc(r.get("created_at") or "")
-        have = watch.window(watch.run_what(r))
-        if rc is not None and rc > created and have \
-                and watch.order_covered(rec["what"], have, rc):
+        if rc is not None and rc > created and watch.run_kind(r)[0] in watch.FULL_KINDS:
             return r
     return None
 
