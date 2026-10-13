@@ -4981,6 +4981,53 @@
      "pattern": "https://tvmatsit.com/api/fixtures/bydate?day={YYYY-MM-DD}&dayBreakHour=5&tz=Europe%2FHelsinki"
     }
    ]
+  },
+  {
+   "domain": "sporting.pt",
+   "timezone": "Europe/Lisbon",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "CANAL 11",
+    "CANAL11.PT",
+    "FPB TV",
+    "RTP 1",
+    "RTP 2",
+    "RTP1",
+    "RTP2",
+    "SPORT TV",
+    "SPORT TV +",
+    "SPORT TV 1",
+    "SPORT TV 2",
+    "SPORT TV 3",
+    "SPORT TV 4",
+    "SPORT TV 5",
+    "SPORT TV 6",
+    "SPORT TV 7",
+    "SPORTING TV"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.sporting.pt/pt/agenda/listagem",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.sporting.pt/pt/ical"
+    }
+   ]
   }
  ]
 }

@@ -27,8 +27,9 @@ cid=923…` и отвечала 401: старая проверка не узна
 Машинный адрес (`is_machine`) — хватает одного признака:
   а. в пути: `/api/`, `/tvapi`, `/epg/`, `/cache/`, `/wp-json/`,
      `/wp-content/`, `/wp-admin/`, `/data-feed/`, `/partial/`,
-     `/integrationlayer/`, часть пути `ajax`, файл-ручка со словом ajax
-     (`admin-ajax.php`, `getAjaxData.aspx`), файл `.json`/`.xml`;
+     `/integrationlayer/`, `/ical` (календарь), часть пути `ajax`, файл-ручка
+     со словом ajax (`admin-ajax.php`, `getAjaxData.aspx`), файл
+     `.json`/`.xml`/`.ics`;
   б. в запросе: `ajax=`/`isajax=`, `accesskey=`, `format=json`;
   в. в имени хоста слово `api` (`api.…`, `api-web.…`, `mwapi-prod.…`,
      `…-epg-api.…`);
@@ -64,8 +65,8 @@ PAGES_FILE = Path(__file__).resolve().parent.parent / "data" / "channel_pages.js
 #: признак а — путь адреса
 _MACHINE_PATH = re.compile(
     r"/(api|tvapi|epg|cache|wp-json|wp-content|wp-admin|data-feed|partial|"
-    r"integrationlayer|ajax)(/|$)|/[\w-]*ajax[\w-]*\.(php|aspx?)$"
-    r"|\.(json|xml)$", re.I)
+    r"integrationlayer|ajax|ical)(/|$)|/[\w-]*ajax[\w-]*\.(php|aspx?)$"
+    r"|\.(json|xml|ics)$", re.I)
 #: признак б — строка запроса
 _MACHINE_QUERY = re.compile(r"(^|&)(is)?ajax=|accesskey=|format=json", re.I)
 #: признак в — слово `api` частью имени хоста (`mwapi-prod` у cosmotetv.gr)
