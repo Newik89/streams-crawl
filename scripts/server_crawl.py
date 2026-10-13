@@ -161,11 +161,11 @@ def проверить_адрес(source: dict) -> dict:
 
 
 def утренний_ход(conn, now=None, fetch_one=None, set_mode=None,
-                 plan=None, lock=None) -> list[str]:
+                 plan=None, lock=None, free=None) -> list[str]:
     """Шаг 11 схемы сбоев перед обычным ходом (`app/site_move.py`): П4 —
     вернуть на GitHub сайты с открывшейся пробой; П2 — проверить кандидатов
     одним адресом и перевести. Подмены (`fetch_one`, `set_mode`, `plan`,
-    `lock`) — для проверок. Возвращает строки журнала."""
+    `lock`, `free`) — для проверок. Возвращает строки журнала."""
     now = now or datetime.now(site_move.KYIV)
     fetch_one = fetch_one or проверить_адрес
     set_mode = set_mode or plan_push.set_mode
@@ -175,12 +175,13 @@ def утренний_ход(conn, now=None, fetch_one=None, set_mode=None,
         said += site_move.return_turn(conn, now, set_mode, busy=занято)
         said += site_move.server_turn(conn, now, fetch_one,
                                       plan if plan is not None else план_по_доменам(),
-                                      set_mode, busy=занято)
+                                      set_mode, busy=занято,
+                                      free=free or site_move.free_mb)
     return said
 
 
 def разовая_проверка(conn, домен: str, now=None, fetch_one=None,
-                     set_mode=None, plan=None, lock=None) -> list[str]:
+                     set_mode=None, plan=None, lock=None, free=None) -> list[str]:
     """`--once <домен>`: проверка одного сайта одним адресом с сервера (П2,
     те же пределы); переводит, только если сайт — кандидат."""
     now = now or datetime.now(site_move.KYIV)
@@ -189,7 +190,8 @@ def разовая_проверка(conn, домен: str, now=None, fetch_one=N
         return site_move.server_turn(
             conn, now, fetch_one or проверить_адрес,
             plan if plan is not None else план_по_доменам(),
-            set_mode or plan_push.set_mode, busy=занято, only=домен, limit=1)
+            set_mode or plan_push.set_mode, busy=занято, only=домен, limit=1,
+            free=free or site_move.free_mb)
 
 
 def шаг(команда: list[str], тег: str) -> bool:

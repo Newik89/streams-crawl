@@ -568,14 +568,8 @@ def server_turn(conn, now: datetime, fetch_one, plan_sources: dict,
         note(conn, text)
         return [text]
     today = checks_today(conn, now)
-    for taken, cand in enumerate(queue):
-        refusal = check_refusal(taken, today, free(), limit)
-        if refusal:
-            rest = ", ".join(c["domain"] for c in queue[taken:])
-            text = f"не проверил с сервера: {rest} — {refusal}; следующая попытка утром"
-            note(conn, text)
-            said.append(text)
-            break
+    taken = 0                  # сколько сайтов скачано в этот заход
+    for place, cand in enumerate(queue):
         domain, config = cand["domain"], cand["config"]
         source = plan_sources.get(domain) or plan_sources.get(bare(domain))
         if source is None:
@@ -583,7 +577,15 @@ def server_turn(conn, now: datetime, fetch_one, plan_sources: dict,
             note(conn, text)
             said.append(text)
             continue
+        refusal = check_refusal(taken, today, free(), limit)
+        if refusal:
+            rest = ", ".join(c["domain"] for c in queue[place:])
+            text = f"не проверил с сервера: {rest} — {refusal}; следующая попытка утром"
+            note(conn, text)
+            said.append(text)
+            break
         row = fetch_one(source)
+        taken += 1
         today += 1
         remember_check(conn, domain, row, now)
         config["server_check_last"] = stamp(now)
