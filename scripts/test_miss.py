@@ -247,6 +247,40 @@ conn = import_twice(first, second, [row(PAGES, "Kanal A"), row(PAGES, "Kanal B")
 check("правило5_страница_канала_A_цела_матча_нет_A_гаснет",
       miss_of(conn, "Kanal A", "Arsenal") == store.MISS_LIMIT)
 
+# правило 5, общий вид страниц каналов: цифра в адресе уходит в «#», и
+# /channel/Kanal-1 и /channel/Kanal-2 — один вид (как port.hu `channel_id=`,
+# tv.orf.at `orf1|orf2|orf3`). 07.10 ORF 1 не добрал страниц дней, а его
+# отметки правило пропускало по целым страницам ORF 2 и ORF III
+first = [game(*A1, (PAGES, "Kanal 1"), (OTHER, "Other 1")),
+         game(*A2, (PAGES, "Kanal 2"), (OTHER, "Other 2"))]
+second = [game(*A1, (OTHER, "Other 1")),
+          game(*A2, (PAGES, "Kanal 2"), (OTHER, "Other 2"))]
+check("правило5_общий_вид: у Kanal 1 и Kanal 2 один вид адреса",
+      miss.вид_адреса(page_url("Kanal 1")) == miss.вид_адреса(page_url("Kanal 2")))
+conn = import_twice(first, second, [row(PAGES, "Kanal 2"), row(OTHER)])
+check("правило5_общий_вид_страницы_канала_1_нет_в_отчёте_2_открылась_1_не_гаснет (ORF 1, 07.10)",
+      miss_of(conn, "Kanal 1", "Arsenal") == 0, miss_of(conn, "Kanal 1", "Arsenal"))
+conn = import_twice(first, second, [row(PAGES, "Kanal 1", verdict="не открылась"),
+                                    row(PAGES, "Kanal 2"), row(OTHER)])
+check("правило5_общий_вид_страница_канала_1_не_открылась_2_открылась_1_не_гаснет",
+      miss_of(conn, "Kanal 1", "Arsenal") == 0, miss_of(conn, "Kanal 1", "Arsenal"))
+conn = import_twice(first, second, [
+    row(PAGES, "KANAL ONE", url=page_url("Kanal 1")),
+    row(PAGES, "Kanal 2"), row(OTHER)])
+check("правило5_общий_вид_страница_1_цела_под_другим_написанием_матча_нет_гаснет "
+      "(movistar «M+ LALIGA» / «M+ LaLiga»: своя — по адресу без дат)",
+      miss_of(conn, "Kanal 1", "Arsenal") == store.MISS_LIMIT,
+      miss_of(conn, "Kanal 1", "Arsenal"))
+conn = import_twice(first, second, [row(PAGES, "Kanal 1"), row(PAGES, "Kanal 2"),
+                                    row(OTHER)])
+check("правило5_общий_вид_страница_канала_1_цела_матча_нет_гаснет",
+      miss_of(conn, "Kanal 1", "Arsenal") == store.MISS_LIMIT,
+      miss_of(conn, "Kanal 1", "Arsenal"))
+check("адрес_без_дат: дата уходит, номер канала остаётся",
+      miss.адрес_без_дат("https://x.test/tvapi?channel_id=375&from=2026-10-13")
+      == miss.адрес_без_дат("https://x.test/tvapi?channel_id=375&from=2026-10-14")
+      != miss.адрес_без_дат("https://x.test/tvapi?channel_id=376&from=2026-10-13"))
+
 # правило 6: скан даты, «расписание есть», а игр 0 (#4224)
 first = [game(*A1, (PAGES, "Kanal A"), (OTHER, "Other 1"))]
 second = [game(*A1, (OTHER, "Other 1"))]
@@ -529,6 +563,65 @@ try:
           and crawl_fetch.link_days(daytime.today("Europe/Vienna"), 3, None,
                                     night=daytime.tv_night("Europe/Vienna"))
           == [date(2026, 10, 7), date(2026, 10, 8)])
+
+    # второй заход (`crawl_fetch.второй_заход`): страница канала ORF,
+    # открывшаяся лишь со второго захода, добирает дни по ссылкам, как на
+    # первом. Сбор 07.10 22:08: ORF 1 «со второго захода» остался без дней
+    # 08–12.10, и гашение судило его отметки по страницам ORF 2 и ORF III.
+    # Время всё ещё 13:15 UTC 06.10 — у Вены день, добираются 07.10 и 08.10
+    from app import fetch as app_fetch
+
+    class FakeFetcher:
+        """Вместо сети: адрес → ответы по очереди (html, ошибка); последний
+        ответ повторяется. Что спросили — в `asked`."""
+
+        def __init__(self, answers):
+            self.answers = {url: list(said) for url, said in answers.items()}
+            self.asked = []
+            self.browser_only = False
+
+        def get_with_fallback(self, url, locale="en-GB", post=None, warmup="",
+                              post_json=None, extra=None):
+            self.asked.append(url)
+            said = self.answers.get(url) or [("", "ConnectTimeout: timed out")]
+            html, error = said.pop(0) if len(said) > 1 else said[0]
+            return app_fetch.Page(url, html, False, error)
+
+    ORF1 = "https://tv.orf.at/program/orf1/index.html"
+    ORF1_07 = "https://tv.orf.at/program/orf1/index~_day-07-10-2026_-a1b2c3d4.html"
+    ORF1_08 = "https://tv.orf.at/program/orf1/index~_day-08-10-2026_-e5f6a7b8.html"
+    index_html = ('<p>20:15 Sport am Montag</p>'
+                  '<a href="/program/orf1/index~_day-07-10-2026_-a1b2c3d4.html">Di</a>'
+                  '<a href="/program/orf1/index~_day-08-10-2026_-e5f6a7b8.html">Mi</a>')
+    fake = FakeFetcher({ORF1: [("", "ConnectTimeout: timed out"), (index_html, "")],
+                        ORF1_07: [("<p>17:55 LASK - Rapid</p>", "")]})
+    orf_job = {"domain": "tv.orf.at", "channel": "ORF 1", "day": "2026-10-06",
+               "day_links": True, "locale": "de-AT", "url": ORF1, "post": None,
+               "post_json": None, "warmup": "", "headers": None}
+    first_try = fake.get_with_fallback(ORF1)          # первый заход — упала
+    orf_report = [{**orf_job, **crawl_fetch.verdict(first_try)}]
+    pass_dir = TMP / "second_pass"
+    pass_dir.mkdir()
+    healed = crawl_fetch.второй_заход(
+        [{"job": orf_job, "row": orf_report[0]}], orf_report, fake, pass_dir,
+        lambda job, html: crawl_fetch.дни_по_ссылкам(job, html, 3, None,
+                                                    "Europe/Vienna"))
+    days_rows = [(r["day"], r["итог"], r.get("_day_from_link")) for r in orf_report[1:]]
+    check("второй_заход: страница ORF 1 выправилась и добрала дни по ссылкам "
+          "(07.10 цела, 08.10 упала — строкой отчёта, а не пропала)",
+          healed == 1 and orf_report[0]["итог"] == "расписание есть"
+          and "(со второго захода)" in orf_report[0]["почему"]
+          and fake.asked == [ORF1, ORF1, ORF1_07, ORF1_08]
+          and days_rows == [("2026-10-07", "расписание есть", True),
+                            ("2026-10-08", "не открылась", True)]
+          and (pass_dir / orf_report[1]["файл"]).read_text(encoding="utf-8")
+          == "<p>17:55 LASK - Rapid</p>",
+          (healed, fake.asked, days_rows))
+    orf_cov = miss.покрытие_из_отчёта(orf_report)
+    check("второй_заход → правило 5: страница ORF 1 за 08.10 упала — его отметку "
+          "с этой страницы не гасить, за 07.10 цела — можно",
+          not orf_cov.страница_цела(ORF1_08, "2026-10-08", {"ORF 1"})
+          and orf_cov.страница_цела(ORF1_07, "2026-10-07", {"ORF 1"}))
 
     # Сидней: «завтра» наступает раньше всех — в 14:00 UTC там уже 01:00 06.10
     daytime.datetime = frozen_utc(2026, 10, 5, 14, 0)
