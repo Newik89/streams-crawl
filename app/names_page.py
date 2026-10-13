@@ -174,8 +174,10 @@ def _games_by_name(conn, rows, now: datetime) -> dict[tuple, list]:
         return {}
     channels: dict[int, list] = {}
     marks = ",".join("?" * len(events))
+    names_on_site = store.site_names(conn)
     for c in conn.execute(
-            f"SELECT ec.event_id, c.canonical_name AS name, s.domain, "
+            f"SELECT ec.event_id, c.id AS channel_id, c.canonical_name AS name, "
+            f"s.domain, ec.source_id, "
             f"ec.source_url, s.base_url, s.timezone FROM event_channels ec "
             f"JOIN channels c ON c.id = ec.channel_id "
             f"LEFT JOIN sources s ON s.id = ec.source_id "
@@ -185,7 +187,10 @@ def _games_by_name(conn, rows, now: datetime) -> dict[tuple, list]:
             "url": store.human_url(c["source_url"], c["base_url"],
                                    domain=c["domain"] or "",
                                    start_kyiv=events[c["event_id"]]["start_kyiv"],
-                                   tz=c["timezone"], channel=c["name"])})
+                                   tz=c["timezone"],
+                                   channel=store.channel_names(
+                                       names_on_site, c["source_id"],
+                                       c["channel_id"], c["name"]))})
     now_text = now.strftime("%Y-%m-%d %H:%M")
     out: dict[tuple, list] = {}
     for key, ids in found.items():

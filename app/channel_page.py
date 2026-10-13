@@ -11,24 +11,31 @@ cid=923…` и отвечала 401: старая проверка не узна
 Правила по порядку — первое сработавшее даёт ссылку (`link`):
 
 1. У сайта есть шаблон в `data/channel_pages.json` → страница по шаблону:
-   дата — день игры по часам САЙТА, канал `{CH}` — из адреса отметки или
-   имени канала (как сказано в шаблоне). Канал не узнан → запасной шаблон
-   сайта без канала (`else`), а его нет — правило 3.
+   дата — день игры по часам САЙТА (у телегидов сутки с утра до утра —
+   поле `night`), канал `{CH}` — из адреса отметки или имени канала (как
+   сказано в шаблоне). Канал не узнан → запасной шаблон сайта без канала
+   (`else`), а его нет — правило 2.
 2. Адрес отметки — страница для человека (`is_machine` = нет) → он как есть:
    с него программа и прочла игру.
-3. Иначе — страница расписания сайта: закладка источника (`base_url`) без
-   `?…` и `#…` (там бывают даты из прошлого года).
-4. Нет ничего — пусто, кнопки нет.
+3. Адреса нет или он машинный → страница расписания сайта: закладка
+   источника (`base_url`) без `?…` и `#…` (там бывают даты из прошлого года).
+4. Нет и закладки (или она сама машинная) — пусто, кнопки нет.
+
+Любая поломка внутри (битый файл шаблонов, кривой пояс сайта, кривой
+адрес) витрину не роняет: ссылка тогда — правило 3.
 
 Машинный адрес (`is_machine`) — хватает одного признака:
   а. в пути: `/api/`, `/tvapi`, `/epg/`, `/cache/`, `/wp-json/`,
      `/wp-content/`, `/wp-admin/`, `/data-feed/`, `/partial/`,
-     `/integrationlayer/`, слово `ajax` или файл `.json`/`.xml`;
-  б. в запросе: `ajax`, `accesskey=`, `format=json`;
+     `/integrationlayer/`, часть пути `ajax` или `…-ajax.php`, файл
+     `.json`/`.xml`;
+  б. в запросе: `ajax=`/`isajax=`, `accesskey=`, `format=json`;
   в. в имени хоста слово `api` (`api.…`, `api-web.…`, `mwapi-prod.…`,
      `…-epg-api.…`);
   г. хост чужого домена — не сайт источника (`tvarenaprogram.com` у
      `tvarenasport.ba`, `kolla.tv` у `dagenstv.com`).
+Слово `ajax` — только целой частью пути или параметром: канал клуба Ajax
+(`/channels/ajax-tv/`) — страница для человека.
 
 Шаблоны выясняются пробами с GitHub (`github_run.py dispatch --urls`), не с
 компьютера владельца. Сторож — `scripts/test_channel_page.py`: каждый
@@ -39,10 +46,12 @@ from __future__ import annotations
 
 import json
 import re
+import time
 import unicodedata
-from datetime import date as _date, datetime
+from datetime import date as _date, datetime, timedelta
+from functools import lru_cache
 from pathlib import Path
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, quote, urlsplit
 from zoneinfo import ZoneInfo
 
 from . import daytime, urls
@@ -52,17 +61,21 @@ PAGES_FILE = Path(__file__).resolve().parent.parent / "data" / "channel_pages.js
 #: признак а — путь адреса
 _MACHINE_PATH = re.compile(
     r"/(api|tvapi|epg|cache|wp-json|wp-content|wp-admin|data-feed|partial|"
-    r"integrationlayer)(/|$)|ajax|\.(json|xml)$", re.I)
+    r"integrationlayer|ajax|[\w-]*-ajax\.php)(/|$)|\.(json|xml)$", re.I)
 #: признак б — строка запроса
-_MACHINE_QUERY = re.compile(r"ajax|accesskey=|format=json", re.I)
-#: признак в — слово `api` в имени хоста (до двух букв впереди: `mwapi`)
-_MACHINE_HOST = re.compile(r"(^|[.-])[a-z]{0,2}api\d*([.-]|$)", re.I)
+_MACHINE_QUERY = re.compile(r"(^|&)(is)?ajax=|accesskey=|format=json", re.I)
+#: признак в — слово `api` частью имени хоста (`mwapi-prod` у cosmotetv.gr)
+_MACHINE_HOST = re.compile(r"(^|[.-])(mw)?api\d*([.-]|$)", re.I)
 
 #: вторые уровни, под которыми регистрируют сайты (`bbc.co.uk`,
 #: `atv.com.tr`): их домен — три последних части имени, а не две
 _SECOND_LEVEL = {"co", "com", "net", "org", "gov", "ac", "edu"}
 
 _KYIV = ZoneInfo("Europe/Kyiv")
+
+#: как часто проверять, не поменялся ли файл шаблонов (витрина зовёт
+#: `pages()` на каждый канал — 2000 раз за страницу)
+_RECHECK_SECONDS = 5
 
 
 def _bare(host: str) -> str:
@@ -93,35 +106,81 @@ def is_machine(url: str | None, domain: str = "") -> bool:
     return False
 
 
-def schedule_page(base_url: str | None) -> str:
-    """Страница расписания сайта — закладка без `?…` и `#…`."""
+def schedule_page(base_url: str | None, domain: str = "") -> str:
+    """Страница расписания сайта — закладка без `?…` и `#…`; машинная
+    закладка — не страница (правило 4)."""
     if not base_url:
         return ""
     p = urlsplit(base_url)
-    return f"{p.scheme}://{p.netloc}{p.path}" if p.scheme else base_url
+    page = f"{p.scheme}://{p.netloc}{p.path}" if p.scheme else base_url
+    return "" if is_machine(page, domain) else page
 
 
-_cache: dict = {"mtime": None, "pages": {}}
+def _norm(name: str) -> str:
+    """Имя канала для сравнения: без регистра, ударений, пробелов, знаков
+    и хвоста `HD` — «SVT 1» = «SVT1», «Spíler1 TV» = «Spiler1 TV»; плюс —
+    словом: «TV3+» = «TV3 Plus», а «MTV Katsomo+» ≠ «MTV Katsomo»."""
+    text = unicodedata.normalize("NFKD", (name or "").replace("+", " plus "))
+    text = "".join(c for c in text.casefold() if c.isalnum())
+    return text[:-2] if text.endswith("hd") and len(text) > 2 else text
+
+
+def _prepare(rule: dict) -> dict:
+    """Шаблон из файла + словарь с упрощёнными именами (`_names`), чтобы
+    не пересобирать его на каждый канал витрины."""
+    rule = dict(rule)
+    table = rule.get("map")
+    if isinstance(table, dict) and rule.get("ch") == "name":
+        rule["_names"] = {_norm(k): v for k, v in table.items()}
+    return rule
+
+
+_cache: dict = {"mtime": None, "checked": 0.0, "pages": {}}
 
 
 def pages() -> dict[str, dict]:
     """Шаблоны из `data/channel_pages.json` (перечитываются, если файл
-    поменялся). Ключи с `_` — пояснения, не сайты."""
+    поменялся). Ключи с `_` — пояснения, не сайты. Файл битый — остаются
+    прежние шаблоны (или никаких): витрина живёт без них по правилам 2–3."""
+    now = time.monotonic()
+    if now - _cache["checked"] < _RECHECK_SECONDS:
+        return _cache["pages"]
+    _cache["checked"] = now
     try:
         mtime = PAGES_FILE.stat().st_mtime
     except OSError:
+        _cache.update(mtime=None, pages={})
         return {}
     if _cache["mtime"] != mtime:
-        raw = json.loads(PAGES_FILE.read_text(encoding="utf-8"))
-        _cache["pages"] = {_bare(k): v for k, v in raw.items()
-                           if not k.startswith("_") and isinstance(v, dict)}
         _cache["mtime"] = mtime
+        try:
+            raw = json.loads(PAGES_FILE.read_text(encoding="utf-8-sig"))
+            if not isinstance(raw, dict):
+                raise ValueError("не словарь")
+            _cache["pages"] = {_bare(k): _prepare(v) for k, v in raw.items()
+                               if not k.startswith("_") and isinstance(v, dict)}
+        except (OSError, ValueError, AttributeError):
+            pass                      # прежние шаблоны остаются
     return _cache["pages"]
 
 
-def site_day(start_kyiv: str | None, tz: str | None) -> _date | None:
+@lru_cache(maxsize=64)
+def _zone(tz: str | None) -> ZoneInfo | None:
+    """Пояс сайта; кривой (`UTC+3`, опечатка в админке) — как нет пояса."""
+    if not tz:
+        return None
+    try:
+        return ZoneInfo(tz)
+    except (KeyError, ValueError):
+        return None
+
+
+@lru_cache(maxsize=4096)
+def site_day(start_kyiv: str | None, tz: str | None, night: int = 0) -> _date | None:
     """День игры по часам сайта: 00:30 по Киеву — у хорватского сайта ещё
-    23:30 накануне, и в его расписании игра стоит под вчерашней датой."""
+    23:30 накануне. `night` — час, с которого у сайта начинаются сутки
+    (телегиды идут `6:00 → … → 0:00 → 5:15`): игра в 02:00 стоит на
+    странице прошлого дня."""
     text = (start_kyiv or "").replace("T", " ").strip()[:16]
     try:
         moment = datetime.strptime(text, "%Y-%m-%d %H:%M").replace(tzinfo=_KYIV)
@@ -130,18 +189,11 @@ def site_day(start_kyiv: str | None, tz: str | None) -> _date | None:
             return datetime.strptime(text[:10], "%Y-%m-%d").date()
         except ValueError:
             return None
-    try:
-        return moment.astimezone(ZoneInfo(tz)).date() if tz else moment.date()
-    except (KeyError, ValueError):
-        return moment.date()
-
-
-def _norm(name: str) -> str:
-    """Имя канала для сравнения: без регистра, ударений, пробелов, знаков
-    и хвоста `HD` — «SVT 1» = «SVT1», «Spíler1 TV» = «Spiler1 TV»."""
-    text = unicodedata.normalize("NFKD", name or "").casefold()
-    text = "".join(c for c in text if c.isalnum())
-    return text[:-2] if text.endswith("hd") and len(text) > 2 else text
+    zone = _zone(tz)
+    local = moment.astimezone(zone) if zone else moment
+    if night and local.hour < night:
+        local -= timedelta(days=1)
+    return local.date()
 
 
 def _name_variants(name: str) -> list[str]:
@@ -173,18 +225,24 @@ def _channel_key(how: str, source_url: str, channel: str) -> str:
     return ""
 
 
-def _lookup(table: dict, key: str, by_name: bool) -> str:
-    """Значение словаря шаблона: по имени канала — без учёта написания."""
+def _lookup(rule: dict, key: str, by_name: bool) -> str:
+    """Значение словаря шаблона: сперва точное совпадение, по имени канала
+    — затем без учёта написания."""
+    table = rule.get("map") or {}
+    if key in table:
+        return str(table[key])
     if not by_name:
-        return str(table.get(key, ""))
-    names = {_norm(k): v for k, v in table.items()}
+        return ""
+    names = rule.get("_names")
+    if names is None:
+        names = {_norm(k): v for k, v in table.items()}
     for variant in _name_variants(key):
         if variant in names:
             return str(names[variant])
     return ""
 
 
-def from_template(rule: dict, source_url: str, channel: str,
+def from_template(rule: dict, source_url: str, channel: str | tuple,
                   day: _date | None, tz: str | None) -> str:
     """Правило 1: страница по шаблону сайта. Пусто — шаблон не подошёл.
 
@@ -192,19 +250,25 @@ def from_template(rule: dict, source_url: str, channel: str,
     канал; `map` — словарь «канал → {CH}» (значение с `://` — это готовая
     страница канала, тоже с метками даты); `else` — страница, когда канал не
     узнан или день вне `days` (`[0, 6]`: сайт `rtcg.me` знает только номер
-    дня от сегодня и дальше недели не показывает)."""
+    дня от сегодня и дальше недели не показывает); `night` — час начала
+    суток сайта (его учитывает `site_day`). `channel` — имя канала или
+    несколько имён (как на сайте, как на витрине) — берётся первое узнанное."""
     page = rule.get("page") or ""
     marks: dict[str, str] = {}
     if "{CH}" in page:
         how = rule.get("ch", "")
-        key = _channel_key(how, source_url, channel)
         table = rule.get("map")
-        if table is not None and key:
-            key = _lookup(table, key, how == "name")
+        key = ""
+        for name in ((channel,) if isinstance(channel, str) else channel):
+            key = _channel_key(how, source_url, name or "")
+            if table is not None and key:
+                key = _lookup(rule, key, how == "name")
+            if key:
+                break
         if "://" in key:
             page = key                       # словарь дал страницу целиком
         elif key:
-            marks["CH"] = key
+            marks["CH"] = quote(key, safe="-_.~/:")
         else:
             page = rule.get("else") or ""
     сегодня = daytime.today(tz)
@@ -221,15 +285,22 @@ def from_template(rule: dict, source_url: str, channel: str,
 
 def link(source_url: str | None, *, domain: str = "", base_url: str = "",
          start_kyiv: str | None = None, tz: str | None = None,
-         channel: str = "", rules: dict | None = None) -> str:
+         channel: str | tuple = "", rules: dict | None = None) -> str:
     """Ссылка кнопки ↗ — правила 1–4 из шапки модуля. `rules` — шаблоны
     вместо файла (для тестов)."""
-    rule = (pages() if rules is None else rules).get(_bare(domain)) if domain else None
-    if rule:
-        url = from_template(rule, source_url or "", channel,
-                            site_day(start_kyiv, tz), tz)
-        if url:
-            return url                                          # 1
-    if source_url and not is_machine(source_url, domain):
-        return source_url                                       # 2
-    return schedule_page(base_url)                              # 3, 4
+    try:
+        tz = tz if _zone(tz) else None
+        rule = (pages() if rules is None else rules).get(_bare(domain)) if domain else None
+        if rule:
+            url = from_template(rule, source_url or "", channel,
+                                site_day(start_kyiv, tz, int(rule.get("night") or 0)), tz)
+            if url:
+                return url                                      # 1
+        if source_url and not is_machine(source_url, domain):
+            return source_url                                   # 2
+        return schedule_page(base_url, domain)                  # 3, 4
+    except Exception:  # noqa: BLE001 — ссылка не стоит упавшей витрины
+        try:
+            return schedule_page(base_url, domain)
+        except Exception:  # noqa: BLE001
+            return ""

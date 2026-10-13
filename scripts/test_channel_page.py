@@ -63,6 +63,12 @@ for адрес, домен, ждём in (
         ("https://epg.cyta.com.cy/tv-guide/en", "epg.cyta.com.cy", False),
         ("https://services.err.ee/x/telekava", "jupiter.err.ee", False),      # тот же err.ee
         ("https://m.flashscore.com.tr/?d=1", "m.flashscore.com.tr", False),
+        # канал клуба Ajax и венгерский napi — слова, а не признаки ручки
+        ("https://www.livesoccertv.com/channels/ajax-tv/", "livesoccertv.com", False),
+        ("https://napi.hu/tv/musor", "napi.hu", False),
+        ("https://www.novasports.gr/wp-admin/admin-ajax.php?action=x", "novasports.gr", True),
+        ("https://ntvplus.tv/tv/ajax/tv?genre=sport", "ntvplus.tv", True),
+        ("https://www.sport5.co.il/Ajax/GetBroadcastSheetData.aspx?date=1", "sport5.co.il", True),
         ("https://www.bbc.co.uk/schedules/p00fzl6p/2026/10/15", "bbc.co.uk", False)):
     проверка(f"{адрес[:70]} → {'машинный' if ждём else 'для человека'}",
              cp.is_machine(адрес, домен), ждём)
@@ -162,8 +168,61 @@ api = "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923"
                  rules=шаблон),
          "https://www.rte.ie/entertainment/listings/television/")
 проверка("4: ничего нет — пусто", cp.link("https://api.x.sk/epg", domain="x.sk", rules=шаблон), "")
+проверка("4: машинная закладка — тоже пусто",
+         cp.link("https://api.x.sk/epg", domain="x.sk", base_url="https://api.x.sk/v1/list",
+                 rules=шаблон), "")
+проверка("3: адреса у отметки нет — страница сайта",
+         cp.link("", domain="x.sk", base_url="https://x.sk/program?d=1", rules=шаблон),
+         "https://x.sk/program")
 
-print("6. сторож: машинные адреса плана и последнего сбора")
+print("6. поломки не роняют витрину")
+проверка("кривой пояс сайта — день по Киеву, без ошибки",
+         cp.link(api, domain="sportklub.hr", start_kyiv="2026-10-16 00:30",
+                 tz="UTC+3", channel="Sport Klub 2", rules=шаблон),
+         "https://sportklub.hr/p/sk2?d=2026-10-16")
+проверка("кривой адрес — страница сайта, без ошибки",
+         cp.link("http://[::1", domain="x.sk", base_url="https://x.sk/program", rules=шаблон),
+         "https://x.sk/program")
+import tempfile  # noqa: E402
+настоящий = cp.PAGES_FILE
+with tempfile.TemporaryDirectory() as папка:
+    for имя, текст in (("битый JSON", '{"x.sk": {"page": '), ("пустой файл", ""),
+                       ("список вместо словаря", "[1, 2]"),
+                       ("BOM Блокнота", '﻿{"x.sk": {"page": "https://x.sk/ok"}}')):
+        файл = Path(папка) / f"{len(имя)}.json"
+        файл.write_text(текст, encoding="utf-8")
+        cp.PAGES_FILE = файл
+        cp._cache.update(mtime=None, checked=0.0, pages={})
+        try:
+            вышло = cp.link("https://api.x.sk/epg", domain="x.sk",
+                            base_url="https://x.sk/program")
+        except Exception as ошибка:  # noqa: BLE001
+            вышло = f"упало: {ошибка!r}"
+        ждём = "https://x.sk/ok" if имя == "BOM Блокнота" else "https://x.sk/program"
+        проверка(f"файл шаблонов: {имя}", вышло, ждём)
+cp.PAGES_FILE = настоящий
+cp._cache.update(mtime=None, checked=0.0, pages={})
+
+print("7. имя канала — как на сайте; ночь телегида")
+словарь = {"page": "https://t.fi/kanava/{CH}", "ch": "name",
+           "map": {"MTV Katsomo": "mtv-katsomo-2", "MTV Katsomo+": "mtv-katsomo",
+                   "TV3 Plus": "tv3-plus"}}
+проверка("«MTV Katsomo» и «MTV Katsomo+» — разные каналы",
+         cp.from_template(словарь, "", "MTV Katsomo", день, None), "https://t.fi/kanava/mtv-katsomo-2")
+проверка("«TV3+» = «TV3 Plus»",
+         cp.from_template(словарь, "", "TV3+", день, None), "https://t.fi/kanava/tv3-plus")
+проверка("имя как на сайте раньше имени владельца («YES Sport 3» ← «Sport1 4»)",
+         cp.from_template({"page": "https://s.il/?ch={CH}", "ch": "name", "map": {"Sport1 4": "4"}},
+                          "", ("Sport1 4", "YES Sport 3"), день, None), "https://s.il/?ch=4")
+проверка("канал в адресе кодируется",
+         cp.from_template({"page": "https://x.pl/s/{CH}", "ch": "name"}, "", "Canal Sport", день, None),
+         "https://x.pl/s/Canal%20Sport")
+проверка("ночь телегида: 02:00 по Варшаве 16.10 — страница 15.10",
+         cp.site_day("2026-10-16 03:00", "Europe/Warsaw", 6), date(2026, 10, 15))
+проверка("ночь телегида: 07:00 по Варшаве — свой день",
+         cp.site_day("2026-10-16 08:00", "Europe/Warsaw", 6), date(2026, 10, 16))
+
+print("8. сторож: машинные адреса плана и последнего сбора")
 шаблоны = cp.pages()
 план = json.loads((ROOT / "data" / "crawl_plan.json").read_text(encoding="utf-8"))
 зоны = {s["domain"]: s.get("timezone") for s in план["sources"]}
@@ -190,35 +249,45 @@ for o in игры.get("другие_виды", []):
     отметки.append((o.get("домен") or "", o.get("канал") or "",
                     o.get("url") or "", o.get("start_kyiv") or ""))
 отчёт = json.loads((ROOT / "results" / "report.json").read_text(encoding="utf-8"))
-for r in next((v for v in отчёт.values()
-               if isinstance(v, list) and v and isinstance(v[0], dict)
-               and "url" in v[0]), []):
+for r in отчёт.get("строки", []):
     отметки.append((r.get("domain") or "", r.get("channel") or "",
                     r.get("url") or "", (r.get("day") or "") + " 12:00"))
 плохие, всего_машинных, без_канала = [], 0, set()
 for сайт, канал, адрес, когда in отметки:
-    if not cp.is_machine(адрес, сайт):
-        continue
-    всего_машинных += 1
-    ссылка = cp.link(адрес, domain=сайт, base_url=базы.get(сайт, ""),
-                     start_kyiv=когда, tz=зоны.get(сайт), channel=канал)
-    # ссылка на соседний сайт того же владельца законна (magentatv.gr у
-    # cosmotetv.gr) — здесь проверяются только признаки а–в
-    if not ссылка or cp.is_machine(ссылка):
-        плохие.append(f"{сайт} / {канал}: {адрес[:60]} → {ссылка[:60]!r}")
     правило = шаблоны.get(cp._bare(сайт), {})
+    if not cp.is_machine(адрес, сайт) and not правило:
+        continue
+    if cp.is_machine(адрес, сайт):
+        всего_машинных += 1
+        ссылка = cp.link(адрес, domain=сайт, base_url=базы.get(сайт, ""),
+                         start_kyiv=когда, tz=зоны.get(сайт), channel=канал)
+        # ссылка на соседний сайт того же владельца законна (magentatv.gr у
+        # cosmotetv.gr) — здесь проверяются только признаки а–в
+        if not ссылка or cp.is_machine(ссылка):
+            плохие.append(f"{сайт} / {канал}: {адрес[:60]} → {ссылка[:60]!r}")
     как = правило.get("ch", "")
     # строка отчёта сетки (одна страница на все каналы) канала не знает
     if "{CH}" in (правило.get("page") or "") and (канал or как != "name"):
         ключ = cp._channel_key(как, адрес, канал)
         if not ключ or (правило.get("map") is not None
-                        and not cp._lookup(правило["map"], ключ, как == "name")):
+                        and not cp._lookup(правило, ключ, как == "name")):
             без_канала.add(f"{сайт}: {канал} ({ключ})")
 print(f"  машинных отметок в последнем сборе: {всего_машинных}")
 проверка("каждая даёт человеческую ссылку", плохие[:10], [])
 # канал есть в сборе, а словарь шаблона его не знает — ссылка ведёт на
 # запасную страницу без канала: дописать канал в map
 проверка("каждый канал сбора узнан словарём своего сайта", sorted(без_канала)[:15], [])
+# два разных имени словаря после упрощения совпали — один канал поведёт
+# на страницу другого («MTV Katsomo» и «MTV Katsomo+» до 13.10)
+совпали = []
+for сайт, правило in шаблоны.items():
+    if правило.get("ch") == "name":
+        видели: dict = {}
+        for имя, значение in (правило.get("map") or {}).items():
+            прежнее = видели.setdefault(cp._norm(имя), (имя, значение))
+            if прежнее[1] != значение:
+                совпали.append(f"{сайт}: «{прежнее[0]}» и «{имя}»")
+проверка("в словарях нет разных каналов с одинаковым упрощённым именем", совпали, [])
 
 print(f"\nзелёных {зелёных}, красных {красных}")
 sys.exit(1 if красных else 0)

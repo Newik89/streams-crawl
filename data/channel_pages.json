@@ -5,6 +5,7 @@
   "page — адрес; метки даты как в плане ({YYYY-MM-DD}, {DD.MM.YYYY}, {UNIXDAY}, {DAYNUM} — номер дня от сегодня); день — день игры по часам сайта.",
   "{CH} — канал; ch — откуда он: q:<параметр> машинного адреса, path:<номер части пути>, name — имя канала (сравнение без регистра, пробелов и HD).",
   "map — словарь «канал → {CH}»; значение с :// — готовая страница канала. else — страница, когда канал не узнан или день вне days.",
+  "night — час начала суток сайта: у телегидов страница дня идёт до утра, игра в 02:00 стоит на странице прошлого дня.",
   "Шаблоны сняты со страниц самих сайтов (recon/raw_*) и пробой GitHub #250 13.10; с компьютера владельца на сайты не ходим.",
   "Нет у сайта адреса с датой или каналом — стоит просто страница расписания: дату там выбирают кнопкой на самой странице."
  ],
@@ -24,7 +25,8 @@
   "page": "https://www.dagenstv.com/kanal/{CH}?dat={YYYY-MM-DD}",
   "ch": "name",
   "map": {"SVT1": "svt1", "SVT2": "svt2", "SVT24": "svt24", "TV3": "tv3", "TV4": "tv4", "TV6": "tv6", "TV8": "tv8", "TV10": "tv10", "TV12": "tv12", "Kanal 5": "kanal-5", "Kanal 9": "kanal-9", "Kanal 11": "kanal-11", "Sjuan": "sjuan", "Eurosport 1": "eurosport-1", "Eurosport 2": "eurosport-2"},
-  "else": "https://www.dagenstv.com/"
+  "else": "https://www.dagenstv.com/",
+  "night": 6
  },
  "dr.dk": {
   "page": "https://www.dr.dk/drtv/tv-guide"
@@ -44,18 +46,21 @@
  "raiplay.it": {
   "page": "https://www.raiplay.it/guidatv/index.html?channel={CH}&date={DD-MM-YYYY}",
   "ch": "path:-2",
-  "else": "https://www.raiplay.it/guidatv/index.html?channel=raiplay&date={DD-MM-YYYY}"
+  "else": "https://www.raiplay.it/guidatv/index.html?channel=raiplay&date={DD-MM-YYYY}",
+  "night": 6
  },
  "raspored.hrt.hr": {
   "page": "https://raspored.hrt.hr/?mreza={CH}&datum={YYYY-MM-DD}",
   "ch": "q:mreza",
-  "else": "https://raspored.hrt.hr/"
+  "else": "https://raspored.hrt.hr/",
+  "night": 6
  },
  "rte.ie": {
   "page": "https://www.rte.ie/entertainment/listings/television/#/{CH}/{YYYY-MM-DD}/",
   "ch": "path:-1",
   "map": {"rte-1": "rte1", "rte-2": "rte2", "rte-jr": "rtejr", "rte-news": "rtenews", "tg4": "tg4", "oireachtas-tv": "oireachtastv", "virgin-media-one": "virgin_media_one", "virgin-media-two": "virgin_media_two", "virgin-media-three": "virgin_media_three", "virgin-media-four": "virgin_media_four", "bbc-1": "bbcone", "bbc-2": "bbctwo", "itv": "utv", "itv-2": "itv2", "channel-4": "channel4", "E4": "e4", "more-4": "more4"},
-  "else": "https://www.rte.ie/entertainment/listings/television/"
+  "else": "https://www.rte.ie/entertainment/listings/television/",
+  "night": 6
  },
  "rtp.pt": {
   "page": "{CH}",
@@ -66,7 +71,8 @@
   "page": "https://www.srf.ch/play/tv/programm-nach-sender/-/{YYYY-MM-DD}?channelUrn=urn:srf:channel:tv:{CH}",
   "ch": "name",
   "map": {"SRF 1": "23FFBE1B-65CE-4188-ADD2-C724186C2C9F", "SRF zwei": "E4D5AD08-C1E8-46A3-BB58-4875051D60D2", "SRF info": "34c2819e-e715-43d7-9026-40a443152a97"},
-  "else": "https://www.srf.ch/play/tv/programm/{YYYY-MM-DD}"
+  "else": "https://www.srf.ch/play/tv/programm/{YYYY-MM-DD}",
+  "night": 6
  },
  "tv2.no": {
   "page": "https://www.tv2.no/tvguide/"
@@ -86,7 +92,8 @@
  "port.hu": {
   "page": "https://port.hu/csatorna/tv/{CH}?date={YYYY-MM-DD}",
   "ch": "q:channel_id[]",
-  "map": {"tvchannel-94": "eurosport-1/tvchannel-94", "tvchannel-37": "eurosport-2/tvchannel-37", "tvchannel-290": "m4-sport/tvchannel-290", "tvchannel-320": "m4-sport/tvchannel-320", "tvchannel-375": "match4/tvchannel-375", "tvchannel-90": "sport1/tvchannel-90", "tvchannel-44": "sport2/tvchannel-44", "tvchannel-305": "spiler1-tv/tvchannel-305", "tvchannel-362": "spiler2-tv/tvchannel-362"}
+  "map": {"tvchannel-94": "eurosport-1/tvchannel-94", "tvchannel-37": "eurosport-2/tvchannel-37", "tvchannel-290": "m4-sport/tvchannel-290", "tvchannel-320": "m4-sport/tvchannel-320", "tvchannel-375": "match4/tvchannel-375", "tvchannel-90": "sport1/tvchannel-90", "tvchannel-44": "sport2/tvchannel-44", "tvchannel-305": "spiler1-tv/tvchannel-305", "tvchannel-362": "spiler2-tv/tvchannel-362"},
+  "night": 6
  },
  "webtv.sk": {
   "page": "https://www.webtv.sk/"
@@ -145,7 +152,8 @@
  },
  "tvheute.at": {
   "page": "https://tvheute.at/{CH}-programm/{DD-MM-YYYY}-im-tv",
-  "ch": "path:-2"
+  "ch": "path:-2",
+  "night": 6
  },
  "sporteventz.com": {
   "page": "https://sporteventz.com/en/component/magictable/?Itemid=0&se_date={YYYY-MM-DD}%2000:00:00&se_module=bW9kX3Nwb3J0ZXZlbnRzX2ZpbHRlcg==&se_id=U2NoZWR1bGU="
@@ -162,6 +170,7 @@
  "teleman.pl": {
   "page": "https://www.teleman.pl/program-tv/stacje/{CH}?date={YYYY-MM-DD}",
   "ch": "name",
-  "map": {"13 Ulica": "13-Ulica", "ale kino+": "Ale-Kino", "AMC": "AMC", "Animal Planet": "Animal-Planet-HD", "Antena HD": "Antena-HD", "AXN": "AXN", "AXN Black": "AXN-Black", "AXN Spin": "AXN-Spin", "AXN White": "AXN-White", "BBC Brit": "BBC-Brit", "BBC Earth": "BBC-Earth", "BBC First": "BBC-First", "BBC Lifestyle": "BBC-Lifestyle", "CANAL+ 1": "CanalPlus-1", "CANAL+ 360": "CanalPlus-360", "CANAL+ 4K": "CanalPlus-4K", "CANAL+ 4K Ultra HD": "CanalPlus-4K", "CANAL+ Dokument": "CanalPlus-Dokument", "CANAL+ Domo": "Domo", "CANAL+ Extra 1": "CanalPlus-Extra-1", "CANAL+ Extra 2": "CanalPlus-Extra-2", "CANAL+ Film": "CanalPlus-Film", "CANAL+ Kuchnia": "Kuchnia-TV", "CANAL+ Premium": "CanalPlus", "CANAL+ Seriale": "CanalPlus-Seriale", "CANAL+ Sport": "CanalPlus-Sport", "CANAL+ Sport 2": "CanalPlus-Sport-2", "CANAL+ Sport 3": "CanalPlus-Sport-3", "CANAL+ Sport 4": "CanalPlus-Sport-4", "CANAL+ Sport 5": "CanalPlus-Sport-5", "Cartoon Network": "Cartoon-Network", "Cartoonito": "Cartoonito", "CBS Reality": "CBS-Reality", "CI Polsat": "Crime-Investigation-Network", "Cinemax": "Cinemax", "Cinemax 2": "Cinemax2", "Comedy Central": "Comedy-Central", "Discovery Channel": "Discovery-Channel", "Discovery Historia": "Discovery-Historia", "Discovery Life": "Discovery-Life", "Discovery Science": "Discovery-Science", "Disney Channel": "Disney-Channel", "Disney Junior": "Disney-Junior", "Disney XD": "Disney-XD", "DTX": "DTX", "Eleven Sports 1": "Eleven-Sports-1", "Eleven Sports 2": "Eleven-Sports-2", "Eleven Sports 3": "Eleven-Sports-3", "Eleven Sports 4": "Eleven-4", "Eurosport 1": "Eurosport", "Eurosport 2": "Eurosport-2", "Extreme Channel": "Extreme", "Film Cafe": "Film-Cafe", "FILMBOX+ Action": "Filmbox-Action", "FILMBOX+ Comedy": "Filmbox-Family", "FILMBOX+ Emotion": "Filmbox-Extra-HD", "FILMBOX+ Festival": "FilmBox-Arthouse", "FILMBOX+ Hits": "Filmbox-Premium", "Fokus TV": "Fokus-TV", "Food Network": "Food-Network", "FX": "FOX", "FX Comedy": "FOX-Comedy", "HBO": "HBO", "HBO 2": "HBO2", "HBO 3": "HBO3", "HGTV": "HGTV", "HISTORY": "History", "HISTORY 2": "H2", "ID": "ID", "Kino Polska": "Kino-Polska", "Lifetime": "Lifetime", "Metro TV": "Metro-TV", "Mezzo": "Mezzo", "MiniMini+": "MiniMini", "MTV Polska": "MTV-Polska", "Nat Geo People": "Nat-Geo-People", "Nat. Geo. Wild": "Nat-Geo-Wild", "National Geo.": "National-Geographic", "Nickelodeon": "Nickelodeon", "Nicktoons": "Nicktoons", "Nowa TV": "Nowa-TV", "Paramount Network": "Paramount-Network", "PLANETE+": "Planete", "Polonia 1": "Polonia-1", "Polsat": "Polsat", "Polsat 2": "Polsat-2", "Polsat Cafe": "Polsat-Cafe", "Polsat Comedy C. E.": "Comedy-Central-Family", "Polsat Doku": "Polsat-Doku", "Polsat Film": "Polsat-Film", "Polsat Film 2": "Polsat-Film-2", "Polsat Games": "Polsat-Games", "Polsat News": "Polsat-News", "Polsat Play": "Polsat-Play", "Polsat Rodzina": "Polsat-Rodzina", "Polsat Seriale": "Polsat-Seriale", "Polsat Sport 1": "Polsat-Sport", "Polsat Sport 2": "Polsat-Sport-2", "Polsat Sport 3": "Polsat-Sport-3", "Polsat Sport Extra 1": "Polsat-Sport-Extra-1", "Polsat Sport Extra 2": "Polsat-Sport-Extra-2", "Polsat Sport Extra 3": "Polsat-Sport-Extra-3", "Polsat Sport Extra 4": "Polsat-Sport-Extra-4", "Polsat Sport Fight": "Polsat-Sport-Fight", "Polsat Sport Premium 1": "Polsat-Sport-Premium-1", "Polsat Sport Premium 2": "Polsat-Sport-Premium-2", "Polsat Viasat Explore": "Viasat-Explorer", "Polsat Viasat History": "Viasat-History", "Polsat Viasat Nature": "Viasat-Nature", "Republika": "TV-Republika", "Romance TV": "Romance-TV", "SCI FI": "SCI-FI", "Show TV": "Show-TV", "SportKlub": "SportKlub", "Stopklatka": "Stopklatka-TV", "Sundance TV": "Sundance-Channel-HD", "Super Polsat": "Super-Polsat", "Tele 5": "Tele-5", "TLC": "TLC", "Travel": "Travel-Channel", "TTV": "TTV", "TV 4": "TV4", "TV 6": "TV6", "TV Puls": "Puls", "TV Puls 2": "Puls-2", "TV Trwam": "TV-Trwam", "TVN": "TVN", "TVN 7": "TVN-Siedem", "TVN Fabuła": "TVN-Fabula", "TVN Style": "TVN-Style", "TVN Turbo": "TVN-Turbo", "TVN24": "TVN24", "TVN24 BiS": "TVN-24-Biznes-i-Swiat", "TVP 1": "TVP-1", "TVP 2": "TVP-2", "TVP ABC": "TVP-ABC", "TVP Dokument": "tvp-dokument", "TVP HD": "TVP-HD", "TVP Historia": "TVP-Historia", "TVP Historia 2": "tvp-historia-2", "TVP Info": "TVP-Info", "TVP Kobieta": "TVP-Kobieta", "TVP Kultura": "TVP-Kultura", "TVP Kultura 2": "tvp-kultura-2", "TVP Nauka": "TVP-Nauka", "TVP Polonia": "TVP-Polonia", "TVP Rozrywka": "TVP-Rozrywka", "TVP Seriale": "TVP-Seriale", "TVP Sport": "TVP-Sport", "TVS": "TVS", "Viasat Epic Drama": "Epic-Drama", "Warner TV": "Warner-TV", "WP": "WP", "Wydarzenia 24": "Wydarzenia24", "ZOOM": "Zoom-TV"}
+  "map": {"13 Ulica": "13-Ulica", "ale kino+": "Ale-Kino", "AMC": "AMC", "Animal Planet": "Animal-Planet-HD", "Antena HD": "Antena-HD", "AXN": "AXN", "AXN Black": "AXN-Black", "AXN Spin": "AXN-Spin", "AXN White": "AXN-White", "BBC Brit": "BBC-Brit", "BBC Earth": "BBC-Earth", "BBC First": "BBC-First", "BBC Lifestyle": "BBC-Lifestyle", "CANAL+ 1": "CanalPlus-1", "CANAL+ 360": "CanalPlus-360", "CANAL+ 4K": "CanalPlus-4K", "CANAL+ 4K Ultra HD": "CanalPlus-4K", "CANAL+ Dokument": "CanalPlus-Dokument", "CANAL+ Domo": "Domo", "CANAL+ Extra 1": "CanalPlus-Extra-1", "CANAL+ Extra 2": "CanalPlus-Extra-2", "CANAL+ Film": "CanalPlus-Film", "CANAL+ Kuchnia": "Kuchnia-TV", "CANAL+ Premium": "CanalPlus", "CANAL+ Seriale": "CanalPlus-Seriale", "CANAL+ Sport": "CanalPlus-Sport", "CANAL+ Sport 2": "CanalPlus-Sport-2", "CANAL+ Sport 3": "CanalPlus-Sport-3", "CANAL+ Sport 4": "CanalPlus-Sport-4", "CANAL+ Sport 5": "CanalPlus-Sport-5", "Cartoon Network": "Cartoon-Network", "Cartoonito": "Cartoonito", "CBS Reality": "CBS-Reality", "CI Polsat": "Crime-Investigation-Network", "Cinemax": "Cinemax", "Cinemax 2": "Cinemax2", "Comedy Central": "Comedy-Central", "Discovery Channel": "Discovery-Channel", "Discovery Historia": "Discovery-Historia", "Discovery Life": "Discovery-Life", "Discovery Science": "Discovery-Science", "Disney Channel": "Disney-Channel", "Disney Junior": "Disney-Junior", "Disney XD": "Disney-XD", "DTX": "DTX", "Eleven Sports 1": "Eleven-Sports-1", "Eleven Sports 2": "Eleven-Sports-2", "Eleven Sports 3": "Eleven-Sports-3", "Eleven Sports 4": "Eleven-4", "Eurosport 1": "Eurosport", "Eurosport 2": "Eurosport-2", "Extreme Channel": "Extreme", "Film Cafe": "Film-Cafe", "FILMBOX+ Action": "Filmbox-Action", "FILMBOX+ Comedy": "Filmbox-Family", "FILMBOX+ Emotion": "Filmbox-Extra-HD", "FILMBOX+ Festival": "FilmBox-Arthouse", "FILMBOX+ Hits": "Filmbox-Premium", "Fokus TV": "Fokus-TV", "Food Network": "Food-Network", "FX": "FOX", "FX Comedy": "FOX-Comedy", "HBO": "HBO", "HBO 2": "HBO2", "HBO 3": "HBO3", "HGTV": "HGTV", "HISTORY": "History", "HISTORY 2": "H2", "ID": "ID", "Kino Polska": "Kino-Polska", "Lifetime": "Lifetime", "Metro TV": "Metro-TV", "Mezzo": "Mezzo", "MiniMini+": "MiniMini", "MTV Polska": "MTV-Polska", "Nat Geo People": "Nat-Geo-People", "Nat. Geo. Wild": "Nat-Geo-Wild", "National Geo.": "National-Geographic", "Nickelodeon": "Nickelodeon", "Nicktoons": "Nicktoons", "Nowa TV": "Nowa-TV", "Paramount Network": "Paramount-Network", "PLANETE+": "Planete", "Polonia 1": "Polonia-1", "Polsat": "Polsat", "Polsat 2": "Polsat-2", "Polsat Cafe": "Polsat-Cafe", "Polsat Comedy C. E.": "Comedy-Central-Family", "Polsat Doku": "Polsat-Doku", "Polsat Film": "Polsat-Film", "Polsat Film 2": "Polsat-Film-2", "Polsat Games": "Polsat-Games", "Polsat News": "Polsat-News", "Polsat Play": "Polsat-Play", "Polsat Rodzina": "Polsat-Rodzina", "Polsat Seriale": "Polsat-Seriale", "Polsat Sport 1": "Polsat-Sport", "Polsat Sport 2": "Polsat-Sport-2", "Polsat Sport 3": "Polsat-Sport-3", "Polsat Sport Extra 1": "Polsat-Sport-Extra-1", "Polsat Sport Extra 2": "Polsat-Sport-Extra-2", "Polsat Sport Extra 3": "Polsat-Sport-Extra-3", "Polsat Sport Extra 4": "Polsat-Sport-Extra-4", "Polsat Sport Fight": "Polsat-Sport-Fight", "Polsat Sport Premium 1": "Polsat-Sport-Premium-1", "Polsat Sport Premium 2": "Polsat-Sport-Premium-2", "Polsat Viasat Explore": "Viasat-Explorer", "Polsat Viasat History": "Viasat-History", "Polsat Viasat Nature": "Viasat-Nature", "Republika": "TV-Republika", "Romance TV": "Romance-TV", "SCI FI": "SCI-FI", "Show TV": "Show-TV", "SportKlub": "SportKlub", "Stopklatka": "Stopklatka-TV", "Sundance TV": "Sundance-Channel-HD", "Super Polsat": "Super-Polsat", "Tele 5": "Tele-5", "TLC": "TLC", "Travel": "Travel-Channel", "TTV": "TTV", "TV 4": "TV4", "TV 6": "TV6", "TV Puls": "Puls", "TV Puls 2": "Puls-2", "TV Trwam": "TV-Trwam", "TVN": "TVN", "TVN 7": "TVN-Siedem", "TVN Fabuła": "TVN-Fabula", "TVN Style": "TVN-Style", "TVN Turbo": "TVN-Turbo", "TVN24": "TVN24", "TVN24 BiS": "TVN-24-Biznes-i-Swiat", "TVP 1": "TVP-1", "TVP 2": "TVP-2", "TVP ABC": "TVP-ABC", "TVP Dokument": "tvp-dokument", "TVP HD": "TVP-HD", "TVP Historia": "TVP-Historia", "TVP Historia 2": "tvp-historia-2", "TVP Info": "TVP-Info", "TVP Kobieta": "TVP-Kobieta", "TVP Kultura": "TVP-Kultura", "TVP Kultura 2": "tvp-kultura-2", "TVP Nauka": "TVP-Nauka", "TVP Polonia": "TVP-Polonia", "TVP Rozrywka": "TVP-Rozrywka", "TVP Seriale": "TVP-Seriale", "TVP Sport": "TVP-Sport", "TVS": "TVS", "Viasat Epic Drama": "Epic-Drama", "Warner TV": "Warner-TV", "WP": "WP", "Wydarzenia 24": "Wydarzenia24", "ZOOM": "Zoom-TV"},
+  "night": 6
  }
 }

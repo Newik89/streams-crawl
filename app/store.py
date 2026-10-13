@@ -52,13 +52,40 @@ FRESH_CHANNEL_GAP = timedelta(hours=3)
 
 def human_url(source_url: str | None, base_url: str | None, *,
               domain: str = "", start_kyiv: str | None = None,
-              tz: str | None = None, channel: str = "") -> str:
+              tz: str | None = None, channel: str | tuple = "") -> str:
     """Ссылка кнопки ↗ «Открыть расписание канала» — страница канала на
     день игры на сайте. Правила — `app/channel_page.py` (13.10: машинный
-    адрес Sport Klub вёл человека на ошибку 401)."""
+    адрес Sport Klub вёл человека на ошибку 401). `channel` — имя канала
+    или несколько (`site_names`): словари сайтов знают имя, как его пишет
+    САЙТ, а на витрине стоит имя владельца («YES Sport 3» ← «Sport1 4»)."""
     return channel_page.link(source_url, domain=domain or "",
                              base_url=base_url or "", start_kyiv=start_kyiv,
                              tz=tz, channel=channel or "")
+
+
+def site_names(conn: sqlite3.Connection) -> dict[tuple[int, int], list[str]]:
+    """Имена канала, как их пишет сайт: (источник, канал) → [список
+    каналов источника, написания этого источника, общие написания].
+    Одним проходом на всю витрину, а не запросом на каждый канал."""
+    out: dict[tuple[int, int], list[str]] = {}
+    общие: dict[int, list[str]] = {}
+    for r in conn.execute("SELECT source_id, channel_id, raw_name FROM source_channels "
+                          "WHERE channel_id IS NOT NULL ORDER BY include DESC, id"):
+        out.setdefault((r[0], r[1]), []).append(r[2] or "")
+    for r in conn.execute("SELECT source_id, channel_id, alias FROM channel_aliases "
+                          "ORDER BY id"):
+        if r[0] is None:
+            общие.setdefault(r[1], []).append(r[2] or "")
+        else:
+            out.setdefault((r[0], r[1]), []).append(r[2] or "")
+    for (source_id, channel_id), names in out.items():
+        names.extend(общие.get(channel_id, []))
+    return out
+
+
+def channel_names(names: dict, source_id, channel_id, shown: str) -> tuple:
+    """Имена для `human_url`: как на сайте, затем имя витрины."""
+    return tuple(n for n in (*names.get((source_id, channel_id), ()), shown) if n)
 
 
 def grace_map(conn: sqlite3.Connection) -> dict[str, int]:
@@ -731,6 +758,8 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
     # переименование лиги действует сразу, не дожидаясь следующего импорта:
     # событие ещё держит league_auto, а показываем уже канон из алиаса
     league_names = dictionary.league_overrides(conn)
+    # имена каналов, как их пишут сайты, — для ссылки ↗ (13.10)
+    names_on_site = site_names(conn)
 
     # Что уже лежит в очереди на подтверждение (страница «Имена»): по этим
     # играм ответ найден, но ждёт вашего слова. Раньше витрина о них молчала,
@@ -805,7 +834,7 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                 "       c.custom_name, c.note, ec.first_seen AS ch_first_seen, "
                 "       ec.source_url, s.base_url, s.created_at, ec.time_off, "
                 "       ec.miss_count, ec.seen AS ch_seen, ec.raw_title, "
-                "       s.domain, s.timezone "
+                "       s.domain, s.timezone, ec.source_id "
                 "FROM event_channels ec "
                 "JOIN channels c ON c.id = ec.channel_id "
                 "LEFT JOIN sources s ON s.id = ec.source_id "
@@ -847,7 +876,9 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                                               domain=r["domain"],
                                               start_kyiv=row["start_kyiv"],
                                               tz=r["timezone"],
-                                              channel=r["name"]),
+                                              channel=channel_names(
+                                                  names_on_site, r["source_id"],
+                                                  r["id"], r["name"])),
                              # сайт канала пишет другое время, чем flashscore
                              # (14.09) — красным, «перепроверить»
                              # у «снятого» канала служебные пометки гасим:
