@@ -495,7 +495,7 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
     # ночью и в другие сутки — только адреса с датой (`redo.night_strict`)
     choice = redo.pick(report, now=_now())
     if choice.mass:
-        print(f"::error::упавших адресов (сайт лёг / нет ответа) {choice.total} — "
+        print(f"::error::упавших адресов (сайт лёг / нет ответа) {choice.failed} — "
               f"больше {redo.REDO_MASS}: это массовый сбой, а не дозабор")
         return 1, report, []
     if not choice.rows:

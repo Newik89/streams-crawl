@@ -339,8 +339,11 @@ class Pick:
     index: list = field(default_factory=list)
     #: сколько всего упавших down/net
     total: int = 0
-    #: упавших больше `REDO_MASS` — массовый сбой, качать нечего
+    #: упавших больше `REDO_MASS` — массовый сбой, качать нечего. Считаются
+    #: ВСЕ упавшие down/net, и ночью тоже — с адресом без даты (`failed`)
     mass: bool = False
+    #: все упавшие down/net — до ночного правила (`total` + ночные без даты)
+    failed: int = 0
     #: не взятые упавшие — почему: {причина: сколько}
     skipped: dict = field(default_factory=dict)
 
@@ -371,10 +374,14 @@ def pick(report: dict, now: datetime | None = None) -> Pick:
             skipped[why] = skipped.get(why, 0) + 1
             continue
         take.append(i)
-    mass = len(take) > REDO_MASS
+    # массовый сбой — по ВСЕМ упавшим down/net, до ночного правила: 150
+    # упавших, из них 40 с датой — всё равно массовый сбой, а не 40
+    # запросов к лежащим сайтам (замечание 13.10)
+    failed = len(take) + skipped.get(NIGHT_UNDATED, 0)
+    mass = failed > REDO_MASS
     chosen = [] if mass else take[:REDO_MAX_URLS]
     return Pick(rows=[rows[i] for i in chosen], index=chosen, total=len(take),
-                mass=mass, skipped=skipped)
+                mass=mass, skipped=skipped, failed=failed)
 
 
 def same_run(report, games, run_id, lo: datetime, hi: datetime) -> str:
@@ -451,16 +458,18 @@ def plan(*, end: datetime, now: datetime, choice: Pick, same: str, night: bool,
                         f"адресам с датой дня")
     if same:
         return "quiet", f"{same} — дозабор не заказываю"
+    if choice.mass:
+        # по ВСЕМ упавшим down/net, и ночью тоже (`Pick.failed`)
+        return "skip", (f"не открылись {choice.failed} адр. (сайт лёг или не "
+                        f"ответил) — больше {REDO_MASS}: это массовый сбой, а не "
+                        f"дозабор. Дозабор не заказываю; следующий плановый "
+                        f"{hm(next_slot)} соберёт всё")
     if choice.total == 0:
         return "quiet", "упавших адресов, которые стоит повторить (сайт лёг, нет ответа), нет"
     count = f"не открылись {choice.total} адр. (сайт лёг или не ответил)"
     if choice.skipped.get(NIGHT_UNDATED):
         count += (f" с датой в адресе; ещё {choice.skipped[NIGHT_UNDATED]} без даты "
                   f"сейчас не трогаю — их возьмёт утренний сбор")
-    if choice.mass:
-        return "skip", (f"{count} — больше {REDO_MASS}: это массовый сбой, а не "
-                        f"дозабор. Дозабор не заказываю; следующий плановый "
-                        f"{hm(next_slot)} соберёт всё")
     if collected:
         return "skip", f"{count}, но эти дни уже собрал обход {collected} — дозабор не нужен"
     if going:

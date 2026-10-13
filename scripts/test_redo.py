@@ -591,6 +591,19 @@ tick(K("11:00"))
 check("81 упавший → массовый сбой, не дозабор: строка, заказа нет, тревоги нет",
       redo_orders() == [] and any("массовый сбой" in n for n in notes_after(edge))
       and alarms_after(edge) == [], (ORDERS, notes_after(edge)))
+night_mass = {"начат_киев": DAY, "строки": [dict(down(i), url=f"https://s{i}.test/tv?date={DAY}")
+                                            for i in range(40)] + [down(i) for i in range(100, 210)]}
+nm = redo.pick(night_mass, now=K("03:00", NEXT))
+check("ночью массовый сбой — по ВСЕМ упавшим: 150 упавших, 40 с датой → массовый сбой, ни одного запроса",
+      nm.mass and nm.failed == 150 and nm.total == 40 and nm.rows == []
+      and redo.plan(now=K("03:00", NEXT), **dict(base, end=K("21:50"), choice=nm, night=True,
+                                                  next_slot=K("08:15", NEXT)))[0] == "skip"
+      and "150" in redo.plan(now=K("03:00", NEXT), **dict(base, end=K("21:50"), choice=nm, night=True,
+                                                         next_slot=K("08:15", NEXT)))[1], nm)
+check("…днём те же 150 — тоже массовый; 70 упавших ночью (40 с датой) — не массовый, качаем 40",
+      redo.pick(night_mass, now=K("11:00")).mass
+      and not redo.pick(dict(night_mass, строки=night_mass["строки"][:70]), now=K("03:00", NEXT)).mass
+      and len(redo.pick(dict(night_mass, строки=night_mass["строки"][:70]), now=K("03:00", NEXT)).rows) == 40)
 check("…ровно 80 — ещё дозабор (40 адресов)",
       not redo.pick({"строки": [down(i) for i in range(80)]}).mass
       and len(redo.pick({"строки": [down(i) for i in range(80)]}).rows) == 40)
