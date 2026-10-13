@@ -67,7 +67,10 @@ r"""Самопроверка прогона: ищет ИЗВЕСТНЫЕ кла�
      без пометок пола и возраста («Polska K» → «polska»), поэтому ловится
      и строка, из которой разбор пару не взял (13.10: teleman «rewanżowy
      mecz barażowy: Polska - Belgia» на TVP Sport; raiplay «Italia -
-     Bielorussia» на Rai 2 — книга случаев 001, 002).
+     Bielorussia» на Rai 2 — книга случаев 001, 002). Тот же канал у игры
+     с другого сайта — не потеря (Prima Sport 1: primaplay.ro и
+     programetv.ro). Первый же прогон на сборе #249 нашёл movistarplus:
+     эфир ЛЧ с 19:38 снимался как «не на ровной минуте».
 
 Правила:
   * подозрение — строка «сайт: что не так — пример»; решение принимает
@@ -1149,13 +1152,23 @@ def _seen_refs(games: dict) -> list[tuple]:
     return out
 
 
-def _site_on_game(domain: str, ref: dict, start: datetime, shown: list) -> bool:
-    """У игры витрины, которая и есть этот матч эталона, есть канал сайта?"""
+def _channel_key(name: str) -> str:
+    """«SPORT.TV5» = «SPORT TV 5»: имя канала без знаков и регистра."""
+    return re.sub(r"[\W_]+", "", (name or "").casefold())
+
+
+def _site_on_game(domain: str, channel: str, ref: dict, start: datetime,
+                  shown: list) -> bool:
+    """У игры витрины, которая и есть этот матч эталона, есть канал сайта —
+    или тот же канал с другого сайта (Prima Sport 1 у primaplay.ro и у
+    programetv.ro — зритель его видит, потери нет)?"""
     lo = bisect.bisect_left(shown, start - SEEN_GAME_WINDOW, key=lambda x: x[0])
+    key = _channel_key(channel)
     for g_start, g in shown[lo:]:
         if g_start > start + SEEN_GAME_WINDOW:
             break
         if not any(bare(e.get("source") or "") == domain
+                   or (key and _channel_key(e.get("channel") or "") == key)
                    for e in g.get("entries") or []):
             continue
         if _pair_score(g, ref) >= SEEN_PAIR:
@@ -1198,7 +1211,7 @@ def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
                         hits[fs] = (p, ref, start)
                         break
         for fs, (p, ref, start) in sorted(hits.items(), key=lambda x: x[1][2]):
-            if _site_on_game(domain, ref, start, shown):
+            if _site_on_game(domain, p.channel_raw, ref, start, shown):
                 continue
             out.append(f"{domain}: {p.start.astimezone(KYIV):%d.%m %H:%M} "
                        f"{p.channel_raw} «{(p.title or p.match_raw or '')[:70]}» — "
