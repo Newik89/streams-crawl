@@ -43,10 +43,14 @@
   П1. Проба = СБОР GitHub. `import_kind`, `crawl_id`, `site_verdicts`,
       `apply_probe`, `after_import`.
       Какая заливка (`import_kind`):
-        «сбор»    — полный обход GitHub: плановый, досрочный, ручной,
-                    кнопка «Обойти сайт» на GitHub, переразбор упавшего
-                    сбора (его report.json — того же сбора). Срыв +1, удача
-                    обнуляет;
+        «сбор»    — полный обход GitHub без фильтров: плановый, досрочный,
+                    ручной «2 дня»/«6 дней», переразбор упавшего сбора (его
+                    report.json — того же сбора). Срыв +1, удача обнуляет;
+        «кнопка»  — «Обойти сайт» на GitHub (`--only`: «кто» — «кнопка»
+                    или в оценке отчёта «строгая»: false) — только
+                    ОБНУЛЯЕТ: владелец жмёт её по нескольку раз в час,
+                    разбираясь со сломанным сайтом, — три нажатия не должны
+                    уводить сайт на сервер;
         «дозабор» — только ОБНУЛЯЕТ (сайт, выправленный дозабором); срыв
                     дозабора не считается: этот сбор уже засчитан;
         «скан»    — скан даты — только ОБНУЛЯЕТ. Срыв скана не считается:
@@ -309,7 +313,8 @@ def crawl_id(report) -> str:
 
 
 def import_kind(report, who: str = "") -> str:
-    """П1: что за заливка — «сбор», «дозабор», «скан», «сервер» или ""."""
+    """П1: что за заливка — «сбор», «кнопка», «дозабор», «скан», «сервер»
+    или "". Срывы считает только «сбор»; остальные GitHub-виды обнуляют."""
     if str(who or "").startswith("сервер"):
         return "сервер"
     if not isinstance(report, dict):
@@ -323,9 +328,14 @@ def import_kind(report, who: str = "") -> str:
     mode = str(report.get("режим") or "")
     if mode.startswith("скан даты"):
         return "скан"
-    if mode.startswith("полный обход"):
-        return "сбор"
-    return ""
+    if not mode.startswith("полный обход"):
+        return ""
+    # обход одного сайта кнопкой: `--only` → оценка провала «не строгая»
+    # (`crawl_fetch.main`); заливка results/site/ подписана «кнопка»
+    grade = report.get("оценка")
+    if who == "кнопка" or (isinstance(grade, dict) and grade.get("строгая") is False):
+        return "кнопка"
+    return "сбор"
 
 
 def row_failed(row: dict) -> bool:
@@ -452,7 +462,7 @@ def after_import(conn, report_path, who: str = "",
         if not verdict:
             continue
         if verdict["итог"] == "fail" and (kind != "сбор" or mass):
-            continue                       # скан, дозабор, массовый — только обнуляют
+            continue                       # кнопка, скан, дозабор, массовый — только обнуляют
         event = apply_probe(config, verdict, crawl, now)
         if not event or event == "same":
             continue
