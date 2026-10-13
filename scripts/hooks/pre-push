@@ -1,7 +1,8 @@
 #!/bin/sh
 # Шлагбаум выкладки (книга случаев, 13.10.2026): push в main — только с
 # зелёной проверкой на GitHub и на компьютере. Правила — scripts/push_gate.py.
-# Включение (один раз на копию репозитория): git config core.hooksPath scripts/hooks
+# Включение (один раз на репозиторий, путь абсолютный — его видят и рабочие
+# копии старых веток): git config core.hooksPath "<папка движка>/scripts/hooks"
 # Ветки и теги идут без шлагбаума — их и проверяет GitHub.
 
 root="$(git rev-parse --show-toplevel)"

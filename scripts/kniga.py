@@ -68,6 +68,15 @@ sys.path.insert(0, str(ROOT))
 
 ВИДЫ = ("разбор", "ссылка", "тест")
 
+#: часы для тестов и для разбора срезов. Тесты писаны под киевские часы
+#: (сервер и компьютер владельца), а на GitHub часы UTC — test_friend там
+#: ронял 3 проверки (проверка ветки 13.10). Разбор — как на GitHub, где сбор
+#: и разбирался: UTC. Windows имя «Europe/Kyiv» в TZ не понимает (часы
+#: сбиваются), а его машина и так киевская — там TZ для тестов не ставим,
+#: для разбора — «UTC0» (формат, понятный и Windows, и Linux)
+TEST_CLOCK = {} if os.name == "nt" else {"TZ": "Europe/Kyiv"}
+PARSE_CLOCK = {"TZ": "UTC0"}
+
 
 def bare(domain: str) -> str:
     return (domain or "").lower().removeprefix("www.").removeprefix("m.")
@@ -104,11 +113,30 @@ def case_problems(case: dict, slices: set[str]) -> list[str]:
     вид = case.get("проверка")
     if вид and вид not in ВИДЫ:
         out.append(f"проверка «{вид}» — неизвестная (знаю: {', '.join(ВИДЫ)})")
+    if вид == "тест" and case.get("ждём"):
+        # «ждём» у теста ничего не проверяет, но оправдывал бы потери на
+        # сборе (`proverka.explained`) — так нельзя
+        out.append("у случая-теста не бывает «ждём»")
     if вид == "разбор":
         if case.get("срез") not in slices:
             out.append(f"среза «{case.get('срез')}» нет в kniga/slices/")
         if not case.get("ждём"):
             out.append("пустое «ждём» — нечего проверять")
+        сайты = set()
+        if case.get("срез") in slices:
+            meta = slice_meta(case["срез"])
+            if not meta:
+                out.append(f"у среза {case['срез']} нет описания {case['срез']}.json")
+            сайты = {bare(s) for s in meta.get("сайты") or []}
+        for exp in case.get("ждём") or []:
+            if not ("нет" in exp or "снято" in exp):
+                continue
+            # «нет»/«снято» без времени и сайта или про сайт, которого в
+            # срезе нет, зелены при любом коде — и оправдывали бы потери
+            if not exp.get("время") or not exp.get("сайт"):
+                out.append(f"у «нет»/«снято» обязательны «время» и «сайт»: {exp}")
+            elif сайты and bare(exp["сайт"]) not in сайты:
+                out.append(f"сайта {exp['сайт']} нет в срезе {case['срез']}: {exp}")
     if вид == "ссылка" and not case.get("ждём"):
         out.append("пустое «ждём» — нечего проверять")
     if вид == "тест":
@@ -123,7 +151,9 @@ def case_problems(case: dict, slices: set[str]) -> list[str]:
 # --- срезы: нарезка и разбор ----------------------------------------------
 
 def slice_meta(name: str) -> dict:
-    return json.loads((SLICES / f"{name}.json").read_text(encoding="utf-8"))
+    """Описание среза (`<срез>.json`); нет файла — пусто."""
+    path = SLICES / f"{name}.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
 
 
 def cut(folder: Path, name: str, domains: list[str], days: list[str],
@@ -188,8 +218,9 @@ def parse_slice(name: str, workdir: Path) -> tuple[dict | None, str]:
     out.mkdir(parents=True)
     with zipfile.ZipFile(SLICES / f"{name}.zip") as z:
         z.extractall(pages)
-    env = dict(os.environ, PYTHONIOENCODING="utf-8",
-               STREAMS_DB=str(out / "none.db"))
+    # часы — как у разбора на GitHub (UTC), где сбор и разбирался
+    env = dict(os.environ, PYTHONIOENCODING="utf-8", STREAMS_DB=str(out / "none.db"),
+               **PARSE_CLOCK)
     run = subprocess.run(
         [sys.executable, "-X", "utf8", str(Path(__file__).resolve()), "--_parse",
          str(pages), "--clock", meta["часы_utc"], "--window", str(meta["окно"]),
@@ -326,8 +357,10 @@ def run_test(name: str) -> tuple[str, str]:
     if name in _tests:
         return _tests[name]
     tmp = tempfile.mkdtemp(prefix="kniga-test-")
+    # журнал посещений — во временную папку, а не в data/ репозитория
     env = dict(os.environ, PYTHONIOENCODING="utf-8",
-               STREAMS_DB=str(Path(tmp) / "none.db"))
+               STREAMS_DB=str(Path(tmp) / "none.db"), STREAMS_VISITS_DIR=tmp)
+    env.update(TEST_CLOCK)
     try:
         run = subprocess.run([sys.executable, "-X", "utf8", f"scripts/{name}"],
                              capture_output=True, text=True, encoding="utf-8",
@@ -440,11 +473,13 @@ def main() -> int:
         return 0
     total, red, yellow = run_book(args.case)
     print("\n" + summary(total, red, yellow))
-    return 1 if red else 0
+    return 1 if red or not total else 0
 
 
 def summary(total: int, red: list[str], yellow: list[str]) -> str:
     """Одна строка итога — она и идёт владельцу."""
+    if not total:
+        return "книга: 0 случаев — нечего проверять (номер не тот? папка пуста?)"
     if red:
         return f"книга: {total} случаев, КРАСНЫХ {len(red)} — выкладывать нельзя"
     if yellow:

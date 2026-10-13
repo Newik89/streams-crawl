@@ -42,7 +42,8 @@ jobs:
 
       - name: Страницы последнего полного сбора
         # артефакты живут 3 дня; берём самый свежий удачный полный обход
-        # (плановый или заказ сервера), у которого архив ещё есть
+        # (плановый или заказ сервера), у которого архив ещё есть. Не нашёлся —
+        # шаг не краснеет сам, но итог ниже будет красным (сравнения нет)
         id: sbor
         continue-on-error: true
         env:
@@ -63,17 +64,24 @@ jobs:
       - name: Тесты, книга случаев, старый и новый код на сборе
         env:
           BEFORE: ${{ github.event.before }}
+          SBOR: ${{ steps.sbor.outputs.dir }}
         run: |
-          base=origin/main
+          # старый код: для main — прежняя голова main; для ветки — общий
+          # предок с main (иначе свежий код main посчитается потерей ветки)
+          base=$(git merge-base origin/main HEAD)
           if [ "$GITHUB_REF_NAME" = "main" ] && [ -n "$BEFORE" ] && \
              [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
             base="$BEFORE"
           fi
-          if [ -n "${{ steps.sbor.outputs.dir }}" ]; then
-            python scripts/proverka.py --sravnit sbor --base "$base" | tee proverka.txt
+          if [ -n "$SBOR" ]; then
+            python scripts/proverka.py --sravnit "$SBOR" --base "$base" | tee proverka.txt
+            code=${PIPESTATUS[0]}
           else
             python scripts/proverka.py | tee proverka.txt
+            code=${PIPESTATUS[0]}
+            # без сравнения на сборе проверка неполная — шлагбаум её не примет
+            echo "✗ сравнение на последнем сборе НЕ СДЕЛАНО: нет живого архива полного обхода" | tee -a proverka.txt
+            code=1
           fi
-          code=${PIPESTATUS[0]}
           { echo '```'; tail -60 proverka.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           exit $code
