@@ -743,8 +743,12 @@ def create_app() -> Flask:
                 "AND (last_success IS NULL OR substr(last_success, 1, 10) < ?) "
                 "ORDER BY last_success IS NOT NULL, last_success, domain",
                 (edge,)).fetchall()
+            # схема сбоев, шаг 11 (П5): кого качает сервер и кто срывается
+            # на GitHub сборы подряд (`app/site_move.py`)
+            from . import site_move
             return render_template("health.html", rows=rows, silent=silent,
-                                   silent_days=SILENT_DAYS)
+                                   silent_days=SILENT_DAYS,
+                                   moves=site_move.overview(conn))
         finally:
             conn.close()
 
@@ -1756,6 +1760,10 @@ def create_app() -> Flask:
                 config = _json.loads(row.pop("selector_config", None)
                                      or "{}") or {}
                 row["by_server"] = bool(config.get("by_server"))
+                # «переведён на сервер автоматически 13.10» / «не дался
+                # GitHub 2 сбора подряд» (схема сбоев, шаг 11, П5)
+                from . import site_move
+                row["moved"] = site_move.mark(config)
                 row["why"] = why.get(domain, "")
                 row["fails"] = count
                 rows.append(row)
