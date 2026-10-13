@@ -43,6 +43,9 @@ _DATE_IN_URL = re.compile(r"date=(\d{4})-(\d{2})-(\d{2})")
 _SLUG_IN_URL = re.compile(r"/program-tv/stacje/([^/?#]+)")
 # `mecz: Karlsruher SC - VfL Wolfsburg` — слева жанр, справа пара команд
 _MATCH_GENRE = re.compile(r"^\s*(mecz|me[cz]z)\s*:\s*(.+)$", re.I)
+#: слово «матч» в подписи перед двоеточием — где угодно (`rewanżowy mecz
+#: barażowy:`), не только первым
+_MECZ = re.compile(r"\bmecz\w*\b", re.I)
 
 
 def page_day(html: str, url: str = "") -> _date | None:
@@ -163,9 +166,13 @@ def parse_sport(html: str, *, day: _date | None = None, tz: str | None = None,
                           tzinfo=ZoneInfo(tz or TZ))
         text = em.text(strip=True) if em else ""
         # пара команд — в <em>: `mecz 1/8 finału: Holandia - Słowenia`;
-        # нет двоеточия с парой — матча в строке нет
-        tail = text.split(":", 1)[1].strip() if text.lower().startswith("mecz") \
-            and ":" in text else ""
+        # слово «mecz» бывает и не первым: `rewanżowy mecz barażowy: Polska -
+        # Belgia`, `rewanżowy mecz półfinałowy: Flamengo - Estudiantes` —
+        # до 13.10 такие ответные игры терялись (вопрос владельца: женский
+        # отбор ЧМ Польша — Бельгия на TVP Sport). Нет «mecz» до двоеточия
+        # (`walka:`, `waga średnia:` у боёв) — матча в строке нет
+        head, colon, rest = text.partition(":")
+        tail = rest.strip() if colon and _MECZ.search(head) else ""
         out.append(Program(
             channel_raw=channel, title=title_node.text(strip=True),
             start=moment, raw_time=raw_time, description=text,
