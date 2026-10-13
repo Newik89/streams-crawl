@@ -84,9 +84,10 @@ def пора(домен: str, память_: dict, force: bool) -> bool:
     return datetime.now() - прошлый >= timedelta(hours=ЖДЁМ_ЧАСОВ)
 
 
-def сайты(only: str = "", days: int = 0) -> list[tuple[str, int]]:
-    """Домены «качает сервер» и их глубина в днях (`site_move.server_depth`,
-    П3; `days` — окно из `--days`)."""
+def сайты(only: str = "", days: int = 0) -> list[tuple[str, int, bool]]:
+    """Домены «качает сервер»: (домен, глубина в днях, переведён ли
+    автоматикой). Глубина — `site_move.server_depth` (П3; `days` — окно из
+    `--days`); «автоматикой» — `moved_by=auto` (`app/site_move.py`)."""
     conn = db.connect()
     try:
         out = []
@@ -97,7 +98,8 @@ def сайты(only: str = "", days: int = 0) -> list[tuple[str, int]]:
                 continue
             if only and r["domain"] != only:
                 continue
-            out.append((r["domain"], site_move.server_depth(config, days)))
+            out.append((r["domain"], site_move.server_depth(config, days),
+                        config.get("moved_by") == "auto"))
         return out
     finally:
         conn.close()
@@ -195,8 +197,8 @@ def разовая_проверка(conn, домен: str, now=None, fetch_one=N
             free=free or site_move.free_mb)
 
 
-#: свободная память, МБ (MemAvailable) — перед каждым сайтом обычного хода;
-#: проверки подменяют
+#: свободная память, МБ (MemAvailable) — перед каждым сайтом обычного хода,
+#: переведённым автоматикой (`moved_by=auto`); проверки подменяют
 свободно_мб = site_move.free_mb
 
 
@@ -269,18 +271,23 @@ def main() -> int:
         print("сайтов с пометкой «качает сервер» нет")
         return 0
     помню = память()
-    for домен, дней in список:
+    for домен, дней, автоматом in список:
         if not пора(домен, помню, args.force):
             было = (помню.get(домен) or {}).get("когда")
             print(f"{домен}: ходили {было} — ждём {ЖДЁМ_ЧАСОВ} ч, пропуск")
             continue
-        # сервер на 1 ГБ (схема сбоев, шаг 11): перед КАЖДЫМ сайтом —
-        # свободно ли MemAvailable ≥ site_move.MIN_FREE_MB; мало — сайт
-        # откладываем (в память не пишем: следующий запуск возьмёт его)
-        свободно = свободно_мб()
-        if site_move.memory_short(свободно):
-            отложил(домен, свободно)
-            continue
+        # сервер на 1 ГБ (схема сбоев, шаг 11): перед КАЖДЫМ сайтом,
+        # переведённым АВТОМАТИКОЙ, — свободно ли MemAvailable ≥
+        # site_move.MIN_FREE_MB; мало — сайт откладываем (в память не
+        # пишем: следующий запуск возьмёт его). Сайты, переведённые
+        # владельцем (mojtv.hr, rtrs.tv), качаются как до 13.10, без
+        # порога: MemAvailable не видит 2 ГБ подкачки, и пропуск их на
+        # сутки был бы новым поведением без слова владельца
+        if автоматом:
+            свободно = свободно_мб()
+            if site_move.memory_short(свободно):
+                отложил(домен, свободно)
+                continue
         куда = РАБОЧАЯ / домен
         print(f"{домен}: обход на {дней} дн. → {куда}")
         ок = шаг([PY, "scripts/crawl_fetch.py", "--full", "--only", домен,

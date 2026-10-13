@@ -650,11 +650,14 @@ print("П3. Глубина серверного сбора")
 проверка("к сайту с сервера не чаще = SITE_GAP_HOURS",
          site_move.CHECK_GAP_HOURS, crawl_hook.SITE_GAP_HOURS)
 поправить("srv.tv", max_days=4)
-глубины = dict(server_crawl.сайты())
+глубины = {d: n for d, n, _ in server_crawl.сайты()}
 проверка("server_crawl.сайты: ban.tv (авто) — 6, srv.tv (потолок) — 4",
          (глубины.get("ban.tv"), глубины.get("srv.tv")), (6, 4))
 проверка("server_crawl.сайты --days 2 — 2 всем",
-         set(dict(server_crawl.сайты(days=2)).values()), {2})
+         {n for _, n, _ in server_crawl.сайты(days=2)}, {2})
+проверка("server_crawl.сайты: «переведён автоматикой» — у ban.tv да, у srv.tv нет",
+         {d: a for d, _, a in server_crawl.сайты() if d in ("ban.tv", "srv.tv")},
+         {"ban.tv": True, "srv.tv": False})
 поправить("srv.tv", max_days=None)
 
 
@@ -891,16 +894,21 @@ server_crawl.шаг = lambda команда, тег: команды.append(ко�
 server_crawl.проверить_адрес = Качалка({})
 server_crawl.замок_заливки = _свободно
 sys.argv = ["server_crawl.py", "--force"]
+источник("mojlike.tv", by_server=True, manual_only=True, max_days=4)   # как mojtv.hr
 server_crawl.свободно_мб = lambda: 350
 до = последний_прогон()
 server_crawl.main()
-проверка("обычный ход: свободно 350 МБ — ни один сайт не качаем, без падения",
-         [к for к in команды if "crawl_fetch.py" in " ".join(к)], [])
-проверка("…строка «мало памяти, сайт … откладываю» на каждый сайт",
-         sum("мало памяти" in s and "откладываю" in s for s in строки_прогонов(до)),
-         len(dict(server_crawl.сайты())))
-проверка("…в память сбора не записаны — следующий запуск возьмёт их",
-         server_crawl.память(), {})
+автоматом = sorted(d for d, _, авто in server_crawl.сайты() if авто)
+только_сайты = sorted(к[к.index("--only") + 1] for к in команды if "crawl_fetch.py" in " ".join(к))
+проверка("обычный ход, свободно 350 МБ: переведённый владельцем (mojtv-подобный) "
+         "качается, как до 13.10", только_сайты, ["mojlike.tv"])
+проверка("…переведённые автоматикой (ban.tv, morning.tv) — откладываются",
+         автоматом, ["ban.tv", "morning.tv"])
+проверка("…строка «мало памяти, сайт … откладываю» на каждый из них, без падения",
+         sorted(d for d in автоматом for s in строки_прогонов(до)
+                if "мало памяти" in s and f"сайт {d} откладываю" in s), автоматом)
+проверка("…отложенные в память сбора не записаны — следующий запуск возьмёт их",
+         sorted(server_crawl.память()), ["mojlike.tv"])
 команды.clear()
 server_crawl.свободно_мб = lambda: 800
 server_crawl.main()
