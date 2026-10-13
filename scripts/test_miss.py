@@ -247,6 +247,40 @@ conn = import_twice(first, second, [row(PAGES, "Kanal A"), row(PAGES, "Kanal B")
 check("правило5_страница_канала_A_цела_матча_нет_A_гаснет",
       miss_of(conn, "Kanal A", "Arsenal") == store.MISS_LIMIT)
 
+# правило 5, общий вид страниц каналов: цифра в адресе уходит в «#», и
+# /channel/Kanal-1 и /channel/Kanal-2 — один вид (как port.hu `channel_id=`,
+# tv.orf.at `orf1|orf2|orf3`). 07.10 ORF 1 не добрал страниц дней, а его
+# отметки правило пропускало по целым страницам ORF 2 и ORF III
+first = [game(*A1, (PAGES, "Kanal 1"), (OTHER, "Other 1")),
+         game(*A2, (PAGES, "Kanal 2"), (OTHER, "Other 2"))]
+second = [game(*A1, (OTHER, "Other 1")),
+          game(*A2, (PAGES, "Kanal 2"), (OTHER, "Other 2"))]
+check("правило5_общий_вид: у Kanal 1 и Kanal 2 один вид адреса",
+      miss.вид_адреса(page_url("Kanal 1")) == miss.вид_адреса(page_url("Kanal 2")))
+conn = import_twice(first, second, [row(PAGES, "Kanal 2"), row(OTHER)])
+check("правило5_общий_вид_страницы_канала_1_нет_в_отчёте_2_открылась_1_не_гаснет (ORF 1, 07.10)",
+      miss_of(conn, "Kanal 1", "Arsenal") == 0, miss_of(conn, "Kanal 1", "Arsenal"))
+conn = import_twice(first, second, [row(PAGES, "Kanal 1", verdict="не открылась"),
+                                    row(PAGES, "Kanal 2"), row(OTHER)])
+check("правило5_общий_вид_страница_канала_1_не_открылась_2_открылась_1_не_гаснет",
+      miss_of(conn, "Kanal 1", "Arsenal") == 0, miss_of(conn, "Kanal 1", "Arsenal"))
+conn = import_twice(first, second, [
+    row(PAGES, "KANAL ONE", url=page_url("Kanal 1")),
+    row(PAGES, "Kanal 2"), row(OTHER)])
+check("правило5_общий_вид_страница_1_цела_под_другим_написанием_матча_нет_гаснет "
+      "(movistar «M+ LALIGA» / «M+ LaLiga»: своя — по адресу без дат)",
+      miss_of(conn, "Kanal 1", "Arsenal") == store.MISS_LIMIT,
+      miss_of(conn, "Kanal 1", "Arsenal"))
+conn = import_twice(first, second, [row(PAGES, "Kanal 1"), row(PAGES, "Kanal 2"),
+                                    row(OTHER)])
+check("правило5_общий_вид_страница_канала_1_цела_матча_нет_гаснет",
+      miss_of(conn, "Kanal 1", "Arsenal") == store.MISS_LIMIT,
+      miss_of(conn, "Kanal 1", "Arsenal"))
+check("адрес_без_дат: дата уходит, номер канала остаётся",
+      miss.адрес_без_дат("https://x.test/tvapi?channel_id=375&from=2026-10-13")
+      == miss.адрес_без_дат("https://x.test/tvapi?channel_id=375&from=2026-10-14")
+      != miss.адрес_без_дат("https://x.test/tvapi?channel_id=376&from=2026-10-13"))
+
 # правило 6: скан даты, «расписание есть», а игр 0 (#4224)
 first = [game(*A1, (PAGES, "Kanal A"), (OTHER, "Other 1"))]
 second = [game(*A1, (OTHER, "Other 1"))]
