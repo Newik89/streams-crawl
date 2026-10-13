@@ -905,13 +905,26 @@ class P:                                           # передача разбо
         self.extra = extra
 
 
-def E(program):                                    # запись склейки (merge.Entry)
-    return type("E", (), {"payload": type("R", (), {"program": program})()})()
+def E(program, home="Gunners", away="Blues", start=None):     # запись склейки (merge.Entry)
+    return type("E", (), {"payload": type("R", (), {"program": program})(),
+                          "home": home, "away": away, "start": start or K("21:45")})()
 
 
 class G:                                           # игра склейки (merge.Game)
     def __init__(self, *entries):
         self.entries = list(entries)
+
+    @property
+    def home(self):
+        return self.entries[0].home
+
+    @property
+    def away(self):
+        return self.entries[0].away
+
+    @property
+    def start(self):
+        return min(e.start for e in self.entries)
 
 
 new_prog, old_prog, none_prog = P({"fs_id": "x"}), P(), P(None)
@@ -921,6 +934,13 @@ check("разбор: передачи перекачанной страницы 
       new_prog.extra == {"fs_id": "x", redo.ENTRY_KEY: True} and redo.program_redone(none_prog)
       and not redo.program_redone(old_prog) and len(kept) == 2
       and [len(g.entries) for g in kept] == [1, 1] and kept[0].entries[0].payload.program is new_prog)
+bridge = G(E(old_prog, "Arsenal", "Chelsea", K("21:40")), E(new_prog, "Gunners", "Blues", K("21:45")))
+kept_b = redo.keep_redone_games([bridge])
+check("«мост»: у оставшейся игры — «связи»: пары имён и время всей склейки и выброшенных записей",
+      len(kept_b) == 1 and redo.links_field(kept_b[0]) == {redo.LINKS_KEY: [
+          {"home": "Arsenal", "away": "Chelsea", "start_kyiv": f"{DAY}T21:40"}]}
+      and redo.links_field(kept[1]) == {} and "**redo.links_field(g)" in
+      (ROOT / "scripts" / "parse_live.py").read_text(encoding="utf-8"), redo.links_field(kept_b[0]))
 payload7 = {"собрано": "x", "игр": 3, "эталон": [1],
             "games": [{"home": "A", "entries": [{"source": "a", **redo.marker(True)}, {"source": "b"}]},
                       {"home": "B", "entries": [{"source": "b"}]}, "битая"],
@@ -1133,6 +1153,41 @@ for n, add_only in ((1, False), (2, True)):
 os.environ["STREAMS_DB"] = str(WATCH_DB)
 check("отметки агрегатора («свой сайт важнее»): обычная заливка снимает, дозабор — не снимает",
       counts == [(1, 1), (0, 2)], counts)
+
+
+def links_db(name: str):
+    """База с уже влитой игрой Arsenal — Chelsea 21:45 (Max 4)."""
+    os.environ["STREAMS_DB"] = str(TMP / f"{name}.db")
+    c = db.connect()
+    db.init_db(c)
+    for d in (GRID, DEAD):
+        c.execute("INSERT INTO sources (domain, name, base_url, country) VALUES (?, ?, ?, 'XX')",
+                  (d, d, f"https://{d}/"))
+    c.commit()
+    store.save_games(c, [gm("Arsenal", "Chelsea", "21:45", (GRID, "Max 4"))])
+    return c
+
+
+# докачанная запись «Gunners — Blues» склеилась со старой «Arsenal — Chelsea»
+# через третью запись-«мост»; после отбора у игры остались только её имена
+bridged = gm("Gunners", "Blues", "21:45", (DEAD, "Dead 9", True))
+c = links_db("links-off")
+store.save_games(c, [bridged], add_only=True)
+without = c.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+c.close()
+c = links_db("links-on")
+stats_l = store.save_games(c, [dict(bridged, **{redo.LINKS_KEY: [
+    {"home": "Arsenal", "away": "Chelsea", "start_kyiv": f"{GAME_DAY}T21:45"}]})], add_only=True)
+with_links = c.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+on_arsenal = c.execute("SELECT COUNT(*) FROM event_channels ec JOIN events e ON e.id = ec.event_id "
+                       "JOIN channel_aliases ca ON ca.channel_id = ec.channel_id "
+                       "AND ca.source_id = ec.source_id "
+                       "WHERE e.team_home_auto = 'Arsenal' AND ca.alias = 'Dead 9'").fetchone()[0]
+c.close()
+os.environ["STREAMS_DB"] = str(WATCH_DB)
+check("«мост»: без «связей» дозабор завёл бы двойника; со «связями» — одна игра, новый канал лёг на неё",
+      without == 2 and with_links == 1 and on_arsenal == 1 and stats_l.new == 0 and stats_l.channels == 1,
+      (without, with_links, on_arsenal, stats_l))
 
 # ════════════════════════════════════════════════════════════════════════════
 rule("Д8", "сбой дозабора — только строка (close); дозабор не «полный сбор»")

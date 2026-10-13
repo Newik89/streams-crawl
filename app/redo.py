@@ -92,7 +92,10 @@
       «дозабор» и только записи со страниц, которые дозабор перекачал и
       которые ОТКРЫЛИСЬ (по ИМЕНИ ФАЙЛА из раздела «дозабор»: адреса мало —
       у POST-сайтов он общий на все дни); игра без таких записей
-      выбрасывается. `games_import.py` по пометке «режим» вливает «только
+      выбрасывается, а у оставшейся пары имён и время выброшенных записей
+      едут полем «связи» (`LINKS_KEY`): склейка могла идти через «мост», и
+      заливка узнаёт уже влитую игру по ним (`store._linked_event`), а не
+      заводит двойника. `games_import.py` по пометке «режим» вливает «только
       добавить» и ещё раз оставляет только помеченное (`only_redone`):
       добавляет НОВЫЕ игры и НОВЫЕ отметки; у существующих игр не трогает
       ни время, ни лигу, ни last_seen, существующую отметку не обновляет и
@@ -609,17 +612,60 @@ def program_redone(program) -> bool:
     return bool((getattr(program, "extra", None) or {}).get(ENTRY_KEY))
 
 
+#: Д7: поле игры в games.json дозабора — пары имён и время её ВЫБРОШЕННЫХ
+#: старых записей (и всей склейки до отбора): докачанную запись могли
+#: склеить со старыми через «мост» — третью запись, а её собственные имена
+#: на игру базы не похожи. Заливка ищет игру базы и по этим парам
+#: (`store._linked_event`), прежде чем завести новую, — без них выходил
+#: двойник (замечание 13.10)
+LINKS_KEY = "связи"
+#: столько пар «связей» на игру, не больше
+LINKS_MAX = 8
+
+
+def _link(home, away, start) -> dict | None:
+    """Пара имён и время записи/игры для «связей»; чего-то нет — None."""
+    if not home or not away or start is None:
+        return None
+    return {"home": str(home), "away": str(away),
+            "start_kyiv": start.strftime("%Y-%m-%dT%H:%M")}
+
+
 def keep_redone_games(games: list) -> list:
     """Д7 (разбор): у каждой склеенной игры остаются только записи с
     перекачанных страниц; игра без них выбрасывается. Время, имена и лига
-    игры считаются уже по оставшимся записям (это свойства игры)."""
+    игры считаются уже по оставшимся записям (это свойства игры). Пары
+    имён и время выброшенных записей и всей склейки до отбора — в
+    `game.links` (поле «связи» games.json, `LINKS_KEY`)."""
     out = []
     for game in games:
-        game.entries = [e for e in game.entries
-                        if program_redone(getattr(e.payload, "program", None))]
-        if game.entries:
+        whole = _link(getattr(game, "home", ""), getattr(game, "away", ""),
+                      getattr(game, "start", None)) if game.entries else None
+        kept, links, dropped = [], [whole] if whole else [], 0
+        for entry in game.entries:
+            if program_redone(getattr(entry.payload, "program", None)):
+                kept.append(entry)
+            else:
+                dropped += 1
+                links.append(_link(getattr(entry, "home", ""), getattr(entry, "away", ""),
+                                   getattr(entry, "start", None)))
+        game.entries = kept
+        if kept and dropped:
+            uniq: list[dict] = []
+            for link in links:
+                if link and link not in uniq:
+                    uniq.append(link)
+            game.links = uniq[:LINKS_MAX]
+        if kept:
             out.append(game)
     return out
+
+
+def links_field(game) -> dict:
+    """Д7 (разбор): поле «связи» игры для games.json — {LINKS_KEY: [...]} или
+    ничего (у игры ничего не выбрасывали)."""
+    links = getattr(game, "links", None)
+    return {LINKS_KEY: links} if links else {}
 
 
 def marker(on: bool) -> dict:

@@ -1317,6 +1317,9 @@ def main() -> int:
                    "start_utc": (g.first.payload.start_utc.strftime("%Y-%m-%dT%H:%M")
                                  if getattr(g.first.payload, "start_utc", None)
                                  else ""),
+                   # дозабор (Д7): пары имён и время выброшенных старых
+                   # записей — заливка узнаёт по ним уже влитую игру
+                   **redo.links_field(g),
                    "entries": [{
                        "source": e.source,
                        "channel": e.channel,

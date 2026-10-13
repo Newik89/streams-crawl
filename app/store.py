@@ -220,6 +220,24 @@ def _find_event(conn: sqlite3.Connection, game: dict) -> sqlite3.Row | None:
     return None
 
 
+def _linked_event(conn: sqlite3.Connection, game: dict) -> sqlite3.Row | None:
+    """Дозабор (`app/redo.py`, Д7): игра базы по «связям» игры файла — парам
+    имён и времени её выброшенных старых записей (`redo.LINKS_KEY`). Те же
+    правила, что `_find_event`; нет связей или ни одна не нашлась — None."""
+    for link in game.get(redo.LINKS_KEY) or []:
+        if not isinstance(link, dict) or not link.get("home") or not link.get("away"):
+            continue
+        try:
+            found = _find_event(conn, {"home": str(link["home"]), "away": str(link["away"]),
+                                       "start_kyiv": str(link.get("start_kyiv") or ""),
+                                       "sport": game.get("sport", "")})
+        except (ValueError, TypeError):
+            continue
+        if found is not None:
+            return found
+    return None
+
+
 def _fs_event(conn: sqlite3.Connection, game: dict) -> sqlite3.Row | None:
     """Игра базы с той же меткой flashscore, что дала этой игре сверка с
     эталоном (`game["fs_id"]` ставит `games_import` по уверенной паре
@@ -410,6 +428,10 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             stats.time_off += time_off
         else:
             found = _find_event(conn, game)
+            if found is None and add_only:
+                # дозабор (`app/redo.py`, Д7): запись склеили со старыми через
+                # «мост» — игру базы ищем и по их именам и времени («связи»)
+                found = _linked_event(conn, game)
         if found is None:
             found = _fs_twin(conn, game, team_ids)
             if found is not None:
