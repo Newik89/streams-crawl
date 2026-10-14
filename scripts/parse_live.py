@@ -74,7 +74,10 @@ REPEAT_GUESS_DOMAINS = {"trtspor.com.tr", "allente.no", "programetv.ro",
                         # live_guess (ветка hu-live — сливать её раньше)
                         "kanal1sport.sk", "webtv.sk",
                         # литовский телегид tv3.lt эфир не помечает
-                        "tv3.lt"}
+                        "tv3.lt",
+                        # Al Kass: пометки эфира нет, большая часть
+                        # сетки — повторы прошлых матчей
+                        "alkass.net"}
 
 
 def previous_counts(path: Path = PREVIOUS) -> dict[str, int]:

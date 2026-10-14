@@ -5028,6 +5028,45 @@
      "pattern": "https://www.sporting.pt/pt/ical"
     }
    ]
+  },
+  {
+   "domain": "alkass.net",
+   "timezone": "Asia/Qatar",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "Al Kass Eight",
+    "Al Kass Five",
+    "Al Kass Four",
+    "Al Kass One",
+    "Al Kass Online",
+    "Al Kass Seven",
+    "Al Kass Six",
+    "Al Kass Three",
+    "Al Kass Two"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.alkass.net/tvguide",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.alkass.net/tvguide"
+    }
+   ]
   }
  ]
 }
