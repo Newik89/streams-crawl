@@ -241,6 +241,8 @@ def _load_all():
                    trt_net_tr, trtavaz_com_tr, trtspor_com_tr,
                    tring_al, tv2_no, tv3_lt, tv8_com_tr, tv24_co_uk,
                    tv_nova_cz,
+                   # 18.10: телегид dir.bg — bTV Action, bTV, Ring.bg, БНТ
+                   tv_dir_bg,
                    tvguidetonight_com_au, unian_tv,
                    vsetv_com,
                    webtv_sk, ziggosport_nl, tvarenaprogram_com,
