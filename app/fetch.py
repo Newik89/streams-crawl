@@ -114,9 +114,27 @@ BROKEN_TLS = {"dagenstv.com", "arenatv.sk"}
 #: вместе с `warmup` на страницу, где ключ лежит; регулярка — здесь, группа 1.
 #: Так устроен `sporteventz.com`: `accesskey` меняется от сессии к сессии
 #: (ключ из копии за 01.09 к 02.09 уже протух — проверено пробой).
+#: `tv.dir.bg` (18.10): `GET /init` отдаёт JSON `{"csrfToken": "…"}` и куки
+#: сессии, дальше каждый `POST /load/programs?channel=…&day=…` несёт тот же
+#: ключ полем `_token`. Ключ запоминается по хосту (`Fetcher._warmkeys`) и
+#: подставляется в КАЖДЫЙ запрос, а не только в первый после разогрева.
 WARMKEY_PATTERNS = {
     "sporteventz.com": r"accesskey=(\d+)",
+    "tv.dir.bg": r'"csrfToken":"([^"]+)"',
 }
+
+WARMKEY_MARK = "{WARMKEY}"
+
+
+def fill_warmkey(url: str, post: dict | None, key: str) -> tuple[str, dict | None]:
+    """Метка `{WARMKEY}` в адресе и в полях формы → ключ. Без ключа или без
+    метки ничего не меняется."""
+    if not key:
+        return url, post
+    url = url.replace(WARMKEY_MARK, key)
+    if post:
+        post = {k: str(v).replace(WARMKEY_MARK, key) for k, v in post.items()}
+    return url, post
 
 #: Ручки, которые пускают только с гостевым ключом. Сайт выдаёт его своему же
 #: виджету по «логину гостя», зашитому в скрипт виджета: `sportklub.hr`
@@ -404,6 +422,11 @@ class Fetcher:
         self._session: dict[str, object] = {}
         # гостевые ключи ручек из TOKEN_HOSTS: берутся один раз за обход
         self._tokens: dict[str, dict[str, str]] = {}
+        # одноразовый ключ страницы разогрева по хосту (`WARMKEY_PATTERNS`):
+        # берётся один раз вместе с куками, подставляется в каждый запрос.
+        # До 18.10 метка заменялась только в первом запросе к хосту, и второй
+        # уходил с буквальным `{WARMKEY}` — у tv.dir.bg это был бы отказ
+        self._warmkeys: dict[str, str] = {}
 
     def _token_headers(self, host: str, agent: str, verify: bool) -> dict[str, str]:
         """Заголовки ручки с гостевым ключом (`TOKEN_HOSTS`); прочим — пусто.
@@ -491,19 +514,18 @@ class Fetcher:
             try:
                 warm = keeper.get(warmup, timeout=TIMEOUT, verify=verify,
                                   headers=headers(agent))
-                # одноразовый ключ из warmup-страницы — метка {WARMKEY}
+                # одноразовый ключ из warmup-страницы — метка {WARMKEY}:
+                # запоминаем по хосту, он нужен и всем следующим запросам
                 pattern = WARMKEY_PATTERNS.get(host.removeprefix("www."))
-                if pattern and "{WARMKEY}" in url + str(post or ""):
+                if pattern:
                     found = re.search(pattern, warm.text)
                     if found:
-                        key = found.group(1)
-                        url = url.replace("{WARMKEY}", key)
-                        if post:
-                            post = {k: str(v).replace("{WARMKEY}", key)
-                                    for k, v in post.items()}
+                        self._warmkeys[host] = found.group(1)
             except Exception:           # разогрев не удался — идём как есть
                 pass
             self._wait(host)
+        # метка {WARMKEY} → ключ хоста: в первом запросе и в каждом следующем
+        url, post = fill_warmkey(url, post, self._warmkeys.get(host, ""))
         caller = keeper if keeper is not None else requests
         # ручки с гостевым ключом (`sportklub.hr`): ключ и их заголовки
         if host in TOKEN_HOSTS:
