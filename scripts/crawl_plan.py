@@ -181,6 +181,11 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # 13.10 (задание владельца): телегид каналов Al Kass, Катар —
           # названия передач сайт пишет по-английски, только сегодня
           "alkass.net",
+          # 18.10 (слово владельца: «нужно расписание bTV Action»): телегид
+          # dir.bg — bTV Action, bTV, Ring.bg, БНТ 1–4; ключ с /init
+          # (warmup_url) и POST на канал и день (post_fields), btv.bg
+          # закрыт Cloudflare
+          "tv.dir.bg",
           ]
 # СПРАВОЧНИКИ, не источники: liveonsat.com (решение 01.09) и
 # sporteventz.com (решение 02.09) в ежедневный обход не входят. Оба —
