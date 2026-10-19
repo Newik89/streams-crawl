@@ -74,6 +74,10 @@
   "else": "https://www.srf.ch/play/tv/programm/{YYYY-MM-DD}",
   "night": 6
  },
+ "tv.dir.bg": {
+  "page": "https://tv.dir.bg/programa/{CH}",
+  "ch": "q:channel"
+ },
  "tv2.no": {
   "page": "https://www.tv2.no/tvguide/"
  },

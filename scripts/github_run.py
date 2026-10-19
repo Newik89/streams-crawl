@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import re
 import subprocess
 import sys
 import time
@@ -124,8 +125,16 @@ def cmd_create(args) -> int:
     return 0
 
 
+#: SHA коммита целиком — только так `crawl.yml` принимает `code_ref`
+_SHA40 = re.compile(r"^[0-9a-f]{40}$")
+
+
 def cmd_dispatch(args) -> int:
     slug = repo_slug()
+    code_ref = (args.code_ref or "").strip().lower()
+    if code_ref and not _SHA40.match(code_ref):
+        print(f"--code-ref: нужен SHA коммита целиком (40 знаков), а не {code_ref!r}")
+        return 1
     status, answer = call(
         "POST", f"/repos/{slug}/actions/workflows/{WORKFLOW}/dispatches",
         {"ref": "main", "inputs": {
@@ -134,10 +143,14 @@ def cmd_dispatch(args) -> int:
             "days": str(args.days), "delay": str(args.delay),
             "only": args.only, "urls": args.urls, "post": args.post,
             "warmup": args.warmup,
-            "browser": "yes" if args.browser else "no"}})
+            "browser": "yes" if args.browser else "no",
+            # workflow — всегда с main, а код обхода — с этого коммита: так
+            # проба бежит кодом ветки до слияния (18.10, ветка dirbg)
+            "code_ref": code_ref}})
     if status == 204:
         print(f"обход запущен: {'полный' if args.full else 'проба'}, "
-              f"пауза {args.delay} с")
+              f"пауза {args.delay} с"
+              + (f", код {code_ref[:10]}" if code_ref else ""))
         return 0
     print(f"{status}: {answer}")
     return 1
@@ -247,6 +260,9 @@ def main() -> int:
     p.add_argument("--browser", action="store_true",
                    help="сразу браузером: сайт отвечает 200, а расписание "
                         "рисует скриптом")
+    p.add_argument("--code-ref", default="", dest="code_ref",
+                   help="SHA коммита (40 знаков): обход бежит кодом этого "
+                        "коммита, а не main — проба ветки до слияния")
     p.set_defaults(run=cmd_dispatch)
     sub.add_parser("runs").set_defaults(run=cmd_runs)
     p = sub.add_parser("wait"); p.add_argument("--timeout", type=int, default=600)

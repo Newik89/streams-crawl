@@ -1,6 +1,6 @@
 {
  "days": 6,
- "built": "2026-10-08",
+ "built": "2026-10-18",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -5065,6 +5065,69 @@
     {
      "name": "",
      "pattern": "https://www.alkass.net/tvguide"
+    }
+   ]
+  },
+  {
+   "domain": "tv.dir.bg",
+   "timezone": "Europe/Sofia",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "BNT1 (БНТ1)",
+    "BNT2 (БНТ2)",
+    "BNT3 (БНТ3)",
+    "BNT4 (БНТ4)",
+    "Ring.bg (bTV Sport)",
+    "bTV",
+    "bTV Action"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": {
+    "_token": "{WARMKEY}"
+   },
+   "warmup_url": "https://tv.dir.bg/init",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://tv.dir.bg/",
+   "channels": [
+    {
+     "name": "BNT1 (БНТ1)",
+     "pattern": "https://tv.dir.bg/load/programs?channel=57&day={YYYY-MM-DD}"
+    },
+    {
+     "name": "BNT2 (БНТ2)",
+     "pattern": "https://tv.dir.bg/load/programs?channel=99&day={YYYY-MM-DD}"
+    },
+    {
+     "name": "BNT3 (БНТ3)",
+     "pattern": "https://tv.dir.bg/load/programs?channel=82&day={YYYY-MM-DD}"
+    },
+    {
+     "name": "BNT4 (БНТ4)",
+     "pattern": "https://tv.dir.bg/load/programs?channel=64&day={YYYY-MM-DD}"
+    },
+    {
+     "name": "Ring.bg (bTV Sport)",
+     "pattern": "https://tv.dir.bg/load/programs?channel=59&day={YYYY-MM-DD}"
+    },
+    {
+     "name": "bTV",
+     "pattern": "https://tv.dir.bg/load/programs?channel=61&day={YYYY-MM-DD}"
+    },
+    {
+     "name": "bTV Action",
+     "pattern": "https://tv.dir.bg/load/programs?channel=95&day={YYYY-MM-DD}"
     }
    ]
   }
