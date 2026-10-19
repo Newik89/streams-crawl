@@ -1,0 +1,42 @@
+{
+ "номер": 59,
+ "дата": "2026-10-19",
+ "вид": "жалоба",
+ "суть": "↗ у канала с календаря клуба ведёт на страницу канала на ЕГО сайте, а не на афишу клуба (Canal 11 у sporting.pt вёл на Спортинг)",
+ "владелец": "#7059: нажимаешь на канал Canal 11 — ведёт на Sporting; почему тогда написано Canal 11?",
+ "правило": "календарь клуба (sporting.pt) — не сайт канала: поле by_channel шаблона даёт страницу канала на его сайте (Canal 11 → canal11.pt, RTP1/RTP2 → rtp.pt); канала в списке нет — афиша клуба, как раньше",
+ "коммит": "",
+ "проверка": "ссылка",
+ "ждём": [
+  {
+   "сайт": "sporting.pt",
+   "канал": "Canal 11",
+   "время": "2026-10-24 17:30",
+   "пояс": "Europe/Lisbon",
+   "адрес_отметки": "https://www.sporting.pt/pt/ical",
+   "адрес_источника": "https://www.sporting.pt/pt/agenda/listagem",
+   "часы_utc": "2026-10-19 17:00",
+   "ссылка": "https://www.canal11.pt/info/programa%C3%A7%C3%A3o/"
+  },
+  {
+   "сайт": "sporting.pt",
+   "канал": "RTP2",
+   "время": "2026-10-24 17:30",
+   "пояс": "Europe/Lisbon",
+   "адрес_отметки": "https://www.sporting.pt/pt/ical",
+   "адрес_источника": "https://www.sporting.pt/pt/agenda/listagem",
+   "часы_utc": "2026-10-19 17:00",
+   "ссылка": "https://www.rtp.pt/rtp2/"
+  },
+  {
+   "сайт": "sporting.pt",
+   "канал": "SPORT TV 5",
+   "время": "2026-10-24 17:30",
+   "пояс": "Europe/Lisbon",
+   "адрес_отметки": "https://www.sporting.pt/pt/ical",
+   "адрес_источника": "https://www.sporting.pt/pt/agenda/listagem",
+   "часы_utc": "2026-10-19 17:00",
+   "ссылка": "https://www.sporting.pt/pt/agenda/listagem?d=2026-10"
+  }
+ ]
+}
