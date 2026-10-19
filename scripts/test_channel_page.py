@@ -253,6 +253,40 @@ print("7. имя канала — как на сайте; ночь телеги�
                  start_kyiv="2026-11-01 01:30", tz="Europe/Lisbon", channel="SPORT TV 1"),
          "https://www.sporting.pt/pt/agenda/listagem?d=2026-10")
 
+print("7а. источник — не сайт канала (календарь клуба): страница канала на ЕГО сайте")
+# жалоба владельца 19.10, #7059 Benfica W — Sporting W: отметка Canal 11 от sporting.pt,
+# а кнопка открывала афишу Спортинга
+клуб = {"sporting.pt": {"page": "https://club.pt/agenda?d={YYYY}-{MM}",
+                        "by_channel": {"CANAL 11": "canal11.pt",
+                                       "RTP1": "https://rtp.pt/rtp1/?d={YYYY-MM-DD}"}},
+        "canal11.pt": {"page": "https://canal11.pt/programacao/?d={YYYY-MM-DD}"}}
+проверка("1а: канал из by_channel → шаблон его сайта на день игры",
+         cp.link("https://club.pt/ical", domain="sporting.pt", base_url="https://club.pt/agenda",
+                 start_kyiv="2026-10-24 17:30", tz="Europe/Lisbon", channel="Canal 11", rules=клуб),
+         "https://canal11.pt/programacao/?d=2026-10-24")
+проверка("1а: имя сравнивается без регистра и HD («CANAL 11 HD»)",
+         cp.link("https://club.pt/ical", domain="sporting.pt", base_url="https://club.pt/agenda",
+                 start_kyiv="2026-10-24 17:30", tz="Europe/Lisbon", channel="canal 11 hd", rules=клуб),
+         "https://canal11.pt/programacao/?d=2026-10-24")
+проверка("1а: готовая страница с :// — метки даты подставлены",
+         cp.link("https://club.pt/ical", domain="sporting.pt", base_url="https://club.pt/agenda",
+                 start_kyiv="2026-10-24 17:30", tz="Europe/Lisbon", channel="RTP1", rules=клуб),
+         "https://rtp.pt/rtp1/?d=2026-10-24")
+проверка("1а: канала нет в by_channel — обычный шаблон клуба (правило 1)",
+         cp.link("https://club.pt/ical", domain="sporting.pt", base_url="https://club.pt/agenda",
+                 start_kyiv="2026-10-24 17:30", tz="Europe/Lisbon", channel="SPORT TV 5", rules=клуб),
+         "https://club.pt/agenda?d=2026-10")
+проверка("1а: домен из by_channel без шаблона — правило 1, не пусто",
+         cp.link("https://club.pt/ical", domain="sporting.pt", base_url="https://club.pt/agenda",
+                 start_kyiv="2026-10-24 17:30", tz="Europe/Lisbon", channel="Canal 11",
+                 rules={"sporting.pt": {**клуб["sporting.pt"], "by_channel": {"CANAL 11": "nowhere.pt"}}}),
+         "https://club.pt/agenda?d=2026-10")
+проверка("1а: файл шаблонов — Canal 11 у sporting.pt ведёт на canal11.pt",
+         cp.link("https://www.sporting.pt/pt/ical", domain="sporting.pt",
+                 base_url="https://www.sporting.pt/pt/agenda/listagem",
+                 start_kyiv="2026-10-24 17:30", tz="Europe/Lisbon", channel="Canal 11"),
+         "https://www.canal11.pt/info/programa%C3%A7%C3%A3o/")
+
 print("8. сторож: машинные адреса плана и последнего сбора")
 шаблоны = cp.pages()
 план = json.loads((ROOT / "data" / "crawl_plan.json").read_text(encoding="utf-8"))

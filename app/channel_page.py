@@ -10,6 +10,12 @@ cid=923…` и отвечала 401: старая проверка не узна
 
 Правила по порядку — первое сработавшее даёт ссылку (`link`):
 
+1а. Сайт-источник — не сайт канала (календарь клуба `sporting.pt`: он лишь
+   пишет, что матч покажет Canal 11): ↗ ведёт на страницу канала на ЕГО
+   сайте — поле `by_channel` шаблона, «канал → домен шаблона этого канала
+   или готовая страница (с `://`)». Жалоба владельца 19.10 (#7059 Benfica W
+   — Sporting W: у Canal 11 кнопка открывала афишу Спортинга). Канала нет в
+   `by_channel` — правило 1.
 1. У сайта есть шаблон в `data/channel_pages.json` → страница по шаблону:
    дата — день игры по часам САЙТА (у телегидов сутки с утра до утра —
    поле `night`), канал `{CH}` — из адреса отметки или имени канала (как
@@ -302,17 +308,48 @@ def from_template(rule: dict, source_url: str, channel: str | tuple,
     return "" if "{CH}" in url else url
 
 
+def own_page(rule: dict, channel: str | tuple, day: _date | None,
+             tz: str | None, all_rules: dict) -> str:
+    """Правило 1а: страница канала на ЕГО сайте, когда источник — не сайт
+    канала (календарь клуба). `by_channel` шаблона: «канал → домен шаблона
+    канала» (страница строится тем шаблоном на день игры) или «канал →
+    готовая страница с `://`» (метки даты подставляются). Канал не из
+    списка или шаблона домена нет — пусто, дальше правило 1."""
+    table = rule.get("by_channel")
+    if not isinstance(table, dict) or not table:
+        return ""
+    names = {_norm(k): str(v) for k, v in table.items()}
+    value = ""
+    for name in ((channel,) if isinstance(channel, str) else channel):
+        for variant in _name_variants(name or ""):
+            if variant in names:
+                value = names[variant]
+                break
+        if value:
+            break
+    if not value:
+        return ""
+    if "://" in value:
+        return urls.resolve(value, day=day, tz=tz)
+    other = all_rules.get(_bare(value))
+    return from_template(other, "", channel, day, tz) if other else ""
+
+
 def link(source_url: str | None, *, domain: str = "", base_url: str = "",
          start_kyiv: str | None = None, tz: str | None = None,
          channel: str | tuple = "", rules: dict | None = None) -> str:
-    """Ссылка кнопки ↗ — правила 1–4 из шапки модуля. `rules` — шаблоны
+    """Ссылка кнопки ↗ — правила 1а–4 из шапки модуля. `rules` — шаблоны
     вместо файла (для тестов)."""
     try:
         tz = tz if _zone(tz) else None
-        rule = (pages() if rules is None else rules).get(_bare(domain)) if domain else None
+        all_rules = pages() if rules is None else rules
+        rule = all_rules.get(_bare(domain)) if domain else None
         if rule:
-            url = from_template(rule, source_url or "", channel,
-                                site_day(start_kyiv, tz, int(rule.get("night") or 0)), tz)
+            day = site_day(start_kyiv, tz, int(rule.get("night") or 0))
+            url = own_page(rule, channel, day, tz, all_rules)      # 1а
+            if url:
+                return url
+            url = from_template(rule, source_url or "", channel, day, tz)
             if url:
                 return url                                      # 1
         if source_url and not is_machine(source_url, domain):
