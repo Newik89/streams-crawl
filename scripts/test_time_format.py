@@ -47,6 +47,16 @@ from app import canon, db, store  # noqa: E402
 ЧАСЫ = datetime.combine(date.today(), datetime.min.time()).replace(hour=12)
 
 
+def utc(kyiv_hhmm: str) -> str:
+    """Киевское «ЧЧ:ММ» дня ДЕНЬ → «ДЕНЬ ЧЧ:ММ» по UTC — часами зоны, а не
+    «+3 летом»: 25.10.2026 — день перевода часов, и угадывание по месяцу
+    красило тест (20.10)."""
+    from zoneinfo import ZoneInfo
+    when = datetime.fromisoformat(f"{ДЕНЬ}T{kyiv_hhmm}").replace(
+        tzinfo=ZoneInfo("Europe/Kyiv"))
+    return when.astimezone(ZoneInfo("UTC")).strftime("%Y-%m-%d %H:%M")
+
+
 def проверка(имя: str, вышло, ждём) -> None:
     global зелёных, красных
     if вышло == ждём:
@@ -162,7 +172,7 @@ def main() -> int:
     store.save_games(conn, [перенос], now=ЧАСЫ)
     проверка("по метке: время игры — эталонное (перенос на 20:00)",
              tuple(conn.execute("SELECT start_kyiv, start_utc FROM events WHERE id = ?", (eid,)).fetchone()),
-             (f"{ДЕНЬ} 20:00", f"{ДЕНЬ} 17:00" if date.fromisoformat(ДЕНЬ).month in range(4, 11) else f"{ДЕНЬ} 18:00"))
+             (f"{ДЕНЬ} 20:00", utc("20:00")))
     # две игры с одной меткой (дубль уже есть) — поиск по метке молчит,
     # дальше обычный путь; ничего не падает
     conn.execute("INSERT INTO events (sport, team_home_auto, team_away_auto, start_utc, start_kyiv, "
@@ -188,7 +198,7 @@ def main() -> int:
     проверка("UTC пересчитан из киевского",
              conn.execute("SELECT start_kyiv, start_utc FROM events WHERE id = ?",
                           (ids["Lokomotiv Moscow"],)).fetchone()[1],
-             f"{ДЕНЬ} 16:30" if date.fromisoformat(ДЕНЬ).month in range(4, 11) else f"{ДЕНЬ} 17:30")
+             utc("19:30"))
     проверка("повторная самопочинка ничего не трогает", store.normalize_times(conn), 0)
     conn.close()
 
