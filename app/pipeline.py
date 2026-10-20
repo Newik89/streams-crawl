@@ -32,7 +32,7 @@ from datetime import datetime, timedelta
 
 from . import daytime, leagues, live, names, sport
 from .parsers import Program
-from .reference import Reference
+from .reference import Confirmed, Reference
 
 
 @dataclass
@@ -98,29 +98,46 @@ def ask_reference(program: Program, verdict: live.Verdict,
                   reference: Reference | None, start_kyiv: datetime | None,
                   league_category: str = ""):
     """Правило (в): строку, которую отсев не взял (`verdict`), спрашиваем у
-    эталона. Пару дают все читатели (`live.split_candidates`), первая
-    догадка, которую эталон подтвердил как эфир (`Reference.confirm`), и есть
-    пара строки — в порядке сторон эталона. Возвращает (новый вердикт,
-    ответ эталона) либо None — тогда строка решается, как раньше."""
+    эталона. Пару дают все читатели (`live.split_candidates`), и пара
+    строки — догадка, которую эталон подтвердил как эфир
+    (`Reference.confirm`), в порядке сторон эталона. Из нескольких
+    подтверждённых берётся сошедшаяся ЦЕЛИКОМ («пара»), а не первая по
+    порядку: у rtl «2. Bundesliga Live - Topspiel: 1. FC Nürnberg - 1. FC
+    Kaiserslautern» первая догадка («2. Bundesliga Live» — «Topspiel: …»)
+    сходилась «одной стороной», и игра уезжала на витрину с мусорным именем
+    (проверка книги 064, 20.10). Возвращает (новый вердикт, ответ эталона)
+    либо None — тогда строка решается, как раньше."""
     if reference is None or start_kyiv is None \
             or verdict.reason not in ASK_REFERENCE_REASONS:
         return None
-    for home, away in live.split_candidates(program.match_raw or program.title or ""):
+    # догадки — и из поля пары, и из заголовка: парсер кладёт в поле « »,
+    # когда пары не нашёл, а заголовок её держит («Al Nassr-Al Neom», ipko)
+    candidates: list[tuple[str, str]] = []
+    for text in ((program.match_raw or "").strip(), (program.title or "").strip()):
+        for pair in live.split_candidates(text):
+            if pair not in candidates:
+                candidates.append(pair)
+    confirmed: list[tuple[str, str, Confirmed]] = []
+    for home, away in candidates:
         # пол и возраст турнира — к догадке сразу: «Polska - Belgia» в женском
         # отборе должна сойтись с «Poland W — Belgium W», а не с мужской парой
         home = leagues.with_category(home, league_category)
         away = leagues.with_category(away, league_category)
         got = reference.confirm(home, away, start_kyiv)
-        if got is None:
-            continue
-        if got.swapped:
-            home, away = away, home
-        # эфир угадан (эталоном, не словом сайта): дальше его проверяют те же
-        # фильтры повторов, что и прочие угадайки (`parse_live.guessed`)
-        program.extra["live_guess"] = True
-        return (live.Verdict(True, "", live_marker=verdict.live_marker or REFERENCE_MARKER,
-                             home=home, away=away), got)
-    return None
+        if got is not None:
+            confirmed.append((home, away, got))
+            if got.how == "пара":
+                break                      # лучше не бывает
+    if not confirmed:
+        return None
+    home, away, got = next((x for x in confirmed if x[2].how == "пара"), confirmed[0])
+    if got.swapped:
+        home, away = away, home
+    # эфир угадан (эталоном, не словом сайта): дальше его проверяют те же
+    # фильтры повторов, что и прочие угадайки (`parse_live.guessed`)
+    program.extra["live_guess"] = True
+    return (live.Verdict(True, "", live_marker=verdict.live_marker or REFERENCE_MARKER,
+                         home=home, away=away), got)
 
 
 def classify(program: Program, markers: live.Markers, sports: sport.Sports,

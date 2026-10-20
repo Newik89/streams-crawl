@@ -74,8 +74,12 @@ LIVE_SHOW_BEFORE = timedelta(minutes=60)
 LIVE_SHOW_AFTER = timedelta(minutes=15)
 #: одна сторона пары узнана «твёрдо» — само имя эталона или его алиас
 SIDE_SURE = 95
-#: другая хотя бы «не спорит» — как у моста по лиге в каноне
-SIDE_FLOOR = canon.BRIDGE_FLOOR
+#: другая хотя бы «не спорит» буквами. Замер 20.10 (`names.similarity`):
+#: чужие клубы дают 26–58 (Portimonense ~ Porto 58, Lens ~ Le Mans 50,
+#: Barcelona ~ Lyon-Villeurbanne 46), обрезанное своё — 60 («1. FC Kaiser»
+#: ~ Kaiserslautern), остальное своё — 90–100. Ниже 60 выручает только общее
+#: слово (`_shares_word`)
+SIDE_FLOOR = 60
 
 
 @dataclass
@@ -243,11 +247,18 @@ class Reference:
                 continue
             if not inside or letter == "T":
                 continue
-            game = swapped if turned else straight
-            if canon._best_side(game, entry) < SIDE_SURE:
+            # порядок сторон для моста — по ТВЁРДОЙ стороне, а не по счёту
+            # пары целиком: у «Sevilla — Real Clube» против «Sevilla — Real
+            # Sociedad» пара даёт 33 прямо и 40 наоборот, и Sevilla (100)
+            # терялась в обратном порядке (проверка 20.10)
+            sides = ((canon._best_side(straight, entry), False, straight),
+                     (canon._best_side(swapped, entry), True, swapped))
+            side, turned, game = max(sides, key=lambda x: x[0])
+            if side < SIDE_SURE:
                 continue
-            if best >= SIDE_FLOOR or (canon._same_category(game, entry)
-                                      and self._shares_word(game, entry, number)):
+            if canon._pair_score(game, entry) >= SIDE_FLOOR or (
+                    canon._same_category(game, entry)
+                    and self._shares_word(game, entry, number)):
                 sided.append((turned, number))
         if whole:
             if len({self._entries[n][0].get("sport") or "F" for *_x, n, _i in whole}) > 1:

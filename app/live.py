@@ -183,10 +183,11 @@ def split_teams(raw: str) -> tuple[str, str] | None:
 
 
 # ── один читатель пары: догадки, которые проверяет эталон (правило (г)) ─────
-#: дефис между буквами без пробелов — разделитель пары только как ДОГАДКА:
-#: он бывает и внутри имени («Saint-Étienne», «Bodø/Glimt»), верную догадку
+#: дефис между буквами без пробелов (или с пробелом с одной стороны: «Aston
+#: Villa- Viking», tvarenasport) — разделитель пары только как ДОГАДКА: он
+#: бывает и внутри имени («Saint-Étienne», «Bodø/Glimt»), верную догадку
 #: выбирает эталон
-_TIGHT_DASH = re.compile(r"(?<=\w)[-–—](?=\w)")
+_TIGHT_DASH = re.compile(r"(?<=\w)\s?[-–—]\s?(?=\w)")
 #: американская запись «гости at хозяева» / «гости @ хозяева»
 _AT = re.compile(r"\s+(?:at|@)\s+", re.I)
 
@@ -217,8 +218,9 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
       4. « at » и « @ » («Minnesota Timberwolves at Miami Heat», tvpassport):
          хозяева — после «at» (обратный порядок эталон проверяет и сам);
       5. дефис без пробелов («Al Nassr-Al Neom», «Levante-Ath Bilbao»,
-         ipko.tv): пара — на каждом таком дефисе; тире среди пробелов при
-         этом нет, иначе дефис — часть имени («Saint-Étienne - Lyon»).
+         ipko.tv) или с пробелом лишь с одной стороны («Aston Villa- Viking»):
+         пара — на каждом таком дефисе; тире среди пробелов при этом нет,
+         иначе дефис — часть имени («Saint-Étienne - Lyon»).
 
     Повторы убраны, порядок сохранён. Скобки с хвостом («(BRA)», «(se
     speciálním studiem)») вырезаны у всех догадок, как в `split_teams`."""
@@ -242,7 +244,8 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
                 add(_sides(" - ".join(parts[:i]), " - ".join(parts[i:])))
         at = _AT.split(text)
         if len(at) == 2:                                         # правило 4
-            add(_sides(at[1], at[0]))
+            # рубрика перед гостями («NBA Basketball: Minnesota…») — долой
+            add(_sides(at[1], _LEFT_JUNK.sub("", at[0])))
         if not _SPLIT.search(text):                              # правило 5
             for m in _TIGHT_DASH.finditer(text):
                 add(_sides(text[:m.start()], text[m.end():]))
@@ -294,6 +297,10 @@ def check(program, markers: Markers) -> Verdict:
     if not live:
         return Verdict(False, "нет маркера прямого эфира")
 
+    # поле пары « » (пробел) — так парсер говорит «пары нет, в заголовок не
+    # лезь» (polsatsport, teleman, novasports…): заголовок тут НЕ читаем.
+    # Такую строку дальше спрашивает эталон (`pipeline.ask_reference`,
+    # правило (в)) — он читает и заголовок, но каждую догадку подтверждает
     pair = split_teams(program.match_raw or title)
     if not pair:
         return Verdict(False, "не видно пары команд", live_marker=live)
