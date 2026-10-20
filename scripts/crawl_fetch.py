@@ -58,7 +58,7 @@ sys.path.insert(0, str(ROOT))
 
 from urllib.parse import urljoin, urlsplit          # noqa: E402
 
-from app import daytime, fetch, protection, redo, site_move, timemarks, urls   # noqa: E402
+from app import crawl, daytime, fetch, protection, redo, site_move, timemarks, urls   # noqa: E402
 from app.parsers import flashscore_mobi                            # noqa: E402
 
 PLAN = ROOT / "data" / "crawl_plan.json"
@@ -200,15 +200,14 @@ def targets(plan: dict, days: int, probe: bool, start: date | None = None,
         if source.get("by_server") and source["domain"] not in only:
             continue
         ppd = source.get("pages_per_day") or 0
-        # «глубина источника» (этап 6е, A1): у эталона flashscore 7 дней,
-        # у дешёвых дневных сеток 5 — независимо от окна обхода, оно
-        # управляет остальными. Считает `app.crawl.depth`, сюда приезжает
-        # готовым числом в плане (0 — по окну)
-        span = 1 if single else (source.get("days_ahead") or days)
-        # потолок глубины у этого сайта: окно 6 дней его не касается
-        cap = source.get("max_days") or 0
-        if cap and span > cap:
-            span = cap
+        # «глубина источника» (этап 6е, A1): своя глубина есть только у
+        # справочников (в плане `days_ahead`, 0 — по окну), потолок —
+        # `max_days`. Считает ОДНО место — `app.crawl.depth`: с 20.10
+        # (правило (а) починки №13) справочник не мельче окна обхода, и
+        # зеркала эталона на 1 день при окне 6 качаются на 6
+        span = 1 if single else crawl.depth(
+            {"days_ahead": source.get("days_ahead"),
+             "max_days": source.get("max_days")}, days, source["domain"])
         if ppd and single and source.get("day_channels"):
             # скан даты: сводник показывает «от сейчас» и дальние дни
             # ненадёжен — берём страницы каналов с датой (идея владельца
