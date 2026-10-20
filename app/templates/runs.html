@@ -6,6 +6,8 @@
   details.audit p.audit-title { margin: 8px 0 2px; font-weight: 600; color: inherit; }
   details.audit ul { margin: 0 0 6px 18px; padding: 0; font-size: 13px; color: inherit; }
   .ok { color: var(--ok, #2a7); }
+  details.audit > summary .new13 { color: var(--err); }
+  details.audit > summary .old13 { color: var(--text); font-weight: 400; }
 </style>
 <h1>Прогоны</h1>
 {% include "_emergency.html" %}
@@ -33,7 +35,10 @@
     <td class="muted">
       {%- if r.audit %}
       {%- if r.audit['подозрений'] %}
-      <details class="audit"><summary>⚠ самопроверка: подозрений {{ r.audit['подозрений'] }}</summary>
+      {#- «новых_13» дописывает scripts/audit_merge.py после склейки на сервере
+          (правило (б) починки №13, 20.10): красным, только если новые есть #}
+      <details class="audit"><summary>⚠ самопроверка: подозрений {{ r.audit['подозрений'] }}
+        {%- if 'новых_13' in r.audit %}, новых в 13: <span class="{{ 'new13' if r.audit['новых_13'] else 'old13' }}">{{ r.audit['новых_13'] }}</span>{% endif %}</summary>
         {% for s in r.audit['разделы'] %}
         <p class="audit-title">{{ s['название'] }} — {{ s['строки']|length }}</p>
         <ul>{% for line in s['строки'] %}<li>{{ line }}</li>{% endfor %}</ul>
