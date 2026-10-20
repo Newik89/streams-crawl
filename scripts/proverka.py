@@ -199,10 +199,14 @@ def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, 
 
 def absorbed(gone: dict, kept: list[dict]) -> dict | None:
     """Двойня, склеенная в игру, которая была и в старом разборе: та же пара
-    ±3 ч (случай 036: дубль Lokomotiv — Krasnodar). Её каналы сверяются с
+    ±3 ч (случай 036: дубль Lokomotiv — Krasnodar) — или все каналы
+    пропавшей при ней, как у `twin` (20.10: «Айнтрахт Брауншвайг — Хановер»
+    nova.bg/novasports.gr вклеилась в «Eintracht Braunschweig — Hannover 96»,
+    а кириллица с латиницей буквами 85 не набирает). Её каналы сверяются с
     каналами пропавшей — недостающий канал всё равно потеря."""
     when = kniga.kyiv(gone["start_kyiv"])
-    hosts = [g for g in kept if _same_pair(gone, g)
+    chans = _chans(gone)
+    hosts = [g for g in kept if (_same_pair(gone, g) or (chans and chans <= _chans(g)))
              and abs(kniga.kyiv(g["start_kyiv"]) - when) <= timedelta(hours=СДВИГ_Ч)]
     return min(hosts, key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when)) if hosts else None
 

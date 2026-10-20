@@ -295,6 +295,24 @@ row = строка("Levante - Ath Bilbao", "2026-10-21T21:00", описание=
          (False, True, ""))
 проверка("…и live_guess не поставлен", row.program.extra.get("live_guess"), None)
 
+print("(в) прошлый сезон в подписи — классика, эталон не спрашиваем")
+когда = момент("2026-10-24T19:00")
+проверка("«2003/04» в октябре 2026 — прошлый сезон",
+         pipeline.past_season("Klasici Premijer Lige: Chelsea - Tottenham, 2003/04", когда), True)
+проверка("«2025/26» в октябре 2026 — уже прошлый",
+         pipeline.past_season("Finale 2025/26", когда), True)
+проверка("«2025/26» в марте 2026 — ещё текущий",
+         pipeline.past_season("Finale 2025/26", момент("2026-03-10T19:00")), False)
+проверка("«(T26/27)» — не сезон из четырёх цифр, не прошлый",
+         pipeline.past_season("UEFA Champions League (T26/27): Real Madrid - Leipzig", когда), False)
+проверка("год основания «Grazer AK 1902» — не сезон",
+         pipeline.past_season("WSG Tirol - Grazer AK 1902", когда), False)
+проверка("«2026 WNBA Finals» — не прошлый",
+         pipeline.past_season("2026 WNBA Finals: Valkyries at Dream", когда), False)
+row = строка("Klasici: Levante - Ath Bilbao, 2003/04", "2026-10-21T21:00")
+проверка("классика «2003/04» без маркера эфира — отсев, эталон не спрошен",
+         (row.ok, row.reason, row.by_reference), (False, "нет маркера прямого эфира", ""))
+
 print("(в) вид неясен — эталон решает только парой целиком")
 row = строка("PSG - Lens", "2026-10-10T21:45", эфир="live")
 проверка("«PSG - Lens» при эталонном «PSG - Le Mans»: вид не от эталона",

@@ -27,6 +27,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
@@ -92,6 +93,22 @@ def hint_fresh(day: str | None, start_kyiv: datetime | None) -> bool:
 ASK_REFERENCE_REASONS = ("нет маркера прямого эфира", "не видно пары команд")
 #: что ставит отсев строке, эфир которой подтвердил эталон, а не сайт
 REFERENCE_MARKER = "эталон"
+#: сезон в подписи: «2003/04», «2019-2020», «1998/99». Прошлый сезон — это
+#: классика, а не эфир: «Klasici Premijer Lige: Chelsea - Tottenham, 2003/04»
+#: на Arena Sport 1 за полчаса до живого Chelsea — Tottenham эталон
+#: подтвердил бы как эфир (проверка перед выкладкой, сбор #301, 20.10)
+_SEASON = re.compile(r"(?<!\d)((?:19|20)\d{2})\s*[/–-]\s*(?:\d{2}|(?:19|20)\d{2})(?!\d)")
+
+
+def past_season(text: str, when: datetime | None) -> bool:
+    """Подпись называет ПРОШЛЫЙ сезон — показ не эфир. Текущий сезон
+    начинается с июля: в марте 2026 «2025/26» — ещё текущий, в октябре 2026
+    «2025/26» — уже прошлый. Год основания клуба («Grazer AK 1902») без
+    второй половины сезоном не считается."""
+    if when is None:
+        return False
+    current = when.year if when.month >= 7 else when.year - 1
+    return any(int(m.group(1)) < current for m in _SEASON.finditer(text or ""))
 
 
 def ask_reference(program: Program, verdict: live.Verdict,
@@ -109,6 +126,10 @@ def ask_reference(program: Program, verdict: live.Verdict,
     либо None — тогда строка решается, как раньше."""
     if reference is None or start_kyiv is None \
             or verdict.reason not in ASK_REFERENCE_REASONS:
+        return None
+    # прошлый сезон в подписи — классика, эталон не спрашиваем
+    if past_season(" ".join(x for x in (program.title, program.match_raw,
+                                        program.league_raw) if x), start_kyiv):
         return None
     # догадки — и из поля пары, и из заголовка: парсер кладёт в поле « »,
     # когда пары не нашёл, а заголовок её держит («Al Nassr-Al Neom», ipko)

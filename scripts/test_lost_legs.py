@@ -135,6 +135,23 @@ found = [показ("Rai Sport", 17, 25, "Bielorussia W - Italia W"),   # зап
 один = [показ("Rai 2", 19, 5, "Italia W - Bielorussia W")]
 проверка("единственный показ пары остаётся",
          len(parse_live.nearest_shows(один, матч, parse_live.guessed)[0]), 1)
+# 20.10 (правила 1–2): честный эфир — якорь группы, снимается только угаданное;
+# ключ группы разбор даёт по матчу эталона — у студии и эфира имена разные
+студия = [показ("TV 2 Sport", 19, 30, "Før HB Køge W - Brøndby IF W", сайт="tvtid.tv2.dk"),
+          показ("TV 2 Sport", 19, 55, "HB Køge W - Brøndby IF W", угадан=False, сайт="tvtid.tv2.dk")]
+киксофф = datetime(2026, 10, 13, 20, 0, tzinfo=KYIV)
+остались, сняты = parse_live.nearest_shows(
+    студия, lambda r: киксофф, parse_live.guessed,
+    lambda домен, r: (домен, "F", "fs:koge"))
+проверка("угаданная студия за 30 мин до эфира снята, честный эфир остался",
+         [r.start_kyiv.strftime("%H:%M") for _d, r in остались], ["19:55"])
+проверка("причина — честный показ ближе к началу",
+         [почему for _x, почему in сняты],
+         ["у сайта есть показ ближе к началу матча (13.10 20:00): 13.10 19:55"])
+наоборот = [показ("TV 2 Sport", 19, 55, "HB Køge W - Brøndby IF W", сайт="tvtid.tv2.dk"),
+            показ("TV 2 Sport", 23, 0, "HB Køge W - Brøndby IF W", угадан=False, сайт="tvtid.tv2.dk")]
+проверка("честный показ дальше от матча, чем угаданный, — не снимается",
+         len(parse_live.nearest_shows(наоборот, lambda r: киксофф, parse_live.guessed)[0]), 2)
 
 print(f"\nзелёных {зелёных}, красных {красных}")
 sys.exit(1 if красных else 0)
