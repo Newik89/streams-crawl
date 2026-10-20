@@ -224,27 +224,33 @@ def local_reference_time(home: str, away: str, start, sport: str,
 SAME_SHOW = timedelta(minutes=15)
 
 
-def nearest_shows(found: list, kickoff_of, guessed_of) -> tuple[list, list]:
+def nearest_shows(found: list, kickoff_of, guessed_of,
+                  key_of=None) -> tuple[list, list]:
     """Эфир — показ, ближайший к началу матча (13.10, вопрос владельца:
     Италия W — Беларусь W). У сайта без честного флага одна пара бывает
     дважды рядом с матчем: Rai Sport в 17:25 крутил запись ПЕРВОГО матча
     («Bielorussia - Italia»), а Rai 2 в 19:05 — живой ответный (эталон
     19:15). Правила списком:
-    1. Смотрим только угаданный эфир (`guessed_of`) с началом матча по
-       эталону (`kickoff_of`) — остальное правило не трогает.
-    2. Пара у сайта — `show_key` (команды в любом порядке, вид спорта).
+    1. В группы идут все эфирные показы с началом матча по эталону
+       (`kickoff_of`) — и честные, и угаданные; СНИМАЮТСЯ только угаданные
+       (`guessed_of`): честная пометка сайта главнее. До 20.10 честные в
+       группы не попадали, и угаданная эталоном студия «Før HB Køge -
+       Brøndby IF» 19:30 на TV 2 Sport жила рядом с честным эфиром 19:55 и
+       склеивалась с ним (проверка перед выкладкой, сбор #301).
+    2. Пара у сайта — `key_of`, по умолчанию `show_key` (команды в любом
+       порядке, вид спорта); разбор передаёт ключ по матчу эталона, когда
+       тот известен: у студии и у эфира того же матча имена разные.
     3. Из показов пары живой — ближайший к началу матча; показы, начавшиеся
        не дальше `SAME_SHOW` от него, — тоже (одновременный эфир на двух
        каналах). Остальные — записи.
     Возвращает (оставленные, снятые с текстом причины)."""
+    key_of = key_of or show_key
     groups: dict[tuple, list] = {}
     for item in found:
         domain, r = item
-        if not guessed_of(domain, r):
-            continue
         kick = kickoff_of(r)
         if kick is not None:
-            groups.setdefault(show_key(domain, r), []).append(
+            groups.setdefault(key_of(domain, r), []).append(
                 (abs(r.start_kyiv - kick), item, kick))
     drop: dict[int, str] = {}
     for rows in groups.values():
@@ -252,6 +258,8 @@ def nearest_shows(found: list, kickoff_of, guessed_of) -> tuple[list, list]:
             continue
         best = min(rows, key=lambda x: x[0])
         for gap, item, kick in rows:
+            if not guessed_of(item[0], item[1]):
+                continue                      # честный эфир не снимаем
             if abs(item[1].start_kyiv - best[1][1].start_kyiv) > SAME_SHOW:
                 drop[id(item)] = (
                     f"у сайта есть показ ближе к началу матча "
@@ -1043,11 +1051,19 @@ def main() -> int:
         return in_local_reference(r.home, r.away, r.start_kyiv, sport,
                                   reference_local)
 
+    def _confirmed(r) -> bool:
+        # правило (в) починки №13 (20.10): «не уверен — спроси эталон» — та
+        # же лестница, что у отсева и вида спорта (`Reference.confirm`): пара
+        # целиком или одна сторона твёрдо, матч начинается рядом с показом.
+        # Скан даты: окно эфира (−15 мин … +1 ч) до вчерашних матчей не
+        # дотягивается, правило «эфир дня — матчами самого дня» цело
+        return judge.confirm(r.home, r.away, r.start_kyiv, r.sport) is not None
+
     def _in_reference(r) -> bool:
         # пословно, а не побуквенно: «Millwall FC - Newcastle United» у
         # oneplaysport — тот же матч, что «Millwall - Newcastle» эталона,
         # а точное сравнение убивало живую строку как запись (#728, 03.09)
-        if _in_reference_local(r, "F"):
+        if _in_reference_local(r, "F") or _confirmed(r):
             return True
         for h, a, t in confirm:
             if abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
@@ -1103,8 +1119,9 @@ def main() -> int:
                for s in ("B", "T")}
 
     def _in_reference_bt(r) -> bool:
-        # местные написания эталона — как у футбола (07.10)
-        if _in_reference_local(r, r.sport):
+        # местные написания эталона — как у футбола (07.10); и «спроси
+        # эталон» (правило (в)) — тоже как у футбола
+        if _in_reference_local(r, r.sport) or _confirmed(r):
             return True
         for h, a, t, sp in reference_bt:
             if sp != r.sport:
@@ -1139,6 +1156,12 @@ def main() -> int:
                                      reference_local)
         if local is not None:
             times.append(local)
+        # матч, которым эталон подтвердил показ (правило (в)): его начало —
+        # тоже кандидат, иначе строка, прошедшая сверку мостом «одна сторона»,
+        # осталась бы без времени матча и без проверки заставки
+        got = judge.confirm(r.home, r.away, r.start_kyiv, sport)
+        if got is not None:
+            times.append(got.start.replace(tzinfo=r.start_kyiv.tzinfo))
         pool = ([(h, a, t) for h, a, t in confirm] if sport == "F" else
                 [(h, a, t) for h, a, t, sp in reference_bt if sp == sport])
         for h, a, t in pool:
@@ -1150,7 +1173,24 @@ def main() -> int:
                 times.append(t)
         return min(times, key=lambda t: abs(r.start_kyiv - t)) if times else None
 
-    found, ушли = nearest_shows(found, _kickoff, guessed)
+    группы_матча: dict[tuple, tuple] = {}
+
+    def _show_group(domain: str, r) -> tuple:
+        # ключ группы — пара по именам (`show_key`), но показы ОДНОГО матча
+        # эталона сводятся в группу первого из них: у студии «Før HB Køge -
+        # Brøndby IF» и у эфира «HB Køge - Brøndby IF» имена разные, а матч
+        # один (правило 2 `nearest_shows`, 20.10). Показ вне окна эталона
+        # (Al Ittihad 19:55 при начале 21:00, книга 051) остаётся со своим
+        # именным ключом — и попадает в ту же группу, что одноимённый показ
+        # 20:55, как и до 20.10
+        key = show_key(domain, r)
+        got = judge.confirm(r.home, r.away, r.start_kyiv, r.sport)
+        if got is not None and got.entry.get("fs_id"):
+            матч = (_bare_domain(domain), r.sport or "", "fs:" + got.entry["fs_id"])
+            key = группы_матча.setdefault(матч, key)
+        return key
+
+    found, ушли = nearest_shows(found, _kickoff, guessed, _show_group)
     for (domain, r), почему in ушли:
         снято.append(removed_row(СНЯТО_НЕ_БЛИЖАЙШИЙ, domain, r, почему))
     if ушли:

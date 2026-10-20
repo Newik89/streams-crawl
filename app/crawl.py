@@ -218,6 +218,13 @@ def depth(config: dict, days: int, domain: str = "") -> int:
     эталона, 2 у остальных) — из-за этого у одной и той же игры каналы
     появлялись вразнобой, и владелец не понимал, почему у субботнего матча
     нет каналов, которые сайт уже показывает.
+
+    Правило (а) починки самопроверки №13 (владелец 20.10, разбор 15.10 по
+    сбору #266): **справочник не мельче окна витрины**. Шесть зеркал эталона
+    (ru, ro, pl, tr, ua, cz) качались на 1 день при окне 6 — у матчей
+    дальних дней не было местных написаний, сверка с эталоном рвалась, и
+    ~130 матчей за сбор терялись. Своя глубина справочника — нижняя
+    планка (7 у flashscore.mobi остаются семью), окно обхода её поднимает.
     """
     try:
         own = int(config.get("days_ahead") or 0)
@@ -225,11 +232,13 @@ def depth(config: dict, days: int, domain: str = "") -> int:
         own = 0
     bare = (domain or "").removeprefix("www.")
     if own > 0 and bare in REFERENCE_DOMAINS:
-        return min(MAX_DAYS_AHEAD, own)
-    got = min(MAX_DAYS_AHEAD, days) if days > 0 else days
+        got = min(MAX_DAYS_AHEAD, max(own, days))
+    else:
+        got = min(MAX_DAYS_AHEAD, days) if days > 0 else days
     # Потолок для отдельного сайта (владелец 10.09, по случаю mojtv.hr):
     # «даже если я нажал кнопку 6 дней — этот пусть берёт 1+3». Общее окно
     # он не отменяет, только не даёт заходить дальше своего предела.
+    # Справочника касается так же (до 20.10 потолок ему считал `targets`)
     try:
         cap = int(config.get("max_days") or 0)
     except (TypeError, ValueError):

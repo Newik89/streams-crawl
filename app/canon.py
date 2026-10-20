@@ -61,6 +61,12 @@ BRIDGE_GAP = 20
 #: сторона, а лучшая — плюс отрыв от второго кандидата ТОЙ ЖЕ лиги
 BRIDGE_BEST = 75
 BRIDGE_FLOOR = 40
+#: «твёрдо» для правила `_firm_side_bridge`: сторона узнана не похоже, а
+#: наверняка — само имя эталона или словарный алиас (100), с запасом на
+#: регистр и точки (95). `BRIDGE_BEST` (75) тут мало: на 75–90 буквы ещё
+#: путают соседей, а правило закрепляет ВТОРУЮ сторону, не читая её вовсе
+#: (слово владельца 20.10)
+FIRM_SIDE = 95
 #: окно поиска: сетки ставят блок раньше матча, а mobi живёт в UTC+2
 WINDOW = timedelta(hours=3)
 
@@ -248,14 +254,70 @@ _TIER_RE = re.compile(
     r"League phase|Qualification|Promotion.*|Relegation.*)$", re.I)
 
 
+def _players(game: dict, ref: dict) -> bool:
+    """Теннис или пара игроков: одна сторона матч тут НЕ решает — игрок в
+    один день стоит и в одиночке, и в паре («Etcheverry» на 100 совпал с
+    «Darderi/Etcheverry», регресс 01.10)."""
+    return ((game.get("sport") or "") == "T" or "/" in (ref.get("home") or "")
+            or "/" in (ref.get("away") or ""))
+
+
 def _one_side_enough(game: dict, ref: dict) -> bool:
     """Твёрдо узнанная одна сторона решает матч: пол/возраст те же, и это не
-    теннис — там игрок в один день стоит и в одиночке, и в паре
-    («Etcheverry» на 100 совпал с «Darderi/Etcheverry», регресс 01.10)."""
-    if (game.get("sport") or "") == "T" or "/" in (ref.get("home") or "") \
-            or "/" in (ref.get("away") or ""):
+    теннис (`_players`)."""
+    if _players(game, ref):
         return False
     return _best_side(game, ref) >= BRIDGE_BEST and _same_category(game, ref)
+
+
+def _game_league(game: dict, league_names: dict[str, str] | None) -> str:
+    """Лига игры так, как её знает эталон: перевод словаря лиг, иначе
+    `league_canon`, иначе сырое название (у части сайтов оно уже канон)."""
+    raw = (game.get("league") or "").strip()
+    return ((league_names or {}).get(raw) or game.get("league_canon")
+            or raw).strip()
+
+
+#: пометки решений программы (`game["канон_как"]`): пара «уверенная», но
+#: решили не буквы, а правило. Ключ без подчёркивания — уезжает в JSON-логи
+HOW_BRIDGE = "программа: мост по лиге"
+HOW_LEADER = "программа: явный лидер"
+HOW_AGED = "программа: одинокий возрастной кандидат"
+HOW_FIRM = "программа: вторая сторона твёрдо, лига и время сошлись"
+
+
+def _firm_side_bridge(game: dict, near: list,
+                      league_names: dict[str, str] | None) -> dict | None:
+    """Правило (д) самопроверки №13 (слово владельца 20.10): одна команда
+    узнана ТВЁРДО, лига и время те же — значит, и вторая команда та, что у
+    эталона, как бы её ни написал сайт. Кандидат берётся, только если
+    ВСЁ сразу:
+
+      1. у игры есть лига (без лиги правило молчит — условие владельца);
+      2. у кандидата одна сторона ≥ `FIRM_SIDE` (`_best_side`);
+      3. лига кандидата той же основы (`_league_core`), что лига игры
+         (`_game_league`);
+      4. таких кандидатов (твёрдая сторона + та же лига) в окне ОДИН:
+         клуб в один час два матча не играет, а два — значит не знаем;
+      5. это не теннис и не пара игроков (`_players`);
+      6. пол и возраст те же (`_same_category`).
+
+    Возвращает кандидата или None. Решение — программы: пара получает
+    пометку `HOW_FIRM`, и `apply` учит слабую сторону через очередь
+    «Названия» с ответом «ответила программа» — владелец видит и правит."""
+    league = _game_league(game, league_names)
+    if not league:
+        return None
+    core = _league_core(league)
+    firm = [r for r, _ in near
+            if _league_core(r.get("league")) == core
+            and _best_side(game, r) >= FIRM_SIDE]
+    if len(firm) != 1:
+        return None
+    pick = firm[0]
+    if _players(game, pick) or not _same_category(game, pick):
+        return None
+    return pick
 
 
 def _league_core(label: str) -> str:
@@ -488,7 +550,21 @@ def align(games: list[dict], reference: list[dict],
 
     `league_names` — словарь лиг из библиотеки (алиас → канон): у ивритских
     игр лига записана ивритом («הליגה ההולנדית»), и без перевода мост
-    «лига + время» её с эталонной `NETHERLANDS: Eredivisie` не сведёт."""
+    «лига + время» её с эталонной `NETHERLANDS: Eredivisie` не сведёт.
+
+    Пара «уверенная» со счётом букв ниже `SURE` — решение ПРОГРАММЫ, не
+    букв. Такая игра получает пометку `game["канон_как"]` (причина), и
+    `apply` учит её слабую сторону через очередь «Названия» с ответом
+    «ответила программа». Решения программы:
+
+      1. мост «та же лига + то же время» (`il_pick`) — `HOW_BRIDGE`;
+      2. одинокий возрастной кандидат — `HOW_AGED`;
+      3. явный лидер без лиги (`_clear_leader`) — `HOW_LEADER`;
+      4. вторая сторона твёрдо, лига и время сошлись
+         (`_firm_side_bridge`; и там, где мост дал бы «с сомнением» или
+         «мимо») — `HOW_FIRM`.
+
+    Пары ≥ `SURE` — решение букв, пометки нет."""
     by_sport: dict[str, list] = {}
     for r in reference:
         start = _parse(r.get("start_kyiv") or "")
@@ -498,6 +574,9 @@ def align(games: list[dict], reference: list[dict],
 
     out = {"sure": [], "ask": [], "missed": []}
     for game in games:
+        # пометка прошлого прогона (та же игра сопоставляется не раз —
+        # `canon_backfill`) не должна пережить новое решение
+        game.pop("канон_как", None)
         ref = by_sport.get(game.get("sport") or "", [])
         if not ref:
             continue                      # вида спорта нет в эталоне
@@ -536,8 +615,12 @@ def align(games: list[dict], reference: list[dict],
                       if (r.get("league") or "").upper().startswith("ISRAEL")]
                 if il:
                     pick, verdict = il_pick(game, il)
+                    firm = None if verdict == "sure" \
+                        else _firm_side_bridge(game, near, league_names)
                     if verdict == "sure":
-                        _sure(out, game, pick, SURE)
+                        _sure(out, game, pick, SURE, HOW_BRIDGE)
+                    elif firm is not None:
+                        _sure(out, game, firm, SURE, HOW_FIRM)
                     elif verdict == "ask":
                         _ask(out, game, pick, LONE_HE)
                     else:
@@ -583,8 +666,14 @@ def align(games: list[dict], reference: list[dict],
                     if pick is not None and _pair_score(game, pick) < BRIDGE_FLOOR \
                             and not _one_side_enough(game, pick):
                         pick, verdict = None, ""
+                    # мост не решил («с сомнением» или «мимо»), а одна сторона
+                    # узнана твёрдо и такой кандидат в лиге один — правило (д)
+                    firm = None if verdict == "sure" \
+                        else _firm_side_bridge(game, near, league_names)
                     if verdict == "sure":
-                        _sure(out, game, pick, SURE)
+                        _sure(out, game, pick, SURE, HOW_BRIDGE)
+                    elif firm is not None:
+                        _sure(out, game, firm, SURE, HOW_FIRM)
                     elif verdict == "ask":
                         _ask(out, game, pick, LONE_HE)
                     else:
@@ -615,7 +704,7 @@ def align(games: list[dict], reference: list[dict],
                                           away=bare_away)) >= SURE:
                     aged.append(r)
             if len(aged) == 1:
-                _sure(out, game, aged[0], SURE)
+                _sure(out, game, aged[0], SURE, HOW_AGED)
                 continue
         if best is None:
             out["missed"].append(game)
@@ -628,7 +717,11 @@ def align(games: list[dict], reference: list[dict],
             # этот час нет. Раньше тут выручал мост по лиге, но ивритское
             # «женский футбол» лигой больше не считается — и #1793 остался
             # без перевода (разбор владельца 11.09)
-            _sure(out, game, best, SURE)
+            _sure(out, game, best, SURE, HOW_LEADER)
+        elif (firm := _firm_side_bridge(game, near, league_names)) is not None:
+            # лига есть, но мост её кандидатов не отобрал (категория по
+            # ярлыку лиги) — одна сторона твёрдо, кандидат в лиге один
+            _sure(out, game, firm, SURE, HOW_FIRM)
         elif best_score >= (lone if len(near) == 1 else SURE - 15):
             _ask(out, game, best, best_score)
         else:
@@ -636,7 +729,7 @@ def align(games: list[dict], reference: list[dict],
     return out
 
 
-def _sure(out: dict, game: dict, ref: dict, score: int) -> None:
+def _sure(out: dict, game: dict, ref: dict, score: int, how: str = "") -> None:
     """Уверенная пара — только если лига эталона той же страны, что и
     лига игры по словарю (`foreign_league`). Уверенная пара пишет НАВСЕГДА:
     алиасы команд и лиги в словарь, метку `fs:`, время. Буквам иврита
@@ -644,10 +737,15 @@ def _sure(out: dict, game: dict, ref: dict, score: int) -> None:
     при единственном кандидате в окне становилась уверенной парой с чешским
     футболом «Velke Hamry — Brozany» (одна сторона 85, `_clear_leader`), и
     словарь выучил бы «רואן» = «Brozany» (разбор 06.10). Лига другой страны —
-    другая игра: в «мимо»."""
+    другая игра: в «мимо».
+
+    `how` — причина, если решили не буквы, а правило программы (`HOW_*`):
+    ложится в `game["канон_как"]`, если там ещё пусто (см. `align`)."""
     if foreign_league(game, ref):
         out["missed"].append(game)
     else:
+        if how and not game.get("канон_как"):
+            game["канон_как"] = how
         out["sure"].append((game, ref, score))
 
 
@@ -923,17 +1021,71 @@ def queue_decision(conn: sqlite3.Connection, game: dict, ref: dict,
     return True, ""
 
 
+def _program_learns(conn: sqlite3.Connection, mine: str, canon: str,
+                    why: str) -> bool:
+    """Закрепить алиас mine → canon как ОТВЕТ ПРОГРАММЫ, а не молча: строка
+    в очереди «Названия» сразу закрывается с пометкой
+    «ответила программа: <why>» — владелец видит её во вкладке «Ответила
+    программа» и может поправить. Правила по порядку:
+
+      1. владелец уже отвечал по этому имени (строка done/skipped) или
+         отложил его (later, кнопка «Не знаю») — его слово главнее: не
+         учим и не трогаем;
+      2. алиас уже лежит в словаре за этим каноном — учить нечего;
+      3. имя ждёт ответа в очереди (open) — закрываем эту строку;
+      4. иначе заводим строку (`dictionary.enqueue`) и закрываем её.
+
+    Закрывает `dictionary.resolve` — он же и зовёт `remember_team`.
+    Возвращает, закреплено ли имя."""
+    if conn.execute("SELECT 1 FROM moderation WHERE kind = 'team' "
+                    "AND raw_value = ? AND status IN ('done', 'skipped', 'later')",
+                    (mine,)).fetchone():
+        return False
+    if conn.execute("SELECT 1 FROM team_aliases a JOIN teams t "
+                    "ON t.id = a.team_id WHERE a.alias = ? "
+                    "AND t.canonical_name = ?", (mine, canon)).fetchone():
+        return False
+    dictionary.enqueue(conn, "team", mine, suggestion=canon)
+    row = conn.execute("SELECT id FROM moderation WHERE kind = 'team' "
+                       "AND raw_value = ? AND status = 'open' "
+                       "ORDER BY id DESC LIMIT 1", (mine,)).fetchone()
+    if row is None:
+        return False
+    причина = why.removeprefix("программа: ").strip() or why
+    dictionary.resolve(conn, row[0], canon,
+                       answered_by=f"{dictionary.PROGRAM_MARK}: {причина}")
+    return True
+
+
+def _learn_side(conn: sqlite3.Connection, mine: str, canon: str,
+                how: str) -> bool:
+    """Одна сторона уверенной пары → словарь. Сторона, узнанная буквами
+    (≥ `SURE`), или пара, решённая буквами (`how` пусто), — молча, как
+    раньше. Слабая сторона пары, которую решила программа (`how` —
+    `game["канон_как"]`), — через очередь (`_program_learns`).
+    `_learnable` обязателен в обоих случаях."""
+    if not (mine and canon and _learnable(mine, canon)):
+        return False
+    if how and names.similarity(mine, canon) < SURE:
+        return _program_learns(conn, mine, canon, how)
+    dictionary.remember_team(conn, mine, canon)
+    return True
+
+
 def apply(conn: sqlite3.Connection, aligned: dict) -> tuple[int, int]:
     """Уверенные — в библиотеку, сомнительные — в очередь. Возвращает
-    (сколько имён закреплено, сколько легло в очередь)."""
+    (сколько имён закреплено, сколько легло в очередь).
+
+    У пары, которую решила программа (`game["канон_как"]`, см. `align`),
+    слабая сторона учится ответом «ответила программа» (`_learn_side`)."""
     fixed = queued = 0
     for game, ref, _ in aligned["sure"]:
         fill_placeholder(game, ref)
+        how = game.get("канон_как") or ""
         for mine, canon in ((game["home"], ref["home"]),
                             (game["away"], ref["away"])):
             mine, canon = (mine or "").strip(), (canon or "").strip()
-            if mine and canon and _learnable(mine, canon):
-                dictionary.remember_team(conn, mine, canon)
+            if _learn_side(conn, mine, canon, how):
                 fixed += 1
         for h, a in _entry_sides(game):
             # ивритскую строку с английским эталоном буквами не сверить —
@@ -942,14 +1094,14 @@ def apply(conn: sqlite3.Connection, aligned: dict) -> tuple[int, int]:
                     names.similarity(h, ref["home"]) >= SURE
                     or (_script(h) == "he"
                         and names.similarity(h, game["home"]) >= SURE)):
-                dictionary.remember_team(conn, h, ref["home"])
-                fixed += 1
+                if _learn_side(conn, h, ref["home"], how):
+                    fixed += 1
             if a != game["away"] and _learnable(a, ref["away"]) and (
                     names.similarity(a, ref["away"]) >= SURE
                     or (_script(a) == "he"
                         and names.similarity(a, game["away"]) >= SURE)):
-                dictionary.remember_team(conn, a, ref["away"])
-                fixed += 1
+                if _learn_side(conn, a, ref["away"], how):
+                    fixed += 1
         league, canon_league = (game.get("league") or "").strip(), \
             (ref.get("league") or "").strip()
         if league and canon_league and league != canon_league \
