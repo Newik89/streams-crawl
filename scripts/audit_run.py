@@ -106,6 +106,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from app import leagues, live, names, pipeline, sport   # noqa: E402
 from app.canon import _pair_score, _script                # noqa: E402
+from app.reference import Reference                       # noqa: E402
 from app.canon import _sides as _local_sides              # noqa: E402
 from app.parsers import SITE_FLAG, SITE_LIVE, SITE_REPEAT, Program  # noqa: E402
 from app.parsers import get as parser_for                 # noqa: E402
@@ -1217,15 +1218,20 @@ def _names_in(text: str, sides: tuple) -> bool:
 
 
 def _site_on_game(domain: str, channel: str, ref: dict, sides: tuple,
-                  start: datetime, shown: list) -> bool:
+                  start: datetime, shown: list, judge=None) -> bool:
     """Строка сайта про этот матч дошла до витрины? Отметка у игры в ±3 ч —
     от этого сайта или тот же канал с другого (Prima Sport 1 у primaplay.ro
     и у programetv.ro — зритель его видит) — и это тот же матч: в подписи
     отметки (`raw_title`) стоят обе команды эталона, или пара игры та же.
     Подпись нужна, потому что имена игры витрины бывают другими: «Lille
-    OSC — Stade Brestois 29» с эталонным «Lille — Brest» дают 76 < 85."""
+    OSC — Stade Brestois 29» с эталонным «Lille — Brest» дают 76 < 85.
+    С 20.10 пару игры сверяет и эталон мостом «одна сторона твёрдо»
+    (`Reference.confirm`, `judge`): «Stade Brestois 29 — OGC Nice» с
+    подписью «Piłka nożna: Liga francuska» у teleman — тот же Brest — Nice,
+    а самопроверка звала его потерянным (сбор #301)."""
     lo = bisect.bisect_left(shown, start - SEEN_GAME_WINDOW, key=lambda x: x[0])
     key = _channel_key(channel)
+    fs = ref.get("fs_id") or ""
     for g_start, g in shown[lo:]:
         if g_start > start + SEEN_GAME_WINDOW:
             break
@@ -1238,12 +1244,83 @@ def _site_on_game(domain: str, channel: str, ref: dict, sides: tuple,
             return True
         if _pair_score(g, ref) >= SEEN_PAIR:
             return True
+        if judge is not None and fs:
+            got = judge.confirm(g.get("home") or "", g.get("away") or "",
+                                g_start, g.get("sport") or "")
+            if got is not None and (got.entry.get("fs_id") or "") == fs:
+                return True
     return False
 
 
+# ── проверка 13: ШАГ ПОТЕРИ (правило (б) починки №13, 20.10) ───────────────
+#: где в конвейере пропал показанный матч: отсев (`live.check`) → вид спорта
+#: (`sport.Sports.decide`) → фильтры повторов (`parse_live`, журнал «снято»)
+#: → очередь «Вид спорта» («на_разбор») → витрина. Владелец читает шаг прямо
+#: в строке подозрения и видит, какое правило чинить, а не просто «нет»
+ШАГ_ОТСЕВ = "отсев"
+ШАГ_ВИД = "вид спорта"
+ШАГ_СНЯТО = "снято фильтром"
+ШАГ_ОЧЕРЕДЬ = "очередь «Вид спорта»"
+ШАГ_НЕ_В_ОЧЕРЕДИ = "вид спорта не определён, в очередь не попала"
+ШАГ_НЕ_СВЕДЕНА = "на витрине, но не сведена с эталоном"
+ШАГ_НЕЯСНО = "пропала между разбором и витриной"
+
+
+def _journal(games: dict) -> types.SimpleNamespace:
+    """Ключи журнала разбора (`games.json`) — (сайт, канал, подпись[:200]):
+    `taken` — строки, дошедшие до витрины (→ игра), `review` — ушедшие в
+    очередь «Вид спорта», `removed` — снятые фильтрами (→ запись «снято»)."""
+    taken: dict = {}
+    for g in games.get("games") or []:
+        for e in g.get("entries") or []:
+            taken.setdefault((bare(e.get("source", "")), e.get("channel", ""),
+                              (e.get("raw_title") or "")[:200]), g)
+    review = {(bare(x.get("домен", "")), x.get("канал", ""),
+               (x.get("raw_title") or "")[:200])
+              for x in games.get("на_разбор") or []}
+    removed = {(bare(x.get("домен", "")), x.get("канал", ""),
+                (x.get("заголовок") or "")[:200]): x
+               for x in games.get("снято") or []}
+    return types.SimpleNamespace(taken=taken, review=review, removed=removed)
+
+
+def loss_step(domain: str, p: Program, journal, markers, sports,
+              league_sports: dict, pair_sports: dict, judge) -> str:
+    """Шаг конвейера, на котором показ `p` сайта `domain` пропал. Строка
+    прогоняется тем же `pipeline.classify`, что и в разборе (с эталоном
+    `judge`), а дальше смотрится журнал разбора."""
+    row = pipeline.classify(p, markers, sports, league_sports, pair_sports, judge)
+    key = (domain, p.channel_raw or "", (p.title or "")[:200])
+    if not row.ok:
+        if row.reason == "вид спорта не определён":
+            return ШАГ_ОЧЕРЕДЬ if key in journal.review else ШАГ_НЕ_В_ОЧЕРЕДИ
+        if row.reason.startswith("другой вид спорта"):
+            return f"{ШАГ_ВИД}: {row.reason}"
+        return f"{ШАГ_ОТСЕВ}: {row.reason}"
+    gone = journal.removed.get(key)
+    if gone is not None:
+        return (f"{ШАГ_СНЯТО} «{gone.get('фильтр') or '?'}»: "
+                f"{gone.get('почему') or ''}")
+    game = journal.taken.get(key)
+    if game is not None:
+        return f"{ШАГ_НЕ_СВЕДЕНА}: «{game.get('home')} — {game.get('away')}»"
+    return ШАГ_НЕЯСНО
+
+
+def step_kind(step: str) -> str:
+    """Шаг без подробностей — для счёта по сайту: «снято фильтром «угаданный
+    эфир без эталона»», «отсев: запись или студия»."""
+    if step.startswith(ШАГ_СНЯТО):
+        return step.split("»:", 1)[0] + ("»" if "»:" in step else "")
+    return ":".join(step.split(":")[:2]).strip()
+
+
 def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
-                         markers) -> list[str]:
-    """13: сайт показал матч эталона рядом с началом, а канала у игры нет."""
+                         markers, sports=None,
+                         details: list | None = None) -> list[str]:
+    """13: сайт показал матч эталона рядом с началом, а канала у игры нет.
+    В каждой строке — шаг потери (`loss_step`), счёт по шагам на сайт; в
+    `details` (если дан) — те же матчи списком словарей для `audit.json`."""
     if not games:
         return []
     refs = _seen_refs(games)
@@ -1251,6 +1328,10 @@ def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
     shown = sorted(((datetime.fromisoformat(g["start_kyiv"][:16]), g)
                     for g in games.get("games") or []), key=lambda x: x[0])
     days = run_window(games)
+    journal = _journal(games)
+    sports = sports or sport.load()
+    league_sports, pair_sports = leagues.sports_map(), leagues.pair_sports()
+    judge = Reference(games.get("эталон") or [])
     out = []
     for domain, s in sorted(sites.items()):
         hits: dict[str, tuple] = {}
@@ -1271,16 +1352,33 @@ def check_seen_not_shown(sites: dict[str, Site], games: dict | None,
                 fs = ref.get("fs_id") or f"{ref.get('home')}-{ref.get('away')}-{start:%d%H%M}"
                 if fs not in hits and any(_names_in(t, sides) for t in texts):
                     hits[fs] = (p, ref, start, sides)
-        lost = [f"{p.start.astimezone(KYIV):%d.%m %H:%M} {p.channel_raw} "
-                f"«{(p.title or p.match_raw or '')[:60]}» = эталон {ref.get('home')} — "
-                f"{ref.get('away')} {start:%H:%M} ({fs})"
+        lost = [(fs, p, ref, start)
                 for fs, (p, ref, start, sides) in sorted(hits.items(), key=lambda x: x[1][2])
-                if not _site_on_game(domain, p.channel_raw, ref, sides, start, shown)]
+                if not _site_on_game(domain, p.channel_raw, ref, sides, start, shown, judge)]
         if lost:
-            # строка на сайт, как у прочих проверок: сайт — число — примеры
+            steps = [loss_step(domain, p, journal, markers, sports,
+                               league_sports, pair_sports, judge)
+                     for fs, p, ref, start in lost]
+            kinds = collections.Counter(step_kind(x) for x in steps)
+            lines = [f"{p.start.astimezone(KYIV):%d.%m %H:%M} {p.channel_raw} "
+                     f"«{(p.title or p.match_raw or '')[:60]}» = эталон {ref.get('home')} — "
+                     f"{ref.get('away')} {start:%H:%M} ({fs}) [{step}]"
+                     for (fs, p, ref, start), step in zip(lost, steps)]
+            # строка на сайт, как у прочих проверок: сайт — число — шаги — примеры
             out.append(f"{domain}: {len(lost)} матч(а/ей) эталона сайт показал в "
-                       f"эфир, а канала у игры на витрине нет — "
-                       + "; ".join(lost[:EXAMPLES]))
+                       f"эфир, а канала у игры на витрине нет — шаги: "
+                       + ", ".join(f"{k} ×{n}" for k, n in kinds.most_common())
+                       + " — " + "; ".join(lines[:EXAMPLES]))
+            if details is not None:
+                details += [{
+                    "сайт": domain, "канал": p.channel_raw or "",
+                    "показ": p.start.astimezone(KYIV).strftime("%Y-%m-%dT%H:%M"),
+                    "подпись": (p.title or p.match_raw or "")[:120],
+                    "fs_id": ref.get("fs_id") or "",
+                    "эталон": f"{ref.get('home')} — {ref.get('away')}",
+                    "начало": start.strftime("%Y-%m-%dT%H:%M"),
+                    "шаг": step,
+                } for (fs, p, ref, start), step in zip(lost, steps)]
     return out
 
 
@@ -1316,6 +1414,10 @@ def main() -> int:
     flags, known = check_flags(sites)
     lost, lost_info = check_lost(sites, games)
     alias, zones, canon_info = check_aliases_and_zones(sites, games)
+    # проверка 13 поимённо, с шагом потери — серверу (правило (б): после
+    # склейки он сверит список с витриной и памятью прошлых сборов)
+    seen_lost: list[dict] = []
+    seen_lines = check_seen_not_shown(sites, games, markers, sports, seen_lost)
     sections = [
         ("1/9. Признак эфира или повтора есть, а разбор его не читает", flags),
         ("2. Слово эфира не в словаре markers.json", check_words(sites, markers)),
@@ -1330,7 +1432,7 @@ def main() -> int:
         ("12. Женская лига без слова «женская»: команды шли мужскими",
          check_women_leagues(sites, games)),
         ("13. Сайт показал матч эталона в эфир, а канала у игры на витрине нет",
-         check_seen_not_shown(sites, games, markers)),
+         seen_lines),
     ]
     errors = [f"{d}: {e}" for d, s in sorted(sites.items()) for e in s.errors[:2]]
     if errors:
@@ -1366,6 +1468,8 @@ def main() -> int:
             "разделы": [{"название": title, "строки": items}
                         for title, items in sections if items],
             "справка": known + lost_info + canon_info,
+            # проверка 13 поимённо: сайт, канал, показ, эталон, шаг потери
+            "показано_нет": seen_lost,
         }, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"итог для админки: {args.json}")
     return 0

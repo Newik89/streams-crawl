@@ -57,6 +57,9 @@ class Row:
                                    # вкладка «Other Sport» (владелец 03.10)
     team_word: str = ""            # слово чужого вида, признанное именем
                                    # команды из пары («Le Mans», 06.10)
+    by_reference: str = ""         # эталон подтвердил эфир/пару/вид спорта:
+                                   # «пара» или «одна сторона» (правило (в),
+                                   # `Reference.confirm`, 20.10)
     start_utc: datetime | None = None
     start_kyiv: datetime | None = None
 
@@ -83,6 +86,43 @@ def hint_fresh(day: str | None, start_kyiv: datetime | None) -> bool:
     return abs(start_kyiv.replace(tzinfo=None) - полдень) <= timedelta(hours=36)
 
 
+#: причины отсева, которые эталон вправе оспорить (правило (в)): сайт не
+#: сказал «эфир» или пара не прочиталась. Слово записи, студия и стоп-слово —
+#: прямые слова сайта, их не трогаем
+ASK_REFERENCE_REASONS = ("нет маркера прямого эфира", "не видно пары команд")
+#: что ставит отсев строке, эфир которой подтвердил эталон, а не сайт
+REFERENCE_MARKER = "эталон"
+
+
+def ask_reference(program: Program, verdict: live.Verdict,
+                  reference: Reference | None, start_kyiv: datetime | None,
+                  league_category: str = ""):
+    """Правило (в): строку, которую отсев не взял (`verdict`), спрашиваем у
+    эталона. Пару дают все читатели (`live.split_candidates`), первая
+    догадка, которую эталон подтвердил как эфир (`Reference.confirm`), и есть
+    пара строки — в порядке сторон эталона. Возвращает (новый вердикт,
+    ответ эталона) либо None — тогда строка решается, как раньше."""
+    if reference is None or start_kyiv is None \
+            or verdict.reason not in ASK_REFERENCE_REASONS:
+        return None
+    for home, away in live.split_candidates(program.match_raw or program.title or ""):
+        # пол и возраст турнира — к догадке сразу: «Polska - Belgia» в женском
+        # отборе должна сойтись с «Poland W — Belgium W», а не с мужской парой
+        home = leagues.with_category(home, league_category)
+        away = leagues.with_category(away, league_category)
+        got = reference.confirm(home, away, start_kyiv)
+        if got is None:
+            continue
+        if got.swapped:
+            home, away = away, home
+        # эфир угадан (эталоном, не словом сайта): дальше его проверяют те же
+        # фильтры повторов, что и прочие угадайки (`parse_live.guessed`)
+        program.extra["live_guess"] = True
+        return (live.Verdict(True, "", live_marker=verdict.live_marker or REFERENCE_MARKER,
+                             home=home, away=away), got)
+    return None
+
+
 def classify(program: Program, markers: live.Markers, sports: sport.Sports,
              league_sports: dict[str, str] | None = None,
              pair_sports: dict[str, str] | None = None,
@@ -91,20 +131,40 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
               start_utc=daytime.to_utc(program.start),
               start_kyiv=daytime.to_kyiv(program.start))
 
-    verdict = live.check(program, markers)
-    row.live_marker = verdict.live_marker
-    row.home, row.away = verdict.home, verdict.away
-    if not verdict.ok:
-        row.reason = verdict.reason
-        return row
-
     # Пол и возраст часто видны только по названию турнира, а команды на
-    # сайте подписаны как обычно. Дописываем метку к именам, иначе женский
-    # матч склеится с мужским (правило проекта: лишний ` W` лучше потерянного).
+    # сайте подписаны как обычно — считаем метку раньше отсева: она нужна и
+    # вопросу эталону ниже (женскую пару с мужским матчем он не сведёт)
     row.league = leagues.clean(program.league_raw)
     row.league_category = leagues.category(
         " ".join(x for x in (program.league_raw, program.title,
                              program.description) if x))
+
+    verdict = live.check(program, markers)
+    row.live_marker = verdict.live_marker
+    row.home, row.away = verdict.home, verdict.away
+    confirmed = None
+    if not verdict.ok:
+        # Правило (в) починки самопроверки №13 (владелец 20.10): «не уверен —
+        # спроси эталон» вместо списков по сайтам. Нет пометки эфира или
+        # пара не прочиталась — пару ищут все читатели (`live.split_candidates`,
+        # правило (г)), а эталон отвечает, эфир ли это (`Reference.confirm`:
+        # матч с такой парой начинается рядом с показом). Эфир тогда
+        # угаданный (`live_guess`) — его проверят те же фильтры повторов,
+        # что и прочие угадайки. Слово записи, студию и стоп-слово эталон
+        # не оспаривает: это сайт сказал прямо
+        rescued = ask_reference(program, verdict, reference, row.start_kyiv,
+                                row.league_category)
+        if rescued is None:
+            row.reason = verdict.reason
+            return row
+        verdict, confirmed = rescued
+        row.live_marker = verdict.live_marker
+        row.home, row.away = verdict.home, verdict.away
+        row.by_reference = confirmed.how
+    rescued = confirmed is not None        # эфир строке дал эталон, не сайт
+
+    # Дописываем метку турнира к именам, иначе женский матч склеится с
+    # мужским (правило проекта: лишний ` W` лучше потерянного).
     if row.league_category:
         row.home = leagues.with_category(row.home, row.league_category)
         row.away = leagues.with_category(row.away, row.league_category)
@@ -126,9 +186,21 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     head = " ".join(x for x in (program.title, program.sport_raw,
                                 program.league_raw) if x)
     text = " ".join(x for x in (head, program.description) if x)
-    # эталон flashscore: знает ли он эту пару в это время (правило 2)
+    # эталон flashscore: знает ли он эту пару в это время (правило 2). Не на
+    # 95, а на 85 (и в окне эфира, а не ±3 ч) — тоже спрашиваем (правило (в):
+    # «вид неясен → совпало с эталоном»), но только ПАРОЙ ЦЕЛИКОМ: одна
+    # твёрдая сторона вид спорта не решает («PSG - Lens» при эталонном
+    # «PSG - Le Mans» — другая вторая команда, эталон молчит; тест правила 2).
+    # Исключение — строка, которую эталон уже признал эфиром своего матча
+    # (`rescued`): раз это показ того матча, вид спорта — его
     by_ref = reference.sport_of(row.home, row.away, row.start_kyiv) \
         if reference is not None else ""
+    if not by_ref and reference is not None:
+        if confirmed is None:
+            confirmed = reference.confirm(row.home, row.away, row.start_kyiv)
+        if confirmed is not None and (rescued or confirmed.how == "пара"):
+            by_ref = confirmed.entry.get("sport") or "F"
+            row.by_reference = row.by_reference or confirmed.how
     # эталон знает хоть одну сторону как команду (правило 3: «пара похожа
     # на матч»)
     ref_team = reference is not None and any(

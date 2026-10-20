@@ -16,7 +16,9 @@
 
 from __future__ import annotations
 
+from bisect import bisect_left, bisect_right
 from collections import Counter
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from . import canon, names
@@ -63,6 +65,27 @@ REPEAT_DEPTH = timedelta(hours=60)
 #: По такому времени «матч уже сыгран» не доказать
 ROUND_SAME_TIME = 5
 
+# ── «не уверен — спроси эталон» (правило (в) починки №13, владелец 20.10) ──
+#: показ — эфир матча, если матч начинается от `LIVE_SHOW_AFTER` ДО показа
+#: до `LIVE_SHOW_BEFORE` ПОСЛЕ него: сетка ставит блок раньше матча (teleman
+#: 18:55 при 19:00, бывает и за час), а показ сильно позже начала — запись.
+#: Те же окна, что у проверки 13 самопроверки (`audit_run.SEEN_BEFORE/AFTER`)
+LIVE_SHOW_BEFORE = timedelta(minutes=60)
+LIVE_SHOW_AFTER = timedelta(minutes=15)
+#: одна сторона пары узнана «твёрдо» — само имя эталона или его алиас
+SIDE_SURE = 95
+#: другая хотя бы «не спорит» — как у моста по лиге в каноне
+SIDE_FLOOR = canon.BRIDGE_FLOOR
+
+
+@dataclass
+class Confirmed:
+    """Ответ эталона на «это эфир какого матча?» (`Reference.confirm`)."""
+    entry: dict            # запись эталона
+    start: datetime        # её начало (наивное киевское)
+    how: str               # «пара» — сошлась целиком; «одна сторона» — мост
+    swapped: bool = False  # пара сошлась в обратном порядке («гости at хозяева»)
+
 
 def _words(name: str, cache: dict) -> frozenset:
     """Слова всех чтений имени, огрублённые так же, как при сравнении имён
@@ -89,6 +112,8 @@ class Reference:
         self._teams: set[str] = set()     # чтения всех команд эталона
         #: (лига, время) → сколько матчей — для `round_placeholder`
         self._slots: Counter | None = None
+        #: записи по времени — для окна эфира в `confirm`
+        self._by_time: list[tuple[datetime, int]] | None = None
         for entry in entries or []:
             try:
                 start = datetime.fromisoformat(entry.get("start_kyiv") or "")
@@ -155,6 +180,101 @@ class Reference:
                  if canon._pair_score(game, self._entries[number][0])
                  >= REF_SURE]
         return sorted(found, key=lambda x: x[1])
+
+    def confirm(self, home: str, away: str, start: datetime | None,
+                sport: str = "") -> Confirmed | None:
+        """«Не уверен — спроси эталон» (правило (в) починки самопроверки №13,
+        владелец 20.10): показ пары `home — away` в `start` — это эфир какого
+        матча эталона? Один ответ для всех, кто раньше решал по спискам
+        сайтов: отсев без пометки эфира, пара, прочитанная догадкой
+        (`live.split_candidates`), строка без вида спорта, сверка угаданного
+        эфира в `parse_live`. Правила:
+
+          1. матч начинается в окне эфира: от `LIVE_SHOW_AFTER` до показа до
+             `LIVE_SHOW_BEFORE` после него;
+          2. вид спорта, если назван, — тот же;
+          3. пара сошлась целиком — `canon._pair_score` не ниже `canon.SURE`
+             (с местными написаниями и стеной по полу и возрасту), в любом
+             порядке сторон («гости at хозяева» — `swapped`) → «пара»; из
+             нескольких таких — ближайший по времени. Но если та же пара в
+             ±`REF_WINDOW` стоит в РАЗНЫХ видах спорта (футбольное и
+             баскетбольное дерби одних клубов в один вечер) — эталон не
+             судья, None (как `sport_of`): решает слово сайта;
+          4. иначе одна сторона твёрдо (`SIDE_SURE`), другая не спорит —
+             буквами (`SIDE_FLOOR`) или хотя бы одним общим словом от 4 букв
+             с любым написанием эталона («ASVEL Villeurbanne» и
+             «Lyon-Villeurbanne» дают буквами 26, но слово общее), стена по
+             полу и возрасту та же, не теннис (там игрок в один день стоит и
+             в одиночке, и в паре) — и такой матч в окне ОДИН: клуб не играет
+             два матча в один час → «одна сторона».
+
+        Ничего не сошлось — None: эталон пару не знает, строка решается как
+        раньше."""
+        if start is None or not self._entries or not home or not away:
+            return None
+        when = start.replace(tzinfo=None)         # эталон — наивное киевское
+        # кандидаты — только записи, делящие слово с одной из сторон (индекс
+        # слов всех языков): так вопрос дёшев и на тысячи строк
+        pool: set[int] = set()
+        for name in (home, away):
+            for word in _words(name, self._cache):
+                pool |= self._home.get(word, set())
+                pool |= self._away.get(word, set())
+        straight = {"home": home, "away": away, "sport": sport}
+        swapped = {"home": away, "away": home, "sport": sport}
+        whole: list[tuple[timedelta, bool, int, bool]] = []   # правило 3
+        sided: list[tuple[bool, int]] = []                    # правило 4
+        for number in pool:
+            entry, kickoff = self._entries[number]
+            gap = kickoff - when
+            if abs(gap) > REF_WINDOW:
+                continue
+            letter = entry.get("sport") or "F"
+            if sport and letter != sport:
+                continue
+            # окно эфира: матч начинается от 15 мин до показа до часа после
+            inside = -LIVE_SHOW_AFTER <= gap <= LIVE_SHOW_BEFORE
+            scores = (canon._pair_score(straight, entry),
+                      canon._pair_score(swapped, entry))
+            best = max(scores)
+            turned = scores[1] > scores[0]
+            if best >= canon.SURE:
+                whole.append((abs(gap), turned, number, inside))
+                continue
+            if not inside or letter == "T":
+                continue
+            game = swapped if turned else straight
+            if canon._best_side(game, entry) < SIDE_SURE:
+                continue
+            if best >= SIDE_FLOOR or (canon._same_category(game, entry)
+                                      and self._shares_word(game, entry, number)):
+                sided.append((turned, number))
+        if whole:
+            if len({self._entries[n][0].get("sport") or "F" for *_x, n, _i in whole}) > 1:
+                return None               # та же пара в двух видах спорта
+            inside_whole = [x for x in whole if x[3]]
+            if not inside_whole:
+                return None               # пара есть, но показ не в час матча
+            _gap, turned, number, _i = min(inside_whole, key=lambda x: x[0])
+            entry, kickoff = self._entries[number]
+            return Confirmed(entry, kickoff, "пара", turned)
+        if len(sided) == 1:
+            turned, number = sided[0]
+            entry, kickoff = self._entries[number]
+            return Confirmed(entry, kickoff, "одна сторона", turned)
+        return None
+
+    def _shares_word(self, game: dict, entry: dict, number: int) -> bool:
+        """Слабая сторона пары (та, что хуже сошлась с английским именем)
+        делит с той же стороной записи `number` хотя бы одно слово от 4 букв —
+        в любом написании эталона (индекс `_home`/`_away` хранит слова всех
+        языков). Короткие слова («FC», «SK», «Al») общими не считаются."""
+        home_score = names.similarity(game["home"], entry.get("home") or "")
+        away_score = names.similarity(game["away"], entry.get("away") or "")
+        weak, index = (("home", self._home) if home_score < away_score
+                       else ("away", self._away))
+        return any(number in index.get(word, ())
+                   for word in _words(game[weak], self._cache) if len(word) >= 4)
 
     def round_placeholder(self, entry: dict, when: datetime) -> bool:
         """Время записи — «заглушка тура»: у её лиги в эту минуту не меньше

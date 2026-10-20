@@ -1043,11 +1043,19 @@ def main() -> int:
         return in_local_reference(r.home, r.away, r.start_kyiv, sport,
                                   reference_local)
 
+    def _confirmed(r) -> bool:
+        # правило (в) починки №13 (20.10): «не уверен — спроси эталон» — та
+        # же лестница, что у отсева и вида спорта (`Reference.confirm`): пара
+        # целиком или одна сторона твёрдо, матч начинается рядом с показом.
+        # Скан даты: окно эфира (−15 мин … +1 ч) до вчерашних матчей не
+        # дотягивается, правило «эфир дня — матчами самого дня» цело
+        return judge.confirm(r.home, r.away, r.start_kyiv, r.sport) is not None
+
     def _in_reference(r) -> bool:
         # пословно, а не побуквенно: «Millwall FC - Newcastle United» у
         # oneplaysport — тот же матч, что «Millwall - Newcastle» эталона,
         # а точное сравнение убивало живую строку как запись (#728, 03.09)
-        if _in_reference_local(r, "F"):
+        if _in_reference_local(r, "F") or _confirmed(r):
             return True
         for h, a, t in confirm:
             if abs((r.start_kyiv - t).total_seconds()) > 3 * 3600:
@@ -1103,8 +1111,9 @@ def main() -> int:
                for s in ("B", "T")}
 
     def _in_reference_bt(r) -> bool:
-        # местные написания эталона — как у футбола (07.10)
-        if _in_reference_local(r, r.sport):
+        # местные написания эталона — как у футбола (07.10); и «спроси
+        # эталон» (правило (в)) — тоже как у футбола
+        if _in_reference_local(r, r.sport) or _confirmed(r):
             return True
         for h, a, t, sp in reference_bt:
             if sp != r.sport:
@@ -1139,6 +1148,12 @@ def main() -> int:
                                      reference_local)
         if local is not None:
             times.append(local)
+        # матч, которым эталон подтвердил показ (правило (в)): его начало —
+        # тоже кандидат, иначе строка, прошедшая сверку мостом «одна сторона»,
+        # осталась бы без времени матча и без проверки заставки
+        got = judge.confirm(r.home, r.away, r.start_kyiv, sport)
+        if got is not None:
+            times.append(got.start.replace(tzinfo=r.start_kyiv.tzinfo))
         pool = ([(h, a, t) for h, a, t in confirm] if sport == "F" else
                 [(h, a, t) for h, a, t, sp in reference_bt if sp == sport])
         for h, a, t in pool:

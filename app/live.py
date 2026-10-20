@@ -182,6 +182,73 @@ def split_teams(raw: str) -> tuple[str, str] | None:
     return home, away
 
 
+# ── один читатель пары: догадки, которые проверяет эталон (правило (г)) ─────
+#: дефис между буквами без пробелов — разделитель пары только как ДОГАДКА:
+#: он бывает и внутри имени («Saint-Étienne», «Bodø/Glimt»), верную догадку
+#: выбирает эталон
+_TIGHT_DASH = re.compile(r"(?<=\w)[-–—](?=\w)")
+#: американская запись «гости at хозяева» / «гости @ хозяева»
+_AT = re.compile(r"\s+(?:at|@)\s+", re.I)
+
+
+def _sides(left: str, right: str) -> tuple[str, str] | None:
+    """Пара из двух кусков подписи — обвязка счищается как в `split_teams`."""
+    home = _LEFT_JUNK.sub("", left).strip(" .-–—:\"'")
+    away = _RIGHT_JUNK.sub("", right).strip(" .-–—:\"'")
+    if len(home) < 2 or len(away) < 2:
+        return None
+    if " ".join(home.casefold().split()) == " ".join(away.casefold().split()):
+        return None
+    return home, away
+
+
+def split_candidates(raw: str) -> list[tuple[str, str]]:
+    """Один читатель пары (правило (г) починки самопроверки №13, владелец
+    20.10): все ДОГАДКИ о паре в подписи, по порядку надёжности. Сами по себе
+    в ленту они не идут — верную выбирает эталон (`reference.Reference.confirm`,
+    «кандидат только по эталону»); без эталона строка решается по-старому,
+    `split_teams`. Правила:
+
+      1. обычное чтение `split_teams` (« - », « x », « vs », «contra») — первым;
+      2. рубрика перед парой отрезается по последнему «: » («2. Bundesliga
+         Live - Topspiel: 1. FC Nürnberg - 1. FC Kaiserslautern», rtl.de);
+      3. три и больше кусков через тире («Virtus - Bologna - Baskonia»,
+         tvarenasport): пара — на каждом разрезе;
+      4. « at » и « @ » («Minnesota Timberwolves at Miami Heat», tvpassport):
+         хозяева — после «at» (обратный порядок эталон проверяет и сам);
+      5. дефис без пробелов («Al Nassr-Al Neom», «Levante-Ath Bilbao»,
+         ipko.tv): пара — на каждом таком дефисе; тире среди пробелов при
+         этом нет, иначе дефис — часть имени («Saint-Étienne - Lyon»).
+
+    Повторы убраны, порядок сохранён. Скобки с хвостом («(BRA)», «(se
+    speciálním studiem)») вырезаны у всех догадок, как в `split_teams`."""
+    if not raw:
+        return []
+    cleaned = _BRACKETS.sub(" ", raw).strip()
+    texts = [cleaned]
+    if ": " in cleaned:                                          # правило 2
+        texts.append(cleaned.rsplit(": ", 1)[1].strip())
+    out: list[tuple[str, str]] = []
+
+    def add(pair) -> None:
+        if pair and pair not in out:
+            out.append(pair)
+
+    for text in texts:
+        add(split_teams(text))                                   # правило 1
+        parts = _SPLIT.split(text)
+        if len(parts) >= 3:                                      # правило 3
+            for i in range(1, len(parts)):
+                add(_sides(" - ".join(parts[:i]), " - ".join(parts[i:])))
+        at = _AT.split(text)
+        if len(at) == 2:                                         # правило 4
+            add(_sides(at[1], at[0]))
+        if not _SPLIT.search(text):                              # правило 5
+            for m in _TIGHT_DASH.finditer(text):
+                add(_sides(text[:m.start()], text[m.end():]))
+    return out
+
+
 @dataclass
 class Verdict:
     ok: bool                 # берём в ленту?
