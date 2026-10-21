@@ -1,0 +1,13 @@
+{
+ "номер": 71,
+ "дата": "2026-10-22",
+ "вид": "слово",
+ "суть": "onesoccer.ca снят: его 10 строк АПЛ — виджет сайта, а не программа канала; программа OneSoccer и TVA Sports — с tvpassport, матчи CPL с каналами — с canpl.ca (5 правил разбора)",
+ "владелец": "«да» 22.10 на «Снимать ложные строки АПЛ от onesoccer.ca?» (разведка #311: в программе OneSoccer на tvpassport и FotMob АПЛ нет, вкладки CPL/MLS сайта пусты — season 2023)",
+ "правило": "scripts/crawl_plan.py: onesoccer.ca вне PILOTS, canpl.ca в PILOTS; scripts/add_kanada.py: onesoccer.ca enabled = 0, его отметки у будущих игр погашены (номера в выводе, вернуть — miss_repair.py), станции tvpassport и источник canpl.ca с каналами; app/parsers/canpl_ca.py — правила 1–5",
+ "коммит": "",
+ "проверка": "тест",
+ "тесты": [
+  "test_kanada.py"
+ ]
+}

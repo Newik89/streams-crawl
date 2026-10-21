@@ -39,11 +39,20 @@ TZ = "America/New_York"
 _URL_SLUG = re.compile(r"/stations/([a-z0-9-]+)/")
 _NAMES = {"fox-soccer-plus": "Fox Soccer Plus",
           "tsn1-hd": "TSN1", "tsn2-hd": "TSN2", "tsn3-hd": "TSN3",
-          "tsn4-hd": "TSN4", "tsn5-hd": "TSN5"}
+          "tsn4-hd": "TSN4", "tsn5-hd": "TSN5",
+          # канадские TVA Sports и OneSoccer (слово владельца 22.10, разведка
+          # #311): программа канала, а не виджет сайта onesoccer.ca
+          "tva-sports-2-hd": "TVA Sports 2", "tva-sports-hd": "TVA Sports",
+          "one-soccer": "OneSoccer"}
+
+#: разделители пары в data-episodeTitle: английский «vs.» и французский у
+#: TVA Sports — «HFX Wanderers FC contre Supra du Québec», «Panthers de la
+#: Floride c. Blackhawks de Chicago» (разведка #311, 21.10)
+_SEPS = (" vs. ", " vs ", " Vs. ", " contre ", " c. ")
 
 
 def _pair(text: str) -> str:
-    for sep in (" vs. ", " vs ", " Vs. "):
+    for sep in _SEPS:
         if sep in text:
             home, _, away = text.partition(sep)
             if home.strip() and away.strip():
