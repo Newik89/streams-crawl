@@ -1,0 +1,31 @@
+{
+ "номер": 67,
+ "дата": "2026-10-21",
+ "вид": "жалоба",
+ "суть": "CFR Cluj — Dinamo 25.10 19:00: у игры с Arena Premium 5 нет Digi Sport 1 — игра раздвоилась («Dinamo B.» прочитан вторым составом, эталон после перевода часов на час позже)",
+ "владелец": "#7400 и скрин digisport.ro/program-tv/digisport-1: «почему у нас её нет с этого канала?» — Superliga: CFR Cluj-Dinamo, 19:00 LIVE",
+ "правило": "app/live.py: _trim — точка после одиночной заглавной буквы в конце имени остаётся («Dinamo B.» = Bucureşti, «Nottingham F.», «Borussia M.» у tvarenasport), иначе «Dinamo B» — второй состав (names.category → B) и не склеивается с «Dinamo»; W не трогаем. app/parsers/flashscore_mobi.py: page_offset — время страницы читается сегодняшним сдвигом пояса сайта, а не календарным сдвигом дня матча (сбор #310: с 25.10 эталон на час позже всех сайтов)",
+ "коммит": "",
+ "проверка": "разбор",
+ "срез": "sbor-310-cfr-dinamo",
+ "ждём": [
+  {
+   "игра": "CFR Cluj - Dinamo",
+   "время": "2026-10-25 19:00",
+   "канал": "Digi Sport 1",
+   "сайт": "digisport.ro"
+  },
+  {
+   "игра": "CFR Cluj - Dinamo",
+   "время": "2026-10-25 19:00",
+   "канал": "Arena Premium 5",
+   "сайт": "tvarenasport.ba"
+  },
+  {
+   "игра": "CFR Cluj - Dinamo",
+   "время": "2026-10-25 19:00",
+   "канал": "Prima Sport 1",
+   "сайт": "primaplay.ro"
+  }
+ ]
+}

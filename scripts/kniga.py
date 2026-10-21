@@ -163,12 +163,17 @@ def cut(folder: Path, name: str, domains: list[str], days: list[str],
     дни (строки без дня — целиком), страницы — в zip рядом с описанием."""
     report = json.loads((folder / "report.json").read_text(encoding="utf-8"))
     want = {bare(d) for d in domains}
+    # страница «сегодня» у многих сайтов держит и дни вперёд (digisport.ro —
+    # всю неделю одной страницей) и помечена днём сбора: у выбранных сайтов
+    # её берём всегда, иначе срез на 25.10 вышел без digisport (#7400, 21.10)
+    сбор = (clock or "")[:10]
     keep = []
     for row in report["строки"]:
         b = bare(row["domain"])
         if b not in want and not any(e in b for e in ЭТАЛОН):
             continue
-        if days and row.get("day") and row["day"] not in days:
+        if days and row.get("day") and row["day"] not in days \
+                and not (b in want and row["day"] == сбор):
             continue
         keep.append(row)
     SLICES.mkdir(parents=True, exist_ok=True)

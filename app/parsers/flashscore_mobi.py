@@ -13,8 +13,21 @@
     <a … class="fin">7-2</a>                                  — закончен
 
 Пояс — CET/CEST (`Europe/Paris`): летом +2 (сверено по Зальцбург — Рапид
-с нашей базой 02.09, страница показывала 20:30 = 21:30 Киева), зимой +1 —
-перевод стрелок ZoneInfo делает сам (C1 аудита, 12.09). День листается `/?d=1`.
+с нашей базой 02.09, страница показывала 20:30 = 21:30 Киева), зимой +1.
+День листается `/?d=1`.
+
+**Сдвиг страницы — сегодняшний (21.10, перед переводом часов 25.10).**
+Время матчей ВСЕХ дней сайт пишет по тому сдвигу своего пояса, который
+действует в момент загрузки страницы, а не по сдвигу дня матча: 21.10
+(CEST, +2) матч 25.10 в 17:00 UTC стоит на странице «19:00», хотя 25.10
+Париж уже на +1. Перевод стрелок по календарю дня матча (C1 аудита, 12.09)
+уводил эталон на час вперёд для всех матчей после перевода часов: сбор
+21.10 — у 15 сайтов из разных стран матчи с 25.10 на 60–75 мин раньше
+эталона, до 25.10 — совпадают; CFR Cluj — Dinamo 25.10 19:00 (Digi Sport 1)
+стал в базе 20:00 и раздвоился (#7192/#7400). Поэтому настенное время
+страницы читается со сдвигом пояса версии сайта на момент разбора
+(`page_offset`; разбор идёт сразу после загрузки, книга замораживает часы
+сбора). Весной (перевод на летнее) то же самое в обратную сторону.
 
 Роль на разборе особая: строки НЕ идут на витрину — `parse_live.py`
 складывает их в эталонный набор (пары + время + канонические английские
@@ -59,7 +72,7 @@ UTC+1) mobi в 22:00–23:00 UTC получил бы вчерашнюю стра
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime
+from datetime import date as _date, datetime, timezone
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
@@ -117,6 +130,12 @@ def site_tz(domain: str) -> str | None:
     """Пояс, по которому эта версия flashscore листает сутки и пишет время;
     `None` — домен не flashscore (тогда пояс — из карточки источника)."""
     return SITE_TZ.get((domain or "").strip().lower().removeprefix("www."))
+
+
+def page_offset(zone: str) -> timezone:
+    """Сдвиг, которым страница пишет время матчей всех дней (шапка, «Сдвиг
+    страницы»): сдвиг пояса версии сайта в момент разбора."""
+    return timezone(datetime.now(ZoneInfo(zone)).utcoffset())
 
 
 _ZONE = ZoneInfo(TZ)
@@ -212,6 +231,11 @@ def _block(league: str, rows: list, day: _date, sport: str, url: str,
              else "" for m in rows]
     moments = daytime.walk_day(clock, day, zone, overlap=ПОЛНОЧЬ_ЛЮБОЙ_ШАГ,
                                window=(ОКНО_С, ОКНО_ДО))
+    # дата — по настенным часам страницы (walk_day), а сдвиг — сегодняшний
+    # сдвиг сайта, не календарный сдвиг дня матча (шапка, «Сдвиг страницы»)
+    offset = page_offset(zone)
+    moments = [b.replace(tzinfo=None).replace(tzinfo=offset) if b else b
+               for b in moments]
     out: list[Program] = []
     for m, raw, begin in zip(rows, clock, moments):
         pair = " ".join(m.group("pair").split()).strip(_PAIR_EDGE)

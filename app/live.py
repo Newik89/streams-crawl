@@ -152,6 +152,25 @@ def load(path: Path | None = None, override: dict | None = None) -> Markers:
                    keep=_pattern(_flatten(data.get("keep_names"))))
 
 
+#: «Dinamo B.», «Nottingham F.», «Borussia M.» — tvarenasport сокращает второе
+#: слово имени до заглавной буквы с точкой (Bucureşti, Forest,
+#: Mönchengladbach). Точку при чистке краёв оставляем: без неё «Dinamo B»
+#: читается вторым составом (`names.category` → B), и игра раздваивается —
+#: CFR Cluj — Dinamo 25.10 у Arena Premium 5 легла отдельно от Digi Sport 1
+#: (#7400/#7192, 21.10). Буква W — пометка пола, её не трогаем
+_INITIAL_END = re.compile(r"(?<=\w)\s+(?![Ww]\.)[^\W\d_]\.$")
+_EDGE = " .-–—:\"'"
+
+
+def _trim(side: str) -> str:
+    """Счистить обвязку с края имени, сохранив точку сокращения («Dinamo B.»)."""
+    text = side.strip(_EDGE)
+    kept = side.rstrip(" -–—:\"'")
+    if _INITIAL_END.search(kept) and kept[-2].isupper():
+        text += "."
+    return text
+
+
 def split_teams(raw: str) -> tuple[str, str] | None:
     """`3 кръг, Мидълзбро - Уест Бромич Албиън, директно` → пара названий.
     Пары не видно — None, такая строка в ленту не идёт.
@@ -171,8 +190,8 @@ def split_teams(raw: str) -> tuple[str, str] | None:
         if len(strong) != 2:
             return None
         parts = [strong[0], _DASH_TAIL.sub("", strong[1])]
-    home = _LEFT_JUNK.sub("", parts[0]).strip(" .-–—:\"'")
-    away = _RIGHT_JUNK.sub("", parts[1]).strip(" .-–—:\"'")
+    home = _trim(_LEFT_JUNK.sub("", parts[0]))
+    away = _trim(_RIGHT_JUNK.sub("", parts[1]))
     if len(home) < 2 or len(away) < 2:
         return None
     # Сама с собой команда не играет: `FENERBAHÇE - Fenerbahçe` — это не матч,
@@ -194,8 +213,8 @@ _AT = re.compile(r"\s+(?:at|@)\s+", re.I)
 
 def _sides(left: str, right: str) -> tuple[str, str] | None:
     """Пара из двух кусков подписи — обвязка счищается как в `split_teams`."""
-    home = _LEFT_JUNK.sub("", left).strip(" .-–—:\"'")
-    away = _RIGHT_JUNK.sub("", right).strip(" .-–—:\"'")
+    home = _trim(_LEFT_JUNK.sub("", left))
+    away = _trim(_RIGHT_JUNK.sub("", right))
     if len(home) < 2 or len(away) < 2:
         return None
     if " ".join(home.casefold().split()) == " ".join(away.casefold().split()):

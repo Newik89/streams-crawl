@@ -29,8 +29,10 @@ import importlib.util
 import os
 import sys
 import tempfile
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
+
+import time_machine
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -106,10 +108,13 @@ check("без_окна_как_раньше: остаток дня nova.bg не �
 
 # ── разбор настоящих страниц d=3 и d=4 (урезаны) ─────────────────────────────
 print("flashscore.mobi: страницы 09.10 и 10.10 сбора #205")
-d3 = flashscore_mobi.parse((DATA / "flashscore_mobi_2026-10-09_d3.html").read_text(encoding="utf-8"),
-                           day=date(2026, 10, 9), url="https://www.flashscore.mobi/?d=3")
-d4 = flashscore_mobi.parse((DATA / "flashscore_mobi_2026-10-10_d4.html").read_text(encoding="utf-8"),
-                           day=date(2026, 10, 10), url="https://www.flashscore.mobi/?d=4")
+# часы — на моменте сбора #205 (06.10 03:15 UTC): сдвиг страницы сегодняшний
+# (`flashscore_mobi.page_offset`), без заморозки после 25.10 тест краснел бы сам
+with time_machine.travel(datetime(2026, 10, 6, 3, 15, tzinfo=timezone.utc), tick=False):
+    d3 = flashscore_mobi.parse((DATA / "flashscore_mobi_2026-10-09_d3.html").read_text(encoding="utf-8"),
+                               day=date(2026, 10, 9), url="https://www.flashscore.mobi/?d=3")
+    d4 = flashscore_mobi.parse((DATA / "flashscore_mobi_2026-10-10_d4.html").read_text(encoding="utf-8"),
+                               day=date(2026, 10, 10), url="https://www.flashscore.mobi/?d=4")
 p3 = {p.extra["fs_id"]: p for p in d3}
 p4 = {p.extra["fs_id"]: p for p in d4}
 check("d3_Instituto_Boca_00_30_это_10_10 (01:30 Киев), а не дата страницы",
@@ -432,6 +437,32 @@ check("port.hu_вне_списка_угадаек: угадан только liv
       "port.hu" not in parse_live.REPEAT_GUESS_DOMAINS
       and parse_live.guessed("port.hu", _Result(port_guess))
       and not parse_live.guessed("port.hu", _Result(port_flag)))
+
+# ── сдвиг страницы — сегодняшний (перевод часов 25.10, #7400) ───────────────
+print("flashscore: время всех дней — по сдвигу сайта в момент сбора")
+UTC = timezone.utc
+
+
+def fs_utc(clock_utc, day, wall, domain="www.flashscore.mobi"):
+    html = (f'<html lang="en"><h4>ROMANIA: Superliga</h4><span>{wall}</span>'
+            'CFR Cluj - Dinamo Bucuresti <a href="/match/00sc25Ib/" class="sched">-</a>')
+    with time_machine.travel(clock_utc, tick=False):
+        p = flashscore_mobi.parse(html, day=day, url=f"https://{domain}/?d=4")
+    return p[0].start.astimezone(UTC).strftime("%m-%d %H:%M")
+
+
+check("сбор 21.10 (лето, +2): «19:00» на 25.10 — 17:00 UTC, как Digi Sport 1 (было 18:00)",
+      fs_utc(datetime(2026, 10, 21, 19, 5, tzinfo=UTC), date(2026, 10, 25), "19:00")
+      == "10-25 17:00")
+check("сбор 21.10: матч 22.10 (до перевода) — «20:30» → 18:30 UTC, как раньше",
+      fs_utc(datetime(2026, 10, 21, 19, 5, tzinfo=UTC), date(2026, 10, 22), "20:30")
+      == "10-22 18:30")
+check("сбор 26.10 (зима, +1): «18:00» на 27.10 — 17:00 UTC",
+      fs_utc(datetime(2026, 10, 26, 6, 15, tzinfo=UTC), date(2026, 10, 27), "18:00")
+      == "10-27 17:00")
+check("версия .ro (Бухарест, +3 в сбор 21.10): «20:00» на 25.10 — 17:00 UTC",
+      fs_utc(datetime(2026, 10, 21, 19, 5, tzinfo=UTC), date(2026, 10, 25), "20:00",
+             domain="m.flashscore.ro") == "10-25 17:00")
 
 print(f"\nпроверок: {passed + len(failed)}, зелёных: {passed}, красных: {len(failed)}")
 sys.exit(1 if failed else 0)

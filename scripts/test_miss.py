@@ -664,10 +664,14 @@ from app.parsers import flashscore_mobi  # noqa: E402
 
 fs_row = ('<html lang="xx"><h4>EUROPE: Test</h4><span>20:30</span>Alpha - Beta '
           '<a href="/match/AbCd1234/" class="sched">-</a>')
-fs_time = {domain: kyiv(flashscore_mobi.parse(
-    fs_row, day=date(2026, 10, 6), tz="UTC", url=f"https://{domain}/?d=0")[0].start)
-    for domain in ("www.flashscore.mobi", "m.flashscore.gr", "m.flashscore.pt",
-                   "m.flashscore.ru")}
+# часы — 06.10 (лето): сдвиг страницы сегодняшний (`flashscore_mobi.page_offset`)
+import time_machine  # noqa: E402
+
+with time_machine.travel(real_datetime(2026, 10, 6, 12, 0, tzinfo=timezone.utc), tick=False):
+    fs_time = {domain: kyiv(flashscore_mobi.parse(
+        fs_row, day=date(2026, 10, 6), tz="UTC", url=f"https://{domain}/?d=0")[0].start)
+        for domain in ("www.flashscore.mobi", "m.flashscore.gr", "m.flashscore.pt",
+                       "m.flashscore.ru")}
 check("flashscore_время_по_часам_версии_сайта: 20:30 Париж/Афины/Лиссабон/Алматы",
       fs_time == {"www.flashscore.mobi": "2026-10-06 21:30",
                   "m.flashscore.gr": "2026-10-06 20:30",
