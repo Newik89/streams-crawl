@@ -125,12 +125,28 @@ def main() -> int:
     итог = ночь(копия, ("streams-crawl", TMP / "net-takogo"), ("streams-schedule", кухня))
     проверка("один провал", len(итог), 1)
     проверка("провал — у пропавшего репо", "не скачался" in (итог or [""])[0], True)
+    проверка("причина понятна: репо не найден", "репо не найден" in (итог or [""])[0], True)
     проверка("кухня доехала", в_копии(копия, "refs/kod/streams-schedule/heads/main"), k2)
     проверка("движок прежний", в_копии(копия, "refs/kod/streams-crawl/heads/main"), m3)
 
     print("правило 5: репо копий не читается — ничего не трогаем")
     итог = ночь(TMP / "net-kopii", ("streams-crawl", движок))
     проверка("провал про репо копий", "репо копий не читается" in (итог or [""])[0], True)
+
+    print("причина в тревоге — понятными словами, а не хвостом совета git")
+    без_ключа = subprocess.CompletedProcess([], 128, "", (
+        "Warning: Identity file /root/.ssh/deploy_kitchen not accessible: No such file or directory.\n"
+        "git@github.com: Permission denied (publickey).\n"
+        "fatal: Could not read from remote repository.\n\n"
+        "Please make sure you have the correct access rights\n"
+        "and the repository exists.\n"))  # вывод git на пробе 21.10
+    проверка("нет файла ключа", code_copy.why(без_ключа).startswith("нет файла ключа:"), True)
+    чужой_ключ = subprocess.CompletedProcess([], 128, "", без_ключа.stderr.split("\n", 1)[1])
+    проверка("ключ не подошёл", code_copy.why(чужой_ключ).startswith("нет доступа — ключ не подошёл:"), True)
+    проверка("иначе — строка fatal:", code_copy.why(subprocess.CompletedProcess(
+        [], 1, "", "hint: что-то\nfatal: bad object\nещё строка\n")), "fatal: bad object")
+    проверка("пустой вывод — код возврата", code_copy.why(subprocess.CompletedProcess([], 5, "", "")),
+             "git вернул 5")
 
     print("восстановление: из копии поднимается репо со всеми ветками и метками")
     новый = TMP / "restored.git"

@@ -57,9 +57,29 @@ def git(box: Path, *args: str, key: str = "") -> subprocess.CompletedProcess:
                           text=True, encoding="utf-8", errors="replace", env=env)
 
 
+#: что видно в выводе git → как сказать владельцу; первое найденное главнее.
+#: Последняя строка git — часто хвост совета («and the repository exists.»):
+#: проба 21.10 без файла ключа дала тревогу с одним этим хвостом.
+ПРИЧИНЫ = (
+    ("not accessible", "нет файла ключа"),
+    ("Permission denied", "нет доступа — ключ не подошёл"),
+    ("Repository not found", "репо не найден"),
+    ("does not appear to be a git repository", "репо не найден"),
+    ("Could not resolve", "нет сети"),
+)
+
+
 def why(r: subprocess.CompletedProcess) -> str:
-    """Последняя содержательная строка ошибки git — в журнал и в тревогу."""
+    """Причина ошибки git — в журнал и в тревогу: понятными словами и строкой
+    git, где это сказано; иначе первая «fatal:/error:», иначе последняя строка."""
     lines = [ln.strip() for ln in (r.stderr or r.stdout or "").splitlines() if ln.strip()]
+    for знак, слова in ПРИЧИНЫ:
+        for ln in lines:
+            if знак in ln:
+                return f"{слова}: {ln}"
+    for ln in lines:
+        if ln.startswith(("fatal:", "error:")):
+            return ln
     return lines[-1] if lines else f"git вернул {r.returncode}"
 
 
