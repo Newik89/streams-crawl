@@ -1,6 +1,6 @@
 {
- "days": 6,
- "built": "2026-10-18",
+ "days": 2,
+ "built": "2026-10-22",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -3521,48 +3521,20 @@
    ]
   },
   {
-   "domain": "onesoccer.ca",
-   "timezone": "UTC",
-   "grid": true,
-   "marks": {},
-   "include": [
-    "OneSoccer"
-   ],
-   "parser": "",
-   "browser": true,
-   "days_inline": false,
-   "day_links": false,
-   "pages_per_day": 0,
-   "day_channels": [],
-   "days_ahead": 0,
-   "max_days": 0,
-   "manual_only": false,
-   "by_server": false,
-   "channel_days": {},
-   "post_fields": null,
-   "warmup_url": "",
-   "post_json": null,
-   "headers": null,
-   "base_url": "https://www.onesoccer.ca/schedule",
-   "channels": [
-    {
-     "name": "",
-     "pattern": "https://www.onesoccer.ca/schedule"
-    }
-   ]
-  },
-  {
    "domain": "tvpassport.com",
    "timezone": "America/New_York",
    "grid": false,
    "marks": {},
    "include": [
     "Fox Soccer Plus",
+    "OneSoccer",
     "TSN1",
     "TSN2",
     "TSN3",
     "TSN4",
-    "TSN5"
+    "TSN5",
+    "TVA Sports",
+    "TVA Sports 2"
    ],
    "parser": "",
    "browser": false,
@@ -3586,6 +3558,10 @@
      "pattern": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/{YYYY-MM-DD}"
     },
     {
+     "name": "OneSoccer",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/{YYYY-MM-DD}"
+    },
+    {
      "name": "TSN1",
      "pattern": "https://www.tvpassport.com/tv-listings/stations/tsn1-hd/2819/{YYYY-MM-DD}"
     },
@@ -3604,6 +3580,14 @@
     {
      "name": "TSN5",
      "pattern": "https://www.tvpassport.com/tv-listings/stations/tsn5-hd/13770/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TVA Sports",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/{YYYY-MM-DD}"
+    },
+    {
+     "name": "TVA Sports 2",
+     "pattern": "https://www.tvpassport.com/tv-listings/stations/tva-sports-2-hd/13778/{YYYY-MM-DD}"
     }
    ]
   },
@@ -5128,6 +5112,41 @@
     {
      "name": "bTV Action",
      "pattern": "https://tv.dir.bg/load/programs?channel=95&day={YYYY-MM-DD}"
+    }
+   ]
+  },
+  {
+   "domain": "canpl.ca",
+   "timezone": "UTC",
+   "grid": true,
+   "marks": {},
+   "include": [
+    "CBC",
+    "OneSoccer",
+    "TSN",
+    "TVA Sports",
+    "TVA Sports 2"
+   ],
+   "parser": "",
+   "browser": true,
+   "days_inline": false,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://canpl.ca/schedule/",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://canpl.ca/schedule/"
     }
    ]
   }
