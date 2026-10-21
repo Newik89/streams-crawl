@@ -217,7 +217,7 @@ def _load_all():
                    aspor_com_tr,
                    atv_com_tr,
                    bbc_co_uk, beinsports_com_tr, bnt_bg,
-                   canal11_pt, ceskatelevize_cz, cosmotetv_gr, cyta_com_cy,
+                   canal11_pt, canpl_ca, ceskatelevize_cz, cosmotetv_gr, cyta_com_cy,
                    diemaxtra_bg, digisport_ro, dr_dk, err_ee, ert_gr,
                    flashscore_mobi,
                    football_tv_ru,

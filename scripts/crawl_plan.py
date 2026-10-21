@@ -120,9 +120,12 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # шестая пачка 02.09 (сайты дал владелец + браузерная разведка):
           # греческий Novasports сеткой и эстонский ERR открытым API
           "novasports.gr", "jupiter.err.ee",
-          # белорусский Беларусь 5 (сетка в props astro, браузером) и
-          # канадский OneSoccer (виджет Opta, браузером) — сайты владельца
-          "news.by", "onesoccer.ca",
+          # белорусский Беларусь 5 (сетка в props astro, браузером) — сайт
+          # владельца. Канадский onesoccer.ca снят 22.10 словом владельца:
+          # на странице виджет АПЛ, а не программа канала; программа
+          # OneSoccer и TVA Sports — tvpassport, матчи CPL с каналами —
+          # календарь лиги canpl.ca (браузером, сетка)
+          "news.by", "canpl.ca",
           # Fox Soccer Plus (США) — официального EPG у FOX нет, расписание
           # берём с телегида tvpassport.com (канал попросил владелец 02.09)
           "tvpassport.com",
