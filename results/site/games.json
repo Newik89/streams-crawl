@@ -1,61 +1,61 @@
 {
- "собрано": "2026-10-21 03:06",
- "игр": 77,
+ "собрано": "2026-10-21 21:26",
+ "игр": 56,
  "окно": 6,
  "по_окнам": {
-  "2": 565,
+  "2": 591,
   "5": 528,
-  "6": 77
+  "6": 56
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "sportklub.hr": 693
+  "sportklub.hr": 697
  },
  "другие_виды": [
   {
    "домен": "sportklub.hr",
    "канал": "Sport Klub 5",
-   "заголовок": "Tenis ATP 250 Lyon: Wawrinka - Landaluce",
+   "заголовок": "Tenis ATP 250 Lyon: Vacherot - Van Assche",
    "лига": "Tenis ATP 250 Lyon",
    "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
    "вид": "другое",
    "слово": "Grand Prix",
-   "start_kyiv": "2026-10-21T15:00",
-   "start_utc": "2026-10-21T12:00"
+   "start_kyiv": "2026-10-22T15:00",
+   "start_utc": "2026-10-22T12:00"
+  },
+  {
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 2",
+   "заголовок": "Tenis ATP 250 Lyon: Vacherot - Van Assche",
+   "лига": "Tenis ATP 250 Lyon",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "другое",
+   "слово": "Grand Prix",
+   "start_kyiv": "2026-10-22T15:15",
+   "start_utc": "2026-10-22T12:15"
   },
   {
    "домен": "sportklub.hr",
    "канал": "Sport Klub 5",
-   "заголовок": "Tenis ATP 250 Lyon: Moutet - Balshaw",
+   "заголовок": "Tenis ATP 250 Lyon: Herbert - Fritz",
    "лига": "Tenis ATP 250 Lyon",
    "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
    "вид": "другое",
    "слово": "Grand Prix",
-   "start_kyiv": "2026-10-21T17:00",
-   "start_utc": "2026-10-21T14:00"
+   "start_kyiv": "2026-10-22T17:00",
+   "start_utc": "2026-10-22T14:00"
   },
   {
    "домен": "sportklub.hr",
    "канал": "Sport Klub 2",
-   "заголовок": "Tenis ATP 250 Lyon: Kouame - Musetti",
+   "заголовок": "Tenis ATP 250 Lyon: Cobolli - Wawrinka",
    "лига": "Tenis ATP 250 Lyon",
    "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
    "вид": "другое",
    "слово": "Grand Prix",
-   "start_kyiv": "2026-10-21T20:00",
-   "start_utc": "2026-10-21T17:00"
-  },
-  {
-   "домен": "sportklub.hr",
-   "канал": "Sport Klub 2",
-   "заголовок": "Tenis ATP 250 Lyon: Bonzi - Paul",
-   "лига": "Tenis ATP 250 Lyon",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-   "вид": "другое",
-   "слово": "Grand Prix",
-   "start_kyiv": "2026-10-21T21:45",
-   "start_utc": "2026-10-21T18:45"
+   "start_kyiv": "2026-10-22T20:00",
+   "start_utc": "2026-10-22T17:00"
   },
   {
    "домен": "sportklub.hr",
@@ -67,6 +67,17 @@
    "слово": "Rukomet",
    "start_kyiv": "2026-10-22T20:00",
    "start_utc": "2026-10-22T17:00"
+  },
+  {
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 2",
+   "заголовок": "Tenis ATP 250 Lyon: Jacquet - Nakashima",
+   "лига": "Tenis ATP 250 Lyon",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "другое",
+   "слово": "Grand Prix",
+   "start_kyiv": "2026-10-22T21:45",
+   "start_utc": "2026-10-22T18:45"
   },
   {
    "домен": "sportklub.hr",
@@ -153,698 +164,6 @@
    "guess": 0,
    "sport": "B",
    "league": "NBA liga",
-   "home": "New York",
-   "away": "Philadelphia",
-   "start_kyiv": "2026-10-21T02:00",
-   "start_utc": "2026-10-20T23:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - NBA liga: New York - Philadelphia"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "NBA liga",
-   "home": "San Antonio",
-   "away": "Oklahoma City",
-   "start_kyiv": "2026-10-21T04:30",
-   "start_utc": "2026-10-21T01:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - NBA liga: San Antonio - Oklahoma City"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Osaka",
-   "home": "Tararudee",
-   "away": "Krueger",
-   "start_kyiv": "2026-10-21T05:30",
-   "start_utc": "2026-10-21T02:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Osaka: Tararudee - Krueger"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Osaka",
-   "home": "Gibson",
-   "away": "Kraus",
-   "start_kyiv": "2026-10-21T05:30",
-   "start_utc": "2026-10-21T02:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Osaka: Gibson - Kraus"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Osaka",
-   "home": "Valentova",
-   "away": "Tagger",
-   "start_kyiv": "2026-10-21T07:15",
-   "start_utc": "2026-10-21T04:15",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Osaka: Valentova - Tagger"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "(Parovi) 1/4 Finale",
-   "home": "Malekova/Skoch",
-   "away": "Liu/Quevedo",
-   "start_kyiv": "2026-10-21T07:30",
-   "start_utc": "2026-10-21T04:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Osaka: (Parovi) 1/4 Finale: Malekova/Skoch - Liu/Quevedo"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 500 Ningbo",
-   "home": "Bouzkova",
-   "away": "Zakharova",
-   "start_kyiv": "2026-10-21T08:00",
-   "start_utc": "2026-10-21T05:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo: Bouzkova - Zakharova"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 500 Ningbo",
-   "home": "Bucsa/Melichar",
-   "away": "Errani/Paolini",
-   "start_kyiv": "2026-10-21T08:00",
-   "start_utc": "2026-10-21T05:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo: Bucsa/Melichar - Errani/Paolini (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "(Parovi) 1/4 Finale",
-   "home": "Hunter/Tjen",
-   "away": "Lee/Wu",
-   "start_kyiv": "2026-10-21T09:00",
-   "start_utc": "2026-10-21T06:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 8",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Osaka: (Parovi) 1/4 Finale: Hunter/Tjen - Lee/Wu"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Osaka",
-   "home": "Boulter",
-   "away": "Golubic",
-   "start_kyiv": "2026-10-21T09:15",
-   "start_utc": "2026-10-21T06:15",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Osaka: Boulter - Golubic"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Almaty",
-   "home": "Duckworth",
-   "away": "Darderi",
-   "start_kyiv": "2026-10-21T09:30",
-   "start_utc": "2026-10-21T06:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Almaty: Duckworth - Darderi"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 500 Ningbo",
-   "home": "Eikeri/Gleason",
-   "away": "TBD/TBD",
-   "start_kyiv": "2026-10-21T09:45",
-   "start_utc": "2026-10-21T06:45",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo: Eikeri/Gleason - TBD/TBD (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 500 Ningbo",
-   "home": "Fernandez",
-   "away": "Sasnovich",
-   "start_kyiv": "2026-10-21T10:00",
-   "start_utc": "2026-10-21T07:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo: Fernandez - Sasnovich"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "(Parovi) 1/4 Finale",
-   "home": "Kobori/Shimizu",
-   "away": "Chan/Kato",
-   "start_kyiv": "2026-10-21T11:00",
-   "start_utc": "2026-10-21T08:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Osaka: (Parovi) 1/4 Finale: Kobori/Shimizu - Chan/Kato"
-    },
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 8",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Osaka: (Parovi) 1/4 Finale: Kobori/Shimizu - Chan/Kato"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 500 Ningbo",
-   "home": "Krawzyk/Stollar",
-   "away": "Danilina/Jiang",
-   "start_kyiv": "2026-10-21T11:15",
-   "start_utc": "2026-10-21T08:15",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo: Krawzyk/Stollar - Danilina/Jiang (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Almaty",
-   "home": "Nurlanuly",
-   "away": "Machac",
-   "start_kyiv": "2026-10-21T11:30",
-   "start_utc": "2026-10-21T08:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Almaty: Nurlanuly - Machac"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 500 Ningbo",
-   "home": "Cirstea",
-   "away": "Bejlek",
-   "start_kyiv": "2026-10-21T11:45",
-   "start_utc": "2026-10-21T08:45",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo: Cirstea - Bejlek"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Brussels",
-   "home": "Damm",
-   "away": "F. Cerundolo",
-   "start_kyiv": "2026-10-21T12:30",
-   "start_utc": "2026-10-21T09:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Brussels: Damm - F. Cerundolo"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 500 Ningbo",
-   "home": "Tang/Xu",
-   "away": "Routliffe/Sutjiadi",
-   "start_kyiv": "2026-10-21T13:00",
-   "start_utc": "2026-10-21T10:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo: Tang/Xu - Routliffe/Sutjiadi (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Almaty",
-   "home": "Mannarino",
-   "away": "Rublev",
-   "start_kyiv": "2026-10-21T13:15",
-   "start_utc": "2026-10-21T10:15",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Almaty: Mannarino - Rublev"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 500 Ningbo",
-   "home": "Alexandrova",
-   "away": "Kostyuk",
-   "start_kyiv": "2026-10-21T14:00",
-   "start_utc": "2026-10-21T11:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo: Alexandrova - Kostyuk"
-    },
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 500 Ningbo (UKLJUČENJE): Alexandrova - Kostyuk"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Brussels",
-   "home": "Navone",
-   "away": "Griekspoor",
-   "start_kyiv": "2026-10-21T14:30",
-   "start_utc": "2026-10-21T11:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Brussels: Navone - Griekspoor"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Brussels",
-   "home": "Chidekh",
-   "away": "Fearnley",
-   "start_kyiv": "2026-10-21T16:30",
-   "start_utc": "2026-10-21T13:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Brussels: Chidekh - Fearnley"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Almaty",
-   "home": "Tsitsipas",
-   "away": "Kukushkin",
-   "start_kyiv": "2026-10-21T17:30",
-   "start_utc": "2026-10-21T14:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Almaty: Tsitsipas - Kukushkin"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Bugarski Liga kup: 1/4 finale",
-   "home": "Cherno More",
-   "away": "Lokomotiv Plovdiv",
-   "start_kyiv": "2026-10-21T18:30",
-   "start_utc": "2026-10-21T15:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Fudbal: Bugarski Liga kup: 1/4 finale: Cherno More - Lokomotiv Plovdiv"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Euroleague",
-   "home": "Hapoel Tel Aviv",
-   "away": "Virtus",
-   "start_kyiv": "2026-10-21T19:00",
-   "start_utc": "2026-10-21T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Euroleague: Hapoel Tel Aviv - Virtus"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Slovenska liga",
-   "home": "Ilirija",
-   "away": "Šentjur",
-   "start_kyiv": "2026-10-21T19:00",
-   "start_utc": "2026-10-21T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 10",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Slovenska liga: Ilirija - Šentjur"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Eurocup",
-   "home": "Cluj",
-   "away": "London",
-   "start_kyiv": "2026-10-21T19:00",
-   "start_utc": "2026-10-21T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Eurocup: Cluj - London"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Brussels",
-   "home": "Goffin",
-   "away": "Bertola",
-   "start_kyiv": "2026-10-21T19:00",
-   "start_utc": "2026-10-21T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Brussels: Goffin - Bertola"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Liga prvaka",
-   "home": "AEK",
-   "away": "Antwerp",
-   "start_kyiv": "2026-10-21T19:00",
-   "start_utc": "2026-10-21T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 6",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Liga prvaka: AEK - Antwerp"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Eurocup",
-   "home": "Cedevita Olimpija",
-   "away": "Le Mans",
-   "start_kyiv": "2026-10-21T19:30",
-   "start_utc": "2026-10-21T16:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 8",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Eurocup: Cedevita Olimpija - Le Mans"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Eurocup",
-   "home": "PAOK",
-   "away": "Ulm",
-   "start_kyiv": "2026-10-21T20:00",
-   "start_utc": "2026-10-21T17:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 9",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Eurocup: PAOK - Ulm"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Eurocup",
-   "home": "Bosna",
-   "away": "Bahcesehir",
-   "start_kyiv": "2026-10-21T20:30",
-   "start_utc": "2026-10-21T17:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Eurocup: Bosna - Bahcesehir"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Eurocup",
-   "home": "Napoli",
-   "away": "Tofas",
-   "start_kyiv": "2026-10-21T21:00",
-   "start_utc": "2026-10-21T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 10",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Eurocup: Napoli - Tofas"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Liga prvaka",
-   "home": "Joventut",
-   "away": "Bonn",
-   "start_kyiv": "2026-10-21T21:00",
-   "start_utc": "2026-10-21T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Liga prvaka: Joventut - Bonn"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP 250 Brussels",
-   "home": "Onclin",
-   "away": "Struff",
-   "start_kyiv": "2026-10-21T21:00",
-   "start_utc": "2026-10-21T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP 250 Brussels: Onclin - Struff"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Španjolska liga",
-   "home": "Levante",
-   "away": "Bilbao",
-   "start_kyiv": "2026-10-21T21:00",
-   "start_utc": "2026-10-21T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 6",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - Španjolska liga: Levante - Bilbao"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Eurocup",
-   "home": "Hapoel Jerusalem",
-   "away": "Riga",
-   "start_kyiv": "2026-10-21T21:00",
-   "start_utc": "2026-10-21T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Eurocup: Hapoel Jerusalem - Riga"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Liga prvaka",
-   "home": "Reggio Emilia",
-   "away": "Juventus",
-   "start_kyiv": "2026-10-21T21:00",
-   "start_utc": "2026-10-21T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 8",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Liga prvaka: Reggio Emilia - Juventus (UKLJUČENJE)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Eurocup",
-   "home": "Maxima Roma",
-   "away": "Venezia",
-   "start_kyiv": "2026-10-21T21:30",
-   "start_utc": "2026-10-21T18:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Eurocup: Maxima Roma - Venezia"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "NBA liga",
    "home": "Miami",
    "away": "Minnesota",
    "start_kyiv": "2026-10-22T02:30",
@@ -877,6 +196,335 @@
   },
   {
    "guess": 0,
+   "sport": "T",
+   "league": "WTA 250 Osaka",
+   "home": "Ružić",
+   "away": "Day",
+   "start_kyiv": "2026-10-22T05:30",
+   "start_utc": "2026-10-22T02:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 250 Osaka: Ružić - Day"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 250 Osaka",
+   "home": "Li",
+   "away": "Sonmez",
+   "start_kyiv": "2026-10-22T05:30",
+   "start_utc": "2026-10-22T02:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 250 Osaka: Li - Sonmez"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 250 Osaka",
+   "home": "Neel/Olmos",
+   "away": "Haverlag/Tagger",
+   "start_kyiv": "2026-10-22T07:30",
+   "start_utc": "2026-10-22T04:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 250 Osaka: Neel/Olmos - Haverlag/Tagger"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 250 Osaka",
+   "home": "Stoiana",
+   "away": "Uchijima",
+   "start_kyiv": "2026-10-22T07:30",
+   "start_utc": "2026-10-22T04:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 250 Osaka: Stoiana - Uchijima"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 500 Ningbo",
+   "home": "Jovic",
+   "away": "Paolini",
+   "start_kyiv": "2026-10-22T08:00",
+   "start_utc": "2026-10-22T05:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 500 Ningbo: Jovic - Paolini"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/4 Finale",
+   "home": "Guo/Mladenovic",
+   "away": "Perez/Schuurs",
+   "start_kyiv": "2026-10-22T09:00",
+   "start_utc": "2026-10-22T06:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 500 Ningbo: (Parovi) 1/4 Finale: Guo/Mladenovic - Perez/Schuurs"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 250 Almaty",
+   "home": "Atmane",
+   "away": "Bellucci",
+   "start_kyiv": "2026-10-22T09:30",
+   "start_utc": "2026-10-22T06:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 250 Almaty: Atmane - Bellucci"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 250 Osaka",
+   "home": "Linette",
+   "away": "Siniakova",
+   "start_kyiv": "2026-10-22T09:30",
+   "start_utc": "2026-10-22T06:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 250 Osaka: Linette - Siniakova"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 500 Ningbo",
+   "home": "Kawa",
+   "away": "Bencic",
+   "start_kyiv": "2026-10-22T09:45",
+   "start_utc": "2026-10-22T06:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 500 Ningbo: Kawa - Bencic"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/4 Finale",
+   "home": "Kozyreva/Lumsden",
+   "away": "Krawczyk/Stollar",
+   "start_kyiv": "2026-10-22T10:30",
+   "start_utc": "2026-10-22T07:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 500 Ningbo: (Parovi) 1/4 Finale: Kozyreva/Lumsden - Krawczyk/Stollar"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 250 Almaty",
+   "home": "Machac",
+   "away": "Khachanov",
+   "start_kyiv": "2026-10-22T11:30",
+   "start_utc": "2026-10-22T08:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 250 Almaty: Machac - Khachanov"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "(Parovi) 1/2 Finale",
+   "home": "Maleckova/Skoch",
+   "away": "Chan/Kato",
+   "start_kyiv": "2026-10-22T11:30",
+   "start_utc": "2026-10-22T08:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 250 Osaka: (Parovi) 1/2 Finale: Maleckova/Skoch - Chan/Kato"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 500 Ningbo",
+   "home": "Eala",
+   "away": "Shnaider",
+   "start_kyiv": "2026-10-22T11:30",
+   "start_utc": "2026-10-22T08:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 500 Ningbo: Eala - Shnaider"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 250 Almaty",
+   "home": "Medvedev",
+   "away": "Shimabukuro",
+   "start_kyiv": "2026-10-22T13:30",
+   "start_utc": "2026-10-22T10:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 250 Almaty: Medvedev - Shimabukuro"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "WTA 500 Ningbo",
+   "home": "Rybakina",
+   "away": "P. Kudermetova",
+   "start_kyiv": "2026-10-22T14:00",
+   "start_utc": "2026-10-22T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 500 Ningbo: Rybakina - P. Kudermetova"
+    },
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "WTA 500 Ningbo (UKLJUČENJE): Rybakina - P. Kudermetova"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 250 Brussels",
+   "home": "Collignon",
+   "away": "Lehecka",
+   "start_kyiv": "2026-10-22T14:30",
+   "start_utc": "2026-10-22T11:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 250 Brussels: Collignon - Lehecka"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 250 Brussels",
+   "home": "Goffin",
+   "away": "Michelsen",
+   "start_kyiv": "2026-10-22T16:15",
+   "start_utc": "2026-10-22T13:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 250 Brussels: Goffin - Michelsen"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 250 Almaty",
+   "home": "Bublik",
+   "away": "Marozsan",
+   "start_kyiv": "2026-10-22T17:30",
+   "start_utc": "2026-10-22T14:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 250 Almaty: Bublik - Marozsan"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP 250 Brussels",
+   "home": "Džumhur",
+   "away": "Bergs",
+   "start_kyiv": "2026-10-22T18:15",
+   "start_utc": "2026-10-22T15:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP 250 Brussels: Džumhur - Bergs"
+    }
+   ]
+  },
+  {
+   "guess": 0,
    "sport": "B",
    "league": "Euroleague",
    "home": "Efes",
@@ -884,6 +532,12 @@
    "start_kyiv": "2026-10-22T20:30",
    "start_utc": "2026-10-22T17:30",
    "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792540800000&toTime=1793145599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Efes - Besiktas"
+    },
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
