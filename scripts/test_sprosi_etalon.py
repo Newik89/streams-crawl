@@ -31,7 +31,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 # базу не открываем, но на всякий случай — не боевая
 os.environ.setdefault("STREAMS_DB", str(Path(tempfile.gettempdir()) / "sprosi-etalon-none.db"))
 
-from app import live, pipeline, sport  # noqa: E402
+from app import live, names, pipeline, sport  # noqa: E402
 from app.parsers import Program  # noqa: E402
 from app.reference import Reference  # noqa: E402
 
@@ -94,6 +94,19 @@ def ответ(дом, гость, когда, вид="", эталон=ЭТАЛ�
 
 
 # ═════════════════════════════════════════════════════════════════════════════
+print("сокращение «Dinamo B.» — не второй состав (#7400, 21.10)")
+проверка("«Dinamo B.» у tvarenasport: точка остаётся, состав не B",
+         [(x, names.category(x)) for x in live.split_teams("CFR Cluj - Dinamo B.")],
+         [("CFR Cluj", ""), ("Dinamo B.", "")])
+проверка("«Nottingham F. - Borussia M.»: точки остаются",
+         live.split_teams("Nottingham F. - Borussia M."), ("Nottingham F.", "Borussia M."))
+проверка("второй состав без точки — по-прежнему B",
+         [names.category(x) for x in live.split_teams("Benfica B - Porto B")], ["B", "B"])
+проверка("«W.» — пометка пола, срезается как раньше",
+         live.split_teams("Arsenal W. - Chelsea W."), ("Arsenal W", "Chelsea W"))
+проверка("точка в конце обычного имени срезается как раньше",
+         live.split_teams("Ajax - PSV."), ("Ajax", "PSV"))
+
 print("(г) live.split_candidates — один читатель пары")
 проверка("правило 1: обычная пара « - » — одна догадка",
          live.split_candidates("Stuttgart - Atletico Madrid"),
