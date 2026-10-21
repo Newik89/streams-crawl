@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1577. Заняло 4787 с.
+Режим: полный обход, окно 6 суток. Запросов: 1577. Заняло 4936 с.
 
 | Сайт | Результат |
 |---|---|
@@ -22,7 +22,7 @@
 | flashscore.mobi | расписание есть — 17, пусто — 4 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
-| jupiter.err.ee | расписание есть — 18 |
+| jupiter.err.ee | не открылась — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 23 |
 | m.eredmenyek.com | расписание есть — 10, пусто — 4 |
@@ -50,7 +50,7 @@
 | news.by | расписание есть — 1 |
 | nova.bg | расписание есть — 24 |
 | novasports.gr | расписание есть — 6 |
-| npo.nl | расписание есть — 17, пусто — 1 |
+| npo.nl | расписание есть — 18 |
 | ntvplus.tv | расписание есть — 6 |
 | oneplay.cz | расписание есть — 6 |
 | oneplaysport.cz | расписание есть — 6 |
@@ -62,7 +62,7 @@
 | programme-tv.net | расписание есть — 48 |
 | raiplay.it | расписание есть — 24 |
 | raspored.hrt.hr | расписание есть — 18 |
-| rtcg.me | расписание есть — 22, пусто — 2 |
+| rtcg.me | расписание есть — 21, пусто — 3 |
 | rte.ie | расписание есть — 17 |
 | rtl.de | расписание есть — 48 |
 | rtp.pt | расписание есть — 33 |
@@ -73,7 +73,7 @@
 | sport1.maariv.co.il | пусто — 3, расписание есть — 3 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
-| sport5.co.il | расписание есть — 6 |
+| sport5.co.il | расписание есть — 5, пусто — 1 |
 | sporteventz.com | расписание есть — 1 |
 | sporting.pt | расписание есть — 1 |
 | sportklub.hr | расписание есть — 10 |
@@ -94,7 +94,7 @@
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 6 |
+| tv8.com.tr | расписание есть — 5, пусто — 1 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -106,11 +106,34 @@
 | tvpassport.com | расписание есть — 36 |
 | tvsporten.dk | расписание есть — 6 |
 | tvtid.tv2.dk | расписание есть — 6 |
-| unian.tv | расписание есть — 6 |
+| unian.tv | расписание есть — 5, пусто — 1 |
 | vsetv.com | расписание есть — 12 |
-| webtv.sk | расписание есть — 39, нет на этот день — 3 |
+| webtv.sk | расписание есть — 38, нет на этот день — 4 |
 | ziggosport.nl | расписание есть — 6 |
+
+## Не открылись — 18
+
+| Сайт | Канал | Что ответил | Ссылка |
+|---|---|---|---|
+| jupiter.err.ee | ETV | HTTP 403; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=21&month=10&year=2026&channel=etv |
+| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=22&month=10&year=2026&channel=etv |
+| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=23&month=10&year=2026&channel=etv |
+| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=24&month=10&year=2026&channel=etv |
+| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=25&month=10&year=2026&channel=etv |
+| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=26&month=10&year=2026&channel=etv |
+| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=21&month=10&year=2026&channel=etvpluss |
+| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=22&month=10&year=2026&channel=etvpluss |
+| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=23&month=10&year=2026&channel=etvpluss |
+| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=24&month=10&year=2026&channel=etvpluss |
+| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=25&month=10&year=2026&channel=etvpluss |
+| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=26&month=10&year=2026&channel=etvpluss |
+| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=21&month=10&year=2026&channel=etv2 |
+| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=22&month=10&year=2026&channel=etv2 |
+| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=23&month=10&year=2026&channel=etv2 |
+| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=24&month=10&year=2026&channel=etv2 |
+| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=25&month=10&year=2026&channel=etv2 |
+| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=26&month=10&year=2026&channel=etv2 |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 0 из 1577 страниц (0%), сайтов без удачи 0 из 106 (0%)
+- ✅ обход в норме: не открылись 18 из 1577 страниц (1%), сайтов без удачи 1 из 106 (1%)
