@@ -44,6 +44,8 @@ def проверка(имя: str, вышло, ждём) -> None:
 print("1. женские лиги без слова «женская»")
 for лига, ждём in (("Liga BPI", "W"), ("LIGA BPI", "W"), ("Liga F", "W"), ("LIGA F MOEVE", "W"),
                    ("Toppserien", "W"),
+                   # Канада, #7274 (22.10): NSL прилипала к мужскому Cavalry — Vancouver FC
+                   ("Northern Super League Soccer", "W"), ("Canadian Premier League Soccer", ""),
                    ("Liga Futsal", ""), ("Liga Portugal Betclic", ""), ("LaLiga EA Sports", ""),
                    ("Liga BPI Sub-19", "U19 W"), ("Spartak Subotica", "")):
     проверка(f"«{лига}» → «{ждём}»", leagues.category(лига), ждём)

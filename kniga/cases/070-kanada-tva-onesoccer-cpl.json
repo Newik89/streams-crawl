@@ -2,7 +2,7 @@
  "номер": 70,
  "дата": "2026-10-22",
  "вид": "слово",
- "суть": "HFX Wanderers — Supra du Québec 25.10 22:00: на витрине TVA Sports 2 и OneSoccer (матчи CPL с каналами — с canpl.ca, программа TVA Sports 2 — с tvpassport)",
+ "суть": "HFX Wanderers — Supra du Québec 25.10 22:00: на витрине TVA Sports 2 (матчи CPL с каналами — с canpl.ca, программа TVA Sports 2 — с tvpassport); OneSoccer у матчей CPL — мультикаст, снят словом владельца 22.10 (случай 072)",
  "владелец": "скрин «Канада — Canadian Premier League, 22:00 HFX Wanderers — Supra du Quebec: TVA Sports 2, OneSoccer»; «нужно найти расписание на эти каналы» → разведка #311–#312 → «да» (22.10) на tvpassport TVA Sports 2 / TVA Sports, canpl.ca и снятие строк АПЛ onesoccer.ca",
  "правило": "app/parsers/canpl_ca.py — календарь CPL (браузер, сетка), 5 правил: несыгранные, дата по заголовку дня с ближайшим годом, время по часам браузера (UTC), каждый код канала — строка (onesoccer/tvas2/tva/tsn/cbc), всё эфир; tvpassport_com: станции TVA Sports 2 (13778), TVA Sports (9824), OneSoccer (37452), французские разделители пары « contre », « c. »",
  "коммит": "",
@@ -13,12 +13,6 @@
    "игра": "HFX Wanderers - Supra du Québec",
    "время": "2026-10-25 22:00",
    "канал": "TVA Sports 2",
-   "сайт": "canpl.ca"
-  },
-  {
-   "игра": "HFX Wanderers - Supra du Québec",
-   "время": "2026-10-25 22:00",
-   "канал": "OneSoccer",
    "сайт": "canpl.ca"
   },
   {
