@@ -1,0 +1,25 @@
+{
+ "номер": 74,
+ "дата": "2026-10-22",
+ "вид": "находка",
+ "суть": "Женский матч Northern Super League (Calgary Wild — Vancouver Rise, TSN2) прилип к мужскому Cavalry — Vancouver FC 25.10 (#7274): лига женская, но пол в названии не пишут",
+ "владелец": "разбор жалобы на #7453/#7452/#7274 (22.10): у #7274 среди каналов TSN2 с «Northern Super League Soccer: Calgary Wild at Vancouver Rise»",
+ "правило": "app/leagues.py: «Northern Super League» в _WOMEN_LEAGUES (высшая женская лига Канады с 2025) — команды получают W и не сводятся с мужскими (Calgary ≈ Cavalry, Vancouver Rise ≈ Vancouver FC)",
+ "коммит": "",
+ "проверка": "разбор",
+ "срез": "sbor-316-multikast-ziggo",
+ "ждём": [
+  {
+   "нет": "Cavalry - Vancouver FC",
+   "время": "2026-10-25 22:00",
+   "сайт": "tvpassport.com",
+   "канал": "TSN2"
+  },
+  {
+   "игра": "Vancouver Rise W - Calgary Wild W",
+   "время": "2026-10-25 22:00",
+   "канал": "TSN2",
+   "сайт": "tvpassport.com"
+  }
+ ]
+}

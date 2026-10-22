@@ -109,7 +109,12 @@ _WOMEN_LEAGUES = re.compile(
     # Испания: «Liga F» — высшая женская (movistarplus: Athletic — Valencia
     # 17.10 шёл мужским; нашла проверка 12 в первый же прогон, 12.10).
     # «Liga Futsal» не задевает: после «f» нужна граница слова
-    r"|\bliga f\b", re.I)
+    r"|\bliga f\b"
+    # Канада: «Northern Super League» — высшая женская (с 2025); tvpassport
+    # пишет «Northern Super League Soccer: Calgary Wild at Vancouver Rise»
+    # без пола, и матч прилип к мужскому Cavalry — Vancouver FC #7274
+    # (Calgary ≈ Cavalry, Vancouver Rise ≈ Vancouver FC; 22.10)
+    r"|\bnorthern super league\b", re.I)
 
 #: турниры, которые бывают ТОЛЬКО молодёжными, а возраст в названии сайт не
 #: пишет (как `_WOMEN_LEAGUES` для пола). Значение — возраст, под которым
