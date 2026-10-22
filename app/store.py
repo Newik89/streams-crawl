@@ -169,6 +169,9 @@ class SaveStats:
     not_own_dropped: int = 0
     #: время игр, записанное в базу с «T», приведено к общему виду (`db_time`)
     times_fixed: int = 0
+    #: отметки, отозванные мультикастом (`multicast_rows`): канал сайта
+    #: показывает несколько игр разом — сайт сам сказал, что это не канал игры
+    multicast_gone: int = 0
 
 
 def _хозяева_канала(conn: sqlite3.Connection, games: list[dict],
@@ -383,12 +386,65 @@ def withheld_rows(data: dict) -> set[tuple[str, str]]:
     return out
 
 
+#: начало фильтра мультикаста в «снято» (`parse_live.СНЯТО_МУЛЬТИКАСТ`)
+МУЛЬТИКАСТ = "мультикаст"
+#: окно «то же время» для отзыва (`parse_live.МУЛЬТИКАСТ_ОКНО`)
+МУЛЬТИКАСТ_МИН = 15
+
+
+def multicast_rows(data: dict) -> set[tuple[str, str, str]]:
+    """Строки сбора, снятые как мультикаст (владелец 22.10.2026: «не может
+    один канал показывать сразу 3 игры … мультикаст не интересен»):
+    (сайт, канал сайта, «ГГГГ-ММ-ДД ЧЧ:ММ» по Киеву). Это слово самого сайта в
+    этом же сборе, поэтому отметку этого канала этого сайта в это время
+    `save_games` гасит сразу — без правил гашения по неполному сбору
+    (`app/miss.py`, правило 6 держало отметки OneSoccer у CPL #7452/#7453/#7274)."""
+    out: set[tuple[str, str, str]] = set()
+    for r in (data.get("снято") or []):
+        if not isinstance(r, dict) or not (r.get("фильтр") or "").startswith(МУЛЬТИКАСТ):
+            continue
+        домен = _bare(r.get("домен") or "")
+        когда = (r.get("start_kyiv") or "").replace("T", " ")[:16]
+        if домен and когда and r.get("канал"):
+            out.add((домен, r["канал"], когда))
+    return out
+
+
+def _retract_multicast(conn: sqlite3.Connection, rows: set[tuple[str, str, str]]) -> int:
+    """Погасить отметки канала сайта у игр в пределах `МУЛЬТИКАСТ_МИН` от
+    строк мультикаста; канал сайта — по его странице (`source_channels`)."""
+    gone = 0
+    for домен, канал, когда in rows:
+        try:
+            t = datetime.strptime(когда, "%Y-%m-%d %H:%M")
+        except ValueError:
+            continue
+        lo = (t - timedelta(minutes=МУЛЬТИКАСТ_МИН)).strftime("%Y-%m-%d %H:%M")
+        hi = (t + timedelta(minutes=МУЛЬТИКАСТ_МИН)).strftime("%Y-%m-%d %H:%M")
+        # канал сайта — по его странице у источника или по написанию канала
+        ids = [r["id"] for r in conn.execute(
+            "SELECT ec.id FROM event_channels ec "
+            "JOIN events e ON e.id = ec.event_id "
+            "JOIN sources s ON s.id = ec.source_id "
+            "WHERE s.domain = ? AND ec.miss_count < ? AND e.start_kyiv BETWEEN ? AND ? "
+            "AND (ec.channel_id IN (SELECT channel_id FROM source_channels "
+            "                       WHERE source_id = s.id AND raw_name = ?) "
+            "  OR ec.channel_id IN (SELECT channel_id FROM channel_aliases WHERE alias = ?))",
+            (домен, MISS_LIMIT, lo, hi, канал, канал)).fetchall()]
+        for i in ids:
+            conn.execute("UPDATE event_channels SET miss_count = ? WHERE id = ?",
+                         (MISS_LIMIT, i))
+        gone += len(ids)
+    return gone
+
+
 def save_games(conn: sqlite3.Connection, games: list[dict],
                now: datetime | None = None, punish: bool = True,
                coverage: miss.Покрытие | None = None,
                collected: str = "",
                withheld: set[tuple[str, str]] | None = None,
-               add_only: bool = False) -> SaveStats:
+               add_only: bool = False,
+               multicast: set[tuple[str, str, str]] | None = None) -> SaveStats:
     """Вливает игры из `games.json`. Формат: список словарей с полями
     sport / league / home / away / start_kyiv / start_utc / entries,
     где entries — строки по сайтам: source / channel / url / raw_title.
@@ -689,6 +745,10 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 if (_bare(гашение.домен_по_id.get(m["source_id"], "")), когда)
                 not in удержано]
             stats.orphans_gone += погасить(marks, r["start_kyiv"], True)
+    # мультикаст — слово сайта в этом же сборе: отметки отзываются сразу
+    # (`multicast_rows`); переналивка и дозабор старого файла — не отзывают
+    if punish and not add_only and multicast:
+        stats.multicast_gone = _retract_multicast(conn, multicast)
     conn.commit()
     stats.not_own = sum(хозяева.пропущено.values())
     stats.not_own_note = хозяева.отчёт(stats.not_own_dropped)

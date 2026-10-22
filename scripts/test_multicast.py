@@ -95,5 +95,72 @@ data = json.loads((ROOT / "data" / "markers.json").read_text(encoding="utf-8"))
 все = [w for group in data["not_live"].values() if isinstance(group, list) for w in group]
 проверка("samenvatting в словаре «запись/повтор»", "samenvatting" in все, True)
 
+print("заливка: мультикаст — слово сайта, отметки отзываются сразу (store.multicast_rows)")
+from app import db, store  # noqa: E402
+
+TMP = Path(tempfile.mkdtemp(prefix="multicast-"))
+
+
+def база(n):
+    os.environ["STREAMS_DB"] = str(TMP / f"m{n}.db")
+    conn = db.connect()
+    db.init_db(conn)
+    conn.execute("INSERT INTO sources (domain, name, base_url, country) "
+                 "VALUES ('canpl.ca', 'canpl', 'https://canpl.ca/', 'CA')")
+    conn.commit()
+    return conn
+
+
+def ф(home, away, *channels):
+    return {"sport": "F", "league": "", "home": home, "away": away,
+            "start_kyiv": "2026-10-25T22:00", "start_utc": "",
+            "entries": [{"source": "canpl.ca", "channel": c, "url": "https://canpl.ca/schedule/",
+                         "raw_title": ""} for c in channels]}
+
+
+def отметки(conn):
+    return sorted((r["home"], r["alias"], r["miss_count"]) for r in conn.execute(
+        "SELECT e.team_home_auto AS home, ca.alias, ec.miss_count FROM event_channels ec "
+        "JOIN events e ON e.id = ec.event_id "
+        "JOIN channel_aliases ca ON ca.channel_id = ec.channel_id"))
+
+
+первый = [ф("HFX Wanderers", "Supra du Québec", "OneSoccer", "TVA Sports 2"),
+          ф("Pacific", "Forge", "OneSoccer")]
+второй = [ф("HFX Wanderers", "Supra du Québec", "TVA Sports 2")]
+данные = {"снято": [
+    {"фильтр": parse_live.СНЯТО_МУЛЬТИКАСТ, "домен": "canpl.ca", "канал": "OneSoccer",
+     "заголовок": "x", "start_kyiv": "2026-10-25T22:00", "почему": "4 игр"},
+    {"фильтр": parse_live.СНЯТО_СЫГРАН, "домен": "canpl.ca", "канал": "TVA Sports 2",
+     "заголовок": "x", "start_kyiv": "2026-10-25T22:00", "почему": "повтор"}]}
+проверка("multicast_rows берёт только строки мультикаста",
+         store.multicast_rows(данные), {("canpl.ca", "OneSoccer", "2026-10-25 22:00")})
+conn = база(1)
+store.save_games(conn, первый)
+итог = store.save_games(conn, второй, multicast=store.multicast_rows(данные))
+проверка("обе отметки OneSoccer отозваны, TVA Sports 2 цел",
+         отметки(conn), [("HFX Wanderers", "OneSoccer", 1), ("HFX Wanderers", "TVA Sports 2", 0),
+                         ("Pacific", "OneSoccer", 1)])
+проверка("в итоге заливки — сколько отозвано", итог.multicast_gone, 2)
+conn = база(2)
+store.save_games(conn, первый)
+store.save_games(conn, второй, punish=False, multicast=store.multicast_rows(данные))
+проверка("переналивка того же файла (punish=False) — не отзывает",
+         [m for _, _, m in отметки(conn)], [0, 0, 0])
+conn = база(3)
+store.save_games(conn, первый)
+store.save_games(conn, второй, add_only=True, multicast=store.multicast_rows(данные))
+проверка("дозабор (add_only) — не отзывает", [m for _, _, m in отметки(conn)], [0, 0, 0])
+p = parse_live.СНЯТО_МУЛЬТИКАСТ
+проверка("фильтр разбора начинается словом, которое ищет заливка",
+         p.startswith(store.МУЛЬТИКАСТ), True)
+
+print("словарь: NSL не сидит на клубах CPL (dict_clean, раздел «команды»)")
+import dict_clean  # noqa: E402
+проверка("правки «Calgary Wild» и «Vancouver Rise» в TEAM_FIXES",
+         {a: (w, r) for a, w, r in dict_clean.TEAM_FIXES if a in ("Calgary Wild", "Vancouver Rise")},
+         {"Calgary Wild": ("Cavalry", "Calgary Wild W"),
+          "Vancouver Rise": ("Vancouver FC", "Vancouver Rise W")})
+
 print(f"\nпроверок: {зелёных + красных}, зелёных: {зелёных}, красных: {красных}")
 sys.exit(1 if красных else 0)
