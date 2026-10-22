@@ -427,6 +427,52 @@ def drop_late_repeats(games: list) -> tuple[list, list]:
     return kept, removed
 
 
+#: окно «в одно время»: начала двух игр на одном канале ближе этого — канал
+#: не может показывать обе (футбольный матч идёт два часа)
+МУЛЬТИКАСТ_ОКНО = timedelta(minutes=15)
+
+
+def drop_multicast(games: list) -> tuple[list, list]:
+    """Мультикаст — не канал игры (владелец 22.10.2026: «не может один канал
+    показывать сразу 3 игры, а если и так — это мультикаст, мультикаст не
+    интересен»; #7453/#7452/#7274 — OneSoccer у четырёх матчей CPL 25.10 в
+    одно время: на canpl.ca это приложение, а не канал).
+
+    Правила по порядку:
+    1. Судим по одному сайту и одному каналу: разные сайты, давшие одному
+       каналу разные игры, — спор сайтов, а не мультикаст.
+    2. Две и больше РАЗНЫХ игр с парой, начала которых у этого канала ближе
+       `МУЛЬТИКАСТ_ОКНО`, — мультикаст: строки этого канала этого сайта у
+       всех таких игр снимаются.
+    3. Трансляции турниров без пары (`broadcast.SESSION`, «ATP Lyon —
+       tournament») не в счёт: канал тенниса меняет корты.
+    4. Игра, у которой не осталось строк, уходит целиком; прочие каналы
+       игры остаются.
+
+    Возвращает (игры, [(игра, снятая строка, сколько игр разом)])."""
+    by_channel: dict = {}
+    for game in games:
+        if game.first.away == broadcast.SESSION:                 # правило 3
+            continue
+        for e in game.entries:
+            by_channel.setdefault((e.source, e.channel), []).append((game, e))
+    drop: dict = {}                                     # id(entry) → сколько
+    for (source, channel), items in by_channel.items():          # правило 1
+        for game, e in items:
+            same = {id(g) for g, x in items
+                    if g is not game and abs(x.start - e.start) <= МУЛЬТИКАСТ_ОКНО}
+            if same:                                             # правило 2
+                drop[id(e)] = len(same) + 1
+    removed: list = []
+    kept: list = []
+    for game in games:
+        removed += [(game, e, drop[id(e)]) for e in game.entries if id(e) in drop]
+        game.entries = [e for e in game.entries if id(e) not in drop]
+        if game.entries:                                         # правило 4
+            kept.append(game)
+    return kept, removed
+
+
 def unique_rows(found: list) -> tuple[list, int]:
     """Строки без копий: одна передача сайта — (домен, канал, начало,
     заголовок) — одна строка, сколько бы его страниц её ни показали.
@@ -477,6 +523,7 @@ def odd_minute_record(start: datetime, kickoff: datetime | None) -> bool:
     return True
 СНЯТО_СЫГРАН = "повтор по flashscore: матч уже сыгран"
 СНЯТО_ПОЗДНИЙ_ПОВТОР = "поздний повтор: пара была раньше у другого сайта"
+СНЯТО_МУЛЬТИКАСТ = "мультикаст: канал сайта показывает несколько игр разом"
 
 
 def removed_row(фильтр: str, domain: str, r, почему: str) -> dict:
@@ -1353,6 +1400,18 @@ def main() -> int:
                         f"{g.away} [{', '.join(g.channels)}] ← "
                         f"{earlier.start.strftime('%d.%m %H:%M')}"
                         for g, earlier in late))
+
+    games, мульти = drop_multicast(games)
+    for g, e, n in мульти:
+        снято.append(removed_row(СНЯТО_МУЛЬТИКАСТ, e.source, e.payload,
+                                 f"«{e.channel}» у {e.source}: {n} игр в "
+                                 f"{e.start.strftime('%d.%m %H:%M')}"))
+    if мульти:
+        разом = sorted({(e.source, e.channel, e.start.strftime('%d.%m %H:%M'), n)
+                        for _, e, n in мульти})
+        print(f"мультикаст снят: строк {len(мульти)} (канал сайта показывает "
+              f"несколько игр разом)"
+              + "".join(f"\n   • {s}: {c} {t} — игр {n}" for s, c, t, n in разом))
 
     # Журнал снятого (владелец: «ничто не теряется молча»): каждая строка,
     # снятая фильтром повторов, — поимённо, тем же окном дней, что витрина

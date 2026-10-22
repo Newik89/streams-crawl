@@ -307,7 +307,9 @@ def check_expect(games: dict, exp: dict) -> str:
                 continue
             if pair_score(g, exp["нет"]) < ПОРОГ_ПАРЫ:
                 continue
-            if exp.get("сайт") and not _has_channel(g, "", exp["сайт"]):
+            # с «канал» — нет именно этого канала этого сайта, прочие каналы
+            # игры могут быть (мультикаст OneSoccer у HFX — Supra, #072)
+            if exp.get("сайт") and not _has_channel(g, exp.get("канал", ""), exp["сайт"]):
                 continue
             return f"на витрине есть то, чего быть не должно: {_show(g)}"
         return ""

@@ -1,0 +1,16 @@
+{
+ "срез": "sbor-316-multikast-ziggo",
+ "откуда": "сбор #316, 22.10.2026 (мультикаст OneSoccer на canpl.ca, samenvatting у Ziggo)",
+ "часы_utc": "2026-10-22 06:41",
+ "окно": 6,
+ "сайты": [
+  "canpl.ca",
+  "tvpassport.com",
+  "ziggosport.nl"
+ ],
+ "дни": [
+  "2026-10-25",
+  "2026-10-27"
+ ],
+ "строк": 97
+}
