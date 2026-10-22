@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1577. Заняло 5004 с.
+Режим: полный обход, окно 6 суток. Запросов: 1595. Заняло 4800 с.
 
 | Сайт | Результат |
 |---|---|
@@ -10,7 +10,8 @@
 | atv.com.tr | расписание есть — 6 |
 | bbc.co.uk | пусто — 66 |
 | bnt.bg | расписание есть — 1 |
-| canal11.pt | расписание есть — 1 |
+| canal11.pt | не открылась — 1 |
+| canpl.ca | расписание есть — 1 |
 | ceskatelevize.cz | расписание есть — 6 |
 | cosmotetv.gr | расписание есть — 6 |
 | dagenstv.com | расписание есть — 6 |
@@ -19,30 +20,30 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 17, пусто — 4 |
+| flashscore.mobi | расписание есть — 16, пусто — 5 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 23 |
-| m.eredmenyek.com | расписание есть — 10, пусто — 4 |
+| m.eredmenyek.com | расписание есть — 9, пусто — 5 |
 | m.flashscore.bg | расписание есть — 7 |
-| m.flashscore.com.tr | расписание есть — 15, пусто — 3 |
+| m.flashscore.com.tr | расписание есть — 14, пусто — 4 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 17, пусто — 4 |
+| m.flashscore.gr | расписание есть — 16, пусто — 5 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
-| m.flashscore.pl | расписание есть — 9, пусто — 3 |
+| m.flashscore.pl | расписание есть — 8, пусто — 4 |
 | m.flashscore.pt | расписание есть — 6 |
-| m.flashscore.ro | расписание есть — 9, пусто — 3 |
-| m.flashscore.ru | расписание есть — 15, пусто — 3 |
+| m.flashscore.ro | расписание есть — 8, пусто — 4 |
+| m.flashscore.ru | расписание есть — 14, пусто — 4 |
 | m.flashscore.se | расписание есть — 6 |
-| m.flashscore.sk | расписание есть — 9, пусто — 3 |
-| m.flashscore.ua | расписание есть — 9, пусто — 3 |
-| m.livesport.cz | расписание есть — 9, пусто — 3 |
+| m.flashscore.sk | расписание есть — 8, пусто — 4 |
+| m.flashscore.ua | расписание есть — 8, пусто — 4 |
+| m.livesport.cz | расписание есть — 8, пусто — 4 |
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 6 |
@@ -54,7 +55,6 @@
 | ntvplus.tv | расписание есть — 6 |
 | oneplay.cz | расписание есть — 6 |
 | oneplaysport.cz | расписание есть — 6 |
-| onesoccer.ca | расписание есть — 1 |
 | port.hu | расписание есть — 54 |
 | poverkhnost.tv | расписание есть — 5 |
 | primaplay.ro | расписание есть — 1 |
@@ -70,10 +70,10 @@
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | пусто — 3, расписание есть — 3 |
+| sport1.maariv.co.il | расписание есть — 4, пусто — 2 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
-| sport5.co.il | расписание есть — 5, пусто — 1 |
+| sport5.co.il | расписание есть — 4, пусто — 2 |
 | sporteventz.com | расписание есть — 1 |
 | sporting.pt | расписание есть — 1 |
 | sportklub.hr | расписание есть — 10 |
@@ -87,14 +87,14 @@
 | trt.net.tr | расписание есть — 1 |
 | trtavaz.com.tr | расписание есть — 6 |
 | trtspor.com.tr | расписание есть — 1 |
-| tv-program.aktuality.sk | не открылась — 1 |
+| tv-program.aktuality.sk | расписание есть — 1 |
 | tv.dir.bg | расписание есть — 42 |
 | tv.orf.at | расписание есть — 24 |
 | tv.sport1.de | расписание есть — 1 |
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 5, пусто — 1 |
+| tv8.com.tr | расписание есть — 4, пусто — 2 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -103,20 +103,20 @@
 | tvheute.at | расписание есть — 12 |
 | tvmatchen.nu | расписание есть — 6 |
 | tvmatsit.com | расписание есть — 6 |
-| tvpassport.com | расписание есть — 36 |
+| tvpassport.com | расписание есть — 54 |
 | tvsporten.dk | расписание есть — 6 |
 | tvtid.tv2.dk | расписание есть — 6 |
-| unian.tv | расписание есть — 5, пусто — 1 |
+| unian.tv | расписание есть — 4, пусто — 2 |
 | vsetv.com | расписание есть — 12 |
-| webtv.sk | расписание есть — 38, нет на этот день — 4 |
+| webtv.sk | расписание есть — 37, нет на этот день — 5 |
 | ziggosport.nl | расписание есть — 6 |
 
 ## Не открылись — 1
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| tv-program.aktuality.sk | сетка | ConnectTimeout: HTTPSConnectionPool(host='tv-program.aktuality.sk', port=443): Max retries exceeded with url: /sportove-stanice/ (Caused by ConnectTimeoutError( | https://tv-program.aktuality.sk/sportove-stanice/ |
+| canal11.pt | сетка | HTTP 403, защита: не опознана | https://fpf.watch.pixellot.tv/api/event/list |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 1 из 1577 страниц (0%), сайтов без удачи 1 из 106 (1%)
+- ✅ обход в норме: не открылись 1 из 1595 страниц (0%), сайтов без удачи 1 из 106 (1%)
