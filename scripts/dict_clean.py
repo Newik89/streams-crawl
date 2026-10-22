@@ -69,6 +69,11 @@ LEAGUE_FIXES = (
 #: Sport — это Марсель («Olympique M. - PSG», 20.09)
 TEAM_FIXES = (
     ("Olympique M", "M. Herzliya", "Marseille"),
+    # женская Northern Super League выучилась на мужские клубы CPL (#7274,
+    # 22.10): Calgary Wild ≈ Cavalry, Vancouver Rise ≈ Vancouver FC — матчи
+    # NSL прилипали к матчам CPL того же вечера
+    ("Calgary Wild", "Cavalry", "Calgary Wild W"),
+    ("Vancouver Rise", "Vancouver FC", "Vancouver Rise W"),
 )
 #: буквы явно за один клуб (CLEAR) — и явно не за другой (ниже FOREIGN)
 CLEAR, FOREIGN = 85, 60
