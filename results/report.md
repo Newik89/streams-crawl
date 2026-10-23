@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1595. Заняло 4867 с.
+Режим: полный обход, окно 6 суток. Запросов: 1595. Заняло 4952 с.
 
 | Сайт | Результат |
 |---|---|
@@ -20,30 +20,30 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 17, пусто — 4 |
+| flashscore.mobi | расписание есть — 16, пусто — 5 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
-| kanal1sport.sk | расписание есть — 1 |
+| kanal1sport.sk | не открылась — 1 |
 | livesoccertv.com | расписание есть — 23 |
-| m.eredmenyek.com | расписание есть — 10, пусто — 4 |
+| m.eredmenyek.com | расписание есть — 9, пусто — 5 |
 | m.flashscore.bg | расписание есть — 7 |
-| m.flashscore.com.tr | расписание есть — 15, пусто — 3 |
+| m.flashscore.com.tr | расписание есть — 14, пусто — 4 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 17, пусто — 4 |
+| m.flashscore.gr | расписание есть — 16, пусто — 5 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
-| m.flashscore.pl | расписание есть — 9, пусто — 3 |
+| m.flashscore.pl | расписание есть — 8, пусто — 4 |
 | m.flashscore.pt | расписание есть — 6 |
-| m.flashscore.ro | расписание есть — 9, пусто — 3 |
-| m.flashscore.ru | расписание есть — 15, пусто — 3 |
+| m.flashscore.ro | расписание есть — 8, пусто — 4 |
+| m.flashscore.ru | расписание есть — 14, пусто — 4 |
 | m.flashscore.se | расписание есть — 6 |
-| m.flashscore.sk | расписание есть — 9, пусто — 3 |
-| m.flashscore.ua | расписание есть — 9, пусто — 3 |
-| m.livesport.cz | расписание есть — 9, пусто — 3 |
+| m.flashscore.sk | расписание есть — 8, пусто — 4 |
+| m.flashscore.ua | расписание есть — 8, пусто — 4 |
+| m.livesport.cz | расписание есть — 8, пусто — 4 |
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 6 |
@@ -70,7 +70,7 @@
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | расписание есть — 4, пусто — 2 |
+| sport1.maariv.co.il | пусто — 2, расписание есть — 4 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
 | sport5.co.il | расписание есть — 6 |
@@ -94,7 +94,7 @@
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 4, пусто — 2 |
+| tv8.com.tr | расписание есть — 3, пусто — 3 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -111,12 +111,15 @@
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 1
+## Не открылись — 2
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
+| kanal1sport.sk | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.kanal1sport.sk/tv-program/", waiting until "domcontentloade | https://www.kanal1sport.sk/tv-program/ |
 | sporting.pt | сетка | cloudflare | https://www.sporting.pt/pt/ical |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 1 из 1595 страниц (0%), сайтов без удачи 1 из 106 (1%)
+- ✅ обход в норме: не открылись 2 из 1595 страниц (0%), сайтов без удачи 2 из 106 (2%)
