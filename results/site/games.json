@@ -1,919 +1,1364 @@
 {
- "собрано": "2026-10-22 12:15",
- "игр": 27,
- "окно": 5,
+ "собрано": "2026-10-23 03:06",
+ "игр": 72,
+ "окно": 6,
  "по_окнам": {
-  "2": 591,
-  "5": 27,
-  "6": 863
+  "2": 613,
+  "5": 528,
+  "6": 72
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "tvpassport.com": 920,
-  "canpl.ca": 7
+  "sportklub.hr": 713
  },
  "другие_виды": [
   {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Panthers de la Floride c. Penguins de Pittsburgh",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-22",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-23T02:00",
-   "start_utc": "2026-10-22T23:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 6",
+   "заголовок": "Odbojka (M) - Slovenska liga: Maribor - Volley Ljubljana",
+   "лига": "Slovenska liga",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "волейбол",
+   "слово": "Odbojka",
+   "start_kyiv": "2026-10-23T21:30",
+   "start_utc": "2026-10-23T18:30"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Hurricanes de la Caroline c. Oilers d'Edmonton",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-22",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-23T04:30",
-   "start_utc": "2026-10-23T01:30"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 9",
+   "заголовок": "Moto 3 Australija: Trening 3 - on board 1",
+   "лига": "Moto 3 Australija",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto 3",
+   "start_kyiv": "2026-10-24T00:40",
+   "start_utc": "2026-10-23T21:40"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "TSN2",
-   "заголовок": "AFL Women's Premiership Football: Port Adelaide Power vs. Collingwood Magpies",
-   "лига": "AFL Women's Premiership Football",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tsn2-hd/5920/2026-10-23",
-   "вид": "австралийский футбол",
-   "слово": "AFL Women",
-   "start_kyiv": "2026-10-23T20:30",
-   "start_utc": "2026-10-23T17:30"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 9",
+   "заголовок": "Moto 2 Australija: Trening 3 - on board 1",
+   "лига": "Moto 2 Australija",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto 2",
+   "start_kyiv": "2026-10-24T01:20",
+   "start_utc": "2026-10-23T22:20"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "TSN3",
-   "заголовок": "Women's Rugby: WXV Global Series: Canada vs. England",
-   "лига": "Women's Rugby",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tsn3-hd/13768/2026-10-23",
-   "вид": "регби",
-   "слово": "Rugby",
-   "start_kyiv": "2026-10-24T02:00",
-   "start_utc": "2026-10-23T23:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 9",
+   "заголовок": "Moto GP Australija: Trening 3 - on board 1",
+   "лига": "Moto GP Australija",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto GP",
+   "start_kyiv": "2026-10-24T02:05",
+   "start_utc": "2026-10-23T23:05"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Lightning de Tampa Bay c. Avalanche du Colorado",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-23",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-24T04:00",
-   "start_utc": "2026-10-24T01:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 9",
+   "заголовок": "Moto GP Australija: Kvalifikacije - helikopter",
+   "лига": "Moto GP Australija",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto GP",
+   "start_kyiv": "2026-10-24T02:50",
+   "start_utc": "2026-10-23T23:50"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "Fox Soccer Plus",
-   "заголовок": "AFL Women's Premiership Football: Geelong Cats vs. Fremantle Dockers",
-   "лига": "AFL Women's Premiership Football",
-   "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-23",
-   "вид": "австралийский футбол",
-   "слово": "AFL Women",
-   "start_kyiv": "2026-10-24T07:00",
-   "start_utc": "2026-10-24T04:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 9",
+   "заголовок": "Moto 3 Australija: Kvalifikacije - on board 1",
+   "лига": "Moto 3 Australija",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto 3",
+   "start_kyiv": "2026-10-24T04:45",
+   "start_utc": "2026-10-24T01:45"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "TSN5",
-   "заголовок": "AFL Women's Premiership Football: Geelong Cats vs. Fremantle Dockers",
-   "лига": "AFL Women's Premiership Football",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tsn5-hd/13770/2026-10-23",
-   "вид": "австралийский футбол",
-   "слово": "AFL Women",
-   "start_kyiv": "2026-10-24T07:00",
-   "start_utc": "2026-10-24T04:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 9",
+   "заголовок": "Moto 2 Australija: Kvalifikacije - on board 1",
+   "лига": "Moto 2 Australija",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "автоспорт",
+   "слово": "Moto 2",
+   "start_kyiv": "2026-10-24T05:35",
+   "start_utc": "2026-10-24T02:35"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "TSN1",
-   "заголовок": "AFL Women's Premiership Football: Western Bulldogs vs. Melbourne Demons",
-   "лига": "AFL Women's Premiership Football",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tsn1-hd/2819/2026-10-24",
-   "вид": "австралийский футбол",
-   "слово": "AFL Women",
-   "start_kyiv": "2026-10-24T20:00",
-   "start_utc": "2026-10-24T17:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 4",
+   "заголовок": "Odbojka - Njemačka liga (Ž): Stuttgart - Suhl",
+   "лига": "Njemačka liga (Ž)",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "волейбол",
+   "слово": "Odbojka",
+   "start_kyiv": "2026-10-24T18:00",
+   "start_utc": "2026-10-24T15:00"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Rangers de New York c. Sénateurs d'Ottawa",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-24",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-25T02:00",
-   "start_utc": "2026-10-24T23:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 6",
+   "заголовок": "Rukomet - Njemačka liga: Erlangen - Kiel",
+   "лига": "Njemačka liga",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "гандбол",
+   "слово": "Rukomet",
+   "start_kyiv": "2026-10-24T19:00",
+   "start_utc": "2026-10-24T16:00"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "Fox Soccer Plus",
-   "заголовок": "AFL Women's Premiership Football: North Melbourne Kangaroos vs. Adelaide Crows",
-   "лига": "AFL Women's Premiership Football",
-   "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-24",
-   "вид": "австралийский футбол",
-   "слово": "AFL Women",
-   "start_kyiv": "2026-10-25T04:00",
-   "start_utc": "2026-10-25T02:00"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 8",
+   "заголовок": "Odbojka - Bundesliga: Giesen - Berlin",
+   "лига": "Bundesliga",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "волейбол",
+   "слово": "Odbojka",
+   "start_kyiv": "2026-10-24T20:30",
+   "start_utc": "2026-10-24T17:30"
   },
   {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Red Wings de Détroit c. Flames de Calgary",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-24",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-25T04:00",
-   "start_utc": "2026-10-25T02:00"
-  },
-  {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Panthers de la Floride c. Blackhawks de Chicago",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-25",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-25T21:00",
-   "start_utc": "2026-10-25T19:00"
-  },
-  {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Canadiens de Montréal contre Jets de Winnipeg",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-25",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-26T01:00",
-   "start_utc": "2026-10-25T23:00"
-  },
-  {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Kings de Los Angeles c. Rangers de New York",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-26",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-27T01:00",
-   "start_utc": "2026-10-26T23:00"
-  },
-  {
-   "домен": "tvpassport.com",
-   "канал": "TVA Sports",
-   "заголовок": "Hockey LNH: Red Wings de Détroit c. Oilers d'Edmonton",
-   "лига": "Hockey LNH",
-   "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-26",
-   "вид": "хоккей",
-   "слово": "Hockey",
-   "start_kyiv": "2026-10-27T03:30",
-   "start_utc": "2026-10-27T01:30"
+   "домен": "sportklub.hr",
+   "канал": "Sport Klub 4",
+   "заголовок": "Rukomet - Njemačka liga: RN Lowen - Magdeburg",
+   "лига": "Njemačka liga",
+   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+   "вид": "гандбол",
+   "слово": "Rukomet",
+   "start_kyiv": "2026-10-25T16:00",
+   "start_utc": "2026-10-25T14:00"
   }
  ],
  "на_разбор": [],
- "снято": [
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "Fox Soccer Plus",
-   "заголовок": "2026 FIFA U-17 Women's World Cup: Nigeria U17 vs. Korea DPR U17",
-   "start_kyiv": "2026-10-23T23:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "Fox Soccer Plus",
-   "заголовок": "2026 FIFA U-17 Women's World Cup: New Zealand U17 vs. Germany U17",
-   "start_kyiv": "2026-10-24T01:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "Fox Soccer Plus",
-   "заголовок": "2026 FIFA U-17 Women's World Cup: Argentina U17 vs. Morocco U17",
-   "start_kyiv": "2026-10-24T03:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "Fox Soccer Plus",
-   "заголовок": "2026 FIFA U-17 Women's World Cup: Puerto Rico U17 vs. Poland U17",
-   "start_kyiv": "2026-10-24T15:30",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "Fox Soccer Plus",
-   "заголовок": "Women's Italian Serie A Soccer: Juventus vs. AS Roma",
-   "start_kyiv": "2026-10-25T00:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "Fox Soccer Plus",
-   "заголовок": "2026 FIFA U-17 Women's World Cup: Venezuela U17 vs. Japan U17",
-   "start_kyiv": "2026-10-25T02:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Champions League Soccer: VfB Stuttgart vs. Atlético Madrid",
-   "start_kyiv": "2026-10-22T11:01",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Champions League Soccer: Sabah FK vs. Borussia Dortmund",
-   "start_kyiv": "2026-10-22T13:02",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Canadian Championship: Forge FC vs. CF Montréal",
-   "start_kyiv": "2026-10-22T17:44",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Europa League Soccer: Bournemouth vs. AC Milan",
-   "start_kyiv": "2026-10-23T14:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Europa League Soccer: Celtic vs. RC Celta",
-   "start_kyiv": "2026-10-23T16:30",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Canadian Championship: Forge FC vs. CF Montréal",
-   "start_kyiv": "2026-10-23T19:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Champions League Soccer: Viking FK vs. FC Bayern München",
-   "start_kyiv": "2026-10-24T21:30",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Champions League Soccer: VfB Stuttgart vs. Atlético Madrid",
-   "start_kyiv": "2026-10-24T23:30",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Champions League Soccer: Sabah FK vs. Borussia Dortmund",
-   "start_kyiv": "2026-10-25T01:30",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Canadian Championship: Forge FC vs. CF Montréal",
-   "start_kyiv": "2026-10-25T03:30",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Conference League Soccer: FK Jablonec vs. Brighton & Hove Albion",
-   "start_kyiv": "2026-10-25T08:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Europa League Soccer: Bournemouth vs. AC Milan",
-   "start_kyiv": "2026-10-25T10:30",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Europa League Soccer: Bournemouth vs. AC Milan",
-   "start_kyiv": "2026-10-25T10:30",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Europa League Soccer: Celtic vs. RC Celta",
-   "start_kyiv": "2026-10-25T13:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Champions League Soccer: VfB Stuttgart vs. Atlético Madrid",
-   "start_kyiv": "2026-10-26T01:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "угаданный эфир без эталона",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "UEFA Conference League Soccer: FK Jablonec vs. Brighton & Hove Albion",
-   "start_kyiv": "2026-10-26T03:00",
-   "почему": "эфир угадан, а пары нет в эталоне в ±3 ч — запись"
-  },
-  {
-   "фильтр": "поздний показ у сайта без флага",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Concacaf Caribbean Cup: Mount Pleasant vs. Club Sando",
-   "start_kyiv": "2026-10-23T11:30",
-   "почему": "та же пара у этого сайта раньше: 23.10 01:50"
-  },
-  {
-   "фильтр": "поздний показ у сайта без флага",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Concacaf Central American Cup Soccer: Motagua vs. Alajuelense",
-   "start_kyiv": "2026-10-24T00:30",
-   "почему": "та же пара у этого сайта раньше: 23.10 03:56"
-  },
-  {
-   "фильтр": "поздний показ у сайта без флага",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Concacaf Central American Cup Soccer: Cartaginés vs. Olimpia",
-   "start_kyiv": "2026-10-24T09:00",
-   "почему": "та же пара у этого сайта раньше: 23.10 07:30"
-  },
-  {
-   "фильтр": "поздний показ у сайта без флага",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Concacaf Central American Cup Soccer: CD LA Firpo vs. Saprissa",
-   "start_kyiv": "2026-10-24T11:00",
-   "почему": "та же пара у этого сайта раньше: 22.10 23:56"
-  },
-  {
-   "фильтр": "поздний показ у сайта без флага",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Concacaf Central American Cup Soccer: Motagua vs. Alajuelense",
-   "start_kyiv": "2026-10-24T13:00",
-   "почему": "та же пара у этого сайта раньше: 23.10 03:56"
-  },
-  {
-   "фильтр": "угаданный эфир не на ровной минуте",
-   "домен": "tvpassport.com",
-   "канал": "OneSoccer",
-   "заголовок": "Concacaf Central American Cup Soccer: CD LA Firpo vs. Saprissa",
-   "start_kyiv": "2026-10-22T23:56",
-   "почему": "эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись"
-  },
-  {
-   "фильтр": "мультикаст: канал сайта показывает несколько игр разом",
-   "домен": "canpl.ca",
-   "канал": "OneSoccer",
-   "заголовок": "Canadian Premier League: HFX Wanderers - Supra du Québec",
-   "start_kyiv": "2026-10-25T22:00",
-   "почему": "«OneSoccer» у canpl.ca: 4 игр в 25.10 22:00"
-  },
-  {
-   "фильтр": "мультикаст: канал сайта показывает несколько игр разом",
-   "домен": "canpl.ca",
-   "канал": "OneSoccer",
-   "заголовок": "Canadian Premier League: Pacific - Forge",
-   "start_kyiv": "2026-10-25T22:00",
-   "почему": "«OneSoccer» у canpl.ca: 4 игр в 25.10 22:00"
-  },
-  {
-   "фильтр": "мультикаст: канал сайта показывает несколько игр разом",
-   "домен": "canpl.ca",
-   "канал": "OneSoccer",
-   "заголовок": "Canadian Premier League: Inter Toronto - Atlético Ottawa",
-   "start_kyiv": "2026-10-25T22:00",
-   "почему": "«OneSoccer» у canpl.ca: 4 игр в 25.10 22:00"
-  },
-  {
-   "фильтр": "мультикаст: канал сайта показывает несколько игр разом",
-   "домен": "canpl.ca",
-   "канал": "OneSoccer",
-   "заголовок": "Canadian Premier League: Cavalry - Vancouver FC",
-   "start_kyiv": "2026-10-25T22:00",
-   "почему": "«OneSoccer» у canpl.ca: 4 игр в 25.10 22:00"
-  }
- ],
+ "снято": [],
  "games": [
   {
    "guess": 0,
-   "sport": "F",
-   "league": "2026 FIFA U-17 Women's World Cup",
-   "home": "China U17 W",
-   "away": "Samoa U17 W",
-   "start_kyiv": "2026-10-22T17:48",
-   "start_utc": "2026-10-22T14:48",
+   "sport": "B",
+   "league": "NBA liga",
+   "home": "Philadelphia",
+   "away": "Cleveland",
+   "start_kyiv": "2026-10-23T02:00",
+   "start_utc": "2026-10-22T23:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-22",
-     "raw_title": "2026 FIFA U-17 Women's World Cup: China U17 vs. Samoa U17"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - NBA liga: Philadelphia - Cleveland"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA Conference League Soccer",
-   "home": "FK Jablonec",
-   "away": "Brighton & Hove Albion",
-   "start_kyiv": "2026-10-22T19:35",
-   "start_utc": "2026-10-22T16:35",
+   "league": "Bugarska 2. liga",
+   "home": "Vihren",
+   "away": "Marek",
+   "start_kyiv": "2026-10-23T16:00",
+   "start_utc": "2026-10-23T13:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-22",
-     "raw_title": "UEFA Conference League Soccer: FK Jablonec vs. Brighton & Hove Albion"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarska 2. liga: Vihren - Marek"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "2026 FIFA U-17 Women's World Cup",
-   "home": "Chile U17 W",
-   "away": "Mexico U17 W",
-   "start_kyiv": "2026-10-22T20:48",
-   "start_utc": "2026-10-22T17:48",
+   "league": "Saudijska liga",
+   "home": "Faisally",
+   "away": "Nassr",
+   "start_kyiv": "2026-10-23T16:30",
+   "start_utc": "2026-10-23T13:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-22",
-     "raw_title": "2026 FIFA U-17 Women's World Cup: Chile U17 vs. Mexico U17"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Saudijska liga: Faisally - Nassr"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "UEFA Europa League Soccer",
-   "home": "Bournemouth",
-   "away": "AC Milan",
-   "start_kyiv": "2026-10-22T21:50",
-   "start_utc": "2026-10-22T18:50",
+   "league": "Saudijska liga",
+   "home": "Ittihad",
+   "away": "Diriyah",
+   "start_kyiv": "2026-10-23T18:30",
+   "start_utc": "2026-10-23T15:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-22",
-     "raw_title": "UEFA Europa League Soccer: Bournemouth vs. AC Milan"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Saudijska liga: Ittihad - Diriyah"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Concacaf Caribbean Cup",
-   "home": "Mount Pleasant",
-   "away": "Club Sando",
-   "start_kyiv": "2026-10-23T01:50",
-   "start_utc": "2026-10-22T22:50",
+   "league": "Slovenski kup",
+   "home": "Tabor",
+   "away": "Koper",
+   "start_kyiv": "2026-10-23T18:30",
+   "start_utc": "2026-10-23T15:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-22",
-     "raw_title": "Concacaf Caribbean Cup: Mount Pleasant vs. Club Sando"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Slovenski kup: Tabor - Koper"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Concacaf Central American Cup Soccer",
-   "home": "Motagua",
-   "away": "Alajuelense",
-   "start_kyiv": "2026-10-23T03:56",
-   "start_utc": "2026-10-23T00:56",
+   "league": "Bugarska liga",
+   "home": "CSKA 1948",
+   "away": "Botev Plovdiv",
+   "start_kyiv": "2026-10-23T19:00",
+   "start_utc": "2026-10-23T16:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-22",
-     "raw_title": "Concacaf Central American Cup Soccer: Motagua vs. Alajuelense"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarska liga: CSKA 1948 - Botev Plovdiv"
     }
    ]
   },
   {
-   "guess": 1,
-   "sport": "F",
-   "league": "Concacaf Central American Cup Soccer",
-   "home": "Cartaginés",
-   "away": "Olimpia",
-   "start_kyiv": "2026-10-23T07:30",
-   "start_utc": "2026-10-23T04:30",
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Cayirova",
+   "away": "Bursa",
+   "start_kyiv": "2026-10-23T19:00",
+   "start_utc": "2026-10-23T16:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-22",
-     "raw_title": "Concacaf Central American Cup Soccer: Cartaginés vs. Olimpia"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Cayirova - Bursa"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Saudi League Soccer",
-   "home": "Al Ittihad",
-   "away": "Diriyah Club",
-   "start_kyiv": "2026-10-23T18:15",
-   "start_utc": "2026-10-23T15:15",
+   "league": "2. Bundesliga",
+   "home": "Bochum",
+   "away": "Wolfsburg",
+   "start_kyiv": "2026-10-23T19:30",
+   "start_utc": "2026-10-23T16:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-23",
-     "raw_title": "Saudi League Soccer: Al Ittihad vs. Diriyah Club"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Bochum - Wolfsburg"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Saudi League Soccer",
-   "home": "Al Qadsiah",
-   "away": "Al Hilal",
-   "start_kyiv": "2026-10-23T20:45",
-   "start_utc": "2026-10-23T17:45",
+   "league": "2. Bundesliga",
+   "home": "Darmstadt",
+   "away": "St. Pauli",
+   "start_kyiv": "2026-10-23T19:30",
+   "start_utc": "2026-10-23T16:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-23",
-     "raw_title": "Saudi League Soccer: Al Qadsiah vs. Al Hilal"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Darmstadt - St. Pauli"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Zalgiris",
+   "away": "Asvel",
+   "start_kyiv": "2026-10-23T20:00",
+   "start_utc": "2026-10-23T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Zalgiris - Asvel"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Bundesliga Soccer",
-   "home": "VfB Stuttgart",
-   "away": "Borussia Mönchengladbach",
+   "league": "3. Bundesliga",
+   "home": "Rot-Weiss",
+   "away": "Regensburg",
+   "start_kyiv": "2026-10-23T20:00",
+   "start_utc": "2026-10-23T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Rot-Weiss - Regensburg"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Saudijska liga",
+   "home": "Qadsiah",
+   "away": "Hilal",
+   "start_kyiv": "2026-10-23T21:00",
+   "start_utc": "2026-10-23T18:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Saudijska liga: Qadsiah - Hilal"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Olympiacos",
+   "away": "Fenerbahce",
+   "start_kyiv": "2026-10-23T21:15",
+   "start_utc": "2026-10-23T18:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Olympiacos - Fenerbahce"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bundesliga",
+   "home": "Stuttgart",
+   "away": "Monchengladbach",
    "start_kyiv": "2026-10-23T21:30",
    "start_utc": "2026-10-23T18:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-23",
-     "raw_title": "Bundesliga Soccer: VfB Stuttgart vs. Borussia Mönchengladbach"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Stuttgart - Monchengladbach"
     }
    ]
   },
   {
-   "guess": 1,
-   "sport": "F",
-   "league": "Concacaf Central American Cup Soccer",
-   "home": "Marathón",
-   "away": "Alianza FC",
-   "start_kyiv": "2026-10-24T07:00",
-   "start_utc": "2026-10-24T04:00",
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Paris",
+   "away": "Valencia",
+   "start_kyiv": "2026-10-23T21:45",
+   "start_utc": "2026-10-23T18:45",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-23",
-     "raw_title": "Concacaf Central American Cup Soccer: Marathón vs. Alianza FC"
-    }
-   ]
-  },
-  {
-   "guess": 1,
-   "sport": "F",
-   "league": "Italian Serie B Soccer",
-   "home": "Empoli",
-   "away": "LR Vicenza",
-   "start_kyiv": "2026-10-24T09:00",
-   "start_utc": "2026-10-24T06:00",
-   "entries": [
-    {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-23",
-     "raw_title": "Italian Serie B Soccer: Empoli vs. LR Vicenza"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Paris - Valencia"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Women's Italian Serie A Soccer",
-   "home": "AC Milan W",
-   "away": "Ternana Women W",
-   "start_kyiv": "2026-10-24T13:25",
-   "start_utc": "2026-10-24T10:25",
+   "league": "Španjolska liga",
+   "home": "Alaves",
+   "away": "Malaga",
+   "start_kyiv": "2026-10-23T22:00",
+   "start_utc": "2026-10-23T19:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-24",
-     "raw_title": "Women's Italian Serie A Soccer: AC Milan vs. Ternana Women"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Alaves - Malaga"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Australska liga",
+   "home": "South East Melbourne",
+   "away": "Adelaide",
+   "start_kyiv": "2026-10-24T11:30",
+   "start_utc": "2026-10-24T08:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Australska liga: South East Melbourne - Adelaide"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Trabzon",
+   "away": "Erok",
+   "start_kyiv": "2026-10-24T13:00",
+   "start_utc": "2026-10-24T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Trabzon - Erok"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Bundesliga Soccer",
-   "home": "RB Leipzig",
-   "away": "SV 07 Elversberg",
+   "league": "2. Bundesliga",
+   "home": "Hertha",
+   "away": "Arminia",
+   "start_kyiv": "2026-10-24T14:00",
+   "start_utc": "2026-10-24T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Hertha - Arminia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Magdeburg",
+   "away": "Karlsruher",
+   "start_kyiv": "2026-10-24T14:00",
+   "start_utc": "2026-10-24T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Magdeburg - Karlsruher"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Heidenheim",
+   "away": "Cottbus",
+   "start_kyiv": "2026-10-24T14:00",
+   "start_utc": "2026-10-24T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Heidenheim - Cottbus"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bugarska liga",
+   "home": "Dunav",
+   "away": "Spartak Varna",
+   "start_kyiv": "2026-10-24T14:00",
+   "start_utc": "2026-10-24T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarska liga: Dunav - Spartak Varna"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Wehen",
+   "away": "Sonnenhof",
+   "start_kyiv": "2026-10-24T15:00",
+   "start_utc": "2026-10-24T12:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Wehen - Sonnenhof"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Rayo Vallecano",
+   "away": "Elche",
+   "start_kyiv": "2026-10-24T15:00",
+   "start_utc": "2026-10-24T12:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Rayo Vallecano - Elche"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Hansa",
+   "away": "Fortuna Dusseldorf",
+   "start_kyiv": "2026-10-24T15:00",
+   "start_utc": "2026-10-24T12:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Hansa - Fortuna Dusseldorf"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Turk Telekom",
+   "away": "Denizli",
+   "start_kyiv": "2026-10-24T15:30",
+   "start_utc": "2026-10-24T12:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Turk Telekom - Denizli"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bundesliga",
+   "home": "Koln",
+   "away": "Schalke",
    "start_kyiv": "2026-10-24T16:30",
    "start_utc": "2026-10-24T13:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-24",
-     "raw_title": "Bundesliga Soccer: RB Leipzig vs. SV 07 Elversberg"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Koln - Schalke"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "2026 FIFA U-17 Women's World Cup",
-   "home": "Ghana U17 W",
-   "away": "Canada U17 W",
-   "start_kyiv": "2026-10-24T17:48",
-   "start_utc": "2026-10-24T14:48",
+   "league": "Bundesliga",
+   "home": "Paderborn",
+   "away": "Hamburg",
+   "start_kyiv": "2026-10-24T16:30",
+   "start_utc": "2026-10-24T13:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-24",
-     "raw_title": "2026 FIFA U-17 Women's World Cup: Ghana U17 vs. Canada U17"
-    },
-    {
-     "source": "tvpassport.com",
-     "channel": "TSN5",
-     "url": "https://www.tvpassport.com/tv-listings/stations/tsn5-hd/13770/2026-10-24",
-     "raw_title": "2026 FIFA U-17 Women's World Cup: Ghana U17 vs. Canada U17"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Paderborn - Hamburg"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Bundesliga Soccer",
-   "home": "Borussia Dortmund",
-   "away": "Eintracht Frankfurt",
+   "league": "Bundesliga",
+   "home": "Leipzig",
+   "away": "Elversberg",
+   "start_kyiv": "2026-10-24T16:30",
+   "start_utc": "2026-10-24T13:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Leipzig - Elversberg"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Racing",
+   "away": "Espanyol",
+   "start_kyiv": "2026-10-24T17:15",
+   "start_utc": "2026-10-24T14:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Racing - Espanyol"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Stuttgart II",
+   "away": "Alemannia",
+   "start_kyiv": "2026-10-24T17:30",
+   "start_utc": "2026-10-24T14:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Stuttgart II - Alemannia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Austrijska liga",
+   "home": "Tirol",
+   "away": "Grazer",
+   "start_kyiv": "2026-10-24T18:00",
+   "start_utc": "2026-10-24T15:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Austrijska liga: Tirol - Grazer"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Grčka liga",
+   "home": "Panathinaikos",
+   "away": "Karditsa",
+   "start_kyiv": "2026-10-24T19:00",
+   "start_utc": "2026-10-24T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Grčka liga: Panathinaikos - Karditsa"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bundesliga",
+   "home": "Dortmund",
+   "away": "Eintracht",
    "start_kyiv": "2026-10-24T19:30",
    "start_utc": "2026-10-24T16:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-24",
-     "raw_title": "Bundesliga Soccer: Borussia Dortmund vs. Eintracht Frankfurt"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Dortmund - Eintracht"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "2026 FIFA U-17 Women's World Cup",
-   "home": "Zambia U17 W",
-   "away": "France U17 W",
-   "start_kyiv": "2026-10-24T20:48",
-   "start_utc": "2026-10-24T17:48",
+   "league": "Španjolska liga",
+   "home": "Valencia",
+   "away": "Villarreal",
+   "start_kyiv": "2026-10-24T19:30",
+   "start_utc": "2026-10-24T16:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-24",
-     "raw_title": "2026 FIFA U-17 Women's World Cup: Zambia U17 vs. France U17"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Valencia - Villarreal"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Football universitaire",
-   "home": "Montréal",
-   "away": "McGill",
-   "start_kyiv": "2026-10-24T21:00",
-   "start_utc": "2026-10-24T18:00",
+   "league": "Grčka liga",
+   "home": "AEK",
+   "away": "Panetolikos",
+   "start_kyiv": "2026-10-24T20:00",
+   "start_utc": "2026-10-24T17:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "TVA Sports",
-     "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-hd/9824/2026-10-24",
-     "raw_title": "Football universitaire: Montréal c. McGill"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Grčka liga: AEK - Panetolikos"
     }
    ]
   },
   {
-   "guess": 1,
-   "sport": "F",
-   "league": "Italian Serie B Soccer",
-   "home": "Arezzo",
-   "away": "Benevento",
-   "start_kyiv": "2026-10-25T06:00",
-   "start_utc": "2026-10-25T04:00",
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Murcia",
+   "away": "Coruna",
+   "start_kyiv": "2026-10-24T20:30",
+   "start_utc": "2026-10-24T17:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-24",
-     "raw_title": "Italian Serie B Soccer: Arezzo vs. Benevento"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Murcia - Coruna"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Bahcesehir",
+   "away": "Besiktas",
+   "start_kyiv": "2026-10-24T20:30",
+   "start_utc": "2026-10-24T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Bahcesehir - Besiktas"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Women's Italian Serie A Soccer",
-   "home": "SS Lazio W",
-   "away": "Como Women W",
-   "start_kyiv": "2026-10-25T13:25",
-   "start_utc": "2026-10-25T11:25",
+   "league": "Švicarska liga",
+   "home": "Young Boys",
+   "away": "St. Gallen",
+   "start_kyiv": "2026-10-24T21:30",
+   "start_utc": "2026-10-24T18:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-25",
-     "raw_title": "Women's Italian Serie A Soccer: SS Lazio vs. Como Women"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Švicarska liga: Young Boys - St. Gallen"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Bundesliga Soccer",
-   "home": "TSG 1899 Hoffenheim",
-   "away": "Bayer 04 Leverkusen",
+   "league": "2. Bundesliga",
+   "home": "Nurnberg",
+   "away": "Kaiserslautern",
+   "start_kyiv": "2026-10-24T21:30",
+   "start_utc": "2026-10-24T18:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Nurnberg - Kaiserslautern"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Atletico Madrid",
+   "away": "La Coruna",
+   "start_kyiv": "2026-10-24T22:00",
+   "start_utc": "2026-10-24T19:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Atletico Madrid - La Coruna"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Barcelona",
+   "away": "Zaragoza",
+   "start_kyiv": "2026-10-24T22:00",
+   "start_utc": "2026-10-24T19:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Barcelona - Zaragoza"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "NBA liga",
+   "home": "Charlotte",
+   "away": "Miami",
+   "start_kyiv": "2026-10-25T01:00",
+   "start_utc": "2026-10-24T22:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - NBA liga: Charlotte - Miami"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Efes",
+   "away": "Korfez",
+   "start_kyiv": "2026-10-25T12:00",
+   "start_utc": "2026-10-25T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Efes - Korfez"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Grčka liga",
+   "home": "Promitheas",
+   "away": "Olympiacos",
+   "start_kyiv": "2026-10-25T13:00",
+   "start_utc": "2026-10-25T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Grčka liga: Promitheas - Olympiacos"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Girona",
+   "away": "Joventut",
+   "start_kyiv": "2026-10-25T13:00",
+   "start_utc": "2026-10-25T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Girona - Joventut"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Bilbao",
+   "away": "Andorra",
+   "start_kyiv": "2026-10-25T13:00",
+   "start_utc": "2026-10-25T11:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Bilbao - Andorra"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Škotski Premiership",
+   "home": "Hibernian",
+   "away": "Celtic",
+   "start_kyiv": "2026-10-25T14:00",
+   "start_utc": "2026-10-25T12:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Škotski Premiership: Hibernian - Celtic"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Karsiyaka",
+   "away": "Fenerbahce",
+   "start_kyiv": "2026-10-25T14:30",
+   "start_utc": "2026-10-25T12:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Karsiyaka - Fenerbahce"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Kiel",
+   "away": "Dynamo Dresden",
+   "start_kyiv": "2026-10-25T14:30",
+   "start_utc": "2026-10-25T12:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Kiel - Dynamo Dresden"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Braunschweig",
+   "away": "Hannover",
+   "start_kyiv": "2026-10-25T14:30",
+   "start_utc": "2026-10-25T12:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Braunschweig - Hannover"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Osnabruck",
+   "away": "Greuther Furth",
+   "start_kyiv": "2026-10-25T14:30",
+   "start_utc": "2026-10-25T12:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Osnabruck - Greuther Furth"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Bilbao",
+   "away": "Getafe",
+   "start_kyiv": "2026-10-25T15:00",
+   "start_utc": "2026-10-25T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Bilbao - Getafe"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Nizozemska liga",
+   "home": "PSV",
+   "away": "Feyenoord",
    "start_kyiv": "2026-10-25T15:30",
    "start_utc": "2026-10-25T13:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-25",
-     "raw_title": "Bundesliga Soccer: TSG 1899 Hoffenheim vs. Bayer 04 Leverkusen"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Nizozemska liga: PSV - Feyenoord"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "2026 FIFA U-17 Women's World Cup",
-   "home": "Chile U17 W",
-   "away": "Spain U17 W",
-   "start_kyiv": "2026-10-25T16:48",
-   "start_utc": "2026-10-25T14:48",
+   "league": "Slovenski kup",
+   "home": "Korotan",
+   "away": "Celje",
+   "start_kyiv": "2026-10-25T16:00",
+   "start_utc": "2026-10-25T14:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-25",
-     "raw_title": "2026 FIFA U-17 Women's World Cup: Chile U17 vs. Spain U17"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Slovenski kup: Korotan - Celje"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Bundesliga Soccer",
-   "home": "SC Freiburg",
-   "away": "FC Bayern München",
+   "league": "Bundesliga",
+   "home": "Hoffenheim",
+   "away": "Leverkusen",
+   "start_kyiv": "2026-10-25T16:30",
+   "start_utc": "2026-10-25T14:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Hoffenheim - Leverkusen"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Tofas",
+   "away": "Petkim",
+   "start_kyiv": "2026-10-25T17:00",
+   "start_utc": "2026-10-25T15:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Tofas - Petkim"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Celta",
+   "away": "Betis",
+   "start_kyiv": "2026-10-25T17:15",
+   "start_utc": "2026-10-25T15:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Celta - Betis"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Munster",
+   "away": "Fortuna Koln",
+   "start_kyiv": "2026-10-25T17:30",
+   "start_utc": "2026-10-25T15:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Munster - Fortuna Koln"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Nizozemska liga",
+   "home": "Sparta",
+   "away": "Ajax",
+   "start_kyiv": "2026-10-25T17:45",
+   "start_utc": "2026-10-25T15:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Nizozemska liga: Sparta - Ajax"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Austrijska liga",
+   "home": "LASK",
+   "away": "Salzburg",
+   "start_kyiv": "2026-10-25T18:00",
+   "start_utc": "2026-10-25T16:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Austrijska liga: LASK - Salzburg"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bundesliga",
+   "home": "Freiburg",
+   "away": "Bayern",
    "start_kyiv": "2026-10-25T18:30",
    "start_utc": "2026-10-25T16:30",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "OneSoccer",
-     "url": "https://www.tvpassport.com/tv-listings/stations/one-soccer/37452/2026-10-25",
-     "raw_title": "Bundesliga Soccer: SC Freiburg vs. FC Bayern München"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Freiburg - Bayern"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "F",
-   "league": "2026 FIFA U-17 Women's World Cup",
-   "home": "Samoa U17 W",
-   "away": "Kenya U17 W",
-   "start_kyiv": "2026-10-25T19:48",
-   "start_utc": "2026-10-25T17:48",
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Breogan",
+   "away": "Unicaja",
+   "start_kyiv": "2026-10-25T19:00",
+   "start_utc": "2026-10-25T17:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-25",
-     "raw_title": "2026 FIFA U-17 Women's World Cup: Samoa U17 vs. Kenya U17"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Breogan - Unicaja"
     }
    ]
   },
   {
    "guess": 0,
    "sport": "F",
-   "league": "Soccer de la Première Ligue Canadienne",
-   "home": "HFX Wanderers FC",
-   "away": "Supra du Québec",
+   "league": "Danska liga",
+   "home": "Aarhus",
+   "away": "Viborg",
+   "start_kyiv": "2026-10-25T19:00",
+   "start_utc": "2026-10-25T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Danska liga: Aarhus - Viborg"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Sociedad",
+   "away": "Levante",
+   "start_kyiv": "2026-10-25T19:30",
+   "start_utc": "2026-10-25T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Sociedad - Levante"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Grčka liga",
+   "home": "Aris",
+   "away": "Atromitos",
+   "start_kyiv": "2026-10-25T19:30",
+   "start_utc": "2026-10-25T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Grčka liga: Aris - Atromitos"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Galatasaray",
+   "away": "Bandirma",
+   "start_kyiv": "2026-10-25T19:30",
+   "start_utc": "2026-10-25T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Galatasaray - Bandirma"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Španjolska liga",
+   "home": "Lleida",
+   "away": "Real Madrid",
+   "start_kyiv": "2026-10-25T20:00",
+   "start_utc": "2026-10-25T18:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Španjolska liga: Lleida - Real Madrid"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Mannheim",
+   "away": "Hoffenheim II",
+   "start_kyiv": "2026-10-25T20:30",
+   "start_utc": "2026-10-25T18:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Mannheim - Hoffenheim II"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Nizozemska liga",
+   "home": "AZ Alkmaar",
+   "away": "Twente",
+   "start_kyiv": "2026-10-25T21:00",
+   "start_utc": "2026-10-25T19:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Nizozemska liga: AZ Alkmaar - Twente"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Barcelona",
+   "away": "Real Madrid",
    "start_kyiv": "2026-10-25T22:00",
    "start_utc": "2026-10-25T20:00",
    "entries": [
     {
-     "source": "tvpassport.com",
-     "channel": "TVA Sports 2",
-     "url": "https://www.tvpassport.com/tv-listings/stations/tva-sports-2-hd/13778/2026-10-25",
-     "raw_title": "Soccer de la Première Ligue Canadienne: HFX Wanderers FC contre Supra du Québec"
-    },
-    {
-     "source": "canpl.ca",
-     "channel": "TVA Sports 2",
-     "url": "https://canpl.ca/schedule/",
-     "raw_title": "Canadian Premier League: HFX Wanderers - Supra du Québec"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Barcelona - Real Madrid"
     }
    ]
   },
   {
    "guess": 0,
-   "sport": "F",
-   "league": "Canadian Premier League",
-   "home": "Cavalry",
-   "away": "Vancouver FC",
-   "start_kyiv": "2026-10-25T22:00",
-   "start_utc": "2026-10-25T20:00",
+   "sport": "B",
+   "league": "NBA liga",
+   "home": "Utah",
+   "away": "LA Lakers",
+   "start_kyiv": "2026-10-25T23:00",
+   "start_utc": "2026-10-25T21:00",
    "entries": [
     {
-     "source": "canpl.ca",
-     "channel": "CBC",
-     "url": "https://canpl.ca/schedule/",
-     "raw_title": "Canadian Premier League: Cavalry - Vancouver FC"
-    },
-    {
-     "source": "canpl.ca",
-     "channel": "TSN",
-     "url": "https://canpl.ca/schedule/",
-     "raw_title": "Canadian Premier League: Cavalry - Vancouver FC"
-    }
-   ]
-  },
-  {
-   "guess": 1,
-   "sport": "F",
-   "league": "Italian Serie B Soccer",
-   "home": "Palermo",
-   "away": "Carrarese",
-   "start_kyiv": "2026-10-26T00:00",
-   "start_utc": "2026-10-25T22:00",
-   "entries": [
-    {
-     "source": "tvpassport.com",
-     "channel": "Fox Soccer Plus",
-     "url": "https://www.tvpassport.com/tv-listings/stations/fox-soccer-plus/7538/2026-10-25",
-     "raw_title": "Italian Serie B Soccer: Palermo vs. Carrarese"
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792713600000&toTime=1793318399999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - NBA liga: Utah - LA Lakers"
     }
    ]
   }
