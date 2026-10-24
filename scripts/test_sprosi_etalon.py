@@ -33,7 +33,7 @@ os.environ.setdefault("STREAMS_DB", str(Path(tempfile.gettempdir()) / "sprosi-et
 
 from app import live, names, pipeline, sport  # noqa: E402
 from app.parsers import Program  # noqa: E402
-from app.reference import Reference  # noqa: E402
+from app.reference import MARKS_HOW, Reference  # noqa: E402
 
 KYIV = ZoneInfo("Europe/Kyiv")
 MARKERS = live.load()
@@ -243,9 +243,20 @@ print("(в) Reference.confirm — правило 4: одна сторона")
 print("(в) Reference.confirm — стена по полу и возрасту")
 проверка("женская пара с мужским матчем → None",
          ответ("Poland W", "Belgium W", "2026-10-24T19:00"), None)
-проверка("мужская пара с женским матчем → None",
+# До 24.10 здесь ждали None («мужская пара с женским матчем → None»).
+# Слово владельца 24.10 (книга 003, 079): у строки меток нет вовсе, а эталон
+# в эту минуту знает пару только с меткой — метка дописывается из эталона
+# (правило 5 `confirm`, подробно — scripts/test_metki_etalona.py)
+проверка("пара без меток с женским матчем → «метки из эталона» (владелец 24.10; "
+         "до того — None)",
          ответ("Poland", "Belgium", "2026-10-24T19:00",
-               эталон=Reference([матч("F", "Poland W", "Belgium W", "2026-10-24T19:00")])), None)
+               эталон=Reference([матч("F", "Poland W", "Belgium W", "2026-10-24T19:00")])),
+         ("Poland W", "Belgium W", MARKS_HOW, False, "24.10 19:00"))
+проверка("…а при мужском матче той же пары в ту же минуту — он главнее: «пара»",
+         ответ("Poland", "Belgium", "2026-10-24T19:00",
+               эталон=Reference([матч("F", "Poland W", "Belgium W", "2026-10-24T19:00"),
+                                 матч("F", "Poland", "Belgium", "2026-10-24T19:00")]))[2:4],
+         ("пара", False))
 проверка("мужская пара с мужским — «пара»",
          ответ("Poland", "Belgium", "2026-10-24T19:00")[2], "пара")
 проверка("одна сторона: женская пара не цепляет мужской матч и по слову",

@@ -33,7 +33,7 @@ from datetime import datetime, timedelta
 
 from . import daytime, leagues, live, names, sport
 from .parsers import Program
-from .reference import Confirmed, Reference
+from .reference import MARKS_HOW, Confirmed, Reference
 
 
 @dataclass
@@ -59,8 +59,11 @@ class Row:
     team_word: str = ""            # слово чужого вида, признанное именем
                                    # команды из пары («Le Mans», 06.10)
     by_reference: str = ""         # эталон подтвердил эфир/пару/вид спорта:
-                                   # «пара» или «одна сторона» (правило (в),
-                                   # `Reference.confirm`, 20.10)
+                                   # «пара», «одна сторона» (правило (в),
+                                   # `Reference.confirm`, 20.10) или «метки
+                                   # из эталона» (`reference.MARKS_HOW`:
+                                   # пара сошлась без пола и возраста
+                                   # эталона, метка дописана к именам, 24.10)
     start_utc: datetime | None = None
     start_kyiv: datetime | None = None
 
@@ -118,7 +121,8 @@ def ask_reference(program: Program, verdict: live.Verdict,
     эталона. Пару дают все читатели (`live.split_candidates`), и пара
     строки — догадка, которую эталон подтвердил как эфир
     (`Reference.confirm`), в порядке сторон эталона. Из нескольких
-    подтверждённых берётся сошедшаяся ЦЕЛИКОМ («пара»), а не первая по
+    подтверждённых берётся сошедшаяся ЦЕЛИКОМ («пара», затем «метки из
+    эталона» — тоже целиком, лишь без пола и возраста), а не первая по
     порядку: у rtl «2. Bundesliga Live - Topspiel: 1. FC Nürnberg - 1. FC
     Kaiserslautern» первая догадка («2. Bundesliga Live» — «Topspiel: …»)
     сходилась «одной стороной», и игра уезжала на витрину с мусорным именем
@@ -151,7 +155,9 @@ def ask_reference(program: Program, verdict: live.Verdict,
                 break                      # лучше не бывает
     if not confirmed:
         return None
-    home, away, got = next((x for x in confirmed if x[2].how == "пара"), confirmed[0])
+    # целая пара главнее половины; среди равных — первая догадка (сорт устойчив)
+    ЦЕЛИКОМ = {"пара": 0, MARKS_HOW: 1}
+    home, away, got = min(confirmed, key=lambda x: ЦЕЛИКОМ.get(x[2].how, 2))
     if got.swapped:
         home, away = away, home
     # эфир угадан (эталоном, не словом сайта): дальше его проверяют те же
@@ -236,9 +242,21 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     if not by_ref and reference is not None:
         if confirmed is None:
             confirmed = reference.confirm(row.home, row.away, row.start_kyiv)
-        if confirmed is not None and (rescued or confirmed.how == "пара"):
+        if confirmed is not None and (rescued or confirmed.how in ("пара", MARKS_HOW)):
             by_ref = confirmed.entry.get("sport") or "F"
             row.by_reference = row.by_reference or confirmed.how
+    # Метки из эталона (слово владельца 24.10, книга 003): сайт написал пару
+    # без пола и возраста, а эталон в эту минуту знает её только с меткой
+    # («Man City – Psg» ↔ «Manchester City U19 – PSG U19», правило 5
+    # `Reference.confirm`). Метку дописываем к именам сразу, как метку
+    # турнира выше: дальше её увидят сверка с эталоном и фильтры повторов
+    # обхода (`parse_live._in_reference`, `nearest_shows`) и склейка — иначе
+    # эфир снимался как «пары нет в эталоне», а дошедший до витрины шёл бы
+    # взрослой игрой рядом со своей же юношеской
+    метки_эталона = confirmed.marks if confirmed is not None else ""
+    if метки_эталона:
+        row.home = leagues.with_category(row.home, метки_эталона)
+        row.away = leagues.with_category(row.away, метки_эталона)
     # эталон знает хоть одну сторону как команду (правило 3: «пара похожа
     # на матч»)
     ref_team = reference is not None and any(
@@ -283,8 +301,10 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         # ни эталон flashscore, ни другие сайты. sportklub.hr кладёт в описание
         # «teniski turnir za žene» — и «Kraus W — Yastremska W» не сходилась с
         # эталонной «Kraus S. — Yastremska D.», все женские матчи сайта жили
-        # без канона (#4597, владелец 04.10). Возраст оставляем как был.
-        без_пола = " ".join(p for p in row.league_category.split() if p != "W")
+        # без канона (#4597, владелец 04.10). Возраст оставляем как был —
+        # и турнира, и дописанный из эталона.
+        без_пола = " ".join(p for p in f"{row.league_category} {метки_эталона}".split()
+                            if p != "W")
         row.home = leagues.with_category(verdict.home, без_пола)
         row.away = leagues.with_category(verdict.away, без_пола)
 

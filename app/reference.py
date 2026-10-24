@@ -11,7 +11,10 @@
 «наш вид или чужой» — в одном месте, `app/sport.py` → `Sports.decide`
 (правило 2). Пару с записью эталона сравнивает `canon._pair_score` — та же
 функция, которой проект закрепляет имена команд, с местными написаниями и
-стеной по полу и возрасту.
+стеной по полу и возрасту. Одна щель в стене — правило 5 `confirm`: у
+строки меток нет вовсе, а эталон в эту минуту знает пару только с меткой
+(«Man City – Psg» ↔ «Manchester City U19 – PSG U19») — метка дописывается
+из эталона (`MARKS_HOW`, слово владельца 24.10).
 """
 
 from __future__ import annotations
@@ -81,14 +84,64 @@ SIDE_SURE = 95
 #: слово (`_shares_word`)
 SIDE_FLOOR = 60
 
+# ── «метки из эталона» (правило 5 `confirm`, слово владельца 24.10) ─────────
+#: как `confirm` называет ответ «пара сошлась, если не смотреть на пол и
+#: возраст эталона»: сайт пишет «Man City – Psg» без возраста, а эталон в
+#: эту минуту знает только «Manchester City U19 – PSG U19». Раньше такая
+#: строка упиралась в стену по полу и возрасту (`canon._pair_score` → 0),
+#: эталон молчал, и фильтр обхода снимал эфир как запись (книга 003).
+#: Владелец 24.10: «дописывать возраст из эталона» — потерянная метка хуже
+#: лишней (правило проекта, как с W). Метка идёт в `Confirmed.marks`, и
+#: `pipeline.classify` дописывает её к именам пары
+MARKS_HOW = "метки из эталона"
+
 
 @dataclass
 class Confirmed:
     """Ответ эталона на «это эфир какого матча?» (`Reference.confirm`)."""
     entry: dict            # запись эталона
     start: datetime        # её начало (наивное киевское)
-    how: str               # «пара» — сошлась целиком; «одна сторона» — мост
+    how: str               # «пара» — сошлась целиком; «одна сторона» — мост;
+                           # `MARKS_HOW` — сошлась без пола и возраста эталона
     swapped: bool = False  # пара сошлась в обратном порядке («гости at хозяева»)
+    marks: str = ""        # пометки записи, которых нет у строки («U19», «W»,
+                           # «U17 W») — только при `how == MARKS_HOW`
+
+
+def _strip_marks(name: str) -> str:
+    """Имя без пометок пола и возраста: «Manchester City U19» → «Manchester
+    City», «Poland W» → «Poland». Те же регулярки, что у `names.category`."""
+    bare = names._WOMEN_RE.sub(" ", names._AGE_RE.sub(" ", name or ""))
+    return " ".join(bare.split())
+
+
+def _marks_of(name: str) -> list[str]:
+    """Пометки пола и возраста имени («U19 W» → [«U19», «W»]). Второй состав
+    («B») — не пол и не возраст: его правило 5 не трогает."""
+    return names.category(name or "").split()
+
+
+def _entry_marks(entry: dict) -> str:
+    """Метка записи эталона, если она ОДНА И ТА ЖЕ у обеих команд («U19»,
+    «W», «U17 W») и это не второй состав. Пусто — у записи меток нет, они
+    разные («Chelsea U21 — Wycombe» в EFL Trophy) или среди них «B»."""
+    дома = _marks_of(entry.get("home"))
+    в_гостях = _marks_of(entry.get("away"))
+    if not дома or дома != в_гостях or "B" in дома:
+        return ""
+    return " ".join(дома)
+
+
+def _bare_entry(entry: dict) -> dict:
+    """Запись эталона без пометок пола и возраста — и в английском, и в
+    местных написаниях (те уже с нашими пометками, `canon.local_pairs`):
+    «Italia W — Bielorussia W» (из «Italia D — Bielorussia D») → «Italia —
+    Bielorussia». С ней `canon._pair_score` сравнивает строку без меток."""
+    return dict(entry,
+                home=_strip_marks(entry.get("home") or ""),
+                away=_strip_marks(entry.get("away") or ""),
+                names={lang: [_strip_marks(h), _strip_marks(a)]
+                       for lang, h, a in canon.local_pairs(entry)})
 
 
 def _words(name: str, cache: dict) -> frozenset:
@@ -210,7 +263,18 @@ class Reference:
              «Lyon-Villeurbanne» дают буквами 26, но слово общее), стена по
              полу и возрасту та же, не теннис (там игрок в один день стоит и
              в одиночке, и в паре) — и такой матч в окне ОДИН: клуб не играет
-             два матча в один час → «одна сторона».
+             два матча в один час → «одна сторона»;
+          5. «метки из эталона» (слово владельца 24.10, книга 003): у ОБЕИХ
+             команд строки нет пометок пола и возраста, а правило 3 не
+             сошлось только из-за стены по ним — сравниваем с записью БЕЗ
+             её меток (`_bare_entry`, как `canon.align` HOW_AGED, плюс W):
+             имена сходятся на `canon.SURE`, вид спорта тот же, окно эфира
+             то же, метка у записи одна и та же у обеих команд (U19/U21/W…,
+             `_entry_marks`), и такой кандидат в окне ОДИН → `MARKS_HOW`,
+             метка в `Confirmed.marks`. Кандидат по правилу 3 главнее (есть
+             взрослый матч той же пары — метку не гадаем); два кандидата с
+             метками в одно время (U19 и U21) — None, не гадаем; правило 4
+             после пятого: половина пары слабее целой.
 
         Ничего не сошлось — None: эталон пару не знает, строка решается как
         раньше."""
@@ -226,8 +290,12 @@ class Reference:
                 pool |= self._away.get(word, set())
         straight = {"home": home, "away": away, "sport": sport}
         swapped = {"home": away, "away": home, "sport": sport}
+        # правило 5 только для строки без пометок пола и возраста у ОБЕИХ
+        # команд: «Man City – Psg» — да, «Chelsea U21 – Wycombe» — нет
+        plain = not _marks_of(home) and not _marks_of(away)
         whole: list[tuple[timedelta, bool, int, bool]] = []   # правило 3
         sided: list[tuple[bool, int]] = []                    # правило 4
+        marked: list[tuple[bool, int, str]] = []              # правило 5
         for number in pool:
             entry, kickoff = self._entries[number]
             gap = kickoff - when
@@ -245,7 +313,19 @@ class Reference:
             if best >= canon.SURE:
                 whole.append((abs(gap), turned, number, inside))
                 continue
-            if not inside or letter == "T":
+            if not inside:
+                continue
+            # правило 5: у записи метка одна на обе команды, у строки меток
+            # нет — сравниваем без меток, в обоих порядках сторон
+            marks = _entry_marks(entry) if plain else ""
+            if marks:
+                bare = _bare_entry(entry)
+                без_меток = (canon._pair_score(straight, bare),
+                             canon._pair_score(swapped, bare))
+                if max(без_меток) >= canon.SURE:
+                    marked.append((без_меток[1] > без_меток[0], number, marks))
+                    continue
+            if letter == "T":
                 continue
             # порядок сторон для моста — по ТВЁРДОЙ стороне, а не по счёту
             # пары целиком: у «Sevilla — Real Clube» против «Sevilla — Real
@@ -269,6 +349,12 @@ class Reference:
             _gap, turned, number, _i = min(inside_whole, key=lambda x: x[0])
             entry, kickoff = self._entries[number]
             return Confirmed(entry, kickoff, "пара", turned)
+        if marked:
+            if len(marked) > 1:
+                return None               # U19 и U21 в одно время — не гадаем
+            turned, number, marks = marked[0]
+            entry, kickoff = self._entries[number]
+            return Confirmed(entry, kickoff, MARKS_HOW, turned, marks)
         if len(sided) == 1:
             turned, number = sided[0]
             entry, kickoff = self._entries[number]
