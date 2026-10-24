@@ -157,8 +157,27 @@ def explained(game: dict, site: str) -> str:
 
 
 def _same_pair(one: dict, two: dict) -> bool:
-    from app import canon
-    return canon._pair_score(one, {"home": two["home"], "away": two["away"]}) >= kniga.ПОРОГ_ПАРЫ
+    from app import canon, reference
+    pair = {"home": two["home"], "away": two["away"]}
+    if canon._pair_score(one, pair) >= kniga.ПОРОГ_ПАРЫ:
+        return True
+    # метки из эталона (правило 5 `Reference.confirm`, 24.10): новый код
+    # дописывает «W»/«U19» командам, у которых их не было, — старая «Golden
+    # State Valkyries — Atlanta Dream» и новая «… W — … W» одна игра. Стена
+    # `_pair_score` (моя метка ≠ его → 0) тут не судья: сравниваем без
+    # меток, когда у одной игры их нет вовсе, а у другой одна и та же у
+    # обеих команд. Мужская при женской с метками у обеих — по-прежнему
+    # разные игры, если метки есть у обеих сторон
+    mine = {"home": one["home"], "away": one["away"]}
+    if not reference._entry_marks(mine) and reference._entry_marks(pair) \
+            and not any(reference._marks_of(mine[k]) for k in ("home", "away")):
+        bare = {k: reference._strip_marks(pair[k]) for k in ("home", "away")}
+        return canon._pair_score(mine, bare) >= kniga.ПОРОГ_ПАРЫ
+    if not reference._entry_marks(pair) and reference._entry_marks(mine) \
+            and not any(reference._marks_of(pair[k]) for k in ("home", "away")):
+        bare = {k: reference._strip_marks(mine[k]) for k in ("home", "away")}
+        return canon._pair_score(bare, pair) >= kniga.ПОРОГ_ПАРЫ
+    return False
 
 
 def ref_time(game: dict, refs: list[dict]):
