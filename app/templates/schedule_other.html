@@ -64,7 +64,25 @@
                 background:#eaf6ec; color:#1e7c34; font-size:12px; font-weight:700;
                 text-decoration:none; white-space:nowrap; margin-right:8px; }
   [hidden] { display:none !important; }
-  @media (max-width:640px) { td.osport .sn { display:none; } }
+  /* телефон (владелец 24.10): таблица не шире экрана — как на вкладке
+     Matches: строка в два этажа (сверху №, время, значок и передача,
+     снизу каналы на всю ширину), текст переносится внутри плашки канала,
+     «live» под временем, заголовок «Channels» спрятан. Шире 640 px ничего
+     не меняется */
+  @media (max-width:640px) {
+    td.osport .sn { display:none; }
+    main { padding:10px 8px 32px; }
+    table, table > tbody { display:block; }
+    table tr { display:grid; grid-template-columns:24px 54px 32px minmax(0, 1fr); }
+    th, td { padding:6px 5px; }
+    th:last-child { display:none; }
+    tr.game > td:last-child { grid-column:1 / -1; border-top:0; padding:0 8px 8px 29px; }
+    td.osport { width:auto; }
+    td.time { width:auto; }
+    td.time .live { display:block; margin-left:0; }
+    td.match { overflow-wrap:anywhere; }
+    .chan { white-space:normal; overflow-wrap:anywhere; }
+  }
 </style>
 </head>
 <body>

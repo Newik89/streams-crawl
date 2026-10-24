@@ -54,6 +54,16 @@
      нечитаемым — строки-то остаются на белой таблице (поймано 12.09) */
   tr.game.fresh > td { background:#eaf6ec; }
   tr.game.fresh > td:first-child { box-shadow:inset 3px 0 0 #2e9e44; }
+  /* красная точка под значком спорта (владелец 24.10): вернуть прочитанную
+     игру в непрочитанные. Только в админке и только у прочитанных: у зелёной
+     строки прячется, после клика по строке появляется снова. Кнопка 20×20
+     вокруг точки 10×10 — чтобы попадать пальцем на телефоне */
+  .unread-dot { display:block; margin:6px 0 0 -2px; padding:5px; border:0;
+                background:transparent; cursor:pointer; line-height:0; }
+  .unread-dot::before { content:""; display:block; width:10px; height:10px;
+                        border-radius:50%; background:#e02424; }
+  .unread-dot:hover::before { background:#b91c1c; box-shadow:0 0 0 3px #fde2e2; }
+  tr.game.fresh .unread-dot { display:none; }
   /* канал, добавившийся к уже известной игре: плашка целиком зелёная */
   .chan.fresh { background:#eaf6ec; border-color:#2e9e44; }
   .newch { margin-left:4px; font-size:9px; font-weight:700;
@@ -145,7 +155,31 @@
   .tab.on { background:var(--accent); border-color:var(--accent); color:#fff; }
   .tab .n { font-weight:400; font-size:12px; opacity:.85; margin-left:2px; }
   [hidden] { display:none !important; }
-  @media (max-width:640px) { td.league { display:none; } th.league { display:none; } }
+  /* телефон (владелец 24.10: «почини ширину таблицы на телефоне»): таблица
+     не шире экрана. До 24.10 на 375 px она была 600 px — самая длинная
+     плашка канала (≈250 px, «NO| TV 2 Direkte Tekst hørselshem.») не
+     переносила текст и не давала столбцу каналов сжаться; а если сжать
+     столбцы, рвались посреди слова то имена команд, то каналы — пяти
+     столбцам на 375 px тесно. Поэтому строка игры — в два этажа: сверху
+     №, время, значок и матч, снизу каналы на всю ширину (их ячейка —
+     последняя в строке). Заголовок «Channels» спрятан — плашки говорят
+     сами за себя. Шире 640 px ничего не меняется */
+  @media (max-width:640px) {
+    td.league { display:none; } th.league { display:none; }
+    main { padding:10px 8px 32px; }
+    table, table > tbody { display:block; }
+    table tr { display:grid; grid-template-columns:24px 54px 32px minmax(0, 1fr); }
+    th, td { padding:6px 5px; }
+    th:last-child { display:none; }
+    tr.game > td:last-child { grid-column:1 / -1; border-top:0; padding:0 8px 8px 29px; }
+    tr.game.fresh > td:last-child { box-shadow:inset 3px 0 0 #2e9e44; }
+    tr.game.ask > td:last-child { box-shadow:inset 3px 0 0 #f59e0b; }
+    td.time { width:auto; }
+    td.time .live { display:block; margin-left:0; }
+    td.match { overflow-wrap:anywhere; }
+    td.match .gid { white-space:nowrap; }
+    .chan { white-space:normal; overflow-wrap:anywhere; }
+  }
 </style>
 </head>
 <body>
@@ -215,7 +249,7 @@
           data-text="{{ (g.home ~ ' ' ~ g.away ~ ' ' ~ g.league ~ ' ' ~ (g.channels | map(attribute='name') | join(' '))) | lower }}">
         <td class="idx"></td>
         <td class="time"><span class="gdate">{{ day.strftime("%d.%m") }}</span>{{ g.time }}{% if g.live %}<span class="live">live</span>{% endif %}</td>
-        <td class="sport">{{ {"F":"⚽","B":"🏀","T":"🎾"}.get(g.sport, g.sport) }}</td>
+        <td class="sport">{{ {"F":"⚽","B":"🏀","T":"🎾"}.get(g.sport, g.sport) }}{% if admin %}<button class="unread-dot" type="button" title="Вернуть в непрочитанные — игра снова подсветится как новая" aria-label="Вернуть в непрочитанные"></button>{% endif %}</td>
         <td class="league"><span class="copy">{{ g.league }}</span>{% if admin and g.league %}<button class="edit" type="button" data-kind="league" data-raw="{{ g.league_auto or g.league }}" title="Исправить название лиги">✎</button>{% endif %}</td>
         <td class="match">{% if g.title %}{# трансляция турнира без пары игроков (владелец 04.10): одной строкой, без «vs» и без правки имён — это не команды #}<b class="copy" title="Tournament broadcast: the players are not announced yet">{{ g.home }}{% if g.away %} — {{ g.away }}{% endif %}</b>{% else %}<b class="copy">{{ g.home }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.home_auto or g.home }}" title="Исправить название команды">✎</button>{% endif %} vs <b class="copy">{{ g.away }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.away_auto or g.away }}" title="Исправить название команды">✎</button>{% endif %}{% endif %}<span class="gid copy" title="Номер игры — клик копирует">#{{ g.id }}</span>{% if admin and g.pending %}<a class="ask-go" href="{{ url_for('moderation_list') }}?focus={{ g.pending }}&amp;back=g{{ g.id }}" title="Название для этой игры уже найдено — осталось подтвердить">ждёт подтверждения →</a>{% endif %}</td>
         <td>{% for c in g.channels %}{# админ гасит «new» кликом (22.09), гостю — прежняя новизна по часам #}{# владельцу бейдж живёт до его клика, гостю — по часам (08.10) #}{% set fresh_ch = (c.new_ever and not c.seen) if admin else c.new %}<span class="chan{% if fresh_ch %} fresh{% endif %}{% if c.time_off %} timeoff{% endif %}" data-cid="{{ c.id }}"{% if c.custom %} data-nocc="1"{% endif %}>{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span>{% if c.new_source %}<span class="newsrc" title="Канал нового источника — на обкатке">новый</span>{% endif %}{% if fresh_ch %}<span class="newch" title="Канал добавился к этой игре недавно">new</span>{% endif %}{% if c.time_off %}<span class="timeoffch" title="Сайт канала пишет другое время, чем flashscore — перепроверить. Не подтвердит обход ближе к дате — канал погаснет сам">время?</span>{% endif %}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}{% if admin %}<button class="chan-edit" type="button" data-cid="{{ c.id }}" data-note="{{ c.country or '' }}" title="Изменить название канала и пометку перед ним">✎</button>{% endif %}</span>{% endfor %}{% for c in g.gone_channels %}<span class="chan gone" data-cid="{{ c.id }}" title="Канал убрал эту игру из своего расписания — если вернёт, отметка оживёт сама{% if admin %}. Клик копирует имя и убирает отметку из этой игры{% endif %}">{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span><span class="gonech">снят</span>{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}</span>{% endfor %}</td>
@@ -434,6 +468,7 @@
   document.addEventListener("click", function (ev) {
     var row = ev.target.closest("tr.game");
     if (!row || row.dataset.unread !== "1") return;
+    if (ev.target.closest(".unread-dot")) return;   // точка — обратное действие
     var meta = document.querySelector('meta[name="csrf"]');
     if (!meta) return;
     row.dataset.unread = "0";
@@ -442,6 +477,30 @@
     body.set("csrf_token", meta.content);
     fetch("/games/" + row.id.slice(1) + "/seen",
           { method: "POST", body: body });
+  });
+
+  // ── красная точка под значком спорта возвращает игру в непрочитанные
+  // (владелец 24.10): строка снова зелёная, пока её не кликнут. Сервер не
+  // принял — подсветка снимается обратно, чтобы витрина не врала
+  document.addEventListener("click", function (ev) {
+    var dot = ev.target.closest(".unread-dot");
+    if (!dot) return;
+    ev.preventDefault();
+    var row = dot.closest("tr.game");
+    var meta = document.querySelector('meta[name="csrf"]');
+    if (!meta || !row) return;
+    row.dataset.unread = "1";
+    row.classList.add("fresh");
+    var body = new URLSearchParams();
+    body.set("csrf_token", meta.content);
+    fetch("/games/" + row.id.slice(1) + "/unseen", { method: "POST", body: body })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); })
+      .catch(function (e) {
+        row.dataset.unread = "0";
+        row.classList.remove("fresh");
+        alert("Не получилось вернуть игру в непрочитанные (" + e.message
+              + "). Обнови страницу и попробуй ещё раз.");
+      });
   });
 
   // ── клик по зелёному каналу гасит его «new» насовсем (владелец 22.09);
