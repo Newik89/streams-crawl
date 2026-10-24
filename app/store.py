@@ -172,6 +172,10 @@ class SaveStats:
     #: отметки, отозванные мультикастом (`multicast_rows`): канал сайта
     #: показывает несколько игр разом — сайт сам сказал, что это не канал игры
     multicast_gone: int = 0
+    #: строки сайта со старой датой, севшие к перенесённой эталоном игре
+    #: (`_moved_event`), и тени таких игр, влитые в игру эталона
+    moved: int = 0
+    ghosts: int = 0
 
 
 def _хозяева_канала(conn: sqlite3.Connection, games: list[dict],
@@ -231,7 +235,7 @@ def _find_event(conn: sqlite3.Connection, game: dict) -> sqlite3.Row | None:
                            sport=game.get("sport", ""))
     # replace: время, записанное с «T» в обход `db_time`, тоже в окне
     for row in conn.execute(
-            "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv "
+            "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv, flags "
             "FROM events WHERE replace(start_kyiv, 'T', ' ') BETWEEN ? AND ?",
             (lo, hi)):
         stored = merge.Entry(source="", channel="",
@@ -305,6 +309,115 @@ def _fs_twin(conn: sqlite3.Connection, game: dict,
         (day, home, away, away, home))
         if not sport or not r["sport"] or r["sport"] == sport]
     return rows[0] if len(rows) == 1 else None
+
+
+def _entry_pairs(conn: sqlite3.Connection, game: dict,
+                 srcs: dict[str, sqlite3.Row]) -> set[tuple[int, int]]:
+    """Пары (сайт, канал) строк игры — как их опознает заливка ниже."""
+    out = set()
+    for entry in game.get("entries", []):
+        source = srcs.get(entry.get("source") or "")
+        if source is None:
+            continue
+        channel_id = _channel_id(conn, entry.get("channel") or "?", source)
+        if channel_id is not None:
+            out.add((source["id"], channel_id))
+    return out
+
+
+#: «перенос» (#5104, вторая половина; слово владельца 24.10 после #7836):
+#: насколько далеко от строки сайта ищем перенесённую эталоном игру
+MOVED_SPAN = timedelta(hours=50)
+
+
+def _moved_event(conn: sqlite3.Connection, game: dict,
+                 pairs: set[tuple[int, int]],
+                 team_ids: dict[str, int]) -> sqlite3.Row | None:
+    """Игра, которую эталон ПЕРЕНЁС, а сайт ещё пишет по-старому.
+
+    Кейс #7836/#6792 (24.10): flashscore перенёс Toulouse — Troyes с субботы
+    на воскресенье, игра #6792 уехала на 25.10 со всеми каналами, а
+    tvarenasport.ba ещё показывал субботу — его строка завела на 24.10 вторую
+    игру с одним каналом, и владелец увидел, что каналы «пропали». Правила:
+    1. Кандидат — игра с меткой flashscore, начало в пределах ±`MOVED_SPAN`
+       от времени сайта, но дальше окна склейки (ближе — обычный поиск).
+    2. У кандидата уже есть отметка ЭТОГО ЖЕ сайта и ЭТОГО ЖЕ канала (`pairs`
+       — пары (сайт, канал) строки): сайт показывал эту игру, а теперь пишет
+       другую дату — это перенос (слово владельца: «те же команды … у того же
+       сайта/канала = перенос — отметку переводить, а не плодить второе
+       событие»).
+    3. Те же команды: по канону (id), а без канона — по именам
+       (`names.same_team`), в любом порядке; спорт не спорит.
+    4. Кандидат ровно один — иначе не гадаем (кубок + лига в одну неделю).
+    Время игры остаётся эталонным, канал — с пометкой «время?» (`time_off`):
+    не подтвердит сайт новую дату — погаснет обычным счётчиком."""
+    if not pairs:
+        return None
+    start = _parse_dt(game["start_kyiv"])
+    window = timedelta(minutes=merge.WINDOW_MINUTES)
+    home_id = _team_id(team_ids, game["home"])
+    away_id = _team_id(team_ids, game["away"])
+    sport = game.get("sport") or ""
+    # правило 2 — первым: только игры, где уже есть отметка этого сайта и
+    # канала (их единицы; сравнивать команды со всеми играми окна — дорого)
+    cands: dict[int, sqlite3.Row] = {}
+    for source_id, channel_id in pairs:
+        for r in conn.execute(
+                "SELECT e.id, e.sport, e.team_home_auto, e.team_away_auto, "
+                "e.team_home_id, e.team_away_id, e.start_kyiv, e.flags "
+                "FROM events e JOIN event_channels ec ON ec.event_id = e.id "
+                "WHERE ec.source_id = ? AND ec.channel_id = ? "
+                "AND e.flags LIKE '%fs:%' "
+                "AND replace(e.start_kyiv, 'T', ' ') BETWEEN ? AND ?",
+                (source_id, channel_id,
+                 _iso(start - MOVED_SPAN), _iso(start + MOVED_SPAN))):
+            cands[r["id"]] = r
+    found = []
+    for r in cands.values():
+        if abs(_parse_dt(r["start_kyiv"]) - start) <= window:
+            continue                                    # правило 1
+        if sport and r["sport"] and r["sport"] != sport:
+            continue                                    # правило 3
+        if home_id and away_id and r["team_home_id"] and r["team_away_id"]:
+            same = {home_id, away_id} == {r["team_home_id"], r["team_away_id"]}
+        else:
+            h, a = r["team_home_auto"] or "", r["team_away_auto"] or ""
+            same = ((names.same_team(game["home"], h) and names.same_team(game["away"], a))
+                    or (names.same_team(game["home"], a)
+                        and names.same_team(game["away"], h)))
+        if same:
+            found.append(r)
+    return found[0] if len(found) == 1 else None        # правило 4
+
+
+def _fold_ghost(conn: sqlite3.Connection, ghost_id: int, main_id: int,
+                pairs: set[tuple[int, int]]) -> bool:
+    """Тень перенесённой игры (её завела строка сайта со старой датой) —
+    в игру эталона. Отметки тех же (сайт, канал) переводятся, а не стираются:
+    у главной их только что подтвердила эта строка, у тени остаётся лишняя
+    копия — её место занято, и она уходит. Чужие отметки тени (другие сайты)
+    не трогаем; осталась тень пустой — убираем её, как двойню по метке
+    (`canon_backfill`). Вернёт True, если тень убрана."""
+    for source_id, channel_id in pairs:
+        conn.execute("UPDATE OR IGNORE event_channels SET event_id = ? WHERE event_id = ? "
+                     "AND source_id = ? AND channel_id = ?",
+                     (main_id, ghost_id, source_id, channel_id))
+        conn.execute("DELETE FROM event_channels WHERE event_id = ? AND source_id = ? "
+                     "AND channel_id = ?", (ghost_id, source_id, channel_id))
+    left = conn.execute("SELECT COUNT(*) FROM event_channels WHERE event_id = ?",
+                        (ghost_id,)).fetchone()[0]
+    if left:
+        return False
+    conn.execute("DELETE FROM events WHERE id = ?", (ghost_id,))
+    return True
+
+
+def _moved_label(moved_from: str | None) -> str:
+    """«24.10 18:15» из времени базы; пусто — не переносили."""
+    try:
+        return _parse_dt(moved_from).strftime("%d.%m %H:%M") if moved_from else ""
+    except (TypeError, ValueError):
+        return ""
 
 
 def _earlier_show(conn: sqlite3.Connection, game: dict) -> bool:
@@ -520,6 +633,23 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                           - _parse_dt(found["start_kyiv"]))
                 time_off = int(gap > timedelta(minutes=merge.WINDOW_MINUTES))
                 stats.time_off += time_off
+        # перенос (`_moved_event`, слово владельца 24.10): игра не нашлась или
+        # нашлась без метки эталона, а у игры эталона в соседние дни уже есть
+        # отметка этого сайта и канала — строка садится туда с «время?», а
+        # найденная тень (её завела та же строка прошлым сбором) вливается
+        ghost_id = None
+        moved_pairs: set[tuple[int, int]] = set()
+        if not add_only and not fs_start and not via_twin and (
+                found is None or "fs:" not in (found["flags"] or "")):
+            moved_pairs = _entry_pairs(conn, game, srcs)
+            moved = _moved_event(conn, game, moved_pairs, team_ids)
+            if moved is not None:
+                ghost_id = found["id"] if found is not None else None
+                found = moved
+                via_twin = True
+                time_off = 1        # за окном склейки по правилу 1 — всегда
+                stats.time_off += 1
+                stats.moved += 1
         # (сведённая трансляция турнира — «ATP Beijing» — зовётся одинаково
         # во всех сессиях турнира: вторая сессия дня не повтор первой)
         if found is None and game.get("guess") \
@@ -664,6 +794,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
         # подтверждённых у события полон
         event_start[event_id] = start_kyiv
         event_seen.setdefault(event_id, set()).update(seen_channel_ids)
+        if ghost_id and ghost_id != event_id:
+            stats.ghosts += int(_fold_ghost(conn, ghost_id, event_id, moved_pairs))
 
     def погасить(marks: list[sqlite3.Row], start: str, в_сборе: bool) -> int:
         """Отметкам, которые разрешают правила `app/miss.py`, — +1 к
@@ -855,7 +987,8 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
     for row in conn.execute(
             "SELECT e.id, e.sport, e.league_auto, e.team_home_auto, "
             "e.team_away_auto, e.start_kyiv, e.grace_minutes, e.first_seen, "
-            "e.seen, e.flags, e.league_id, l.canonical_name AS league_canon, "
+            "e.seen, e.flags, e.league_id, e.moved_from, "
+            "l.canonical_name AS league_canon, "
             "l.slug AS league_slug, "
             "th.canonical_name AS home_canon, ta.canonical_name AS away_canon "
             "FROM events e "
@@ -1049,6 +1182,9 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             # «непрочитанная»: висит новой, пока владелец не кликнет по строке
             # или не нажмёт «Прочитано всё» (21.09); гостям остаётся is_new
             "unread": not row["seen"],
+            # «перенесён с 24.10 18:15» (владелец 24.10): прежнее время, если
+            # матч сдвинули на 3 ч и больше (`db._add_triggers`)
+            "moved_from": _moved_label(row["moved_from"]),
             "channels": channels,
             # перечёркнутые «снят» — только витрине; API их не отдаёт
             "gone_channels": gone_channels,

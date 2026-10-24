@@ -53,6 +53,7 @@ def init_db(conn: sqlite3.Connection | None = None) -> Path:
     try:
         conn.executescript(SCHEMA.read_text(encoding="utf-8"))
         _add_missing_columns(conn)
+        _add_triggers(conn)
         conn.commit()
     finally:
         if own:
@@ -75,7 +76,12 @@ _LATE_COLUMNS = {
     "sport_hints": [("match_day", "TEXT")],
     # 21.09: игра «новая», пока владелец её не прочитал — клик по строке или
     # кнопка «Прочитано всё» (просьба владельца: новизна по часам гасла сама)
-    "events": [("seen", "INTEGER NOT NULL DEFAULT 0")],
+    # 24.10: прежнее время перенесённой игры — пометка «перенесён с …» на
+    # витрине (#7836/#6792: эталон перенёс матч на сутки, каналы уехали
+    # вместе с игрой, а владелец искал их в прежнем дне). Ставит триггер
+    # `events_moved_from` (см. `_add_triggers`), а не код заливки
+    "events": [("seen", "INTEGER NOT NULL DEFAULT 0"),
+               ("moved_from", "TEXT")],
     # 04.10: у канала на вкладке «Other Sport» — та же ссылка «открыть
     # расписание канала», что и у матчей; для неё нужна страница строки
     "other_sport": [("source_url", "TEXT")],
@@ -84,6 +90,42 @@ _LATE_COLUMNS = {
     # (`app/sport_question.py`) — видно во вкладках админки
     "moderation": [("answered_by", "TEXT")],
 }
+
+
+#: сдвиг начала игры, с которого это ПЕРЕНОС, а не поправка (часов):
+#: поправки эталона — минуты, перевод часов — 1 ч, перенос матча — сутки
+MOVED_HOURS = 3
+
+
+def _add_triggers(conn: sqlite3.Connection) -> None:
+    """Пометка «перенесён с …» (владелец 24.10). Правила по порядку:
+    1. Время начала игры сдвинулось на `MOVED_HOURS` и больше — запоминаем
+       прежнее время в `events.moved_from` (кто бы ни сдвинул: заливка,
+       сверка с эталоном — правило одно, в самой базе).
+    2. Уже переносили — храним самое первое время (перенос за переносом
+       показывает, откуда матч уехал изначально).
+    3. Матч вернули к прежнему времени (ближе `MOVED_HOURS`) — пометка
+       снимается.
+    4. Сдвиг меньше порога пометку не трогает (поправка на минуты после
+       переноса остаётся переносом)."""
+    new = "julianday(replace(NEW.start_kyiv, 'T', ' '))"
+    old = "julianday(replace(OLD.start_kyiv, 'T', ' '))"
+    # версия в имени: правило поменяется — новое имя, старое снять DROP'ом
+    # здесь же (пересоздавать при каждом открытии базы — лишняя запись)
+    conn.execute(f"""
+        CREATE TRIGGER IF NOT EXISTS events_moved_from_v1
+        AFTER UPDATE OF start_kyiv ON events
+        WHEN {new} IS NOT NULL AND {old} IS NOT NULL
+             AND abs({new} - {old}) * 24 >= {MOVED_HOURS}
+        BEGIN
+            UPDATE events SET moved_from = CASE
+                WHEN OLD.moved_from IS NULL
+                    THEN substr(replace(OLD.start_kyiv, 'T', ' '), 1, 16)
+                WHEN abs({new} - julianday(OLD.moved_from)) * 24 < {MOVED_HOURS}
+                    THEN NULL
+                ELSE OLD.moved_from END
+            WHERE id = NEW.id;
+        END""")
 
 
 def _add_missing_columns(conn: sqlite3.Connection) -> None:
