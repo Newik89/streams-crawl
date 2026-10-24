@@ -955,6 +955,27 @@ def create_app() -> Flask:
             conn.close()
         return jsonify({"ok": True})
 
+    @app.route("/games/<int:event_id>/unseen", methods=["POST"])
+    def game_unseen(event_id: int):
+        """Красная точка под значком спорта — обратное к клику по строке
+        (владелец 24.10: «метку игры не прочитанной вернуть назад»): игра
+        снова «новая», пока её не кликнут. Только сама игра — «new» у
+        каналов не трогается, их владелец гасит каждый своим кликом.
+        Игры нет — 404, чтобы витрина сняла подсветку обратно."""
+        verify_csrf()
+        if not session.get("admin"):
+            abort(403)
+        conn = db.connect()
+        try:
+            n = conn.execute("UPDATE events SET seen = 0 WHERE id = ?",
+                             (event_id,)).rowcount
+            conn.commit()
+        finally:
+            conn.close()
+        if not n:
+            return jsonify({"ok": False, "why": "игры нет"}), 404
+        return jsonify({"ok": True})
+
     @app.route("/games/<int:event_id>/channels/<int:channel_id>/seen",
                methods=["POST"])
     def channel_seen(event_id: int, channel_id: int):
