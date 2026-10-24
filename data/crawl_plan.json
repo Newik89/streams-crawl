@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-10-22",
+ "built": "2026-10-24",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -711,6 +711,9 @@
     "ON Sport 2",
     "ON Sport Max",
     "ON Sport Plus",
+    "RTSH 1",
+    "RTSH 2",
+    "RTSH Sport",
     "SuperSport 1 Digitalb",
     "SuperSport 2 Digitalb",
     "SuperSport 3 Digitalb",
@@ -799,6 +802,18 @@
     {
      "name": "ON Sport Plus",
      "pattern": "https://www.livesoccertv.com/channels/on-sport-plus/"
+    },
+    {
+     "name": "RTSH 1",
+     "pattern": "https://www.livesoccertv.com/channels/tvsh-albania/"
+    },
+    {
+     "name": "RTSH 2",
+     "pattern": "https://www.livesoccertv.com/channels/tvsh-2-albania/"
+    },
+    {
+     "name": "RTSH Sport",
+     "pattern": "https://www.livesoccertv.com/channels/rtsh-sport-albania/"
     },
     {
      "name": "SuperSport 1 Digitalb",
