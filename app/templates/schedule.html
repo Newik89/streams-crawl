@@ -155,7 +155,31 @@
   .tab.on { background:var(--accent); border-color:var(--accent); color:#fff; }
   .tab .n { font-weight:400; font-size:12px; opacity:.85; margin-left:2px; }
   [hidden] { display:none !important; }
-  @media (max-width:640px) { td.league { display:none; } th.league { display:none; } }
+  /* телефон (владелец 24.10: «почини ширину таблицы на телефоне»): таблица
+     не шире экрана. До 24.10 на 375 px она была 600 px — самая длинная
+     плашка канала (≈250 px, «NO| TV 2 Direkte Tekst hørselshem.») не
+     переносила текст и не давала столбцу каналов сжаться; а если сжать
+     столбцы, рвались посреди слова то имена команд, то каналы — пяти
+     столбцам на 375 px тесно. Поэтому строка игры — в два этажа: сверху
+     №, время, значок и матч, снизу каналы на всю ширину (их ячейка —
+     последняя в строке). Заголовок «Channels» спрятан — плашки говорят
+     сами за себя. Шире 640 px ничего не меняется */
+  @media (max-width:640px) {
+    td.league { display:none; } th.league { display:none; }
+    main { padding:10px 8px 32px; }
+    table, table > tbody { display:block; }
+    table tr { display:grid; grid-template-columns:24px 54px 32px minmax(0, 1fr); }
+    th, td { padding:6px 5px; }
+    th:last-child { display:none; }
+    tr.game > td:last-child { grid-column:1 / -1; border-top:0; padding:0 8px 8px 29px; }
+    tr.game.fresh > td:last-child { box-shadow:inset 3px 0 0 #2e9e44; }
+    tr.game.ask > td:last-child { box-shadow:inset 3px 0 0 #f59e0b; }
+    td.time { width:auto; }
+    td.time .live { display:block; margin-left:0; }
+    td.match { overflow-wrap:anywhere; }
+    td.match .gid { white-space:nowrap; }
+    .chan { white-space:normal; overflow-wrap:anywhere; }
+  }
 </style>
 </head>
 <body>
