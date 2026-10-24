@@ -106,7 +106,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from app import leagues, live, names, pipeline, sport   # noqa: E402
 from app.canon import _pair_score, _script                # noqa: E402
-from app.reference import Reference                       # noqa: E402
+from app.reference import MARKS_HOW, Reference            # noqa: E402
 from app.canon import _sides as _local_sides              # noqa: E402
 from app.parsers import SITE_FLAG, SITE_LIVE, SITE_REPEAT, Program  # noqa: E402
 from app.parsers import get as parser_for                 # noqa: E402
@@ -1247,7 +1247,13 @@ def _site_on_game(domain: str, channel: str, ref: dict, sides: tuple,
         if judge is not None and fs:
             got = judge.confirm(g.get("home") or "", g.get("away") or "",
                                 g_start, g.get("sport") or "")
-            if got is not None and (got.entry.get("fs_id") or "") == fs:
+            # «метки из эталона» (правило 5 `confirm`, 24.10) — для СЫРОЙ
+            # строки сайта без пола и возраста. Игра витрины — готовый итог:
+            # разбор уже дописал бы ей метку эталона; игра без метки при
+            # эталоне только с меткой — другая игра (мужская при женском
+            # матче), и самопроверка не должна прятать потерю
+            if got is not None and got.how != MARKS_HOW \
+                    and (got.entry.get("fs_id") or "") == fs:
                 return True
     return False
 

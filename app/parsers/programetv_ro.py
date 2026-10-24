@@ -20,8 +20,16 @@
 * прерванный матч идёт двумя записями с LIVE (тайм 1 в 17:30, тайм 2 в
   18:30) — эфиром считается первый показ пары, поздние глушим здесь же;
   межфайловые повторы добивает `parse_live.py` (`REPEAT_GUESS_DOMAINS`);
-* вид спорта сайт не называет (`categories` всегда `Sport`) — `sport_raw`
-  пустой, вид определяется по лиге/названию дальше по конвейеру.
+* вид спорта в `categories` сайт не называет (всегда `Sport`). У Prima Sport
+  и Pro Arena вид и турнир лежат в `subTitle`: «Meci Fotbal Uefa Youth
+  League», «Meci Handbal Masculin European League», «Meci Baschet Liga
+  Nationala» → `sport_raw` «Fotbal», `league_raw` «Uefa Youth League»
+  (`_SUBTITLE`; книга 003, 24.10: без этого «Man City – Psg» Юношеской ЛЧ шёл
+  без возраста и упирался в стену эталона). Подзаголовок читается только у
+  передачи-пары без лиги в заголовке; общая фраза передач без матча («Cele
+  mai importante informații din lumea sportului.») не по образцу «Meci …» и
+  не читается. Нет подзаголовка — `sport_raw` пустой, вид определяется по
+  лиге/названию дальше по конвейеру.
 
 Имя канала строим из слага адреса: `digi-sport-1` → `Digi Sport 1` — оно же
 `raw_name` в `source_channels`.
@@ -42,6 +50,10 @@ _ARRAYS = ("shows", "nextDayShows")
 _SLUG = re.compile(r"/program-tv/([\w-]+)")
 _LIVE = re.compile(r"^\s*LIVE[\s:]+", re.I)
 _ETAPA = re.compile(r"\s+(?:Etapa|Turul)\s+\d+\s*$", re.I)
+#: подзаголовок матча Prima Sport / Pro Arena: «Meci <вид спорта> <турнир>»
+#: («Meci Fotbal Uefa Youth League») → вид спорта и турнир. Общая фраза
+#: передач без матча под образец не подходит и не читается
+_SUBTITLE = re.compile(r"^\s*meci\s+(\S+)\s+(.+?)\s*$", re.I)
 
 
 def _channel_from(url: str) -> str:
@@ -126,11 +138,18 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     break
             if pair == " ":
                 league = ""
+            # лиги в заголовке нет (Prima Sport, Pro Arena) — вид спорта и
+            # турнир берём из подзаголовка «Meci <вид> <турнир>»
+            sport_raw = ""
+            if pair != " " and not league.strip():
+                sub = _SUBTITLE.match((item.get("subTitle") or "").strip())
+                if sub:
+                    sport_raw, league = sub.group(1), sub.group(2)
             program = Program(
                 channel_raw=channel, title=clean, start=start,
                 raw_time=raw[11:16],
                 league_raw=league.strip() if pair != " " else "",
-                sport_raw="",
+                sport_raw=sport_raw,
                 match_raw=pair, source_url=url,
                 extra={"day": raw[:10], "spaced": spaced, "prefix": live},
             )

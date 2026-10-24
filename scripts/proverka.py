@@ -157,8 +157,27 @@ def explained(game: dict, site: str) -> str:
 
 
 def _same_pair(one: dict, two: dict) -> bool:
-    from app import canon
-    return canon._pair_score(one, {"home": two["home"], "away": two["away"]}) >= kniga.ПОРОГ_ПАРЫ
+    from app import canon, reference
+    pair = {"home": two["home"], "away": two["away"]}
+    if canon._pair_score(one, pair) >= kniga.ПОРОГ_ПАРЫ:
+        return True
+    # метки из эталона (правило 5 `Reference.confirm`, 24.10): новый код
+    # дописывает «W»/«U19» командам, у которых их не было, — старая «Golden
+    # State Valkyries — Atlanta Dream» и новая «… W — … W» одна игра. Стена
+    # `_pair_score` (моя метка ≠ его → 0) тут не судья: сравниваем без
+    # меток, когда у одной игры их нет вовсе, а у другой одна и та же у
+    # обеих команд. Мужская при женской с метками у обеих — по-прежнему
+    # разные игры, если метки есть у обеих сторон
+    mine = {"home": one["home"], "away": one["away"]}
+    if not reference._entry_marks(mine) and reference._entry_marks(pair) \
+            and not any(reference._marks_of(mine[k]) for k in ("home", "away")):
+        bare = {k: reference._strip_marks(pair[k]) for k in ("home", "away")}
+        return canon._pair_score(mine, bare) >= kniga.ПОРОГ_ПАРЫ
+    if not reference._entry_marks(pair) and reference._entry_marks(mine) \
+            and not any(reference._marks_of(pair[k]) for k in ("home", "away")):
+        bare = {k: reference._strip_marks(mine[k]) for k in ("home", "away")}
+        return canon._pair_score(bare, pair) >= kniga.ПОРОГ_ПАРЫ
+    return False
 
 
 def ref_time(game: dict, refs: list[dict]):
@@ -169,6 +188,17 @@ def ref_time(game: dict, refs: list[dict]):
             and abs(kniga.kyiv(r["start_kyiv"]) - when) <= timedelta(hours=СДВИГ_Ч)
             and _same_pair(game, r)]
     return min(near, key=lambda t: abs(t - when)) if near else None
+
+
+def _moved_apart(ch: str, site: str, was: dict, fresh: list[dict]) -> dict | None:
+    """Новая игра (которой не было в старом разборе), куда ушёл канал `ch`
+    сайта `site` старой игры `was`: та же отметка (канал, сайт) не дальше
+    СДВИГ_Ч от старого начала. Пара не сравнивается: имя у новой игры может
+    быть на другом языке («גולדן סטייט — אטלנטה» у sport5)."""
+    when = kniga.kyiv(was["start_kyiv"])
+    near = [g for g in fresh if (ch, site) in _chans(g)
+            and abs(kniga.kyiv(g["start_kyiv"]) - when) <= timedelta(hours=СДВИГ_Ч)]
+    return min(near, key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when)) if near else None
 
 
 def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, str]:
@@ -253,8 +283,15 @@ def compare(old: dict, new: dict) -> list[str]:
             print(f"  + канал {ch}/{site}: {kniga._show(now)}")
         for ch, site in sorted(lost):
             why = explained(was, site)
+            apart = _moved_apart(ch, site, was, fresh)
             if why:
                 print(f"  − канал {ch}/{site} снят (случай {why}): {kniga._show(was)}")
+            elif apart is not None:
+                # канал не потерян — он на витрине отдельной новой игрой (24.10:
+                # игра встала на время эталона 01:55, а показ sport5 03:00 вышел
+                # за окно склейки и отделился); дубль — не потеря, новая игра
+                # уже напечатана выше со знаком «+»
+                print(f"  ~ канал {ch}/{site} отделился в новую игру: {kniga._show(apart)}")
             else:
                 print(f"  ✗ ПРОПАЛ КАНАЛ {ch}/{site}: {kniga._show(was)}")
                 losses.append(f"пропал канал {ch}/{site} у {kniga._show(was)}")
