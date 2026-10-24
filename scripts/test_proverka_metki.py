@@ -86,6 +86,24 @@ def main() -> int:
                                           "2026-10-27T01:55")], refs)
     check("другая пара — не находится", found is None, how)
 
+    print("5. compare: канал отделился в новую игру — не потеря")
+    import contextlib, io
+    old_g = game("Golden State Valkyries", "Atlanta Dream", "2026-10-27T02:00",
+                 [("Sport1", "port.hu"), ("ספורט 5+", "sport5.co.il")])
+    new_w = game("Golden State Valkyries W", "Atlanta Dream W", "2026-10-27T01:55",
+                 [("Sport1", "port.hu"), ("TSN5", "tvpassport.com")])
+    hebrew = game("גולדן סטייט", "אטלנטה", "2026-10-27T03:00", [("ספורט 5+", "sport5.co.il")])
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        losses = proverka.compare({"games": [old_g], "эталон": refs}, {"games": [new_w, hebrew]})
+    check("потерь нет: sport5 ушёл в новую игру 03:00", not losses, losses)
+    check("в отчёте — «отделился в новую игру»", "отделился в новую игру" in out.getvalue())
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        losses = proverka.compare({"games": [old_g], "эталон": refs}, {"games": [new_w]})
+    check("без новой игры — канал sport5 и правда пропал", len(losses) == 1
+          and "sport5.co.il" in losses[0], losses)
+
     print(f"\nПроверок: {passed + len(failed)}, провалов: {len(failed)}")
     return 1 if failed else 0
 

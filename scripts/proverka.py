@@ -190,6 +190,17 @@ def ref_time(game: dict, refs: list[dict]):
     return min(near, key=lambda t: abs(t - when)) if near else None
 
 
+def _moved_apart(ch: str, site: str, was: dict, fresh: list[dict]) -> dict | None:
+    """Новая игра (которой не было в старом разборе), куда ушёл канал `ch`
+    сайта `site` старой игры `was`: та же отметка (канал, сайт) не дальше
+    СДВИГ_Ч от старого начала. Пара не сравнивается: имя у новой игры может
+    быть на другом языке («גולדן סטייט — אטלנטה» у sport5)."""
+    when = kniga.kyiv(was["start_kyiv"])
+    near = [g for g in fresh if (ch, site) in _chans(g)
+            and abs(kniga.kyiv(g["start_kyiv"]) - when) <= timedelta(hours=СДВИГ_Ч)]
+    return min(near, key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when)) if near else None
+
+
 def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, str]:
     """Та же игра среди НОВЫХ записей нового разбора:
     «имя» — пара та же (словарь перевёл, сверка поправила) или все каналы
@@ -272,8 +283,15 @@ def compare(old: dict, new: dict) -> list[str]:
             print(f"  + канал {ch}/{site}: {kniga._show(now)}")
         for ch, site in sorted(lost):
             why = explained(was, site)
+            apart = _moved_apart(ch, site, was, fresh)
             if why:
                 print(f"  − канал {ch}/{site} снят (случай {why}): {kniga._show(was)}")
+            elif apart is not None:
+                # канал не потерян — он на витрине отдельной новой игрой (24.10:
+                # игра встала на время эталона 01:55, а показ sport5 03:00 вышел
+                # за окно склейки и отделился); дубль — не потеря, новая игра
+                # уже напечатана выше со знаком «+»
+                print(f"  ~ канал {ch}/{site} отделился в новую игру: {kniga._show(apart)}")
             else:
                 print(f"  ✗ ПРОПАЛ КАНАЛ {ch}/{site}: {kniga._show(was)}")
                 losses.append(f"пропал канал {ch}/{site} у {kniga._show(was)}")
