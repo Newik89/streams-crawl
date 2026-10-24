@@ -310,6 +310,9 @@ def main() -> int:
               + (f", игр-сирот (сайт перенёс на другой день) — отметок "
                  f"погашено: {stats.orphans_gone}"
                  if stats.orphans_gone else "")
+              + (f", строк со старой датой у перенесённых эталоном игр "
+                 f"(«время?»): {stats.moved}, теней влито: {stats.ghosts}"
+                 if stats.moved else "")
               + (f", мультикаст (канал сайта показывает несколько игр разом) — "
                  f"отметок погашено: {stats.multicast_gone}"
                  if stats.multicast_gone else ""))
