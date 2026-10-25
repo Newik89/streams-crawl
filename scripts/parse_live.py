@@ -323,7 +323,32 @@ def nearest_shows(found: list, kickoff_of, guessed_of,
 _SPORTY_CHANNEL = re.compile(r"sport|спорт|ספורט|deportes|esporte", re.I)
 
 
-def worth_asking(domain: str, r) -> bool:
+#: спортивный источник: доля строк с парой, у которых вид спорта нашёлся
+SPORTY_SHARE = 0.8
+#: …и не меньше стольких строк с парой, чтобы доля что-то значила
+SPORTY_LEAST = 10
+
+
+def sporty_sites(maybe: list) -> set[str]:
+    """Сайты — спортивные вещатели: среди их строк с парой вид спорта нашёлся
+    почти у всех (`SPORTY_SHARE` при ≥ `SPORTY_LEAST` строк) — Al Kass,
+    movistar, Sport Klub. У общего телегида (raiplay, tvheute, hrt) доля
+    мала: там строка с парой и «турниром» — чаще сериал («Il Paradiso delle
+    Signore»), новости («NACHRICHTEN») или детская передача («Mališani»).
+    Первый же сбор правилом 3 без этого сита положил владельцу в очередь
+    161 такую строку (25.10 вечер)."""
+    всего: dict[str, int] = {}
+    решено: dict[str, int] = {}
+    for domain, r in maybe:
+        key = _bare_domain(domain)
+        всего[key] = всего.get(key, 0) + 1
+        if r.ok:
+            решено[key] = решено.get(key, 0) + 1
+    return {key for key, n in всего.items()
+            if n >= SPORTY_LEAST and решено.get(key, 0) / n >= SPORTY_SHARE}
+
+
+def worth_asking(domain: str, r, sporty: set | None = None) -> bool:
     """Строка с парой и временем, которой вид спорта не дали ни склейка, ни
     эталон, ни израильский мост, — отдать человеку (очередь «Вид спорта») или
     снять молча? Правило владельца 04.09: не убивать молча. Но без сита в
@@ -333,9 +358,11 @@ def worth_asking(domain: str, r) -> bool:
     2. строка выглядит израильской (`canon.looks_israeli`: клубы и лиги
        Израиля) — спросить;
     3. (25.10, Al Kass: «Gulf U-17 Cup: Egypt - Kuwait» на каналах One, Four,
-       Eight — слова «sport» в именах нет) сайт сам назвал турнир
-       (`league_raw`), и пара команд прочитана — спросить: это соревнование,
-       которого словарь ещё не знает, а не передача;
+       Eight — слова «sport» в именах нет) сайт — спортивный вещатель
+       (`sporty_sites`), он сам назвал турнир (`league_raw`), и пара команд
+       прочитана — спросить: это соревнование, которого словарь ещё не
+       знает, а не передача. У общего телегида «турнир» — рубрика или
+       название сериала, его не спрашиваем (25.10 вечер: 161 лишняя строка);
     4. иначе — снять молча, как раньше."""
     program = r.program
     if _SPORTY_CHANNEL.search(program.channel_raw or ""):
@@ -343,7 +370,8 @@ def worth_asking(domain: str, r) -> bool:
     if canon.looks_israeli({"home": r.home, "away": r.away,
                             "league": r.league or program.league_raw or ""}):
         return True
-    return bool((program.league_raw or "").strip() and r.home and r.away)
+    return bool(_bare_domain(domain) in (sporty or set())
+                and (program.league_raw or "").strip() and r.home and r.away)
 
 
 def reference_index(reference: list) -> dict:
@@ -1113,8 +1141,9 @@ def main() -> int:
     # Но только с похожих на спорт строк (`worth_asking`, правила списком):
     # без этого сита в очередь ехали 1543 строки — передачи BBC, скачки,
     # биржевые сводки
+    sporty = sporty_sites(maybe)
     unsolved = [(domain, r) for domain, r in maybe
-                if not r.ok and worth_asking(domain, r)]
+                if not r.ok and worth_asking(domain, r, sporty)]
     # Повтор в очередь не кладём: канал крутит запись вчерашнего матча, и
     # спрашивать про него вид спорта незачем (10.09: из 485 нерешённых
     # строк 67 были именно такими, в основном beIN и oneplaysport)
