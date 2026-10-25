@@ -47,7 +47,12 @@ for лига, ждём in (("Liga BPI", "W"), ("LIGA BPI", "W"), ("Liga F", "W")
                    # Канада, #7274 (22.10): NSL прилипала к мужскому Cavalry — Vancouver FC
                    ("Northern Super League Soccer", "W"), ("Canadian Premier League Soccer", ""),
                    ("Liga Futsal", ""), ("Liga Portugal Betclic", ""), ("LaLiga EA Sports", ""),
-                   ("Liga BPI Sub-19", "U19 W"), ("Spartak Subotica", "")):
+                   ("Liga BPI Sub-19", "U19 W"), ("Spartak Subotica", ""),
+                   # #7925 (владелец 25.10, книга 083): вьетнамское «Ha Noi» ловилось
+                   # венгерским «női», записанным ещё и без диакритики как «noi»
+                   ("Nogomet - LP Azije ELITE: Shanghai Port - Cong An Ha Noi", ""),
+                   ("Cong An Ha Noi", ""), ("Noi Bai", ""),
+                   ("Női kézilabda: Győr - Ferencváros", "W"), ("NŐI KOSÁRLABDA", "W")):
     проверка(f"«{лига}» → «{ждём}»", leagues.category(лига), ждём)
 
 
