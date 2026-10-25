@@ -35,6 +35,8 @@ data/*
 !data/league_words.json
 # кнопка ↗: страница канала на дату по сайтам (владелец 13.10.2026)
 !data/channel_pages.json
+# языки служебных слов (книга 084, 25.10): без него разбор на GitHub не знает, где чьё слово
+!data/word_langs.json
 
 # служебное для Claude Code
 .claude/
