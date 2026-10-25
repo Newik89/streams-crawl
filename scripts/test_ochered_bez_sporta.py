@@ -58,13 +58,32 @@ def строка(канал: str, турнир: str = "", дом: str = "Egypt",
         program=SimpleNamespace(channel_raw=канал, league_raw=турнир))
 
 
-спросить = lambda r: parse_live.worth_asking("alkass.net", r)  # noqa: E731
+СПОРТИВНЫЕ = {"alkass.net"}
+спросить = lambda r, sporty=СПОРТИВНЫЕ: parse_live.worth_asking("alkass.net", r, sporty)  # noqa: E731
 
-print("1. Турнир назван сайтом — спросить человека")
+print("1. Турнир назван спортивным сайтом — спросить человека")
 проверка("«Gulf U-17 Cup: Egypt - Kuwait» на Al Kass One → в очередь",
          спросить(строка("Al Kass One", "Gulf U-17 Cup")), True)
 проверка("то же на Al Kass Eight → в очередь",
          спросить(строка("Al Kass Eight", "Gulf U-17 Cup")), True)
+проверка("тот же турнир, но сайт не спортивный вещатель (общий телегид) → молча",
+         спросить(строка("Al Kass One", "Gulf U-17 Cup"), set()), False)
+
+print("1а. Спортивный вещатель — по доле строк с найденным видом спорта")
+
+
+def сайт(домен: str, всего: int, решено: int) -> list:
+    return [(домен, SimpleNamespace(ok=i < решено)) for i in range(всего)]
+
+
+проверка("Al Kass: 13 строк с парой, 12 с видом спорта → спортивный",
+         parse_live.sporty_sites(сайт("alkass.net", 13, 12)), {"alkass.net"})
+проверка("raiplay: 37 строк, вид спорта у 5 → общий телегид, не спрашиваем",
+         parse_live.sporty_sites(сайт("raiplay.it", 37, 5)), set())
+проверка("мало строк (6 из 6) — доля ничего не значит, не спортивный",
+         parse_live.sporty_sites(сайт("tv.kz", 6, 6)), set())
+проверка("домен с www. считается тем же сайтом",
+         parse_live.sporty_sites(сайт("www.alkass.net", 10, 9)), {"alkass.net"})
 
 print("2. Без турнира у канала без слова «sport» — снять молча, как раньше")
 проверка("Al Kass One, турнира нет → молча",
