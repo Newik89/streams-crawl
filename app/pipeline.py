@@ -296,6 +296,20 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         row.needs_review = True
         return row
     row.sport = letter
+    # Показ вне окна эфира (25.10, sport5: матч WNBA 02:00 стоит в сетке на
+    # 03:00 со значком эфира): эфиром эталон его не признал (`confirm` →
+    # None, фильтры повторов решают как раньше), но пару в ±3 ч знает
+    # только с меткой — метку дописываем всё равно (`Reference.late_marks`,
+    # вид спорта уже известен), иначе женский матч шёл бы на витрину второй
+    # строкой без W рядом со своей же W-игрой. Теннису метки не пишем
+    if not метки_эталона and confirmed is None and reference is not None \
+            and row.home and row.away and letter != "T":
+        поздний = reference.late_marks(row.home, row.away, row.start_kyiv, letter)
+        if поздний is not None:
+            метки_эталона = поздний.marks
+            row.home = leagues.with_category(row.home, метки_эталона)
+            row.away = leagues.with_category(row.away, метки_эталона)
+            row.by_reference = row.by_reference or поздний.how
     if letter == "T" and (row.home, row.away) != (verdict.home, verdict.away):
         # Теннис: пол игрока задаёт турнир (WTA/ATP), к фамилии его не пишет
         # ни эталон flashscore, ни другие сайты. sportklub.hr кладёт в описание
