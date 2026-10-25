@@ -231,6 +231,12 @@ def _channel_of(r) -> str:
     return " ".join((getattr(program, "channel_raw", "") or "").lower().split())
 
 
+def _title_of(r) -> str:
+    """Заголовок передачи для правила 4 `nearest_shows` — как на сайте."""
+    program = getattr(r, "program", None)
+    return " ".join((getattr(program, "title", "") or "").lower().split())
+
+
 def _extra(r) -> dict:
     """Пометки разбора у строки (`program.extra`); нет — заводим."""
     program = getattr(r, "program", None)
@@ -262,17 +268,19 @@ def nearest_shows(found: list, kickoff_of, guessed_of,
        каналах). Остальные — записи.
     4. (25.10, Al Kass: Eight начал в 17:00 трансляцию матча 17:30, который
        One начал в 17:30 — Eight снимался как запись.) Если и лучший показ
-       угадан (у сайта честного флага нет), то показ пары на ДРУГОМ канале,
-       начатый в окне эфира — от `LIVE_SHOW_BEFORE` до начала матча до
-       `LIVE_SHOW_AFTER` после (как у `Reference.confirm`), — тот же эфир на
-       соседнем канале, не запись; оба показа помечаются
-       `extra["same_show"]`, и фильтр позднего показа (`late_show`) их не
-       трогает. На ТОМ ЖЕ канале раньше матча — предматчевая студия
-       (movistar «La Casa del Fútbol Previa: Sevilla - Osasuna» 21:30 перед
-       матчем 21:54 на M+ LALIGA; проверка на сборе #339), запись, как в
-       правиле 3. Показ раньше окна (Rai Sport 17:25 при матче 19:15) —
-       запись. При ЧЕСТНОМ лучшем показе правило не действует: угаданная
-       студия 19:30 рядом с честным эфиром 19:55 — запись (правило 1).
+       угадан (у сайта честного флага нет), то ТА ЖЕ ПЕРЕДАЧА (одинаковый
+       заголовок) на ДРУГОМ канале, начатая в окне эфира — от
+       `LIVE_SHOW_BEFORE` до начала матча до `LIVE_SHOW_AFTER` после (как у
+       `Reference.confirm`), — тот же эфир на соседнем канале, не запись;
+       оба показа помечаются `extra["same_show"]`, и фильтр позднего показа
+       (`late_show`) их не трогает. Другой заголовок — другая передача:
+       предматчевая студия movistar «La Casa del Fútbol Previa: Sevilla -
+       Osasuna» 21:30 перед «LALIGA EA SPORTS: Sevilla - Osasuna» 21:54 —
+       и на том же канале M+ LALIGA, и на соседнем M+ LALIGA HDR (две
+       проверки на сборе #339) — запись, как в правиле 3. Показ раньше окна
+       (Rai Sport 17:25 при матче 19:15) — запись. При ЧЕСТНОМ лучшем
+       показе правило не действует: угаданная студия 19:30 рядом с честным
+       эфиром 19:55 — запись (правило 1).
     Возвращает (оставленные, снятые с текстом причины)."""
     key_of = key_of or show_key
     groups: dict[tuple, list] = {}
@@ -289,12 +297,14 @@ def nearest_shows(found: list, kickoff_of, guessed_of,
         best = min(rows, key=lambda x: x[0])
         best_guessed = guessed_of(best[1][0], best[1][1])
         best_channel = _channel_of(best[1][1])
+        best_title = _title_of(best[1][1])
         for gap, item, kick in rows:
             if not guessed_of(item[0], item[1]):
                 continue                      # честный эфир не снимаем
             if abs(item[1].start_kyiv - best[1][1].start_kyiv) <= SAME_SHOW:
                 continue                      # правило 3: одновременный эфир
             if best_guessed and _channel_of(item[1]) != best_channel \
+                    and _title_of(item[1]) == best_title \
                     and -LIVE_SHOW_AFTER <= kick - item[1].start_kyiv \
                     <= LIVE_SHOW_BEFORE:
                 for r in (item[1], best[1][1]):   # правило 4: тот же эфир

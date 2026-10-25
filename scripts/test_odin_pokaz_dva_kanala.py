@@ -5,9 +5,10 @@ Al Kass One — в 17:30. `parse_live.nearest_shows` (правило 3, 13.10) �
 Eight как запись: дальше `SAME_SHOW` (15 мин) от ближайшего показа.
 Правило 4 (25.10): если лучший показ тоже угадан, показ пары на ДРУГОМ
 канале, начатый в окне эфира (от `LIVE_SHOW_BEFORE` до начала матча до
-`LIVE_SHOW_AFTER` после), — тот же эфир; оба помечаются `same_show`, и
-фильтр позднего показа (`late_show`) их не трогает. На том же канале раньше
-матча — предматчевая студия (movistar «Previa»), запись, как раньше.
+`LIVE_SHOW_AFTER` после) с ТЕМ ЖЕ заголовком передачи, — тот же эфир; оба
+помечаются `same_show`, и фильтр позднего показа (`late_show`) их не
+трогает. Другой заголовок или тот же канал раньше матча — предматчевая
+студия (movistar «Previa»), запись, как раньше.
 
 Что сторожится:
 
@@ -15,8 +16,9 @@ Eight как запись: дальше `SAME_SHOW` (15 мин) от ближа�
    матче 17:30) — оба остаются и помечены `same_show`;
 2. `late_show`: One 17:30 после Eight 17:00 — не поздний показ (проверка на
    сборе #339: без этого настоящий показ снимался как поздний);
-3. тот же канал раньше матча (movistar «Previa» 21:30 перед матчем 21:54 на
-   M+ LALIGA) — снят, как в правиле 3;
+3. другая передача — студия movistar «Previa» 21:30 перед матчем 21:54 —
+   снята и на том же канале (M+ LALIGA), и на соседнем с другим
+   заголовком (M+ LALIGA HDR): тот же эфир — это та же передача;
 4. показ раньше окна (15:30) и показ позже окна (17:50) — записи;
 5. Rai Sport 17:25 при матче 19:15 (книга, 13.10) — по-прежнему запись;
 6. movistar Al Ittihad — Al Shabab (книга 051): показ 19:55 при матче 21:00
@@ -69,13 +71,15 @@ def когда(день: str, часы: str) -> datetime:
     return datetime.fromisoformat(f"{день}T{часы}").replace(tzinfo=KYIV)
 
 
-def показ(канал: str, часы: str, честный: bool = False, день: str = "2026-10-20"):
+def показ(канал: str, часы: str, честный: bool = False, день: str = "2026-10-20",
+         заголовок: str = "Gulf U-17 Cup: Egypt - Kuwait"):
     """Строка сайта, как её видят `nearest_shows` и `late_show`: канал,
-    начало, пометка эфира (честная — `site_flag`, угаданная — `live_guess`)."""
+    начало, заголовок передачи, пометка эфира (честная — `site_flag`,
+    угаданная — `live_guess`)."""
     extra = {"site_flag": "live"} if честный else {"live_guess": True}
     return (САЙТ, SimpleNamespace(
         start_kyiv=когда(день, часы), home="Egypt", away="Kuwait", sport="F",
-        program=SimpleNamespace(channel_raw=канал, extra=extra)))
+        program=SimpleNamespace(channel_raw=канал, title=заголовок, extra=extra)))
 
 
 def оставшиеся(показы: list, матч: str, день: str = "2026-10-20") -> list[str]:
@@ -123,6 +127,11 @@ kept = оставшиеся(студия, "17:15")
          ["DAZN LALIGA 2 17:10"])
 проверка("…пометки same_show у них нет",
          [r.program.extra.get("same_show") for _d, r in студия], [None, None])
+сосед = [показ("M+ LALIGA HDR", "21:30", заголовок="La Casa del Fútbol Previa: Sevilla FC - CA Osasuna"),
+         показ("M+ LALIGA", "21:54", заголовок="LALIGA EA SPORTS: Sevilla FC - CA Osasuna")]
+проверка("студия с ДРУГИМ заголовком на соседнем канале (M+ LALIGA HDR 21:30) снята — другая передача",
+         оставшиеся(сосед, "22:00"), ["M+ LALIGA"])
+проверка("…и same_show никому не ставится", [r.program.extra.get("same_show") for _d, r in сосед], [None, None])
 
 print("4. Показы вне окна эфира — записи, как в правиле 3")
 проверка("показ за два часа до матча (15:30) снят",
