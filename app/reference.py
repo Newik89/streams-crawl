@@ -94,6 +94,9 @@ SIDE_FLOOR = 60
 #: лишней (правило проекта, как с W). Метка идёт в `Confirmed.marks`, и
 #: `pipeline.classify` дописывает её к именам пары
 MARKS_HOW = "метки из эталона"
+#: то же для показа вне окна эфира (`Reference.late_marks`, 25.10): метка
+#: дописывается, но эфиром матча показ не признаётся
+LATE_MARKS_HOW = "метки из эталона, показ вне окна"
 
 
 @dataclass
@@ -151,9 +154,18 @@ def _words(name: str, cache: dict) -> frozenset:
     эталона хотя бы по одному слову на каждой стороне."""
     got = cache.get(name)
     if got is None:
-        got = frozenset(names._rough(names._exo(word))
-                        for reading in names.readings(name)
-                        for word in reading.split())
+        words = {names._rough(names._exo(word))
+                 for reading in names.readings(name)
+                 for word in reading.split()}
+        # иврит пишется без гласных: чтение «GOLDN STIIT» никогда не совпадёт
+        # со словами «GOLDEN STATE» записи, хотя `names.similarity` даёт 100
+        # (там сверяют и костяк согласных). Индекс хранит костяки слов всех
+        # записей (`Reference.__init__`), ивритская строка ищет по ним — иначе
+        # sport5 «גולדן סטייט — אטלנטה» не доходила до правил `confirm` вовсе
+        # (25.10, матч WNBA)
+        if names._HEBREW_RE.search(name):
+            words |= {names._skeleton(w) for w in words}
+        got = frozenset(w for w in words if w)
         cache[name] = got
     return got
 
@@ -190,10 +202,13 @@ class Reference:
                 for name in (h, a):
                     self._teams.update(r for r in names.readings(name)
                                        if r.strip())
-                for word in _words(h, self._cache):
-                    self._home.setdefault(word, set()).add(number)
-                for word in _words(a, self._cache):
-                    self._away.setdefault(word, set()).add(number)
+                for index, name in ((self._home, h), (self._away, a)):
+                    for word in _words(name, self._cache):
+                        index.setdefault(word, set()).add(number)
+                        # костяк согласных — для ивритских строк (`_words`)
+                        bones = names._skeleton(word)
+                        if bones and bones != word:
+                            index.setdefault(bones, set()).add(number)
 
     def __len__(self) -> int:
         return len(self._entries)
@@ -360,6 +375,63 @@ class Reference:
             entry, kickoff = self._entries[number]
             return Confirmed(entry, kickoff, "одна сторона", turned)
         return None
+
+    def late_marks(self, home: str, away: str, start: datetime | None,
+                   sport: str = "") -> Confirmed | None:
+        """Правило 5 «метки из эталона» для показа ВНЕ окна эфира (25.10:
+        sport5 ставит матч WNBA «גולדן סטייט — אטלנטה» на 03:00 при начале
+        02:00 — на час позже, с значком эфира). `confirm` такому показу
+        отвечает None, и это верно: эфиром он не становится, фильтры повторов
+        решают как раньше. Но пара в ±`REF_WINDOW` известна эталону ТОЛЬКО с
+        одной и той же меткой у обеих команд — значит, это женский (юношеский)
+        матч, и без метки он шёл бы на витрину второй строкой без W рядом со
+        своей же W-игрой. Условия строже правила 5, по списку:
+          1. у обеих команд строки меток нет (`_marks_of`);
+          2. вид спорта строки известен и у записи тот же (`sport` обязателен:
+             мужское волейбольное дерби не должно взять W у женского
+             баскетбольного той же пары);
+          3. в ±`REF_WINDOW` НЕТ записи, сошедшейся с метками как есть
+             (взрослый матч той же пары рядом — метку не гадаем);
+          4. запись без своих меток (`_bare_entry`) сошлась на `canon.SURE` в
+             любом порядке сторон, метка у неё одна на обе команды
+             (`_entry_marks`) — и такая запись ровно ОДНА.
+        Ответ — `Confirmed` с `how == LATE_MARKS_HOW` и меткой в `marks`."""
+        if start is None or not self._entries or not home or not away \
+                or not sport:
+            return None
+        if _marks_of(home) or _marks_of(away):
+            return None
+        when = start.replace(tzinfo=None)
+        pool: set[int] = set()
+        for name in (home, away):
+            for word in _words(name, self._cache):
+                pool |= self._home.get(word, set())
+                pool |= self._away.get(word, set())
+        straight = {"home": home, "away": away, "sport": sport}
+        swapped = {"home": away, "away": home, "sport": sport}
+        marked: list[tuple[bool, int, str]] = []
+        for number in pool:
+            entry, kickoff = self._entries[number]
+            if abs(kickoff - when) > REF_WINDOW:
+                continue
+            if (entry.get("sport") or "F") != sport:
+                continue
+            if max(canon._pair_score(straight, entry),
+                   canon._pair_score(swapped, entry)) >= canon.SURE:
+                return None               # пара есть как есть — не гадаем
+            marks = _entry_marks(entry)
+            if not marks:
+                continue
+            bare = _bare_entry(entry)
+            scores = (canon._pair_score(straight, bare),
+                      canon._pair_score(swapped, bare))
+            if max(scores) >= canon.SURE:
+                marked.append((scores[1] > scores[0], number, marks))
+        if len(marked) != 1:
+            return None
+        turned, number, marks = marked[0]
+        entry, kickoff = self._entries[number]
+        return Confirmed(entry, kickoff, LATE_MARKS_HOW, turned, marks)
 
     def _shares_word(self, game: dict, entry: dict, number: int) -> bool:
         """Слабая сторона пары (та, что хуже сошлась с английским именем)

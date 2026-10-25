@@ -133,7 +133,8 @@ LATE_REPEAT = timedelta(hours=30)
 # 60 ч, LIVE_NEAR ±3 ч, ROUND_SAME_TIME — заглушка тура) живут в
 # `app/reference.py`: по ним же очередь «Вид спорта» отличает повтор от
 # матча (`app/sport_question.py`). Смысл каждого — там.
-from app.reference import (LIVE_NEAR, REPEAT_DEPTH,  # noqa: E402
+from app.reference import (LIVE_NEAR, LIVE_SHOW_AFTER,  # noqa: E402
+                           LIVE_SHOW_BEFORE, REPEAT_DEPTH,
                            ROUND_SAME_TIME, repeat_after)
 
 
@@ -243,6 +244,15 @@ def nearest_shows(found: list, kickoff_of, guessed_of,
     3. Из показов пары живой — ближайший к началу матча; показы, начавшиеся
        не дальше `SAME_SHOW` от него, — тоже (одновременный эфир на двух
        каналах). Остальные — записи.
+    4. (25.10, Al Kass: Eight начал в 17:00 трансляцию матча 17:30, который
+       соседний канал начал в 17:30 — Eight снимался как запись.) Если и
+       лучший показ угадан (у сайта честного флага нет), то все показы пары,
+       начатые в окне эфира — от `LIVE_SHOW_BEFORE` до начала матча до
+       `LIVE_SHOW_AFTER` после (как у `Reference.confirm`), — один эфир на
+       соседних каналах, не записи. Показ раньше окна (Rai Sport 17:25 при
+       матче 19:15) — запись, как в правиле 3. При ЧЕСТНОМ лучшем показе
+       правило не действует: угаданная студия 19:30 рядом с честным эфиром
+       19:55 — запись (правило 1).
     Возвращает (оставленные, снятые с текстом причины)."""
     key_of = key_of or show_key
     groups: dict[tuple, list] = {}
@@ -257,17 +267,49 @@ def nearest_shows(found: list, kickoff_of, guessed_of,
         if len(rows) < 2:
             continue
         best = min(rows, key=lambda x: x[0])
+        best_guessed = guessed_of(best[1][0], best[1][1])
         for gap, item, kick in rows:
             if not guessed_of(item[0], item[1]):
                 continue                      # честный эфир не снимаем
-            if abs(item[1].start_kyiv - best[1][1].start_kyiv) > SAME_SHOW:
-                drop[id(item)] = (
-                    f"у сайта есть показ ближе к началу матча "
-                    f"({kick.strftime('%d.%m %H:%M')}): "
-                    f"{best[1][1].start_kyiv.strftime('%d.%m %H:%M')}")
+            if abs(item[1].start_kyiv - best[1][1].start_kyiv) <= SAME_SHOW:
+                continue                      # правило 3: одновременный эфир
+            if best_guessed and -LIVE_SHOW_AFTER <= kick - item[1].start_kyiv \
+                    <= LIVE_SHOW_BEFORE:
+                continue                      # правило 4: тот же эфир в окне
+            drop[id(item)] = (
+                f"у сайта есть показ ближе к началу матча "
+                f"({kick.strftime('%d.%m %H:%M')}): "
+                f"{best[1][1].start_kyiv.strftime('%d.%m %H:%M')}")
     kept = [item for item in found if id(item) not in drop]
     gone = [(item, drop[id(item)]) for item in found if id(item) in drop]
     return kept, gone
+
+
+#: канал похож на спортивный — по слову в имени (сито очереди «Вид спорта»)
+_SPORTY_CHANNEL = re.compile(r"sport|спорт|ספורט|deportes|esporte", re.I)
+
+
+def worth_asking(domain: str, r) -> bool:
+    """Строка с парой и временем, которой вид спорта не дали ни склейка, ни
+    эталон, ни израильский мост, — отдать человеку (очередь «Вид спорта») или
+    снять молча? Правило владельца 04.09: не убивать молча. Но без сита в
+    очередь ехали 1543 строки — передачи BBC, скачки, биржевые сводки, —
+    поэтому спрашиваем только про похожее на спорт. Правила списком:
+    1. в имени канала есть слово «sport» (и его переводы) — спросить;
+    2. строка выглядит израильской (`canon.looks_israeli`: клубы и лиги
+       Израиля) — спросить;
+    3. (25.10, Al Kass: «Gulf U-17 Cup: Egypt - Kuwait» на каналах One, Four,
+       Eight — слова «sport» в именах нет) сайт сам назвал турнир
+       (`league_raw`), и пара команд прочитана — спросить: это соревнование,
+       которого словарь ещё не знает, а не передача;
+    4. иначе — снять молча, как раньше."""
+    program = r.program
+    if _SPORTY_CHANNEL.search(program.channel_raw or ""):
+        return True
+    if canon.looks_israeli({"home": r.home, "away": r.away,
+                            "league": r.league or program.league_raw or ""}):
+        return True
+    return bool((program.league_raw or "").strip() and r.home and r.away)
 
 
 def reference_index(reference: list) -> dict:
@@ -1032,16 +1074,11 @@ def main() -> int:
     # ни склейка, ни эталон, ни израильский мост, — НЕ убивать молча, а
     # отдать человеку (очередь «Вид спорта» в модерации; кейс Эйлат —
     # Герцлия: 5 израильских кандидатов в ±3 ч, буквы не решили).
-    # Но только с похожих на спорт строк: без этого сита в очередь ехали
-    # 1543 строки — передачи BBC, скачки, биржевые сводки
-    sporty_channel = re.compile(r"sport|спорт|ספורט|deportes|esporte", re.I)
-    unsolved = [
-        (domain, r) for domain, r in maybe
-        if not r.ok and (
-            sporty_channel.search(r.program.channel_raw or "")
-            or canon.looks_israeli(
-                {"home": r.home, "away": r.away,
-                 "league": r.league or r.program.league_raw or ""}))]
+    # Но только с похожих на спорт строк (`worth_asking`, правила списком):
+    # без этого сита в очередь ехали 1543 строки — передачи BBC, скачки,
+    # биржевые сводки
+    unsolved = [(domain, r) for domain, r in maybe
+                if not r.ok and worth_asking(domain, r)]
     # Повтор в очередь не кладём: канал крутит запись вчерашнего матча, и
     # спрашивать про него вид спорта незачем (10.09: из 485 нерешённых
     # строк 67 были именно такими, в основном beIN и oneplaysport)
