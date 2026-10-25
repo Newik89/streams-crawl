@@ -411,9 +411,12 @@ def parse_page(text: str, row: dict, setting: dict):
     day = _date.fromisoformat(row["day"]) if row.get("day") else None
     extra = {"channels": setting["include"]} if setting.get("include") else {}
     try:
-        return parse(text, day=day, tz=setting.get("tz"), url=row["url"], **extra)
+        programs = parse(text, day=day, tz=setting.get("tz"), url=row["url"], **extra)
     except TypeError:
-        return parse(text, day=day, tz=setting.get("tz"), url=row["url"])
+        programs = parse(text, day=day, tz=setting.get("tz"), url=row["url"])
+    # язык одолженного разбора — к языку сайта (книга 084)
+    parse_live.mark_borrowed(programs or [], setting.get("parser") or "")
+    return programs
 
 
 def check_day_page(site: Site, programs: list, row: dict, tz: str | None,

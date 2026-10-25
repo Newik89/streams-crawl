@@ -174,7 +174,13 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
              langs: frozenset | None = None) -> Row:
     """`langs` — языки сайта строки (`site_lang.of`, слово владельца 25.10,
     книга 084): служебные слова — пол, эфир, повтор, стоп-слова — ищутся
-    только на языке сайта и общие. None — все языки, как раньше."""
+    только на языке сайта и общие. None — все языки, как раньше. Строку
+    читал одолженный разбор (`extra["borrowed"]`) — его язык тоже: он пишет
+    свои пометки по-своему (датский «direkte» у шведского сайта)."""
+    borrowed = (program.extra or {}).get("borrowed") if langs is not None else ""
+    if borrowed:
+        own = site_lang.of(borrowed)
+        langs = None if own is None else langs | own
     markers = markers.for_langs(langs)
     row = Row(program=program, ok=False,
               start_utc=daytime.to_utc(program.start),

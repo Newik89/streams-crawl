@@ -136,5 +136,24 @@ row = pipeline.run([строка], все, SPORTS, {}, {}, domain="sportklub.hr"
          (row.home, row.away, row.league_category), ("Shanghai Port", "Cong An Ha Noi", ""))
 проверка("…и эфир прочитан по-хорватски", bool(row.live_marker), True)
 
+print("6. Одолженный разбор пишет пометки на своём языке")
+# tvmatchen.nu (шведский) разбирает датский tvsporten.dk: эфир — «direkte»
+# (сравнение на сборе #343: без этого 19 потерь)
+def шведская(borrowed: str = ""):
+    p = Program(channel_raw="TV4 Fotboll", title="GAIS - IFK Göteborg",
+                start=datetime(2026, 10, 25, 15, 0, tzinfo=KYIV), live_raw="direkte",
+                match_raw="GAIS - IFK Göteborg", sport_raw="Fotboll")
+    if borrowed:
+        import parse_live  # noqa: E402
+        parse_live.mark_borrowed([p], borrowed)
+    return pipeline.run([p], все, SPORTS, {}, {}, domain="tvmatchen.nu")[0]
+
+
+sys.path.insert(0, str(ROOT / "scripts"))
+проверка("датское «direkte» на шведском сайте без пометки разбора — не эфир",
+         шведская().ok, False)
+проверка("с пометкой «разбор tvsporten.dk» — эфир (датский язык добавлен)",
+         (шведская("tvsporten.dk").ok, шведская("tvsporten.dk").live_marker), (True, "direkte"))
+
 print(f"\nзелёных {зелёных}, красных {красных}")
 sys.exit(1 if красных else 0)
