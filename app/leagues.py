@@ -60,7 +60,11 @@ _AGE = re.compile(r"\bU-?\s?(\d{2})\b|\b(?:under|sub)[\s-]{0,3}(\d{2})\b(?![.:]\
 _WOMEN = re.compile(
     r"\bwomen'?s?\b|\bkobiet\w*\b|\bfem[ei]nin[ao]?\b|\bжени\b|\bженск\w*\b"
     r"|\bdonne\b|\bfrauen\w*\b|\bkadınlar\b|\bžensk\w*\b|\bzensk\w*\b|\bfemminil\w*\b"
-    r"|\bdamer\b|\bdames\b|\bnaiset\b|\bnői\b|\bnoi\b|\bfeminin\w*\b"
+    # венгерское «női» — только с диакритикой: форма «noi» без неё ловила
+    # вьетнамское «Ha Noi» (Ханой): «Shanghai Port - Cong An Ha Noi» у
+    # sportklub.hr шёл женским (#7925, владелец 25.10, книга 083); на
+    # венгерских сайтах «noi» без диакритики бывает только в адресах ссылок
+    r"|\bdamer\b|\bdames\b|\bnaiset\b|\bnői\b|\bfeminin\w*\b"
     r"|\bžene?\b|\bza žene\b|\bжінк\w*\b|\bwomen\b|\bkvinn\w*\b|\bkvinder\b"
     r"|\bfrauen\b|\(ž\)|\(w\)"
     # «(k)» — kvinder/kvinner/kvinnor: «Fodbold: Canada - Danmark (k),
