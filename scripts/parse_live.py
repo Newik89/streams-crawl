@@ -225,6 +225,22 @@ def local_reference_time(home: str, away: str, start, sport: str,
 SAME_SHOW = timedelta(minutes=15)
 
 
+def _channel_of(r) -> str:
+    """Канал строки для правила 4 `nearest_shows` — как написан на сайте."""
+    program = getattr(r, "program", None)
+    return " ".join((getattr(program, "channel_raw", "") or "").lower().split())
+
+
+def _extra(r) -> dict:
+    """Пометки разбора у строки (`program.extra`); нет — заводим."""
+    program = getattr(r, "program", None)
+    if program is None:
+        return {}
+    if getattr(program, "extra", None) is None:
+        program.extra = {}
+    return program.extra
+
+
 def nearest_shows(found: list, kickoff_of, guessed_of,
                   key_of=None) -> tuple[list, list]:
     """Эфир — показ, ближайший к началу матча (13.10, вопрос владельца:
@@ -245,14 +261,18 @@ def nearest_shows(found: list, kickoff_of, guessed_of,
        не дальше `SAME_SHOW` от него, — тоже (одновременный эфир на двух
        каналах). Остальные — записи.
     4. (25.10, Al Kass: Eight начал в 17:00 трансляцию матча 17:30, который
-       соседний канал начал в 17:30 — Eight снимался как запись.) Если и
-       лучший показ угадан (у сайта честного флага нет), то все показы пары,
-       начатые в окне эфира — от `LIVE_SHOW_BEFORE` до начала матча до
-       `LIVE_SHOW_AFTER` после (как у `Reference.confirm`), — один эфир на
-       соседних каналах, не записи. Показ раньше окна (Rai Sport 17:25 при
-       матче 19:15) — запись, как в правиле 3. При ЧЕСТНОМ лучшем показе
-       правило не действует: угаданная студия 19:30 рядом с честным эфиром
-       19:55 — запись (правило 1).
+       One начал в 17:30 — Eight снимался как запись.) Если и лучший показ
+       угадан (у сайта честного флага нет), то показ пары на ДРУГОМ канале,
+       начатый в окне эфира — от `LIVE_SHOW_BEFORE` до начала матча до
+       `LIVE_SHOW_AFTER` после (как у `Reference.confirm`), — тот же эфир на
+       соседнем канале, не запись; оба показа помечаются
+       `extra["same_show"]`, и фильтр позднего показа (`late_show`) их не
+       трогает. На ТОМ ЖЕ канале раньше матча — предматчевая студия
+       (movistar «La Casa del Fútbol Previa: Sevilla - Osasuna» 21:30 перед
+       матчем 21:54 на M+ LALIGA; проверка на сборе #339), запись, как в
+       правиле 3. Показ раньше окна (Rai Sport 17:25 при матче 19:15) —
+       запись. При ЧЕСТНОМ лучшем показе правило не действует: угаданная
+       студия 19:30 рядом с честным эфиром 19:55 — запись (правило 1).
     Возвращает (оставленные, снятые с текстом причины)."""
     key_of = key_of or show_key
     groups: dict[tuple, list] = {}
@@ -268,14 +288,18 @@ def nearest_shows(found: list, kickoff_of, guessed_of,
             continue
         best = min(rows, key=lambda x: x[0])
         best_guessed = guessed_of(best[1][0], best[1][1])
+        best_channel = _channel_of(best[1][1])
         for gap, item, kick in rows:
             if not guessed_of(item[0], item[1]):
                 continue                      # честный эфир не снимаем
             if abs(item[1].start_kyiv - best[1][1].start_kyiv) <= SAME_SHOW:
                 continue                      # правило 3: одновременный эфир
-            if best_guessed and -LIVE_SHOW_AFTER <= kick - item[1].start_kyiv \
+            if best_guessed and _channel_of(item[1]) != best_channel \
+                    and -LIVE_SHOW_AFTER <= kick - item[1].start_kyiv \
                     <= LIVE_SHOW_BEFORE:
-                continue                      # правило 4: тот же эфир в окне
+                for r in (item[1], best[1][1]):   # правило 4: тот же эфир
+                    _extra(r)["same_show"] = True
+                continue
             drop[id(item)] = (
                 f"у сайта есть показ ближе к началу матча "
                 f"({kick.strftime('%d.%m %H:%M')}): "
@@ -657,8 +681,10 @@ def first_shows(found: list) -> dict[tuple, datetime]:
 def late_show(domain: str, r, firsts: dict[tuple, datetime]) -> datetime | None:
     """Угаданный эфир позже первого показа той же пары у сайта — запись:
     вернёт время первого показа (`firsts` — из `first_shows`). Строку,
-    которую сайт пометил сам, и первый показ не трогаем — None."""
-    if not guessed(domain, r):
+    которую сайт пометил сам, первый показ и показ, признанный тем же эфиром
+    на соседнем канале (`nearest_shows`, правило 4: Al Kass One 17:30 после
+    Eight 17:00 — не поздний показ), не трогаем — None."""
+    if not guessed(domain, r) or _extra(r).get("same_show"):
         return None
     first = firsts[show_key(domain, r)]
     return first if r.start_kyiv > first else None
