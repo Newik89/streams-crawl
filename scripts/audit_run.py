@@ -104,7 +104,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from app import leagues, live, names, pipeline, sport   # noqa: E402
+from app import leagues, live, names, pipeline, site_lang, sport   # noqa: E402
 from app.canon import _pair_score, _script                # noqa: E402
 from app.reference import MARKS_HOW, Reference            # noqa: E402
 from app.canon import _sides as _local_sides              # noqa: E402
@@ -521,7 +521,7 @@ def collect(folder: Path, markers, sports) -> dict[str, Site]:
             continue
         site.shows += [p for p in programs if p.start is not None]
         for r in pipeline.run(programs, markers, sports, league_sports,
-                              pair_sports):
+                              pair_sports, domain=domain):
             if r.ok and r.sport in ("F", "B", "T") and r.start_kyiv:
                 site.rows.append((r, name))
             elif r.reason.startswith(STOP_REASONS) and r.program.live_raw \
@@ -1295,7 +1295,8 @@ def loss_step(domain: str, p: Program, journal, markers, sports,
     """Шаг конвейера, на котором показ `p` сайта `domain` пропал. Строка
     прогоняется тем же `pipeline.classify`, что и в разборе (с эталоном
     `judge`), а дальше смотрится журнал разбора."""
-    row = pipeline.classify(p, markers, sports, league_sports, pair_sports, judge)
+    row = pipeline.classify(p, markers, sports, league_sports, pair_sports, judge,
+                            site_lang.of(domain))
     key = (domain, p.channel_raw or "", (p.title or "")[:200])
     if not row.ok:
         if row.reason == "вид спорта не определён":

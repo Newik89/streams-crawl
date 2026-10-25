@@ -30,7 +30,7 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -124,6 +124,29 @@ class Markers:
     stop_genre: re.Pattern | None = None
     #: имена со стоп-словом внутри (`keep_names`): вырезаются перед поиском
     keep: re.Pattern | None = None
+    #: сами слова по разделам — для словаря языка сайта (`for_langs`)
+    words: dict = field(default_factory=dict, repr=False, compare=False)
+    _by_langs: dict = field(default_factory=dict, repr=False, compare=False)
+
+    def for_langs(self, langs) -> "Markers":
+        """Те же слова, но только языков сайта и общие (`app/site_lang.py`,
+        слово владельца 25.10, книга 084): венгерское слово не ищется на
+        хорватском сайте. `langs` None — сайт неизвестен, все слова."""
+        if langs is None or not self.words:
+            return self
+        key = frozenset(langs)
+        got = self._by_langs.get(key)
+        if got is None:
+            from . import site_lang
+
+            def pick(section: str):
+                return _pattern([w for w in self.words.get(section, [])
+                                 if site_lang.allowed(w, key)])
+            got = Markers(live=pick("live"), not_live=pick("not_live"),
+                          stop_title=pick("stop_title"),
+                          stop_genre=pick("stop_genre"), keep=self.keep)
+            self._by_langs[key] = got
+        return got
 
     def found(self, pattern, text: str) -> str:
         if not pattern or not text:
@@ -145,11 +168,14 @@ def load(path: Path | None = None, override: dict | None = None) -> Markers:
     data = json.loads((path or MARKERS_FILE).read_text(encoding="utf-8"))
     if override:
         data = {**data, **override}
-    return Markers(live=_pattern(_flatten(data.get("live"))),
-                   not_live=_pattern(_flatten(data.get("not_live"))),
-                   stop_title=_pattern(_flatten(data.get("stop_title"))),
-                   stop_genre=_pattern(_flatten(data.get("stop_genre"))),
-                   keep=_pattern(_flatten(data.get("keep_names"))))
+    words = {section: _flatten(data.get(section))
+             for section in ("live", "not_live", "stop_title", "stop_genre")}
+    return Markers(live=_pattern(words["live"]),
+                   not_live=_pattern(words["not_live"]),
+                   stop_title=_pattern(words["stop_title"]),
+                   stop_genre=_pattern(words["stop_genre"]),
+                   keep=_pattern(_flatten(data.get("keep_names"))),
+                   words=words)
 
 
 #: «Dinamo B.», «Nottingham F.», «Borussia M.» — tvarenasport сокращает второе

@@ -945,7 +945,7 @@ def main() -> int:
     by_rule: dict[int, int] = {}       # номер правила → сколько строк
     for domain, programs in pages:
         for r in pipeline.run(programs, markers, sports, league_sports,
-                              pair_sports, judge):
+                              pair_sports, judge, domain=domain):
             if r.sport_rule:
                 by_rule[r.sport_rule] = by_rule.get(r.sport_rule, 0) + 1
             if r.team_word:

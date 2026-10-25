@@ -57,36 +57,61 @@ _EDGE = " -–—:.,/|"
 #: (canal11.pt, sporttv.pt, movistarplus): без него «Liga BPI Sub-19» шла
 #: взрослой (12.10)
 _AGE = re.compile(r"\bU-?\s?(\d{2})\b|\b(?:under|sub)[\s-]{0,3}(\d{2})\b(?![.:]\d)", re.I)
-_WOMEN = re.compile(
-    r"\bwomen'?s?\b|\bkobiet\w*\b|\bfem[ei]nin[ao]?\b|\bжени\b|\bженск\w*\b"
-    r"|\bdonne\b|\bfrauen\w*\b|\bkadınlar\b|\bžensk\w*\b|\bzensk\w*\b|\bfemminil\w*\b"
-    # венгерское «női» — только с диакритикой: форма «noi» без неё ловила
-    # вьетнамское «Ha Noi» (Ханой): «Shanghai Port - Cong An Ha Noi» у
-    # sportklub.hr шёл женским (#7925, владелец 25.10, книга 083); на
-    # венгерских сайтах «noi» без диакритики бывает только в адресах ссылок
-    r"|\bdamer\b|\bdames\b|\bnaiset\b|\bnői\b|\bfeminin\w*\b"
-    r"|\bžene?\b|\bza žene\b|\bжінк\w*\b|\bwomen\b|\bkvinn\w*\b|\bkvinder\b"
-    r"|\bfrauen\b|\(ž\)|\(w\)"
-    # «(k)» — kvinder/kvinner/kvinnor: «Fodbold: Canada - Danmark (k),
-    # direkte» у dr.dk, «Fodbold (k)» у allente.no и tv2.no — женский
-    # товарищеский 10.10 шёл мужским и не сводился с «Denmark W» (#205)
-    r"|\(k\)"
-    # «Чемпионат мира. Женщины» (vsetv), «MS žen» (чехи), «Europe Cup Ž»
-    # (сербы), одиночные «Ж»/«Γ» (кириллица, греки) — ЧМ шёл мужским (06.09);
-    # «moterų» — литовский tv3.lt (FIBA moterų … čempionatas)
-    r"|\bженщин\w*\b|\bženy\b|\bžen\b|(?<!\w)[žжγ](?!\w)|\bmoter\w*\b"
-    # «בכדורגל הנשים» — с артиклем ה, у sport5 (#2525, 14.09); «לנשים»
-    # («для женщин»: «מוקדמות אליפות העולם 27 לנשים», очередь #2074, 06.10)
-    # — с предлогом ל. «אנשים» («люди») не ловится: перед נ стоит א
-    r"|γυναικ\w*|\b[הל]?נשים\b"
-    # «(әйелдер)» — казахский sports.kz: «Әлем Чемпионаты-2027 Iріктеу
-    # турнирі (әйелдер). Қазақстан — Ирландия» шёл мужским (регресс 06.10)
-    r"|\bәйел\w*"
-    # финское «naisten» («женщин»: «Naisten Liiga», «Naisten Korisliiga»);
-    # «naiset» выше — именительный падеж. Шведское «(Dam)» в скобках:
-    # так пол пишут tvmatchen.nu и tv.nu («Landsvägscykling (Dam)»),
-    # а отдельное «dam» без скобок не берём — это и английское слово
-    r"|\bnaisten\b|\(dam\)", re.I)
+#: Слово «женский» ПО ЯЗЫКАМ (слово владельца 25.10, книга 084): ищется
+#: только на языке сайта строки (`app/site_lang.py`) и общее (`None`).
+#: Повод: венгерское «női», записанное и как «noi», нашлось в вьетнамском
+#: «Ha Noi» на хорватском sportklub.hr — Лига чемпионов Азии стала женской
+#: (#7925). Новое слово — в кучку своего языка; общая — только английское и
+#: пометки, которые пишут сайты разных стран.
+_WOMEN_BY_LANG: tuple = (
+    # общие: английское и «(w)»
+    (None, r"\bwomen'?s?\b|\(w\)"),
+    (("pl",), r"\bkobiet\w*\b"),
+    # испанский, португальский, румынский, французский, итальянский:
+    # femenino/feminino/feminin
+    (("es", "pt", "ro", "fr", "it"), r"\bfem[ei]nin[ao]?\b|\bfeminin\w*\b"),
+    (("it",), r"\bdonne\b|\bfemminil\w*\b"),
+    (("de",), r"\bfrauen\w*\b"),
+    (("tr",), r"\bkadınlar\b"),
+    # сербохорватский и словенский: «ženske», «(ž)», «za žene»
+    (("hr", "sr", "bs", "sl"), r"\bžensk\w*\b|\bzensk\w*\b|\bžene?\b|\bza žene\b|\(ž\)"),
+    # чешский и словацкий: «MS žen», «ženy»
+    (("cs", "sk"), r"\bženy\b|\bžen\b"),
+    # одиночная «Ž» («Europe Cup Ž») — сербы, хорваты, чехи
+    (("hr", "sr", "bs", "sl", "cs", "sk"), r"(?<!\w)ž(?!\w)"),
+    # скандинавские: damer/kvinner/kvinnor/kvinder, «(k)» — kvinder/kvinner
+    # (dr.dk, allente.no, tv2.no — #205), шведское «(Dam)» в скобках
+    # (tvmatchen.nu; голое «dam» — английское слово, его не берём)
+    (("sv", "no", "da"), r"\bdamer\b|\bkvinn\w*\b|\bkvinder\b|\(k\)|\(dam\)"),
+    (("nl", "fr"), r"\bdames\b"),
+    # финское: «naiset», «Naisten Liiga»
+    (("fi",), r"\bnaiset\b|\bnaisten\b"),
+    # венгерское «női» — только с диакритикой (книга 083)
+    (("hu",), r"\bnői\b"),
+    # литовское «moterų» (tv3.lt)
+    (("lt",), r"\bmoter\w*\b"),
+    # кириллица: «женская», «Женщины» (vsetv), болгарское «жени», украинское
+    # «жінки», одиночная «Ж»; казахское «(әйелдер)» (sports.kz, 06.10)
+    (("ru", "uk", "be", "bg", "sr", "mk", "kk"),
+     r"\bжени\b|\bженск\w*\b|\bженщин\w*\b|\bжінк\w*\b|(?<!\w)ж(?!\w)|\bәйел\w*"),
+    # греческое: «γυναικών», одиночная «Γ»
+    (("el",), r"γυναικ\w*|(?<!\w)γ(?!\w)"),
+    # иврит: «הנשים» с артиклем (sport5, #2525), «לנשים» с предлогом (#2074);
+    # «אנשים» («люди») не ловится: перед נ стоит א
+    (("he",), r"\b[הל]?נשים\b"),
+)
+
+
+def _women_re(langs) -> re.Pattern:
+    """Шаблон слова «женский» для языков сайта (`langs` None — все языки)."""
+    parts = [pattern for own, pattern in _WOMEN_BY_LANG
+             if own is None or langs is None or set(own) & set(langs)]
+    return re.compile("|".join(parts), re.I)
+
+
+#: все языки — для строк без известного сайта
+_WOMEN = _women_re(None)
+_WOMEN_CACHE: dict = {}
 
 
 #: турниры, которые бывают ТОЛЬКО женскими: пол в названии не пишут вовсе,
@@ -198,7 +223,7 @@ def clean(raw: str) -> str:
     return re.sub(r"\s{2,}", " ", text).strip(_EDGE)
 
 
-def category(raw: str) -> str:
+def category(raw: str, langs=None) -> str:
     """Пол и возраст турнира: `W`, `U19`, `U16 W`. Пусто — взрослый мужской.
 
     Нужно, чтобы женский матч не склеился с мужским: у части сайтов пол виден
@@ -216,7 +241,12 @@ def category(raw: str) -> str:
         parts.append("U21")
     elif _YOUTH_LEAGUES.search(raw or ""):
         parts.append("U19")
-    if _WOMEN.search(raw or "") or _WOMEN_LEAGUES.search(raw or ""):
+    # слово «женский» — на языке сайта (`langs`, книга 084), иначе все языки
+    key = frozenset(langs) if langs is not None else None
+    women = _WOMEN_CACHE.get(key)
+    if women is None:
+        women = _WOMEN_CACHE[key] = _women_re(langs)
+    if women.search(raw or "") or _WOMEN_LEAGUES.search(raw or ""):
         parts.append("W")
     return " ".join(parts)
 
