@@ -1810,6 +1810,14 @@
       ]
     },
     {
+      "name": "AS Vacoas",
+      "country": null,
+      "aliases": [
+        "Βακόας",
+        "АС Вакоа"
+      ]
+    },
+    {
       "name": "AS Vita Club",
       "country": null,
       "aliases": [
@@ -2932,6 +2940,7 @@
         "ACADÉMICO",
         "Academico Viseu",
         "Academico Viseu 9. forduló",
+        "Académico",
         "Académico Viseu",
         "Académico Viseu FC",
         "Académico de Viseu",
@@ -4092,6 +4101,14 @@
       ]
     },
     {
+      "name": "Aguilar Cardozo J./Roncadelli F.",
+      "country": null,
+      "aliases": [
+        "Αγκουιλάρ Καρντόζο Χ./Ροκαντέλι Φ.",
+        "Агілар Х./Ронкаделлі Ф."
+      ]
+    },
+    {
       "name": "Aguilas",
       "country": null,
       "aliases": [
@@ -4331,6 +4348,14 @@
         "Ейрдріоніанс",
         "Еърдриониънс",
         "Эйрдрионианс"
+      ]
+    },
+    {
+      "name": "Aisin Wings W",
+      "country": null,
+      "aliases": [
+        "Aisin Wings Ž",
+        "Αϊσίν Ουίνγκς Γ"
       ]
     },
     {
@@ -5785,6 +5810,7 @@
       "name": "Al Kuwait",
       "country": null,
       "aliases": [
+        "Kuwait",
         "Αλ Κουβέιτ",
         "Αλ Κουβέιτ (Κβτ)",
         "Ал Кувейт",
@@ -6681,6 +6707,14 @@
         "Ал Сулайбихат",
         "Аль-Сулайбихат",
         "Аль-Сулайбіхат"
+      ]
+    },
+    {
+      "name": "Al Suwaiq",
+      "country": null,
+      "aliases": [
+        "Αλ Σουβαΐκ",
+        "Ал Сувайк"
       ]
     },
     {
@@ -7664,6 +7698,7 @@
         "Алавес",
         "Алавес",
         "Алавес",
+        "Алавес. Прямая трансляция. В перерыве Спорт-центр",
         "Футбол. Чемпионат Испании. 6-й тур. Алавес",
         "Футбол. Чемпионат Испании. Ла Лига. 10-й тур. Алавес",
         "Чемпионат Испании. Прямая трансляция. \"Алавес"
@@ -8249,6 +8284,7 @@
       "name": "Aldosivi",
       "country": null,
       "aliases": [
+        "ALDOSIVI",
         "CA Aldosivi",
         "Αλντόσιβι",
         "Алдосиви",
@@ -11652,6 +11688,7 @@
         "ANTALYASPOR A.Ş",
         "Antalyaspor A.Ş",
         "TRENDYOL 1. LİG FUTBOL KARŞILAŞMASI 10. HAFTA ANTALYASPOR",
+        "TRENDYOL 1.LİG FUTBOL KARŞILAŞMASI 12.HAFTA ANTALYASPOR A.Ş",
         "TRENDYOL 1.LİG FUTBOL KARŞILAŞMASI 6.HAFTA  ANTALYASPOR A.Ş",
         "TRENDYOL 1.LİG FUTBOL KARŞILAŞMASI 6.HAFTA ANTALYASPOR A.Ş",
         "Αντάλιασπορ",
@@ -12690,6 +12727,13 @@
         "Товарищеский матч. Прямая трансляция. Аргентина",
         "Футбол. Товарищеский матч. Прямая трансляция. Аргентина",
         "ארגנטינה"
+      ]
+    },
+    {
+      "name": "Argentina 3x3",
+      "country": null,
+      "aliases": [
+        "Αργεντινή 3x3"
       ]
     },
     {
@@ -14366,6 +14410,13 @@
       ]
     },
     {
+      "name": "Astana W",
+      "country": null,
+      "aliases": [
+        "Astana Ž"
+      ]
+    },
+    {
       "name": "Asteras Amaliadas",
       "country": null,
       "aliases": [
@@ -14783,6 +14834,7 @@
         "Athletic Bilbao (M)",
         "Athletic Club",
         "Athletic Club",
+        "La Liga Athletic Bilbao",
         "Αθλέτικ Μπιλμπάο",
         "Αθλέτικ Μπιλμπάο (Ισπ)",
         "Μπιλμπάο",
@@ -15128,6 +15180,7 @@
         "Ατλέτικο Μαδρίτης",
         "Атл. Мадрид",
         "Атлетико",
+        "Атлетико (Мадрид). Прямая трансляция",
         "Атлетико (Мадрид). Прямая трансляция. В перерыве Спорт-центр",
         "Атлетико Мадрид",
         "Атлетіко",
@@ -15446,6 +15499,7 @@
       "country": null,
       "aliases": [
         "Atlanta Dream K",
+        "Atlanta Dream W",
         "Atlanta Dream Ž",
         "Ατλάντα Ντρημ Γ",
         "Атланта Дрим (Ж)"
@@ -17650,6 +17704,15 @@
       ]
     },
     {
+      "name": "Ayeni A./Ilagan A.",
+      "country": null,
+      "aliases": [
+        "Αγιένι Α./Ιλαγκάν Α.",
+        "Айени А./Ilagan A.",
+        "Аєні А./Ілаган А."
+      ]
+    },
+    {
       "name": "Ayense",
       "country": null,
       "aliases": [
@@ -18653,6 +18716,7 @@
       "name": "BMS Herlev",
       "country": null,
       "aliases": [
+        "CPH Wolfpacks",
         "Χέρλεφ Γούλφπακ",
         "Херлев Вольфпэк"
       ]
@@ -19152,6 +19216,15 @@
       ]
     },
     {
+      "name": "Bagnis F./Gomez E.",
+      "country": null,
+      "aliases": [
+        "Μπανίς Φ./Γκόμεζ E.",
+        "Багніс Ф./Гомес Е.",
+        "Баньис Ф./Гомес Э."
+      ]
+    },
+    {
       "name": "Bahamas",
       "country": null,
       "aliases": [
@@ -19626,6 +19699,16 @@
       "aliases": [
         "Bakonyi D./Kovács V. K.",
         "Баконьї Д./Ковач В. К."
+      ]
+    },
+    {
+      "name": "Bakov nad Jizerou W",
+      "country": null,
+      "aliases": [
+        "Bakov nad Jizerou N",
+        "Bakov nad Jizerou Ž",
+        "Μπακόφ ναντ Γίζερου Γ",
+        "Баков над Йизероу W"
       ]
     },
     {
@@ -20394,6 +20477,16 @@
       ]
     },
     {
+      "name": "Banik Most - Sous W",
+      "country": null,
+      "aliases": [
+        "Banik Most - Sous N",
+        "Banik Most - Sous Ž",
+        "Μπάνικ Μοστ - Σου Γ",
+        "Баник Мост-Соуш W"
+      ]
+    },
+    {
       "name": "Banik Most-Sous",
       "country": null,
       "aliases": [
@@ -20541,12 +20634,30 @@
       ]
     },
     {
+      "name": "Baquero M.",
+      "country": null,
+      "aliases": [
+        "Baquero M. (Εκου)",
+        "Baquero M. (Экв)",
+        "Пенья М."
+      ]
+    },
+    {
       "name": "Bar Biryukov P.",
       "country": null,
       "aliases": [
         "Bar Biryukov P. (Κοσ)",
         "Бар Бірюков П.",
         "Бар-Бирюков П. (Мир)"
+      ]
+    },
+    {
+      "name": "Bar Biryukov P./Binda A.",
+      "country": null,
+      "aliases": [
+        "Bar Biryukov P./Μπίντα Α.",
+        "Бар Бірюков П./Бінда А.",
+        "Бар-Бирюков П./Бинда А."
       ]
     },
     {
@@ -20615,7 +20726,8 @@
         "Барановичі",
         "ФК Барановичи",
         "ФК Барановичи. Прямая трансляция. В перерыве Спорт-центр",
-        "Футбол. Чемпионат Беларуси. 23-й тур. ФК Барановичи"
+        "Футбол. Чемпионат Беларуси. 23-й тур. ФК Барановичи",
+        "Футбол. Чемпионат Беларуси. 27-й тур. ФК Барановичи"
       ]
     },
     {
@@ -20732,6 +20844,7 @@
         "FC Barcelona",
         "FC Barcelona",
         "Joventut Badalona",
+        "La Liga Barcelona",
         "La Liga: FC Barcelona",
         "LaLiga. \"Barcelona",
         "Labdarúgás: Barcelona",
@@ -20756,6 +20869,7 @@
         "Ла Лига: Барселона",
         "Футбол. Чемпионат Испании. 6-й тур. Барселона",
         "Футбол. Чемпионат Испании. Ла Лига. 10-й тур. Барселона",
+        "Футбол. Чемпионат Испании. Ла Лига. 11-й тур. Барселона",
         "Футбол. Чемпионат Испании. Прямая трансляция. \"Барселона",
         "Чемпионат Испании. \"Барселона",
         "Чемпионат Испании. Прямая трансляция. \"Барселона",
@@ -21218,6 +21332,15 @@
       ]
     },
     {
+      "name": "Barrena A./Bueno G.",
+      "country": null,
+      "aliases": [
+        "Μπαρένα Α./Μπουένο Γκ.",
+        "Баррена А./Буено Г.",
+        "Баррена А./Буэно Г."
+      ]
+    },
+    {
       "name": "Barrera Aguirre I.",
       "country": null,
       "aliases": [
@@ -21390,6 +21513,15 @@
       ]
     },
     {
+      "name": "Barry C./Jones B.",
+      "country": null,
+      "aliases": [
+        "Barry C./Τζόουνς Μ.",
+        "Barry C./Джонс Б.",
+        "Баррі К./Джонс Б."
+      ]
+    },
+    {
       "name": "Barry C./Vives Marcos P.",
       "country": null,
       "aliases": [
@@ -21512,6 +21644,14 @@
       ]
     },
     {
+      "name": "Barsy Atyrau W",
+      "country": null,
+      "aliases": [
+        "Barsy Atyrau Ž",
+        "Μπαρσί Ατιρό Γ"
+      ]
+    },
+    {
       "name": "Bartashevich Y.",
       "country": null,
       "aliases": [
@@ -21605,6 +21745,18 @@
         "Μπάρτον Χ./Ντούντα Φ.",
         "Бартон Г./Дуда Ф.",
         "Бартонь Г./Дуда Ф."
+      ]
+    },
+    {
+      "name": "Barton H./Kasnikowski M.",
+      "country": null,
+      "aliases": [
+        "Barton H./Kaśnikowski M.",
+        "Bartoň H./Kasnikowski M.",
+        "Bartoň H./Kasnikowski M.",
+        "Μπάρτον Χ./Κασνικόφσκι Μ.",
+        "Бартон Г./Касниковски М.",
+        "Бартонь Г./Касніковскі М."
       ]
     },
     {
@@ -22078,6 +22230,8 @@
       "aliases": [
         "Braunschweig",
         "Braunschweig",
+        "Баскетбол. Чемпионат Германии. Брауншвейг",
+        "Брауншвейг",
         "Брауншвейг"
       ]
     },
@@ -22333,6 +22487,7 @@
         "BATMAN PETROL SPOR",
         "BATMAN PETROL SPOR A.Ş",
         "Batman P",
+        "Batman Petrol Spor",
         "Μπάτμαν Πετρολσπόρ",
         "Батман Петролспор",
         "Батман Петролспор",
@@ -24230,6 +24385,7 @@
       "name": "Beltinci",
       "country": null,
       "aliases": [
+        "Beltinci",
         "Μπέλτιντσι",
         "Белтинци",
         "Белтинці",
@@ -25530,6 +25686,7 @@
         "Бетис. Прямая трансляция. В перерыве Спорт-центр",
         "Бетіс",
         "Ла Лига: Бетис",
+        "Футбол. Чемпионат Испании. Ла Лига. 11-й тур. Бетис",
         "Футбол. Чемпионат Испании. Ла Лига. 4-й тур. Бетис",
         "Футбол. Чемпионат Испании. Ла Лига. 9-й тур. Бетис",
         "Футбол. Чемпионат Испании. Прямая трансляция. \"Бетис",
@@ -25603,6 +25760,15 @@
         "Μπέτοφ Σ./Σιέ Τ.",
         "Бетов С./Сіє Ч.",
         "Бетов С./Хси Чэн-Пэн"
+      ]
+    },
+    {
+      "name": "Betov S./Ymer E.",
+      "country": null,
+      "aliases": [
+        "Μπέτοφ Σ./Ιμέρ Ε.",
+        "Бетов С./Імер Е.",
+        "Бетов С./Имер Э."
       ]
     },
     {
@@ -25705,6 +25871,15 @@
         "Бежания",
         "Бежания",
         "Бежанія"
+      ]
+    },
+    {
+      "name": "Bhambri Y./Ho R.",
+      "country": null,
+      "aliases": [
+        "Μπάμπρι Γ./Χο Ρ.",
+        "Бхамбри Ю./Хо Р.",
+        "Бхамбрі Ю./Хо Рей"
       ]
     },
     {
@@ -27519,7 +27694,8 @@
         "Бохум",
         "Бохум",
         "Бохум (Гер)",
-        "בוכום"
+        "בוכום",
+        "בוכום (משולב)"
       ]
     },
     {
@@ -28323,6 +28499,14 @@
       ]
     },
     {
+      "name": "Bolton City",
+      "country": null,
+      "aliases": [
+        "Μπόλτον Σίτι",
+        "Болтън Сити"
+      ]
+    },
+    {
       "name": "Bolton U21",
       "country": null,
       "aliases": [
@@ -28887,10 +29071,19 @@
       "name": "Boroughmuir W",
       "country": null,
       "aliases": [
+        "Boroughmuir D",
+        "Boroughmuir D",
+        "Boroughmuir F",
+        "Boroughmuir F",
+        "Boroughmuir F",
+        "Boroughmuir F",
         "Boroughmuir F",
         "Boroughmuir K",
         "Boroughmuir K",
+        "Boroughmuir K",
         "Boroughmuir N",
+        "Boroughmuir V",
+        "Boroughmuir Ž",
         "Boroughmuir Ž",
         "Boroughmuir Ž",
         "Μπόρομουιρ Θιστλ Γ",
@@ -28937,6 +29130,7 @@
       "country": null,
       "aliases": [
         "Μποσκαρντίν Ντίας Π./Ρέις Ντα Σίλβα Ζ.",
+        "Боскардин Диас П./Реис Да Сильва Ж.",
         "Боскардін Діаш П./Рейш Да Сілва Ж."
       ]
     },
@@ -29654,12 +29848,29 @@
       ]
     },
     {
+      "name": "Bougouba",
+      "country": null,
+      "aliases": [
+        "Μπουγκουμπά",
+        "Бугуба"
+      ]
+    },
+    {
       "name": "Bougouffa H.",
       "country": null,
       "aliases": [
         "Bougouffa H. (Γαλ)",
         "Bougouffa H. (Фра)",
         "Бугуффа Х."
+      ]
+    },
+    {
+      "name": "Boulais J.",
+      "country": null,
+      "aliases": [
+        "Μπουλέ Τ. (Καν)",
+        "Буле Дж.",
+        "Було Дж. (Кан)"
       ]
     },
     {
@@ -30990,6 +31201,13 @@
       ]
     },
     {
+      "name": "Brazil 3x3",
+      "country": null,
+      "aliases": [
+        "Βραζιλία 3x3"
+      ]
+    },
+    {
       "name": "Brazil U17 W",
       "country": null,
       "aliases": [
@@ -31987,6 +32205,15 @@
         "Μπρίτο Λ./Σαράιβα ντος Σάντος Π. Α.",
         "Бритто Л./Сарайва Дос Сантос П.",
         "Брітту Л./Сарайва Дос Сантос П. А."
+      ]
+    },
+    {
+      "name": "Britto L./Zormann Da Silva M.",
+      "country": null,
+      "aliases": [
+        "Μπρίτο Λ./Ζορμάν Ντα Σίλβα Μ.",
+        "Бритто Л./Зорманн Да Силва М.",
+        "Брітту Л./Цорманн Да Сілва М."
       ]
     },
     {
@@ -36994,6 +37221,13 @@
       ]
     },
     {
+      "name": "Camacho E./Veliz A.",
+      "country": null,
+      "aliases": [
+        "Камачо Е./Веліс А."
+      ]
+    },
+    {
       "name": "Camargo Lima E.",
       "country": null,
       "aliases": [
@@ -37431,6 +37665,14 @@
         "Kanada 3x3 U23 W",
         "Καναδάς 3x3 U23 W",
         "Канада 3x3 U23 W"
+      ]
+    },
+    {
+      "name": "Canada 3x3 W",
+      "country": null,
+      "aliases": [
+        "Kanada 3x3 W",
+        "Καναδάς 3x3 W"
       ]
     },
     {
@@ -37900,6 +38142,14 @@
       ]
     },
     {
+      "name": "Capitao Poco U20",
+      "country": null,
+      "aliases": [
+        "Καπιτάο Πόκο U20",
+        "Капитао Поко U20"
+      ]
+    },
+    {
       "name": "Capivariano U20",
       "country": null,
       "aliases": [
@@ -38059,6 +38309,15 @@
         "Кардасар",
         "Кардассар",
         "Кардассар"
+      ]
+    },
+    {
+      "name": "Cardenas Olivares A.",
+      "country": null,
+      "aliases": [
+        "Cardenas Olivares A. (Μεξ)",
+        "Cardenas Olivares A. (Мек)",
+        "Карденас Оліварес А."
       ]
     },
     {
@@ -38630,8 +38889,10 @@
         "Casa Pia AC",
         "Casa Pia AC",
         "Labdarúgás: Portugál bajnokság: Casa Pia",
+        "Portugalijos \"Primeira\" futbolo lyga. Casa Pia",
         "Κάζα Πία",
         "Κάζα Πία",
+        "Каза Пия",
         "Каса Пиа",
         "Каса Пиа",
         "Каса Піа",
@@ -38864,6 +39125,16 @@
         "Зенит Каслав",
         "Часлав",
         "Часлав"
+      ]
+    },
+    {
+      "name": "Caslav W",
+      "country": null,
+      "aliases": [
+        "Caslav N",
+        "Caslav Ž",
+        "Τσάσλαβ Γ",
+        "Часлав W"
       ]
     },
     {
@@ -39118,6 +39389,15 @@
       ]
     },
     {
+      "name": "Castro Loedel S.",
+      "country": null,
+      "aliases": [
+        "Castro Loedel S. (Εκου)",
+        "Castro Loedel S. (Экв)",
+        "Кастро Лоедель С."
+      ]
+    },
+    {
       "name": "Castrumfavara",
       "country": null,
       "aliases": [
@@ -39232,6 +39512,13 @@
         "Catry R. (Γαλ)",
         "Catry R. (Фра)",
         "Катрі Р."
+      ]
+    },
+    {
+      "name": "Catry R./Pawlak P.",
+      "country": null,
+      "aliases": [
+        "Катрі Р./Павляк П."
       ]
     },
     {
@@ -39708,6 +39995,7 @@
         "Celta de Vigo",
         "Celta de Vigo",
         "Celta de Vigo",
+        "La Liga Celta Vigo",
         "RC Celta",
         "UEFA AVRUPA LİGİ FUTBOL KARŞILAŞMASI CELTA VIGO",
         "Θέλτα",
@@ -39862,6 +40150,7 @@
       "country": null,
       "aliases": [
         "Cento (Ита)",
+        "Serie A2 Old Wild West 2026/27-- 7a giornata Cento",
         "Τσέντο",
         "Τσέντο (Ιτα)"
       ]
@@ -40187,6 +40476,14 @@
       ]
     },
     {
+      "name": "Cercle De Joachim",
+      "country": null,
+      "aliases": [
+        "Τσέρκλ Ντε Χοακίμ",
+        "Серкъл Дьо Жоаким"
+      ]
+    },
+    {
       "name": "Cerdanyola",
       "country": null,
       "aliases": [
@@ -40323,6 +40620,15 @@
       "country": null,
       "aliases": [
         "Cerundolo/Cerundolo"
+      ]
+    },
+    {
+      "name": "Cerundolo F./Etcheverry T. M.",
+      "country": null,
+      "aliases": [
+        "Τσερούντολο Φ./Ετσεβερί Τ. Μ.",
+        "Черундоло Ф./Етчеверрі Т. М.",
+        "Черундоло Ф./Этчеверри Т.-М."
       ]
     },
     {
@@ -41146,6 +41452,14 @@
       ]
     },
     {
+      "name": "Chanson V-Magic W",
+      "country": null,
+      "aliases": [
+        "Chanson V-Magic Ž",
+        "Τσάνσον Β-Μάτζικ Γ"
+      ]
+    },
+    {
       "name": "Chanta A.",
       "country": null,
       "aliases": [
@@ -41824,6 +42138,14 @@
         "Чеба",
         "Чебба",
         "Шебба"
+      ]
+    },
+    {
+      "name": "Chebel Citizens",
+      "country": null,
+      "aliases": [
+        "Σεμπέλ Σίτιζενς",
+        "Шебел Ситизънс"
       ]
     },
     {
@@ -42947,6 +43269,7 @@
       "country": null,
       "aliases": [
         "CHICAGO BULLS",
+        "Chicago Bulls",
         "Σικάγο Μπούλς",
         "Чикаго Буллз",
         "שיקגו"
@@ -43152,10 +43475,19 @@
       ]
     },
     {
+      "name": "Chile 3x3",
+      "country": null,
+      "aliases": [
+        "Čile 3x3",
+        "Χιλή 3x3"
+      ]
+    },
+    {
       "name": "Chile 3x3 W",
       "country": null,
       "aliases": [
-        "Čile 3x3 W"
+        "Čile 3x3 W",
+        "Χιλή 3x3 W"
       ]
     },
     {
@@ -44097,6 +44429,15 @@
       ]
     },
     {
+      "name": "Chung Y./Kim J.",
+      "country": null,
+      "aliases": [
+        "Τσανγκ Γ./Κιμ Γ.",
+        "Чун Ю./Кім Дж.",
+        "Чун Ю./Хён Ким"
+      ]
+    },
+    {
       "name": "Churchill Brothers",
       "country": null,
       "aliases": [
@@ -44766,6 +45107,7 @@
       "name": "Cividale",
       "country": null,
       "aliases": [
+        "Cividale",
         "Τσίβιντεϊλ"
       ]
     },
@@ -47520,6 +47862,15 @@
       ]
     },
     {
+      "name": "Cornea V. V./Duda F.",
+      "country": null,
+      "aliases": [
+        "Κορνέα Β. Β./Ντούντα Φ.",
+        "Корня В. В./Дуда Ф.",
+        "Корня В. В./Дуда Ф."
+      ]
+    },
+    {
       "name": "Cornea V. V./Poljak D.",
       "country": null,
       "aliases": [
@@ -48017,7 +48368,8 @@
         "Енерги Котбус",
         "Енергі Коттбус",
         "Энерги",
-        "Энерги (Гер)"
+        "Энерги (Гер)",
+        "אנרג'י קוטובוס"
       ]
     },
     {
@@ -48872,6 +49224,16 @@
       ]
     },
     {
+      "name": "Crown FC",
+      "country": null,
+      "aliases": [
+        "Crown",
+        "Crown",
+        "Κράουν",
+        "Краун ФК"
+      ]
+    },
+    {
       "name": "Crown Legacy",
       "country": null,
       "aliases": [
@@ -49672,8 +50034,12 @@
       "name": "Curumins EC U20",
       "country": null,
       "aliases": [
+        "Curumins EC -20",
+        "Curumins EC -20",
+        "Curumins EC Sub-20",
         "Κουρούμινς U20",
-        "Куруминш ЕК U20"
+        "Куруминш ЕК U20",
+        "Курумінс ЕК U20"
       ]
     },
     {
@@ -49773,10 +50139,24 @@
       "name": "Cyprus U17",
       "country": null,
       "aliases": [
+        "Chipre Sub-17",
+        "Chipre U17",
+        "Chypre -17",
         "Cipar U17",
+        "Cipro U17",
+        "Cipru U17",
         "Ciprus U17",
+        "Cypern U17",
+        "Cypern U17",
+        "Cypr U17",
+        "Cyprus -17",
+        "Güney Kıbrıs U17",
+        "Kypr U17",
+        "Zypern U17",
         "Κύπρος U17",
-        "Кипър U17"
+        "Кипр U17",
+        "Кипър U17",
+        "Кіпр U17"
       ]
     },
     {
@@ -51188,6 +51568,17 @@
       ]
     },
     {
+      "name": "Damm M./Vrbensky M.",
+      "country": null,
+      "aliases": [
+        "Damm M./Vrbenský M.",
+        "Damm M./Vrbenský M.",
+        "Νταμ Μ./Βρμπένσκι Μ.",
+        "Дамм M./Врбенски М.",
+        "Дамм М./Врбенскі М."
+      ]
+    },
+    {
       "name": "Damme W",
       "country": null,
       "aliases": [
@@ -52538,6 +52929,14 @@
       ]
     },
     {
+      "name": "Del Pino M./La Serna J. M.",
+      "country": null,
+      "aliases": [
+        "Ντελ Πίνο Μ./Λε Σέρνα Χ. Μ.",
+        "Дель Піно М./Ла Серна Х. М."
+      ]
+    },
+    {
       "name": "Del Pino M./Mouilleron Salvo M.",
       "country": null,
       "aliases": [
@@ -52579,6 +52978,15 @@
         "Ντέλανεϊ Τ./Ουτσίντα Κ.",
         "Делейні Дж./Учіда К.",
         "Дилэйни Дж./Утида К."
+      ]
+    },
+    {
+      "name": "Delaney Ja./Wang A.",
+      "country": null,
+      "aliases": [
+        "Ντέλανεϊ Τ./Ουάνγκ Α.",
+        "Делейні Дж./Ван А.",
+        "Дилэйни Дж./Ван Аожань"
       ]
     },
     {
@@ -54175,6 +54583,14 @@
         "Ντεσπορτίβα Γκουαραμπίρα",
         "Деспортіва Гуарабіра",
         "Дешпортива Гуарабира"
+      ]
+    },
+    {
+      "name": "Desportiva Paraense U20",
+      "country": null,
+      "aliases": [
+        "Ντεσπορτίβα Παραένσε U20",
+        "Деспортива Параензе U20"
       ]
     },
     {
@@ -56507,6 +56923,15 @@
       ]
     },
     {
+      "name": "Donski A./Poljak D.",
+      "country": null,
+      "aliases": [
+        "Ντόνσκι Α./Πόλιακ Ν.",
+        "Донски А./Давид Поляк",
+        "Донскі А./Поляк Д."
+      ]
+    },
+    {
       "name": "Donza W",
       "country": null,
       "aliases": [
@@ -56826,6 +57251,15 @@
         "Дуглас Хаиг",
         "Дуглас Хайг",
         "Дъглас Хайг"
+      ]
+    },
+    {
+      "name": "Doumbia S./Pel D.",
+      "country": null,
+      "aliases": [
+        "Ντουμπιά Σ./Πελ Ν.",
+        "Думбия С./Пел Д.",
+        "Думбія С./Пел Д."
       ]
     },
     {
@@ -57381,6 +57815,7 @@
         "Dubai Basketball",
         "Dubai TBD!",
         "Dubái",
+        "Eirolīga. Dubai",
         "Eurolygos rungtynės. \"Dubai",
         "Eurolygos supertaurė. \"Dubai",
         "Ντουμπάι",
@@ -57715,6 +58150,16 @@
         "Дукла Прага U19",
         "Дукла Прага U19",
         "Дукла Прага U19"
+      ]
+    },
+    {
+      "name": "Dukla Prague W",
+      "country": null,
+      "aliases": [
+        "Dukla Prag Ž",
+        "Dukla Praha N",
+        "Ντούκλα Πράγας Γ",
+        "Дукла Прага W"
       ]
     },
     {
@@ -60783,6 +61228,13 @@
       ]
     },
     {
+      "name": "El Salvador 3x3 W",
+      "country": null,
+      "aliases": [
+        "Ελ Σαλβαδόρ 3x3 W"
+      ]
+    },
+    {
       "name": "El Salvador W",
       "country": null,
       "aliases": [
@@ -61531,6 +61983,14 @@
       "country": null,
       "aliases": [
         "Енчева Л./Велікова Д."
+      ]
+    },
+    {
+      "name": "Eneos Sunflowers W",
+      "country": null,
+      "aliases": [
+        "Eneos Sunflowers Ž",
+        "Ενεός Σανφλάουερς Γ"
       ]
     },
     {
@@ -63354,6 +63814,7 @@
       "aliases": [
         "ESTORIL PRAIA",
         "GD Estoril Praia",
+        "GD Estoril Praia",
         "Εστορίλ",
         "Εστορίλ",
         "Εστορίλ (Ζ)",
@@ -64237,6 +64698,7 @@
         "Everton F",
         "Everton F",
         "Everton F",
+        "Everton FC W",
         "Everton K",
         "Everton K",
         "Everton K",
@@ -64445,6 +64907,14 @@
       "aliases": [
         "Εξστέντ Μ./Γκούντι Γ.",
         "Екстед М./Гуд Г."
+      ]
+    },
+    {
+      "name": "Exsted M./Woestendick C.",
+      "country": null,
+      "aliases": [
+        "Εξστέντ Μ./Ουόστεντικ Κ.",
+        "Екстед М./Вестендік К."
       ]
     },
     {
@@ -68307,6 +68777,7 @@
       "name": "Feronikeli",
       "country": null,
       "aliases": [
+        "Albi Mall Superliga Feronikeli ’74",
         "Feronikeli",
         "Φερονικέλι",
         "Фероникели",
@@ -72560,6 +73031,14 @@
       ]
     },
     {
+      "name": "Fujitsu W",
+      "country": null,
+      "aliases": [
+        "Fujitsu Ž",
+        "Φουτζίτσου Γ"
+      ]
+    },
+    {
       "name": "Fukien",
       "country": null,
       "aliases": [
@@ -73635,6 +74114,15 @@
         "Γκαλαρνό Α. (Καν)",
         "Галарно А.",
         "Галарно А. (Кан)"
+      ]
+    },
+    {
+      "name": "Galarneau A./Hach Verdugo H.",
+      "country": null,
+      "aliases": [
+        "Γκαλαρνό Α./Χατς X.",
+        "Галарно А./Гах Г.",
+        "Галарно А./Хах Х."
       ]
     },
     {
@@ -74973,6 +75461,15 @@
       ]
     },
     {
+      "name": "Geerts M./Ruehl T.",
+      "country": null,
+      "aliases": [
+        "Γκιρτς Μ./Ρεχλ Τ.",
+        "Гертс М./Рюль Т.",
+        "Гиртц М./Ruehl T."
+      ]
+    },
+    {
       "name": "Geerts M./Vliegen J.",
       "country": null,
       "aliases": [
@@ -75388,6 +75885,7 @@
         "Genoa CFC",
         "GÉNOVA",
         "Janov",
+        "Serie A Genoa",
         "Τζένοα",
         "Τζένοα",
         "Τζένοα (Ιτα)",
@@ -75438,6 +75936,15 @@
         "Дженоа (Ж)",
         "Дженоа W",
         "Дженоа Ж"
+      ]
+    },
+    {
+      "name": "Genov A./Lalami Laaroussi Y.",
+      "country": null,
+      "aliases": [
+        "Τζένοφ Α./Λάλαμι Λααρουσί Γ.",
+        "Генов А./Лалами Лаарусси Ю.",
+        "Генов А./Лаламі Лааруссі Ю."
       ]
     },
     {
@@ -77830,6 +78337,14 @@
       ]
     },
     {
+      "name": "Gokulam",
+      "country": null,
+      "aliases": [
+        "Γκοκουλάμ",
+        "Гокулам"
+      ]
+    },
+    {
       "name": "Gol Gohar",
       "country": null,
       "aliases": [
@@ -77958,6 +78473,7 @@
       "aliases": [
         "Golden State Valkyries (Ж)",
         "Golden State Valkyries K",
+        "Golden State Valkyries W",
         "Golden State Valkyries Ž",
         "Γκόλντεν Στέιτ Βάλκιριζ Γ"
       ]
@@ -78309,6 +78825,15 @@
         "Γκονζάλες Σ./Γιέμπενς Χ.",
         "Гонсалес С./Єбенс Х.",
         "Гонсалес С./Йебенс Х."
+      ]
+    },
+    {
+      "name": "Gonzalez S./Stevens B.",
+      "country": null,
+      "aliases": [
+        "Γκονζάλες Σ./Στήβενς Μ.",
+        "Гонсалес С./Стевенс Б.",
+        "Гонсалес С./Стивенс Б."
       ]
     },
     {
@@ -79156,6 +79681,14 @@
         "Γκραντ-Σακονέ",
         "Гран-Саконне",
         "Гранд-Саконекс"
+      ]
+    },
+    {
+      "name": "Grande Riviere",
+      "country": null,
+      "aliases": [
+        "Γκράντε Ριβιέρ",
+        "Гранд Ривиер"
       ]
     },
     {
@@ -81316,6 +81849,15 @@
       ]
     },
     {
+      "name": "Gulin G.",
+      "country": null,
+      "aliases": [
+        "Gulin G. (Бра)",
+        "Γκούλιν Γ. (Bρα)",
+        "Гулін Г."
+      ]
+    },
+    {
       "name": "Gulin S.",
       "country": null,
       "aliases": [
@@ -83276,6 +83818,15 @@
       ]
     },
     {
+      "name": "Hamza Reguig S./Ifi N.",
+      "country": null,
+      "aliases": [
+        "Χαμζά Ρεγκουίγκ Σ./Ίφι Ν.",
+        "Хамза Регуиг С./Ifi N.",
+        "Хамза Регіг С./Іфі Н."
+      ]
+    },
+    {
       "name": "Han C./Yang A.",
       "country": null,
       "aliases": [
@@ -84119,6 +84670,15 @@
         "Hara Friend J. D./Χο Ρ.",
         "Hara Friend J. D./Хо Р.",
         "Хара Френд Дж. Д./Хо Рей"
+      ]
+    },
+    {
+      "name": "Hara Friend J. D./Sakamoto R.",
+      "country": null,
+      "aliases": [
+        "Hara Friend J. D./Σακαμότο Ρ.",
+        "Hara Friend J. D./Сакамото Р.",
+        "Хара Френд Дж. Д./Сакамото Р."
       ]
     },
     {
@@ -85135,6 +85695,14 @@
       ]
     },
     {
+      "name": "Heartland",
+      "country": null,
+      "aliases": [
+        "Χάρτλαντ",
+        "Хартланд"
+      ]
+    },
+    {
       "name": "Hearts",
       "country": null,
       "aliases": [
@@ -85291,6 +85859,15 @@
         "Εμπράικα γ Μακάμπι (Ουρ)",
         "Хебраика и Макаби",
         "Хебраика и Макаби (Уру)"
+      ]
+    },
+    {
+      "name": "Heck H.",
+      "country": null,
+      "aliases": [
+        "Heck H. (Сша)",
+        "Χεκ Χ. (Ηπα)",
+        "Хек Х."
       ]
     },
     {
@@ -85624,7 +86201,10 @@
       "name": "Heliovaara H./Patten H.",
       "country": null,
       "aliases": [
-        "Heliovaara/Patten"
+        "Heliovaara/Patten",
+        "Χελιοβάαρα Χ./Πατέν Χ.",
+        "Хелиоваара Х./Паттен А.",
+        "Хеліоваара Х./Паттен Х."
       ]
     },
     {
@@ -85961,6 +86541,15 @@
         "Херд",
         "Херд",
         "Херд"
+      ]
+    },
+    {
+      "name": "Herea C. A.",
+      "country": null,
+      "aliases": [
+        "Herea C. A. (Рум)",
+        "Χερέα Κ. Α. (Ρου)",
+        "Херя К. А."
       ]
     },
     {
@@ -86517,6 +87106,7 @@
         "Hibernian",
         "Hibernian FC",
         "Hibernian FC",
+        "Premierliga e Skocise Hibernian",
         "Ποδόσφαιρο: Χιμπέρνιαν",
         "Χιμπέρνιαν",
         "Χιμπέρνιαν",
@@ -86873,6 +87463,14 @@
         "Ίσκα Νασιονάλ",
         "Іска Насьйональ",
         "Хиска Насионал"
+      ]
+    },
+    {
+      "name": "Hitachi Cougars W",
+      "country": null,
+      "aliases": [
+        "Hitachi Cougars Ž",
+        "Χιτάτσι Κούγκαρς Γ"
       ]
     },
     {
@@ -87362,6 +87960,16 @@
         "Сапоро",
         "Саппоро",
         "Саппоро"
+      ]
+    },
+    {
+      "name": "Holasovice W",
+      "country": null,
+      "aliases": [
+        "Holasovice N",
+        "Holasovice Ž",
+        "Χολασόβιτσε Γ",
+        "Холашовице W"
       ]
     },
     {
@@ -88057,6 +88665,15 @@
         "Χόπερ Τ./Μιτσούι Σ.",
         "Хоппер Дж./Мицуи Ш.",
         "Хоппер Дж./Міцуї С."
+      ]
+    },
+    {
+      "name": "Hopper J./Whitehouse M.",
+      "country": null,
+      "aliases": [
+        "Χόπερ Τ./Ουάιτχαους Μ.",
+        "Хоппер Дж./Вайтхауз М.",
+        "Хоппер Дж./Уайтхауз М."
       ]
     },
     {
@@ -88765,6 +89382,15 @@
       ]
     },
     {
+      "name": "Hsieh C./Uchida K.",
+      "country": null,
+      "aliases": [
+        "Σιέ Τ./Ουτσίντα Κ.",
+        "Сіє Ч./Учіда К.",
+        "Хси Чэн-Пэн/Утида К."
+      ]
+    },
+    {
       "name": "Hsieh S-W./Ostapenko J.",
       "country": null,
       "aliases": [
@@ -88789,6 +89415,14 @@
       "aliases": [
         "Hsu J./Ιλαγκάν Α.",
         "Су Дж./Ілаган А."
+      ]
+    },
+    {
+      "name": "Hsu J./Sueoka Y.",
+      "country": null,
+      "aliases": [
+        "Hsu J./Σουεόκα Γ.",
+        "Су Дж./Суеока Я."
       ]
     },
     {
@@ -88826,6 +89460,14 @@
         "Hu J. (Κιν)",
         "Ху Д.",
         "Ху Ц. (Кит)"
+      ]
+    },
+    {
+      "name": "Hu J./Tang S.",
+      "country": null,
+      "aliases": [
+        "Ху Д./Тан Ш.",
+        "Ху Ц./Tang S."
       ]
     },
     {
@@ -90803,6 +91445,15 @@
       ]
     },
     {
+      "name": "Ichikawa T./Shimizu Y.",
+      "country": null,
+      "aliases": [
+        "Ιτσικάβα Τ./Σιμίτζου Γ.",
+        "Ічікава Т./Сімідзу Ю.",
+        "Ишикава Т./Шимизу Ю."
+      ]
+    },
+    {
       "name": "Idogaki K./Kusuhara Y.",
       "country": null,
       "aliases": [
@@ -91200,6 +91851,15 @@
         "Ιμαμούρα Μ. (Ιαπ)",
         "Імамура М.",
         "Имамура М. (Япо)"
+      ]
+    },
+    {
+      "name": "Imamura M./Matsuda R.",
+      "country": null,
+      "aliases": [
+        "Ιμαμούρα Μ./Ματσούντα Ρ.",
+        "Імамура М./Мацуда Р.",
+        "Имамура М./Мацуда Р."
       ]
     },
     {
@@ -93472,6 +94132,21 @@
       "aliases": [
         "Isakova P./Ζου Μ.",
         "Ісакова П./Су Б."
+      ]
+    },
+    {
+      "name": "Isaro P./Nam Ji S.",
+      "country": null,
+      "aliases": [
+        "Isaro P./Nam J. S.",
+        "Isaro P./Nam J. S.",
+        "Isaro P./Nam J. S.",
+        "Isaro P./Nam J. S.",
+        "Isaro P./Nam J. S.",
+        "Isaro P./Nam J. S.",
+        "Isaro P./Нам Д.",
+        "Ιζάρο Π./Ναμ Γι Σ.",
+        "Ісаро П./Нам Чжі С."
       ]
     },
     {
@@ -103023,6 +103698,21 @@
       ]
     },
     {
+      "name": "Kiger M./Smith J. P.",
+      "country": null,
+      "aliases": [
+        "Kiger M./Smith J-P.",
+        "Kiger M./Smith J-P.",
+        "Kiger M./Smith J-P.",
+        "Kiger M./Smith J-P.",
+        "Kiger M./Smith J-P.",
+        "Kiger M./Smith J-P.",
+        "Κίγκερ Μ./Σμιθ Τ-Π.",
+        "Кайгер М./Смит Дж.",
+        "Кігер М./Сміт Дж. П."
+      ]
+    },
+    {
       "name": "Kigezi HomeBoyz",
       "country": null,
       "aliases": [
@@ -103244,6 +103934,15 @@
         "Kim D. J. (Kορ) ΠΑΡΑΙΤΉΘΗΚΕ",
         "Kim D. J. (Кор) ОТКАЗ",
         "Кім Д. Чж. (Kor) ВІДМОВА"
+      ]
+    },
+    {
+      "name": "Kim D. J./Park U.",
+      "country": null,
+      "aliases": [
+        "Kim D. J./Παρκ Ο.",
+        "Kim D. J./Пак У.",
+        "Кім Д. Чж./Парк У."
       ]
     },
     {
@@ -103858,6 +104557,16 @@
         "Клатови",
         "Клатови",
         "Клатовы"
+      ]
+    },
+    {
+      "name": "Klatovy W",
+      "country": null,
+      "aliases": [
+        "Klatovy N",
+        "Klatovy Ž",
+        "Κλατόβι Γ",
+        "Клатови W"
       ]
     },
     {
@@ -105191,7 +105900,8 @@
         "Коньяспор",
         "Коньяспор",
         "Коняспор",
-        "Чемпионат Турции. Прямая трансляция. \"Коньяспор"
+        "Чемпионат Турции. Прямая трансляция. \"Коньяспор",
+        "קוניאספור"
       ]
     },
     {
@@ -106332,6 +107042,15 @@
       ]
     },
     {
+      "name": "Kozlov S.",
+      "country": null,
+      "aliases": [
+        "Κοζλόφ Σ. (Ηπα)",
+        "Козлов С.",
+        "Козлов С. (Сша)"
+      ]
+    },
+    {
       "name": "Kozuf Gevgelija",
       "country": null,
       "aliases": [
@@ -106980,6 +107699,15 @@
         "Κρούγκερ Μ. (Ηπα)",
         "Крюгер М.",
         "Крюгер М. (Сша)"
+      ]
+    },
+    {
+      "name": "Krueger M./Papa C.",
+      "country": null,
+      "aliases": [
+        "Κρούγκερ Μ./Πάπα Κ.",
+        "Крюгер М./Papa C.",
+        "Крюгер М./Папа К."
       ]
     },
     {
@@ -108034,6 +108762,14 @@
       ]
     },
     {
+      "name": "Kusuhara Y./Nakagawa S.",
+      "country": null,
+      "aliases": [
+        "Κουσουχάρα Γ./Nakagawa S.",
+        "Кусухара Ю./Накагава С."
+      ]
+    },
+    {
       "name": "Kusy J.",
       "country": null,
       "aliases": [
@@ -109008,6 +109744,7 @@
       "country": null,
       "aliases": [
         "La Cure Waves (Мвр)",
+        "ΛΑ Κιούρ Ουέιβς",
         "ΛΑ Κιούρ Ουέιβς (Μακ)",
         "Ла Кюр Вейвз",
         "Ла Кюр Уейвс"
@@ -109560,6 +110297,14 @@
       ]
     },
     {
+      "name": "Lajong",
+      "country": null,
+      "aliases": [
+        "Λαϊόνγκ",
+        "Ладжонг"
+      ]
+    },
+    {
       "name": "Lajovic D.",
       "country": null,
       "aliases": [
@@ -109598,6 +110343,15 @@
         "Лактаси",
         "Лактаси",
         "Лакташі"
+      ]
+    },
+    {
+      "name": "Lalami Laaroussi Y.",
+      "country": null,
+      "aliases": [
+        "Λάλαμι Λααρουσί Γ. (Mαρ)",
+        "Лалами Лаарусси Ю. (Мар)",
+        "Лаламі Лааруссі Ю."
       ]
     },
     {
@@ -111219,6 +111973,7 @@
         "LECCE",
         "Labdarúgás: Olasz Bajnokság Serie A: Lecce",
         "Lecce",
+        "Serie A Lecce",
         "Serie A, 5. kolo, Milán - Lecce",
         "Serie A, 7. kolo, Udinese - Lecce",
         "Serie A, 9. kolo, Frosinone - Lecce",
@@ -112642,6 +113397,13 @@
       ]
     },
     {
+      "name": "Leong M. W. K./Pankin S.",
+      "country": null,
+      "aliases": [
+        "Леонг М. В. К./Панькін С."
+      ]
+    },
+    {
       "name": "Leong M. W. K./Shiraishi H.",
       "country": null,
       "aliases": [
@@ -113169,6 +113931,7 @@
         "Леванте",
         "Леванте",
         "Леванте. Прямая трансляция. В перерыве Спорт-центр",
+        "Футбол. Чемпионат Испании. Ла Лига. 11-й тур. Леванте",
         "Футбол. Чемпионат Испании. Ла Лига. 8-й тур. Леванте",
         "Футбол. Чемпионат Испании. Прямая трансляция. \"Леванте",
         "Чемпионат Испании. Прямая трансляция. \"Леванте"
@@ -115960,6 +116723,15 @@
       ]
     },
     {
+      "name": "Llewellyn S.",
+      "country": null,
+      "aliases": [
+        "Llewellyn S. (Сша)",
+        "Λβέβελιν Σ. (Ηπα)",
+        "Ллюеллін С."
+      ]
+    },
+    {
       "name": "Llinares Domingo L.",
       "country": null,
       "aliases": [
@@ -118694,7 +119466,8 @@
         "Μακάμπι Ναζαρέτ",
         "М. Назарет",
         "М. Назарет",
-        "Маккаби Назарет"
+        "Маккаби Назарет",
+        "מכבי אחי נצרת"
       ]
     },
     {
@@ -120054,6 +120827,15 @@
       ]
     },
     {
+      "name": "Magadan A./Zeballos F.",
+      "country": null,
+      "aliases": [
+        "Magadan A./Σεμπάλος Φ.",
+        "Magadan A./Себальос Ф.",
+        "Магадан А./Себальос Ф."
+      ]
+    },
+    {
       "name": "Magallanes",
       "country": null,
       "aliases": [
@@ -120174,6 +120956,15 @@
         "Магреб Фес",
         "Магреб Фес (Мар)",
         "Магриб Фес"
+      ]
+    },
+    {
+      "name": "Maginley J./Poling K.",
+      "country": null,
+      "aliases": [
+        "Μαγκίνλεϊ Ζ./Πόλινγκ Κ.",
+        "Магинли Дж./Poling K.",
+        "Магінлі Дж./Полінг К."
       ]
     },
     {
@@ -120434,6 +121225,7 @@
         "1. FSV Mainz 05",
         "1. FSV Mainz 05",
         "Bundesliga. \"Mainz",
+        "FSV Mainz 05",
         "FSV Mainz 05",
         "MAINZ",
         "Magonza",
@@ -123581,6 +124373,15 @@
       ]
     },
     {
+      "name": "Martinez L. D./Nedunchezhiyan J.",
+      "country": null,
+      "aliases": [
+        "Μαρτίνεθ Λ. Ν./Νεντουντσετζιγιάν Γ.",
+        "Мартинес Л.-Д./Недунчежиан Дж.",
+        "Мартінес Л. Д./Недунчежиян Дж."
+      ]
+    },
+    {
       "name": "Martinez L. D./Rybakov A.",
       "country": null,
       "aliases": [
@@ -124083,6 +124884,15 @@
         "Ματσούντα Ρ./Ουακάα Α.",
         "Мацуда Р./Оуака А.",
         "Мацуда Р./Уакаа А."
+      ]
+    },
+    {
+      "name": "Matsui T./Ramanathan R.",
+      "country": null,
+      "aliases": [
+        "Ματσούι T./Ραμαναθάν Ρ.",
+        "Мацуи Т./Раманатан Р.",
+        "Мацуї Т./Раманатан Р."
       ]
     },
     {
@@ -124951,6 +125761,14 @@
       ]
     },
     {
+      "name": "Mec Maraba U20",
+      "country": null,
+      "aliases": [
+        "Μεκ Μαράμπα U20",
+        "Мек Мараба U20"
+      ]
+    },
+    {
       "name": "Mecarelli M.",
       "country": null,
       "aliases": [
@@ -125673,6 +126491,7 @@
         "Μέμφις Γκρίζλις",
         "Мемфис Гриззлис",
         "ממפיס",
+        "ממפיס, עונה סדירה",
         "ממפיס, קדם עונה"
       ]
     },
@@ -126457,7 +127276,8 @@
       "name": "Mexico 3x3 W",
       "country": null,
       "aliases": [
-        "Meksiko 3x3 W"
+        "Meksiko 3x3 W",
+        "Μεξικό 3x3 W"
       ]
     },
     {
@@ -126809,6 +127629,15 @@
         "Μίκελσεν Α. (Ηπα)",
         "Микельсен А. (Сша)",
         "Мікелсен А."
+      ]
+    },
+    {
+      "name": "Michelsen A./Van De Zandschulp B.",
+      "country": null,
+      "aliases": [
+        "Μίκελσεν Α./Βαν ντε Ζάντσκουλπ Μ.",
+        "Микельсен А./Ван де Зандсхюлп Б.",
+        "Мікелсен А./Ван Де Зандсхулп Б."
       ]
     },
     {
@@ -127391,6 +128220,16 @@
         "Milic O. (Сер)",
         "Μίλιτς Ο. (Σερ)",
         "Мілич О."
+      ]
+    },
+    {
+      "name": "Milic O./Poljicak M.",
+      "country": null,
+      "aliases": [
+        "Milic O./Poljičak M.",
+        "Milic O./Поличак М.",
+        "Μίλιτς Ο./Πόλιτσακ Μ.",
+        "Мілич О./Польїчак М."
       ]
     },
     {
@@ -128646,6 +129485,16 @@
         "Μόκπο",
         "Мокпо",
         "Мокпо"
+      ]
+    },
+    {
+      "name": "Mokre W",
+      "country": null,
+      "aliases": [
+        "Mokre N",
+        "Mokre Ž",
+        "Μόκρε Γ",
+        "Мокре W"
       ]
     },
     {
@@ -130821,6 +131670,16 @@
       ]
     },
     {
+      "name": "Motorlet Prague W",
+      "country": null,
+      "aliases": [
+        "Motorlet Prague Ž",
+        "Motorlet Praha N",
+        "Μότορλετ Πράγας Γ",
+        "Моторлет Прага W"
+      ]
+    },
+    {
       "name": "Motril",
       "country": null,
       "aliases": [
@@ -132590,6 +133449,31 @@
       ]
     },
     {
+      "name": "Naegohyang W",
+      "country": null,
+      "aliases": [
+        "Naegohyang (Ж)",
+        "Naegohyang D",
+        "Naegohyang D",
+        "Naegohyang F",
+        "Naegohyang F",
+        "Naegohyang F",
+        "Naegohyang F",
+        "Naegohyang F",
+        "Naegohyang K",
+        "Naegohyang K",
+        "Naegohyang K",
+        "Naegohyang N",
+        "Naegohyang V",
+        "Naegohyang Ž",
+        "Naegohyang Ž",
+        "Naegohyang Ž",
+        "Ναεγκοχιάνγκ Γ",
+        "Негох'янг Ж",
+        "Негоян W"
+      ]
+    },
+    {
       "name": "Naesby",
       "country": null,
       "aliases": [
@@ -132717,6 +133601,7 @@
         "Нафтан",
         "Нафтан",
         "Нафтан (Новополоцк). Прямая трансляция",
+        "Нафтан (Новополоцк). Прямая трансляция. В перерыве Дай пять",
         "Нафтан-Новополоцк"
       ]
     },
@@ -133016,7 +133901,9 @@
       "aliases": [
         "Nakashima",
         "Νακασίμα Μ. (Ηπα)",
+        "Νακασίμα Μ. Ν. (Ηπα)",
         "Накасима Б. (Сша)",
+        "Накасіма Б.",
         "Накашима Б."
       ]
     },
@@ -133920,6 +134807,15 @@
       ]
     },
     {
+      "name": "Navarro M. F.",
+      "country": null,
+      "aliases": [
+        "Ναβάρο Μ. Φ. (Μεξ)",
+        "Наварро М. (Мек)",
+        "Наварро М. Ф."
+      ]
+    },
+    {
       "name": "Navbahor Namangan",
       "country": null,
       "aliases": [
@@ -133954,6 +134850,15 @@
         "Ναβόνε Μ. (Αργ)",
         "Навоне М.",
         "Навоне М. (Арг)"
+      ]
+    },
+    {
+      "name": "Navone M./Tabilo A.",
+      "country": null,
+      "aliases": [
+        "Ναβόνε Μ./Ταμπίλο Α.",
+        "Навоне М./Табило А.",
+        "Навоне М./Табіло А."
       ]
     },
     {
@@ -134974,6 +135879,15 @@
         "Νεμάγιερ Λ. (Αυτ)",
         "Ноймайер Л. (Авт)",
         "Ноймаєр Л."
+      ]
+    },
+    {
+      "name": "Neumayer L./Rodionov J.",
+      "country": null,
+      "aliases": [
+        "Νεμάγιερ Λ./Ροντιόνοφ Γ.",
+        "Ноймайер Л./Родионов Ю.",
+        "Ноймаєр Л./Родіонов Ю."
       ]
     },
     {
@@ -136670,7 +137584,9 @@
       "country": null,
       "aliases": [
         "Νίσβα",
-        "Низва"
+        "Низва",
+        "Низва",
+        "Нізва"
       ]
     },
     {
@@ -141239,6 +142155,7 @@
       "aliases": [
         " ΟΛΥΜΠΙΑΚΟΣ",
         " ΟΛΥΜΠΙΑΚΟΣ",
+        "Eirolīga. Olympiacos",
         "Eurolygos rungtynės. \"Olympiacos",
         "Eurolygos supertaurė. \"Olympiacos",
         "FINALE: Olympiacos",
@@ -142816,6 +143733,15 @@
       ]
     },
     {
+      "name": "Osborne A.",
+      "country": null,
+      "aliases": [
+        "Όσμπορν Α. (Aυσ)",
+        "Осборн А.",
+        "Осборн А. (Авс)"
+      ]
+    },
+    {
       "name": "Osborne A./Penickova K.",
       "country": null,
       "aliases": [
@@ -143933,6 +144859,7 @@
         "PAOK -19",
         "PAOK -19",
         "PAOK Sub-19",
+        "ΠΑΟΚ U19",
         "ΠΑΟΚ U19",
         "ПАОК U19",
         "ПАОК U19",
@@ -145212,6 +146139,14 @@
       ]
     },
     {
+      "name": "Palmacia",
+      "country": null,
+      "aliases": [
+        "Παλμάτσια",
+        "Палмасия"
+      ]
+    },
+    {
       "name": "Palmeira U20",
       "country": null,
       "aliases": [
@@ -145374,6 +146309,14 @@
         "Памба",
         "Памба",
         "Памба"
+      ]
+    },
+    {
+      "name": "Pamplemousses",
+      "country": null,
+      "aliases": [
+        "Παμπλεμουσέ",
+        "Памплемус"
       ]
     },
     {
@@ -146909,6 +147852,7 @@
       "name": "Partizan Mozzart Bet",
       "country": null,
       "aliases": [
+        "Belgrado „Partizan",
         "PARTIZAN",
         "Partizan",
         "Partizan",
@@ -147449,6 +148393,14 @@
       "aliases": [
         "Πάβλονταρ",
         "Иртыш"
+      ]
+    },
+    {
+      "name": "Pavlodar W",
+      "country": null,
+      "aliases": [
+        "Pavlodar Ž",
+        "Πάβλονταρ Γ"
       ]
     },
     {
@@ -148191,6 +149143,7 @@
         "TFF 1.LİG \" Orfa Yapı Pendikspor Futbol",
         "TFF 1.LİG \" Orfa Yapı Pendikspor Futbol A.Ş",
         "TRENDYOL 1. LİG FUTBOL KARŞILAŞMASI 5. HAFTA ORFA YAPI PENDİKSPOR FUTBOL",
+        "TRENDYOL 1.LİG FUTBOL KARŞILAŞMASI 12.HAFTA ORFA YAPI PENDİKSPOR FUTBOL",
         "Πεντικσπόρ",
         "Πεντικσπόρ (Tου)",
         "Пендикспор",
@@ -149170,6 +150123,14 @@
         "Petit L. (Μον)",
         "Petit L. (Мнк)",
         "Петі Л."
+      ]
+    },
+    {
+      "name": "Petite Riviere",
+      "country": null,
+      "aliases": [
+        "Πετίτ Ριβιέρ",
+        "Петит Ривиер"
       ]
     },
     {
@@ -150892,6 +151853,15 @@
         "Пласа Колония",
         "Пласа Колония",
         "Пласа Колонія"
+      ]
+    },
+    {
+      "name": "Plekhanova D.",
+      "country": null,
+      "aliases": [
+        "Plekhanova D. (Кан)",
+        "Πλεκάνοβα Ν. (Καν)",
+        "Плеханова Д."
       ]
     },
     {
@@ -152653,6 +153623,15 @@
       ]
     },
     {
+      "name": "Poritskyi A./Ursu V.",
+      "country": null,
+      "aliases": [
+        "Poritskyi A./Ούρσου Β.",
+        "Poritskyi A./Урсу В.",
+        "Порицький А./Урсу В."
+      ]
+    },
+    {
       "name": "Porongos",
       "country": null,
       "aliases": [
@@ -152720,6 +153699,7 @@
       "name": "Port Louis",
       "country": null,
       "aliases": [
+        "Πορτ Λούις",
         "Πορτ Λούις (Μακ)",
         "Порт Луи (Мвр)",
         "Порт Луис",
@@ -152991,6 +153971,7 @@
       "name": "Portland Trail Blazers",
       "country": null,
       "aliases": [
+        "Portland Trail Blazers",
         "Portland TrailBlazers",
         "Πόρτλαντ Τρέιλ Μπλέιζερς",
         "Πόρτλαντ Τρέιλ Μπλέιζερς (Ηπα)",
@@ -154343,6 +155324,16 @@
       ]
     },
     {
+      "name": "Pribram W",
+      "country": null,
+      "aliases": [
+        "Pribram N",
+        "Pribram Ž",
+        "Πρίμπραμ Γ",
+        "Прибрам W"
+      ]
+    },
+    {
       "name": "Price G.",
       "country": null,
       "aliases": [
@@ -154540,6 +155531,7 @@
       "name": "Prishtina",
       "country": null,
       "aliases": [
+        "Albi Mall Superliga Prishtina",
         "FC Prishtina",
         "Prishtina",
         "Priština",
@@ -155185,6 +156177,14 @@
         "Пуерто Рико",
         "Пуерто-Рико",
         "Пуэрто-Рико"
+      ]
+    },
+    {
+      "name": "Puerto Rico 3x3",
+      "country": null,
+      "aliases": [
+        "Portoriko 3x3",
+        "Πουέρτο Ρίκο 3x3"
       ]
     },
     {
@@ -159130,7 +160130,9 @@
       "country": null,
       "aliases": [
         "Ρεάλ Κασμίρ",
-        "Реал Кашмир"
+        "Реал Кашмир",
+        "Реал Кашмир",
+        "Реал Кашмір"
       ]
     },
     {
@@ -159421,6 +160423,7 @@
       "aliases": [
         "Gilloise-Real Sociedad",
         "LALIGA EA SPORTS (T26/27): Real Sociedad",
+        "La Liga Real Sociedad",
         "LaLiga EA Sports: Real Sociedad",
         "LaLiga. \"Real Sociedad",
         "Labdarúgás: La Liga: Real Sociedad",
@@ -161228,7 +162231,10 @@
       "aliases": [
         "Rinderkech",
         "Rinderknech",
-        "rinderknech"
+        "rinderknech",
+        "Ρίντερκνετς Α. (Γαλ)",
+        "Рендеркнек А.",
+        "Риндеркнех А. (Фра)"
       ]
     },
     {
@@ -161517,6 +162523,14 @@
         "Rivet M. (Γαλ)",
         "Rivet M. (Фра)",
         "Ріве М."
+      ]
+    },
+    {
+      "name": "Riviere Du Rempart",
+      "country": null,
+      "aliases": [
+        "Ριβιέρ Ντου Ρεμπάρτ",
+        "Ривиер ду Ремпарт"
       ]
     },
     {
@@ -163380,6 +164394,15 @@
         "Рубин Ялта",
         "Рубин Ялта",
         "Рубін Ялта"
+      ]
+    },
+    {
+      "name": "Rubini Garcia Belaunde A.",
+      "country": null,
+      "aliases": [
+        "Rubini Garcia Belaunde A. (Περ)",
+        "Rubini Garcia Belaunde A. (Пер)",
+        "Рубіні Гарсія Белаунде А."
       ]
     },
     {
@@ -167010,6 +168033,14 @@
       ]
     },
     {
+      "name": "Samaleswari SC",
+      "country": null,
+      "aliases": [
+        "Σαμαλεσβάρι",
+        "Самалесвари СК"
+      ]
+    },
+    {
       "name": "Samara",
       "country": null,
       "aliases": [
@@ -167162,6 +168193,7 @@
       "aliases": [
         "Šamorín",
         "Šamorín",
+        "Βράμπλε - Σαμορίν",
         "Σαμορίν",
         "Саморин",
         "Шаморин",
@@ -171422,6 +172454,15 @@
       ]
     },
     {
+      "name": "Seggerman R./Tien L.",
+      "country": null,
+      "aliases": [
+        "Seggerman R./Тиен Л.",
+        "Σέγκερμαν Ρ./Τιέν Λ.",
+        "Сеггерман Р./Тін Л."
+      ]
+    },
+    {
       "name": "Seggerman R./Wang Z.",
       "country": null,
       "aliases": [
@@ -172942,6 +173983,7 @@
       "name": "Shabab Al Ahli Dubai",
       "country": null,
       "aliases": [
+        "Shabab Ahli",
         "Shabab Al Ahli",
         "Шабаб Ал Ахли",
         "Шабаб Аль Ахли",
@@ -175476,6 +176518,21 @@
         "Σινγκ Ν. (Iνδ)",
         "Сингх Д. (Инд)",
         "Сінг Д."
+      ]
+    },
+    {
+      "name": "Singh D. (Ind) RETIRED",
+      "country": null,
+      "aliases": [
+        "Singh D. (Ind) FELADTA",
+        "Singh D. (Ind) GERI ÇEKILDI",
+        "Singh D. (Ind) KRECZ",
+        "Singh D. (Ind) RETRAS",
+        "Singh D. (Ind) SKREČ",
+        "Singh D. (Ind) SKREČ",
+        "Σινγκ Ν. (Iνδ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Сингх Д. (Инд) ОТКАЗ",
+        "Сінг Д. (Ind) ВІДМОВА"
       ]
     },
     {
@@ -178855,6 +179912,15 @@
       ]
     },
     {
+      "name": "Sousa Salazar N.",
+      "country": null,
+      "aliases": [
+        "Sousa Salazar N. (Μεξ)",
+        "Sousa Salazar N. (Мек)",
+        "Соуса Саласар Н."
+      ]
+    },
+    {
       "name": "Sousense",
       "country": null,
       "aliases": [
@@ -180750,6 +181816,14 @@
         "Σπορτ Μπελέμ",
         "Спорт Белем",
         "Спорт Белен"
+      ]
+    },
+    {
+      "name": "Sport Belem U20",
+      "country": null,
+      "aliases": [
+        "Σπορτ Μπελέμ U20",
+        "Спорт Белем U20"
       ]
     },
     {
@@ -182865,6 +183939,7 @@
       "name": "Stenhousemuir",
       "country": null,
       "aliases": [
+        "2026/27,Stenhousemuir",
         "Stenhousemuir",
         "Στενχάουσμιουρ",
         "Στενχαούσμιουρ",
@@ -184782,6 +185857,14 @@
         "Σάνσαϊν Κόαστ Ουόντερερς",
         "Саншайн-Кост Уондерерз",
         "Съншайн Коуст Уондърърс"
+      ]
+    },
+    {
+      "name": "Sunshine Rabbits W",
+      "country": null,
+      "aliases": [
+        "Sunshine Rabbits Ž",
+        "Σάνσαϊν Ράμπιτς Γ"
       ]
     },
     {
@@ -187635,6 +188718,7 @@
       "country": null,
       "aliases": [
         "Taiwan Beer Leopards (Твн)",
+        "Ταίβάν Μπιρ Λέοπαρντς",
         "Ταίβάν Μπιρ Λέοπαρντς (Ταϊ)"
       ]
     },
@@ -192189,6 +193273,15 @@
       ]
     },
     {
+      "name": "Torres Murcia M. C.",
+      "country": null,
+      "aliases": [
+        "Torres Murcia M. C. (Кол)",
+        "Τόρες Μουρθία Μ. Κ. (Κολ)",
+        "Торрес Мурсія М. К."
+      ]
+    },
+    {
       "name": "Torres T.",
       "country": null,
       "aliases": [
@@ -192513,6 +193606,14 @@
         "Тояма",
         "Тояма",
         "Тояма"
+      ]
+    },
+    {
+      "name": "Toyota Antelopes W",
+      "country": null,
+      "aliases": [
+        "Toyota Antelopes Ž",
+        "Τογιότα Άντελοπς Γ"
       ]
     },
     {
@@ -192928,6 +194029,16 @@
       ]
     },
     {
+      "name": "Trebic W",
+      "country": null,
+      "aliases": [
+        "Trebic N",
+        "Trebic Ž",
+        "Χοράτσκα Σλάβια Γ",
+        "Требич W"
+      ]
+    },
+    {
       "name": "Trebon",
       "country": null,
       "aliases": [
@@ -193313,6 +194424,7 @@
       "name": "Triglav",
       "country": null,
       "aliases": [
+        "Triglav",
         "Τρίγκλαβ Γκορένισκα",
         "Триглав",
         "Триглав",
@@ -194477,6 +195589,14 @@
         "Turan",
         "Τουράν (Αζε)",
         "Туран (Азе)"
+      ]
+    },
+    {
+      "name": "Turan W",
+      "country": null,
+      "aliases": [
+        "Turan Ž",
+        "Τούραν Γ"
       ]
     },
     {
@@ -196520,6 +197640,7 @@
       "aliases": [
         "COPPA ITALIA 2.TUR FUTBOL KARŞILAŞMASI UDINESE",
         "Fotbal: Udinese",
+        "Serie A Udinese",
         "Serie A, 6. kolo, Turín - Udinese",
         "Serie A. \"Udinese",
         "UDINESE",
@@ -201490,6 +202611,7 @@
       "name": "Velez Sarsfield",
       "country": null,
       "aliases": [
+        "CA Velez Sarsfield",
         "Vélez Sarsfield",
         "Vélez Sársfield",
         "Βελέζ Σάρσφιλντ",
@@ -201528,6 +202650,15 @@
         "Велим",
         "Велим",
         "Велім"
+      ]
+    },
+    {
+      "name": "Veliz A.",
+      "country": null,
+      "aliases": [
+        "Veliz A. (Εκου)",
+        "Veliz A. (Экв)",
+        "Веліс А."
       ]
     },
     {
@@ -201807,6 +202938,13 @@
         "Венесуела",
         "Венесуэла",
         "Венецуела"
+      ]
+    },
+    {
+      "name": "Venezuela 3x3 W",
+      "country": null,
+      "aliases": [
+        "Βενεζουέλα 3x3 W"
       ]
     },
     {
@@ -203229,6 +204367,15 @@
       ]
     },
     {
+      "name": "Vilar G.",
+      "country": null,
+      "aliases": [
+        "Vilar G. (Сша)",
+        "Βιλάρ Γ. (Ηπα)",
+        "Вілар Г."
+      ]
+    },
+    {
       "name": "Vilassar de Mar",
       "country": null,
       "aliases": [
@@ -203396,6 +204543,15 @@
       ]
     },
     {
+      "name": "Villanueva G./Zarate C. M.",
+      "country": null,
+      "aliases": [
+        "Βιλανουέβα Γ./Τζάρατε Κ. Μ.",
+        "Виллануэва Г./Zarate C. M.",
+        "Вільянуева Г./Сарате К. М."
+      ]
+    },
+    {
       "name": "Villanyi",
       "country": null,
       "aliases": [
@@ -203445,6 +204601,7 @@
         "Футбол. Чемпионат Испании. Ла Лига. 11-й тур. Вильярреал",
         "Футбол. Чемпионат Испании. Ла Лига. 4-й тур. Вильярреал",
         "Футбол. Чемпионат Испании. Ла-Лига. 5-й тур. Вильярреал",
+        "Футбол. Чемпионат Испании. Прямая трансляция. \"Вильярреал",
         "Чемпионат Испании. Прямая трансляция. \"Вильярреал",
         "ויאריאל"
       ]
@@ -204485,6 +205642,16 @@
         "Влашим",
         "Влашим",
         "Влашим (Чех)"
+      ]
+    },
+    {
+      "name": "Vlasim W",
+      "country": null,
+      "aliases": [
+        "Vlasim N",
+        "Vlasim Ž",
+        "Βλάσιμ Γ",
+        "Влашим W"
       ]
     },
     {
@@ -205938,7 +207105,8 @@
       "name": "Wanderers Durazno",
       "country": null,
       "aliases": [
-        "Ουόντερερς Ντουράζνο"
+        "Ουόντερερς Ντουράζνο",
+        "Вондерерс Дурасно"
       ]
     },
     {
@@ -211422,6 +212590,7 @@
       "name": "Zalgiris Kaunas",
       "country": null,
       "aliases": [
+        "Kauno „Žalgiris",
         "Kauno „Žalgiris“",
         "Zalgiris",
         "Zalgiris Kaunas",
@@ -213076,6 +214245,16 @@
       ]
     },
     {
+      "name": "Zlichov W",
+      "country": null,
+      "aliases": [
+        "Zlichov N",
+        "Zlichov Ž",
+        "Ζλιχόφ Γ",
+        "Злихов W"
+      ]
+    },
+    {
       "name": "Zlicin",
       "country": null,
       "aliases": [
@@ -213252,6 +214431,7 @@
         "Zrinjski -19",
         "Zrinjski Mostar U19",
         "Zrinjski Sub-19",
+        "Ζρίνσκι U19",
         "Ζρινιέσκι U19",
         "Зрински U19",
         "Зриньски Мостар U19",
@@ -214240,6 +215420,7 @@
         "CAMPEONATO DA ARGENTINA",
         "Liga Argentina. Torneo Clausura",
         "Liga Profesional Clausura (13. Spieltag)",
+        "Liga Profesional Clausura (15. Spieltag)",
         "ΑΡΓΕΝΤΙΝΗ: Λίγκα Προφεσιονάλ - Κλαουζούρα",
         "АРГЕНТИНА: Лига Професиональ - Клаусура",
         "АРГЕНТИНА: Прімера - Клаусура",
@@ -215337,6 +216518,23 @@
       ]
     },
     {
+      "name": "ATP - DOUBLES: Basel (Switzerland), hard (indoor)",
+      "slug": "atp-doubles-basel-switzerland-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ATP - DEBEL: Basel (Szwajcaria), twarda (w hali)",
+        "ATP - DUBLU: Basel (Elveţia), suprafață dură (sală)",
+        "ATP - PÁROS: Basel (Svájc), kemény (fedettpályás)",
+        "ATP - ÇİFT: Basel (İsviçre), sert (kapalı)",
+        "ATP - ČTYŘHRY: Basilej (Švýcarsko), tvrdý povrch (hala)",
+        "ATP - ŠTVORHRY: Bazilej (Švajčiarsko), tvrdý povrch (hala)",
+        "ATP - ΔΙΠΛΑ: Βασιλεία (Ελβετία), σκληρή (κλειστό)",
+        "ATP - ПАРНИЙ РОЗРЯД: Базель (Швейцарія), хард (indoor)",
+        "ATP - ПАРНЫЙ РАЗРЯД: Базель (Швейцария), хард (в помещении)"
+      ]
+    },
+    {
       "name": "ATP - DOUBLES: Beijing (China), hard",
       "slug": "atp-doubles-beijing-china-hard",
       "sport": null,
@@ -215468,6 +216666,40 @@
       ]
     },
     {
+      "name": "ATP - DOUBLES: Vienna (Austria) - Qualification, hard (indoor)",
+      "slug": "atp-doubles-vienna-austria-qualification-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ATP - DEBEL: Vienna (Austria) - Kwalifikacje, twarda (w hali)",
+        "ATP - DUBLU: Vienna (Austria) - Calificări, suprafață dură (sală)",
+        "ATP - PÁROS: Bécs (Ausztria) - Selejtező, kemény (fedettpályás)",
+        "ATP - ÇİFT: Vienna (Avusturya) - Elemeler, sert (kapalı)",
+        "ATP - ČTYŘHRY: Vídeň (Rakousko) - Kvalifikace, tvrdý povrch (hala)",
+        "ATP - ŠTVORHRY: Viedeň (Rakúsko) - kvalifikácia, tvrdý povrch (hala)",
+        "ATP - ΔΙΠΛΑ: Βιέννη (Αυστρία) - Προκριματικά, σκληρή (κλειστό)",
+        "ATP - ПАРНИЙ РОЗРЯД: Відень (Австрія) - Qualification, хард (indoor)",
+        "ATP - ПАРНЫЙ РАЗРЯД: Вена (Австрия) - квалификация, хард (в помещении)"
+      ]
+    },
+    {
+      "name": "ATP - DOUBLES: Vienna (Austria), hard (indoor)",
+      "slug": "atp-doubles-vienna-austria-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ATP - DEBEL: Vienna (Austria), twarda (w hali)",
+        "ATP - DUBLU: Vienna (Austria), suprafață dură (sală)",
+        "ATP - PÁROS: Bécs (Ausztria), kemény (fedettpályás)",
+        "ATP - ÇİFT: Vienna (Avusturya), sert (kapalı)",
+        "ATP - ČTYŘHRY: Vídeň (Rakousko), tvrdý povrch (hala)",
+        "ATP - ŠTVORHRY: Viedeň (Rakúsko), tvrdý povrch (hala)",
+        "ATP - ΔΙΠΛΑ: Βιέννη (Αυστρία), σκληρή (κλειστό)",
+        "ATP - ПАРНИЙ РОЗРЯД: Відень (Австрія), хард (indoor)",
+        "ATP - ПАРНЫЙ РАЗРЯД: Вена (Австрия), хард (в помещении)"
+      ]
+    },
+    {
       "name": "ATP - SINGLES: Almaty (Kazakhstan) - Qualification, hard (indoor)",
       "slug": "atp-singles-almaty-kazakhstan-qualification-hard-indoor",
       "sport": "T",
@@ -215503,6 +216735,7 @@
         "ATP - ОДИНОЧНИЙ РОЗРЯД: Алмати (Казахстан), хард (indoor)",
         "ATP - ОДИНОЧНЫЙ РАЗРЯД: Almaty (Казахстан), хард (в помещении)",
         "ATP 250 Almaty",
+        "FINALE",
         "Torneo de Almaty"
       ]
     },
@@ -215521,6 +216754,23 @@
         "ATP - ΜΟΝΑ: Βασιλεία (Ελβετία) - Προκριματικά, σκληρή (κλειστό)",
         "ATP - ОДИНОЧНИЙ РОЗРЯД: Базель (Швейцарія) - Qualification, хард (indoor)",
         "ATP - ОДИНОЧНЫЙ РАЗРЯД: Базель (Швейцария) - квалификация, хард (в помещении)"
+      ]
+    },
+    {
+      "name": "ATP - SINGLES: Basel (Switzerland), hard (indoor)",
+      "slug": "atp-singles-basel-switzerland-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ATP - DVOJHRY: Bazilej (Švajčiarsko), tvrdý povrch (hala)",
+        "ATP - DVOUHRY: Basilej (Švýcarsko), tvrdý povrch (hala)",
+        "ATP - EGYÉNI: Basel (Svájc), kemény (fedettpályás)",
+        "ATP - SIMPLU: Basel (Elveţia), suprafață dură (sală)",
+        "ATP - SINGIEL: Bazylea (Szwajcaria), twarda (w hali)",
+        "ATP - TEK: Basel (İsviçre), sert (kapalı)",
+        "ATP - ΜΟΝΑ: Βασιλεία (Ελβετία), σκληρή (κλειστό)",
+        "ATP - ОДИНОЧНИЙ РОЗРЯД: Базель (Швейцарія), хард (indoor)",
+        "ATP - ОДИНОЧНЫЙ РАЗРЯД: Базель (Швейцария), хард (в помещении)"
       ]
     },
     {
@@ -215583,6 +216833,7 @@
         "ATP - ОДИНОЧНЫЙ РАЗРЯД: Brussels (Бельгия), хард (в помещении)",
         "ATP 250 Brussels",
         "ATP BRUSSELS",
+        "FINALE",
         "Torneo de Bruselas"
       ]
     },
@@ -215666,6 +216917,7 @@
         "ATP - ОДИНОЧНИЙ РОЗРЯД: Lyon (Франція), хард (indoor)",
         "ATP - ОДИНОЧНЫЙ РАЗРЯД: Lyon (Франция), хард (в помещении)",
         "ATP 250 - Lyon",
+        "FINALE",
         "Tenis ATP 250 Lyon",
         "Torneo de Lyon"
       ]
@@ -218660,6 +219912,17 @@
       ]
     },
     {
+      "name": "BRAZIL: Copa Fares Lopes",
+      "slug": "brazil-copa-fares-lopes",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "BRAZÍLIA: Copa Fares Lopes",
+        "ΒΡΑΖΙΛΙΑ: Κόπα Φάρες Λόπεζ",
+        "БРАЗИЛИЯ: Копа Фареш Лопеш"
+      ]
+    },
+    {
       "name": "BRAZIL: Copa Parana",
       "slug": "brazil-copa-parana",
       "sport": "F",
@@ -220689,6 +221952,23 @@
       ]
     },
     {
+      "name": "CHALLENGER MEN - DOUBLES: Brest (France), hard (indoor)",
+      "slug": "challenger-men-doubles-brest-france-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - ÇİFT: Brest (Fransa), sert (kapalı)",
+        "CHALLENGER FÉRFI - PÁROS: Bressuire (Franciaország), kemény (fedettpályás)",
+        "CHALLENGER MASCULIN - DUBLU: Brest (Franţa), suprafață dură (sală)",
+        "CHALLENGER MUŽI - ČTYŘHRY: Brest (Francie), tvrdý povrch (hala)",
+        "CHALLENGER MUŽI - ŠTVORHRY: Brest (Francúzsko), tvrdý povrch (hala)",
+        "CHALLENGER MĘŻCZYŹNI - DEBEL: Brest (Francja), twarda (w hali)",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΔΙΠΛΑ: Μπρεσούιρ (Γαλλία), σκληρή (κλειστό)",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: Брессюир (Франция), хард (в помещении)",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: Брессюїр (Франція), хард (indoor)"
+      ]
+    },
+    {
       "name": "CHALLENGER MEN - DOUBLES: Cali (Colombia), clay",
       "slug": "challenger-men-doubles-cali-colombia-clay",
       "sport": "T",
@@ -220811,6 +222091,23 @@
       ]
     },
     {
+      "name": "CHALLENGER MEN - DOUBLES: Guayaquil (Ecuador), clay",
+      "slug": "challenger-men-doubles-guayaquil-ecuador-clay",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - ÇİFT: Guayaquil (Ekvador), toprak",
+        "CHALLENGER FÉRFI - PÁROS: Guayaquil (Ecuador), salak",
+        "CHALLENGER MASCULIN - DUBLU: Guayaquil (Ecuador), zgură",
+        "CHALLENGER MUŽI - ČTYŘHRY: Guayaquil (Ekvádor), antuka",
+        "CHALLENGER MUŽI - ŠTVORHRY: Guayaquil (Ekvádor), antuka",
+        "CHALLENGER MĘŻCZYŹNI - DEBEL: Guayaquil (Ekwador), ziemna",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΔΙΠΛΑ: Γκουαγιακίλ (Εκουαδόρ), χώμα",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: Гуаякиль (Эквадор), грунт",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: Гуаякіль (Еквадор), грунт"
+      ]
+    },
+    {
       "name": "CHALLENGER MEN - DOUBLES: Jinan (China), hard",
       "slug": "challenger-men-doubles-jinan-china-hard",
       "sport": "T",
@@ -220896,6 +222193,23 @@
       ]
     },
     {
+      "name": "CHALLENGER MEN - DOUBLES: Ningbo (China), hard",
+      "slug": "challenger-men-doubles-ningbo-china-hard",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - ÇİFT: Ningbo (Çin), sert",
+        "CHALLENGER FÉRFI - PÁROS: Ningbo (Kína), kemény",
+        "CHALLENGER MASCULIN - DUBLU: Ningbo (China), suprafață dură",
+        "CHALLENGER MUŽI - ČTYŘHRY: Ningbo (Čína), tvrdý povrch",
+        "CHALLENGER MUŽI - ŠTVORHRY: Ningbo (Čína), tvrdý povrch",
+        "CHALLENGER MĘŻCZYŹNI - DEBEL: Ningbo (Chiny), twarda",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΔΙΠΛΑ: Νίνγκμπο (Κίνα), σκληρή",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: Нинбо (Китай), хард",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: Нінбо (Китай), хард"
+      ]
+    },
+    {
       "name": "CHALLENGER MEN - DOUBLES: Olbia (Italy), hard",
       "slug": "challenger-men-doubles-olbia-italy-hard",
       "sport": "T",
@@ -220978,6 +222292,40 @@
         "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΔΙΠΛΑ: Σάντα Κρούζ 2 (Βολιβία), χώμα",
         "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: Santa Cruz 2 (Боливия), грунт",
         "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: Santa Cruz 2 (Болівія), грунт"
+      ]
+    },
+    {
+      "name": "CHALLENGER MEN - DOUBLES: Seoul (South Korea), hard",
+      "slug": "challenger-men-doubles-seoul-south-korea-hard",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - ÇİFT: Seoul (Güney Kore), sert",
+        "CHALLENGER FÉRFI - PÁROS: Szöul (Dél-Korea), kemény",
+        "CHALLENGER MASCULIN - DUBLU: Seul (Coreea de Sud), suprafață dură",
+        "CHALLENGER MUŽI - ČTYŘHRY: Soul (Jižní Korea), tvrdý povrch",
+        "CHALLENGER MUŽI - ŠTVORHRY: Soul (Južná Kórea), tvrdý povrch",
+        "CHALLENGER MĘŻCZYŹNI - DEBEL: Seul (Korea Południowa), twarda",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΔΙΠΛΑ: Σεούλ (Νότιος Κορέα), σκληρή",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: Сеул (Южная Корея), хард",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: Сеул (Південна Корея), хард"
+      ]
+    },
+    {
+      "name": "CHALLENGER MEN - DOUBLES: Sioux Falls (USA), hard (indoor)",
+      "slug": "challenger-men-doubles-sioux-falls-usa-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - ÇİFT: Sioux Falls (ABD), sert (kapalı)",
+        "CHALLENGER FÉRFI - PÁROS: Sioux Falls (USA), kemény (fedettpályás)",
+        "CHALLENGER MASCULIN - DUBLU: Sioux Falls (SUA), suprafață dură (sală)",
+        "CHALLENGER MUŽI - ČTYŘHRY: Sioux Falls (USA), tvrdý povrch (hala)",
+        "CHALLENGER MUŽI - ŠTVORHRY: Sioux Falls (USA), tvrdý povrch (hala)",
+        "CHALLENGER MĘŻCZYŹNI - DEBEL: Sioux Falls (USA), twarda (w hali)",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΔΙΠΛΑ: Σιού Φολς (ΗΠΑ), σκληρή (κλειστό)",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: Sioux Falls (США), хард (в помещении)",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: Су-Фолс (США), хард (indoor)"
       ]
     },
     {
@@ -221114,6 +222462,23 @@
         "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Μπρεστ (Γαλλία) - Προκριματικά, σκληρή (κλειστό)",
         "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Brest (Франция) - квалификация, хард (в помещении)",
         "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Брест (Франція) - Qualification, хард (indoor)"
+      ]
+    },
+    {
+      "name": "CHALLENGER MEN - SINGLES: Brest (France), hard (indoor)",
+      "slug": "challenger-men-singles-brest-france-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - TEK: Brest (Fransa), sert (kapalı)",
+        "CHALLENGER FÉRFI - EGYÉNI: Brest (Franciaország), kemény (fedettpályás)",
+        "CHALLENGER MASCULIN - SIMPLU: Brest (Franţa), suprafață dură (sală)",
+        "CHALLENGER MUŽI - DVOJHRY: Brest (Francúzsko), tvrdý povrch (hala)",
+        "CHALLENGER MUŽI - DVOUHRY: Brest (Francie), tvrdý povrch (hala)",
+        "CHALLENGER MĘŻCZYŹNI - SINGIEL: Brest (Francja), twarda (w hali)",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Μπρεστ (Γαλλία), σκληρή (κλειστό)",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Brest (Франция), хард (в помещении)",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Брест (Франція), хард (indoor)"
       ]
     },
     {
@@ -221323,6 +222688,40 @@
         "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Γκουανγκτζού (Κίνα), σκληρή",
         "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Чьянчжоу (Китай), хард",
         "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Гуанчжоу (Китай), хард"
+      ]
+    },
+    {
+      "name": "CHALLENGER MEN - SINGLES: Guayaquil (Ecuador) - Qualification, clay",
+      "slug": "challenger-men-singles-guayaquil-ecuador-qualification-clay",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - TEK: Guayaquil (Ekvador) - Elemeler, toprak",
+        "CHALLENGER FÉRFI - EGYÉNI: Guayaquil (Ecuador) - Selejtező, salak",
+        "CHALLENGER MASCULIN - SIMPLU: Guayaquil (Ecuador) - Calificări, zgură",
+        "CHALLENGER MUŽI - DVOJHRY: Guayaquil (Ekvádor) - kvalifikácia, antuka",
+        "CHALLENGER MUŽI - DVOUHRY: Guayaquil (Ekvádor) - Kvalifikace, antuka",
+        "CHALLENGER MĘŻCZYŹNI - SINGIEL: Guayaquil (Ekwador) - Kwalifikacje, ziemna",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Γκουαγιακίλ (Εκουαδόρ) - Προκριματικά, χώμα",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Гуаякиль (Эквадор) - квалификация, грунт",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Гуаякіль (Еквадор) - Qualification, грунт"
+      ]
+    },
+    {
+      "name": "CHALLENGER MEN - SINGLES: Guayaquil (Ecuador), clay",
+      "slug": "challenger-men-singles-guayaquil-ecuador-clay",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - TEK: Guayaquil (Ekvador), toprak",
+        "CHALLENGER FÉRFI - EGYÉNI: Guayaquil (Ecuador), salak",
+        "CHALLENGER MASCULIN - SIMPLU: Guayaquil (Ecuador), zgură",
+        "CHALLENGER MUŽI - DVOJHRY: Guayaquil (Ekvádor), antuka",
+        "CHALLENGER MUŽI - DVOUHRY: Guayaquil (Ekvádor), antuka",
+        "CHALLENGER MĘŻCZYŹNI - SINGIEL: Guayaquil (Ekwador), ziemna",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Γκουαγιακίλ (Εκουαδόρ), χώμα",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Гуаякиль (Эквадор), грунт",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Гуаякіль (Еквадор), грунт"
       ]
     },
     {
@@ -221693,6 +223092,40 @@
       ]
     },
     {
+      "name": "CHALLENGER MEN - SINGLES: Sioux Falls (USA) - Qualification, hard (indoor)",
+      "slug": "challenger-men-singles-sioux-falls-usa-qualification-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - TEK: Sioux Falls (ABD) - Elemeler, sert (kapalı)",
+        "CHALLENGER FÉRFI - EGYÉNI: Sioux Falls (USA) - Selejtező, kemény (fedettpályás)",
+        "CHALLENGER MASCULIN - SIMPLU: Sioux Falls (SUA) - Calificări, suprafață dură (sală)",
+        "CHALLENGER MUŽI - DVOJHRY: Sioux Falls (USA) - kvalifikácia, tvrdý povrch (hala)",
+        "CHALLENGER MUŽI - DVOUHRY: Sioux Falls (USA) - Kvalifikace, tvrdý povrch (hala)",
+        "CHALLENGER MĘŻCZYŹNI - SINGIEL: Sioux Falls (USA) - Kwalifikacje, twarda (w hali)",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Σιού Φολς (ΗΠΑ) - Προκριματικά, σκληρή (κλειστό)",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Sioux Falls (США) - квалификация, хард (в помещении)",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Су-Фолс (США) - Qualification, хард (indoor)"
+      ]
+    },
+    {
+      "name": "CHALLENGER MEN - SINGLES: Sioux Falls (USA), hard (indoor)",
+      "slug": "challenger-men-singles-sioux-falls-usa-hard-indoor",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER ERKEKLER - TEK: Sioux Falls (ABD), sert (kapalı)",
+        "CHALLENGER FÉRFI - EGYÉNI: Sioux Falls (USA), kemény (fedettpályás)",
+        "CHALLENGER MASCULIN - SIMPLU: Sioux Falls (SUA), suprafață dură (sală)",
+        "CHALLENGER MUŽI - DVOJHRY: Sioux Falls (USA), tvrdý povrch (hala)",
+        "CHALLENGER MUŽI - DVOUHRY: Sioux Falls (USA), tvrdý povrch (hala)",
+        "CHALLENGER MĘŻCZYŹNI - SINGIEL: Sioux Falls (USA), twarda (w hali)",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Σιού Φολς (ΗΠΑ), σκληρή (κλειστό)",
+        "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Sioux Falls (США), хард (в помещении)",
+        "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Су-Фолс (США), хард (indoor)"
+      ]
+    },
+    {
       "name": "CHALLENGER MEN - SINGLES: St. Tropez (France), hard",
       "slug": "challenger-men-singles-st-tropez-france-hard",
       "sport": null,
@@ -221924,6 +223357,23 @@
       ]
     },
     {
+      "name": "CHALLENGER WOMEN - SINGLES: Curitiba (Brazil) - Qualification, clay",
+      "slug": "challenger-women-singles-curitiba-brazil-qualification-clay",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER BAYANLAR - TEK: Curitiba (Brezilya) - Elemeler, toprak",
+        "CHALLENGER FEMININ - SIMPLU: Curitiba (Brazilia) - Calificări, zgură",
+        "CHALLENGER KOBIETY - SINGIEL: Curitiba (Brazylia) - Kwalifikacje, ziemna",
+        "CHALLENGER NŐI - EGYÉNI: Curitiba (Brazília) - Selejtező, salak",
+        "CHALLENGER ŽENY - DVOJHRY: Curitiba (Brazília) - kvalifikácia, antuka",
+        "CHALLENGER ŽENY - DVOUHRY: Curitiba (Brazílie) - Kvalifikace, antuka",
+        "ΤΣΑΛΕΝΤΖΕΡ ΓΥΝΑΙΚΩΝ - ΜΟΝΑ: Curitiba (Βραζιλία) - Προκριματικά, χώμα",
+        "ЧЕЛЛЕНДЖЕР ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: Curitiba (Бразилія) - Qualification, грунт",
+        "ЧЕЛЛЕНДЖЕР ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Curitiba (Бразилия) - квалификация, грунт"
+      ]
+    },
+    {
       "name": "CHALLENGER WOMEN - SINGLES: Jingshan (China), hard",
       "slug": "challenger-women-singles-jingshan-china-hard",
       "sport": "T",
@@ -222007,6 +223457,23 @@
         "ΤΣΑΛΕΝΤΖΕΡ ΓΥΝΑΙΚΩΝ - ΜΟΝΑ: Μαγιόρκα (Ισπανία), χώμα",
         "ЧЕЛЛЕНДЖЕР ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: Mallorca (Іспанія), грунт",
         "ЧЕЛЛЕНДЖЕР ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Mallorca (Испания), грунт"
+      ]
+    },
+    {
+      "name": "CHALLENGER WOMEN - SINGLES: Queretaro (Mexico) - Qualification, clay",
+      "slug": "challenger-women-singles-queretaro-mexico-qualification-clay",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER BAYANLAR - TEK: Queretaro (Meksika) - Elemeler, toprak",
+        "CHALLENGER FEMININ - SIMPLU: Queretaro (Mexic) - Calificări, zgură",
+        "CHALLENGER KOBIETY - SINGIEL: Queretaro (Meksyk) - Kwalifikacje, ziemna",
+        "CHALLENGER NŐI - EGYÉNI: Queretaro (Mexikó) - Selejtező, salak",
+        "CHALLENGER ŽENY - DVOJHRY: Queretaro (Mexiko) - kvalifikácia, antuka",
+        "CHALLENGER ŽENY - DVOUHRY: Queretaro (Mexiko) - Kvalifikace, antuka",
+        "ΤΣΑΛΕΝΤΖΕΡ ΓΥΝΑΙΚΩΝ - ΜΟΝΑ: Κερετάρο (Μεξικό) - Προκριματικά, χώμα",
+        "ЧЕЛЛЕНДЖЕР ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: Керетаро (Мексика) - Qualification, грунт",
+        "ЧЕЛЛЕНДЖЕР ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Queretaro (Мексика) - квалификация, грунт"
       ]
     },
     {
@@ -223440,6 +224907,18 @@
         "ЧЕХІЯ: 1. Ліга",
         "ЧЕХИЯ: 1. Лига",
         "ЧЕХИЯ: Первая лига"
+      ]
+    },
+    {
+      "name": "CZECH REPUBLIC: Czech Cup Women",
+      "slug": "czech-republic-czech-cup-women",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "CSEHORSZÁG: Cseh Kupa - női",
+        "ČEŠKA REPUBLIKA: Czech Cup Women",
+        "ΤΣΕΧΙΑ: Κύπελλο Τσεχίας Γυναίκες",
+        "ЧЕХИЯ: Купа на Чехия - Жени"
       ]
     },
     {
@@ -225140,6 +226619,7 @@
         "Women's Super League",
         "Women's Super League (7. Spieltag): Crystal Palace - Chelsea FC",
         "Women's Super League (7. Spieltag): Liverpool FC - London City Lionesses",
+        "Women's Super League (8. Spieltag): Everton FC - Manchester United",
         "İNGİLTERE: WSL",
         "ΑΓΓΛΙΑ: WSL",
         "Ποδόσφαιρο Γυναικών Super League Αγγλίας",
@@ -225497,8 +226977,10 @@
       "sport": "B",
       "country": null,
       "aliases": [
+        "AVRUPA: CEWL Women",
         "EUROPA: CEWL Women",
-        "ΕΥΡΩΠΗ: CEWL Γυναίκών"
+        "ΕΥΡΩΠΗ: CEWL Γυναίκών",
+        "ЕВРОПА: СЕВЛ - Женщины"
       ]
     },
     {
@@ -229875,9 +231357,20 @@
       "sport": "F",
       "country": null,
       "aliases": [
+        "HİNDİSTAN: 1. Lig",
+        "INDE: I-League",
+        "INDIA: I-Liga",
+        "INDIE: I-League",
+        "INDIE: I-League",
+        "INDIEN: I-League",
+        "INDIEN: I-League",
+        "INDIEN: I-League",
         "INDIJA: I-League",
+        "ÍNDIA: Liga Indiana",
         "ΙΝΔΙΑ: I-Λιγκ",
-        "ИНДИЯ: И-Лига"
+        "ІНДІЯ: І-Ліга",
+        "ИНДИЯ: И-Лига",
+        "ИНДИЯ: Первый дивизион"
       ]
     },
     {
@@ -230957,6 +232450,7 @@
         "Basket: Serie A2 Old Wild West - 2a giornata",
         "Basket: Serie A2 Old Wild West - 3a giornata",
         "ITALIJA: Serie A2",
+        "Pallacanestro Maschile",
         "Pallacanestro Maschile: Serie A2 Old Wild West 3a giornata",
         "Pallacanestro. Serie A2 Old Wild West - 2a giornata",
         "İTALYA: Serie A2",
@@ -235921,6 +237415,15 @@
       ]
     },
     {
+      "name": "JAPAN: W League Women",
+      "slug": "japan-w-league-women",
+      "sport": "B",
+      "country": null,
+      "aliases": [
+        "ΙΑΠΩΝΙΑ: W Λιγκ Γυναικών"
+      ]
+    },
+    {
       "name": "JAPAN: WE League Cup Women",
       "slug": "japan-we-league-cup-women",
       "sport": "F",
@@ -236857,6 +238360,16 @@
       ]
     },
     {
+      "name": "MALI: Premiere Division",
+      "slug": "mali-premiere-division",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "ΜΑΛΙ: Πρέμιερ Ντιβίζιον",
+        "МАЛИ: Премиър Дивизия"
+      ]
+    },
+    {
       "name": "MALTA: Challenge League",
       "slug": "malta-challenge-league",
       "sport": "F",
@@ -236955,6 +238468,18 @@
         "МАВРИТАНІЯ: Ліга 1",
         "МАВРИТАНИЯ: Лига 1",
         "МАВРИТАНИЯ: Лига 1"
+      ]
+    },
+    {
+      "name": "MAURITIUS: Super League",
+      "slug": "mauritius-super-league",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "MAURICIJUS: Super League",
+        "MAURITIUS: Szuperliga",
+        "ΜΑΥΡΙΚΙΟΣ: Σούπερ Λιγκ",
+        "МАВРИЦИЙ: Супер лига"
       ]
     },
     {
@@ -237633,6 +239158,8 @@
         "Eredivisie",
         "Eredivisie (10. Spieltag)",
         "Eredivisie (10. Spieltag): AZ Alkmaar - FC Twente Enschede",
+        "Eredivisie (11. Spieltag)",
+        "Eredivisie (11. Spieltag): PSV Eindhoven - Willem II Tilburg",
         "Eredivisie (8. Spieltag)",
         "Eredivisie (8. Spieltag): FC Utrecht - Willem II Tilburg",
         "Eredivisie (9. Spieltag)",
@@ -237916,6 +239443,18 @@
         "НІГЕР: Суперліга",
         "НИГЕР: Super Ligue",
         "НИГЕР: Суперлига"
+      ]
+    },
+    {
+      "name": "NIGERIA: NNL",
+      "slug": "nigeria-nnl",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "NIGERIJA: NNL",
+        "NIGÉRIA: NNL",
+        "ΝΙΓΗΡΙΑ: NNL",
+        "НИГЕРИЯ: ННЛ"
       ]
     },
     {
@@ -241534,12 +243073,21 @@
       "sport": "F",
       "country": null,
       "aliases": [
+        "ECOSSE: SWPL Cup Women - Phase Finale",
+        "ESCOCIA: SWPL Cup Femenino - Playoffs",
+        "ESCÓCIA: Taça Feminina SWPL - Playoffs",
+        "SCHOTLAND: SWPL Cup Vrouwen - Play-offs",
+        "SCHOTTLAND: SWPL Cup - Frauen - Playoffs",
+        "SCOZIA: SWPL Cup Women - Play Off",
         "SCOŢIA: SWPL Cup Feminin - Play-off",
+        "SKOTLAND: SWPL Cup Kvinder - Play Offs",
         "SKOTSKO: SWPL Pohár ženy - Play Off",
+        "SKOTTLAND: SWPL Cup Women - Slutspel",
         "SKÓCIA: SWPL Kupa - női - Play Off",
         "SZKOCJA: SWPL Cup Women - Play Offy",
         "İSKOÇYA: SWPL Cup Women - Playofflar",
         "ŠKOTSKA: SWPL Cup Women - Playoff",
+        "ŠKÓTSKO: SWPL Cup - ženy - Play off",
         "ΣΚΩΤΙΑ: Κύπελλο SWPL Γυναικών - Πλέι Οφς",
         "ШОТЛАНДІЯ: Кубок ШЖПЛ (Жінки) - Плей-оф",
         "ШОТЛАНДИЯ: SWPL Къп - жени - Плейофи",
@@ -242838,6 +244386,7 @@
       "sport": "B",
       "country": null,
       "aliases": [
+        "GÜNEY AMERİKA: Güney Amerika Ligi - İkinci etap",
         "JUŽNA AMERIKA: Južnoamerička Liga - Druga faza",
         "ΝΟΤΙΑ ΑΜΕΡΙΚΗ: Πρωτάθλημα Νοτίου Αμερικής - Δεύτερη φάση"
       ]
@@ -246347,6 +247896,7 @@
         "NBA Basketball",
         "NBA liga",
         "SAD: NBA",
+        "alapszakasz",
         "ΗΠΑ: NBA",
         "США: НБА"
       ]
@@ -246520,7 +248070,9 @@
       "country": null,
       "aliases": [
         "ABD: Bayanlar NBA - Playofflar",
+        "Kosárlabda: WNBA",
         "SAD: WNBA - Playoff",
+        "WNBA",
         "ΗΠΑ: WNBA - Πλέι Οφς",
         "США: ВНБА - Плей-офф"
       ]
@@ -246888,12 +248440,23 @@
       ]
     },
     {
+      "name": "WORLD: AmeriCup 3x3",
+      "slug": "world-americup-3x3",
+      "sport": "B",
+      "country": null,
+      "aliases": [
+        "SVIJET: AmeriCup 3x3",
+        "ΚΟΣΜΟΣ: ΑμέριΚαπ 3x3"
+      ]
+    },
+    {
       "name": "WORLD: AmeriCup 3x3 Women",
       "slug": "world-americup-3x3-women",
       "sport": "B",
       "country": null,
       "aliases": [
-        "SVIJET: AmeriCup 3x3 Women"
+        "SVIJET: AmeriCup 3x3 Women",
+        "ΚΟΣΜΟΣ: ΑμέριΚαπ 3x3 Γυναίκες"
       ]
     },
     {
@@ -246989,6 +248552,33 @@
         "МИР: Межконтинентальный Кубок ФИФА",
         "СВІТ: Міжконтинентальний кубок ФІФА",
         "СВЯТ: Междуконтинентална купа на ФИФА"
+      ]
+    },
+    {
+      "name": "WORLD: FIFA Women's Champions Cup",
+      "slug": "world-fifa-women-s-champions-cup",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "DÜNYA: FIFA Women's Champions Cup",
+        "LUME: FIFA Women's Champions Cup",
+        "MONDE: FIFA Women's Champions Cup",
+        "MONDO: FIFA Women's Champions Cup",
+        "MUNDIAL: FIFA Women's Champions Cup",
+        "MUNDO: Taça dos Campeões Feminina da FIFA",
+        "SVET: FIFA Women's Champions Cup",
+        "SVIJET: FIFA Women's Champions Cup",
+        "SVĚT: FIFA Champions Cup ženy",
+        "VERDEN: FIFA Women's Champions Cup",
+        "VILÁG: FIFA Bajnokok Kupája - női",
+        "VÄRLD: FIFA Women's Champions Cup",
+        "WELT: FIFA Women's Champions Cup",
+        "WERELD: FIFA Women's Champions Cup",
+        "ŚWIAT: FIFA Women's Champions Cup",
+        "ΚΟΣΜΟΣ: FIFA Κύπελλο Πρωταθλητριών Γυναικών",
+        "МИР: FIFA Women's Champions Cup",
+        "СВІТ: FIFA Women's Champions Cup",
+        "СВЯТ: FIFA Women's Champions Cup"
       ]
     },
     {
@@ -247821,6 +249411,7 @@
       "aliases": [
         "1/2 Finale",
         "1/4 Finale",
+        "FINALE",
         "Turniej WTA w Osace",
         "WTA - DVOJHRY: Osaka (Japonsko), tvrdý povrch",
         "WTA - DVOUHRY: Osaka (Japonsko), tvrdý povrch",
@@ -252428,6 +254019,13 @@
       "source": "teleman.pl"
     },
     {
+      "name": "Metro TV",
+      "country": "PL",
+      "language": null,
+      "alias": "Metro TV",
+      "source": "teleman.pl"
+    },
+    {
       "name": "PL CANAL  Sport 3",
       "country": "PL",
       "language": null,
@@ -254381,6 +255979,13 @@
       "source": "skysports.com"
     },
     {
+      "name": "Sky Sports Golf",
+      "country": "UK",
+      "language": null,
+      "alias": "Sky Sports Golf",
+      "source": "skysports.com"
+    },
+    {
       "name": "Sky Sports Main Event",
       "country": "UK",
       "language": null,
@@ -255368,6 +256973,10 @@
       "sport": "F",
       "day": null
     },
+    "Lokomotiv Plovdiv - Slavia": {
+      "sport": "F",
+      "day": "2026-10-26"
+    },
     "Lyon - Rennes": {
       "sport": "B",
       "day": null
@@ -255443,6 +257052,10 @@
     "Monchengladbach - Mainz": {
       "sport": "F",
       "day": null
+    },
+    "Monchengladbach - Paderborn": {
+      "sport": "F",
+      "day": "2026-10-31"
     },
     "Munster - Saarbrucken": {
       "sport": "F",
@@ -255671,6 +257284,10 @@
     "Stade Brestois - PSG": {
       "sport": "F",
       "day": null
+    },
+    "Steaua - CS Dinamo": {
+      "sport": "F",
+      "day": "2026-10-30"
     },
     "Strasbourg - Monaco": {
       "sport": "F",
@@ -255942,7 +257559,9 @@
     "Aarhus": "F",
     "Aarhus Fremad": "F",
     "Aarhus W": "F",
+    "Aberdeen": "F",
     "Academico Viseu": "F",
+    "Adelaide": "B",
     "Adelaide United": "F",
     "Agram Zagreb W": "F",
     "Ajax": "F",
@@ -255950,8 +257569,8 @@
     "Akron Togliatti": "F",
     "Al Ahli SC": "F",
     "Al Ain": "F",
-    "Al Duhail": "F",
     "Al Faisaly Amman": "F",
+    "Al Fateh": "F",
     "Al Gharafa": "F",
     "Al Hilal": "F",
     "Al Hussein": "F",
@@ -255978,8 +257597,8 @@
     "Alba Berlin": "B",
     "Albacete": "F",
     "Alcazar": "F",
+    "Aldosivi": "F",
     "Alkar": "B",
-    "Almeria": "F",
     "Amarante": "F",
     "America De Cali": "F",
     "Anadolu Efes": "B",
@@ -255993,7 +257612,9 @@
     "Arda": "F",
     "Argentinos Jrs": "F",
     "Arges Pitesti": "B",
+    "Arminia Bielefeld": "F",
     "Arsenal": "F",
+    "Arsenal Tula": "F",
     "Arsenal W": "F",
     "Ascoli": "F",
     "Asteras Tripolis": "F",
@@ -256005,6 +257626,7 @@
     "Atl. Nacional": "F",
     "Atl. Ottawa": "F",
     "Atl. Tucuman": "F",
+    "Atlanta Dream W": "B",
     "Atlanta Hawks": "B",
     "Atletico CP": "F",
     "Atletico Calatayud": "F",
@@ -256019,6 +257641,7 @@
     "B. Monchengladbach": "F",
     "BC Komarno": "B",
     "BC Roma": "B",
+    "BMS Herlev": "B",
     "BSK Banja Luka": "F",
     "Bahcesehir Kol.": "B",
     "Bahia": "F",
@@ -256026,12 +257649,15 @@
     "Baltika": "F",
     "Bamberg": "B",
     "Banga": "F",
+    "Baranovici": "F",
     "Barcelona W": "F",
     "Basaksehir": "F",
-    "Basket Zaragoza": "B",
+    "Basilashvili N.": "T",
     "Basket Zivinice": "B",
+    "Basketball Braunschweig": "B",
     "Baskonia": "B",
     "Basquet Girona": "B",
+    "Batman Petrolspor": "F",
     "Bayer Leverkusen": "F",
     "Bayern": "B",
     "Bayern Munich": "F",
@@ -256039,6 +257665,7 @@
     "Beijing Guoan": "F",
     "Beitar Jerusalem": "F",
     "Belshina": "F",
+    "Beltinci": "F",
     "Benfica": "F",
     "Betis": "F",
     "Bicskei": "F",
@@ -256059,13 +257686,14 @@
     "Bournemouth": "F",
     "Bradford City": "F",
     "Braga": "F",
-    "Bragantino": "F",
+    "Brage": "F",
     "Braunschweig": "F",
     "Brentford": "F",
     "Breogan": "B",
     "Brighton": "F",
     "Brisbane Bullets": "B",
     "Brisbane Roar": "F",
+    "Brisbane Roar W": "F",
     "Brno": "F",
     "Brommapojkarna": "F",
     "Brondby": "F",
@@ -256074,13 +257702,12 @@
     "Burgos CF": "F",
     "Buriram": "F",
     "Bursaspor": "F",
-    "Bydgoszcz": "B",
-    "CF Montreal": "F",
     "CFR Cluj": "F",
     "CIU": "B",
     "CSKA 1948 Sofia": "F",
     "CSKA Sofia": "F",
     "CSM Satu Mare": "F",
+    "Cacak 94": "B",
     "Cadiz CF": "F",
     "Cagliari": "F",
     "Cairns Taipans": "B",
@@ -256094,9 +257721,8 @@
     "Celje": "F",
     "Celta Vigo": "F",
     "Celtic": "F",
-    "Central Coast Mariners": "F",
+    "Cento": "B",
     "Ceuta": "F",
-    "Charlotte Hornets": "B",
     "Chelsea": "F",
     "Chelsea W": "F",
     "Cherno More": "F",
@@ -256104,12 +257730,14 @@
     "Chile U17 W": "F",
     "Chindia Targoviste": "F",
     "Cholet": "B",
+    "Cibona": "B",
+    "Cividale": "B",
     "Cleveland Cavaliers": "B",
-    "Colorado Rapids": "F",
     "Como": "F",
     "Como W": "F",
     "Concordia": "F",
     "Cong An Ha Noi": "F",
+    "Corinthians": "F",
     "Coritiba": "F",
     "Corona Brasov": "F",
     "Corum": "F",
@@ -256122,8 +257750,10 @@
     "Crvena zvezda": "F",
     "Crystal Palace": "F",
     "Crystal Palace W": "F",
+    "Csikszereda M. Ciuc": "F",
     "Cukaricki": "F",
     "Czarni Slupsk": "B",
+    "Czarni Sosnowiec W": "F",
     "DC United": "F",
     "Dabrowa Gornicza": "B",
     "Daejeon": "F",
@@ -256134,13 +257764,13 @@
     "Degerfors": "F",
     "Den Haag": "F",
     "Denver Nuggets": "B",
-    "Denver Summit W": "F",
     "Dep. A Coruna": "F",
     "Dep. Cali": "F",
     "Dep. Pasto": "F",
     "Deportes Tolima": "F",
     "Detroit Pistons": "B",
     "Digenis Akritas": "F",
+    "Dijon": "B",
     "Din. Minsk": "F",
     "Din. Zagreb": "F",
     "Din. Zagreb W": "F",
@@ -256150,9 +257780,11 @@
     "Drita": "F",
     "Dubai": "B",
     "Dukagjini": "F",
+    "Dunav Ruse": "F",
     "Dynamo Brest": "F",
     "Dynamo Makhachkala": "F",
     "Dynamo Moscow": "F",
+    "Dynamo Vladivostok": "B",
     "Dziki Warszawa": "B",
     "ETHA Engomi": "B",
     "East Bengal": "F",
@@ -256161,15 +257793,16 @@
     "Elche": "F",
     "Eldense": "F",
     "Elfsborg": "F",
-    "Elitzur Ramla W": "B",
     "Elversberg": "F",
     "Enisey": "B",
+    "Erokspor": "F",
     "Esbjerg": "F",
     "Espanyol": "F",
     "Esteghlal F.C.": "F",
     "Estoril": "F",
     "Estrela U23": "F",
     "Everton": "F",
+    "Everton W": "F",
     "Excelsior": "F",
     "Excelsior 31": "F",
     "Excelsior Maassluis": "F",
@@ -256180,12 +257813,12 @@
     "FC Emmen": "F",
     "FC Koln": "F",
     "FC Porto": "F",
+    "FC Porto B": "F",
     "FC Rapid Bucuresti": "F",
     "FC Voluntari": "F",
     "FCSB": "F",
     "FK Pardubice": "F",
     "FK Rostov": "F",
-    "FK Sarajevo": "F",
     "Fakel Voronezh": "F",
     "Falkenberg": "F",
     "Famalicao": "F",
@@ -256195,7 +257828,6 @@
     "Fernandez L.": "T",
     "Feronikeli": "F",
     "Feyenoord": "F",
-    "Fils A.": "T",
     "Final": "T",
     "Fiorentina": "F",
     "Flamengo RJ": "F",
@@ -256205,11 +257837,11 @@
     "Forge": "F",
     "Fortaleza": "F",
     "Fortuna Koln": "F",
-    "France U17 W": "F",
     "Fratria": "F",
     "Fredrikstad": "F",
     "Freiburg": "F",
     "Fribourg Olympic": "B",
+    "Fritz T.": "T",
     "Frosinone": "F",
     "Fulham": "F",
     "G.A. Eagles": "F",
@@ -256227,21 +257859,24 @@
     "Giugliano": "F",
     "Glasgow City W": "F",
     "Gloria Bistrita": "F",
+    "Golden State Valkyries W": "B",
     "Golden State Warriors": "B",
     "Gornik Walbrzych": "B",
     "Gornik Zabrze": "F",
     "Goteborg": "F",
     "Goztepe": "F",
     "Graficar Beograd": "F",
-    "Granada CF W": "F",
+    "Grazer AK": "F",
     "Gremio": "F",
     "Greuther Furth": "F",
+    "Griekspoor T.": "T",
     "Grobina": "F",
     "Grodzisk M.": "F",
     "Groningen": "F",
     "Grossaspach": "F",
     "Gyirmot": "F",
     "Gyor": "F",
+    "H. Akko": "F",
     "H. Beer Sheva": "F",
     "H. Ironi Rishon": "F",
     "HBA-Marsky Helsinki W": "B",
@@ -256257,17 +257892,19 @@
     "Hammarby": "F",
     "Hannover": "F",
     "Hapoel HaEmek": "B",
-    "Hapoel Haifa": "F",
     "Hapoel Holon": "B",
     "Hapoel Jerusalem": "B",
     "Hapoel Jerusalem W": "B",
     "Hapoel Petah Tikva": "F",
+    "Hartberg": "F",
     "Hearts": "F",
     "Hebar": "F",
     "Heerenveen": "F",
     "Heerenveen W": "F",
+    "Heidenheim": "F",
     "Heracles": "F",
     "Hercegovac": "B",
+    "Hertha Berlin": "F",
     "Hibernian": "F",
     "Hoffenheim": "F",
     "Hoffenheim II": "F",
@@ -256278,7 +257915,6 @@
     "Hortaleza": "F",
     "Hradec Kralove": "F",
     "Hull": "F",
-    "Huracan": "F",
     "IMT Novi Beograd": "F",
     "Igokea": "B",
     "Ind. Medellin": "F",
@@ -256318,7 +257954,6 @@
     "Kenya U17 W": "F",
     "Kibirkstis Vilnius W": "B",
     "Kifisia": "F",
-    "Kisvarda": "F",
     "Kitchee": "F",
     "Kloetinge": "F",
     "Koge W": "F",
@@ -256336,7 +257971,6 @@
     "LKS Lodz": "F",
     "Landes W": "B",
     "Landskrona": "F",
-    "Las Palmas": "F",
     "Lazio": "F",
     "Lazio W": "F",
     "Le Havre": "F",
@@ -256346,11 +257980,11 @@
     "Lechia Gdansk": "F",
     "Leczna": "F",
     "Leeds": "F",
+    "Leiria": "F",
+    "Leixoes": "F",
     "Lens": "F",
-    "Levadiakos": "F",
     "Levante": "F",
     "Levski Sofia": "F",
-    "Leyma Coruna": "B",
     "Liberec": "F",
     "Lietkabelis": "B",
     "Lille": "F",
@@ -256358,10 +257992,13 @@
     "Lion City": "F",
     "Liverpool": "F",
     "Liverpool W": "F",
+    "Livingston": "F",
     "Livorno": "F",
     "Lok. Sofia": "F",
+    "Lok. Zagreb": "F",
     "Lokomotiv Moscow": "F",
     "London City Lionesses W": "F",
+    "London Lions": "B",
     "Lorient": "F",
     "Los Angeles Clippers": "B",
     "Los Angeles FC": "F",
@@ -256371,17 +258008,19 @@
     "Loznica": "F",
     "Ludogorets": "F",
     "Lugano": "F",
-    "Lusail": "F",
     "Lusitania FC": "F",
     "Lyngby": "F",
     "Lyon": "F",
+    "M. Nazareth": "F",
+    "MS Kafr Qasim": "F",
     "MTK Budapest": "F",
     "MTK Budapest U19": "F",
+    "Maastricht": "F",
+    "Macarthur FC": "F",
     "Maccabi Ashdod": "B",
     "Maccabi Haifa": "F",
     "Maccabi Ironi Ramat Gan": "B",
     "Maccabi Rehovot": "B",
-    "Maccabi Rishon": "B",
     "Machida": "F",
     "Macva": "F",
     "Madrid CFF W": "F",
@@ -256401,18 +258040,18 @@
     "Marko": "F",
     "Marseille": "F",
     "Maxima Roma": "B",
+    "Medvedev D.": "T",
     "Mega MIS W": "B",
-    "Melbourne City W": "F",
-    "Melbourne United": "B",
+    "Meia-final": "T",
     "Melbourne Victory": "F",
-    "Melbourne Victory W": "F",
+    "Memphis Grizzlies": "B",
     "Metaloglobus Bucharest": "F",
     "Miami Heat": "B",
     "Midtjylland": "F",
     "Migdal Haemek": "B",
-    "Milwaukee Bucks": "B",
     "Minnesota Timberwolves": "B",
     "Minsk": "B",
+    "Mirassol": "F",
     "Mjallby": "F",
     "Mlada Boleslav": "F",
     "Mladost Zemun": "B",
@@ -256424,29 +258063,29 @@
     "MoraBanc Andorra": "B",
     "Moreirense": "F",
     "Moreirense U23": "F",
-    "Mornar Bar": "F",
     "Motherwell": "F",
     "Motor Lublin": "F",
     "Murcia": "B",
+    "Musetti L.": "T",
     "NAC Breda": "F",
     "Nacional": "F",
+    "Naftan": "F",
+    "Nancy": "B",
     "Nanterre": "B",
-    "Nantes": "F",
     "Napoli": "F",
     "Napredak": "F",
     "Nasaf Qarshi": "F",
-    "Nashville SC": "F",
     "Navalcarnero": "F",
     "Nea Salamis": "F",
     "Neftchi Fargona": "F",
     "Neman": "F",
     "Neptunas": "B",
     "Nes Ziona": "B",
-    "Nevezis": "B",
-    "New England Revolution": "F",
     "New York Knicks": "B",
+    "New Zealand Breakers": "B",
     "Newcastle": "F",
     "Newcastle Jets": "F",
+    "Nice": "F",
     "Nijmegen": "F",
     "Niki Volos": "F",
     "Nordsjaelland": "F",
@@ -256462,6 +258101,7 @@
     "OFK Beograd Mozzart Bet": "F",
     "OL Lyonnes W": "F",
     "Obradoiro CAB": "B",
+    "Oddevold": "F",
     "Odense": "F",
     "Odra Opole": "F",
     "Odysseas Moschato W": "F",
@@ -256481,7 +258121,6 @@
     "Ostrow Wielkopolski": "B",
     "Otelul": "F",
     "Otrant": "F",
-    "Oviedo": "F",
     "PAOK U19": "F",
     "PEC Zwolle W": "F",
     "PSG": "F",
@@ -256497,8 +258136,8 @@
     "Palmeiras": "F",
     "Panionios": "F",
     "Panserraikos": "F",
+    "Pari NN": "F",
     "Paris": "B",
-    "Paris FC": "F",
     "Paris FC W": "F",
     "Parma": "F",
     "Parma Perm": "B",
@@ -256506,7 +258145,6 @@
     "Partizan": "F",
     "Partizan Mozzart Bet": "B",
     "Pau-Orthez": "B",
-    "Penafiel": "F",
     "Pendikspor": "F",
     "Peristeri": "B",
     "Persib Bandung": "F",
@@ -256516,17 +258154,17 @@
     "Petkim Spor": "B",
     "Petrolul": "F",
     "Philadelphia 76ers": "B",
-    "Philadelphia Union": "F",
     "Phnom Penh Crown": "F",
-    "Phoenix Suns": "B",
     "Piast Gliwice": "F",
     "Pinatar": "F",
     "Platense": "F",
     "Plzen": "F",
     "Plzen W": "F",
+    "Pogon Szczecin W": "F",
     "Pohang": "F",
     "Polonia Warszawa": "F",
     "Port MTI FC": "F",
+    "Portimonense": "F",
     "Portland Trail Blazers": "B",
     "Potkozarje": "F",
     "Prague Raptors W": "F",
@@ -256543,7 +258181,6 @@
     "Pyrgos": "F",
     "RB Leipzig": "F",
     "Racing Club": "F",
-    "Racing Louisville W": "F",
     "Racing Santander": "F",
     "Radnicki": "B",
     "Radnicki 1923": "F",
@@ -256551,12 +258188,12 @@
     "Radomiak Radom": "F",
     "Rakow": "F",
     "Ramnicu Valcea": "F",
+    "Randers FC": "F",
     "Rangers": "F",
     "Ratchaburi": "F",
     "Rayo Vallecano": "F",
     "Real Madrid W": "F",
     "Real Sociedad": "F",
-    "Real Sociedad B": "F",
     "Recreativo Huelva": "F",
     "Red Star": "F",
     "Rennes": "F",
@@ -256570,9 +258207,7 @@
     "River Plate": "F",
     "Rizespor": "F",
     "Rodina Moscow": "F",
-    "Rosario Central": "F",
     "Roskilde": "F",
-    "Rostock": "B",
     "Rubin Kazan": "F",
     "Ruch Chorzow": "F",
     "Rudes": "F",
@@ -256581,11 +258216,9 @@
     "S. Kostroma": "F",
     "SC Ashdod": "F",
     "SC Dimona": "F",
-    "SC Farense": "F",
     "SC Vianense": "F",
     "SCM Timisoara": "B",
     "SG Dynamo Dresden": "F",
-    "SK Rapid": "F",
     "SL Benfica W": "F",
     "Sabadell": "F",
     "Sabah BC": "B",
@@ -256594,8 +258227,8 @@
     "Salzburg": "F",
     "Samoa U17 W": "F",
     "Sampdoria": "F",
-    "San Antonio Spurs": "B",
     "San Diego FC": "F",
+    "San Lorenzo": "F",
     "San Pablo Burgos": "B",
     "Santa Clara": "F",
     "Santa Fe": "F",
@@ -256605,6 +258238,7 @@
     "Sao Paulo": "F",
     "Sassuolo": "F",
     "Schalke": "F",
+    "Sencur": "B",
     "Seoul": "F",
     "Sepsi Sf. Gheorghe": "F",
     "Septemvri Sofia": "F",
@@ -256639,10 +258273,10 @@
     "Spezia": "F",
     "Split": "B",
     "Sporting CP": "F",
+    "Sporting CP B": "F",
     "Sporting CP W": "B",
-    "St Etienne": "F",
-    "St. Gallen": "F",
     "Stal Mielec": "F",
+    "Stenhousemuir": "F",
     "Strasbourg": "F",
     "Strommen": "F",
     "Stromsgodset": "F",
@@ -256653,14 +258287,12 @@
     "Supra du Quebec": "F",
     "Svay Rieng": "F",
     "Sydney": "B",
-    "Sydney FC": "F",
     "Sydney W": "F",
-    "Syntainics MBC": "B",
     "Szeged": "F",
     "TSC": "F",
     "Tampines": "F",
     "Tarancon": "F",
-    "Taurage": "B",
+    "Tasmania JackJumpers": "B",
     "Tavernes": "F",
     "Teplice": "F",
     "Thun": "F",
@@ -256672,14 +258304,19 @@
     "Torreense": "F",
     "Torreense U23": "F",
     "Torreense W": "F",
+    "Torun": "B",
+    "Tottenham": "F",
     "Toulouse": "F",
     "Tractor": "F",
     "Trefl Sopot": "B",
     "Trento": "B",
+    "Triglav": "F",
     "Tromso": "F",
     "Troyes": "F",
+    "Turk Telekom": "B",
     "Twente": "F",
     "Twente W": "F",
+    "Tychy": "F",
     "U. Cluj": "F",
     "UTA Arad": "F",
     "Udinese": "F",
@@ -256693,10 +258330,12 @@
     "Uralmash Ekaterinburg": "B",
     "Utah Jazz": "B",
     "Utrecht": "F",
+    "Vaerlose": "B",
     "Valadares Gaia W": "F",
     "Vancouver FC": "F",
     "Vancouver Rise W": "F",
     "Vancouver Whitecaps": "F",
+    "Varazdin": "F",
     "Varberg": "F",
     "Varese": "B",
     "Varzim": "F",
@@ -256704,13 +258343,14 @@
     "Vasco": "F",
     "Vasteras SK": "F",
     "Vechta": "B",
+    "Veles Moscow": "F",
     "Velez Mostar": "F",
+    "Velez Sarsfield": "F",
     "Venezia": "F",
-    "Venezia W": "B",
+    "Venlo": "F",
     "Verona": "F",
     "VfL Osnabruck": "F",
     "Viborg": "F",
-    "Vienna Basket": "T",
     "Viettel": "F",
     "Vihren": "F",
     "Viking": "F",
@@ -256726,30 +258366,30 @@
     "Volos": "F",
     "Vozdovac": "F",
     "Vrsac": "F",
+    "WS Wanderers": "F",
     "Walsall": "F",
     "Warta Poznan": "F",
     "Washington Spirit W": "F",
     "Watergraafsmeer": "F",
     "Wellington Phoenix": "F",
-    "Wellington Phoenix W": "F",
     "Werder Bremen": "F",
+    "Widzew Lodz": "F",
     "Wieczysta Krakow": "F",
+    "Willem II": "F",
     "Wisla": "F",
     "Wisla Plock": "F",
     "Wolfsburg": "F",
     "Wrexham": "F",
+    "Wurzburg": "B",
     "Yantra Gabrovo": "F",
-    "Young Boys": "F",
     "Zabiny Brno W": "B",
     "Zadar": "B",
     "Zakynthos": "F",
     "Zalaegerszegi": "F",
     "Zalgiris": "F",
     "Zalgiris Kaunas": "B",
-    "Zambia U17 W": "F",
     "Zaragoza W": "B",
     "Zeleznicar Pancevo": "F",
-    "Zeljeznicar": "F",
     "Zenit": "F",
     "Zenit Petersburg": "B",
     "Zlatibor": "B",
