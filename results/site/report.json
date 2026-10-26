@@ -1,8 +1,8 @@
 {
  "когда": "2026-10-26",
  "режим": "полный обход, окно 6 суток",
- "прогон": "40267234341",
- "начат_киев": "2026-10-26",
+ "прогон": "40412215863",
+ "начат_киев": "2026-10-27",
  "пояса": {
   "allente.no": "Europe/Oslo",
   "aspor.com.tr": "Europe/Istanbul",
@@ -147,7 +147,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 145548,
+   "байт": 141919,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1075_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
@@ -166,7 +166,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 96686,
+   "байт": 90898,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=923_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
@@ -185,7 +185,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 155763,
+   "байт": 161913,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=924_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
@@ -204,7 +204,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 168221,
+   "байт": 158566,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=928_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
@@ -223,7 +223,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 110822,
+   "байт": 121355,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=728_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
@@ -242,7 +242,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 141543,
+   "байт": 163334,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=927_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
@@ -261,7 +261,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 170037,
+   "байт": 169163,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1072_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
@@ -280,7 +280,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 175219,
+   "байт": 166710,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1073_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
@@ -299,7 +299,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 179210,
+   "байт": 176003,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1074_fromTime=1792972800000_toTime=1793577599999_communityIdentifier=sk_hr_languageId=181.html"
