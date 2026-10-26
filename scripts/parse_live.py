@@ -27,7 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import (broadcast, canon, daytime, db, dictionary,  # noqa: E402
+from app import (broadcast, canon, channel_grid, daytime, db, dictionary,  # noqa: E402
                  leagues, live, merge, names, pipeline, redo, sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers import flashscore_mobi                     # noqa: E402
@@ -616,6 +616,8 @@ def unique_rows(found: list) -> tuple[list, int]:
 СНЯТО_ПОЗДНИЙ_ПОКАЗ = "поздний показ у сайта без флага"
 СНЯТО_НЕ_БЛИЖАЙШИЙ = "показ пары дальше от матча, чем другой показ у сайта"
 СНЯТО_НЕТ_В_ЭТАЛОНЕ = "угаданный эфир без эталона"
+#: полная программа канала у другого сайта в это время — другое (книга 085)
+СНЯТО_ЧУЖАЯ_СЕТКА = "полная программа канала у другого сайта: в это время там другое"
 СНЯТО_НЕТ_В_ЭТАЛОНЕ_БТ = "угаданный эфир без эталона (баскет/теннис)"
 СНЯТО_ГРЯЗНЫЕ_МИНУТЫ = "угаданный эфир не на ровной минуте"
 #: заставка перед матчем: эфирный блок начинается за столько минут до
@@ -1517,6 +1519,23 @@ def main() -> int:
                         f"{g.away} [{', '.join(g.channels)}] ← "
                         f"{earlier.start.strftime('%d.%m %H:%M')}"
                         for g, earlier in late))
+
+    # Полная программа канала главнее чужой строки про этот канал (слово
+    # владельца 26.10, #7042): сайт показывает игру на одном канале, а его
+    # сплошная сетка другого канала в это время занята другой передачей —
+    # строку агрегатора «игра на том канале» не берём (`app/channel_grid.py`)
+    games, чужие = channel_grid.drop_contradicted(
+        games, channel_grid.Grids(pages, channel_grid.load_map()),
+        reference_full)
+    for g, e, b in чужие:
+        снято.append(removed_row(СНЯТО_ЧУЖАЯ_СЕТКА, e.source, e.payload,
+                                 f"у {b} сплошная программа «{e.channel}», "
+                                 f"а игра у него на другом канале"))
+    if чужие:
+        print(f"строк, которые опровергла полная программа канала: {len(чужие)}"
+              + "".join(f"\n   • {e.start.strftime('%d.%m %H:%M')} {g.home} — "
+                        f"{g.away}: «{e.channel}» ({e.source}) ← программа {b}"
+                        for g, e, b in чужие))
 
     games, мульти = drop_multicast(games)
     for g, e, n in мульти:
