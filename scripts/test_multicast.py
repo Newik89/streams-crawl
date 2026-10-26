@@ -99,6 +99,10 @@ print("заливка: мультикаст — слово сайта, отме�
 from app import db, store  # noqa: E402
 
 TMP = Path(tempfile.mkdtemp(prefix="multicast-"))
+#: игра — завтра от сегодняшнего дня: заливка убирает прошедшие игры, и
+#: жёсткая дата 25.10 22:00 с 26.10 давала «отметок нет» (тест краснел сам)
+from datetime import date as _date, timedelta as _td  # noqa: E402
+ЗАВТРА = (_date.today() + _td(days=1)).isoformat()
 
 
 def база(n):
@@ -113,7 +117,7 @@ def база(n):
 
 def ф(home, away, *channels):
     return {"sport": "F", "league": "", "home": home, "away": away,
-            "start_kyiv": "2026-10-25T22:00", "start_utc": "",
+            "start_kyiv": f"{ЗАВТРА}T22:00", "start_utc": "",
             "entries": [{"source": "canpl.ca", "channel": c, "url": "https://canpl.ca/schedule/",
                          "raw_title": ""} for c in channels]}
 
@@ -130,11 +134,11 @@ def отметки(conn):
 второй = [ф("HFX Wanderers", "Supra du Québec", "TVA Sports 2")]
 данные = {"снято": [
     {"фильтр": parse_live.СНЯТО_МУЛЬТИКАСТ, "домен": "canpl.ca", "канал": "OneSoccer",
-     "заголовок": "x", "start_kyiv": "2026-10-25T22:00", "почему": "4 игр"},
+     "заголовок": "x", "start_kyiv": f"{ЗАВТРА}T22:00", "почему": "4 игр"},
     {"фильтр": parse_live.СНЯТО_СЫГРАН, "домен": "canpl.ca", "канал": "TVA Sports 2",
-     "заголовок": "x", "start_kyiv": "2026-10-25T22:00", "почему": "повтор"}]}
+     "заголовок": "x", "start_kyiv": f"{ЗАВТРА}T22:00", "почему": "повтор"}]}
 проверка("multicast_rows берёт только строки мультикаста",
-         store.multicast_rows(данные), {("canpl.ca", "OneSoccer", "2026-10-25 22:00")})
+         store.multicast_rows(данные), {("canpl.ca", "OneSoccer", f"{ЗАВТРА} 22:00")})
 conn = база(1)
 store.save_games(conn, первый)
 итог = store.save_games(conn, второй, multicast=store.multicast_rows(данные))

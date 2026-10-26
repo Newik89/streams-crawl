@@ -31,7 +31,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from . import daytime, leagues, live, names, sport
+from . import daytime, leagues, live, names, site_lang, sport
 from .parsers import Program
 from .reference import MARKS_HOW, Confirmed, Reference
 
@@ -170,7 +170,18 @@ def ask_reference(program: Program, verdict: live.Verdict,
 def classify(program: Program, markers: live.Markers, sports: sport.Sports,
              league_sports: dict[str, str] | None = None,
              pair_sports: dict[str, str] | None = None,
-             reference: Reference | None = None) -> Row:
+             reference: Reference | None = None,
+             langs: frozenset | None = None) -> Row:
+    """`langs` — языки сайта строки (`site_lang.of`, слово владельца 25.10,
+    книга 084): служебные слова — пол, эфир, повтор, стоп-слова — ищутся
+    только на языке сайта и общие. None — все языки, как раньше. Строку
+    читал одолженный разбор (`extra["borrowed"]`) — его язык тоже: он пишет
+    свои пометки по-своему (датский «direkte» у шведского сайта)."""
+    borrowed = (program.extra or {}).get("borrowed") if langs is not None else ""
+    if borrowed:
+        own = site_lang.of(borrowed)
+        langs = None if own is None else langs | own
+    markers = markers.for_langs(langs)
     row = Row(program=program, ok=False,
               start_utc=daytime.to_utc(program.start),
               start_kyiv=daytime.to_kyiv(program.start))
@@ -181,7 +192,7 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     row.league = leagues.clean(program.league_raw)
     row.league_category = leagues.category(
         " ".join(x for x in (program.league_raw, program.title,
-                             program.description) if x))
+                             program.description) if x), langs)
 
     verdict = live.check(program, markers)
     row.live_marker = verdict.live_marker
@@ -335,7 +346,8 @@ def run(programs, markers: live.Markers | None = None,
         sports: sport.Sports | None = None,
         league_sports: dict[str, str] | None = None,
         pair_sports: dict[str, str] | None = None,
-        reference: Reference | None = None) -> list[Row]:
+        reference: Reference | None = None,
+        domain: str = "") -> list[Row]:
     """`reference` — эталон flashscore этого обхода (`app/reference.py`).
     Без него правило 2 (`sport.Sports.decide`) молчит, остальные работают."""
     markers = markers or live.load()
@@ -344,5 +356,8 @@ def run(programs, markers: live.Markers | None = None,
         league_sports = leagues.sports_map()
     if pair_sports is None:
         pair_sports = leagues.pair_sports()
-    return [classify(p, markers, sports, league_sports, pair_sports, reference)
+    # языки сайта — для словаря служебных слов (книга 084)
+    langs = site_lang.of(domain) if domain else None
+    return [classify(p, markers, sports, league_sports, pair_sports, reference,
+                     langs)
             for p in programs]

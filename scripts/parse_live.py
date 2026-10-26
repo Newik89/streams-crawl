@@ -319,6 +319,20 @@ def nearest_shows(found: list, kickoff_of, guessed_of,
     return kept, gone
 
 
+def mark_borrowed(programs: list, borrowed: str) -> None:
+    """Строка помнит одолженный разбор (`parsers.get(domain, borrowed)`):
+    он пишет свои пометки на СВОЁМ языке — датский разбор tvsporten.dk у
+    шведского tvmatchen.nu и финского tvmatsit.com ставит эфиру «direkte».
+    Язык разбора добавляется к языку сайта (`pipeline.classify`, книга 084;
+    сравнение на сборе #343: 19 потерь без этого)."""
+    if not borrowed:
+        return
+    for p in programs:
+        if getattr(p, "extra", None) is None:
+            p.extra = {}
+        p.extra.setdefault("borrowed", borrowed)
+
+
 #: канал похож на спортивный — по слову в имени (сито очереди «Вид спорта»)
 _SPORTY_CHANNEL = re.compile(r"sport|спорт|ספורט|deportes|esporte", re.I)
 
@@ -905,6 +919,7 @@ def main() -> int:
         # Страницы сайтов разбираются ПОСЛЕ цикла: эталон flashscore едет в
         # том же обходе, и вид спорта строки решается уже с ним на руках
         # (`sport.Sports.decide`, правило 2; владелец 06.10)
+        mark_borrowed(programs, setting.get("parser") or "")
         pages.append((row["domain"], programs))
 
     # Эталон flashscore: один матч — одна запись и одно время (сбор #205:
@@ -945,7 +960,7 @@ def main() -> int:
     by_rule: dict[int, int] = {}       # номер правила → сколько строк
     for domain, programs in pages:
         for r in pipeline.run(programs, markers, sports, league_sports,
-                              pair_sports, judge):
+                              pair_sports, judge, domain=domain):
             if r.sport_rule:
                 by_rule[r.sport_rule] = by_rule.get(r.sport_rule, 0) + 1
             if r.team_word:
