@@ -1,16 +1,16 @@
 {
- "собрано": "2026-10-25 22:04",
- "игр": 71,
+ "собрано": "2026-10-26 04:06",
+ "игр": 80,
  "окно": 6,
  "по_окнам": {
   "2": 566,
   "5": 528,
-  "6": 71
+  "6": 80
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "sportklub.hr": 656
+  "sportklub.hr": 680
  },
  "другие_виды": [],
  "на_разбор": [],
@@ -28,7 +28,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Wang - Parks"
     }
    ]
@@ -45,13 +45,13 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Sasnovich - Bartunkova"
     },
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Sasnovich - Bartunkova (UKLJUČENJE)"
     }
    ]
@@ -68,7 +68,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Timofeeva - Kostović"
     }
    ]
@@ -85,7 +85,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Udvardy - Kraus"
     }
    ]
@@ -102,7 +102,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Kasatkina - Gibson"
     }
    ]
@@ -119,7 +119,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Aoyama/Liang - Neel/Olmos (parovi)"
     }
    ]
@@ -136,7 +136,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Snigur - Bondar"
     }
    ]
@@ -153,7 +153,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Kozyreva/Lumsden - Bhosale/Plipuech (parovi)"
     }
    ]
@@ -170,7 +170,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Uchijima - Mertens"
     }
    ]
@@ -187,7 +187,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Errani/Paolini - Danilina/Jiang (parovi)"
     }
    ]
@@ -204,7 +204,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Haverlag/Kulambayeva - Qu/Zhang (parovi)"
     }
    ]
@@ -221,7 +221,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Shi - Ibragimova"
     }
    ]
@@ -238,7 +238,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Perez/Schuurs - Tang/Xu (parovi)"
     }
    ]
@@ -255,7 +255,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 500 Tokyo: Eala - Stojsavljevic"
     }
    ]
@@ -272,7 +272,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Badosa - Lee"
     }
    ]
@@ -289,7 +289,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Dart - Prozorova"
     }
    ]
@@ -306,7 +306,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Basel: Paul/Vocel - Michelsen/Zandschulp (parovi)"
     }
    ]
@@ -323,13 +323,13 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Gorgodze/Zimmermann - V. Williams/Tjen (parovi)"
     },
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Guangzhou: Gorgodze/Zimmermann - V. Williams/Tjen (parovi)"
     }
    ]
@@ -346,7 +346,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Vienna: Berrettini - Etcheverry"
     }
    ]
@@ -363,7 +363,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Basel: Vacherot - Navone"
     }
    ]
@@ -380,7 +380,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Basel: Brunold - Borges"
     }
    ]
@@ -397,7 +397,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Neftchi - Ittihad"
     }
    ]
@@ -414,7 +414,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Vienna: Machac - De Minaur"
     }
    ]
@@ -431,7 +431,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Basel: Rune - Halys"
     }
    ]
@@ -448,13 +448,13 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Basel: Altmaier - J.M. Cerundolo"
     },
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Basel: Altmaier - J.M. Cerundolo (UKLJUČENJE)"
     }
    ]
@@ -471,7 +471,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Bugarska liga: Lokomotiv Plovdiv - Slavia"
     }
    ]
@@ -488,7 +488,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Turska liga: Besiktas - Basaksehir"
     }
    ]
@@ -505,7 +505,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Turska liga: Rize - Trabzon"
     }
    ]
@@ -522,7 +522,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Ahli - Gharafa"
     }
    ]
@@ -539,7 +539,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Ain - Tractor"
     }
    ]
@@ -556,7 +556,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Vienna: Mensik - Neumayer"
     }
    ]
@@ -573,7 +573,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Vienna: Fery - Fearnley"
     }
    ]
@@ -590,7 +590,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Bugarska liga: CSKA - Ludogorets"
     }
    ]
@@ -607,7 +607,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Danska liga: Copenhagen - Odense"
     }
    ]
@@ -624,7 +624,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Air Force - Pakhtakor"
     }
    ]
@@ -641,7 +641,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Nassr - Wasl"
     }
    ]
@@ -658,13 +658,13 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Vienna: Darderi - Arnaldi"
     },
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Vienna: Darderi - Arnaldi (UKLJUČENJE)"
     }
    ]
@@ -681,7 +681,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Qadsiah - Sadd"
     }
    ]
@@ -698,7 +698,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Turska liga: Galatasaray - Fenerbahce"
     }
    ]
@@ -715,7 +715,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Vienna: Van Assche - Tien"
     }
    ]
@@ -732,7 +732,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP 500 Basel: Stricker - Ruud"
     }
    ]
@@ -749,7 +749,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Španjolska liga: Sevilla - Osasuna"
     }
    ]
@@ -766,7 +766,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - NBA liga: Cleveland - Minnesota"
     }
    ]
@@ -783,7 +783,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Kyoto - Newcastle Jets"
     }
    ]
@@ -800,7 +800,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Daejon - Kobe"
     }
    ]
@@ -817,7 +817,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Johor - Port"
     }
    ]
@@ -834,7 +834,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Shanghai Port - Cong An Ha Noi"
     }
    ]
@@ -851,7 +851,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Peking - Jeonbuk"
     }
    ]
@@ -868,7 +868,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Ratchaburi - Kashiwa"
     }
    ]
@@ -885,7 +885,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Bugarska liga: Cherno More - Septemvri"
     }
    ]
@@ -902,7 +902,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Dubai - Paris"
     }
    ]
@@ -919,7 +919,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Shabab Ahli - Esteghlal"
     }
    ]
@@ -936,7 +936,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Bahcesehir - PAOK"
     }
    ]
@@ -953,7 +953,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Sabah - Nanterre"
     }
    ]
@@ -970,7 +970,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Slovenska 1. liga: Radomlje - Mura"
     }
    ]
@@ -987,7 +987,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Lietkabelis - Ulm"
     }
    ]
@@ -1004,7 +1004,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Bugarska liga: Arda - Levski"
     }
    ]
@@ -1021,7 +1021,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Slovenska 1. liga: Koper - Maribor"
     }
    ]
@@ -1038,7 +1038,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Shamal - Hilal"
     }
    ]
@@ -1055,7 +1055,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Crvena zvezda - Maccabi"
     }
    ]
@@ -1072,7 +1072,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Trento - Budućnost"
     }
    ]
@@ -1089,7 +1089,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Bayern - Barcelona"
     }
    ]
@@ -1106,7 +1106,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Roma - Bosna"
     }
    ]
@@ -1123,7 +1123,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Panathinaikos - Armani"
     }
    ]
@@ -1140,7 +1140,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Valencia - Fenerbahce"
     }
    ]
@@ -1157,7 +1157,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Baskonia - Real Madrid"
     }
    ]
@@ -1174,7 +1174,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - NBA liga: LA Lakers - Portland"
     }
    ]
@@ -1191,7 +1191,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Kashima - Pohang Steelers"
     }
    ]
@@ -1208,7 +1208,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Gamba Osaka - Buriram United"
     }
    ]
@@ -1225,7 +1225,7 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Viettel - Seoul"
     }
    ]
@@ -1242,8 +1242,161 @@
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792886400000&toTime=1793491199999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Nasaf - Kuwait"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Eurocup",
+   "home": "Neptunas",
+   "away": "Napoli",
+   "start_kyiv": "2026-10-28T19:00",
+   "start_utc": "2026-10-28T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Eurocup: Neptunas - Napoli"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Besiktas",
+   "away": "Olympiacos",
+   "start_kyiv": "2026-10-28T19:30",
+   "start_utc": "2026-10-28T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Besiktas - Olympiacos"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Hapoel Tel Aviv",
+   "away": "Efes",
+   "start_kyiv": "2026-10-28T20:00",
+   "start_utc": "2026-10-28T18:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Hapoel Tel Aviv - Efes"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Virtus",
+   "away": "Zalgiris",
+   "start_kyiv": "2026-10-28T21:30",
+   "start_utc": "2026-10-28T19:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Virtus - Zalgiris"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Škotski Premiership",
+   "home": "Hearts",
+   "away": "Rangers",
+   "start_kyiv": "2026-10-28T22:00",
+   "start_utc": "2026-10-28T20:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Škotski Premiership: Hearts - Rangers"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "NBA liga",
+   "home": "Indiana",
+   "away": "Philadelphia",
+   "start_kyiv": "2026-10-29T01:00",
+   "start_utc": "2026-10-28T23:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - NBA liga: Indiana - Philadelphia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "NBA liga",
+   "home": "LA Clippers",
+   "away": "LA Lakers",
+   "start_kyiv": "2026-10-29T04:30",
+   "start_utc": "2026-10-29T02:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - NBA liga: LA Clippers - LA Lakers"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Liga prvaka Azije - TWO",
+   "home": "Gangwon",
+   "away": "Kuching City",
+   "start_kyiv": "2026-10-29T12:00",
+   "start_utc": "2026-10-29T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: Liga prvaka Azije - TWO: Gangwon - Kuching City"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Liga prvaka Azije - TWO",
+   "home": "Shanghai Shenhua",
+   "away": "Machida",
+   "start_kyiv": "2026-10-29T14:15",
+   "start_utc": "2026-10-29T12:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1792972800000&toTime=1793577599999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: Liga prvaka Azije - TWO: Shanghai Shenhua - Machida"
     }
    ]
   }
