@@ -118,6 +118,22 @@ def _words(*names: str) -> set[str]:
     return out
 
 
+#: названия-заглушки телегидов: передачи нет, сайт заполнил пустое место
+_PLACEHOLDERS = re.compile(
+    r"^(?:unknown show|no information|to be announced|tba|program|programet\b.*|"
+    r"нет данных|нет информации)$", re.I)
+
+
+def placeholder(title: str, key) -> bool:
+    """Заглушка вместо передачи: «Unknown show», «Programet e TS4 HD» или
+    само имя канала («Tring Sport 3 HD» у канала Tring Sport 3)."""
+    plain = _norm(title)
+    if not plain or _PLACEHOLDERS.match(plain):
+        return True
+    name = _norm((key or ("",))[0])
+    return bool(name) and plain.startswith(name)
+
+
 class Grids:
     """Передачи каждого сайта по каналам — из ВСЕХ разобранных страниц
     сбора (и матчи, и прочее): (сайт, канал) → [(время, заголовок)]."""
@@ -136,16 +152,25 @@ class Grids:
         self.shows = {k: sorted(v) for k, v in self.shows.items()}
 
     def full(self, domain: str, key, ts: float) -> bool:
-        """Правило 2: у сайта сплошная сетка канала к моменту `ts`."""
+        """Правило 2: у сайта сплошная сетка канала к моменту `ts`.
+        Заглушка — не сетка (сбор 26.10 20:08: у ipko каналы Tring Sport
+        расписаны «Unknown show» каждый час или «Tring Sport 3 HD» каждые
+        2 ч, и правило сняло настоящие матчи с сайта самого Tring): в окне
+        должно быть не меньше двух разных названий, а передача в момент
+        матча — не заглушка (`placeholder`)."""
         shows = self.shows.get((_bare(domain), key)) or []
-        window = [t for t, _ in shows
+        window = [(t, title) for t, title in shows
                   if ts - GRID_BACK.total_seconds() <= t <= ts + 600]
         if len(window) < GRID_SHOWS:
             return False
-        if ts - window[-1] > GRID_GAP.total_seconds():
+        if ts - window[-1][0] > GRID_GAP.total_seconds():
             return False
-        gaps = [b - a for a, b in zip(window, window[1:])]
-        return all(g <= GRID_GAP.total_seconds() for g in gaps)
+        gaps = [b[0] - a[0] for a, b in zip(window, window[1:])]
+        if not all(g <= GRID_GAP.total_seconds() for g in gaps):
+            return False
+        if len({_norm(title) for _, title in window}) < 2:
+            return False
+        return not placeholder(window[-1][1], key)
 
     def mentions(self, domain: str, key, ts: float, words: set[str]) -> bool:
         """Правило 3в: в сетке канала у сайта рядом есть передача, где в

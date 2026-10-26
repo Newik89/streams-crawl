@@ -142,6 +142,26 @@ ipko_both = ("ipko.tv", IPKO[1] + [показ("SuperSport 3", "21:30", "PSG-Lyon
                                 строка("livesoccertv.com", "Неизвестный канал", "21:30"))])
 проверка("канал не узнан словарём — не судим", снято, [])
 
+print("3а. Заглушка — не сетка (сбор 26.10 20:08: ipko расписал каналы Tring Sport пустышками)")
+заглушка = ("ipko.tv", [показ("Tring Sport 1", h, "Unknown show")
+                        for h in ("16:00", "17:00", "18:00", "19:00", "20:00", "21:00")]
+            + [показ("Tring Sport 2", "19:25", "Venezia - Inter")])
+tring = игра(строка("ipko.tv", "Tring Sport 2", "19:25", дом="Venezia", гость="Inter"),
+             строка("tring.al", "Tring Sport 1", "19:30", дом="Venezia", гость="INTER DE MILÃO"))
+оставлено, снято = прогон([tring], (заглушка,))
+проверка("«Unknown show» каждый час — не сетка, строку tring.al не снимаем", снято, [])
+имя_канала = ("ipko.tv", [показ("Tring Sport 3", h, "Tring Sport 3 HD")
+                          for h in ("14:00", "16:00", "18:00", "20:00")]
+              + [показ("Tring Sport 2", "21:00", "Portland - Utah")])
+nba = игра(строка("ipko.tv", "Tring Sport 2", "21:00", дом="Portland", гость="Utah"),
+           строка("tring.al", "Tring Sport 3", "21:00", дом="Portland Trail Blazers", гость="Utah Jazz"))
+оставлено, снято = прогон([nba], (имя_канала,))
+проверка("в сетке только имя канала («Tring Sport 3 HD») — не сетка", снято, [])
+проверка("placeholder: «Programet e TS4 HD» — заглушка",
+         cg.placeholder("Programet e TS4 HD", ("Tring Sport 4", "AL")), True)
+проверка("placeholder: «Premier League Channel» — настоящая передача",
+         cg.placeholder("Premier League Channel", ("SuperSport 3", "AL")), False)
+
 print("4. Один матч эталона — одна игра, даже если строки не склеились")
 ipko_игра = игра(строка("ipko.tv", "SuperSport 2", "21:18", дом="PARIS SAINT-GERMAIN", гость="Olympique Lyon"))
 lstv_игра = игра(строка("livesoccertv.com", "SuperSport 2 Digitalb", "21:30", гость="Olympique Lyonnais"),
