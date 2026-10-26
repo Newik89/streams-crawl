@@ -1525,7 +1525,8 @@ def main() -> int:
     # сплошная сетка другого канала в это время занята другой передачей —
     # строку агрегатора «игра на том канале» не берём (`app/channel_grid.py`)
     games, чужие = channel_grid.drop_contradicted(
-        games, channel_grid.Grids(pages, channel_grid.load_map()))
+        games, channel_grid.Grids(pages, channel_grid.load_map()),
+        reference_full)
     for g, e, b in чужие:
         снято.append(removed_row(СНЯТО_ЧУЖАЯ_СЕТКА, e.source, e.payload,
                                  f"у {b} сплошная программа «{e.channel}», "

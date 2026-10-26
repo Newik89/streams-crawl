@@ -157,14 +157,45 @@ class Grids:
         return False
 
 
-def drop_contradicted(games: list, grids: Grids) -> tuple[list, list]:
-    """Правила 3–4. Возвращает (игры, [(игра, снятая строка, сайт-сетка)])."""
+def same_match(games: list, reference: list | None) -> dict[int, int]:
+    """Игры, которые эталон признал ОДНИМ матчем, — общий номер группы.
+    На GitHub строки разных сайтов склеиваются не всегда («PARIS SAINT-
+    GERMAIN — Olympique Lyon» у ipko и «PSG — Olympique Lyonnais» у
+    livesoccertv легли двумя играми, #7042): их сводит только метка
+    flashscore, как на сервере (`canon.align`, уверенные пары). Без эталона
+    — каждая игра сама по себе."""
+    group = {id(g): i for i, g in enumerate(games)}
+    if not reference:
+        return group
+    from . import canon
+    dicts = [{"home": g.home, "away": g.away, "sport": g.first.sport or "",
+              "league": g.first.league or "",
+              "start_kyiv": g.start.replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M"),
+              "_game": g} for g in games]
+    by_fs: dict = {}
+    for d, ref, _score in canon.align(dicts, reference).get("sure", []):
+        fs = ref.get("fs_id")
+        if fs:
+            group[id(d["_game"])] = by_fs.setdefault(fs, group[id(d["_game"])])
+    return group
+
+
+def drop_contradicted(games: list, grids: Grids,
+                      reference: list | None = None) -> tuple[list, list]:
+    """Правила 3–4. Возвращает (игры, [(игра, снятая строка, сайт-сетка)]).
+    `reference` — эталон сбора: игры одного матча эталона считаются одной
+    игрой для правила 3а (`same_match`)."""
     cmap = grids.cmap
+    group = same_match(games, reference)
+    members: dict = {}
+    for g in games:
+        members.setdefault(group[id(g)], []).extend(g.entries)
     removed: list = []
     kept: list = []
     for game in games:
-        sites = {_bare(e.source) for e in game.entries}
-        words = _words(*[n for e in game.entries for n in (e.home, e.away)])
+        entries = members[group[id(game)]]          # строки всех сайтов матча
+        sites = {_bare(e.source) for e in entries}
+        words = _words(*[n for e in entries for n in (e.home, e.away)])
         drop: dict = {}
         for e in game.entries:
             a = _bare(e.source)
@@ -177,7 +208,7 @@ def drop_contradicted(games: list, grids: Grids) -> tuple[list, list]:
                     continue
                 on_k = any(_bare(x.source) == b
                            and channel_key(cmap, x.source, x.channel) == key
-                           for x in game.entries)
+                           for x in entries)
                 if on_k or grids.mentions(b, key, ts, words):           # 3в
                     continue
                 drop[id(e)] = b
