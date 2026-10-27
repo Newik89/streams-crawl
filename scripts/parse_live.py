@@ -548,9 +548,23 @@ def drop_late_repeats(games: list) -> tuple[list, list]:
 #: окно «в одно время»: начала двух игр на одном канале ближе этого — канал
 #: не может показывать обе (футбольный матч идёт два часа)
 МУЛЬТИКАСТ_ОКНО = timedelta(minutes=15)
+#: каналы-исключения из мультикаста — в данных, не в коде (книга 088)
+MULTICAST_KEEP_FILE = ROOT / "data" / "multicast_keep.json"
 
 
-def drop_multicast(games: list) -> tuple[list, list]:
+def multicast_keep(path: Path | None = None) -> set[tuple[str, str]]:
+    """Пары (сайт, канал), которые мультикаст не трогает (`data/
+    multicast_keep.json`, правило 5 `drop_multicast`). Нет файла — пусто."""
+    try:
+        data = json.loads((path or MULTICAST_KEEP_FILE).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return set()
+    return {((x.get("сайт") or "").strip().lower().removeprefix("www."),
+             (x.get("канал") or "").strip())
+            for x in data.get("каналы") or [] if isinstance(x, dict)}
+
+
+def drop_multicast(games: list, keep: set | None = None) -> tuple[list, list]:
     """Мультикаст — не канал игры (владелец 22.10.2026: «не может один канал
     показывать сразу 3 игры, а если и так — это мультикаст, мультикаст не
     интересен»; #7453/#7452/#7274 — OneSoccer у четырёх матчей CPL 25.10 в
@@ -566,13 +580,19 @@ def drop_multicast(games: list) -> tuple[list, list]:
        tournament») не в счёт: канал тенниса меняет корты.
     4. Игра, у которой не осталось строк, уходит целиком; прочие каналы
        игры остаются.
+    5. Каналы-исключения (`keep`, по умолчанию `data/multicast_keep.json`,
+       слово владельца 26.10: Canal 11 у canal11.pt) не снимаются вовсе.
 
     Возвращает (игры, [(игра, снятая строка, сколько игр разом)])."""
+    if keep is None:
+        keep = multicast_keep()
     by_channel: dict = {}
     for game in games:
         if game.first.away == broadcast.SESSION:                 # правило 3
             continue
         for e in game.entries:
+            if ((e.source or "").lower().removeprefix("www."), e.channel) in keep:
+                continue                                         # правило 5
             by_channel.setdefault((e.source, e.channel), []).append((game, e))
     drop: dict = {}                                     # id(entry) → сколько
     for (source, channel), items in by_channel.items():          # правило 1
