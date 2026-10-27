@@ -579,7 +579,7 @@ def check_women_leagues(sites: dict[str, Site], games: dict | None) -> list[str]
     found: dict = collections.defaultdict(list)
     for domain, s in sorted(sites.items()):
         for r, _ in s.rows:
-            if r.sport not in ("F", "B") or "W" in names.category(f"{r.home} {r.away}").split():
+            if r.sport not in ("F", "B") or "W" in names.pair_category(r.home, r.away).split():
                 continue
             league_raw = " ".join(x for x in (r.league, r.program.league_raw) if x)
             for ref, _t in _near(index, r.start_kyiv, timedelta(minutes=30)):

@@ -23,6 +23,8 @@
    краснеет, пока сайт плана без языка).
 5. Названия команд язык сайта не трогает: их сверяет эталон flashscore во
    всех написаниях (английское имя на хорватском сайте — как есть).
+6. Язык строки — язык сайта плюс письменность самой строки (`of_row`,
+   книга 086): русская строка на литовском tv3.lt читается и по-русски.
 """
 
 from __future__ import annotations
@@ -154,6 +156,20 @@ def word_langs(word: str) -> frozenset[str] | None:
         if letters.search(w):
             return frozenset(langs)
     return _tagged().get(w)
+
+
+def of_row(langs: frozenset[str] | None, text: str) -> frozenset[str] | None:
+    """Правило 6 (книга 086, слово владельца 27.10): язык СТРОКИ — языки
+    сайта плюс письменность самой строки. Литовский tv3.lt держит и русские
+    передачи («Женщины. …») — русское слово «женщины» там не искалось, и
+    женский матч шёл мужским. Нелатинские буквы язык выдают сами (иврит,
+    греческий, кириллица, арабский — `_SCRIPTS`); латиница ничего не
+    добавляет. Сайт неизвестен (None) — все языки, как было."""
+    if langs is None:
+        return None
+    extra = frozenset(lang for letters, own in _SCRIPTS
+                      if letters.search(text or "") for lang in own)
+    return langs | extra if extra - langs else langs
 
 
 def allowed(word: str, langs: frozenset[str] | None) -> bool:
