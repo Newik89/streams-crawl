@@ -474,21 +474,44 @@ def odd_word(site: str, spellings: list[str]) -> str:
     узнал «Hajduk Čurug» как хорватское «Hajduk» на 100 — а «Čurug» нет ни в
     «Hajduk Split», ни в «Hajduk», ни в «Χάιντουκ Σπλιτ»: это другой клуб.
     Слово отличает, только если оно такое во ВСЕХ чтениях имени сайта
-    (кириллицу `names.readings` читает трояко). Пусто — не отличает."""
+    (кириллицу `names.readings` читает трояко). Пусто — не отличает.
+
+    Правила (проверка GitHub 27.10 поймала три настоящих матча):
+      1. смотрим только слова ПОСЛЕ первого общего: перед именем сайты пишут
+         рубрику, турнир и спонсора («BKT EuroCup Basketbol Karşılaşması
+         Bahçeşehir Koleji» у TRT, «Albi Mall Superliga Llapi» у ipko);
+      2. клуб другой, только если СВОЁ слово после общего есть и у эталона:
+         «Hajduk Čurug» против «Hajduk Split», «Μάντσεστερ Γιουνάιτεντ»
+         против «Manchester Basketball». Эталон пишет просто «PAOK», а сайт
+         добавил город («PAOK Thessaloni») — это уточнение, не другой клуб;
+      3. ни одно слово не общее — судить не по чему, пусто."""
     if not site or _NO_VOWELS_RE.search(site):
         return ""
-    theirs = {w for s in spellings if s for r in names.readings(s) for w in r.split()}
-    if not theirs:
-        return ""
+    readings = [r.split() for r in names.readings(site)]
+    mine = {w for words in readings for w in words}
+    their_readings = [r.split() for s in spellings if s for r in names.readings(s)]
+    theirs = {w for words in their_readings for w in words}
+    if not theirs or not any(_after_common(words, mine) for words in their_readings):
+        return ""                                               # правило 2
     found = ""
-    for reading in names.readings(site):
-        odd = [w for w in reading.split()
-               if len(w) >= ODD_WORD_MIN and not w.isdigit()
-               and not any(_same_word(w, t) for t in theirs)]
+    for words in readings:
+        odd = _after_common(words, theirs)
         if not odd:
             return ""
         found = found or odd[0]
     return found
+
+
+def _after_common(words: list[str], other: set[str]) -> list[str]:
+    """Слова имени ПОСЛЕ первого слова, похожего на одно из `other`, сами ни
+    на одно из `other` не похожие (от `ODD_WORD_MIN` букв, не числа).
+    Общего слова нет — пусто (`odd_word`, правила 1 и 3)."""
+    known = [any(_same_word(w, t) for t in other) for w in words]
+    if True not in known:
+        return []
+    start = known.index(True) + 1
+    return [w for w, ok in zip(words[start:], known[start:])
+            if not ok and len(w) >= ODD_WORD_MIN and not w.isdigit()]
 
 
 def _clear_leader(game: dict, best: dict, best_score: int,

@@ -101,6 +101,17 @@ print("3. Отличающее слово команды сайта")
 проверка("«Dinamo Minsk» при «Dinamo Moscow» — MINSK",
          canon.odd_word("Dinamo Minsk", ["Dinamo Moscow", "Динамо Москва"]), "MINSK")
 проверка("иврит не проверяется", canon.odd_word("הפועל באר שבע", ["H. Beer Sheva"]), "")
+# проверка GitHub 27.10 (сбор #352) поймала три настоящих матча:
+проверка("рубрика перед именем: «BKT EuroCup … Bahçeşehir Koleji» при «Bahcesehir Kol.»",
+         canon.odd_word("BKT EUROCUP BASKETBOL KARŞILAŞMASI BAHÇEŞEHİR KOLEJİ",
+                        ["Bahcesehir Kol.", "Bahçeşehir Kol."]), "")
+проверка("спонсор перед именем: «Albi Mall Superliga Llapi» при «KF Llapi»",
+         canon.odd_word("Albi Mall Superliga Llapi", ["KF Llapi", "Λάπι"]), "")
+проверка("город после имени, у эталона уточнения нет: «PAOK Thessaloni» при «PAOK»",
+         canon.odd_word("PAOK THESSALONI", ["PAOK", "ΠΑΟΚ"]), "")
+проверка("«Inter Milan» при «Inter» — тоже уточнение", canon.odd_word("Inter Milan", ["Inter"]), "")
+проверка("«Μάντσεστερ Γιουνάιτεντ» при «Manchester Basketball» — другой клуб (cosmote 01.11)",
+         bool(canon.odd_word("Μάντσεστερ Γιουνάιτεντ", ["Manchester Basketball"])), True)
 проверка("твёрдая сторона — хозяева",
          canon.firm_side({"home": "Hajduk Čurug", "away": "Oni zive"},
                          {"home": "Hajduk Split", "away": "Gorica",
