@@ -19,6 +19,8 @@ import re
 import sqlite3
 from datetime import datetime, timedelta
 
+from rapidfuzz import fuzz
+
 from . import dictionary, names
 
 #: с этого сходства пишем в библиотеку молча (порог склейки проекта)
@@ -433,6 +435,83 @@ def _best_side(game: dict, ref: dict) -> int:
         best = max(best, names.similarity(game["home"], h),
                    names.similarity(game["away"], a))
     return best
+
+
+#: «отличающее слово» (книга 087): слово имени сайта от `ODD_WORD_MIN` букв,
+#: не похожее (`ODD_WORD_SAME`, начало слова) ни на одно слово ни одного
+#: написания команды эталона. 70, а не 80: греческое «Πειραιώς» читается
+#: «PIREOS», а у эталона «PIRAEUS» — 77; чужие клубы дают 20–45 («CURUG» и
+#: «SPLIT», «MINSK» и «MOSCOW», «MADRID» и «MALLORCA»)
+ODD_WORD_MIN = 4
+ODD_WORD_SAME = 70
+#: иврит и арабский пишутся без гласных — их слова с латиницей эталона
+#: дословно не сходятся, и «отличающим» стало бы каждое: не проверяем
+_NO_VOWELS_RE = re.compile(r"[֐-׿؀-ۿ]")
+
+
+def firm_side(game: dict, ref: dict) -> tuple[str, list[str]]:
+    """Лучше узнанная сторона игры: (имя у сайта, все написания этой команды
+    в эталоне — английское и местные)."""
+    locals_ = local_pairs(ref)
+    homes = [ref.get("home") or ""] + [h for _lang, h, _a in locals_]
+    aways = [ref.get("away") or ""] + [a for _lang, _h, a in locals_]
+    home = max((names.similarity(game["home"], x) for x in homes if x), default=0)
+    away = max((names.similarity(game["away"], x) for x in aways if x), default=0)
+    return (game["home"], homes) if home >= away else (game["away"], aways)
+
+
+def _same_word(mine: str, theirs: str) -> bool:
+    if mine == theirs or fuzz.ratio(mine, theirs) >= ODD_WORD_SAME:
+        return True
+    # сокращение: «ATL» у эталона — это «ATLETICO» у сайта, и наоборот
+    short, long_ = sorted((mine, theirs), key=len)
+    return len(short) >= 3 and long_.startswith(short)
+
+
+def odd_word(site: str, spellings: list[str]) -> str:
+    """Слово команды сайта, которого нет ни в одном написании команды эталона
+    (книга 087, #8126): сериал «Oni žive za fudbal ep. 252 - Hajduk Čurug»
+    узнал «Hajduk Čurug» как хорватское «Hajduk» на 100 — а «Čurug» нет ни в
+    «Hajduk Split», ни в «Hajduk», ни в «Χάιντουκ Σπλιτ»: это другой клуб.
+    Слово отличает, только если оно такое во ВСЕХ чтениях имени сайта
+    (кириллицу `names.readings` читает трояко). Пусто — не отличает.
+
+    Правила (проверка GitHub 27.10 поймала три настоящих матча):
+      1. смотрим только слова ПОСЛЕ первого общего: перед именем сайты пишут
+         рубрику, турнир и спонсора («BKT EuroCup Basketbol Karşılaşması
+         Bahçeşehir Koleji» у TRT, «Albi Mall Superliga Llapi» у ipko);
+      2. клуб другой, только если СВОЁ слово после общего есть и у эталона:
+         «Hajduk Čurug» против «Hajduk Split», «Μάντσεστερ Γιουνάιτεντ»
+         против «Manchester Basketball». Эталон пишет просто «PAOK», а сайт
+         добавил город («PAOK Thessaloni») — это уточнение, не другой клуб;
+      3. ни одно слово не общее — судить не по чему, пусто."""
+    if not site or _NO_VOWELS_RE.search(site):
+        return ""
+    readings = [r.split() for r in names.readings(site)]
+    mine = {w for words in readings for w in words}
+    their_readings = [r.split() for s in spellings if s for r in names.readings(s)]
+    theirs = {w for words in their_readings for w in words}
+    if not theirs or not any(_after_common(words, mine) for words in their_readings):
+        return ""                                               # правило 2
+    found = ""
+    for words in readings:
+        odd = _after_common(words, theirs)
+        if not odd:
+            return ""
+        found = found or odd[0]
+    return found
+
+
+def _after_common(words: list[str], other: set[str]) -> list[str]:
+    """Слова имени ПОСЛЕ первого слова, похожего на одно из `other`, сами ни
+    на одно из `other` не похожие (от `ODD_WORD_MIN` букв, не числа).
+    Общего слова нет — пусто (`odd_word`, правила 1 и 3)."""
+    known = [any(_same_word(w, t) for t in other) for w in words]
+    if True not in known:
+        return []
+    start = known.index(True) + 1
+    return [w for w, ok in zip(words[start:], known[start:])
+            if not ok and len(w) >= ODD_WORD_MIN and not w.isdigit()]
 
 
 def _clear_leader(game: dict, best: dict, best_score: int,
