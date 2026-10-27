@@ -181,6 +181,10 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     if borrowed:
         own = site_lang.of(borrowed)
         langs = None if own is None else langs | own
+    # и письменность самой строки: русская передача на литовском сайте
+    # читается по-русски (правило 6 `site_lang`, книга 086)
+    langs = site_lang.of_row(langs, " ".join(
+        x for x in (program.league_raw, program.title, program.description) if x))
     markers = markers.for_langs(langs)
     row = Row(program=program, ok=False,
               start_utc=daytime.to_utc(program.start),

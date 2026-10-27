@@ -90,11 +90,29 @@ _AGE_RE = re.compile(r"\bU\s?-?(\d{2})\b|\b(?:under|sub)[\s-]{0,3}(\d{2})\b(?![.
 # «ж» («Австралия (Ж)»), греческая «γ» («Τουρκία Γ») — женские пометки
 # источников, чьи команды шли мужскими (женский ЧМ по баскету, 06.09).
 # «женск»/«жен» префиксом брать нельзя — срезал бы Женеву (Серветт Женева)
-_WOMEN_RE = re.compile(r"(?<!\w)W(?!\w)|\bwomen\b|\bfem[ei]nin"
+#
+# Одиночная буква пола (W, Ž, Ж, Γ) — «женская» ТОЛЬКО так (книга 086,
+# слово владельца 27.10):
+#   1. последней в имени: «Arsenal W», «Νυρεμβέργη Γ», «Penarol Ž»;
+#      после неё могут стоять лишь страна в скобках, «WO», «RETIRED»,
+#      возраст и номер состава («Spain W (Esp)», «Arsenal W U19»,
+#      «Werder W II»);
+#   2. или в скобках: «Spain (W)», «Австралия (Ж)»;
+#   3. с точкой — это сокращение или инициал, не пол: «Μάντσεστερ Γ.»
+#      (Манчестер Юнайтед у Novasports — матч МЮ стал женским, канал
+#      пропал у 4 игр), «Polonia W.» (Варшава), теннисное «Zheng W.»;
+#   4. «& W» — тоже не пол: «Havant & W» (Havant & Waterlooville).
+# В середине имени буква — часть имени («Εμπράικα γ Μακάμπι»).
+_MARK_TAIL = (r"(?=(?:\s+(?:\([^()]*\)|WO|RETIRED|U\s?-?\d{2}|B|II|III|2)"
+              r"(?!\w))*\s*$)")
+#: «(F)», «(FEM)» — пометка пола у movistar, ipko, allente, sporttv (086)
+_WOMEN_RE = re.compile(r"(?<![\w&])(?<!&\s)W" + _MARK_TAIL
+                       + r"|\bwomen\b|\bfem[ei]nin"
                        r"|\bженщин\w*\b|\bženy\b|\bžen\b|\bmoter\w*\b"
                        # иврит: «נשים», у sport5 с артиклем — «הנשים» (14.09),
                        # с предлогом — «לנשים» (очередь #2074, 06.10)
-                       r"|(?<!\w)[žжγ](?!\w)|\b[הל]?נשים\b", re.I)
+                       r"|(?<!\w)[žжγ]" + _MARK_TAIL
+                       + r"|\([žжγw]\)|\((?:f|fem)\)|\b[הל]?נשים\b", re.I)
 # Второй состав: `SL Benfica B`, `Werder Bremen II`. От основы отличается одной
 # буквой — фаззи не различит, поэтому выносим в категорию.
 _RESERVE_RE = re.compile(r"(?<=\w)\s+(B|II|2)\s*$", re.I)
@@ -223,11 +241,24 @@ def is_placeholder(name: str) -> bool:
 def category(name: str) -> str:
     """Пол, возраст и состав: `W`, `U19`, `B`. Правило проекта — терять их
     нельзя, а склеивать через них тем более."""
+    return _category(name, bool(_WOMEN_RE.search(name)))
+
+
+def pair_category(*texts: str) -> str:
+    """То же для нескольких имён разом (хозяева, гости, турнир). Буква пола
+    ищется в конце КАЖДОГО имени (книга 086), поэтому склеивать имена в одну
+    строку для `category` нельзя: в «Arsenal W Chelsea W» буква хозяев уже
+    не последняя. Возраст и второй состав — как у склеенной строки."""
+    texts = [t or "" for t in texts]
+    return _category(" ".join(texts), any(_WOMEN_RE.search(t) for t in texts))
+
+
+def _category(name: str, women: bool) -> str:
     parts = []
     m = _AGE_RE.search(name)
     if m:
         parts.append(f"U{m.group(1) or m.group(2)}")
-    if _WOMEN_RE.search(name):
+    if women:
         parts.append("W")
     if _RESERVE_RE.search(name.strip()) or _RESERVE_MID_RE.search(name.strip()):
         parts.append("B")
