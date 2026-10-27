@@ -19,12 +19,18 @@
 
 from __future__ import annotations
 
+import re
 from bisect import bisect_left, bisect_right
 from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from . import canon, names
+
+#: номер выпуска в «имени команды» (книга 087, #8126): число от трёх цифр, но
+#: не год основания или сезона (18xx–20xx): «Oni žive za fudbal ep. 252» —
+#: передача, а «Como 1907», «Schalke 04», «Hannover 96» — команды
+_EPISODE_NO = re.compile(r"(?<![\w.])(?!(?:18|19|20)\d\d(?!\d))\d{3,}(?![\w.])")
 
 #: С какого сходства пары эталон диктует вид спорта. 95 — «пара сошлась почти
 #: точно», порог владельца от 02.10 (#4335/#4336: при меньшем сходстве
@@ -291,9 +297,17 @@ class Reference:
              метками в одно время (U19 и U21) — None, не гадаем; правило 4
              после пятого: половина пары слабее целой.
 
+          0. (книга 087) сторона с номером выпуска — не команда: «Oni žive za
+             fudbal ep. 252» (`_EPISODE_NO`) → None;
+          4а. (книга 087) у твёрдой стороны сайта есть слово, которого нет ни
+             в одном написании команды эталона (`canon.odd_word`), — правило
+             4 молчит: «Hajduk Čurug» — не «Hajduk».
+
         Ничего не сошлось — None: эталон пару не знает, строка решается как
         раньше."""
         if start is None or not self._entries or not home or not away:
+            return None
+        if _EPISODE_NO.search(home) or _EPISODE_NO.search(away):
             return None
         when = start.replace(tzinfo=None)         # эталон — наивное киевское
         # кандидаты — только записи, делящие слово с одной из сторон (индекс
@@ -350,6 +364,11 @@ class Reference:
                      (canon._best_side(swapped, entry), True, swapped))
             side, turned, game = max(sides, key=lambda x: x[0])
             if side < SIDE_SURE:
+                continue
+            # у твёрдой стороны сайта есть слово, которого нет ни в одном
+            # написании команды эталона, — это другой клуб: «Hajduk Čurug»
+            # не «Hajduk» (книга 087, #8126)
+            if canon.odd_word(*canon.firm_side(game, entry)):
                 continue
             if canon._pair_score(game, entry) >= SIDE_FLOOR or (
                     canon._same_category(game, entry)

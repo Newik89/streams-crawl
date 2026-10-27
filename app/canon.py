@@ -19,6 +19,8 @@ import re
 import sqlite3
 from datetime import datetime, timedelta
 
+from rapidfuzz import fuzz
+
 from . import dictionary, names
 
 #: с этого сходства пишем в библиотеку молча (порог склейки проекта)
@@ -418,6 +420,60 @@ def _best_side(game: dict, ref: dict) -> int:
         best = max(best, names.similarity(game["home"], h),
                    names.similarity(game["away"], a))
     return best
+
+
+#: «отличающее слово» (книга 087): слово имени сайта от `ODD_WORD_MIN` букв,
+#: не похожее (`ODD_WORD_SAME`, начало слова) ни на одно слово ни одного
+#: написания команды эталона. 70, а не 80: греческое «Πειραιώς» читается
+#: «PIREOS», а у эталона «PIRAEUS» — 77; чужие клубы дают 20–45 («CURUG» и
+#: «SPLIT», «MINSK» и «MOSCOW», «MADRID» и «MALLORCA»)
+ODD_WORD_MIN = 4
+ODD_WORD_SAME = 70
+#: иврит и арабский пишутся без гласных — их слова с латиницей эталона
+#: дословно не сходятся, и «отличающим» стало бы каждое: не проверяем
+_NO_VOWELS_RE = re.compile(r"[֐-׿؀-ۿ]")
+
+
+def firm_side(game: dict, ref: dict) -> tuple[str, list[str]]:
+    """Лучше узнанная сторона игры: (имя у сайта, все написания этой команды
+    в эталоне — английское и местные)."""
+    locals_ = local_pairs(ref)
+    homes = [ref.get("home") or ""] + [h for _lang, h, _a in locals_]
+    aways = [ref.get("away") or ""] + [a for _lang, _h, a in locals_]
+    home = max((names.similarity(game["home"], x) for x in homes if x), default=0)
+    away = max((names.similarity(game["away"], x) for x in aways if x), default=0)
+    return (game["home"], homes) if home >= away else (game["away"], aways)
+
+
+def _same_word(mine: str, theirs: str) -> bool:
+    if mine == theirs or fuzz.ratio(mine, theirs) >= ODD_WORD_SAME:
+        return True
+    # сокращение: «ATL» у эталона — это «ATLETICO» у сайта, и наоборот
+    short, long_ = sorted((mine, theirs), key=len)
+    return len(short) >= 3 and long_.startswith(short)
+
+
+def odd_word(site: str, spellings: list[str]) -> str:
+    """Слово команды сайта, которого нет ни в одном написании команды эталона
+    (книга 087, #8126): сериал «Oni žive za fudbal ep. 252 - Hajduk Čurug»
+    узнал «Hajduk Čurug» как хорватское «Hajduk» на 100 — а «Čurug» нет ни в
+    «Hajduk Split», ни в «Hajduk», ни в «Χάιντουκ Σπλιτ»: это другой клуб.
+    Слово отличает, только если оно такое во ВСЕХ чтениях имени сайта
+    (кириллицу `names.readings` читает трояко). Пусто — не отличает."""
+    if not site or _NO_VOWELS_RE.search(site):
+        return ""
+    theirs = {w for s in spellings if s for r in names.readings(s) for w in r.split()}
+    if not theirs:
+        return ""
+    found = ""
+    for reading in names.readings(site):
+        odd = [w for w in reading.split()
+               if len(w) >= ODD_WORD_MIN and not w.isdigit()
+               and not any(_same_word(w, t) for t in theirs)]
+        if not odd:
+            return ""
+        found = found or odd[0]
+    return found
 
 
 def _clear_leader(game: dict, best: dict, best_score: int,
