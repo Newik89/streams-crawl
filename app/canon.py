@@ -343,32 +343,40 @@ def _league_marks(game: dict) -> list[str]:
     двойней рядом с «Norway U21 — Israel U21», а «България — Шотландия» шла
     взрослыми сборными без метки эталона (#4313, #4216, 03.10). «Вторая
     команда» (B) из турнира не берётся — см. `_pair_score`."""
-    text = f"{game.get('league') or ''} {game.get('league_canon') or ''}"
-    return [m for m in names.category(text).split() if m != "B"]
+    marks = names.pair_category(game.get("league"), game.get("league_canon"))
+    return [m for m in marks.split() if m != "B"]
 
 
 def _same_category(game: dict, ref: dict) -> bool:
     """Пол и возраст пары совпадают с кандидатом (та же стена, что в
     `_pair_score`, но без счёта по буквам)."""
     из_лиги = _league_marks(game)
-    моя = names.category(f"{game.get('home') or ''} {game.get('away') or ''}")
+    моя = names.pair_category(game.get('home'), game.get('away'))
     моя = sorted(set((моя + " " + " ".join(из_лиги)).split()))
-    его = sorted(set(names.category(
-        f"{ref.get('home') or ''} {ref.get('away') or ''}").split()))
+    его = sorted(set(names.pair_category(
+        ref.get('home'), ref.get('away')).split()))
     return моя == его
 
 
 #: как flashscore на своём языке помечает женскую команду, которую по-
 #: английски он пишет с «W»: «Italia D», «Polska K», «Polen F», «Polen V»,
-#: «Lengyelország N». Кириллица «(Ж)», чешская «Ž» и греческая «Γ» — уже
-#: пометки `names._WOMEN_RE`. Буквы опасны в общем словаре («Real Madrid
-#: C»), поэтому переводятся ТОЛЬКО у написаний flashscore и ТОЛЬКО когда
-#: английское имя женское (13.10: «Italia W - Bielorussia W» с Rai 2 не
-#: узнавало итальянское «Italia D - Bielorussia D», и эфир снимался как
-#: запись; так же терялись польские, немецкие, французские… написания)
+#: «Lengyelország N». Кириллица «(Ж)» в скобках — пометка `names._WOMEN_RE`.
+#: Буквы опасны в общем словаре («Real Madrid C»), поэтому переводятся
+#: ТОЛЬКО у написаний flashscore и ТОЛЬКО когда английское имя женское
+#: (13.10: «Italia W - Bielorussia W» с Rai 2 не узнавало итальянское
+#: «Italia D - Bielorussia D», и эфир снимался как запись; так же терялись
+#: польские, немецкие, французские… написания).
+#: Греческая «Γ», хорватская/чешская/словацкая «Ž», украинская «Ж» — те же
+#: буквы, что `names._WOMEN_RE` считает полом в конце имени, но у МУЖСКОЙ
+#: записи flashscore они значат другое: «Ατλέτικο Μαδρίτης Γ» = Atl. Madrid
+#: C, третья команда (93 ложные W у мужских в эталоне 26.10, книга 086) —
+#: у мужской записи букву меняем на английскую («C») или снимаем
 _LOCAL_WOMEN = {"it": "D", "sv": "D", "pl": "K", "tr": "K", "da": "K",
                 "ro": "F", "de": "F", "pt": "F", "fr": "F", "es": "F",
-                "nl": "V", "hu": "N"}
+                "nl": "V", "hu": "N",
+                "el": "Γ", "hr": "Ž", "cs": "Ž", "sk": "Ž", "uk": "Ж"}
+#: эти буквы `names._WOMEN_RE` читает полом и без перевода (книга 086)
+_LOCAL_SAME_AS_OURS = {"el", "hr", "cs", "sk", "uk"}
 #: французский возраст «Biélorussie -17» — у нас «U17»
 _LOCAL_AGE = re.compile(r"(?<!\w)-(\d{2})(?=\s|$)")
 
@@ -377,11 +385,18 @@ def local_name(local: str, english: str, lang: str) -> str:
     """Местное написание flashscore с пометками пола и возраста, как пишем
     мы: «Italia D» → «Italia W», «Bielorussia U19 D» → «Bielorussia U19 W»,
     «Biélorussie -17» → «Biélorussie U17». Мужское английское — без
-    перемен: буква в конце тогда часть имени."""
+    перемен: буква в конце тогда часть имени; а греческая «Γ», «Ž», «Ж»
+    (их `names` читает полом) у мужской записи меняются на последнюю букву
+    английского имени или снимаются: «Ατλέτικο Μαδρίτης Γ» при «Atl.
+    Madrid C» → «Ατλέτικο Μαδρίτης C» (книга 086)."""
     name = " ".join((local or "").split())
     letter = _LOCAL_WOMEN.get(lang)
-    if letter and "W" in names.category(english or "").split():
-        name = re.sub(rf"(?<=\s){letter}$", "W", name)
+    if letter and re.search(rf"(?<=\s){letter}$", name):
+        if "W" in names.category(english or "").split():
+            name = name[:-1] + "W"
+        elif lang in _LOCAL_SAME_AS_OURS:
+            last = ((english or "").split() or [""])[-1]
+            name = name[:-1] + last if len(last) == 1 else name[:-1].rstrip()
     return _LOCAL_AGE.sub(lambda m: f"U{m.group(1)}", name)
 
 
@@ -505,10 +520,10 @@ def _pair_score(game: dict, ref: dict) -> int:
     # дубль клуба, и матч Arkadag — Al-Muharraq не лёг на эталон, хотя обе
     # команды совпали на 100 (#2061, разбор владельца 10.09)
     из_лиги = _league_marks(game)
-    моя = names.category(f"{game.get('home') or ''} {game.get('away') or ''}")
+    моя = names.pair_category(game.get('home'), game.get('away'))
     моя = sorted(set((моя + " " + " ".join(из_лиги)).split()))
-    его = sorted(set(names.category(
-        f"{ref.get('home') or ''} {ref.get('away') or ''}").split()))
+    его = sorted(set(names.pair_category(
+        ref.get('home'), ref.get('away')).split()))
     # В теннисе буква пола в имени ничего не значит: эталон пишет игроков с
     # инициалом («Zheng W.», «Osuigwe W.» — это не «женская», а имя), пол
     # задаёт турнир. Стена по категории тут только мешала: «Kraus W» с
@@ -705,13 +720,13 @@ def align(games: list[dict], reference: list[dict],
             in_league = (game.get("league") or "").strip()
             in_league = (league_names or {}).get(in_league, in_league)
             if in_league:
-                cat = names.category(f"{game.get('home') or ''} "
-                                     f"{game.get('away') or ''} {in_league}")
+                cat = names.pair_category(game.get('home'), game.get('away'),
+                                          in_league)
                 core = _league_core(in_league)
                 same = [r for r, _ in near
                         if _league_core(r.get("league")) == core
-                        and names.category(f"{r.get('home') or ''} "
-                                           f"{r.get('away') or ''}") == cat]
+                        and names.pair_category(r.get('home'),
+                                                r.get('away')) == cat]
                 if same:
                     pick, verdict = il_pick(game, same, same_league=True)
                     # израильскому мосту единственного кандидата хватает, а
