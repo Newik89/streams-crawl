@@ -37,6 +37,8 @@ data/*
 !data/channel_pages.json
 # языки служебных слов (книга 084, 25.10): без него разбор на GitHub не знает, где чьё слово
 !data/word_langs.json
+# каналы-исключения из мультикаста (книга 088, 27.10): Canal 11 у canal11.pt
+!data/multicast_keep.json
 
 # служебное для Claude Code
 .claude/

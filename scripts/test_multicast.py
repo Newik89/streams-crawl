@@ -89,6 +89,28 @@ print("правила 1–4 мультикаста")
 одна = [игра("A", "B", 20, 0, ("x.tv", "K1")), игра("C", "D", 22, 0, ("x.tv", "K1"))]
 проверка("одна игра в окне — ничего не снято", len(parse_live.drop_multicast(одна)[1]), 0)
 
+print("правило 5: каналы-исключения из данных (книга 088, Canal 11 у canal11.pt)")
+проверка("data/multicast_keep.json знает Canal 11 у canal11.pt",
+         ("canal11.pt", "Canal 11") in parse_live.multicast_keep(), True)
+liga = [игра("SC Farense", "Académico", 13, 0, ("canal11.pt", "Canal 11")),
+        игра("Portimonense", "Marítimo", 13, 0, ("canal11.pt", "Canal 11")),
+        игра("Estoril Praia", "Santa Clara", 13, 0, ("www.canal11.pt", "Canal 11")),
+        игра("Arsenal", "Chelsea", 13, 0, ("skysports.com", "Sky Sports+")),
+        игра("Everton", "Leeds", 13, 0, ("skysports.com", "Sky Sports+"))]
+осталось, снято = parse_live.drop_multicast(liga)
+проверка("три игры Canal 11 в 13:00 — остаются со своим каналом (и с www.)",
+         sorted(f"{g.first.home}/{e.channel}" for g in осталось for e in g.entries
+                if e.channel == "Canal 11"),
+         ["Estoril Praia/Canal 11", "Portimonense/Canal 11", "SC Farense/Canal 11"])
+проверка("Sky Sports+ у skysports.com — по-прежнему мультикаст",
+         sorted(e.home for _, e, _n in снято), ["Arsenal", "Everton"])
+проверка("без исключений (keep пуст) Canal 11 снимается, как раньше",
+         len(parse_live.drop_multicast([игра("A", "B", 13, 0, ("canal11.pt", "Canal 11")),
+                                        игра("C", "D", 13, 0, ("canal11.pt", "Canal 11"))],
+                                       keep=set())[1]), 2)
+проверка("нет файла исключений — пусто",
+         parse_live.multicast_keep(ROOT / "data" / "нет-такого-файла.json"), set())
+
 print("«samenvatting» — обзор (ziggosport.nl 27.10: «FC Barcelona - Real Madrid (samenvatting)»)")
 import json  # noqa: E402
 data = json.loads((ROOT / "data" / "markers.json").read_text(encoding="utf-8"))
