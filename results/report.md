@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 5983 с.
+Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 5924 с.
 
 | Сайт | Результат |
 |---|---|
@@ -23,7 +23,7 @@
 | flashscore.mobi | расписание есть — 17, пусто — 4 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
-| jupiter.err.ee | не открылась — 18 |
+| jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 26 |
 | m.eredmenyek.com | расписание есть — 10, пусто — 4 |
@@ -39,7 +39,7 @@
 | m.flashscore.pl | расписание есть — 9, пусто — 3 |
 | m.flashscore.pt | расписание есть — 6 |
 | m.flashscore.ro | расписание есть — 9, пусто — 3 |
-| m.flashscore.ru | расписание есть — 14, пусто — 4 |
+| m.flashscore.ru | расписание есть — 15, пусто — 3 |
 | m.flashscore.se | расписание есть — 6 |
 | m.flashscore.sk | расписание есть — 9, пусто — 3 |
 | m.flashscore.ua | расписание есть — 9, пусто — 3 |
@@ -60,8 +60,8 @@
 | primaplay.ro | расписание есть — 1 |
 | programetv.ro | пусто — 11 |
 | programme-tv.net | расписание есть — 48 |
-| raiplay.it | расписание есть — 21, не открылась — 3 |
-| raspored.hrt.hr | расписание есть — 18 |
+| raiplay.it | расписание есть — 23, не открылась — 1 |
+| raspored.hrt.hr | расписание есть — 17, не открылась — 1 |
 | rtcg.me | расписание есть — 24 |
 | rte.ie | расписание есть — 17 |
 | rtl.de | расписание есть — 48 |
@@ -73,7 +73,7 @@
 | sport1.maariv.co.il | расписание есть — 5, пусто — 1 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
-| sport5.co.il | расписание есть — 6 |
+| sport5.co.il | расписание есть — 5, пусто — 1 |
 | sporteventz.com | расписание есть — 1 |
 | sporting.pt | заглушка защиты — 1 |
 | sportklub.hr | расписание есть — 10 |
@@ -94,11 +94,11 @@
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | пусто — 96 |
-| tv8.com.tr | расписание есть — 6 |
+| tv8.com.tr | расписание есть — 5, пусто — 1 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
-| tvarenasport.si | расписание есть — 1 |
+| tvarenasport.si | не открылась — 1 |
 | tvguidetonight.com.au | расписание есть — 18 |
 | tvheute.at | расписание есть — 12 |
 | tvmatchen.nu | расписание есть — 6 |
@@ -106,80 +106,62 @@
 | tvpassport.com | расписание есть — 54 |
 | tvsporten.dk | расписание есть — 6 |
 | tvtid.tv2.dk | расписание есть — 6 |
-| unian.tv | расписание есть — 6 |
+| unian.tv | расписание есть — 5, пусто — 1 |
 | vsetv.com | расписание есть — 12 |
-| webtv.sk | расписание есть — 39, нет на этот день — 3 |
+| webtv.sk | расписание есть — 38, нет на этот день — 4 |
 | ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 64
+## Не открылись — 46
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| jupiter.err.ee | ETV | HTTP 403; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=27&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=28&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=29&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=30&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=31&month=10&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=1&month=11&year=2026&channel=etv |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=27&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=28&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=29&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=30&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=31&month=10&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=1&month=11&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=27&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=28&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=29&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=30&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=31&month=10&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=1&month=11&year=2026&channel=etv2 |
-| raiplay.it | Rai 1 | HTTP 404; браузер: HTTP 403 (браузер), защита: не опознана | https://www.raiplay.it/palinsesto/app/rai-1/01-11-2026.json |
-| raiplay.it | Rai 2 | HTTP 404; браузер: HTTP 403 (браузер), защита: не опознана | https://www.raiplay.it/palinsesto/app/rai-2/01-11-2026.json |
-| raiplay.it | Rai 3 | HTTP 404; браузер: HTTP 403 (браузер), защита: не опознана | https://www.raiplay.it/palinsesto/app/rai-3/01-11-2026.json |
+| raiplay.it | Rai Sport | HTTP 404; браузер: HTTP 403 (браузер), защита: не опознана | https://www.raiplay.it/palinsesto/app/rai-sport/02-11-2026.json |
+| raspored.hrt.hr | HTV 3 | ConnectionError: HTTPSConnectionPool(host='arhiv-raspored.hrt.hr', port=443): Max retries exceeded with url: /format/text.xml?mreza=4&datum=2026-11-02 (Caused b | https://raspored.hrt.hr/format/text.xml?mreza=4&datum=2026-11-02 |
+| tvarenasport.si | сетка | SSLError: HTTPSConnectionPool(host='www.tvarenasport.si', port=443): Max retries exceeded with url: /tv-spored/ (Caused by SSLError(SSLCertVerificationError(1,  | https://www.tvarenasport.si/tv-spored/ |
 | sporting.pt | сетка | cloudflare | https://www.sporting.pt/pt/ical |
-| tv.dir.bg | BNT1 (БНТ1) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=57&day=2026-10-27 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=57&day=2026-10-27 |
 | tv.dir.bg | BNT1 (БНТ1) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=57&day=2026-10-28 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=57&day=2026-10-28 |
 | tv.dir.bg | BNT1 (БНТ1) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=57&day=2026-10-29 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=57&day=2026-10-29 |
 | tv.dir.bg | BNT1 (БНТ1) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=57&day=2026-10-30 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=57&day=2026-10-30 |
 | tv.dir.bg | BNT1 (БНТ1) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=57&day=2026-10-31 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=57&day=2026-10-31 |
 | tv.dir.bg | BNT1 (БНТ1) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=57&day=2026-11-01 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=57&day=2026-11-01 |
-| tv.dir.bg | BNT2 (БНТ2) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=99&day=2026-10-27 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=99&day=2026-10-27 |
+| tv.dir.bg | BNT1 (БНТ1) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=57&day=2026-11-02 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=57&day=2026-11-02 |
 | tv.dir.bg | BNT2 (БНТ2) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=99&day=2026-10-28 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=99&day=2026-10-28 |
 | tv.dir.bg | BNT2 (БНТ2) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=99&day=2026-10-29 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=99&day=2026-10-29 |
 | tv.dir.bg | BNT2 (БНТ2) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=99&day=2026-10-30 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=99&day=2026-10-30 |
 | tv.dir.bg | BNT2 (БНТ2) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=99&day=2026-10-31 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=99&day=2026-10-31 |
 | tv.dir.bg | BNT2 (БНТ2) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=99&day=2026-11-01 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=99&day=2026-11-01 |
-| tv.dir.bg | BNT3 (БНТ3) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=82&day=2026-10-27 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=82&day=2026-10-27 |
+| tv.dir.bg | BNT2 (БНТ2) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=99&day=2026-11-02 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=99&day=2026-11-02 |
 | tv.dir.bg | BNT3 (БНТ3) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=82&day=2026-10-28 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=82&day=2026-10-28 |
 | tv.dir.bg | BNT3 (БНТ3) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=82&day=2026-10-29 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=82&day=2026-10-29 |
 | tv.dir.bg | BNT3 (БНТ3) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=82&day=2026-10-30 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=82&day=2026-10-30 |
 | tv.dir.bg | BNT3 (БНТ3) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=82&day=2026-10-31 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=82&day=2026-10-31 |
 | tv.dir.bg | BNT3 (БНТ3) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=82&day=2026-11-01 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=82&day=2026-11-01 |
-| tv.dir.bg | BNT4 (БНТ4) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=64&day=2026-10-27 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=64&day=2026-10-27 |
+| tv.dir.bg | BNT3 (БНТ3) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=82&day=2026-11-02 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=82&day=2026-11-02 |
 | tv.dir.bg | BNT4 (БНТ4) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=64&day=2026-10-28 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=64&day=2026-10-28 |
 | tv.dir.bg | BNT4 (БНТ4) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=64&day=2026-10-29 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=64&day=2026-10-29 |
 | tv.dir.bg | BNT4 (БНТ4) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=64&day=2026-10-30 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=64&day=2026-10-30 |
 | tv.dir.bg | BNT4 (БНТ4) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=64&day=2026-10-31 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=64&day=2026-10-31 |
 | tv.dir.bg | BNT4 (БНТ4) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=64&day=2026-11-01 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=64&day=2026-11-01 |
-| tv.dir.bg | Ring.bg (bTV Sport) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=59&day=2026-10-27 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=59&day=2026-10-27 |
+| tv.dir.bg | BNT4 (БНТ4) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=64&day=2026-11-02 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=64&day=2026-11-02 |
 | tv.dir.bg | Ring.bg (bTV Sport) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=59&day=2026-10-28 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=59&day=2026-10-28 |
 | tv.dir.bg | Ring.bg (bTV Sport) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=59&day=2026-10-29 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=59&day=2026-10-29 |
 | tv.dir.bg | Ring.bg (bTV Sport) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=59&day=2026-10-30 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=59&day=2026-10-30 |
 | tv.dir.bg | Ring.bg (bTV Sport) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=59&day=2026-10-31 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=59&day=2026-10-31 |
 | tv.dir.bg | Ring.bg (bTV Sport) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=59&day=2026-11-01 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=59&day=2026-11-01 |
-| tv.dir.bg | bTV | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=61&day=2026-10-27 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=61&day=2026-10-27 |
+| tv.dir.bg | Ring.bg (bTV Sport) | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=59&day=2026-11-02 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=59&day=2026-11-02 |
 | tv.dir.bg | bTV | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=61&day=2026-10-28 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=61&day=2026-10-28 |
 | tv.dir.bg | bTV | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=61&day=2026-10-29 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=61&day=2026-10-29 |
 | tv.dir.bg | bTV | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=61&day=2026-10-30 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=61&day=2026-10-30 |
 | tv.dir.bg | bTV | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=61&day=2026-10-31 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=61&day=2026-10-31 |
 | tv.dir.bg | bTV | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=61&day=2026-11-01 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=61&day=2026-11-01 |
-| tv.dir.bg | bTV Action | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=95&day=2026-10-27 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=95&day=2026-10-27 |
+| tv.dir.bg | bTV | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=61&day=2026-11-02 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=61&day=2026-11-02 |
 | tv.dir.bg | bTV Action | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=95&day=2026-10-28 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=95&day=2026-10-28 |
 | tv.dir.bg | bTV Action | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=95&day=2026-10-29 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=95&day=2026-10-29 |
 | tv.dir.bg | bTV Action | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=95&day=2026-10-30 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=95&day=2026-10-30 |
 | tv.dir.bg | bTV Action | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=95&day=2026-10-31 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=95&day=2026-10-31 |
 | tv.dir.bg | bTV Action | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=95&day=2026-11-01 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=95&day=2026-11-01 |
+| tv.dir.bg | bTV Action | ConnectTimeout: HTTPSConnectionPool(host='tv.dir.bg', port=443): Max retries exceeded with url: /load/programs?channel=95&day=2026-11-02 (Caused by ConnectTimeo | https://tv.dir.bg/load/programs?channel=95&day=2026-11-02 |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 64 из 1598 страниц (4%), сайтов без удачи 3 из 106 (3%)
+- ✅ обход в норме: не открылись 46 из 1598 страниц (3%), сайтов без удачи 3 из 106 (3%)
