@@ -1516,8 +1516,12 @@ def main() -> int:
     games, повторы = drop_reference_repeats(games, reference_full)
     for g, матч in повторы:
         for e in g.entries:
-            снято.append(removed_row(СНЯТО_СЫГРАН, e.source, e.payload,
-                                     f"эталон: {_ref_text(матч)}"))
+            # fs_id — заливке: строка на СТАРОМ времени перенесённой эталоном
+            # игры не повтор, а сетка сайта, которую он ещё не обновил
+            # (`store.moved_repeat_rows`, #7999)
+            снято.append({**removed_row(СНЯТО_СЫГРАН, e.source, e.payload,
+                                        f"эталон: {_ref_text(матч)}"),
+                          "fs_id": матч.get("fs_id") or ""})
     if повторы:
         print(f"повторы сняты по flashscore: {len(повторы)} (матч уже сыгран, "
               f"канал крутит запись)"
@@ -1689,6 +1693,11 @@ def main() -> int:
                    "entries": [{
                        "source": e.source,
                        "channel": e.channel,
+                       # время САМОЙ строки сайта (время игры — по самой
+                       # ранней строке): «время?» заливка ставит каналу по
+                       # его времени, а не по времени склейки (#8223, 28.10:
+                       # одна строка teleman на 15:55 красила все 20 каналов)
+                       "start_kyiv": e.start.strftime("%Y-%m-%dT%H:%M"),
                        "url": getattr(getattr(e.payload, "program", None),
                                       "source_url", "") or "",
                        "raw_title": getattr(getattr(e.payload, "program", None),

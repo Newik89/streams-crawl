@@ -176,6 +176,9 @@ class SaveStats:
     #: (`_moved_event`), и тени таких игр, влитые в игру эталона
     moved: int = 0
     ghosts: int = 0
+    #: отметки каналов, оставленные у перенесённой игры с «время?»: строку
+    #: на старом времени разбор снял как повтор (`_keep_moved`, #7999)
+    moved_kept: int = 0
 
 
 def _хозяева_канала(conn: sqlite3.Connection, games: list[dict],
@@ -523,6 +526,71 @@ def multicast_rows(data: dict) -> set[tuple[str, str, str]]:
     return out
 
 
+#: начало фильтра «матч уже сыгран» в «снято» (`parse_live.СНЯТО_СЫГРАН`)
+ПОВТОР_СЫГРАН = "повтор по flashscore"
+
+
+def moved_repeat_rows(data: dict) -> list[tuple[str, str, str, str]]:
+    """Строки сбора, снятые как повтор уже сыгранного матча, с меткой
+    flashscore этого матча: (сайт, канал сайта, «ГГГГ-ММ-ДД ЧЧ:ММ» по Киеву,
+    fs_id). Из них `_keep_moved` оставляет те, что стоят на СТАРОМ времени
+    перенесённой игры (#7999). Файлы до 29.10 fs_id не несут — пусто."""
+    out = []
+    for r in (data.get("снято") or []):
+        if not isinstance(r, dict) or not (r.get("фильтр") or "").startswith(ПОВТОР_СЫГРАН):
+            continue
+        домен = _bare(r.get("домен") or "")
+        когда = (r.get("start_kyiv") or "").replace("T", " ")[:16]
+        fs = (r.get("fs_id") or "").strip()
+        if домен and когда and fs and r.get("канал"):
+            out.append((домен, r["канал"], когда, fs))
+    return out
+
+
+def _keep_moved(conn: sqlite3.Connection, rows: list[tuple[str, str, str, str]],
+                now: datetime) -> int:
+    """Строка со старым временем перенесённой игры — канал остаётся у игры
+    с «время?», а не гаснет (слово владельца 29.10, #7999 Ницца — Ренн:
+    flashscore перенёс игру с сб 31.10 18:15 на пт 30.10 20:00, пять сайтов
+    ещё держали субботу, разбор снимал их строки как повтор уже сыгранного
+    матча, и каналы на витрине стали «снят»). Это то же правило переноса,
+    что `_moved_event` (слово 24.10), для строк, которые до игры не дошли.
+    Правила — отметка канала оживает с «время?», только если всё сразу:
+    1. Строку снял фильтр «матч уже сыгран», и у неё есть fs_id матча
+       (`moved_repeat_rows`).
+    2. Игра базы с этой меткой ровно одна, и эталон её переносил
+       (`events.moved_from` — прежнее время, ставит триггер `app/db.py`).
+    3. Время строки — в окне склейки от прежнего времени игры: сайт держит
+       старую сетку. Повтор сыгранного матча стоит где угодно, не там.
+    4. У игры уже есть отметка ЭТОГО сайта и ЭТОГО канала: сайт показывал
+       её до переноса (как правило 2 у `_moved_event`). Канал, впервые
+       появившийся на старом времени, не берём.
+    Обновит сайт сетку — строка придёт обычной и пометка уйдёт сама; уберёт
+    игру вовсе — отметка погаснет обычным счётчиком. Вернёт число отметок."""
+    window = timedelta(minutes=merge.WINDOW_MINUTES)
+    kept = 0
+    for домен, канал, когда, fs in rows:
+        games = conn.execute(
+            "SELECT id, moved_from FROM events WHERE flags = ?",
+            (f"fs:{fs}",)).fetchall()
+        if len(games) != 1 or not games[0]["moved_from"]:
+            continue                                         # правило 2
+        try:
+            gap = abs(_parse_dt(когда) - _parse_dt(games[0]["moved_from"]))
+        except ValueError:
+            continue
+        if gap > window:
+            continue                                         # правило 3
+        kept += conn.execute(
+            "UPDATE event_channels SET miss_count = 0, time_off = 1, last_seen = ? "
+            "WHERE event_id = ? AND source_id IN (SELECT id FROM sources WHERE domain = ?) "
+            "AND channel_id IN (SELECT a.channel_id FROM channel_aliases a "
+            "                   JOIN sources s ON s.domain = ? "
+            "                   WHERE a.alias = ? AND a.source_id = s.id)",
+            (_iso(now), games[0]["id"], домен, домен, канал)).rowcount   # правило 4
+    return kept
+
+
 def _retract_multicast(conn: sqlite3.Connection, rows: set[tuple[str, str, str]]) -> int:
     """Погасить отметки канала сайта у игр в пределах `МУЛЬТИКАСТ_МИН` от
     строк мультикаста; канал сайта — по его странице (`source_channels`)."""
@@ -557,7 +625,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                collected: str = "",
                withheld: set[tuple[str, str]] | None = None,
                add_only: bool = False,
-               multicast: set[tuple[str, str, str]] | None = None) -> SaveStats:
+               multicast: set[tuple[str, str, str]] | None = None,
+               moved_rows: list[tuple[str, str, str, str]] | None = None) -> SaveStats:
     """Вливает игры из `games.json`. Формат: список словарей с полями
     sport / league / home / away / start_kyiv / start_utc / entries,
     где entries — строки по сайтам: source / channel / url / raw_title.
@@ -574,7 +643,10 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     (время, лига, last_seen), существующая отметка не обновляется и
     погашенная не оживает; не гасится ничего (`miss`, правило 0), сироты не
     ищутся, отметки агрегаторов не снимаются (строку агрегатора, которую не
-    пускает правило «свой сайт важнее», дозабор просто не берёт)."""
+    пускает правило «свой сайт важнее», дозабор просто не берёт).
+    `moved_rows` — строки, снятые разбором как повтор (`moved_repeat_rows`):
+    стоящие на старом времени перенесённой игры оставляют канал у неё с
+    «время?» (`_keep_moved`); дозабор старого файла их не оживляет."""
     now = now or datetime.now()
     stats = SaveStats()
     # время с «T» в базе — к общему виду, иначе поиск игры его не видит
@@ -606,16 +678,17 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
         # сперва — по метке flashscore от сверки (`_fs_event`), потом — по
         # именам и окну времени, потом — по канону команд
         found = _fs_event(conn, game)
-        time_off = 0
+        # «время?» ставится КАЖДОЙ строке по её времени (`_time_off`); здесь
+        # копим, с чем сверять: эталонное время игры и признак переноса
+        ref_start = ""
+        moved_off = False
         via_twin = False
         fs_start = ""
         if found is not None:
             # по метке: время игры — эталонное (`fs_start` из сверки), а
-            # красная пометка — если время САЙТА от него дальше окна склейки
+            # красная пометка — строкам, чьё время дальше окна склейки
             fs_start = db_time(game.get("fs_start") or "") or db_time(found["start_kyiv"])
-            gap = abs(_parse_dt(game["start_kyiv"]) - _parse_dt(fs_start))
-            time_off = int(gap > timedelta(minutes=merge.WINDOW_MINUTES))
-            stats.time_off += time_off
+            ref_start = fs_start
         else:
             found = _find_event(conn, game)
             if found is None and add_only:
@@ -629,10 +702,7 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 # только если время сайта и правда вне окна склейки (иначе
                 # не совпали лишь написания имён: «Dresden» / «Dynamo Drezno»)
                 via_twin = True
-                gap = abs(_parse_dt(game["start_kyiv"])
-                          - _parse_dt(found["start_kyiv"]))
-                time_off = int(gap > timedelta(minutes=merge.WINDOW_MINUTES))
-                stats.time_off += time_off
+                ref_start = found["start_kyiv"]
         # перенос (`_moved_event`, слово владельца 24.10): игра не нашлась или
         # нашлась без метки эталона, а у игры эталона в соседние дни уже есть
         # отметка этого сайта и канала — строка садится туда с «время?», а
@@ -647,8 +717,7 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 ghost_id = found["id"] if found is not None else None
                 found = moved
                 via_twin = True
-                time_off = 1        # за окном склейки по правилу 1 — всегда
-                stats.time_off += 1
+                moved_off = True    # за окном склейки по правилу 1 — всегда
                 stats.moved += 1
         # (сведённая трансляция турнира — «ATP Beijing» — зовётся одинаково
         # во всех сессиях турнира: вторая сессия дня не повтор первой)
@@ -764,6 +833,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 continue
             seen_channel_ids.add(channel_id)
             гашение.учесть(source["id"], start_kyiv[:10], event_id, channel_id)
+            time_off = _time_off(entry, game, ref_start, moved_off)
+            stats.time_off += time_off
             if add_only:
                 # дозабор (Д7): только НОВАЯ отметка; живую не обновляем,
                 # погашенную (miss_count) не оживляем — это решил более
@@ -881,10 +952,35 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     # (`multicast_rows`); переналивка и дозабор старого файла — не отзывают
     if punish and not add_only and multicast:
         stats.multicast_gone = _retract_multicast(conn, multicast)
+    # строки старой сетки у перенесённой игры — ПОСЛЕ гашения и сирот: иначе
+    # их отметки тут же погасли бы как не подтверждённые этим сбором
+    if not add_only and moved_rows:
+        stats.moved_kept = _keep_moved(conn, moved_rows, now)
     conn.commit()
     stats.not_own = sum(хозяева.пропущено.values())
     stats.not_own_note = хозяева.отчёт(stats.not_own_dropped)
     return stats
+
+
+def _time_off(entry: dict, game: dict, ref_start: str, moved: bool) -> int:
+    """Пометка «время?» отметке канала — по времени САМОЙ строки (#8223,
+    28.10: строка teleman.pl на 15:55 через анонс Canal+ 18:04 слиплась с
+    игрой в 18:30, время склейки стало 15:55 — и красными стали все 20
+    каналов, а не один польский). Правила:
+    1. Строка со старой датой у перенесённой эталоном игры
+       (`_moved_event`) — всегда 1.
+    2. Игра найдена по эталону (метка flashscore или канон команд) — 1,
+       если время строки дальше окна склейки от эталонного `ref_start`.
+       Время строки — `entry["start_kyiv"]`; в файлах до 29.10 его нет —
+       тогда время игры (по самой ранней строке склейки, как было).
+    3. Эталона нет — 0: сверять не с чем."""
+    if moved:
+        return 1
+    if not ref_start:
+        return 0
+    own = entry.get("start_kyiv") or game["start_kyiv"]
+    gap = abs(_parse_dt(own) - _parse_dt(ref_start))
+    return int(gap > timedelta(minutes=merge.WINDOW_MINUTES))
 
 
 def _add_miss(conn: sqlite3.Connection, mark_id: int) -> int:

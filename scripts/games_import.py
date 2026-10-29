@@ -210,7 +210,9 @@ def main() -> int:
                                  withheld=store.withheld_rows(data),
                                  add_only=add_only,
                                  # мультикаст сайт назвал сам — отметки отзываются
-                                 multicast=store.multicast_rows(data))
+                                 multicast=store.multicast_rows(data),
+                                 # строки старой сетки у перенесённых игр (#7999)
+                                 moved_rows=store.moved_repeat_rows(data))
         # другой вид спорта — отдельной таблицей для вкладки «Other Sport»
         # (владелец 03.10); старые файлы ключа не имеют — тогда 0
         # (дозабор — только строки с докачанных страниц, `data` уже отобран)
@@ -315,7 +317,10 @@ def main() -> int:
                  if stats.moved else "")
               + (f", мультикаст (канал сайта показывает несколько игр разом) — "
                  f"отметок погашено: {stats.multicast_gone}"
-                 if stats.multicast_gone else ""))
+                 if stats.multicast_gone else "")
+              + (f", каналов со старой сеткой у перенесённых игр оставлено "
+                 f"(«время?»): {stats.moved_kept}"
+                 if stats.moved_kept else ""))
         if stats.not_own_note:
             print(f"   {stats.not_own_note}")
         total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
