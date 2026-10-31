@@ -1,0 +1,50 @@
+# Выдать сбор № — страницы прогона обхода из кэша GitHub обычным артефактом
+# на сутки (~27 МБ).
+#
+# Зачем (31.10.2026, письмо GitHub «хранилище Actions 100 %»): страницы сбора
+# crawl.yml кладёт одним tar.xz в кэш GitHub (ключ sbor-<номер>-pages) — у
+# кэша отдельные 10 ГБ, в лимит 0,5 ГБ он не входит. Но кэш наружу не
+# скачивается, а для книги случаев страницы нужны на компьютере. Эту кнопку
+# нажимает `scripts/github_run.py fetch --run N` сам: заказ → минута → архив.
+# Сутки, не три: выдача одноразовая, в лимит 0,5 ГБ входит.
+name: Выдать сбор
+run-name: ${{ format('Выдать сбор #{0}', inputs.number) }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      number:
+        description: "номер прогона обхода (#N на вкладке Actions)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  vydat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Проверка номера
+        # значения формы — только через env (аудит 05.10.2026)
+        env:
+          IN_NUMBER: ${{ inputs.number }}
+        run: |
+          [[ "$IN_NUMBER" =~ ^[0-9]{1,8}$ ]] || { echo "::error::номер прогона — только цифры"; exit 1; }
+
+      - name: Страницы сбора из кэша
+        # нет ключа — красный: сбор старше ~7 дней (кэш стёрт) или без страниц
+        uses: actions/cache/restore@v4
+        with:
+          key: sbor-${{ inputs.number }}-pages
+          path: obhod.tar.xz
+          fail-on-cache-miss: true
+
+      - name: Выдать артефактом на сутки
+        uses: actions/upload-artifact@v4
+        with:
+          name: vydacha-${{ inputs.number }}
+          path: obhod.tar.xz
+          retention-days: 1
+          # уже сжато xz — второй раз не жать
+          compression-level: 0

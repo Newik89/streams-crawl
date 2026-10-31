@@ -844,7 +844,7 @@ def step_runs(cond: str, outputs: dict, event: str, status: str) -> bool:
     """`if:` шага по правилам GitHub: без функции статуса — неявный success()."""
     expr = cond or "success()"
     has_status = re.search(r"\b(always|success|failure|cancelled)\(\)", expr)
-    expr = re.sub(r"steps\.(\w+)\.outputs\.(\w+)",
+    expr = re.sub(r"steps\.(\w+)\.outputs\.([\w-]+)",
                   lambda m: repr(outputs.get(m.group(1), {}).get(m.group(2), "")), expr)
     for name, value in (("github.event_name", event), ("inputs.readers", "no"),
                         ("vars.STREAMS_AI", "off")):
@@ -858,13 +858,16 @@ def step_runs(cond: str, outputs: dict, event: str, status: str) -> bool:
 
 
 def run_plan(mode: dict, event="workflow_dispatch", fail_at: str = "",
-             redo_out: dict | None = None) -> list[str]:
+             redo_out: dict | None = None, pack_out: dict | None = None,
+             kesh_out: dict | None = None) -> list[str]:
     """Какие шаги crawl.yml пойдут: `mode` — выходы шага «Что запускаем»,
     `fail_at` — id шага, который краснеет (дальше статус failure),
-    `redo_out` — выходы шага «Дозабор» (`nothing`)."""
+    `redo_out` — выходы шага «Дозабор» (`nothing`), `pack_out` — шага
+    «Упаковать страницы» (`have`), `kesh_out` — шага «из кэша» (`cache-hit`)."""
     outputs = {"guard": {"run": "1"}, "what": dict(
         {"mode": "full", "days": "6", "delay": "3", "only": "", "urls": "", "date": "",
-         "from_run": "", "code_ref": "", "redo": ""}, **mode), "redo": redo_out or {}}
+         "from_run": "", "code_ref": "", "redo": ""}, **mode), "redo": redo_out or {},
+        "kesh": kesh_out or {"cache-hit": "false"}, "pack": pack_out or {"have": "1"}}
     status, went = "success", []
     for step in crawl_steps(crawl_yml):
         label = step.get("name") or step.get("uses")
@@ -879,33 +882,42 @@ HEAD = ["Проверка параметров запуска", "actions/checkou
         "Поставить, что нужно", "Не ходили ли уже сегодня", "Что запускаем",
         "Стук серверу — начали", "Самопроверка окружения"]
 TAIL = ["Разобрать скачанное", "Самопроверка прогона", "Показать итог прямо здесь"]
-check("crawl.yml: шагов 25 (23 с именем + checkout и setup-python), шаг «Дозабор» один, имена шагов не повторяются",
-      len(crawl_steps(crawl_yml)) == 25 and crawl_yml.count("      - name: ") == 23
+check("crawl.yml: шагов 28 (26 с именем + checkout и setup-python), шаг «Дозабор» один, имена шагов не повторяются",
+      len(crawl_steps(crawl_yml)) == 28 and crawl_yml.count("      - name: ") == 26
       and crawl_yml.count("id: redo\n") == 1
-      and len({s.get("name") for s in crawl_steps(crawl_yml) if s.get("name")}) == 23)
+      and len({s.get("name") for s in crawl_steps(crawl_yml) if s.get("name")}) == 26)
+# страницы прежнего сбора (31.10): кэш → запас старым видом → распаковка/проверка
+PAGES = ["Страницы прежнего сбора — из кэша", "Страницы прежнего сбора — старым видом",
+         "Страницы прежнего сбора"]
 check("режим redo: страницы прежнего сбора → Дозабор → разбор → push_partial; обхода, results/, артефакта и дозора нет",
       run_plan({"from_run": "123", "redo": "1"}) == HEAD + [
-          "Какой сбор переразбираем", "Страницы прежнего сбора", "Дозабор упавших адресов"] + TAIL
+          "Какой сбор переразбираем", *PAGES, "Дозабор упавших адресов"] + TAIL
       + ["Положить переразбор в репозиторий", "Стук серверу — закончили"],
       run_plan({"from_run": "123", "redo": "1"}))
 check("…дозабирать оказалось нечего (nothing=1) → прогон зелёный: ни разбора, ни push_partial, ни issue; стук идёт",
       run_plan({"from_run": "123", "redo": "1"}, redo_out={"nothing": "1"}) == HEAD + [
-          "Какой сбор переразбираем", "Страницы прежнего сбора", "Дозабор упавших адресов",
+          "Какой сбор переразбираем", *PAGES, "Дозабор упавших адресов",
           "Самопроверка прогона", "Показать итог прямо здесь", "Стук серверу — закончили"],
       run_plan({"from_run": "123", "redo": "1"}, redo_out={"nothing": "1"}))
 check("…упал «Дозабор» → разбор и стук идут, push_partial и issue владельцу — нет",
       run_plan({"from_run": "123", "redo": "1"}, fail_at="redo") == HEAD + [
-          "Какой сбор переразбираем", "Страницы прежнего сбора", "Дозабор упавших адресов"] + TAIL
+          "Какой сбор переразбираем", *PAGES, "Дозабор упавших адресов"] + TAIL
       + ["Стук серверу — закончили"])
 check("переразбор — как раньше: без «Дозабора»; упал разбор — issue владельцу есть",
-      run_plan({"from_run": "123"}) == HEAD + ["Какой сбор переразбираем", "Страницы прежнего сбора"]
+      run_plan({"from_run": "123"}) == HEAD + ["Какой сбор переразбираем", *PAGES]
       + TAIL + ["Положить переразбор в репозиторий", "Стук серверу — закончили"]
       and "Провал — issue владельцу" in run_plan({"from_run": "123"}, fail_at="parse"))
-check("обычный полный обход — как раньше: Обход → results/ → артефакт → дозор; провал → issue",
+check("обычный полный обход — как раньше: Обход → results/ → страницы одним файлом в кэш → дозор; провал → issue",
       run_plan({}) == HEAD + ["Обход"] + TAIL + [
-          "Положить результат в репозиторий", "Забрать страницы и отчёты",
-          "Дозор — сайт снова пускает", "Стук серверу — закончили"]
+          "Положить результат в репозиторий", "Упаковать страницы одним файлом",
+          "Забрать страницы и отчёты", "Дозор — сайт снова пускает", "Стук серверу — закончили"]
       and "Провал — issue владельцу" in run_plan({}, fail_at="fetch"))
+check("страниц нет (have=0) — в кэш не кладём; прежний сбор нашёлся в кэше — запас старым видом пропущен",
+      "Забрать страницы и отчёты" not in run_plan({}, pack_out={"have": "0"})
+      and "Упаковать страницы одним файлом" in run_plan({}, pack_out={"have": "0"})
+      and run_plan({"from_run": "123"}, kesh_out={"cache-hit": "true"}) == HEAD + [
+          "Какой сбор переразбираем", "Страницы прежнего сбора — из кэша", "Страницы прежнего сбора"]
+      + TAIL + ["Положить переразбор в репозиторий", "Стук серверу — закончили"])
 check("обход по расписанию и скан даты — без «Дозабора» и без push_partial",
       not {"Дозабор упавших адресов", "Положить переразбор в репозиторий"}
       & set(run_plan({}, event="schedule") + run_plan({"date": "2026-11-12"})))
