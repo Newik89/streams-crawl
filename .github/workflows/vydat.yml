@@ -8,7 +8,8 @@
 # нажимает `scripts/github_run.py fetch --run N` сам: заказ → минута → архив.
 # Сутки, не три: выдача одноразовая, в лимит 0,5 ГБ входит.
 name: Выдать сбор
-run-name: ${{ format('Выдать сбор #{0}', inputs.number) }}
+# в кавычках: «#» без них YAML считает началом комментария — GitHub отверг файл (01.11)
+run-name: "${{ format('Выдать сбор #{0}', inputs.number) }}"
 
 on:
   workflow_dispatch:
