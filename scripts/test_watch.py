@@ -2698,6 +2698,13 @@ check("страницы сбора — одним tar.xz в кэш GitHub (кл�
       and "actions/cache/restore@v4" in proverka_yml and "-pages" in proverka_yml
       and "key: sbor-${{ inputs.number }}-pages" in vydat_yml
       and "retention-days: 1" in vydat_yml and "name: vydacha-${{ inputs.number }}" in vydat_yml)
+github_run_src = (ROOT / "scripts" / "github_run.py").read_text(encoding="utf-8")
+check("имя шага «Забрать страницы и отчёты» в crawl.yml и в github_run.STEP_PAGES одно: по нему fetch узнаёт, были ли у прогона страницы",
+      "      - name: Забрать страницы и отчёты\n" in crawl
+      and 'STEP_PAGES = "Забрать страницы и отчёты"' in github_run_src)
+# грабля 01.11: «#» в run-name без кавычек — YAML-комментарий, GitHub отверг файл
+check("vydat.yml: run-name с «#» взят в кавычки целиком",
+      "run-name: \"${{ format('Выдать сбор #{0}', inputs.number) }}\"" in vydat_yml)
 check("crawl.yml: при переразборе обход пропущен, итог — в results/partial/, а не results/",
       "if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run == ''\n" in crawl
       and "results/partial" in crawl
