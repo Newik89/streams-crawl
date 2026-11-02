@@ -1,63 +1,73 @@
 {
  "прогон": "raw_live",
- "собрано": "2026-11-01 19:58",
- "подозрений": 30,
+ "собрано": "2026-11-02 07:45",
+ "подозрений": 35,
  "разделы": [
   {
    "название": "1/9. Признак эфира или повтора есть, а разбор его не читает",
    "строки": [
-    "kanal1sport.sk: в данных class:is-live ×5 (страниц 1), а честного эфира у разбора 0, угадано 6 — признак не читается",
-    "rts.rs: сайт помечает повтор (text:(R) ×3), а разбор не отличает его, и эфир угадывается — повтор может стать «первым показом»"
+    "kanal1sport.sk: в данных class:is-live ×4 (страниц 1), а честного эфира у разбора 0, угадано 3 — признак не читается"
    ]
   },
   {
    "название": "3. Расписание есть, а игр нет (или резко меньше)",
    "строки": [
     "football-tv.ru: расписание есть (1 стр.), игр 0 — строк разбор не дал вовсе — разметка или настройка источника?",
-    "skysports.com: расписание есть (1 стр.), игр 0 — строк разбор не дал вовсе — разметка или настройка источника?"
+    "ssport.tv: игр 0 за 6 сут. против 9 за 6 сут. в прошлом прогоне — меньше 30 %",
+    "tring.al: игр 2 за 6 сут. против 10 за 6 сут. в прошлом прогоне — меньше 30 %"
+   ]
+  },
+  {
+   "название": "5. Передачи легли не на свой день",
+   "строки": [
+    "bbc.co.uk: 1 стр. легли не на свой день — www.bbc.co.uk__schedules_p00fzl95_2026_11_07.html: страница 07.11, а 12 из 21 передач — 08.11"
    ]
   },
   {
    "название": "7. Кличка: вторая команда сошлась, эта — нет",
    "строки": [
-    "allente.no: «AGF» ≠ «Aarhus»? — 01.11 18:55 «Brøndby — AGF» ↔ эталон «Brondby — Aarhus» (DENMARK: Superliga; у сайта лига «Superliga») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "allente.no: «Dinamo Zagreb» ≠ «Din. Zagreb»? — 05.11 21:55 «Sunderland — Dinamo Zagreb» ↔ эталон «Sunderland — Din. Zagreb» (EUROPE: Europa League - League phase; у сайта лига «UEFA Europa League») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
+    "digisport.ro: «Sepsi Sfantu Gheorghe» ≠ «Sepsi Sf. Gheorghe»? — 08.11 16:00 «Sepsi Sfantu Gheorghe — Voluntari» ↔ эталон «Sepsi Sf. Gheorghe — FC Voluntari» (ROMANIA: Superliga; у сайта лига «superliga Superliga»)",
+    "digisport.ro: «Universitatea Craiova» ≠ «Univ. Craiova»? — 08.11 19:00 «CFR Cluj — Universitatea Craiova» ↔ эталон «CFR Cluj — Univ. Craiova» (ROMANIA: Superliga; у сайта лига «superliga Superliga»)",
     "epg.cyta.com.cy: «TALTECH ALEXELA» ≠ «Tal Tech»? — 03.11 19:00 «AEL — TALTECH ALEXELA» ↔ эталон «AEL — Tal Tech» (EUROPE: ENBL; у сайта лига «EUROPEAN NORTH BASKET LEAGUE»)",
     "movistarplus.es: «At. Madrid» ≠ «Atl. Madrid»? — 03.11 21:53 «At. Madrid — Bayern Múnich» ↔ эталон «Atl. Madrid — Bayern Munich» (EUROPE: Champions League - League phase; у сайта лига «UEFA Champions League») — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "movistarplus.es: «At. Madrid U19» ≠ «Atl. Madrid U19»? — 03.11 16:55 «At. Madrid U19 — Bayern Munich U19» ↔ эталон «Atl. Madrid U19 — Bayern U19» (EUROPE: UEFA Youth League - League phase; у сайта лига «UEFA Youth League») — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "movistarplus.es: «At. Paraense» ≠ «Athletico-PR»? — 05.11 00:25 «At. Paraense — Vasco Gama» ↔ эталон «Athletico-PR — Vasco» (BRAZIL: Serie A; у сайта лига «Brasileirao») — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "movistarplus.es: «Olympique de Marsella» ≠ «Marseille»? — 05.11 21:53 «Bayer Leverkusen — Olympique de Marsella» ↔ эталон «Bayer Leverkusen — Marseille» (EUROPE: Europa League - League phase; у сайта лига «UEFA Europa League») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
-    "programetv.ro: «Athl Bilbao» ≠ «Ath Bilbao»? — 01.11 22:00 «Athl Bilbao — Real Sociedad» ↔ эталон «Ath Bilbao — Real Sociedad» (SPAIN: LaLiga; у сайта лига «La Liga») — эфир угадан: сверка с эталоном СНИМЕТ строку",
-    "raiplay.it: «Spezia U23» ≠ «Spezia»? — 01.11 15:45 «Spezia U23 — Atalanta U23» ↔ эталон «Spezia — Atalanta U23» (ITALY: Serie C - Group B; у сайта лига «Calcio - Serie C 2026-2027 - 12a giornat») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
-    "sportklub.hr: «Bursa» ≠ «Bursaspor»? — 01.11 17:00 «Bursa — Karsiyaka» ↔ эталон «Bursaspor — Karsiyaka» (TURKEY: Super Lig; у сайта лига «Turska liga»)",
-    "sportklub.hr: «Erok» ≠ «Esenler Erokspor»? — 01.11 12:00 «Erok — Turk Telekom» ↔ эталон «Esenler Erokspor — Turk Telekom» (TURKEY: Super Lig; у сайта лига «Turska liga»)",
-    "sporttv.pt: «AMED» ≠ «Amedspor»? — 07.11 18:00 «GALATASARAY — AMED» ↔ эталон «Galatasaray — Amedspor» (TURKEY: Super Lig; у сайта лига «SUPERLIGA TURCA - FUTEBOL»)",
-    "start.sportdigital.de: «Western Sydney Wanderers» ≠ «WS Wanderers»? — 07.11 10:35 «Melbourne City — Western Sydney Wanderers» ↔ эталон «Melbourne City — WS Wanderers» (AUSTRALIA: A-League; у сайта лига «A-League (4. Spieltag)»)",
+    "sportklub.hr: «Reggio Emilia» ≠ «Reggiana»? — 03.11 21:30 «Unicaja — Reggio Emilia» ↔ эталон «Unicaja — Reggiana» (EUROPE: Champions League; у сайта лига «Liga prvaka»)",
+    "sporttv.pt: «SHEFFIELD WEDNESDAY» ≠ «Sheffield Wed»? — 08.11 19:10 «OLDHAM — SHEFFIELD WEDNESDAY» ↔ эталон «Oldham — Sheffield Wed» (ENGLAND: FA Cup; у сайта лига «TAÇA DE INGLATERRA 2026/2027 - JOGOS - F»)",
     "teleman.pl: «Bahcesehir College Stambuł» ≠ «Bahcesehir Kol.»? — 03.11 20:25 «Ratiopharm Ulm — Bahcesehir College Stambuł» ↔ эталон «Ulm — Bahcesehir Kol.» (EUROPE: Eurocup; у сайта лига «Koszykówka mężczyzn: EuroCup»)",
+    "tvarenasport.ba: «Cornivul» ≠ «Corvinul»? — 07.11 20:30 «FCSB — Cornivul» ↔ эталон «FCSB — Corvinul» (ROMANIA: Superliga; у сайта лига «Rumunska liga»)",
+    "tvarenasport.ba: «Dinamo» ≠ «Dynamo Moscow»? — 07.11 13:00 «Fakel — Dinamo» ↔ эталон «Fakel Voronezh — Dynamo Moscow» (RUSSIA: Premier League; у сайта лига «Ruska liga»)",
+    "tvarenasport.com: «Dinamo» ≠ «Dynamo Moscow»? — 07.11 13:00 «Fakel — Dinamo» ↔ эталон «Fakel Voronezh — Dynamo Moscow» (RUSSIA: Premier League; у сайта лига «RUSKA LIGA»)",
     "tvarenasport.com: «Reggio Emilia» ≠ «Reggiana»? — 03.11 21:30 «Unicaja — Reggio Emilia» ↔ эталон «Unicaja — Reggiana» (EUROPE: Champions League; у сайта лига «FIBA LIGA ŠAMPIONA»)",
     "tvarenasport.com: «WAC» ≠ «Wolfsberger AC»? — 06.11 20:30 «Rapid — WAC» ↔ эталон «SK Rapid — Wolfsberger AC» (AUSTRIA: Bundesliga; у сайта лига «AUSTRIJSKA LIGA»)",
-    "ziggosport.nl: «Londen City Lionesses W» ≠ «London City Lionesses W»? — 01.11 13:55 «Londen City Lionesses W — Manchester City W» ↔ эталон «London City Lionesses W — Manchester City W» (ENGLAND: WSL; у сайта лига «»)"
+    "tvarenasport.hr: «RAPID B» ≠ «FC Rapid Bucuresti»? — 07.11 17:30 «FARUL — RAPID B» ↔ эталон «Farul Constanta — FC Rapid Bucuresti» (ROMANIA: Superliga; у сайта лига «RUMUNJSKA LIGA»)",
+    "tvarenasport.si: «Mega Superbet» ≠ «Mega Basket»? — 02.11 19:30 «Mega Superbet — Spartak Office Shoes» ↔ эталон «Mega Basket — Spartak Subotica» (EUROPE: AdmiralBet ABA League; у сайта лига «ABA Liga 2026/27»)"
    ]
   },
   {
    "название": "10. Одна страница на разные дни или каналы",
    "строки": [
-    "movistarplus.es: 4 запрос(ов) впустую — 4 одинаковых (дни 2026-11-03…2026-11-06) — www.movistarplus.es__programacion-tv_multi6_2026-11-03.html; 2 одинаковых (дни 2026-11-01…2026-11-02) — www.movistarplus.es__programacion-tv_multi6_2026-11-01.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу",
-    "unian.tv: 4 запрос(ов) впустую — 5 одинаковых (дни 2026-11-02…2026-11-06) — unian.tv__02.11.2026.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу"
+    "movistarplus.es: 5 запрос(ов) впустую — 6 одинаковых (дни 2026-11-02…2026-11-07) — www.movistarplus.es__programacion-tv_multi6_2026-11-02.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу",
+    "unian.tv: 5 запрос(ов) впустую — 6 одинаковых (дни 2026-11-02…2026-11-07) — unian.tv__02.11.2026.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу"
    ]
   },
   {
    "название": "12. Женская лига без слова «женская»: команды шли мужскими",
    "строки": [
-    "programme-tv.net: 1 строк(и) лиги «premiere ligue» шли мужскими, а эталон знает их женскими (FRANCE: Premiere Ligue Women) — турнир в _WOMEN_LEAGUES (app/leagues.py) — 01.11 15:30 «Paris FC — Paris-SG»",
-    "tvsporten.dk: 2 строк(и) лиги «a-liga» шли мужскими, а эталон знает их женскими (DENMARK: A-Liga Women) — турнир в _WOMEN_LEAGUES (app/leagues.py) — 01.11 12:30 «HB Køge — Fortuna Hjørring»; 03.11 20:00 «AGF — FC Midtjylland»"
+    "tvsporten.dk: 1 строк(и) лиги «a-liga» шли мужскими, а эталон знает их женскими (DENMARK: A-Liga Women) — турнир в _WOMEN_LEAGUES (app/leagues.py) — 03.11 20:00 «AGF — FC Midtjylland»"
    ]
   },
   {
    "название": "13. Сайт показал матч эталона в эфир, а канала у игры на витрине нет",
    "строки": [
+    "alkass.net: 2 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «поздний показ у сайта без флага» ×1, снято фильтром «мультикаст: канал сайта показывает несколько игр разом» ×1 — 02.11 17:30 Al Kass Five «AFC Champions League Elite Al-Sadd (Qatar) vs. Al-Ahli (Saud» = эталон Al Sadd — Al Ahli SC 18:00 (pdsXDUZR) [снято фильтром «поздний показ у сайта без флага»: та же пара у этого сайта раньше: 02.11 17:20]; 02.11 17:30 Al Kass Seven «AFC Champions League Elite Tractor (Iran) vs. Neftchi (Uzbek» = эталон Tractor — Neftchi Fargona 18:00 (lhWA6nS1) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Al Kass Seven» у alkass.net: 2 игр в 02.11 17:30]",
+    "allente.no: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: стоп-слово в заголовке ×1 — 07.11 21:55 V sport 1 HD (N) «Fa Cup Studio Før: Peterborough - Reading» = эталон Peterborough — Reading 22:00 (Wj2miQbT) [отсев: стоп-слово в заголовке: Studio]",
     "movistarplus.es: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «угаданный эфир не на ровной минуте» ×1 — 05.11 20:31 M+ Vamos «Previa Euroliga de baloncesto (T26/27): Hapoel Tel Aviv - FC» = эталон Hapoel Tel Aviv — Barcelona 20:45 (Y1qyLYhn) [снято фильтром «угаданный эфир не на ровной минуте»: эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись]",
-    "rtcg.me: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: не видно пары команд ×1 — 01.11 17:50 TVCG 3 «Košarka: SC Derby–Ilirija, ABA-6.kolo, direktno» = эталон Studentski Centar — Perspektiva Ilirija 18:00 (0nvOa1fo) [отсев: не видно пары команд]",
+    "news.by: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: вид спорта: другой вид спорта ×1 — 08.11 15:55 Беларусь 5 «Хоккей. КХЛ. ХК Сочи - Динамо-Минск. Прямая трансляция. В пе» = эталон FC Minsk — Dynamo Brest 16:00 (bHn3lPK5) [вид спорта: другой вид спорта: Хоккей]",
+    "raiplay.it: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «угаданный эфир без эталона» ×1 — 07.11 15:50 Rai Sport «Calcio. Serie A Women Athora: Milan-Inter - 6a g.ta» = эталон AC Milan W — Inter W 16:00 (SOQPlxvm) [снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись]",
+    "skysports.com: 15 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «мультикаст: канал сайта показывает несколько игр разом» ×15 — 03.11 21:00 Sky Sports+ «Cambridge United vs Brighton and Hove Albion U21» = эталон Cambridge Utd — Brighton U21 21:00 (WSw5LwBd) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00]; 03.11 21:00 Sky Sports+ «Newport County AFC vs Crystal Palace U21» = эталон Newport — Crystal Palace U21 21:00 (hIx5GiTa) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00]; 03.11 21:00 Sky Sports+ «Rochdale vs Doncaster Rovers» = эталон Rochdale — Doncaster 21:00 (4KtZz4hg) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00]; 03.11 21:00 Sky Sports+ «Rotherham United vs Newcastle United U21» = эталон Rotherham — Newcastle Utd U21 21:00 (z9SfUbzo) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00]",
     "sport5.co.il: 2 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «мультикаст: канал сайта показывает несколько игр разом» ×2 — 02.11 18:45 ספורט 5 Stars «ליגה לאומית בכדורגל: הפועל רעננה - מ.ס. קרית ים, מחזור 12 - » = эталон H. Raanana — Kiryat Yam 19:00 (A3hxTPw3) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «ספורט 5 Stars» у sport5.co.il: 2 игр в 02.11 18:45]; 02.11 18:45 ספורט 5 Stars «ליגה לאומית בכדורגל: הפועל כפר שלם - עירוני מודיעין, מחזור 1» = эталон Hapoel Kfar Shalem — Ironi Modiin 19:00 (Aq2r7rHq) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «ספורט 5 Stars» у sport5.co.il: 2 игр в 02.11 18:45]",
     "sporttv.pt: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: вид спорта: другой вид спорта ×1 — 02.11 22:08 SPORT.TV + «SL BENFICA X FC ALVERCA» = эталон Benfica — Alverca 22:15 (zs2gO75k) [вид спорта: другой вид спорта: INFORMAÇÃO]",
     "teleman.pl: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: на витрине, но не сведена с эталоном: «Galatasaray MCT Technic — Galatasaray Nef» ×1 — 04.11 18:50 TVP Sport «Koszykówka mężczyzn: Liga Mistrzów» = эталон Legia — Galatasaray 19:00 (jPUuiN15) [на витрине, но не сведена с эталоном: «Galatasaray MCT Technic — Galatasaray Nef»]"
@@ -65,51 +75,84 @@
   }
  ],
  "справка": [
-  "kanal1sport.sk class:live ×57 — проверено: «Vysielame» у всех строк подряд (kanal1sport_sk.py, 01.09)",
-  "mediaklikk.hu class:elo ×231 — проверено: «Élő» спрятана (`display:none`) у всех, кроме идущей сейчас (06.10)",
-  "mediaklikk.hu class:live ×6 — проверено: плеер прямого эфира канала, не передача (06.10)",
-  "skai.gr class:live-img ×94 — проверено: LIVE — эфир канала в этот час, не матч (skai_gr.py)",
+  "kanal1sport.sk class:live ×58 — проверено: «Vysielame» у всех строк подряд (kanal1sport_sk.py, 01.09)",
+  "mediaklikk.hu class:elo ×215 — проверено: «Élő» спрятана (`display:none`) у всех, кроме идущей сейчас (06.10)",
+  "mediaklikk.hu class:live ×3 — проверено: плеер прямого эфира канала, не передача (06.10)",
+  "skai.gr class:live-img ×95 — проверено: LIVE — эфир канала в этот час, не матч (skai_gr.py)",
   "skai.gr class:live ×6 — проверено: пункт меню «Live» сайта (06.10)",
-  "unian.tv class:tv-item__now ×1 — проверено: «Зараз в ефірі» — идёт сейчас (unian_tv.py)",
-  "alkass.net: угаданных эфиров снято 13 (повтор / нет в эталоне)",
-  "allente.no: угаданных эфиров снято 54 (повтор / нет в эталоне)",
+  "alkass.net: угаданных эфиров снято 10 (повтор / нет в эталоне)",
+  "allente.no: угаданных эфиров снято 65 (повтор / нет в эталоне)",
   "dagenstv.com: угаданных эфиров снято 3 (повтор / нет в эталоне)",
-  "epg.cyta.com.cy: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
   "ert.gr: угаданных эфиров снято 7 (повтор / нет в эталоне)",
-  "ipko.tv: угаданных эфиров снято 65 (повтор / нет в эталоне)",
-  "jupiter.err.ee: угаданных эфиров снято 1 (повтор / нет в эталоне)",
-  "movistarplus.es: угаданных эфиров снято 82 (повтор / нет в эталоне)",
-  "ntvplus.tv: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 2",
+  "ipko.tv: угаданных эфиров снято 42 (повтор / нет в эталоне)",
+  "movistarplus.es: угаданных эфиров снято 75 (повтор / нет в эталоне)",
+  "ntvplus.tv: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
   "oneplaysport.cz: угаданных эфиров снято 19 (повтор / нет в эталоне)",
   "port.hu: угаданных эфиров снято 20 (повтор / нет в эталоне)",
-  "programetv.ro: угаданных эфиров снято 2 (повтор / нет в эталоне)",
-  "raiplay.it: угаданных эфиров снято 4 (повтор / нет в эталоне)",
+  "programetv.ro: угаданных эфиров снято 1 (повтор / нет в эталоне)",
+  "raiplay.it: угаданных эфиров снято 5 (повтор / нет в эталоне)",
   "raspored.hrt.hr: угаданных эфиров снято 1 (повтор / нет в эталоне)",
+  "skysports.com: помеченных эфиром снято фильтром «мультикаст: канал сайта показывает несколько игр разом» — 15",
   "sport5.co.il: помеченных эфиром снято фильтром «мультикаст: канал сайта показывает несколько игр разом» — 2",
+  "sports.kz: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 3",
   "sports.kz: угаданных эфиров снято 4 (повтор / нет в эталоне)",
-  "trt.net.tr: угаданных эфиров снято 4 (повтор / нет в эталоне)",
-  "trtspor.com.tr: угаданных эфиров снято 1 (повтор / нет в эталоне)",
-  "tv.orf.at: угаданных эфиров снято 3 (повтор / нет в эталоне)",
-  "tv2.no: угаданных эфиров снято 3 (повтор / нет в эталоне)",
-  "tv3.lt: угаданных эфиров снято 71 (повтор / нет в эталоне)",
-  "tvpassport.com: угаданных эфиров снято 8 (повтор / нет в эталоне)",
-  "digisport.ro: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "oneplay.cz: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "programetv.ro: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "trt.net.tr: угаданных эфиров снято 2 (повтор / нет в эталоне)",
+  "tv.orf.at: угаданных эфиров снято 2 (повтор / нет в эталоне)",
+  "tv2.no: угаданных эфиров снято 2 (повтор / нет в эталоне)",
+  "tv3.lt: угаданных эфиров снято 78 (повтор / нет в эталоне)",
+  "tvarenasport.ba: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
+  "tvarenasport.com: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
+  "tvarenasport.hr: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
+  "tvheute.at: угаданных эфиров снято 1 (повтор / нет в эталоне)",
+  "tvpassport.com: угаданных эфиров снято 3 (повтор / нет в эталоне)",
+  "tvarenasport.hr: «DINAMO B» ≠ «Dinamo Bucuresti» — проверено, в словарь не кладём: «B» — метка второго состава (Dinamo Zagreb B), не Бухарест (06.10)",
+  "oneplay.cz: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "programme-tv.net: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "sport1tv.cz: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "skysports.com: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "sportklub.hr: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "sporttv.pt: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "start.sportdigital.de: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "teleman.pl: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "tv24.co.uk: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "tvarenasport.ba: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "tv24.co.uk: 2 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "tvarenasport.ba: 2 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "tvarenasport.com: 2 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "tvmatsit.com: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "tvsporten.dk: 2 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "tvarenasport.hr: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "tvsporten.dk: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "tvtid.tv2.dk: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "webtv.sk: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "ziggosport.nl: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)"
  ],
  "показано_нет": [
+  {
+   "сайт": "alkass.net",
+   "канал": "Al Kass Five",
+   "показ": "2026-11-02T17:30",
+   "подпись": "AFC Champions League Elite Al-Sadd (Qatar) vs. Al-Ahli (Saudi Arabia)",
+   "fs_id": "pdsXDUZR",
+   "эталон": "Al Sadd — Al Ahli SC",
+   "начало": "2026-11-02T18:00",
+   "шаг": "снято фильтром «поздний показ у сайта без флага»: та же пара у этого сайта раньше: 02.11 17:20"
+  },
+  {
+   "сайт": "alkass.net",
+   "канал": "Al Kass Seven",
+   "показ": "2026-11-02T17:30",
+   "подпись": "AFC Champions League Elite Tractor (Iran) vs. Neftchi (Uzbekistan)",
+   "fs_id": "lhWA6nS1",
+   "эталон": "Tractor — Neftchi Fargona",
+   "начало": "2026-11-02T18:00",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Al Kass Seven» у alkass.net: 2 игр в 02.11 17:30"
+  },
+  {
+   "сайт": "allente.no",
+   "канал": "V sport 1 HD (N)",
+   "показ": "2026-11-07T21:55",
+   "подпись": "Fa Cup Studio Før: Peterborough - Reading",
+   "fs_id": "Wj2miQbT",
+   "эталон": "Peterborough — Reading",
+   "начало": "2026-11-07T22:00",
+   "шаг": "отсев: стоп-слово в заголовке: Studio"
+  },
   {
    "сайт": "movistarplus.es",
    "канал": "M+ Vamos",
@@ -121,14 +164,174 @@
    "шаг": "снято фильтром «угаданный эфир не на ровной минуте»: эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись"
   },
   {
-   "сайт": "rtcg.me",
-   "канал": "TVCG 3",
-   "показ": "2026-11-01T17:50",
-   "подпись": "Košarka: SC Derby–Ilirija, ABA-6.kolo, direktno",
-   "fs_id": "0nvOa1fo",
-   "эталон": "Studentski Centar — Perspektiva Ilirija",
-   "начало": "2026-11-01T18:00",
-   "шаг": "отсев: не видно пары команд"
+   "сайт": "news.by",
+   "канал": "Беларусь 5",
+   "показ": "2026-11-08T15:55",
+   "подпись": "Хоккей. КХЛ. ХК Сочи - Динамо-Минск. Прямая трансляция. В перерыве Спорт-центр",
+   "fs_id": "bHn3lPK5",
+   "эталон": "FC Minsk — Dynamo Brest",
+   "начало": "2026-11-08T16:00",
+   "шаг": "вид спорта: другой вид спорта: Хоккей"
+  },
+  {
+   "сайт": "raiplay.it",
+   "канал": "Rai Sport",
+   "показ": "2026-11-07T15:50",
+   "подпись": "Calcio. Serie A Women Athora: Milan-Inter - 6a g.ta",
+   "fs_id": "SOQPlxvm",
+   "эталон": "AC Milan W — Inter W",
+   "начало": "2026-11-07T16:00",
+   "шаг": "снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:00",
+   "подпись": "Cambridge United vs Brighton and Hove Albion U21",
+   "fs_id": "WSw5LwBd",
+   "эталон": "Cambridge Utd — Brighton U21",
+   "начало": "2026-11-03T21:00",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:00",
+   "подпись": "Newport County AFC vs Crystal Palace U21",
+   "fs_id": "hIx5GiTa",
+   "эталон": "Newport — Crystal Palace U21",
+   "начало": "2026-11-03T21:00",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:00",
+   "подпись": "Rochdale vs Doncaster Rovers",
+   "fs_id": "4KtZz4hg",
+   "эталон": "Rochdale — Doncaster",
+   "начало": "2026-11-03T21:00",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:00",
+   "подпись": "Rotherham United vs Newcastle United U21",
+   "fs_id": "z9SfUbzo",
+   "эталон": "Rotherham — Newcastle Utd U21",
+   "начало": "2026-11-03T21:00",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Blackburn Rovers vs Stoke City",
+   "fs_id": "fmhXnH1S",
+   "эталон": "Blackburn — Stoke",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Charlton Athletic vs Bolton Wanderers",
+   "fs_id": "MaPjhCw8",
+   "эталон": "Charlton — Bolton",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Derby County vs Norwich City",
+   "fs_id": "QVr3sePk",
+   "эталон": "Derby — Norwich",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Huddersfield Town vs Luton Town",
+   "fs_id": "SfwERv5N",
+   "эталон": "Huddersfield — Luton",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Northampton Town vs Oldham Athletic",
+   "fs_id": "fBErhd3b",
+   "эталон": "Northampton — Oldham",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports» у skysports.com: 2 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Portsmouth vs Swansea City",
+   "fs_id": "4tCThItm",
+   "эталон": "Portsmouth — Swansea",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Preston North End vs Sheffield United",
+   "fs_id": "bqsBuZg2",
+   "эталон": "Preston — Sheffield Utd",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Queens Park Rangers vs Burnley",
+   "fs_id": "4tUd3xn9",
+   "эталон": "QPR — Burnley",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Watford vs Lincoln City",
+   "fs_id": "C6X41GGL",
+   "эталон": "Watford — Lincoln",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports",
+   "показ": "2026-11-03T21:45",
+   "подпись": "Wigan Athletic vs Mansfield Town",
+   "fs_id": "nL3JaPG6",
+   "эталон": "Wigan — Mansfield",
+   "начало": "2026-11-03T21:45",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports» у skysports.com: 2 игр в 03.11 21:45"
+  },
+  {
+   "сайт": "skysports.com",
+   "канал": "Sky Sports+",
+   "показ": "2026-11-03T22:00",
+   "подпись": "Birmingham City vs Millwall",
+   "fs_id": "nNlPlwXF",
+   "эталон": "Birmingham — Millwall",
+   "начало": "2026-11-03T22:00",
+   "шаг": "снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 9 игр в 03.11 22:00"
   },
   {
    "сайт": "sport5.co.il",
