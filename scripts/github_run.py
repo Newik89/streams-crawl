@@ -13,7 +13,12 @@ r"""Работа с GitHub без ручных действий: репозит�
     python scripts/github_run.py dispatch --full --days 2
     python scripts/github_run.py runs            последние запуски
     python scripts/github_run.py wait            дождаться конца запуска
-    python scripts/github_run.py fetch           забрать артефакт в recon/raw_live
+    python scripts/github_run.py fetch           забрать страницы сбора в recon/raw_live
+    python scripts/github_run.py fetch --run 376 страницы конкретного прогона
+
+Страницы сбора с 31.10 лежат в кэше GitHub одним файлом (crawl.yml, ключ
+`sbor-N-pages`), а кэш наружу не скачивается: `fetch` сам заказывает задание
+«Выдать сбор» (vydat.yml) — оно кладёт архив артефактом `vydacha-N` на сутки.
 """
 
 from __future__ import annotations
@@ -24,6 +29,7 @@ import json
 import re
 import subprocess
 import sys
+import tarfile
 import time
 import urllib.error
 import urllib.request
@@ -33,6 +39,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 API = "https://api.github.com"
 WORKFLOW = "crawl.yml"
+#: задание «Выдать сбор №»: страницы из кэша → артефакт vydacha-N на сутки
+VYDAT = "vydat.yml"
+#: шаг crawl.yml, который кладёт страницы; прошёл — страницы у прогона есть
+STEP_PAGES = "Забрать страницы и отчёты"
 
 
 def _token() -> str:
@@ -137,20 +147,21 @@ def cmd_dispatch(args) -> int:
         return 1
     status, answer = call(
         "POST", f"/repos/{slug}/actions/workflows/{WORKFLOW}/dispatches",
-        {"ref": "main", "inputs": {
+        {"ref": args.ref, "inputs": {
             # значения латиницей: GitHub не принял кириллицу в списке вариантов
             "mode": "full" if args.full else "proba",
             "days": str(args.days), "delay": str(args.delay),
             "only": args.only, "urls": args.urls, "post": args.post,
             "warmup": args.warmup,
             "browser": "yes" if args.browser else "no",
-            # workflow — всегда с main, а код обхода — с этого коммита: так
-            # проба бежит кодом ветки до слияния (18.10, ветка dirbg)
+            # workflow — с main (или с ветки --ref), а код обхода — с этого
+            # коммита: так проба бежит кодом ветки до слияния (18.10, dirbg)
             "code_ref": code_ref}})
     if status == 204:
         print(f"обход запущен: {'полный' if args.full else 'проба'}, "
               f"пауза {args.delay} с"
-              + (f", код {code_ref[:10]}" if code_ref else ""))
+              + (f", код {code_ref[:10]}" if code_ref else "")
+              + (f", workflow с ветки {args.ref}" if args.ref != "main" else ""))
         return 0
     print(f"{status}: {answer}")
     return 1
@@ -190,12 +201,91 @@ def cmd_wait(args) -> int:
     return 1
 
 
+def _artifacts(slug: str, run_id: int) -> list[dict]:
+    status, answer = call("GET", f"/repos/{slug}/actions/runs/{run_id}/artifacts")
+    return [a for a in answer.get("artifacts", []) if not a["expired"]] \
+        if status == 200 else []
+
+
+def _has_pages(slug: str, run: dict) -> bool:
+    """У прогона были страницы: шаг «Забрать страницы и отчёты» прошёл.
+    Плановый запуск, увидевший «сегодня уже ходили», и переразбор страниц
+    не кладут — шаг у них пропущен."""
+    status, answer = call("GET", f"/repos/{slug}/actions/runs/{run['id']}/jobs?per_page=5")
+    for job in answer.get("jobs", []) if status == 200 else []:
+        for step in job.get("steps", []):
+            if step["name"] == STEP_PAGES:
+                return step.get("conclusion") == "success"
+    return False
+
+
+def _vydacha(slug: str, number: int, ref: str) -> list[dict]:
+    """Страницы сбора лежат в кэше GitHub (crawl.yml, ключ sbor-N-pages), а
+    кэш наружу не скачивается. Заказываем задание «Выдать сбор» (vydat.yml):
+    оно кладёт архив обычным артефактом vydacha-N на сутки. Уже выдан и жив —
+    берём его, задание не заказываем. `ref` — ветка того прогона: кэш виден
+    только ей и main."""
+    def ready() -> list[dict]:
+        status, answer = call("GET", f"/repos/{slug}/actions/artifacts?name=vydacha-{number}")
+        return [a for a in answer.get("artifacts", []) if not a["expired"]] \
+            if status == 200 else []
+
+    have = ready()
+    if have:
+        return have
+    since = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 60))
+    status, answer = call("POST", f"/repos/{slug}/actions/workflows/{VYDAT}/dispatches",
+                          {"ref": ref, "inputs": {"number": str(number)}})
+    if status != 204:
+        print(f"{status}: выдача сбора #{number} не заказалась: {answer}")
+        return []
+    print(f"страницы #{number} лежат в кэше GitHub — заказана выдача, ждём…")
+    title = f"Выдать сбор #{number}"
+    for _ in range(36):                       # до 6 минут
+        time.sleep(10)
+        status, answer = call("GET", f"/repos/{slug}/actions/workflows/{VYDAT}/runs?per_page=5")
+        for run in answer.get("workflow_runs", []) if status == 200 else []:
+            if (run["display_title"] != title or run["created_at"] < since
+                    or run["status"] != "completed"):
+                continue
+            if run["conclusion"] == "success":
+                return ready()
+            print(f"выдача #{number} не удалась ({run['conclusion']}): в кэше "
+                  f"страниц нет — сбор старше ~7 дней или без страниц\n  {run['html_url']}")
+            return []
+    print("выдача не дождалась за 6 минут")
+    return []
+
+
+def _unpack(blob: bytes, out: Path) -> int:
+    """Артефакт — zip. Старый вид (до 31.10): страницы россыпью. Новый: внутри
+    один obhod.tar.xz (crawl.yml, шаг «Упаковать страницы одним файлом»), в
+    нём папка raw_live/ — её содержимое кладём прямо в out, как раньше."""
+    with zipfile.ZipFile(io.BytesIO(blob)) as z:
+        names = z.namelist()
+        if names != ["obhod.tar.xz"]:
+            z.extractall(out)
+            return len(names)
+        packed = z.read("obhod.tar.xz")
+    n = 0
+    with tarfile.open(fileobj=io.BytesIO(packed), mode="r:xz") as tar:
+        for member in tar:
+            _, _, rest = member.name.partition("/")
+            if not rest:                      # сама папка raw_live
+                continue
+            member.name = rest
+            tar.extract(member, out, filter="data")
+            n += int(member.isfile())
+    return n
+
+
 def cmd_fetch(args) -> int:
     slug = repo_slug()
     # 30, а не 10: за сутки прогонов бывает больше десятка (сборы, пробы,
     # очередь queue.yml идёт тем же списком), и утренний сбор уже не попадал
-    # в выборку — `fetch --run 205` отвечал «не найден» (06.10)
-    runs = _runs(slug, 30)
+    # в выборку — `fetch --run 205` отвечал «не найден» (06.10). С номером —
+    # 100: кэш GitHub держит страницы до 7 дней, это глубже 30 прогонов
+    runs = _runs(slug, 100 if args.run_number else 30)
     if not runs:
         print("запусков ещё не было")
         return 1
@@ -204,25 +294,27 @@ def cmd_fetch(args) -> int:
         if not matched:
             print(f"запуск #{args.run_number} не найден среди последних {len(runs)}")
             return 1
-        run = matched[0]
-    else:
-        run = runs[0]
-    status, answer = call("GET", f"/repos/{slug}/actions/runs/{run['id']}/artifacts")
-    items = answer.get("artifacts", []) if status == 200 else []
+        runs = matched
+    run, items = runs[0], []
+    # старый вид — артефакт obhod-N у самого прогона; новый — страницы в кэше,
+    # их выдаёт vydat.yml. Без --run: плановый запуск, увидевший «сегодня уже
+    # ходили», и переразбор страниц не кладут — берём ближайший прогон с ними
+    for r in runs:
+        if not _has_pages(slug, r):
+            continue
+        items = _artifacts(slug, r["id"]) or \
+            _vydacha(slug, r["run_number"], r.get("head_branch") or "main")
+        if items:
+            if r is not runs[0]:
+                print(f"у последнего запуска страниц нет, "
+                      f"беру #{r['run_number']} ({r['created_at']})")
+            run = r
+            break
+        if args.run_number:
+            break
     if not items:
-        # плановый запуск, увидевший «сегодня уже ходили», завершается пустым —
-        # тогда молча берём ближайший прогон с артефактом
-        if not args.run_number:
-            for r in runs[1:]:
-                st, a = call("GET", f"/repos/{slug}/actions/runs/{r['id']}/artifacts")
-                if st == 200 and a.get("artifacts"):
-                    run, items = r, a["artifacts"]
-                    print(f"у последнего запуска артефактов нет, "
-                          f"беру #{run['run_number']} ({run['created_at']})")
-                    break
-        if not items:
-            print(f"у запуска #{run['run_number']} артефактов нет")
-            return 1
+        print(f"у запуска #{run['run_number']} страниц нет")
+        return 1
     art = items[0]
     status, blob = call("GET", art["archive_download_url"], raw=True)
     if status != 200:
@@ -230,9 +322,7 @@ def cmd_fetch(args) -> int:
         return 1
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(io.BytesIO(blob)) as z:
-        z.extractall(out)
-        print(f"распаковано {len(z.namelist())} файл(ов) в {out}")
+    print(f"распаковано {_unpack(blob, out)} файл(ов) в {out}")
     for name in ("report.md", "matches.md"):
         path = out / name
         if path.exists():
@@ -263,6 +353,10 @@ def main() -> int:
     p.add_argument("--code-ref", default="", dest="code_ref",
                    help="SHA коммита (40 знаков): обход бежит кодом этого "
                         "коммита, а не main — проба ветки до слияния")
+    p.add_argument("--ref", default="main",
+                   help="ветка, с которой берётся сам crawl.yml (проверка "
+                        "правок workflow до слияния; код — тоже с неё, если "
+                        "--code-ref не задан). Проба не пишет в main")
     p.set_defaults(run=cmd_dispatch)
     sub.add_parser("runs").set_defaults(run=cmd_runs)
     p = sub.add_parser("wait"); p.add_argument("--timeout", type=int, default=600)
@@ -270,7 +364,7 @@ def main() -> int:
     p = sub.add_parser("fetch")
     p.add_argument("--out", default=str(ROOT / "recon" / "raw_live"))
     p.add_argument("--run", type=int, default=0, dest="run_number",
-                   help="номер конкретного прогона (по умолчанию — последний с артефактом)")
+                   help="номер конкретного прогона (по умолчанию — последний со страницами)")
     p.set_defaults(run=cmd_fetch)
     args = ap.parse_args()
     return args.run(args)

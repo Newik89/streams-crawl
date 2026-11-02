@@ -80,7 +80,7 @@ on:
         description: "Скан одной даты ГГГГ-ММ-ДД (календарь владельца): дневные сетки качаются только за этот день, итог кладётся в results/day/"
         default: ""
       from_run:
-        description: "Переразбор без обхода (схема сбоев, шаг 4): id прогона, чьи страницы (артефакт obhod-N, живёт 3 дня) разобрать заново; к сайтам не ходим, итог — в results/partial/"
+        description: "Переразбор без обхода (схема сбоев, шаг 4): id прогона, чьи страницы (кэш GitHub, ключ sbor-N-pages) разобрать заново; к сайтам не ходим, итог — в results/partial/"
         default: ""
       code_ref:
         description: "Переразбор кодом другой версии: SHA коммита (пусто — текущий main). Сторож даёт родителя коммита упавшего прогона, когда упал наш разбор"
@@ -92,7 +92,7 @@ on:
 permissions:
   contents: write        # чтобы обход мог сам положить результат в results/
   issues: write          # провал обхода → issue с меткой «обход-упал» (письмо владельцу)
-  actions: read          # переразбор: скачать артефакт страниц прежнего прогона
+  actions: read          # переразбор: страницы прежнего прогона (запас — артефакт obhod-N до 04.11)
 
 # Кнопка сайта поверх планового обхода встаёт в очередь, а не идёт рядом
 # (аудит 07.09, A2): два обхода разом — двойная нагрузка на сайты и гонка
@@ -315,7 +315,7 @@ jobs:
         id: prior
         # переразбор без обхода (схема сбоев, шаг 4; сторож сервера,
         # `watch.RECOVERY` → reparse): к сайтам не ходим — страницы берём из
-        # артефакта упавшего прогона. Окно дней — из его названия («Обход
+        # кэша GitHub упавшего прогона. Окно дней — из его названия («Обход
         # full-6»): переразбор только полного обхода (у него и страницы, и
         # порог). Прогон другого workflow или не полный — красный, к сайтам
         # всё равно не идём. Тот же шаг — у дозабора (шаг 5, redo=1): его
@@ -351,20 +351,46 @@ jobs:
           echo "days=$DAYS"      >> $GITHUB_OUTPUT
           echo "number=$NUMBER"  >> $GITHUB_OUTPUT
 
-      - name: Страницы прежнего сбора
-        id: pages
-        # артефакт obhod-<номер> того прогона (шаг «Забрать страницы и
-        # отчёты», живёт 3 дня) — в ту же папку, куда кладёт их обход.
-        # По имени, не по маске: с маской и нулём совпадений шаг зелёный
-        # («0 artifacts»), а по имени — красный, причина стука «pages»
-        # (проверка 10.10)
+      - name: Страницы прежнего сбора — из кэша
+        id: kesh
+        # страницы того прогона лежат в кэше GitHub одним файлом obhod.tar.xz
+        # (шаг «Забрать страницы и отчёты», ключ sbor-<номер>-pages). Ключ
+        # точный, без маски: с маской и нулём совпадений шаг был бы зелёным
+        # (проверка 10.10). Нет в кэше — шаг ниже пробует старый вид
         if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != ''
+        uses: actions/cache/restore@v4
+        with:
+          key: sbor-${{ steps.prior.outputs.number }}-pages
+          path: obhod.tar.xz
+
+      - name: Страницы прежнего сбора — старым видом
+        # сборы до 31.10 лежат артефактами obhod-<номер> (живут 3 дня);
+        # после 04.11 этот шаг — пустой запас, можно убрать
+        if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != '' && steps.kesh.outputs.cache-hit != 'true'
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           run-id: ${{ steps.what.outputs.from_run }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           name: obhod-${{ steps.prior.outputs.number }}
           path: recon/raw_live
+
+      - name: Страницы прежнего сбора
+        id: pages
+        # в ту же папку, куда кладёт их обход. Нет ни в кэше, ни артефактом —
+        # красный, причина стука «pages»
+        if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run != ''
+        env:
+          W_NUMBER: ${{ steps.prior.outputs.number }}
+        run: |
+          if [ -f obhod.tar.xz ]; then
+            mkdir -p recon && tar -C recon -xJf obhod.tar.xz && rm obhod.tar.xz
+            echo "страницы #$W_NUMBER — из кэша"
+          fi
+          if [ -z "$(ls -A recon/raw_live 2>/dev/null)" ]; then
+            echo "::error::страниц прогона #$W_NUMBER нет ни в кэше, ни артефактом"; exit 1
+          fi
+          echo "файлов: $(find recon/raw_live -type f | wc -l)"
 
       - name: Дозабор упавших адресов
         id: redo
@@ -644,21 +670,36 @@ jobs:
           echo "::error::$TITLE не запушился за 3 попытки"
           exit 1
 
-      - name: Забрать страницы и отчёты
-        # при переразборе не кладём: те же страницы уже лежат артефактом
-        # прежнего прогона, второй экземпляр только забил бы хранилище
+      - name: Упаковать страницы одним файлом
+        id: pack
+        # при переразборе не пакуем: те же страницы уже лежат в кэше прежнего
+        # прогона. 1600 страниц порознь — 157 МБ, одним tar.xz — 27 МБ
+        # (страницы одного сайта почти одинаковы; проба 30.10 на сборе #363).
+        # -T0 — все ядра машины, около минуты. Архив нужен проверке перед
+        # выкладкой, дозабору и книге случаев; обход из-за него краснеть,
+        # стучать «провал» и заставлять сторожа перезаказывать не должен
         if: always() && steps.guard.outputs.run == '1' && steps.what.outputs.from_run == ''
-        # архив страниц нужен только для отладки: переполнилось хранилище
-        # Actions (02.10 — 582 МБ при лимите 500) — обход не должен из-за
-        # этого краснеть, стучать «провал» и заставлять сторожа перезаказывать
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        run: |
+          if [ -z "$(ls -A recon/raw_live 2>/dev/null)" ]; then
+            echo "страниц нет — паковать нечего"; echo "have=0" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          XZ_OPT='-6 -T0' tar -C recon -cJf obhod.tar.xz raw_live
+          echo "have=1" >> "$GITHUB_OUTPUT"
+          echo "файлов: $(find recon/raw_live -type f | wc -l), архив: $(du -h obhod.tar.xz | cut -f1)"
+
+      - name: Забрать страницы и отчёты
+        # в кэш GitHub, не в хранилище артефактов: у кэша отдельные 10 ГБ на
+        # репозиторий, в лимит 0,5 ГБ (считается и для публичного репо —
+        # письма 29.09, 30.10) он не входит, старое GitHub стирает сам (не
+        # трогали 7 дней или кончилось место). Ключ sbor-<номер>-pages читают
+        # proverka.yml, шаг «Страницы прежнего сбора — из кэша» и vydat.yml
+        if: always() && steps.guard.outputs.run == '1' && steps.what.outputs.from_run == '' && steps.pack.outputs.have == '1'
+        continue-on-error: true
+        uses: actions/cache/save@v4
         with:
-          name: obhod-${{ github.run_number }}
-          path: recon/raw_live/
-          # 3 дня, не 7: хранилище Actions 0,5 ГБ считается и для публичного
-          # репо — при 7 днях подходили к 90% (письмо GitHub 29.09)
-          retention-days: 3
+          key: sbor-${{ github.run_number }}-pages
+          path: obhod.tar.xz
 
       - name: Дозор — сайт снова пускает
         # закрытый сайт стоит в обходе одним заходом в сутки; ответил

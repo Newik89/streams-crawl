@@ -2681,10 +2681,30 @@ check("заявка cancel: отменяет только прогон crawl.yml
 check("в queue.yml по-прежнему 3 шага-имени", len(re.findall(r"name: ", queue)) == 3)
 check("crawl.yml называет прогон видом сбора", "run-name:" in crawl and "Обход proba-{0}" in crawl)
 # схема сбоев, шаг 4: переразбор без обхода
-check("crawl.yml: вход from_run, прогон зовётся reparse-<id>, страницы — download-artifact ПО ИМЕНИ (с маской нет артефакта = зелёный), право actions: read",
+check("crawl.yml: вход from_run, прогон зовётся reparse-<id>, страницы — из кэша по ТОЧНОМУ ключу sbor-<номер>-pages, запас — download-artifact ПО ИМЕНИ (с маской нет артефакта = зелёный), право actions: read",
       "from_run:" in crawl and "Обход reparse-{0}" in crawl
+      and "actions/cache/restore@v4" in crawl
+      and "key: sbor-${{ steps.prior.outputs.number }}-pages" in crawl
       and "actions/download-artifact@v4" in crawl and "actions: read" in crawl
       and "name: obhod-${{ steps.prior.outputs.number }}" in crawl and "pattern: obhod-" not in crawl)
+# хранилище Actions 100 % (письмо GitHub 30.10): страницы сбора — одним tar.xz
+# в кэш GitHub (отдельные 10 ГБ), а не артефактом в лимит 0,5 ГБ
+proverka_yml = (ROOT / ".github" / "workflows" / "proverka.yml").read_text(encoding="utf-8")
+vydat_yml = (ROOT / ".github" / "workflows" / "vydat.yml").read_text(encoding="utf-8")
+check("страницы сбора — одним tar.xz в кэш GitHub (ключ sbor-<номер>-pages), не артефактом; проверка и выдача читают тот же ключ, выдача живёт сутки",
+      "actions/upload-artifact@v4" not in crawl and "actions/cache/save@v4" in crawl
+      and "key: sbor-${{ github.run_number }}-pages" in crawl
+      and "tar -C recon -cJf obhod.tar.xz raw_live" in crawl
+      and "actions/cache/restore@v4" in proverka_yml and "-pages" in proverka_yml
+      and "key: sbor-${{ inputs.number }}-pages" in vydat_yml
+      and "retention-days: 1" in vydat_yml and "name: vydacha-${{ inputs.number }}" in vydat_yml)
+github_run_src = (ROOT / "scripts" / "github_run.py").read_text(encoding="utf-8")
+check("имя шага «Забрать страницы и отчёты» в crawl.yml и в github_run.STEP_PAGES одно: по нему fetch узнаёт, были ли у прогона страницы",
+      "      - name: Забрать страницы и отчёты\n" in crawl
+      and 'STEP_PAGES = "Забрать страницы и отчёты"' in github_run_src)
+# грабля 01.11: «#» в run-name без кавычек — YAML-комментарий, GitHub отверг файл
+check("vydat.yml: run-name с «#» взят в кавычки целиком",
+      "run-name: \"${{ format('Выдать сбор #{0}', inputs.number) }}\"" in vydat_yml)
 check("crawl.yml: при переразборе обход пропущен, итог — в results/partial/, а не results/",
       "if: steps.guard.outputs.run == '1' && steps.what.outputs.from_run == ''\n" in crawl
       and "results/partial" in crawl

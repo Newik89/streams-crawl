@@ -18,7 +18,7 @@ on:
 
 permissions:
   contents: read
-  actions: read      # скачать страницы последнего сбора (артефакт обхода)
+  actions: read      # список прогонов обхода; запас — артефакт obhod-N (до 04.11)
 
 concurrency:
   group: proverka-${{ github.ref }}
@@ -40,22 +40,52 @@ jobs:
       - name: Библиотеки (точные версии)
         run: pip install -r requirements-crawl.txt -r requirements-proverka.txt
 
-      - name: Страницы последнего полного сбора
-        # артефакты живут 3 дня; берём самый свежий удачный полный обход
-        # (плановый или заказ сервера), у которого архив ещё есть. Не нашёлся —
-        # шаг не краснеет сам, но итог ниже будет красным (сравнения нет)
-        id: sbor
-        continue-on-error: true
+      - name: Какие полные сборы свежие
+        # самые свежие удачные полные обходы (плановые или заказ сервера),
+        # свежие первыми: первый номер — точный ключ кэша, ещё пять — запасные
+        id: kandidaty
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh run list --workflow crawl.yml --status success --limit 30 \
             --json databaseId,number,displayTitle \
             --jq '.[] | select(.displayTitle | test("^Обход (по расписанию|full-)")) | "\(.databaseId) \(.number)"' > runs.txt
+          set -- $(awk '{print $2}' runs.txt | head -6)
+          echo "first=sbor-${1:-0}-pages" >> "$GITHUB_OUTPUT"
+          if [ $# -gt 0 ]; then shift; fi
+          { echo "rest<<EOF"; for n in "$@"; do echo "sbor-$n-pages"; done; echo "EOF"; } >> "$GITHUB_OUTPUT"
+          echo "кандидаты: $(awk '{print "#"$2}' runs.txt | head -6 | tr '\n' ' ')"
+
+      - name: Страницы последнего полного сбора — из кэша
+        # архив сбора одним файлом (crawl.yml, шаг «Забрать страницы и
+        # отчёты», ключ sbor-<номер>-pages); нет точного — ближайший запасной
+        id: kesh
+        uses: actions/cache/restore@v4
+        with:
+          key: ${{ steps.kandidaty.outputs.first }}
+          restore-keys: ${{ steps.kandidaty.outputs.rest }}
+          path: obhod.tar.xz
+
+      - name: Страницы последнего полного сбора
+        # из кэша — распаковать в sbor/; нет в кэше — запас: сборы до 31.10
+        # лежат артефактами obhod-N (живут 3 дня; после 04.11 запас пустой).
+        # Не нашёлся — шаг не краснеет сам, но итог ниже будет красным
+        id: sbor
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KEY: ${{ steps.kesh.outputs.cache-matched-key }}
+        run: |
+          if [ -f obhod.tar.xz ]; then
+            mkdir -p sbor && tar -C sbor --strip-components=1 -xJf obhod.tar.xz
+            echo "dir=sbor" >> "$GITHUB_OUTPUT"
+            echo "сбор из кэша: $KEY, файлов: $(find sbor -type f | wc -l)"
+            exit 0
+          fi
           while read -r id num; do
             if gh run download "$id" -n "obhod-$num" -D sbor 2>/dev/null; then
               echo "dir=sbor" >> "$GITHUB_OUTPUT"
-              echo "сбор #$num"
+              echo "сбор #$num (артефакт старого вида)"
               exit 0
             fi
           done < runs.txt

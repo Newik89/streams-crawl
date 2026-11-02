@@ -79,8 +79,13 @@ alive = (ROOT / ".github" / "workflows" / "alive.yml").read_text(encoding="utf-8
 проверка("«Сервер жив?» — раз в 3 часа (13.10)",
          re.findall(r'cron:\s*"([^"]+)"', alive), ["17 */3 * * *"])
 crawl = (ROOT / ".github" / "workflows" / "crawl.yml").read_text(encoding="utf-8")
-проверка("архив страниц сбора — 3 дня (29.09: хранилище Actions)",
-         re.findall(r"retention-days:\s*(\d+)", crawl), ["3"])
+vydat = (ROOT / ".github" / "workflows" / "vydat.yml").read_text(encoding="utf-8")
+# 29.09 было «артефакт 3 дня»; 31.10 (письмо GitHub «хранилище 100 %») —
+# страницы одним tar.xz в кэш GitHub, срока у них нет (кэш стирает сам:
+# 7 дней без обращения или 10 ГБ), а выдача на компьютер живёт 1 день
+проверка("страницы сбора — в кэше GitHub без срока, выдача на компьютер — 1 день (31.10: хранилище Actions 100 %)",
+         (re.findall(r"retention-days:\s*(\d+)", crawl), "actions/cache/save@v4" in crawl,
+          re.findall(r"retention-days:\s*(\d+)", vydat)), ([], True, ["1"]))
 pins = (ROOT / "requirements-crawl.txt").read_text(encoding="utf-8")
 проверка("selectolax закреплён ниже 1.0 (03.10: 1.0.0 уронила разбор #172)",
          re.search(r"^selectolax==0\.", pins, re.M) is not None, True)
