@@ -328,36 +328,47 @@ def _entry_pairs(conn: sqlite3.Connection, game: dict,
     return out
 
 
+#: окно поиска игры по каналам: уже окна склейки (150 мин) — один канал
+#: показывает игры одну за другой, и через два часа на нём уже другая
+CHANNELS_WINDOW_MINUTES = 30
+
+
 def _pick_by_marks(pairs: set[tuple[int, int]],
                    rows: list[tuple[int, int, int]]) -> int | None:
-    """Игра базы, у которой большинство отметок (сайт, канал) этой игры
-    файла — не меньше двух и не меньше половины; `rows` — (игра, сайт,
-    канал) отметок игр в окне времени. Двух игр с таким совпадением не
-    бывает: это одна игра (книга 094 — имя игры сменилось, когда склейка
-    стала брать его по большинству строк, а отметки те же). Ровно как
-    `proverka._most_channels`."""
-    if len(pairs) < 2:
+    """Игра базы по отметкам (сайт, канал) игры файла; `rows` — (игра,
+    сайт, канал) ВСЕ отметки игр в окне ±CHANNELS_WINDOW_MINUTES. Своя,
+    когда: (а) у неё большинство отметок игры файла — не меньше двух и не
+    меньше половины (как `proverka._most_channels`); или (б) ВСЕ её
+    отметки есть у игры файла (#9196: одна отметка teleman/SportKlub, сбор
+    назвал игру «Bàsquet Girona» вместо «FIATC Girona» — заливка завела
+    двойника). Это одна игра: имя сменилось (словарь, большинство строк —
+    книга 094), а канал в тот же час тот же. Из нескольких — с наибольшим
+    совпадением."""
+    if not pairs:
         return None
-    common: dict[int, int] = {}
+    marks: dict[int, set] = {}
     for event_id, source_id, channel_id in rows:
-        if (source_id, channel_id) in pairs:
-            common[event_id] = common.get(event_id, 0) + 1
-    best = max(common, key=common.get, default=None)
-    if best is None or common[best] < 2 or 2 * common[best] < len(pairs):
-        return None
+        marks.setdefault(event_id, set()).add((source_id, channel_id))
+    best, best_common = None, 0
+    for event_id, mine in marks.items():
+        common = len(mine & pairs)
+        majority = common >= 2 and 2 * common >= len(pairs)
+        whole = common >= 1 and mine <= pairs
+        if (majority or whole) and common > best_common:
+            best, best_common = event_id, common
     return best
 
 
 def _channels_event(conn: sqlite3.Connection, game: dict,
                     srcs: dict[str, sqlite3.Row]) -> sqlite3.Row | None:
     """Игра базы по отметкам каналов, когда по именам не нашлась
-    (`_pick_by_marks`): то же окно времени, что у `_find_event`."""
+    (`_pick_by_marks`), в окне ±CHANNELS_WINDOW_MINUTES того же вида спорта."""
     pairs = _entry_pairs(conn, game, srcs)
-    if len(pairs) < 2:
+    if not pairs:
         return None
     start = _parse_dt(game["start_kyiv"])
-    lo = _iso(start - timedelta(minutes=merge.WINDOW_MINUTES))
-    hi = _iso(start + timedelta(minutes=merge.WINDOW_MINUTES))
+    lo = _iso(start - timedelta(minutes=CHANNELS_WINDOW_MINUTES))
+    hi = _iso(start + timedelta(minutes=CHANNELS_WINDOW_MINUTES))
     sport = game.get("sport") or ""
     rows = [(r[0], r[1], r[2]) for r in conn.execute(
         "SELECT e.id, ec.source_id, ec.channel_id FROM events e "
