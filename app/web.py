@@ -20,6 +20,7 @@ import json
 import os
 import re
 import secrets
+import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
@@ -128,6 +129,35 @@ def _secret_key() -> str:
     return keyfile.read_text(encoding="utf-8").strip()
 
 
+def _same_secret(typed: str, expected: str) -> bool:
+    """Пароль или CSRF-токен совпал? Сравнение без утечки по времени, В БАЙТАХ:
+    `compare_digest` со строками падает TypeError на не-ASCII — пароль
+    кириллицей дал 500 на /login 15.10 (устойчивость-1, 02.11)."""
+    return secrets.compare_digest(typed.encode("utf-8"), expected.encode("utf-8"))
+
+
+#: страница ошибки без шаблонов (шаблон сам может быть причиной сбоя):
+#: посетителю — короткие слова и автообновление через полминуты
+_OSHIBKA_HTML = """<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="30"><title>Расписание — минутку</title>
+<style>body{{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+background:#0f172a;color:#e2e8f0;font:18px/1.5 system-ui,sans-serif}}main{{max-width:32rem;
+padding:2rem;text-align:center}}h1{{font-size:1.4rem;margin:0 0 .5rem}}p{{margin:.3rem 0;color:#94a3b8}}
+a{{color:#7dd3fc}}</style></head><body><main><h1>{title}</h1>
+<p>{words} Страница обновится сама через полминуты, или <a href="/schedule">обновите её</a>.</p>
+</main></body></html>"""
+
+
+def _oshibka(title: str, words: str, code: int, retry_after: int = 0):
+    """Ответ об ошибке: клиенту /api/ — JSON, остальным — страница «минутку».
+    `retry_after` — заголовок Retry-After (секунд), когда есть смысл повторить."""
+    headers = {"Retry-After": str(retry_after)} if retry_after else {}
+    if request.path.startswith("/api/"):
+        return jsonify(error=f"{title}. {words}"), code, headers
+    return _OSHIBKA_HTML.format(title=title, words=words), code, headers
+
+
 def create_app() -> Flask:
     app = Flask(__name__)
     # За nginx (05.10, аудит: голый gunicorn на 80 порту кладётся потоком
@@ -186,6 +216,23 @@ def create_app() -> Flask:
             visits.log_request(request, resp, session)
         return resp
 
+    # ── страницы ошибок (устойчивость-1, 02.11) ──────────────────────────────
+    @app.errorhandler(sqlite3.OperationalError)
+    def db_busy(e):
+        # заливка сбора держит базу одной длинной транзакцией; запись с сайта
+        # ждёт её db.BUSY_TIMEOUT_WEB с, дальше — «повторите», а не 500
+        if "locked" in str(e) or "busy" in str(e):
+            return _oshibka("База занята", "Идёт заливка расписания — повторите через минуту.",
+                            503, retry_after=60)
+        raise e                     # прочее — обычная внутренняя ошибка (500 ниже)
+
+    @app.errorhandler(500)
+    def internal_error(e):
+        # исход уже в журнале службы (journalctl -u streams-web); посетителю —
+        # без следов кода
+        return _oshibka("Сайт не смог показать страницу",
+                        "Ошибка записана, сайт продолжает работать.", 500)
+
     # ── защита ───────────────────────────────────────────────────────────────
 
     def csrf_token() -> str:
@@ -197,7 +244,7 @@ def create_app() -> Flask:
         # пустое с пустым не сравниваем: запрос без куки и без токена раньше
         # проходил проверку (аудит 05.10) — форму отправляли, не открыв страницу
         expected = session.get("csrf_token", "")
-        if not expected or not secrets.compare_digest(
+        if not expected or not _same_secret(
                 request.form.get("csrf_token", ""), expected):
             abort(400)
 
@@ -428,12 +475,12 @@ def create_app() -> Flask:
                       "error")
                 return render_template("login.html")
             typed = request.form.get("password", "")
-            if secrets.compare_digest(typed, ADMIN_PASSWORD):
+            if _same_secret(typed, ADMIN_PASSWORD):
                 session.clear()
                 session["admin"] = True
                 return redirect(safe_next(request.args.get("next"))
                                 or url_for("dashboard"))
-            if FRIEND_PASSWORD and secrets.compare_digest(typed, FRIEND_PASSWORD):
+            if FRIEND_PASSWORD and _same_secret(typed, FRIEND_PASSWORD):
                 # друзья владельца (05.10): админки не видят, но кнопки сбора
                 # на витрине им открыты — вместо PIN, который подбирался
                 session.clear()

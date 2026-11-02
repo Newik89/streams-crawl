@@ -32,6 +32,12 @@ r"""Сторож витрины: сайт завис — перезапусти�
       правила М1–М4), в том числе написанные этим же запуском.
   В7. Последним — своя отметка «жив» (`alive.beat`): по ней сервер (/alive)
       и GitHub видят, что сторож витрины ходит.
+Устойчивость-1 (02.11.2026), раз в сутки (`daily_due`, память `daily_at`):
+  В8. `PRAGMA quick_check` живой базы (`db_check`): не «ok» → ТРЕВОГА «база
+      повреждена»; сама ничего не чинит — копии в /root/backups и на GitHub,
+      восстановление руками по КАК-ОТКАТИТЬ.
+  В9. Свободное место на диске базы (`disk_free_gb`) меньше `DISK_MIN_GB` →
+      ТРЕВОГА «мало места»; чистка — только по белому списку схемы сбоев.
 Два запуска разом не идут: замок `web-watch.lock` рядом с базой; занят
 (прошлый ещё ждёт витрину или GitHub) — этот выходит молча.
 Память — настройка `web_watch` (JSON {restarts: [UTC ISO…], alarm_at,
@@ -47,6 +53,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -80,6 +87,10 @@ WATCH_SCRIPT = ROOT / "scripts" / "crawl_watch.py"
 WATCH_LOG = "/var/log/streams-watch.log"
 #: запускать молчащего сторожа и тревожить о нём — не чаще (В5)
 KICK_EVERY = timedelta(hours=1)
+#: проверка базы и диска — раз в сутки (В8, В9)
+DAILY_EVERY = timedelta(hours=24)
+#: свободного места на диске базы меньше — ТРЕВОГА (В9)
+DISK_MIN_GB = 1.0
 
 
 def probe(url: str = URL, timeout: int = TIMEOUT) -> tuple[bool, str]:
@@ -152,6 +163,38 @@ def watch_silence(state: dict, now: datetime, silent_for: int,
                      f"{WATCH_LOG}"), new
 
 
+def daily_due(state: dict, now: datetime) -> bool:
+    """В8–В9 пора? Раз в сутки от прошлой проверки (память `daily_at`)."""
+    last = watch.moment(state.get("daily_at") or "")
+    return last is None or watch.utc(last) <= now - DAILY_EVERY
+
+
+def db_check(conn) -> str:
+    """`PRAGMA quick_check`: «ok» или первая строка беды (В8). Файл — не база
+    вовсе (sqlite3.DatabaseError) — тоже слова беды, а не исключение."""
+    try:
+        return str(conn.execute("PRAGMA quick_check").fetchone()[0])
+    except Exception as e:                       # noqa: BLE001
+        return f"{type(e).__name__}: {e}"[:160]
+
+
+def disk_free_gb(path) -> float:
+    """Свободно ГБ на диске, где лежит `path` (В9)."""
+    return shutil.disk_usage(str(path)).free / 1e9
+
+
+def daily_verdict(check: str, free_gb: float) -> list[str]:
+    """Правила В8–В9 → строки ТРЕВОГА (пусто — всё в порядке)."""
+    words = []
+    if check != "ok":
+        words.append(f"ТРЕВОГА — база повреждена (quick_check: {check[:120]}); сама не "
+                     f"чиню: копии в /root/backups и на GitHub, восстановление руками")
+    if free_gb < DISK_MIN_GB:
+        words.append(f"ТРЕВОГА — на диске {free_gb:.1f} ГБ свободно (порог {DISK_MIN_GB:g}); "
+                     f"чистка только по белому списку схемы сбоев")
+    return words
+
+
 def restart() -> str:
     r = subprocess.run(["systemctl", "restart", SERVICE], capture_output=True, text=True)
     return "ok" if r.returncode == 0 else (r.stderr or r.stdout or "?").strip()[:200]
@@ -219,6 +262,13 @@ def _run(check: bool) -> int:
             print(f"{stamp} {what}: {words}")
             if not check:
                 watch.note(conn, f"{words}; запуск: {kick()}", who=WHO)
+        if daily_due(new, now):                                        # В8–В9
+            for line in daily_verdict(db_check(conn), disk_free_gb(db.db_path())):
+                print(f"{stamp} alarm: {line}")
+                if not check:
+                    watch.note(conn, line, who=WHO)
+            if not check:
+                new["daily_at"] = watch.when(now)
         if not check and new != state:
             watch.save_json(conn, KEY, new)
         mail = alarm_mail.flush(conn, now, check=check)            # В6

@@ -2490,8 +2490,10 @@ finally:
     conn_script.close()
 src = {n: (ROOT / "scripts" / f"{n}.py").read_text(encoding="utf-8")
        for n in ("crawl_watch", "request_crawl", "games_import")}
-check("Н9: сторож, заявка и заливка ждут занятую базу 30 с, страницы сайта — 5 с",
-      web_ms == 5000 and script_ms == 30000
+# страницы сайта: 5 с → 20 с (устойчивость-1, 02.11: клик «прочитано» во
+# время заливки падал 500 «database is locked»; ждут только записи, читатели в WAL нет)
+check("Н9: сторож, заявка и заливка ждут занятую базу 30 с, страницы сайта — 20 с",
+      web_ms == 20000 and script_ms == 30000
       and all("db.connect(db.BUSY_TIMEOUT_SCRIPT)" in t and "db.connect()" not in t
               for t in src.values()), (web_ms, script_ms))
 import threading  # noqa: E402

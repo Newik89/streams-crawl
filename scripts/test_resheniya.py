@@ -78,6 +78,9 @@ print("2. сроки и частоты")
 alive = (ROOT / ".github" / "workflows" / "alive.yml").read_text(encoding="utf-8")
 проверка("«Сервер жив?» — раз в 3 часа (13.10)",
          re.findall(r'cron:\s*"([^"]+)"', alive), ["17 */3 * * *"])
+from app import db as app_db  # noqa: E402
+проверка("база занята заливкой — запись с сайта ждёт 20 с, не 5 (02.11: клик «прочитано» падал 500 «database is locked»)",
+         app_db.BUSY_TIMEOUT_WEB, 20)
 crawl = (ROOT / ".github" / "workflows" / "crawl.yml").read_text(encoding="utf-8")
 vydat = (ROOT / ".github" / "workflows" / "vydat.yml").read_text(encoding="utf-8")
 # 29.09 было «артефакт 3 дня»; 31.10 (письмо GitHub «хранилище 100 %») —
