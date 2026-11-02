@@ -117,7 +117,9 @@ class Game:
         Bodø/Glimt» и ipko «Liga e Kampioneve Bodo Glimt»). Сходство по
         вхождению даёт длинному имени те же 100, что коротким, поэтому при
         равном согласии решает доля ЛИШНИХ слов — тех, которых нет ни в
-        одном другом написании («liga», «kampioneve»): меньше — лучше.
+        одном другом написании («liga», «kampioneve»): меньше — лучше. Судить
+        так можно от ТРЁХ написаний: в споре двух любое длинное выглядит
+        «лишним» («Los Angeles Lakers» против «LA Lakers»), там — длина.
         Написание с парой внутри (`names.looks_like_pair`) — последним, что
         бы ни было. Дальше — как раньше:
 
@@ -149,7 +151,7 @@ class Game:
 
         def extra(name: str) -> float:
             mine = _words(name)
-            if not mine:
+            if not mine or len(pool) < 3:
                 return 0.0
             others = set().union(*(_words(o) for o in pool if o != name))
             return len(mine - others) / len(mine)
