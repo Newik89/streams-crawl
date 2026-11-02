@@ -24,6 +24,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 from datetime import datetime, timedelta
 from functools import lru_cache
+import re
 
 from . import names
 
@@ -41,11 +42,20 @@ SPORT_CLASH_SURE = 95
 SPORT_CLASH_WINDOW = 30
 
 
+_WORD = re.compile(r"\w+")
+
+
+def _words(name: str) -> set[str]:
+    """Слова имени от трёх букв, строчными: «Liga e Kampioneve Bodo Glimt» →
+    {liga, kampioneve, bodo, glimt}."""
+    return {w for w in _WORD.findall(name.lower()) if len(w) >= 3}
+
+
 @lru_cache(maxsize=65536)
-def _alike(one: str, two: str) -> bool:
-    """Одно ли это написание по буквам (порог склейки). С памятью: имя
-    игры пересчитывается на каждой новой строке, пары повторяются."""
-    return one == two or names.similarity(one, two) >= names.SIMILAR_ENOUGH
+def _sim(one: str, two: str) -> int:
+    """Сходство написаний 0–100. С памятью: имя игры пересчитывается на
+    каждой новой строке, а пары написаний повторяются."""
+    return 100 if one == two else names.similarity(one, two)
 
 
 @dataclass
@@ -96,12 +106,20 @@ class Game:
     def _readable(spellings: list[str]) -> str:
         """Какое из написаний показывать человеку.
 
-        Сперва — то, с которым согласно БОЛЬШИНСТВО строк игры (книга 094,
-        02.11): восемь сайтов писали «Bodo/Glimt — Lille», а имя игры брали
-        по длине — и побеждали две грязные строки: студия programme-tv
-        «Villarreal - Paris-SG et FK Bodø/Glimt» и ipko «Liga e Kampioneve
-        Bodo Glimt». Написание с парой внутри (`names.looks_like_pair`) —
-        последним, что бы ни было. При равной поддержке — как раньше:
+        Алфавит — первым, как и раньше (латиница, кириллица, прочее): иврит
+        не должен побеждать латиницу, даже если с ним «согласны» больше
+        строк (проба 02.11: «Newcastle United FC» ↔ «Newcastle» буквами не
+        сходятся, а «ניוקאסל» по костяку согласных сходится с обоими).
+        Внутри алфавита — написание, с которым согласно больше строк игры:
+        сумма сходства со всеми строками (книга 094, 02.11: восемь сайтов
+        писали «Bodo/Glimt — Lille», а имя брали по длине — и побеждали две
+        грязные строки, студия programme-tv «Villarreal - Paris-SG et FK
+        Bodø/Glimt» и ipko «Liga e Kampioneve Bodo Glimt»). Сходство по
+        вхождению даёт длинному имени те же 100, что коротким, поэтому при
+        равном согласии решает доля ЛИШНИХ слов — тех, которых нет ни в
+        одном другом написании («liga», «kampioneve»): меньше — лучше.
+        Написание с парой внутри (`names.looks_like_pair`) — последним, что
+        бы ни было. Дальше — как раньше:
 
         Одна игра приходит с сайтов на разных алфавитах: `אטאלנטה` с
         израильского, `Аталанта` с российского, `Atalanta` с чешского. Раньше
@@ -126,11 +144,18 @@ class Game:
         if not pool:
             return ""
 
-        def support(name: str) -> int:
-            return sum(1 for other in pool if _alike(name, other))
+        def agreement(name: str) -> int:
+            return sum(_sim(name, other) for other in pool)
 
-        return sorted(pool, key=lambda n: (names.looks_like_pair(n), -support(n))
-                      + rank(n))[0]
+        def extra(name: str) -> float:
+            mine = _words(name)
+            if not mine:
+                return 0.0
+            others = set().union(*(_words(o) for o in pool if o != name))
+            return len(mine - others) / len(mine)
+
+        return sorted(pool, key=lambda n: (names.looks_like_pair(n), rank(n)[0],
+                                           -agreement(n), extra(n), rank(n)[1]))[0]
 
     @property
     def home(self) -> str:
