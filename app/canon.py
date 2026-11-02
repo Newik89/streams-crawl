@@ -36,6 +36,11 @@ def _learnable(mine: str, canon: str) -> bool:
     так что честное имя приходит сюда уже со своей категорией."""
     if names.is_placeholder(mine) or names.is_placeholder(canon):
         return False          # «TBC», «Winner QF1» — не имя команды (10.09)
+    # в написании целая пара через тире — студия с двумя матчами: «Villarreal
+    # - Paris-SG et FK Bodø/Glimt» легло алиасом Villarreal (02.11, книга 094);
+    # `_one_team` ниже ловит только «x»/«vs»
+    if names.looks_like_pair(mine) and not names.looks_like_pair(canon):
+        return False
     # в написании — весь матч или «Лига: клуб», а не клуб: «Eurocup: Tortona
     # - Le Mans» лежало алиасом Le Mans, «Premier League: Hull City» — Hull
     # (08.10: 125 + 636 таких записей в словаре, сторож test_sport_words

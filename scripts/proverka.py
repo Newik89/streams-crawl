@@ -128,6 +128,16 @@ def _chans(g: dict) -> set:
             for e in g.get("entries") or []}
 
 
+def _most_channels(old: set, new: set) -> bool:
+    """Большинство каналов старой игры при новой — не меньше двух и не
+    меньше половины. Имя игры сменилось, а один канал ушёл — это
+    переименование с потерей канала, не пропажа всей игры (книга 094: студия
+    programme-tv больше не пара, 7 из 8 каналов на месте). Потерю канала
+    сверка покажет отдельно и спросит с книги."""
+    common = old & new
+    return len(common) >= 2 and 2 * len(common) >= len(old)
+
+
 def explained(game: dict, site: str) -> str:
     """Номер случая книги, который объясняет потерю канала сайта `site` у
     этой игры: «нет»/«снято» с той же парой ±3 ч и тем же сайтом. Берутся
@@ -204,7 +214,7 @@ def _moved_apart(ch: str, site: str, was: dict, fresh: list[dict]) -> dict | Non
 def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, str]:
     """Та же игра среди НОВЫХ записей нового разбора:
     «имя» — пара та же (словарь перевёл, сверка поправила) или все каналы
-    старой игры при ней, начало ±10 мин;
+    старой игры при ней (большинство — `_most_channels`), начало ±10 мин;
     «время» — пара та же, начало сдвинулось не дальше СДВИГ_Ч И стало ближе
     к эталону. Уехала дальше от эталона или эталона нет — не переезд."""
     when = kniga.kyiv(gone["start_kyiv"])
@@ -213,7 +223,8 @@ def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, 
     # сбор #249), а все отметки старой игры на месте
     chans = _chans(gone)
     near = sorted((g for g in fresh if _same_pair(gone, g)
-                   or (chans and chans <= _chans(g))),
+                   or (chans and chans <= _chans(g))
+                   or _most_channels(chans, _chans(g))),
                   key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when))
     kick = ref_time(gone, refs)
     for g in near:
@@ -282,7 +293,9 @@ def compare(old: dict, new: dict) -> list[str]:
         for ch, site in sorted(got):
             print(f"  + канал {ch}/{site}: {kniga._show(now)}")
         for ch, site in sorted(lost):
-            why = explained(was, site)
+            # случай книги написан верными именами, а у старого кода имя
+            # могло быть мусорным (094) — спрашиваем книгу и по новым
+            why = explained(was, site) or explained(now, site)
             apart = _moved_apart(ch, site, was, fresh)
             if why:
                 print(f"  − канал {ch}/{site} снят (случай {why}): {kniga._show(was)}")

@@ -23,6 +23,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
 from datetime import datetime, timedelta
+from functools import lru_cache
+import re
 
 from . import names
 
@@ -38,6 +40,22 @@ WINDOW_MINUTES = 150
 #: разошлись
 SPORT_CLASH_SURE = 95
 SPORT_CLASH_WINDOW = 30
+
+
+_WORD = re.compile(r"\w+")
+
+
+def _words(name: str) -> set[str]:
+    """Слова имени от трёх букв, строчными: «Liga e Kampioneve Bodo Glimt» →
+    {liga, kampioneve, bodo, glimt}."""
+    return {w for w in _WORD.findall(name.lower()) if len(w) >= 3}
+
+
+@lru_cache(maxsize=65536)
+def _sim(one: str, two: str) -> int:
+    """Сходство написаний 0–100. С памятью: имя игры пересчитывается на
+    каждой новой строке, а пары написаний повторяются."""
+    return 100 if one == two else names.similarity(one, two)
 
 
 @dataclass
@@ -85,8 +103,25 @@ class Game:
         return (self.first.sport if self.first.sport in лидеры else лидеры[0])
 
     @staticmethod
-    def _readable(names: list[str]) -> str:
+    def _readable(spellings: list[str]) -> str:
         """Какое из написаний показывать человеку.
+
+        Алфавит — первым, как и раньше (латиница, кириллица, прочее): иврит
+        не должен побеждать латиницу, даже если с ним «согласны» больше
+        строк (проба 02.11: «Newcastle United FC» ↔ «Newcastle» буквами не
+        сходятся, а «ניוקאסל» по костяку согласных сходится с обоими).
+        Внутри алфавита — написание, с которым согласно больше строк игры:
+        сумма сходства со всеми строками (книга 094, 02.11: восемь сайтов
+        писали «Bodo/Glimt — Lille», а имя брали по длине — и побеждали две
+        грязные строки, студия programme-tv «Villarreal - Paris-SG et FK
+        Bodø/Glimt» и ipko «Liga e Kampioneve Bodo Glimt»). Сходство по
+        вхождению даёт длинному имени те же 100, что коротким, поэтому при
+        равном согласии решает доля ЛИШНИХ слов — тех, которых нет ни в
+        одном другом написании («liga», «kampioneve»): меньше — лучше. Судить
+        так можно от ТРЁХ написаний: в споре двух любое длинное выглядит
+        «лишним» («Los Angeles Lakers» против «LA Lakers»), там — длина.
+        Написание с парой внутри (`names.looks_like_pair`) — последним, что
+        бы ни было. Дальше — как раньше:
 
         Одна игра приходит с сайтов на разных алфавитах: `אטאלנטה` с
         израильского, `Аталанта` с российского, `Atalanta` с чешского. Раньше
@@ -107,7 +142,22 @@ class Game:
                 return (1, -len(name))
             return (2, -len(name))
 
-        return sorted([n for n in names if n], key=rank)[0] if any(names) else ""
+        pool = [n for n in spellings if n]
+        if not pool:
+            return ""
+
+        def agreement(name: str) -> int:
+            return sum(_sim(name, other) for other in pool)
+
+        def extra(name: str) -> float:
+            mine = _words(name)
+            if not mine or len(pool) < 3:
+                return 0.0
+            others = set().union(*(_words(o) for o in pool if o != name))
+            return len(mine - others) / len(mine)
+
+        return sorted(pool, key=lambda n: (names.looks_like_pair(n), rank(n)[0],
+                                           -agreement(n), extra(n), rank(n)[1]))[0]
 
     @property
     def home(self) -> str:
@@ -116,6 +166,13 @@ class Game:
     @property
     def away(self) -> str:
         return self._readable([e.away for e in self.entries]) or self.first.away
+
+    @property
+    def sample(self) -> Entry:
+        """Образец порядка команд для `_aligned`: имена игры по большинству
+        строк, а не самой ранней записи — та бывает грязной (студия
+        programme-tv начинается за 2 минуты до матча и идёт первой, 094)."""
+        return replace(self.first, home=self.home, away=self.away)
 
     @property
     def sources(self) -> list[str]:
@@ -221,10 +278,10 @@ def merge(entries: list[Entry],
         for twin in targets[1:]:
             if not _same_kind(target, twin):
                 continue
-            target.entries.extend(_aligned(e, target.first)
-                                  for e in twin.entries)
+            sample = target.sample
+            target.entries.extend(_aligned(e, sample) for e in twin.entries)
             games.remove(twin)
-        target.entries.append(_aligned(entry, target.first))
+        target.entries.append(_aligned(entry, target.sample))
     return sorted(games, key=lambda g: g.start)
 
 

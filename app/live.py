@@ -209,6 +209,8 @@ def split_teams(raw: str) -> tuple[str, str] | None:
         return None
     cleaned = _BRACKETS.sub(" ", raw).strip()
     parts = _SPLIT.split(cleaned)
+    if several_matches(parts):                 # две пары в одной подписи (094)
+        return None
     if len(parts) != 2:
         # частей не две — возможно, после пары через явный разделитель идёт
         # хвост стадии через тире; тогда делим по явному и хвост отрезаем
@@ -235,6 +237,20 @@ def split_teams(raw: str) -> tuple[str, str] | None:
 _TIGHT_DASH = re.compile(r"(?<=\w)\s?[-–—]\s?(?=\w)")
 #: американская запись «гости at хозяева» / «гости @ хозяева»
 _AT = re.compile(r"\s+(?:at|@)\s+", re.I)
+#: союз между двумя парами: «Villarreal - Paris-SG et FK Bodø/Glimt - Lille»
+#: — студия programme-tv с ДВУМЯ матчами (02.11, книга 094). Правило 3 резало
+#: такую подпись на каждом тире и отдавало эталону догадку «Villarreal -
+#: Paris-SG et FK Bodø/Glimt» — «Lille»; та сходилась по «Lille», и мусорное
+#: имя уезжало в склейку и в словарь. Союз ищется только в СРЕДНИХ кусках
+#: между разделителями: в крайних он часть имени
+_CONJ = re.compile(r"\s(?:et|and|&|und|dhe|ve|og|och|oraz|και|и|та|és|și|si|e|i|y|a)\s", re.I)
+
+
+def several_matches(parts: list[str]) -> bool:
+    """Куски подписи между разделителями: в средних стоит союз — это две
+    (и больше) пары в одной передаче, а не одна пара с хвостом. Такая
+    подпись не пара и не догадка (книга 094)."""
+    return len(parts) >= 3 and any(_CONJ.search(p) for p in parts[1:-1])
 
 
 def _sides(left: str, right: str) -> tuple[str, str] | None:
@@ -284,6 +300,8 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
     for text in texts:
         add(split_teams(text))                                   # правило 1
         parts = _SPLIT.split(text)
+        if several_matches(parts):                               # книга 094
+            continue
         if len(parts) >= 3:                                      # правило 3
             for i in range(1, len(parts)):
                 add(_sides(" - ".join(parts[:i]), " - ".join(parts[i:])))

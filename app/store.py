@@ -328,6 +328,61 @@ def _entry_pairs(conn: sqlite3.Connection, game: dict,
     return out
 
 
+#: окно поиска игры по каналам: уже окна склейки (150 мин) — один канал
+#: показывает игры одну за другой, и через два часа на нём уже другая
+CHANNELS_WINDOW_MINUTES = 30
+
+
+def _pick_by_marks(pairs: set[tuple[int, int]],
+                   rows: list[tuple[int, int, int]]) -> int | None:
+    """Игра базы по отметкам (сайт, канал) игры файла; `rows` — (игра,
+    сайт, канал) ВСЕ отметки игр в окне ±CHANNELS_WINDOW_MINUTES. Своя,
+    когда: (а) у неё большинство отметок игры файла — не меньше двух и не
+    меньше половины (как `proverka._most_channels`); или (б) ВСЕ её
+    отметки есть у игры файла (#9196: одна отметка teleman/SportKlub, сбор
+    назвал игру «Bàsquet Girona» вместо «FIATC Girona» — заливка завела
+    двойника). Это одна игра: имя сменилось (словарь, большинство строк —
+    книга 094), а канал в тот же час тот же. Из нескольких — с наибольшим
+    совпадением."""
+    if not pairs:
+        return None
+    marks: dict[int, set] = {}
+    for event_id, source_id, channel_id in rows:
+        marks.setdefault(event_id, set()).add((source_id, channel_id))
+    best, best_common = None, 0
+    for event_id, mine in marks.items():
+        common = len(mine & pairs)
+        majority = common >= 2 and 2 * common >= len(pairs)
+        whole = common >= 1 and mine <= pairs
+        if (majority or whole) and common > best_common:
+            best, best_common = event_id, common
+    return best
+
+
+def _channels_event(conn: sqlite3.Connection, game: dict,
+                    srcs: dict[str, sqlite3.Row]) -> sqlite3.Row | None:
+    """Игра базы по отметкам каналов, когда по именам не нашлась
+    (`_pick_by_marks`), в окне ±CHANNELS_WINDOW_MINUTES того же вида спорта."""
+    pairs = _entry_pairs(conn, game, srcs)
+    if not pairs:
+        return None
+    start = _parse_dt(game["start_kyiv"])
+    lo = _iso(start - timedelta(minutes=CHANNELS_WINDOW_MINUTES))
+    hi = _iso(start + timedelta(minutes=CHANNELS_WINDOW_MINUTES))
+    sport = game.get("sport") or ""
+    rows = [(r[0], r[1], r[2]) for r in conn.execute(
+        "SELECT e.id, ec.source_id, ec.channel_id FROM events e "
+        "JOIN event_channels ec ON ec.event_id = e.id "
+        "WHERE replace(e.start_kyiv, 'T', ' ') BETWEEN ? AND ? "
+        "AND (? = '' OR e.sport IS NULL OR e.sport = '' OR e.sport = ?)",
+        (lo, hi, sport, sport))]
+    best = _pick_by_marks(pairs, rows)
+    if best is None:
+        return None
+    return conn.execute("SELECT id, sport, team_home_auto, team_away_auto, start_kyiv, flags "
+                        "FROM events WHERE id = ?", (best,)).fetchone()
+
+
 #: «перенос» (#5104, вторая половина; слово владельца 24.10 после #7836):
 #: насколько далеко от строки сайта ищем перенесённую эталоном игру
 MOVED_SPAN = timedelta(hours=50)
@@ -691,6 +746,10 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             ref_start = fs_start
         else:
             found = _find_event(conn, game)
+            if found is None:
+                # имя игры сменилось (словарь, большинство строк — 094), а
+                # отметки каналов те же — это она, не двойня
+                found = _channels_event(conn, game, srcs)
             if found is None and add_only:
                 # дозабор (`app/redo.py`, Д7): запись склеили со старыми через
                 # «мост» — игру базы ищем и по их именам и времени («связи»)
