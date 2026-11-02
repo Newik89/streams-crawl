@@ -25,6 +25,9 @@ Bodø/Glimt» = Villarreal и «Liga e Kampioneve Bodo Glimt» = PSG, залив
       Bodø/Glimt» → Villarreal); «Bodo Glimt» → «Bodo/Glimt» — учится.
   И6. ipko.tv `_pair`: «Liga e …», «Kupa e …», «Superliga …» перед парой
       отрезаются; турецкое «… Karşılaşması» — как раньше; `parse` целиком.
+  И7. `proverka.twin`: игра с новым именем и большинством прежних каналов
+      (≥2 и ≥половины) — переименование, не пропажа; один общий канал из
+      восьми — пропажа, как раньше.
 
 В сеть не ходит, база не нужна:
 
@@ -151,6 +154,32 @@ got = ipko_tv.parse(sample, url="https://stargate.ipko.tv/api/titan.tv.WebEpg/Ge
 check("parse: пара без приставки лиги, канал Sport 6",
       len(got) == 1 and got[0].match_raw == "Bodo Glimt - Lille" and got[0].channel_raw == "Sport 6",
       [(p.channel_raw, p.match_raw) for p in got])
+
+print("И7. сравнение сборов: переименование по большинству каналов")
+import importlib.util  # noqa: E402
+spec = importlib.util.spec_from_file_location("proverka", ROOT / "scripts" / "proverka.py")
+proverka = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(proverka)
+
+
+def game(home, away, start, chans):
+    return {"home": home, "away": away, "start_kyiv": start,
+            "entries": [{"channel": c, "source": s} for c, s in chans]}
+
+
+CH = [("L'Equipe", "programme-tv.net"), ("Magenta Sport 8", "cosmotetv.gr"), ("ART Sport 6", "livesoccertv.com"),
+      ("PPV1", "primaplay.ro"), ("Arena Premium 5", "tvarenasport.ba"), ("Arena Sport 1", "tvarenasport.com"),
+      ("Arena Sport 8", "tvarenasport.hr"), ("Sport 6", "ipko.tv")]
+old = game("Villarreal - Paris-SG et FK Bodø/Glimt", "Liga e Kampioneve Bodo Glimt", "2026-11-03T21:58", CH)
+new = game("Bodø / Glimt", "Lille", "2026-11-03T22:00", CH[1:])
+found, how = proverka.twin(old, [new], [])
+check("7 из 8 каналов при новом имени → «имя», не пропажа", found is new and how == "имя", (found, how))
+one = game("Bodø / Glimt", "Lille", "2026-11-03T22:00", CH[:1])
+found, how = proverka.twin(old, [one], [])
+check("один общий канал из восьми — пропажа, как раньше", found is None, (found, how))
+check("_most_channels: 2 из 4 — да, 2 из 5 — нет, 1 из 2 — нет",
+      proverka._most_channels({1, 2, 3, 4}, {1, 2}) and not proverka._most_channels({1, 2, 3, 4, 5}, {1, 2})
+      and not proverka._most_channels({1, 2}, {1}))
 
 print(f"\nпроверок: {total}, зелёных: {green}, красных: {total - green}")
 raise SystemExit(0 if green == total else 1)
