@@ -328,13 +328,18 @@ def _entry_pairs(conn: sqlite3.Connection, game: dict,
     return out
 
 
-#: окно поиска игры по каналам: уже окна склейки (150 мин) — один канал
-#: показывает игры одну за другой, и через два часа на нём уже другая
+#: окно поиска игры по каналам, когда ни одна команда не сошлась: уже окна
+#: склейки (150 мин) — один канал показывает игры одну за другой, и через
+#: два часа на нём уже другая. Сошлась хоть одна команда — окно склейки
+#: целиком: начало склеенной игры берётся по самой ранней строке, а это
+#: бывает студия за час до матча (#9459 «Manchester City — Liga e Kampioneve
+#: Leipzig» 21:00 по TNT Sports против #8782 «RB Leipzig — Manchester City»
+#: 22:00 по эталону: двойник забрал 20 каналов, у настоящей 16 погасли)
 CHANNELS_WINDOW_MINUTES = 30
 
 
-def _pick_by_marks(pairs: set[tuple[int, int]],
-                   rows: list[tuple[int, int, int]]) -> int | None:
+def _pick_by_marks(pairs: set[tuple[int, int]], rows: list[tuple[int, int, int]],
+                   near: set[int] | None = None, side: set[int] | None = None) -> int | None:
     """Игра базы по отметкам (сайт, канал) игры файла; `rows` — (игра,
     сайт, канал) ВСЕ отметки игр в окне ±CHANNELS_WINDOW_MINUTES. Своя,
     когда: (а) у неё большинство отметок игры файла — не меньше двух и не
@@ -342,8 +347,11 @@ def _pick_by_marks(pairs: set[tuple[int, int]],
     отметки есть у игры файла (#9196: одна отметка teleman/SportKlub, сбор
     назвал игру «Bàsquet Girona» вместо «FIATC Girona» — заливка завела
     двойника). Это одна игра: имя сменилось (словарь, большинство строк —
-    книга 094), а канал в тот же час тот же. Из нескольких — с наибольшим
-    совпадением."""
+    книга 094), а канал в тот же час тот же. Игра подходит, если она рядом
+    по времени (`near`, ±CHANNELS_WINDOW_MINUTES) или с ней сошлась хоть одна
+    команда (`side`): клуб два матча за вечер не играет, а соседняя по
+    времени игра на тех же каналах — другая пара. `near`/`side` None —
+    без этого ограничения. Из нескольких — с наибольшим совпадением."""
     if not pairs:
         return None
     marks: dict[int, set] = {}
@@ -351,6 +359,9 @@ def _pick_by_marks(pairs: set[tuple[int, int]],
         marks.setdefault(event_id, set()).add((source_id, channel_id))
     best, best_common = None, 0
     for event_id, mine in marks.items():
+        if near is not None and side is not None \
+                and event_id not in near and event_id not in side:
+            continue
         common = len(mine & pairs)
         majority = common >= 2 and 2 * common >= len(pairs)
         whole = common >= 1 and mine <= pairs
@@ -362,21 +373,32 @@ def _pick_by_marks(pairs: set[tuple[int, int]],
 def _channels_event(conn: sqlite3.Connection, game: dict,
                     srcs: dict[str, sqlite3.Row]) -> sqlite3.Row | None:
     """Игра базы по отметкам каналов, когда по именам не нашлась
-    (`_pick_by_marks`), в окне ±CHANNELS_WINDOW_MINUTES того же вида спорта."""
+    (`_pick_by_marks`): того же вида спорта, рядом по времени
+    (±CHANNELS_WINDOW_MINUTES) или в окне склейки с одной сошедшейся командой."""
     pairs = _entry_pairs(conn, game, srcs)
     if not pairs:
         return None
     start = _parse_dt(game["start_kyiv"])
-    lo = _iso(start - timedelta(minutes=CHANNELS_WINDOW_MINUTES))
-    hi = _iso(start + timedelta(minutes=CHANNELS_WINDOW_MINUTES))
+    lo = _iso(start - timedelta(minutes=merge.WINDOW_MINUTES))
+    hi = _iso(start + timedelta(minutes=merge.WINDOW_MINUTES))
     sport = game.get("sport") or ""
-    rows = [(r[0], r[1], r[2]) for r in conn.execute(
-        "SELECT e.id, ec.source_id, ec.channel_id FROM events e "
-        "JOIN event_channels ec ON ec.event_id = e.id "
-        "WHERE replace(e.start_kyiv, 'T', ' ') BETWEEN ? AND ? "
-        "AND (? = '' OR e.sport IS NULL OR e.sport = '' OR e.sport = ?)",
-        (lo, hi, sport, sport))]
-    best = _pick_by_marks(pairs, rows)
+    rows, near, side = [], set(), set()
+    mine = [n for n in (game.get("home") or "", game.get("away") or "") if n]
+    for r in conn.execute(
+            "SELECT e.id, ec.source_id, ec.channel_id, e.start_kyiv, "
+            "e.team_home_auto, e.team_away_auto FROM events e "
+            "JOIN event_channels ec ON ec.event_id = e.id "
+            "WHERE replace(e.start_kyiv, 'T', ' ') BETWEEN ? AND ? "
+            "AND (? = '' OR e.sport IS NULL OR e.sport = '' OR e.sport = ?)",
+            (lo, hi, sport, sport)):
+        rows.append((r[0], r[1], r[2]))
+        if r[0] in near or r[0] in side:
+            continue
+        if abs(_parse_dt(r[3]) - start) <= timedelta(minutes=CHANNELS_WINDOW_MINUTES):
+            near.add(r[0])
+        elif any(names.same_team(a, b) for a in mine for b in (r[4] or "", r[5] or "") if b):
+            side.add(r[0])
+    best = _pick_by_marks(pairs, rows, near, side)
     if best is None:
         return None
     return conn.execute("SELECT id, sport, team_home_auto, team_away_auto, start_kyiv, flags "
