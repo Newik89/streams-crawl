@@ -47,6 +47,17 @@ ALIASES_FILE = ROOT / "data" / "aliases.json"
 # (`results/matches.md`): свои пары дают 85–100, заведомо разные — не выше 54.
 SIMILAR_ENOUGH = 85
 
+#: разделитель пары ВНУТРИ имени: имя команды само парой быть не может.
+#: «Villarreal - Paris-SG et FK Bodø/Glimt» — студия programme-tv с двумя
+#: матчами в одной передаче (02.11, книга 094): склейка такое написание не
+#: показывает (`merge.Game._readable`), словарь его не учит (`canon._learnable`)
+_PAIR_INSIDE = re.compile(r"\s(?:[-–—]|[xX]|[vV][sS]\.?|[vV]\.)\s")
+
+
+def looks_like_pair(name: str) -> bool:
+    """В написании — целая пара («A - B»), а не одна команда."""
+    return bool(_PAIR_INSIDE.search(name or ""))
+
 # Формы клуба и предлоги: у каждого сайта свои, к делу не относятся.
 # `Real`, `Sporting`, `Athletic` НЕ трогаем — они различают клубы
 # (`Real Madrid` и `Real Sociedad`).

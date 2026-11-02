@@ -66,13 +66,19 @@ _SEPS = (" - ", " – ", " — ", " vs ", " ndaj ")
 #: — всё до слова «матч» (tr/sq) к именам не относится
 _PREFIX = re.compile(r"^.*\b(karşılaşması|karşılaşma|ndeshja|ndeshje)\s+",
                      re.I)
+#: у албанских каналов лига тоже приклеена к паре без двоеточия: «Futboll:
+#: Liga e Kampioneve Bodo Glimt - Lille» (02.11, книга 094) — «Liga e …»,
+#: «Kupa e …», «Superliga …», «Superkupa …» перед первой командой к именам
+#: не относятся (словарь успел выучить «Liga e Kampioneve Bodo Glimt» = PSG)
+_LEAGUE = re.compile(r"^\s*(?:liga\s+e\s+\S+|kupa\s+e\s+\S+"
+                     r"|superliga(?:\s+e\s+\S+)?|superkupa(?:\s+e\s+\S+)?)\s+", re.I)
 
 
 def _pair(text: str) -> str:
     """Пара команд из заголовка или описания: `Futboll: Prishtina - Drita`."""
     # лига/вид спорта до двоеточия к паре не относится
     text = text.split(":", 1)[-1] if ":" in text else text
-    text = _PREFIX.sub("", text)
+    text = _LEAGUE.sub("", _PREFIX.sub("", text))
     for part in text.split(","):
         part = part.strip()
         for sep in _SEPS:

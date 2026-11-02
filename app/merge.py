@@ -23,6 +23,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
 from datetime import datetime, timedelta
+from functools import lru_cache
 
 from . import names
 
@@ -38,6 +39,13 @@ WINDOW_MINUTES = 150
 #: разошлись
 SPORT_CLASH_SURE = 95
 SPORT_CLASH_WINDOW = 30
+
+
+@lru_cache(maxsize=65536)
+def _alike(one: str, two: str) -> bool:
+    """Одно ли это написание по буквам (порог склейки). С памятью: имя
+    игры пересчитывается на каждой новой строке, пары повторяются."""
+    return one == two or names.similarity(one, two) >= names.SIMILAR_ENOUGH
 
 
 @dataclass
@@ -85,8 +93,15 @@ class Game:
         return (self.first.sport if self.first.sport in лидеры else лидеры[0])
 
     @staticmethod
-    def _readable(names: list[str]) -> str:
+    def _readable(spellings: list[str]) -> str:
         """Какое из написаний показывать человеку.
+
+        Сперва — то, с которым согласно БОЛЬШИНСТВО строк игры (книга 094,
+        02.11): восемь сайтов писали «Bodo/Glimt — Lille», а имя игры брали
+        по длине — и побеждали две грязные строки: студия programme-tv
+        «Villarreal - Paris-SG et FK Bodø/Glimt» и ipko «Liga e Kampioneve
+        Bodo Glimt». Написание с парой внутри (`names.looks_like_pair`) —
+        последним, что бы ни было. При равной поддержке — как раньше:
 
         Одна игра приходит с сайтов на разных алфавитах: `אטאלנטה` с
         израильского, `Аталанта` с российского, `Atalanta` с чешского. Раньше
@@ -107,7 +122,15 @@ class Game:
                 return (1, -len(name))
             return (2, -len(name))
 
-        return sorted([n for n in names if n], key=rank)[0] if any(names) else ""
+        pool = [n for n in spellings if n]
+        if not pool:
+            return ""
+
+        def support(name: str) -> int:
+            return sum(1 for other in pool if _alike(name, other))
+
+        return sorted(pool, key=lambda n: (names.looks_like_pair(n), -support(n))
+                      + rank(n))[0]
 
     @property
     def home(self) -> str:
@@ -116,6 +139,13 @@ class Game:
     @property
     def away(self) -> str:
         return self._readable([e.away for e in self.entries]) or self.first.away
+
+    @property
+    def sample(self) -> Entry:
+        """Образец порядка команд для `_aligned`: имена игры по большинству
+        строк, а не самой ранней записи — та бывает грязной (студия
+        programme-tv начинается за 2 минуты до матча и идёт первой, 094)."""
+        return replace(self.first, home=self.home, away=self.away)
 
     @property
     def sources(self) -> list[str]:
@@ -221,10 +251,10 @@ def merge(entries: list[Entry],
         for twin in targets[1:]:
             if not _same_kind(target, twin):
                 continue
-            target.entries.extend(_aligned(e, target.first)
-                                  for e in twin.entries)
+            sample = target.sample
+            target.entries.extend(_aligned(e, sample) for e in twin.entries)
             games.remove(twin)
-        target.entries.append(_aligned(entry, target.first))
+        target.entries.append(_aligned(entry, target.sample))
     return sorted(games, key=lambda g: g.start)
 
 
