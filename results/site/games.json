@@ -1,11 +1,11 @@
 {
- "собрано": "2026-11-03 04:06",
- "игр": 98,
+ "собрано": "2026-11-03 21:37",
+ "игр": 99,
  "окно": 6,
  "по_окнам": {
-  "2": 584,
+  "2": 567,
   "5": 528,
-  "6": 98
+  "6": 99
  },
  "оценка": "",
  "эталон": [],
@@ -571,13 +571,6 @@
      "start_kyiv": "2026-11-03T14:00",
      "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Davidovich-Fokina - Kouame"
-    },
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-03T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Davidovich-Fokina - Kouame"
     }
    ]
   },
@@ -704,6 +697,24 @@
      "start_kyiv": "2026-11-03T14:45",
      "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Sawangkaew - Hontama"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "T",
+   "league": "ATP Masters Paris",
+   "home": "Đoković",
+   "away": "Vacherot",
+   "start_kyiv": "2026-11-03T15:45",
+   "start_utc": "2026-11-03T13:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 2",
+     "start_kyiv": "2026-11-03T15:45",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "ATP Masters Paris: Đoković - Vacherot"
     }
    ]
   },
