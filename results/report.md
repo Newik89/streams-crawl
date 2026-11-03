@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 4779 с.
+Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 5150 с.
 
 | Сайт | Результат |
 |---|---|
@@ -20,30 +20,30 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 18, пусто — 3 |
+| flashscore.mobi | расписание есть — 17, пусто — 4 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 26 |
-| m.eredmenyek.com | расписание есть — 11, пусто — 3 |
+| m.eredmenyek.com | расписание есть — 10, пусто — 4 |
 | m.flashscore.bg | расписание есть — 7 |
-| m.flashscore.com.tr | расписание есть — 16, пусто — 2 |
+| m.flashscore.com.tr | расписание есть — 15, пусто — 3 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 18, пусто — 3 |
+| m.flashscore.gr | расписание есть — 17, пусто — 4 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
-| m.flashscore.pl | расписание есть — 10, пусто — 2 |
+| m.flashscore.pl | расписание есть — 9, пусто — 3 |
 | m.flashscore.pt | расписание есть — 6 |
-| m.flashscore.ro | расписание есть — 10, пусто — 2 |
+| m.flashscore.ro | расписание есть — 9, пусто — 3 |
 | m.flashscore.ru | расписание есть — 15, пусто — 3 |
 | m.flashscore.se | расписание есть — 6 |
-| m.flashscore.sk | расписание есть — 10, пусто — 2 |
-| m.flashscore.ua | расписание есть — 10, пусто — 2 |
-| m.livesport.cz | расписание есть — 10, пусто — 2 |
+| m.flashscore.sk | расписание есть — 9, пусто — 3 |
+| m.flashscore.ua | расписание есть — 9, пусто — 3 |
+| m.livesport.cz | расписание есть — 9, пусто — 3 |
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 6 |
@@ -62,7 +62,7 @@
 | programme-tv.net | расписание есть — 48 |
 | raiplay.it | расписание есть — 24 |
 | raspored.hrt.hr | расписание есть — 18 |
-| rtcg.me | расписание есть — 20, пусто — 4 |
+| rtcg.me | расписание есть — 16, пусто — 8 |
 | rte.ie | расписание есть — 17 |
 | rtl.de | расписание есть — 48 |
 | rtp.pt | расписание есть — 33 |
@@ -70,7 +70,7 @@
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | расписание есть — 4, пусто — 2 |
+| sport1.maariv.co.il | пусто — 2, расписание есть — 4 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
 | sport5.co.il | расписание есть — 6 |
@@ -83,9 +83,9 @@
 | ssport.tv | расписание есть — 1 |
 | start.sportdigital.de | расписание есть — 6 |
 | teleman.pl | расписание есть — 30 |
-| tring.al | расписание есть — 1 |
+| tring.al | пусто — 1 |
 | trt.net.tr | расписание есть — 1 |
-| trtavaz.com.tr | расписание есть — 6 |
+| trtavaz.com.tr | не открылась — 2, расписание есть — 4 |
 | trtspor.com.tr | расписание есть — 1 |
 | tv-program.aktuality.sk | расписание есть — 1 |
 | tv.dir.bg | расписание есть — 42 |
@@ -111,6 +111,17 @@
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
+## Не открылись — 2
+
+| Сайт | Канал | Что ответил | Ссылка |
+|---|---|---|---|
+| trtavaz.com.tr | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.trtavaz.com.tr/yayin-akisi/2026-11-03", waiting until "domc | https://www.trtavaz.com.tr/yayin-akisi/2026-11-03 |
+| trtavaz.com.tr | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.trtavaz.com.tr/yayin-akisi/2026-11-06", waiting until "domc | https://www.trtavaz.com.tr/yayin-akisi/2026-11-06 |
+
 ## Оценка
 
-- ✅ обход в норме: не открылись 0 из 1598 страниц (0%), сайтов без удачи 0 из 106 (0%)
+- ✅ обход в норме: не открылись 2 из 1598 страниц (0%), сайтов без удачи 0 из 106 (0%)
