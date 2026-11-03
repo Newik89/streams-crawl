@@ -182,6 +182,9 @@ def main() -> int:
                 if ref.get("fs_id"):
                     game["fs_id"] = ref["fs_id"]
                     game["fs_start"] = ref.get("start_kyiv") or ""
+                # подпись лиги у сайта — ошибка сайта (книга 095): в базу
+                # едет лига эталона, а не «Чемпионат Дании» у St. Gallen
+                game["league"] = canon.reference_league(game, ref)
             print(f"канон по flashscore: имён закреплено {fixed}, "
                   f"в очередь на подтверждение {queued}, "
                   f"время подтянуто к эталону у {retimed}, "

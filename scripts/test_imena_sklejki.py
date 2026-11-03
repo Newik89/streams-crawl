@@ -164,6 +164,10 @@ for raw, want in (
     ("Futboll: Liga e Evropës Roma - Viktoria Plzen", "Roma - Viktoria Plzen"),
     ("UEFA Kadınlar Şampiyonlar Ligi Futbol Karşılaşması Barcelona - Paris FC", "Barcelona - Paris FC"),
     ("Futboll: Prishtina - Drita", "Prishtina - Drita"),
+    # спонсор перед лигой (#9470, 03.11)
+    ("Procredit Superliga Peja - Sigal Prishtina", "Peja - Sigal Prishtina"),
+    ("Albi Mall Superliga Llapi - Drita", "Llapi - Drita"),
+    ("Basketboll: Sigal Prishtina - Peja", "Sigal Prishtina - Peja"),
 ):
     check(f"{raw!r} → {want!r}", ipko_tv._pair(raw) == want, ipko_tv._pair(raw))
 sample = json.dumps({"shows": [{"title": "Futboll: Liga e Kampioneve Bodo Glimt - Lille",

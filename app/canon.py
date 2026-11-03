@@ -291,6 +291,7 @@ HOW_BRIDGE = "программа: мост по лиге"
 HOW_LEADER = "программа: явный лидер"
 HOW_AGED = "программа: одинокий возрастной кандидат"
 HOW_FIRM = "программа: вторая сторона твёрдо, лига и время сошлись"
+HOW_LETTERS = "программа: буквы против подписи лиги"
 
 
 def _firm_side_bridge(game: dict, near: list,
@@ -841,7 +842,18 @@ def _sure(out: dict, game: dict, ref: dict, score: int, how: str = "") -> None:
     `how` — причина, если решили не буквы, а правило программы (`HOW_*`):
     ложится в `game["канон_как"]`, если там ещё пусто (см. `align`)."""
     if foreign_league(game, ref):
-        out["missed"].append(game)
+        # книга 095 (#9362): сайт подписал St. Gallen — Lugano «Чемпионат
+        # Дании. Superliga», словарь честно перевёл в DENMARK, и верный матч
+        # эталона (SWITZERLAND: Super League) уходил в «мимо» по правилу
+        # 06.10. То правило — для букв, которые сомневаются (85/72 у
+        # иврита); когда ОБЕ команды сошлись твёрдо (`FIRM_SIDE`) и решали
+        # буквы, а не мост, подпись сайта — ошибка сайта, матч тот самый:
+        # лига у игры — по эталону (`reference_league`), ярлык не учится
+        if not how and label_wrong(game, ref):
+            game["канон_как"] = HOW_LETTERS
+            out["sure"].append((game, ref, score))
+        else:
+            out["missed"].append(game)
     else:
         if how and not game.get("канон_как"):
             game["канон_как"] = how
@@ -973,6 +985,30 @@ def foreign_league(game: dict, ref: dict) -> bool:
     mine = _league_country(game.get("league_canon") or "")
     theirs = _league_country(ref.get("league") or "")
     return bool(mine and theirs) and mine != theirs
+
+
+def countries_differ(label_canon: str, ref_league: str) -> bool:
+    """Страна лиги по словарю (`label_canon`, «DENMARK: Superliga») и страна
+    лиги эталона известны и разные. Пусто с любой стороны — не судим."""
+    mine, theirs = _league_country(label_canon), _league_country(ref_league)
+    return bool(mine and theirs) and mine != theirs
+
+
+def label_wrong(game: dict, ref: dict) -> bool:
+    """Подпись лиги у сайта — ошибка сайта, а не другая игра (книга 095):
+    обе команды сошлись с эталоном твёрдо — пара не ниже `FIRM_SIDE` (худшая
+    из сторон, со стеной по полу и возрасту), и страна лиги по словарю не та,
+    что у эталона. Одна сторона твёрдо, другая слабее — как раньше, «мимо»
+    (06.10: «בולאזאק — רואן» 85/72 к чешскому футболу)."""
+    return foreign_league(game, ref) and _pair_score(game, ref) >= FIRM_SIDE
+
+
+def reference_league(game: dict, ref: dict) -> str:
+    """Лига игры после сверки: по эталону, когда подпись сайта признана
+    ошибкой (`HOW_LETTERS`), иначе как была."""
+    if game.get("канон_как") == HOW_LETTERS and (ref.get("league") or "").strip():
+        return ref["league"].strip()
+    return (game.get("league") or "").strip()
 
 
 def other_game(game: dict, ref: dict) -> str:
@@ -1203,6 +1239,10 @@ def apply(conn: sqlite3.Connection, aligned: dict) -> tuple[int, int]:
                     fixed += 1
         league, canon_league = (game.get("league") or "").strip(), \
             (ref.get("league") or "").strip()
+        # подпись сайта признана ошибкой (`HOW_LETTERS`, книга 095) — она уже
+        # алиас ДРУГОЙ лиги, к лиге эталона её не вяжем
+        if how == HOW_LETTERS:
+            league = ""
         if league and canon_league and league != canon_league \
                 and league_worthy(league) \
                 and not conn.execute(
