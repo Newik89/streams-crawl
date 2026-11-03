@@ -1,820 +1,21 @@
 {
- "собрано": "2026-11-02 21:08",
- "игр": 136,
+ "собрано": "2026-11-03 04:06",
+ "игр": 98,
  "окно": 6,
  "по_окнам": {
   "2": 584,
   "5": 528,
-  "6": 136
+  "6": 98
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "sportklub.hr": 657
+  "sportklub.hr": 661
  },
  "другие_виды": [],
  "на_разбор": [],
  "снято": [],
  "games": [
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "NBA liga",
-   "home": "LA Lakers",
-   "away": "Toronto",
-   "start_kyiv": "2026-11-02T04:00",
-   "start_utc": "2026-11-02T02:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 1",
-     "start_kyiv": "2026-11-02T04:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - NBA liga: LA Lakers - Toronto"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Hong Kong",
-   "home": "Golubic",
-   "away": "Boulter",
-   "start_kyiv": "2026-11-02T08:00",
-   "start_utc": "2026-11-02T06:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-02T08:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Hong Kong: Golubic - Boulter"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Hong Kong",
-   "home": "Liu",
-   "away": "Prozorova",
-   "start_kyiv": "2026-11-02T08:00",
-   "start_utc": "2026-11-02T06:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "start_kyiv": "2026-11-02T08:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Hong Kong: Liu - Prozorova"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Hong Kong",
-   "home": "Lee",
-   "away": "Sakkari",
-   "start_kyiv": "2026-11-02T10:00",
-   "start_utc": "2026-11-02T08:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-02T10:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Hong Kong: Lee - Sakkari"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Hong Kong",
-   "home": "Volynets",
-   "away": "Sasnovich",
-   "start_kyiv": "2026-11-02T10:00",
-   "start_utc": "2026-11-02T08:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "start_kyiv": "2026-11-02T10:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Hong Kong: Volynets - Sasnovich"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Chennai",
-   "home": "Falei",
-   "away": "Linette",
-   "start_kyiv": "2026-11-02T11:30",
-   "start_utc": "2026-11-02T09:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "start_kyiv": "2026-11-02T11:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Tenis - WTA 250 Chennai: Falei - Linette"
-    },
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 10",
-     "start_kyiv": "2026-11-02T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Tenis - WTA 250 Chennai: Falei - Linette (UKLJUČENJE)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Chennai",
-   "home": "Vandromme",
-   "away": "Okamura",
-   "start_kyiv": "2026-11-02T11:30",
-   "start_utc": "2026-11-02T09:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 9",
-     "start_kyiv": "2026-11-02T11:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Tenis - WTA 250 Chennai: Vandromme - Okamura"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Hong Kong",
-   "home": "Maleckova/Skoch",
-   "away": "Huergo/Pridankina",
-   "start_kyiv": "2026-11-02T11:45",
-   "start_utc": "2026-11-02T09:45",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 8",
-     "start_kyiv": "2026-11-02T11:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Hong Kong: Maleckova/Skoch - Huergo/Pridankina (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Buse",
-   "away": "Bergs",
-   "start_kyiv": "2026-11-02T12:00",
-   "start_utc": "2026-11-02T10:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-02T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Buse - Bergs"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Darderi",
-   "away": "Hijikata",
-   "start_kyiv": "2026-11-02T12:00",
-   "start_utc": "2026-11-02T10:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "start_kyiv": "2026-11-02T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Darderi - Hijikata"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Musetti",
-   "away": "Hurkacz",
-   "start_kyiv": "2026-11-02T12:00",
-   "start_utc": "2026-11-02T10:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "start_kyiv": "2026-11-02T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Musetti - Hurkacz"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Hong Kong",
-   "home": "V. Williams",
-   "away": "Stoiana",
-   "start_kyiv": "2026-11-02T12:30",
-   "start_utc": "2026-11-02T10:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "start_kyiv": "2026-11-02T12:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Hong Kong: V. Williams - Stoiana"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Chennai",
-   "home": "L. Fruhvirtova",
-   "away": "Falkowska",
-   "start_kyiv": "2026-11-02T13:30",
-   "start_utc": "2026-11-02T11:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 10",
-     "start_kyiv": "2026-11-02T13:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Tenis - WTA 250 Chennai: L. Fruhvirtova - Falkowska"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Chennai",
-   "home": "Uchijima",
-   "away": "Sramkova",
-   "start_kyiv": "2026-11-02T13:30",
-   "start_utc": "2026-11-02T11:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 9",
-     "start_kyiv": "2026-11-02T13:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Tenis - WTA 250 Chennai: Uchijima - Sramkova"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Krajicek/Mektić",
-   "away": "Halys/Herbert",
-   "start_kyiv": "2026-11-02T14:00",
-   "start_utc": "2026-11-02T12:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-02T14:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Krajicek/Mektić - Halys/Herbert (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Van Assche",
-   "away": "Navone",
-   "start_kyiv": "2026-11-02T14:00",
-   "start_utc": "2026-11-02T12:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "start_kyiv": "2026-11-02T14:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Van Assche - Navone"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Tabilo",
-   "away": "Jodar",
-   "start_kyiv": "2026-11-02T14:00",
-   "start_utc": "2026-11-02T12:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "start_kyiv": "2026-11-02T14:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Tabilo - Jodar"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "F. Cerundolo/Etcheverry",
-   "away": "Polmans/Zielinski",
-   "start_kyiv": "2026-11-02T14:00",
-   "start_utc": "2026-11-02T12:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 8",
-     "start_kyiv": "2026-11-02T14:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: F. Cerundolo/Etcheverry - Polmans/Zielinski (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Hong Kong",
-   "home": "Wang",
-   "away": "Karunaratne",
-   "start_kyiv": "2026-11-02T14:15",
-   "start_utc": "2026-11-02T12:15",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "start_kyiv": "2026-11-02T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "WTA 250 Hong Kong: Wang - Karunaratne"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Chennai",
-   "home": "Yamalapalli",
-   "away": "Waltert",
-   "start_kyiv": "2026-11-02T15:30",
-   "start_utc": "2026-11-02T13:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 10",
-     "start_kyiv": "2026-11-02T15:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Tenis - WTA 250 Chennai: Yamalapalli - Waltert"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Merida",
-   "away": "Blockx",
-   "start_kyiv": "2026-11-02T15:30",
-   "start_utc": "2026-11-02T13:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-02T15:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Merida - Blockx"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Chennai",
-   "home": "Burrage/Montgomery",
-   "away": "Kostović/Vandromme",
-   "start_kyiv": "2026-11-02T15:30",
-   "start_utc": "2026-11-02T13:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 9",
-     "start_kyiv": "2026-11-02T15:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Tenis - WTA 250 Chennai: Burrage/Montgomery - Kostović/Vandromme (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "LP Azije ELITE",
-   "home": "Pakhtakor",
-   "away": "Nassr",
-   "start_kyiv": "2026-11-02T15:45",
-   "start_utc": "2026-11-02T13:45",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 1",
-     "start_kyiv": "2026-11-02T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - LP Azije ELITE: Pakhtakor - Nassr"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Ruud",
-   "away": "J.M. Cerundolo",
-   "start_kyiv": "2026-11-02T15:45",
-   "start_utc": "2026-11-02T13:45",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "start_kyiv": "2026-11-02T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Ruud - J.M. Cerundolo"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Buse/Darderi",
-   "away": "Bonzi/Rinderknech",
-   "start_kyiv": "2026-11-02T15:45",
-   "start_utc": "2026-11-02T13:45",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 8",
-     "start_kyiv": "2026-11-02T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Buse/Darderi - Bonzi/Rinderknech (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Norrie",
-   "away": "Arnaldi",
-   "start_kyiv": "2026-11-02T16:00",
-   "start_utc": "2026-11-02T14:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "start_kyiv": "2026-11-02T16:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Norrie - Arnaldi"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Bugarska liga",
-   "home": "Cherno More",
-   "away": "Botev Vratsa",
-   "start_kyiv": "2026-11-02T17:00",
-   "start_utc": "2026-11-02T15:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 3",
-     "start_kyiv": "2026-11-02T17:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - Bugarska liga: Cherno More - Botev Vratsa"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Turska liga",
-   "home": "Petkim",
-   "away": "Efes",
-   "start_kyiv": "2026-11-02T17:00",
-   "start_utc": "2026-11-02T15:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 6",
-     "start_kyiv": "2026-11-02T17:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Turska liga: Petkim - Efes"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "WTA 250 Chennai",
-   "home": "Kucmova/Laboutkova",
-   "away": "Bhamidipaty/Revathi",
-   "start_kyiv": "2026-11-02T17:30",
-   "start_utc": "2026-11-02T15:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 10",
-     "start_kyiv": "2026-11-02T17:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Tenis - WTA 250 Chennai: Kucmova/Laboutkova - Bhamidipaty/Revathi (parovi)"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Bellucci",
-   "away": "Sonego",
-   "start_kyiv": "2026-11-02T17:30",
-   "start_utc": "2026-11-02T15:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-02T17:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Bellucci - Sonego"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "LP Azije ELITE",
-   "home": "Sadd",
-   "away": "Ahli",
-   "start_kyiv": "2026-11-02T18:00",
-   "start_utc": "2026-11-02T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 1",
-     "start_kyiv": "2026-11-02T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - LP Azije ELITE: Sadd - Ahli"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Jacquet",
-   "away": "Machac",
-   "start_kyiv": "2026-11-02T18:00",
-   "start_utc": "2026-11-02T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "start_kyiv": "2026-11-02T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Jacquet - Machac"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Slovenska 1. liga",
-   "home": "Bravo",
-   "away": "Koper",
-   "start_kyiv": "2026-11-02T18:00",
-   "start_utc": "2026-11-02T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "start_kyiv": "2026-11-02T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - Slovenska 1. liga: Bravo - Koper"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "LP Azije ELITE",
-   "home": "Tractor",
-   "away": "Neftchi",
-   "start_kyiv": "2026-11-02T18:00",
-   "start_utc": "2026-11-02T16:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 9",
-     "start_kyiv": "2026-11-02T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - LP Azije ELITE: Tractor - Neftchi"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Bugarska liga",
-   "home": "Arda",
-   "away": "Septemvri",
-   "start_kyiv": "2026-11-02T19:30",
-   "start_utc": "2026-11-02T17:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 10",
-     "start_kyiv": "2026-11-02T19:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - Bugarska liga: Arda - Septemvri"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Grčka liga",
-   "home": "Kalamata",
-   "away": "Iraklis",
-   "start_kyiv": "2026-11-02T19:30",
-   "start_utc": "2026-11-02T17:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 3",
-     "start_kyiv": "2026-11-02T19:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - Grčka liga: Kalamata - Iraklis"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "B",
-   "league": "Turska liga",
-   "home": "Besiktas",
-   "away": "Cayirova",
-   "start_kyiv": "2026-11-02T19:30",
-   "start_utc": "2026-11-02T17:30",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 7",
-     "start_kyiv": "2026-11-02T19:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Košarka - Turska liga: Besiktas - Cayirova"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Shapovalov",
-   "away": "Khachanov",
-   "start_kyiv": "2026-11-02T20:00",
-   "start_utc": "2026-11-02T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-02T20:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Shapovalov - Khachanov"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Molcan",
-   "away": "Droguet",
-   "start_kyiv": "2026-11-02T20:00",
-   "start_utc": "2026-11-02T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 4",
-     "start_kyiv": "2026-11-02T20:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Molcan - Droguet"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Danska liga",
-   "home": "Sonderjyske",
-   "away": "Copenhagen",
-   "start_kyiv": "2026-11-02T20:00",
-   "start_utc": "2026-11-02T18:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 6",
-     "start_kyiv": "2026-11-02T20:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - Danska liga: Sonderjyske - Copenhagen"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "LP Azije ELITE",
-   "home": "Ittihad",
-   "away": "Ain",
-   "start_kyiv": "2026-11-02T20:15",
-   "start_utc": "2026-11-02T18:15",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 1",
-     "start_kyiv": "2026-11-02T20:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - LP Azije ELITE: Ittihad - Ain"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "LP Azije ELITE",
-   "home": "Gharafa",
-   "away": "Qadsiah",
-   "start_kyiv": "2026-11-02T20:15",
-   "start_utc": "2026-11-02T18:15",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 5",
-     "start_kyiv": "2026-11-02T20:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - LP Azije ELITE: Gharafa - Qadsiah"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "T",
-   "league": "ATP Masters Paris",
-   "home": "Humbert",
-   "away": "Van de Zandschulp",
-   "start_kyiv": "2026-11-02T21:45",
-   "start_utc": "2026-11-02T19:45",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 2",
-     "start_kyiv": "2026-11-02T21:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "ATP Masters Paris: Humbert - Van de Zandschulp"
-    }
-   ]
-  },
-  {
-   "guess": 0,
-   "sport": "F",
-   "league": "Španjolska liga",
-   "home": "La Coruna",
-   "away": "Osasuna",
-   "start_kyiv": "2026-11-02T22:00",
-   "start_utc": "2026-11-02T20:00",
-   "entries": [
-    {
-     "source": "sportklub.hr",
-     "channel": "Sport Klub 3",
-     "start_kyiv": "2026-11-02T22:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
-     "raw_title": "Nogomet - Španjolska liga: La Coruna - Osasuna"
-    }
-   ]
-  },
   {
    "guess": 0,
    "sport": "B",
@@ -828,7 +29,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-03T02:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - NBA liga: Cleveland - Oklahoma City"
     }
    ]
@@ -846,7 +47,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-03T05:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - NBA liga: LA Lakers - Miami"
     }
    ]
@@ -864,7 +65,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-03T07:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Selekhmeteva - Kostović"
     }
    ]
@@ -882,7 +83,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-03T07:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Teichmann - Garland"
     }
    ]
@@ -900,7 +101,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-03T07:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Udvardy - Montgomery"
     }
    ]
@@ -918,7 +119,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
      "start_kyiv": "2026-11-03T08:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Gibson - Oliynyikova"
     }
    ]
@@ -936,7 +137,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
      "start_kyiv": "2026-11-03T08:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Yastremska - Sonmez"
     }
    ]
@@ -954,7 +155,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-03T08:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Ninomiya/Zhang - Hozumi/Klepač (parovi)"
     }
    ]
@@ -972,7 +173,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-03T09:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Zakharova - Iatcenko"
     }
    ]
@@ -990,7 +191,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-03T09:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: L. Fruhvirtova - Falkowska"
     }
    ]
@@ -1008,7 +209,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-03T09:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Vandromme - Okamura"
     }
    ]
@@ -1026,7 +227,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-03T09:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Newcastle Jets - Shanghai Port"
     }
    ]
@@ -1044,7 +245,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
      "start_kyiv": "2026-11-03T09:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Inglis - Joint"
     }
    ]
@@ -1062,7 +263,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-03T09:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Jiang/Wong - Neel/Olmos (parovi)"
     }
    ]
@@ -1080,7 +281,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
      "start_kyiv": "2026-11-03T10:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Cirstea - Timofeeva"
     }
    ]
@@ -1098,7 +299,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-03T11:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Tjen - Hui"
     }
    ]
@@ -1116,7 +317,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-03T11:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Sakatsume - Valentova"
     }
    ]
@@ -1134,7 +335,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-03T11:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Burrage - Adkar"
     }
    ]
@@ -1152,7 +353,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-03T11:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Morvayova - P. Kudermetova"
     }
    ]
@@ -1170,7 +371,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-03T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Kashiwa - Daejon"
     }
    ]
@@ -1188,7 +389,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-03T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Shubladze - Samsonova"
     }
    ]
@@ -1206,7 +407,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
      "start_kyiv": "2026-11-03T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Rinderknech - F. Cerundolo"
     }
    ]
@@ -1224,7 +425,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-03T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Jeonbuk - Johor"
     }
    ]
@@ -1242,7 +443,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
      "start_kyiv": "2026-11-03T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Halys - Fery"
     }
    ]
@@ -1260,7 +461,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-03T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Rublev - Etcheverry"
     }
    ]
@@ -1278,7 +479,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-03T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Kobe - Ratchaburi"
     }
    ]
@@ -1296,7 +497,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-03T12:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Parks - Eala"
     }
    ]
@@ -1314,7 +515,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-03T13:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Uchijima - Sramkova"
     }
    ]
@@ -1332,7 +533,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-03T13:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Zolotareva - Stefanini"
     }
    ]
@@ -1350,7 +551,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-03T13:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Tang/Ye - Karunaratne/Shek (parovi)"
     }
    ]
@@ -1368,14 +569,14 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
      "start_kyiv": "2026-11-03T14:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Davidovich-Fokina - Kouame"
     },
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
      "start_kyiv": "2026-11-03T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Davidovich-Fokina - Kouame"
     }
    ]
@@ -1393,7 +594,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
      "start_kyiv": "2026-11-03T14:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Tsitsipas - Tien"
     }
    ]
@@ -1411,7 +612,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-03T14:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Nakashima - Berrettini"
     }
    ]
@@ -1429,7 +630,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-03T14:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Nouza/Venus - Cabral/Tracy (parovi)"
     }
    ]
@@ -1447,7 +648,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-03T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Port - Peking"
     }
    ]
@@ -1465,7 +666,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-03T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Cong An Ha Noi - Kyoto"
     }
    ]
@@ -1483,7 +684,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-03T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "WTA 250 Hong Kong: Pridankina - Badosa"
     }
    ]
@@ -1501,7 +702,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-03T14:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Tenis - WTA 250 Chennai: Sawangkaew - Hontama"
     }
    ]
@@ -1519,7 +720,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
      "start_kyiv": "2026-11-03T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Paul - Rune"
     }
    ]
@@ -1537,7 +738,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-03T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: East Bengal - Seeb"
     }
    ]
@@ -1555,7 +756,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-03T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Bolelli/Vavassori - Schaitter/Wallner (parovi)"
     }
    ]
@@ -1573,7 +774,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-03T16:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Michelsen - Lehecka"
     }
    ]
@@ -1591,14 +792,14 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
      "start_kyiv": "2026-11-03T17:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Michelsen/Tien - Krawietz/Puetz (parovi)"
     },
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-03T17:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Michelsen/Tien - Krawietz/Puetz (parovi)"
     }
    ]
@@ -1616,7 +817,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
      "start_kyiv": "2026-11-03T17:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Bonzi - Fritz"
     }
    ]
@@ -1634,7 +835,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-03T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Esteghlal - Shamal"
     }
    ]
@@ -1652,7 +853,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-03T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Hussein - Shorta"
     }
    ]
@@ -1670,7 +871,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-03T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Slovenska liga: Polzela - Krka"
     }
    ]
@@ -1688,7 +889,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-03T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Tofas - Neptunas"
     }
    ]
@@ -1706,14 +907,14 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-03T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: R. Cash/Nakashima - Van Assche/Vacherot (parovi)"
     },
     {
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-03T20:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris (UKLJUČENJE): R. Cash/Nakashima - Van Assche/Vacherot (parovi)"
     }
    ]
@@ -1731,7 +932,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 4",
      "start_kyiv": "2026-11-03T19:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Struff - Gea"
     }
    ]
@@ -1749,7 +950,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
      "start_kyiv": "2026-11-03T20:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Shelton - Norrie"
     }
    ]
@@ -1767,7 +968,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-03T20:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: PAOK - Roma"
     }
    ]
@@ -1785,7 +986,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-03T20:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Budućnost - Chemnitz"
     }
    ]
@@ -1803,7 +1004,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-03T20:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Hilal - Shabab Ahli"
     }
    ]
@@ -1821,7 +1022,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-03T20:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Ulm - Bahcesehir"
     }
    ]
@@ -1839,7 +1040,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-03T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Strasbourg - Cibona"
     }
    ]
@@ -1857,7 +1058,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-03T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Napoli - Trento"
     }
    ]
@@ -1875,7 +1076,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-03T21:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Unicaja - Reggio Emilia"
     }
    ]
@@ -1893,7 +1094,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 2",
      "start_kyiv": "2026-11-03T21:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "ATP Masters Paris: Ruud - Jodar"
     }
    ]
@@ -1911,7 +1112,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T09:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Melbourne Victory - Persib Bandung"
     }
    ]
@@ -1929,7 +1130,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T10:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): Bam Khatoon - Naegohyang"
     }
    ]
@@ -1947,7 +1148,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-04T10:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): 4.25 Sports Club - Ho Chi Minh City"
     }
    ]
@@ -1965,7 +1166,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-04T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Pohang Steelers - Gamba Osaka"
     }
    ]
@@ -1983,7 +1184,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Seoul - Viettel"
     }
    ]
@@ -2001,7 +1202,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T12:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): Kaya Iloilo - Melbourne City"
     }
    ]
@@ -2019,7 +1220,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-04T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Buriram United - Kashima"
     }
    ]
@@ -2037,7 +1238,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T14:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): Ayeyawady - Kobe Leonessa"
     }
    ]
@@ -2055,7 +1256,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Arkadag - Golgohar Sirjan"
     }
    ]
@@ -2073,7 +1274,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-04T16:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): East Bengal - Hwacheon"
     }
    ]
@@ -2091,7 +1292,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-04T16:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): Nasaf - Peking"
     }
    ]
@@ -2109,7 +1310,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Wahda - Khaldiya"
     }
    ]
@@ -2127,7 +1328,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-04T18:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Turk Telekom - Frankfurt"
     }
    ]
@@ -2145,7 +1346,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-04T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Legia - Galatasaray"
     }
    ]
@@ -2163,7 +1364,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Lietkabelis - Manresa"
     }
    ]
@@ -2181,7 +1382,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-04T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Riga - Le Mans"
     }
    ]
@@ -2199,7 +1400,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-04T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Szombathely - AEK"
     }
    ]
@@ -2217,7 +1418,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-04T19:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Cedevita Olimpija - Tortona"
     }
    ]
@@ -2235,7 +1436,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T20:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Taawoun - Faisaly"
     }
    ]
@@ -2253,7 +1454,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-04T20:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Bosna - Balkan Botevgrad"
     }
    ]
@@ -2271,7 +1472,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-04T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Venezia - Siauliai"
     }
    ]
@@ -2289,7 +1490,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-04T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Hapoel Jerusalem - Aris"
     }
    ]
@@ -2307,7 +1508,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-04T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Bonn - Herzliya"
     }
    ]
@@ -2325,7 +1526,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T21:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Maxima Roma - London"
     }
    ]
@@ -2343,7 +1544,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-04T21:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Burgos - Rostock"
     }
    ]
@@ -2361,7 +1562,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-04T21:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Real Madrid - Panathinaikos"
     }
    ]
@@ -2379,7 +1580,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-05T05:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - NBA liga: Sacramento - LA Lakers"
     }
    ]
@@ -2397,7 +1598,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-05T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Lion City Sailors - Adelaide United"
     }
    ]
@@ -2415,7 +1616,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-05T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Machida - Shanghai Shenhua"
     }
    ]
@@ -2433,7 +1634,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-05T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Kitchee - Phnom Penh Crown"
     }
    ]
@@ -2451,7 +1652,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-05T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Pathum United - Tai Po"
     }
    ]
@@ -2469,7 +1670,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-05T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Kuching City - Gangwon"
     }
    ]
@@ -2487,8 +1688,116 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-05T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793577600000&toTime=1794182399999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Svay Rieng - Tampines Rovers"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Efes",
+   "away": "Paris",
+   "start_kyiv": "2026-11-05T19:15",
+   "start_utc": "2026-11-05T17:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "start_kyiv": "2026-11-05T19:15",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Efes - Paris"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Fenerbahce",
+   "away": "Baskonia",
+   "start_kyiv": "2026-11-05T20:00",
+   "start_utc": "2026-11-05T18:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "start_kyiv": "2026-11-05T20:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Fenerbahce - Baskonia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Hapoel Tel Aviv",
+   "away": "Barcelona",
+   "start_kyiv": "2026-11-05T20:45",
+   "start_utc": "2026-11-05T18:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "start_kyiv": "2026-11-05T20:45",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Hapoel Tel Aviv - Barcelona"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Asvel",
+   "away": "Bayern",
+   "start_kyiv": "2026-11-05T21:00",
+   "start_utc": "2026-11-05T19:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "start_kyiv": "2026-11-05T21:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Asvel - Bayern"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Armani",
+   "away": "Valencia",
+   "start_kyiv": "2026-11-05T21:30",
+   "start_utc": "2026-11-05T19:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "start_kyiv": "2026-11-05T21:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Armani - Valencia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Eurocup",
+   "home": "Tenerife",
+   "away": "Cluj",
+   "start_kyiv": "2026-11-05T22:00",
+   "start_utc": "2026-11-05T20:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "start_kyiv": "2026-11-05T22:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Eurocup: Tenerife - Cluj"
     }
    ]
   }
