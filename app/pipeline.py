@@ -94,6 +94,30 @@ def hint_fresh(day: str | None, start_kyiv: datetime | None) -> bool:
 #: сказал «эфир» или пара не прочиталась. Слово записи, студия и стоп-слово —
 #: прямые слова сайта, их не трогаем
 ASK_REFERENCE_REASONS = ("нет маркера прямого эфира", "не видно пары команд")
+#: книга 095 (#9541): сторона пары совпала с именем канала — заставка канала
+CHANNEL_SIDE = "сторона пары — имя канала"
+
+
+def _plain(text: str) -> str:
+    """Имя без регистра, пробелов и знаков: «Sport 2» = «SPORT-2»."""
+    return "".join(ch for ch in (text or "").casefold() if ch.isalnum())
+
+
+def channel_side(channel: str, home: str, away: str,
+                 reference: Reference | None = None) -> bool:
+    """Одна из сторон пары — имя канала, на котором идёт строка («Sport 2 -
+    Program Sportiv» на Sport 2, ipko #9541): это передача канала, не матч.
+    Вторую сторону эталон знает как команду — клубный канал показывает свой
+    матч («KB Peja»), строка остаётся."""
+    key = _plain(channel)
+    if not key:
+        return False
+    hit = [side for side, name in (("home", home), ("away", away))
+           if _plain(name) and _plain(name) == key]
+    if not hit:
+        return False
+    other = away if hit[0] == "home" else home
+    return not (reference is not None and reference.knows_team(other))
 #: что ставит отсев строке, эфир которой подтвердил эталон, а не сайт
 REFERENCE_MARKER = "эталон"
 #: сезон в подписи: «2003/04», «2019-2020», «1998/99». Прошлый сезон — это
@@ -221,6 +245,11 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         row.home, row.away = verdict.home, verdict.away
         row.by_reference = confirmed.how
     rescued = confirmed is not None        # эфир строке дал эталон, не сайт
+    # книга 095 (#9541): сторона пары — имя своего канала («Sport 2 - Program
+    # Sportiv» у ipko) — заставка канала, а не матч: ни на витрину, ни в очередь
+    if channel_side(program.channel_raw, row.home, row.away, reference):
+        row.reason = CHANNEL_SIDE
+        return row
 
     # Дописываем метку турнира к именам, иначе женский матч склеится с
     # мужским (правило проекта: лишний ` W` лучше потерянного).

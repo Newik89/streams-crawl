@@ -70,8 +70,11 @@ _PREFIX = re.compile(r"^.*\b(karşılaşması|karşılaşma|ndeshja|ndeshje)\s+"
 #: Liga e Kampioneve Bodo Glimt - Lille» (02.11, книга 094) — «Liga e …»,
 #: «Kupa e …», «Superliga …», «Superkupa …» перед первой командой к именам
 #: не относятся (словарь успел выучить «Liga e Kampioneve Bodo Glimt» = PSG)
+#: спонсор перед лигой — до двух слов: «Procredit Superliga Peja - Sigal
+#: Prishtina» (#9470, 03.11), «Albi Mall Superliga Llapi - Drita»
 _LEAGUE = re.compile(r"^\s*(?:liga\s+e\s+\S+|kupa\s+e\s+\S+"
-                     r"|superliga(?:\s+e\s+\S+)?|superkupa(?:\s+e\s+\S+)?)\s+", re.I)
+                     r"|(?:\S+\s+){0,2}?superliga(?:\s+e\s+\S+)?"
+                     r"|(?:\S+\s+){0,2}?superkupa(?:\s+e\s+\S+)?)\s+", re.I)
 
 
 def _pair(text: str) -> str:

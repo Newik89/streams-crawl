@@ -470,8 +470,15 @@ def main() -> int:
                 "FROM events e JOIN leagues l ON l.id = e.league_id "
                 "WHERE e.flags LIKE 'fs:%'").fetchall():
             canon_league = league_by_flag.get(r["flags"])
-            if not canon_league or canon_league == r["canonical_name"] \
-                    or (r["league_auto"] or "").strip() not in спорные:
+            raw = (r["league_auto"] or "").strip()
+            if not canon_league or canon_league == r["canonical_name"]:
+                continue
+            # книга 095: подпись сайта словарь знает, но страна у неё не та,
+            # что у лиги эталона («Чемпионат Дании. Superliga» при St. Gallen
+            # — Lugano в SWITZERLAND: Super League) — лига по эталону, как у
+            # спорных написаний
+            if raw not in спорные and not canon.countries_differ(
+                    overrides.get(raw, ""), canon_league):
                 continue
             row = conn.execute("SELECT id FROM leagues WHERE canonical_name = ?",
                                (canon_league,)).fetchone()
