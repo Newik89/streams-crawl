@@ -1,147 +1,17 @@
 # Матчи с живого обхода
 
-Игр: **823** (строк с сайтов: 2697). Время киевское.
+Игр: **763** (строк с сайтов: 2431). Время киевское.
 
 | Когда | Матч | Лига | Каналы |
 |---|---|---|---|
-| 03.11 00:00 | Defensa y Justicia — Independiente | Argentinska liga | Arena Sport 1, Arena Premium 3 |
-| 03.11 00:55 | ברגנטינו — סאנטוס | הברזילראו | Sport1 5 |
-| 03.11 01:00 | Miami — Florida | NCAA | S Sport2 |
-| 03.11 02:00 | Cleveland Cavaliers — Oklahoma City | alapszakasz | Sport1 HU, S Sport, Arena Premium 1, Sport Klub 1, Sport1, Go3 Sport 1, Sport 1, Nova Sport 6 |
-| 03.11 03:29 | HOUSTON ROCKETS — BOSTON CELTICS | NBA | SPORT.TV1 |
-| 03.11 03:30 | Florida A&M — Florida St | NCAA | S Sport2 |
-| 03.11 05:00 | Λος Άντζελες Λέικερς — Μαϊάμι Χιτ |  | Magenta Sport 4 |
-| 03.11 05:00 | LA Lakers — Miami | alapszakasz | Sport1 HU, Sport Klub 1, Sport1 |
-| 03.11 07:30 | Selekhmeteva — Kostović | WTA 250 Chennai | Sport Klub 7 |
-| 03.11 07:30 | Teichmann — Garland | WTA 250 Chennai | Sport Klub 8 |
-| 03.11 07:30 | Udvardy — Montgomery | WTA 250 Chennai | Sport Klub 9 |
-| 03.11 08:00 | Gibson — Oliynyikova | WTA 250 Hong Kong | Sport Klub 2 |
-| 03.11 08:00 | Yastremska — Sonmez | WTA 250 Hong Kong | Sport Klub 4 |
-| 03.11 08:00 | Ninomiya/Zhang — Hozumi/Klepač | WTA 250 Hong Kong | Sport Klub 5 |
-| 03.11 09:15 | Zakharova — Iatcenko | WTA 250 Chennai | Sport Klub 7 |
-| 03.11 09:15 | L. Fruhvirtova — Falkowska | WTA 250 Chennai | Sport Klub 8 |
-| 03.11 09:30 | Vandromme — Okamura | WTA 250 Chennai | Sport Klub 9 |
-| 03.11 09:40 | Ньюкасл Джетс — Шанхай Порт | АФК Лига Чемпионов Элита Прямая трансляция | СТАРТ HD, Sport 1 |
-| 03.11 09:40 | Newcastle Jets — Shanghai Port | LP Azije ELITE | Sport1 5, Sport Klub 3 |
-| 03.11 09:45 | Inglis — Joint | WTA 250 Hong Kong | Sport Klub 4 |
-| 03.11 09:45 | Jiang/Wong — Neel/Olmos | WTA 250 Hong Kong | Sport Klub 5 |
-| 03.11 10:00 | Sorana Cirstea — Maria Timofeeva | tenis WTA Hong Kong ziua 2 | Digi Sport 2, Sport Klub 2 |
-| 03.11 10:00 | Sorana Cirstea — Maria Timofeeva ziua 2 | WTA Hong Kong | Digi Sport 2 |
-| 03.11 11:00 | Tjen — Hui | WTA 250 Chennai | Sport Klub 7 |
-| 03.11 11:15 | Sakatsume — Valentova | WTA 250 Hong Kong | Sport Klub 5 |
-| 03.11 11:15 | Burrage — Adkar | WTA 250 Chennai | Sport Klub 8 |
-| 03.11 11:15 | Morvayova — P. Kudermetova | WTA 250 Chennai | Sport Klub 9 |
-| 03.11 11:19 | ESCÓCIA U16 — PORTUGAL U16 | FUTEBOL FEDERATIONS CUP SUB 16 - Regular | SPORT.TV1 |
-| 03.11 11:55 | Чонбук — Джохор | АФК Лига Чемпионов Элита Прямая трансляция | СТАРТ HD, Sport 2 |
-| 03.11 11:55 | Касива Рейсол — Тэджон | АФК Лига Чемпионов Элита Прямая трансляция | СТАРТ ТРИУМФ HD, Sport 1 |
-| 03.11 12:00 | Kobe — Ratchaburi | Елитна Шампионска лига на Азия | Diema Sport 3, Sport Klub 6 |
-| 03.11 12:00 | ATP Paris — tournament | ATP | Prima Sport 3, Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14, TV 2 Sport, TV4 Tennis, MTV Max |
-| 03.11 12:00 | Kashiwa — Daejon | LP Azije ELITE | Sport Klub 1 |
-| 03.11 12:00 | Shubladze — Samsonova | WTA 250 Hong Kong | Sport Klub 10 |
-| 03.11 12:00 | Rinderknech — F. Cerundolo | ATP Masters Paris | Sport Klub 2, M+ Deportes 2 |
-| 03.11 12:00 | Jeonbuk — Johor | LP Azije ELITE | Sport Klub 3 |
-| 03.11 12:00 | Halys — Fery | ATP Masters Paris | Sport Klub 4, TV 2 Sport, M+ Deportes 3 |
-| 03.11 12:00 | Rublev — Etcheverry | ATP Masters Paris | Sport Klub 5, M+ Deportes 4 |
-| 03.11 12:30 | Parks — Eala | WTA 250 Hong Kong | Sport Klub 8 |
-| 03.11 13:00 | Uchijima — Sramkova | WTA 250 Chennai | Sport Klub 7 |
-| 03.11 13:00 | Zolotareva — Stefanini | WTA 250 Chennai | Sport Klub 9 |
-| 03.11 13:45 | Tang/Ye — Karunaratne/Shek | WTA 250 Hong Kong | Sport Klub 10 |
-| 03.11 13:55 | Villarreal U19 — PSG U19 | UEFA Youth League | M+ Liga de Campeones |
-| 03.11 14:00 | Davidovich-Fokina — Kouame | ATP Masters Paris | Sport Klub 2 |
-| 03.11 14:00 | Tsitsipas — Tien | ATP Masters Paris | Sport Klub 4, TV 2 Sport |
-| 03.11 14:00 | Nakashima — Berrettini | ATP Masters Paris | Sport Klub 5, M+ Deportes 4 |
-| 03.11 14:00 | Nouza/Venus — Cabral/Tracy | ATP Masters Paris | Sport Klub 7 |
-| 03.11 14:05 | Borges — Kouame | Torneo de París | M+ Deportes 2 |
-| 03.11 14:05 | Vallejo — Tien | Torneo de París | M+ Deportes 3 |
-| 03.11 14:10 | Cong An Ha Noi — Kyoto | Елитна Шампионска лига на Азия | Diema Sport 3, Sport Klub 3 |
-| 03.11 14:10 | Port — Peking | АФК Лига Чемпионов Элита Прямая трансляция | СТАРТ HD, Diema Sport 2, Sport Klub 1 |
-| 03.11 14:10 | Конг Ан Ханой — Киото Санга | АФК Лига Чемпионов Элита Прямая трансляция | СТАРТ ТРИУМФ HD, Sport 2 |
-| 03.11 14:15 | Порт — Бейцзин Гоань | AFC Champions League Elite | Sport 1 |
-| 03.11 14:15 | Pridankina — Badosa | WTA 250 Hong Kong | Sport Klub 8 |
-| 03.11 14:45 | Sawangkaew — Hontama | WTA 250 Chennai | Sport Klub 9 |
-| 03.11 14:50 | Manchester United U19 — AS Roma U19 | UEFA YOUTH LEAGUE | PPV1, MAX Sport 3, TNT Sports 2, Sport 1, TV3 Sport |
-| 03.11 15:00 | Edas Butvilas — Laslo Djere | Tenisas. ATP Challenger 100. Bratislava | Sport 1 |
-| 03.11 15:00 | Club Africain — Stade Tunisien | Tunis Derby | Al Kass Three |
-| 03.11 15:30 | Two East Bengal — Al-Seeb | AFC Champions League | Al Kass Six, Sport Klub 6 |
-| 03.11 15:45 | Djokovic — Vacherot | ATP Masters Paris | Sport Klub 2, M+ Deportes 2 |
-| 03.11 15:45 | Paul — Rune | ATP Masters Paris | Sport Klub 4, TV 2 Sport, M+ Deportes 3 |
-| 03.11 15:45 | Bolelli/Vavassori — Schaitter/Wallner | ATP Masters Paris | Sport Klub 7 |
-| 03.11 16:00 | Michelsen — Lehecka | ATP Masters Paris | Sport Klub 5, M+ Deportes 4 |
-| 03.11 16:00 | ATP Paris — tournament | ATP | TV 2 Sport, Ziggo Sport 4 |
-| 03.11 16:15 | Al-Zawraa — Al-Riffa | Gulf Club Champions League | Al Kass One, Al Kass Eight |
-| 03.11 16:45 | Al-Shabab — Shaab Hadramaut | Gulf Club Champions League | Al Kass Four |
-| 03.11 16:50 | Atlético Madrid U19 — Bayern Munchen U19 | futbolli | Tring Sport 1, TV 2 Sport 1 HD, TV 2 Sport 1, Ziggo Sport 3, Nova Sport 4, Digi Sport 3, Cytavision Sports6 HD, PPV5, Prima Sport 2, TV3 Sport, MTV Urheilu 2 |
-| 03.11 16:55 | FC Barcelona U19 — Aston Villa U19 | UEFA Youth League | M+ Liga de Campeones, TNT Sports 4 |
-| 03.11 16:55 | At. Madrid U19 — Bayern Munich U19 | UEFA Youth League | M+ Liga de Campeones 2, M+ Vamos |
-| 03.11 17:30 | Michelsen/Tien — Krawietz/Puetz | ATP Masters Paris | Sport Klub 2, Sport Klub 7 |
-| 03.11 17:30 | Esteghlal — Al-Shamal | AFC Champions League Elite | Al Kass Five, СТАРТ HD, Diema Sport 3, Sport 1, Sport Klub 1 |
-| 03.11 17:45 | Bonzi — Fritz | ATP Masters Paris | Sport Klub 4, TV 2 Sport, M+ Deportes 3 |
-| 03.11 18:00 | ΑΕΛ — ΗΡΑΚΛΗΣ ΓΕΡΟΛΑΚΚΟΥ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA | Cytavision Sports2 HD, PPV2 |
-| 03.11 18:00 | Hussein — Al-Shorta | AFC Champions League Two | Sport 2, Sport Klub 3, Al Kass Six |
-| 03.11 18:00 | Jezero — Dečić | CRNOGORSKA LIGA | Arena Sport 10 |
-| 03.11 18:00 | Polzela — Krka | Slovenska liga | Sport Klub 6 |
-| 03.11 18:25 | Спартак — Волна | FONBET Кубок России Прямая трансляция | Матч ТВ, Телеканал «Матч ТВ», МАТЧ ПРЕМЬЕР HD |
-| 03.11 18:50 | עירוני נהריה — מכבי עירוני רעננה | ליגה לאומית בכדורסל | ספורט 5+ |
-| 03.11 18:50 | Tofas — NEPTUNAS KLAIPEDA | Europos taurė | Go3 Sport 2, Novasports 5 HD, TRT SPOR, Arena Sport 2, Arena Premium 5, Sport Klub 10, TRT Spor |
-| 03.11 19:00 | ΚΑΡΜΙΩΤΙΣΣΑ — ΕΡΜΗΣ ΑΡΑΔΙΠΠΟΥ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA | Cytavision Sports1 HD, PPV1 |
-| 03.11 19:00 | AEL — TALTECH ALEXELA | EUROPEAN NORTH BASKET LEAGUE | Cytavision Sports8 HD |
-| 03.11 19:00 | ATP Paris — tournament | ATP | PPV3, Ziggo Sport 4, TV4 Tennis |
-| 03.11 19:00 | ECE Triglav Kranj — Sloboda Užice | ABA 2 liga | Arena Premium 1, Arena Sport 4, Arena Sport 9, Arena Sport 1 |
-| 03.11 19:00 | R. Cash/Nakashima — Van Assche/Vacherot | ATP Masters Paris | Sport Klub 5, Sport Klub 7 |
-| 03.11 19:00 | Τόφας — Νεπτούνας | EuroCup | Novasports5HD |
-| 03.11 19:00 | Lyngby BK — Randers FC | DBU Pokalen | Viaplay Sport News DK |
-| 03.11 19:25 | Salon — Antwerp | Fiba Liga prvaka | Nova Sport 2, ספורט 5 Stars, Arena Sport 1 |
-| 03.11 19:30 | Galatasaray SK — VfB Stuttgart | BL | Sport1 HU, Sport1, Nova Sport 4, Ziggo Sport 1, Ziggo Sport 2, Ziggo Sport Kanaal 14, ספורט 5 Live, Tring Sport 1, CANAL+ Extra 2, Digi Sport 1, Cytavision Sports4 HD, CVSPORTS 4K2, PPV4, MAX Sport 3, Prima Sport 1, Arena Premium 2, Arena Premium 1, Arena Sport 2, TNT Sports 2, Sport 1, TV3 Sport, Viaplay Sport, MTV Urheilu 1 |
-| 03.11 19:30 | SHAKHTAR — Sporting CP | BL | Sport2 HU, Sport2, Nova Sport 6, SPORT.TV5, 5MAX, Digi Sport 2, CANAL+ Extra 3, Ziggo Sport 3, Tring Sport 2, Magenta Sport 2, Cytavision Sports3 HD, CVSPORTS 4K1, PPV3, Prima Sport 2, Arena Premium 3, Arena Premium 2, Arena Sport 3, TNT Sports 4, Sport 2, TV3 Max, MTV Urheilu 2, MAX Sport 4 |
-| 03.11 19:30 | Struff — Gea | ATP Masters Paris | Sport Klub 4 |
-| 03.11 19:30 | PAOK — BC Roma | Pre Game Show | Novasports Prime, Sport1 5, Novasports PrimeHD, Arena Premium 5, Arena Premium 3, Sport Klub 8 |
-| 03.11 19:30 | Neom — Al-Duhail | Gulf Club Champions League | Al Kass One, Al Kass Eight |
-| 03.11 19:45 | Γαλατασαράι — Στουτγκάρδη |  | Magenta Sport 3 |
-| 03.11 19:45 | Atlético — Bayern M. | УЕФА Шампионска лига | MAX Sport 4, TV 2 Sport 1 HD, Sport1 HU, TV 2 Sport 1, Sport1, TNT Sports 2, Nova Sport 6, Tring Sport 1, M+ Liga de Campeones, Digi Sport 2, CANAL+ Extra 2, Ziggo Sport 3, OneSoccer, Magenta Sport 2, Magenta Sport 4K, Cytavision Sports4 HD, CVSPORTS 4K2, PPV4, ART Sport 3, Prima Sport 2, Tabii Spor, Arena Premium 1, Arena Sport 1, ספורט 5+, Sport 3, Viaplay Sport News DK, V Sport Football, MTV Urheilu 2 |
-| 03.11 19:50 | Budućnost — Kemnic | Eurokup, direktno | TVCG 2 |
-| 03.11 19:55 | Juventus — Pardubice | FIBA Liga prvaka | Nova Sport, Nova Sport 1, Arena Sport 3, Arena Sport 2 |
-| 03.11 19:55 | Ювентус Утена — Пардубице | Лига Чемпионов Прямая трансляция | Старт Баскет |
-| 03.11 19:55 | AGF W — FC Midtjylland W | A-Liga | TV 2 Sport X |
-| 03.11 20:00 | Budućnost — Chemnitz | EVROKUP | Arena Premium 4, Sport Klub 9 |
-| 03.11 20:00 | FMP — Uralmash | VTB KUP | Arena Sport 1 |
-| 03.11 20:00 | Shelton — Norrie | ATP Masters Paris | Sport Klub 2, TV 2 Sport |
-| 03.11 20:00 | IK Sirius FK — Halmstads BK | Allsvenskan | TV4 Fotboll |
-| 03.11 20:10 | Al-Hilal — Shabab Al-Ahli | АФК Лига Чемпионов Элита Прямая трансляция | СТАРТ HD, Sport 1, Sport Klub 6, Al Kass Five |
-| 03.11 20:25 | Ulm — Bahcesehir | EuroCup | Polsat Sport Extra 4, Arena Sport 4, Sport Klub 3, Novasports 4 HD |
-| 03.11 20:30 | Athinaikos Qualco W — Kibirkstis W | EuroLeague Γυναικών | Novasports Start HD, ΝovasportsStart |
-| 03.11 20:30 | Ουλμ — Μπαχτσεσεχίρ | EuroCup | Novasports4HD |
-| 03.11 20:55 | Страсбур — Цибона | Лига Чемпионов Прямая трансляция | СТАРТ ТРИУМФ HD |
-| 03.11 20:55 | FIATC Girona — Patrioti Levice |  | JOJ Šport |
-| 03.11 20:55 | BODO GLIMT — LILLE ! | futbolli | Tring Sport 6, Magenta Sport 8, ART Sport 6, PPV1, Arena Premium 5, Arena Sport 1, Arena Sport 8, Sport 6 |
-| 03.11 21:00 | Napoli — Basket Trento | Eurocup | Novasports 3 HD, Arena Sport 6, Arena Sport 5, Sport Klub 5 |
-| 03.11 21:00 | Podgorica — Sloboda | ABA 2 liga | Arena Sport 2, Arena Sport 9, Arena Sport 1 |
-| 03.11 21:00 | Strasbourg — Cibona | FIBA Liga prvaka | Arena Sport 7, Sport Klub 1 |
-| 03.11 21:00 | FC Barcelona — Aston Villa FC | UEFA Champions League Football | TNT Sports 1, Nova Sport 4, Tring Sport 3, M+ Liga de Campeones 2, CANAL+ Extra 1, Ziggo Sport 2, Digi Sport 1, Cytavision Sports6 HD, PPV5, ART Sport 1, Magenta Sport 4, MAX Sport 3, Prima Sport 1, Arena Premium 3, Arena Premium 2, Arena Sport 3, ערוץ הספורט, ספורט מובייל, Sport 1, TV3 Sport, V Sport 1, MTV Urheilu 3 |
-| 03.11 21:00 | Νάπολι — Τρέντο | EuroCup | Novasports3HD |
-| 03.11 21:20 | Unicaja — Reggiana | Basketball Champions League | Teledeporte, Nova Sport 2 |
-| 03.11 21:25 | Уникаха — Реджана | Лига Чемпионов Прямая трансляция | Старт Баскет |
-| 03.11 21:25 | פורטו — חובנטוד בדאלונה | ליגת האלופות בכדורסל | ספורט 5 Gold |
-| 03.11 21:30 | Unicaja — Reggio Emilia | FIBA LIGA ŠAMPIONA | Arena Sport 6, Sport Klub 10 |
-| 03.11 21:35 | Ruud — Jodar | Torneo de París | M+ Vamos, Sport Klub 2 |
-| 03.11 21:40 | Saint — Pierre |  | TV 2 Charlie |
-| 03.11 21:45 | SCU TORREENSE W — SL BENFICA W | Liga BPI | Canal 11 |
-| 03.11 21:45 | Portsmouth — Swansea | Championship | V Sport+ Suomi |
-| 03.11 21:45 | Manchester United FC — „AS Roma“ | BL | Sport2 HU, Sport2, TV3, V sport ultra HD, CANAL+ Extra 3, Ziggo Sport 5, Tring Sport 2, Nova Sport 3, Digi Sport 3, Cytavision Sports3 HD, CVSPORTS 4K1, PPV3, ART Sport 2, MAX Sport 2, Prima Sport 4, Arena Premium 2, Arena Premium 4, Arena Sport 2, 5MAX, Sport 2, TV3 Plus, Viasat Ultra HD, V Sport Premium, V Ultra HD, MTV Urheilu 1 |
-| 03.11 21:45 | Атлетико — Бавария | УЕФА Чемпиондар Лигасы 4 тур «Атлетико» (Испания) — «Бавария» (Германия) | Телеканал «Qazsport» |
-| 03.11 21:45 | Villarreal CF — Paris Saint-Germain | UEFA Champions League Football | TNT Sports 4, Tring Sport 5, Ziggo Sport 6, Cytavision Sports7 HD, PPV6, ART Sport 5, MAX Sport 1, Prima Sport 3, Arena Premium 4, Arena Premium 3, Arena Sport 5, ספורט 5 Stars, Sport 5, TV3 Max, V Sport Extra, Sport2 |
-| 03.11 21:50 | West Bromwich — Southampton | Carabao Cup | V sport 1 HD (N), SPORT.TV1, SuperSport 2 Digitalb, Sky Sports Main Event, Sky Sports Football, Arena Sport 8, Match4, V Sport 2 Suomi, Viaplay TV (FI) |
-| 03.11 21:50 | Feyenoord — INTER ! | futbolli | Ziggo Sport 1, Ziggo Sport Kanaal 14, Tring Sport 4, M+ Liga de Campeones 5, Digi Sport 4, CANAL+ 360, Cytavision Sports2 HD, PPV2, ART Sport 4, Prima Sport 5, Arena Sport 1, Arena Premium 5, Arena Sport 7, Sport 4 |
-| 03.11 21:55 | ווסט ברומיץ — סאותהמפטון | צ'מפיונשיפ | Sport1 1 |
-| 03.11 21:55 | LASK Linz — ŠK Slovan Bratislava | Liga prvaka | Nova Sport 5, PPV2, Arena Sport 3, Arena Sport 2, Arena Sport 10 |
-| 03.11 22:00 | Μάντσεστερ Γιουνάιτεντ — Ρόμα |  | Magenta Sport 3, Magenta Sport Start |
-| 03.11 22:00 | Βιγιαρεάλ — Παρί Σεν Ζερμέν |  | Magenta Sport 5 |
-| 03.11 22:00 | Φέγενορντ — Ίντερ |  | Magenta Sport 7 |
-| 03.11 22:00 | Λίντσερ — Σλόβαν Μπρατισλάβας |  | Magenta Sport 9 |
-| 03.11 22:00 | Уест Бромич Албиън — Саутхямптън | Чемпиъншип | Diema Sport 2, diemasport 2 |
-| 03.11 22:00 | WBA — Southampton | Engleska 2.liga | Arena Sport 4, Arena Sport 3, Arena Sport 6, SuperSport 2 |
-| 04.11 02:25 | Интернасьонал — Коритиба | Прямая трансляция | МАТЧ! Футбол 3 (HD) |
+| 04.11 07:45 | Villarreal — PSG |  | Prima Sport 2 |
+| 04.11 08:00 | Ružić — Charaeva | WTA 250 Hong Kong | Sport Klub 2 |
+| 04.11 08:00 | Fernandez — Kenin | WTA 250 Hong Kong | Sport Klub 4 |
+| 04.11 08:00 | Racing Santander — Espanyol |  | Prima Sport 5 |
 | 04.11 09:40 | Melbourne Victory — Persib Bandung | АФК Лига Чемпионов-2 Прямая трансляция | СТАРТ ТРИУМФ HD, Sport1 3, Sportdigital FUSSBALL2, nova sport, Sport 1, Sport Klub 3 |
 | 04.11 09:55 | Енисей — Нижний Новгород | Прямая трансляция | МАТЧ ПРЕМЬЕР HD |
+| 04.11 10:00 | Gibson — Sasnovich | WTA 250 Hong Kong | Sport Klub 2 |
+| 04.11 10:00 | Liu — Boulter | WTA 250 Hong Kong | Sport Klub 4 |
 | 04.11 10:30 | Bam Khatoon W — Naegohyang W | Liga prvaka Azije (Ž) | Sport Klub 6 |
 | 04.11 10:30 | 4.25 Sports Club W — Ho Chi Minh City W | Liga prvaka Azije (Ž) | Sport Klub 9 |
 | 04.11 11:00 | Брисбен Буллетс — Перт Уайлдкэтс | Чемпионат Австралии Прямая трансляция | Старт Баскет |
@@ -153,93 +23,118 @@
 | 04.11 12:00 | Поханг Стийлърс — Гамба Осака | Елитна Шампионска лига на Азия | Diema Sport 3, diemasport 3 |
 | 04.11 12:00 | ATP Paris — tournament | 2026 ATP 1000 - PARIS | Cytavision Sports5 HD, Ziggo Sport 1, Ziggo Sport 4, Ziggo Sport Kanaal 14, TV 2 Sport X, TV4 Tennis, MTV Max |
 | 04.11 12:00 | Pohang Steelers — Gamba Osaka | LP Azije ELITE | Sport Klub 1 |
-| 04.11 12:00 | Halys — Tiafoe | ATP | TV 2 Sport X |
+| 04.11 12:00 | Gorgodze/Timofeeva — Cho/Cho | WTA 250 Hong Kong | Sport Klub 10 |
+| 04.11 12:00 | Halys — Tiafoe | ATP Masters Paris | Sport Klub 2, TV 2 Sport X |
+| 04.11 12:00 | Bellucci — Rinderknech | ATP Masters Paris | Sport Klub 4, M+ Deportes 4 |
+| 04.11 12:00 | Arribage/Olivetti — J. Cash/Glasspool | ATP Masters Paris | Sport Klub 5, M+ Deportes 3 |
+| 04.11 12:00 | Luz/Matos — Navone/Tabilo | ATP Masters Paris | Sport Klub 7 |
 | 04.11 12:30 | Kaya Iloilo W — Melbourne City W | Liga prvaka Azije (Ž) | Sport Klub 6 |
+| 04.11 12:30 | Joint — Sakkari | WTA 250 Hong Kong | Sport Klub 8 |
 | 04.11 12:30 | Τζόιντ — Σάκκαρη | Τένις: WTA 250 | Novasports6HD |
 | 04.11 12:55 | Ленинградец — СКА-Хабаровск | FONBET Кубок России Прямая трансляция | Матч ТВ, Телеканал «Матч ТВ», МАТЧ ПРЕМЬЕР HD |
+| 04.11 13:30 | Paul — Merida | Torneo de París | M+ Deportes 3, Sport Klub 5 |
+| 04.11 13:30 | Van assche — Tien | Torneo de París | M+ Deportes 4, Sport Klub 4 |
+| 04.11 13:30 | Harrison/Hewitt — Chan/Kato | WTA 250 Hong Kong | Sport Klub 10 |
+| 04.11 13:45 | Andreozzi/Guinard — Pavlasek/Rikl | ATP Masters Paris | Sport Klub 7 |
 | 04.11 14:00 | Budućnost Krušik — Partizan | Kup Srbije | Arena Premium 1 |
 | 04.11 14:00 | Drita — Prishtina | futbolli | Sport 1 |
 | 04.11 14:00 | Raiffeisen Liga e Pare Dinamo — Vellaznimi | futbolli | Sport 2 |
-| 04.11 14:00 | Zverev — Musetti | ATP | TV 2 Sport X |
 | 04.11 14:10 | Buriram United — Kashima | АФК Лига Чемпионов Элита Прямая трансляция | СТАРТ HD, Sportdigital1+, Diema Sport 3, diemasport 3, Sport 1, Sport Klub 1 |
+| 04.11 14:15 | Lee/Wu — V. Williams/Xu | WTA 250 Hong Kong | Sport Klub 8 |
+| 04.11 14:30 | Zverev — Musetti | ATP Masters Paris | Sport Klub 2, TV 2 Sport X |
 | 04.11 14:30 | Ayeyawady W — Kobe Leonessa W | Liga prvaka Azije (Ž) | Sport Klub 6 |
 | 04.11 14:50 | LENS U19 — COMO U19 | UEFA YOUTH LEAGUE | PPV5 |
+| 04.11 15:00 | Buse — Medvedev | Torneo de París | M+ Deportes 4, Sport Klub 4 |
 | 04.11 15:00 | Crvena zvezda U19 — Bravo U19 | UEFA Liga Mladih | Arena Premium 2 |
+| 04.11 15:15 | Miedler/Oberleitner — Reymond/Sanchez | ATP Masters Paris | Sport Klub 7 |
 | 04.11 15:30 | Paok U19 — Zrinjski U19 | Uefa Liga prvaka mladi | Magenta Sport 2, Arena Sport 1 |
-| 04.11 15:40 | Аркадаг — Гол Гохар | АФК Лига Чемпионов-2 Прямая трансляция | СТАРТ ТРИУМФ HD, nova sport, Sport 2 |
+| 04.11 15:30 | Etcheverry — De Minaur | Torneo de París | M+ Deportes 3, Sport Klub 5 |
+| 04.11 15:40 | Two Arkadag — Gol Gohar | АФК Лига Чемпионов-2 Прямая трансляция | СТАРТ ТРИУМФ HD, nova sport, Sport 2, Al Kass Six |
 | 04.11 15:45 | Arkadag — Golgohar Sirjan | Liga prvaka Azije - TWO | Sport Klub 3 |
-| 04.11 16:00 | Djokovic — Hijakata | ATP | TV 2 Sport X |
+| 04.11 15:45 | Mustaqbal Al-Shamal — Mesaimeer | Jetour League | Al Kass Two, Al Kass Eight |
 | 04.11 16:05 | ATP Paris — tournament | ATP MASTERS 1000 | Ziggo Sport 4, SPORT.TV3, TV 2 Sport X, TV4 Tennis |
 | 04.11 16:30 | East Bengal W — Hwacheon W | Liga prvaka Azije (Ž) | Sport Klub 10 |
+| 04.11 16:30 | Djokovic — Hijikata | ATP Masters Paris | Sport Klub 2, TV 2 Sport X |
 | 04.11 16:30 | Nasaf W — Peking W | Liga prvaka Azije (Ž) | Sport Klub 9 |
+| 04.11 16:35 | Borges — Khachanov | Torneo de París | M+ Deportes 4, Sport Klub 4 |
+| 04.11 16:45 | Gornes/Walkow — Doumbia/Pel | ATP Masters Paris | Sport Klub 7 |
 | 04.11 16:48 | Japan U17 W — Korea DPR U17 W | 2026 FIFA U-17 Women's World Cup | TSN3 |
 | 04.11 16:50 | Japón U17 W — Corea del Norte U17 W | Mundial Sub-17 (F) | Teledeporte |
 | 04.11 16:55 | Borussia Dortmund U19 — Real Betis U19 | UEFA Youth League | M+ Liga de Campeones, CANAL+ Extra 2, CANAL+ Sport 5, Ziggo Sport 3, Cytavision Sports4 HD, PPV3, MTV Urheilu 2 |
 | 04.11 17:00 | U. LEIRIA U23 — ESTORIL PRAIA U23 | Liga Next Gen | Canal 11 |
-| 04.11 17:15 | Stade Rennais FC — Olympiacos | Evropská liga | Sport1, Polsat Sport Premium 1, Sport1 1, M+ Liga de Campeones 2, Magenta Sport 3, Cytavision Sports6 HD, PPV4, Arena Premium 2, TNT Sports 2 |
+| 04.11 17:00 | Al-Nasr — Qatar SC | Gulf Club Champions League | Al Kass One |
+| 04.11 17:15 | Stade Rennais FC — Olympiacos | Evropská liga | Sport1, Polsat Sport Premium 1, Sport1 1, M+ Liga de Campeones 2, Magenta Sport 3, Cytavision Sports6 HD, PPV4, Tabii Spor, Arena Premium 2, TNT Sports 2 |
 | 04.11 17:25 | מוקדמות U19 — שני משחקים U19 | המשחקים האולימפיים לנוער | ספורט 5 Stars |
+| 04.11 17:30 | Molcan — Fritz | Torneo de París | M+ Deportes 3, Sport Klub 5, Sport Klub 2 |
 | 04.11 17:55 | Ал Кувейт — Насаф | АФК Лига Чемпионов-2 Прямая трансляция | СТАРТ ТРИУМФ HD, Diema Sport 2, diemasport 2, Sport 1 |
+| 04.11 17:55 | Two Al-Rayyan — Al-Nahda | AFC Champions League | Al Kass Five, nova sport |
 | 04.11 18:00 | ΔΟΞΑ — ΟΛΥΜΠΙΑΚΟΣ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA | Cytavision Sports1 HD, PPV1 |
-| 04.11 18:00 | Ал Раян — Ал Нахда | Шампионска лига на Азия 2 | nova sport |
 | 04.11 18:00 | Эр-Райян — Аль-Нахда | AFC Champions League Two | Sport 2 |
-| 04.11 18:00 | Wahda — Khaldiya | Liga prvaka Azije - TWO | Sport Klub 6 |
-| 04.11 18:30 | Turk Telekom — Frankfurt | Eurocup | Arena Premium 1, Sport Klub 5 |
-| 04.11 18:30 | Turk Telekom — Skyliners | EVROKUP | Arena Premium 5 |
-| 04.11 18:50 | Galatasaray MCT Technic — Legia Warszawa | Liga Mistrzów | TVP Sport, Старт Баскет, Nova Sport 2, Arena Sport 5, Arena Sport 1, Sport Klub 10 |
+| 04.11 18:00 | Two Al-Wahda — Al-Khaldiya | Liga prvaka Azije - TWO | Sport Klub 6, Al Kass Six |
+| 04.11 18:25 | Turk Telekom — SKYLINERS FRANKFURT | BKT EUROCUP SEZONU TÜRK TELEKOM-SKYLINERS FRANKFURT | TRT SPOR YILDIZ, Arena Premium 1, Arena Premium 5, Sport Klub 5 |
+| 04.11 18:30 | Bolelli/Vavassori — R. Cash/Nakashima | ATP Masters Paris | Sport Klub 7 |
+| 04.11 18:30 | Al-Bidda — Muaither | Jetour League | Al Kass Two |
+| 04.11 18:30 | Ittihad Al-Gharafa — Umm Salal | Jetour League | Al Kass Eight |
+| 04.11 18:35 | Berrettini — Humbert | Torneo de París | M+ Deportes 4, Sport Klub 4 |
+| 04.11 18:50 | Galatasaray MCT Technic — Legia Warszawa | Liga Mistrzów | TVP Sport, Nova Sport 2, Старт Баскет, Arena Sport 5, Arena Sport 1, Sport Klub 10 |
 | 04.11 18:50 | SK Artis Brno — Bohemians Praha 1905 | Chance Liga | Oneplay Sport 1 |
 | 04.11 18:50 | MBK Ružomberok W — Meins Avenida W |  | JOJ Šport |
-| 04.11 18:50 | Lietkabelis — Manresa | Europos taurė | Go3 Sport 1, Esport 3, M+ Vamos, Novasports 3 HD, Arena Premium 5, Arena Premium 4, Sport Klub 3, Novasports3HD |
+| 04.11 18:50 | Lietkabelis — Manresa | Europos taurė | Go3 Sport 1, Esport 3, M+ Vamos 2, Novasports 3 HD, Arena Premium 5, Arena Premium 4, Sport Klub 3, Novasports3HD |
 | 04.11 18:50 | Riga Zelli — Le Mans | Europos taurė | Go3 Sport 2, Sport Klub 8 |
 | 04.11 18:55 | Локомотив Пловдив — Нефтчи /Баку/ | среща от груповата фаза на FIBA Europe Cup | BNT 3, BNT3 (БНТ3) |
+| 04.11 18:55 | Falco — AEK BC | Liga prvaka | Nova Sport, Nova Sport 1, Magenta Sport 4, Arena Sport 6, Sport Klub 9 |
 | 04.11 18:55 | Сомбатей — АЕК | Лига Чемпионов Прямая трансляция | СТАРТ HD |
 | 04.11 18:55 | אליצור רמלה W — ריגה W | יורוקאפ נשים | ספורט 5 Live |
-| 04.11 18:55 | Falco — AEK BC | Liga prvaka | Nova Sport 1, Magenta Sport 4, Arena Sport 6, Sport Klub 9 |
-| 04.11 19:00 | Barcelona — Alavés | LaLiga EA Sports | TV 2 Sport Premium HD |
+| 04.11 18:55 | Erbil — Kazma | Gulf Club Champions League | Al Kass Seven |
 | 04.11 19:00 | FC PENAFIEL U23 — FC FAMALICÃO U23 | Liga Next Gen | Canal 11 |
 | 04.11 19:00 | U Cluj W — Venezia W | Feminin Euro Cup | Prima Sport 3 |
-| 04.11 19:00 | Hercegovac — TFT Skopje | ABA 2 liga | Arena Sport 4, Arena Sport 9 |
-| 04.11 19:00 | Fenerbahçe SK — Liverpool FC | UEFA Champions League Football | TNT Sports 1, Nova Sport 6, Ziggo Sport 1, Ziggo Sport Kanaal 14, Digi Sport 2, CANAL+ Extra 2, Tring Sport 1, Cytavision Sports4 HD, CVSPORTS 4K2, PPV3, Prima Sport 2, Arena Premium 3, Arena Premium 2, Arena Sport 2, Ziggo Sport 2, ספורט 5+, TV3 Plus, V Sport Premium, MTV Urheilu 2, Ring.bg (bTV Sport) |
+| 04.11 19:00 | Hercegovac — TFT Skopje | ABA 2 liga | Arena Sport 4, Arena Sport 9, Arena Sport 2 |
+| 04.11 19:00 | Fenerbahçe SK — Liverpool FC | UEFA Champions League Football | TNT Sports 1, Nova Sport 6, Ziggo Sport 1, Ziggo Sport Kanaal 14, Digi Sport 2, CANAL+ Extra 2, Tring Sport 1, Cytavision Sports4 HD, CVSPORTS 4K2, PPV3, Prima Sport 2, TRT 1, Arena Premium 3, Arena Premium 2, Arena Sport 2, Ziggo Sport 2, ספורט 5+, TV3 Plus, V Sport Premium, MTV Urheilu 2, Ring.bg (bTV Sport) |
+| 04.11 19:30 | Aek — Real M. | UEFA Champions League | TV 2 Sport Premium HD, Sport1 HU, TV 2 Sport Premium, Sport1, TNT Sports 3, Nova Sport 4, Телеканал «Qazsport», M+ Liga de Campeones, CANAL+ Extra 1, Ziggo Sport 3, Tring Sport 2, Digi Sport 1, Cytavision Sports3 HD, CVSPORTS 4K1, PPV2, ART Sport 1, Prima Sport 1, Tabii Spor, Magenta Sport 2, Magenta Sport 4K, Arena Premium 2, Arena Premium 1, Arena Sport 3, ערוץ הספורט, ספורט מובייל, Sport 1, TV3 Sport, Viaplay Sport, MTV Urheilu 1, bTV Action |
 | 04.11 19:30 | Cedevita — Derthona | Eurocup | Novasports 5 HD, Arena Premium 4, Arena Premium 3, Sport Klub 1 |
 | 04.11 19:30 | AEL W — ZABINY BRNO W | EURO CUP WOMEN | Cytavision Sports8 HD |
-| 04.11 19:30 | AEK — Real M. | UEFA Champions League | TV 2 Sport Premium, Sport1, TNT Sports 3, Nova Sport 4, Телеканал «Qazsport», M+ Liga de Campeones, CANAL+ Extra 1, Ziggo Sport 3, Tring Sport 2, Digi Sport 1, Cytavision Sports3 HD, CVSPORTS 4K1, PPV2, ART Sport 1, Prima Sport 1, Magenta Sport 2, Magenta Sport 4K, Arena Premium 2, Arena Premium 1, Arena Sport 3, ערוץ הספורט, ספורט מובייל, Sport 1, TV3 Sport, Viaplay Sport, MTV Urheilu 1, bTV Action |
+| 04.11 19:30 | Tirante — Struff | Torneo de París | M+ Deportes 3 |
 | 04.11 19:30 | Τσεντεβίτα Ολίμπια — Ντερτόνα | EuroCup | Novasports5HD |
 | 04.11 19:45 | Φενέρμπαχτσε — Λίβερπουλ |  | Magenta Sport 5 |
 | 04.11 19:48 | Brazil U17 W — Nigeria U17 W | 2026 FIFA U-17 Women's World Cup | TSN3 |
 | 04.11 19:55 | WKS Śląsk Wrocław — Bourg | EuroCup | Polsat Sport Extra 4, Polsat Sport 3, Arena Sport 3 |
-| 04.11 20:00 | Michelsen — Alcaraz | ATP | TV 2 Sport X |
+| 04.11 20:00 | Michelsen — Alcaraz | ATP Masters Paris | Sport Klub 2, TV 2 Sport X, M+ Vamos |
+| 04.11 20:00 | Al-Ettifaq — Ajman | Gulf Club Champions League | Al Kass One |
+| 04.11 20:00 | Two Al-Muharraq — Al-Jazira | AFC Champions League | Al Kass Six |
 | 04.11 20:10 | Аль Мухаррак — Аль Джазира | АФК Лига Чемпионов-2 Прямая трансляция | СТАРТ ТРИУМФ HD, Diema Sport 3, diemasport 3, Sport 1 |
-| 04.11 20:15 | Taawoun — Faisaly | Шампионска лига на Азия 2 | nova sport, Sport 2, Sport Klub 6 |
+| 04.11 20:15 | Taawoun — Al-Faisaly | Шампионска лига на Азия 2 | nova sport, Sport 2, Sport Klub 6, Al Kass Five |
 | 04.11 20:30 | KK Bosna — Balkan Botevgrad | Еврокупа | Novasports Start HD, MAX Sport 2, Arena Sport 2, Arena Sport 6, Sport Klub 7, ΝovasportsStart |
 | 04.11 20:40 | HAPOEL JERUSALEM — Aris | EUROCUP | Sport1 1, SPORT.TV3, Novasports 4 HD, Arena Sport 6, Arena Sport 4, Sport Klub 5, Novasports4HD |
 | 04.11 20:50 | Venezia — Siauliai | Basketbols. EuroCup | Go3 Sport 3, Sport Klub 10 |
-| 04.11 20:55 | Bonn — Bnei Penlink Herzliya | Лига Чемпионов Прямая трансляция | Старт Баскет, 5MAX, Nova Sport 2, Sport Klub 9 |
-| 04.11 21:00 | RB Leipzig — Manchester City | UEFA Champions League Football | TNT Sports 2, RTÉ2, Sport1, Tring Sport 1, M+ Liga de Campeones 5, HTV 2, Ziggo Sport 3, Digi Sport 1, Cytavision Sports4 HD, CVSPORTS 4K2, PPV3, ART Sport 2, Prima Sport 1, Arena Premium 1, Arena Premium 4, Arena Sport 1, ערוץ הספורט, Sport 2, TV3 Max, V Sport Football, MTV Urheilu 2 |
+| 04.11 20:50 | Borussia Dortmund — Betis | futbolli | Tring Sport 4, SRF zwei, Nova Sport 5, M+ Liga de Campeones 2, CANAL+ 360, Ziggo Sport 5, Magenta Sport 3, Magenta Sport Start, Digi Sport 3, Cytavision Sports7 HD, PPV6, ART Sport 4, Prima Sport 3, Arena Premium 2, Arena Premium 5, Arena Sport 2, TNT Sports 4, Sport 4, Viaplay Sport News DK, V Sport 1, MTV Urheilu 1, Sport2 |
+| 04.11 20:50 | RC Lens — COMO ! | futbolli | Tring Sport 5, OneSoccer, Cytavision Sports2 HD, PPV5, ART Sport 5, PPV1, Arena Sport 3, Arena Sport 2, Sport 5 |
+| 04.11 20:55 | Bonn — Bnei Penlink Herzliya | Лига Чемпионов Прямая трансляция | Nova Sport 2, Старт Баскет, 5MAX, Sport Klub 9 |
+| 04.11 20:55 | PSV — CLUB BRUGGE ! | futbolli | Tring Sport 6, Ziggo Sport 1, Ziggo Sport Kanaal 14, ART Sport 6, Prima Sport 5, Arena Sport 1, Arena Sport 8 |
+| 04.11 21:00 | RB Leipzig — Manchester City | UEFA Champions League Football | TNT Sports 2, RTÉ2, Sport1 HU, Sport1, Tring Sport 1, M+ Liga de Campeones 5, HTV 2, Ziggo Sport 3, Digi Sport 1, Cytavision Sports4 HD, CVSPORTS 4K2, PPV3, ART Sport 2, Prima Sport 1, Tabii Spor, Arena Premium 1, Arena Premium 4, Arena Sport 1, ערוץ הספורט, Sport 2, TV3 Max, V Sport Football, MTV Urheilu 2 |
 | 04.11 21:00 | Gladsaxe — Holbaek | Basketligaen | SPORT LIVE |
-| 04.11 21:10 | Borussia Dortmund — Betis | futbolli | SRF zwei, Nova Sport 5, Tring Sport 4, M+ Liga de Campeones 2, CANAL+ 360, Ziggo Sport 5, Magenta Sport 3, Magenta Sport Start, Digi Sport 3, Cytavision Sports7 HD, PPV6, ART Sport 4, Prima Sport 3, Arena Premium 2, Arena Premium 5, Arena Sport 2, TNT Sports 4, Sport 4, Viaplay Sport News DK, V Sport 1, MTV Urheilu 1, Sport2 |
 | 04.11 21:25 | Lions de Geneve — BC Prievidza |  | JOJ Šport |
 | 04.11 21:30 | Burgos — Rostock | Eurocup | Arena Sport 7, Arena Sport 5, Sport Klub 8 |
 | 04.11 21:30 | Maxima Roma — London | Eurocup | Sport Klub 3 |
 | 04.11 21:30 | Real — Panathinaikos | Eurolygos rungtynės | Go3 Sport 1, Oneplay Sport 1, Oneplay Sport 4, ספורט 5 Stars, Novasports PrimeHD, S Sport, Polsat Sport Extra 4, Arena Premium 5, Arena Premium 3, Sport Klub 1, Novasports Prime |
 | 04.11 21:40 | בנות אשדוד W — ביקשטאש W | יורוקאפ נשים | ספורט 5 Gold |
-| 04.11 21:45 | SK Slavia Praga — Arsenal FC | UEFA Champions League | TV 2 Sport 1 HD, TV 2 Sport 1, Sport2, TNT Sports 1, Tring Sport 3, V sport ultra HD, Digi Sport 2, CANAL+ Extra 2, Ziggo Sport 6, Nova Sport 3, Magenta Sport 5, Cytavision Sports3 HD, CVSPORTS 4K1, PPV2, ART Sport 1, Prima Sport 2, Arena Premium 3, Arena Premium 2, Arena Sport 7, ספורט 5+, Sport 1, TV3 Sport, Viasat Ultra HD, Viaplay Sport, V Ultra HD, MTV Urheilu 3, Ring.bg (bTV Sport) |
+| 04.11 21:45 | SK Slavia Praga — Arsenal FC | UEFA Champions League | TV 2 Sport 1 HD, Sport2 HU, TV 2 Sport 1, Sport2, TNT Sports 1, Tring Sport 3, V sport ultra HD, Digi Sport 2, CANAL+ Extra 2, Ziggo Sport 6, Nova Sport 3, Magenta Sport 5, Cytavision Sports3 HD, CVSPORTS 4K1, PPV2, ART Sport 1, Prima Sport 2, Arena Premium 3, Arena Premium 2, Arena Sport 7, ספורט 5+, Sport 1, TV3 Sport, Viasat Ultra HD, Viaplay Sport, V Ultra HD, MTV Urheilu 3, Ring.bg (bTV Sport) |
+| 04.11 21:45 | Cardiff — West Ham | Championship | V Sport+ Suomi |
+| 04.11 21:45 | Fils — Machac | ATP Masters Paris | Sport Klub 2, TV 2 Sport X |
 | 04.11 21:45 | RB Lipsko — Manchester City FC | Liga Mistrzów UEFA | Nova Sport 4, CANAL+ Extra 3 |
 | 04.11 21:45 | FC Porto — SSC Neapol |  | Nova Sport 6 |
-| 04.11 21:45 | Cardiff — West Ham | Championship | V Sport+ Suomi |
 | 04.11 21:49 | FC PORTO — NAPOLI ! | UEFA CHAMPIONS LEAGUE | SPORT.TV5, Tring Sport 2, Digi Sport 4, CANAL+ Extra 1, TVP 1, Magenta Sport 4, Cytavision Sports6 HD, PPV4, ART Sport 3, Prima Sport 4, Arena Premium 4, Arena Premium 1, Arena Sport 5, Ziggo Sport 2, Sport 3, TV3 Plus, V Sport Extra |
-| 04.11 21:50 | Bristol City — Wolverhampton | Carabao Cup | V sport 1 HD (N), SPORT.TV1, Sport1 3, SuperSport 2 Digitalb, Arena Sport 5, Arena Sport 7, Arena Sport 6, Match4, SuperSport 2, V Sport 2 Suomi, Viaplay TV (FI) |
+| 04.11 21:50 | Bristol City — Wolverhampton | Carabao Cup | V sport 1 HD (N), SPORT.TV1, Sport1 3, SuperSport 2 Digitalb, Sky Sports Main Event, Sky Sports Football, Arena Sport 5, Arena Sport 7, Arena Sport 6, Arena Sport 8, Match4, SuperSport 2, V Sport 2 Suomi, Viaplay TV (FI) |
 | 04.11 21:50 | Viking — Sabah | УЕФА Чемпиондар Лигасы 4 тур «Викинг» (Норвегия) — «Сабах» (Әзербайжан) | Телеканал «Qazsport», PPV2, Arena Sport 4, Arena Sport 3, Arena Sport 9 |
-| 04.11 21:50 | PSV — CLUB BRUGGE ! | futbolli | Ziggo Sport 1, Ziggo Sport Kanaal 14, Tring Sport 6, ART Sport 6, Prima Sport 5, Arena Sport 1, Arena Sport 8 |
-| 04.11 21:50 | RC Lens — COMO ! | futbolli | Tring Sport 5, OneSoccer, Cytavision Sports2 HD, PPV5, ART Sport 5, PPV1, Arena Sport 3, Arena Sport 2, Sport 5 |
 | 04.11 21:54 | Lens — Côme | Plateau Avant Match Uefa Champions League | Canal+, L'Equipe |
 | 04.11 22:00 | Λειψία — Μάντσεστερ Σίτι |  | Magenta Sport 7 |
 | 04.11 22:00 | Λανς — Κόμο |  | Magenta Sport 8 |
 | 04.11 22:00 | PSV Αϊντχόφεν — Κλαμπ Μπριζ |  | Magenta Sport 9 |
 | 04.11 22:00 | Бристъл Сити — Уулвърхямптън Уондърърс | Чемпиъншип | Diema Sport 2, diemasport 2 |
-| 04.11 22:00 | Fils — Machac | ATP | TV 2 Sport X |
 | 04.11 22:00 | Лайпциг — Манчестър Сити | УЕФА Шампионска лига | bTV Action |
 | 05.11 00:25 | Атлетико Паранаэнсе — Васко да Гама | Прямая трансляция | МАТЧ! Футбол 3 (HD) |
 | 05.11 00:30 | Athletico PR — Vasco | Brazilska liga | Arena Sport 1, Arena Premium 3 |
 | 05.11 02:00 | Detroit Pistons — Philadelphia 76ers | NBA | Magenta Sport 4, DAZN Baloncesto, S Sport, ערוץ הספורט, ספורט מובייל, Go3 Sport 1, Sport 1, ספורט 5 Stars |
+| 05.11 02:10 | Oklahoma City — Cleveland | NBA liga | Sport Klub 2 |
 | 05.11 02:25 | Сан-Паулу — Коринтианс | Прямая трансляция | МАТЧ! Футбол 3 (HD) |
 | 05.11 02:30 | Botafogo — Atletico MG | Brazilska liga | Arena Sport 1, Arena Premium 3 |
 | 05.11 03:20 | Мильонариос — Америка де Кали | Колумбия Примера А Клаусура 2026 17 тур Прямая трансляция | viju+ Sport HD |
@@ -263,6 +158,7 @@
 | 05.11 14:15 | Svay Rieng — Tampines Rovers | Liga prvaka Azije - TWO | Sport Klub 6 |
 | 05.11 16:00 | ATP Paris — tournament | ATP | Ziggo Sport 4, TV 2 Sport X, TV4 Tennis |
 | 05.11 17:00 | Chindia Tragoviste — Popesti Leordeni | liga 2 Liga 2 | Digi Sport 1, Prima Sport 1 |
+| 05.11 17:00 | FC Bihor — Slatina | LIGA 2 | Prima Sport 1 |
 | 05.11 18:25 | Волга — Чертаново | FONBET Кубок России Прямая трансляция | Матч ТВ, Телеканал «Матч ТВ», МАТЧ ПРЕМЬЕР HD |
 | 05.11 19:00 | Spartak — Zadar | ABA liga | Arena Sport 2, Arena Sport 9 |
 | 05.11 19:00 | Crystal Palace FC — TSG Hoffenheim | UEFA Europa League Football | TNT Sports 1, Polsat Sport Extra 2, M+ Liga de Campeones 5, V sport 2 HD, Ziggo Sport 6, Cytavision Sports4 HD, CVSPORTS 4K2, PPV3, Arena Premium 5, Arena Sport 4, Sport 2, V Sport 1 Suomi |
@@ -287,7 +183,7 @@
 | 05.11 19:45 | Lincoln — Hajduk | Konferencijska liga | Arena Premium 2, Arena Sport 7, Arena Sport 1 |
 | 05.11 19:45 | Mjallby — Borac | Konferencijska liga | Arena Sport 1, Arena Sport 5 |
 | 05.11 19:45 | Midtjylland — Ajax | UEFA LIGA KONFERENCIJA | Arena Sport 6, Arena Sport 7, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
-| 05.11 19:45 | Fenerbahçe Tarfin — Baskonia | Eurolygos rungtynės | Go3 Sport 2, 5MAX, Novasports 6 HD, S Sport, Arena Premium 5, Arena Sport 1, Sport Klub 5 |
+| 05.11 19:45 | Fenerbahçe Tarfin — Baskonia | Eurolygos rungtynės | Go3 Sport 2, 5MAX, Novasports 3 HD, S Sport, Arena Premium 5, Arena Sport 1, Sport Klub 5 |
 | 05.11 19:45 | KuPS — Gent | Konferenssi-liiga | V Sport 2 Suomi |
 | 05.11 19:50 | CA Aldosivi — CA River Plate | Liga Profesional Clausura (16. Spieltag) | Sportdigital FUSSBALL, SPORT.TV1 |
 | 05.11 19:55 | Hapoel Tel Aviv — FC Barcelona | EL | Oneplay Sport 1, Oneplay Sport 3, Oneplay Sport 4, Novasports 4 HD, Arena Sport 8, Sport Klub 3, ערוץ הספורט, ספורט מובייל |
@@ -310,10 +206,11 @@
 | 05.11 22:00 | PANATHINAIKOS — CSKA SOFIA | UEFA CONFERENCE LEAGUE | Magenta Sport 4, Magenta Sport 4K, Cytavision Sports4 HD, PPV3, Arena Sport 4, bTV Action |
 | 05.11 22:00 | Άλκμααρ — Γιουβέντους |  | Magenta Sport 8 |
 | 05.11 22:00 | Χετάφε — Μπράιτον |  | Magenta Sport 9 |
-| 05.11 22:00 | Universitatea — Egnatia | digisport Conference League | Digi Sport 1, Prima Sport 1, SuperSport 1 |
+| 05.11 22:00 | CS U Craiova — Egnatia | digisport Conference League | Digi Sport 1, Prima Sport 1, SuperSport 1 |
 | 05.11 22:00 | FC Twente — PAFOS | UEFA CONFERENCE LEAGUE | Cytavision Sports3 HD, PPV2, Ziggo Sport 2 |
-| 05.11 22:00 | CSU Craiova — Egnatia Rrogozhinë | UEFA Conference League | SuperSport 1 Digitalb |
-| 05.11 22:00 | Tenerife — Cluj | Eurocup | Prima Sport 3, Arena Premium 5, Arena Sport 7, Sport Klub 7 |
+| 05.11 22:00 | CSU Craiova — Egnatia Rrogozhinë | UEFA Conference League | RTSH 1, SuperSport 1 Digitalb |
+| 05.11 22:00 | Tenerife — U Cluj | Eurocup | Prima Sport 3, Arena Premium 5, Arena Sport 7, Sport Klub 7 |
+| 05.11 22:00 | Celta Vigo — St. Gilloisse | UEFA EUROPA LEAGUE | Prima Sport 2 |
 | 05.11 22:00 | Sturm — Celje | Europska liga | Arena Premium 2, Arena Sport 6, Arena Sport 8 |
 | 05.11 22:00 | Bayer L. — Olympique M. | Europska liga | Arena Premium 3 |
 | 05.11 22:00 | Monaco — Nordsjaelland | Konferencijska liga | Arena Sport 7, Arena Sport 3, V Sport 1 Suomi |
@@ -322,6 +219,7 @@
 | 06.11 00:00 | Апоел Тел Авив — Барселона | Евролига | MAX Sport 2 |
 | 06.11 00:25 | Palmeiras — Remo | Brasileirao | M+ Vamos, МАТЧ! Футбол 3 (HD), Sport1 3, Sportdigital FUSSBALL, Arena Premium 3 |
 | 06.11 02:25 | Крузейро — Баия | Прямая трансляция | МАТЧ! Футбол 3 (HD) |
+| 06.11 03:00 | Duke — Coastal Carolina | College Basketball | TSN5 |
 | 06.11 04:00 | Suns — Magic | NBA | DAZN Baloncesto, S Sport, Go3 Sport 1 |
 | 06.11 04:00 | NBA Orlando — Phoenix | basketboll | Sport 1 |
 | 06.11 04:59 | GOLDEN STATE WARRIORS — MIAMI HEAT | NBA | SPORT.TV1, Magenta Sport 4, ערוץ הספורט, ספורט מובייל, Sport1, TSN5 |
@@ -335,14 +233,15 @@
 | 06.11 14:45 | בני יהודה — אחי נצרת | ליגה לאומית בכדורגל | ספורט 5 Live |
 | 06.11 14:45 | מ.ס. קרית ים — מ.ס. אשדוד | ליגה לאומית בכדורגל | ספורט 5 Stars |
 | 06.11 14:45 | הפועל ראשל"צ — הפועל רעננה | ליגה לאומית בכדורגל | 5MAX |
-| 06.11 15:00 | ATP Paris — tournament | ATP MASTERS 1000 | SPORT.TV2, Ziggo Sport 4, TV 2 Sport, TV4 Tennis, MTV Urheilu 1, Cytavision Sports5 HD |
-| 06.11 16:55 | Ал Хазем — Ал Насър | Саудитска Професионална Лига | MAX Sport 4 |
-| 06.11 17:00 | Септември — Локомотив София | efbet Лига | Diema Sport, diemasport |
+| 06.11 15:00 | ATP Paris — tournament | 2026 ATP 1000 - PARIS | Cytavision Sports5 HD, SPORT.TV2, Ziggo Sport 4, TV 2 Sport, TV4 Tennis, MTV Urheilu 1 |
+| 06.11 16:55 | Hazem — Nassr | Саудитска Професионална Лига | MAX Sport 4, Sport Klub 4 |
+| 06.11 17:00 | Septemvri — Lokomotiv Sofia | efbet Лига | Diema Sport, diemasport, Sport Klub 6 |
 | 06.11 17:00 | Σοφάδες — Κομοτηνή | Elite League | 7η Αγωνιστική | ΕΡΤ2 ΣΠΟΡ |
 | 06.11 17:00 | Avtodor — UNICS | VTB LIGA | Arena Premium 4 |
 | 06.11 17:30 | UTA Arad — Petrolul | superliga Superliga | Digi Sport 1, Prima Sport 1, Arena Premium 1, Arena Sport 2 |
 | 06.11 18:25 | Lokomotiv — Rubin | Тур 14 Прямая трансляция | МАТЧ ПРЕМЬЕР HD, Arena Sport 3, Arena Sport 1 |
-| 06.11 18:45 | BESIKTAS — Zalgiris | Eurolygos rungtynės | Go3 Sport 1, TV6, SPORT.TV1, Oneplay Sport 1, Oneplay Sport 4, ערוץ הספורט, ספורט מובייל, Novasports 4 HD, MAX Sport 3, S Sport, Arena Premium 5, Arena Premium 2, Novasports4HD |
+| 06.11 18:30 | Nafta — Olimpija | Slovenska 1. liga | Sport Klub 8 |
+| 06.11 18:45 | BESIKTAS — Zalgiris | Eurolygos rungtynės | Go3 Sport 1, TV6, SPORT.TV1, Oneplay Sport 1, Oneplay Sport 4, ערוץ הספורט, ספורט מובייל, Novasports 4 HD, MAX Sport 3, S Sport, Arena Premium 5, Arena Premium 2, Sport Klub 3, Novasports4HD |
 | 06.11 18:50 | Djurgårdens IF W — BK Haecken FF W | Damallsvenskan | SVT2 HD, Viaplay Sport |
 | 06.11 18:50 | FK Dukla Praha — Fotbal Příbram | Chance Národní Liga | ČT sport |
 | 06.11 18:50 | Piešťanské Čajky W — MBK Ružomberok W |  | JOJ Šport |
@@ -353,12 +252,13 @@
 | 06.11 19:00 | 14. Hafta Antalyaspor A.Ş — BURSASPOR | TRENDYOL 1.LİG FUTBOL | TRT SPOR, TRT Spor |
 | 06.11 19:00 | Lokomotiva — Rudeš | HNL | Arena Sport 1 |
 | 06.11 19:00 | Dukagjini — Llapi | futbolli | Sport 2 |
-| 06.11 19:15 | Ботев Пловдив — Дунав | efbet Лига | Diema Sport, diemasport |
-| 06.11 19:20 | Dresden — Greuther Furth | Втора Бундеслига | Sport1 3, Novasports 2HD, nova sport, Prima Sport 2, Arena Premium 4, Arena Premium 5, Viaplay TV (FI) |
+| 06.11 19:15 | Botev Plovdiv — Dunav | efbet Лига | Diema Sport, diemasport, Sport Klub 4 |
+| 06.11 19:20 | Dresden — Greuther Furth | Втора Бундеслига | Sport1 3, Novasports 2HD, nova sport, Prima Sport 2, Arena Premium 4, Arena Premium 5, Sport Klub 1, Viaplay TV (FI) |
 | 06.11 19:25 | Dynamo Drezno — SpVgg Greuther Fürth | 2. liga niemiecka | Eleven Sports 4 |
 | 06.11 19:25 | Eintracht Brunszwik TSV — FC Energie Cottbus | 2. liga niemiecka | Eleven Sports 2 |
 | 06.11 19:25 | Dynamo Drážďany — Greuther Fürth |  | Nova Sport 4 |
-| 06.11 19:30 | Braunschweig — Cottbus | Втора Бундеслига | Diema Sport 2, diemasport 2, PPV1, Arena Premium 2, Arena Premium 4, V Sport 2 Suomi |
+| 06.11 19:30 | Braunschweig — Cottbus | Втора Бундеслига | Diema Sport 2, diemasport 2, PPV1, Arena Premium 2, Arena Premium 4, Sport Klub 6, V Sport 2 Suomi |
+| 06.11 19:30 | Ittihad — Neom | Saudijska liga | Sport Klub 9 |
 | 06.11 19:30 | Ντιναμό Δρέσδης — Γκρόιτερ Φιρτ | 2.Bundesliga | Novasports2HD |
 | 06.11 19:35 | Аталанта — Қайрат | УЕФА Конференция Лигасы 3 тур «Аталанта» (Италия) — «Қайрат» (Қазақстан) | Телеканал «Qazsport» |
 | 06.11 19:50 | BSC YB Frauen W — FC Basel 1893 W |  | SRF info |
@@ -366,41 +266,43 @@
 | 06.11 20:00 | CS Ramnicu Valcea — Arges Pitesti | baschet Baschet Baschet masculin Liga Nationala | Digi Sport 3 |
 | 06.11 20:00 | ATP Paris — tournament | 2026 ATP 1000 - PARIS | Cytavision Sports5 HD, SPORT.TV4, Ziggo Sport 4, TV 2 Sport, TV4 Tennis |
 | 06.11 20:00 | CS Rm. Vâlcea — Argeș Pitești |  | PPV2 |
+| 06.11 20:00 | Viktoria Koln — Saarbrucken | 3. Bundesliga | Sport Klub 10 |
 | 06.11 20:00 | Hammarby IF — IF Elfsborg | Allsvenskan | TV4 Fotboll |
 | 06.11 20:25 | Ascoli — Palermo | Italian Serie B Soccer | 5MAX, Fox Soccer Plus, Arena Sport 7 |
 | 06.11 20:30 | FC Arges — Dinamo | superliga Superliga | Digi Sport 1, Prima Sport 1 |
 | 06.11 20:30 | Rapid — WAC | Austrijska liga | Arena Sport 6, Arena Sport 5 |
 | 06.11 20:30 | AFS — FC VIZELA | LIGA PORTUGAL 2 | SPORT.TV + |
 | 06.11 21:00 | UNIÃO SANTARÉM — CD MAFRA | Liga 3 Placard | Canal 11 |
+| 06.11 21:00 | Montpellier — Metz | FRANCUSKA 2.LIGA | Cablenet Sports 1 HD, Arena Sport 7 |
 | 06.11 21:00 | Willem II — PEC Zwolle | Eredivisie | ESPN 2 Netherlands |
 | 06.11 21:00 | VVV — PSV II | Eerste Divisie | ESPN 3 Netherlands |
 | 06.11 21:00 | Dordrecht — NAC Breda | Eerste Divisie | ESPN 4 Netherlands |
 | 06.11 21:00 | Vojvodina — Radnički | KLS | Arena Sport 10 |
-| 06.11 21:00 | MONTPELLIER — METZ | FRANCUSKA 2.LIGA | Arena Sport 7 |
-| 06.11 21:00 | Olympiakos Pireus — Crvena Zvezda | Eurolygos rungtynės | Go3 Sport 2, Oneplay Sport 1, Oneplay Sport 3, Oneplay Sport 4, ספורט 5 Live, Novasports PrimeHD, Arena Sport 1, Arena Premium 1 |
+| 06.11 21:00 | Jadran — Bistrica | Slovenska 2. liga | Sport Klub 8 |
+| 06.11 21:00 | Olympiakos Pireus — Crvena Zvezda | Eurolygos rungtynės | Go3 Sport 2, Oneplay Sport 1, Oneplay Sport 3, Oneplay Sport 4, ספורט 5 Live, Novasports PrimeHD, Arena Sport 1, Arena Premium 1, Sport Klub 3 |
 | 06.11 21:10 | Enea Łaciate Astoria Bydgoszcz — PGE Start Lublin | PGE Basket Liga | Polsat Sport 3, Polsat Sport Extra 4 |
 | 06.11 21:15 | Олимпиакос — Цървена Звезда | Евролига | MAX Sport 2 |
 | 06.11 21:15 | Olympiacos — Kızılyıldız | EuroLeague | S Sport2 |
 | 06.11 21:15 | Ολυμπιακός — Ερυθρός Αστέρας | EuroLeague | Novasports Prime |
-| 06.11 21:15 | Virtus — Dubai | Basketbols: Eirolīga | Go3 Sport 3, ספורט 5 Stars, Novasports Start HD, Arena Sport 2, Arena Sport 3, ΝovasportsStart |
+| 06.11 21:15 | Virtus — Dubai | Basketbols: Eirolīga | Go3 Sport 3, ספורט 5 Stars, Novasports Start HD, Arena Sport 2, Arena Sport 3, Sport Klub 5, ΝovasportsStart |
 | 06.11 21:15 | Admira Wacker — SKN St. Pölten | LIVE Fußball ADMIRAL 2. Liga | ORF SPORT+ |
-| 06.11 21:20 | Hamburger SV — Mönchengladbach | Bundesliga | V sport 2 HD, Eleven Sports 3, Nova Sport 3, Sport1 3, Novasports 3 HD, nova sport, OneSoccer, TV3 Max, V Sport Football |
+| 06.11 21:20 | Hamburger SV — Mönchengladbach | Bundesliga | V sport 2 HD, Eleven Sports 3, Nova Sport 3, Sport1 3, Novasports 3 HD, nova sport, Sport Klub 1, OneSoccer, TV3 Max, V Sport Football |
 | 06.11 21:25 | 2026/27,Raith Rovers — Dunfermline Athletic | Sportscene: Championship Live | BBC Scotland |
 | 06.11 21:25 | Wisla Krakow — Cracovia | PKO BP Ekstraklasa | CANAL+ Sport, CANAL+ Sport 3, CANAL+ Sport 4, Sportdigital FUSSBALL, Sport 1, Arena Sport 5, Arena 1X2, Arena Sport 4 |
 | 06.11 21:30 | CD Castellón — SD Eibar | LALIGA HYPERMOTION | LALIGA TV HYPERMOTION, PPV3 |
 | 06.11 21:30 | Hamburg — Gladbach |  | Prima Sport 4 |
 | 06.11 21:30 | HSV — Borussia Mönchengladbach | Njemačka liga | Arena Premium 4, Arena Premium 5, V Sport Football FI, Viaplay TV (FI) |
 | 06.11 21:30 | Αμβούργο — Γκλάντμπαχ | Bundesliga | Novasports3HD |
-| 06.11 21:30 | Partizan — Maccabi | Eurolygos rungtynės | Go3 Sport 1, Novasports 4 HD, S Sport, Arena Premium 5, Arena Premium 2, ערוץ הספורט, ספורט מובייל, Novasports4HD |
+| 06.11 21:30 | Partizan — Maccabi | Eurolygos rungtynės | Go3 Sport 1, Novasports 4 HD, S Sport, Arena Premium 5, Arena Premium 2, Sport Klub 4, ערוץ הספורט, ספורט מובייל, Novasports4HD |
 | 06.11 21:40 | Oxford City — Leicester | FA Cup | V sport 3 HD, Nova Sport 2, Cytavision Sports6 HD, Arena Sport 7, Arena Sport 6, Arena Sport 5 |
-| 06.11 21:40 | Toulouse FC — RC Strasbourg | LIGA FRANCESA | SPORT.TV3, Eleven Sports 4, ספורט 5+, Nova Sport 4, Arena Sport 3, Arena Sport 2, Sport 3, V Sport Extra, V Sport+ Suomi |
+| 06.11 21:40 | Toulouse FC — RC Strasbourg | LIGA FRANCESA | SPORT.TV3, Eleven Sports 4, ספורט 5+, Nova Sport 4, Cablenet Sports 2 HD, Arena Sport 3, Arena Sport 2, Sport 3, V Sport Extra, V Sport+ Suomi |
 | 06.11 21:40 | Venezia FC — UDINESE | SERIE A | SPORT.TV2, Eleven Sports 2, МАТЧ! Футбол 1 (HD), TV 2 Sport X, Magenta Sport 2, Cytavision Sports4 HD, MAX Sport 3, Prima Sport 3, Arena Premium 2, Arena Sport 1, Arena Sport 2, Sport 1, Sport1, Sport 2, TV4 Sportkanalen, MTV Urheilu 2 |
 | 06.11 21:45 | Тулуза — Страсбург | Лига 1 на Франция | Diema Sport, diemasport |
 | 06.11 21:45 | Όξφορντ — Λέστερ | Κύπελλο Αγγλίας | ΕΡΤ2 ΣΠΟΡ |
 | 06.11 21:50 | Everton FC — Coventry | Premier League | V sport Premier League HD, Sport1 1, CANAL+ Extra 1, Diema Sport 2, CVSPORTS Multiview, Cytavision Sports3 HD, DAZN 1, diemasport 2, Arena Premium 1, Arena Premium 3, Arena Sport 1, Match4, See, V Sport Premium, V Sport Premium FI, V Sport 2 Suomi |
 | 06.11 21:50 | Севилья — Алавес | Чемпионат Испании Прямая трансляция | Матч ТВ, Телеканал «Матч ТВ», МАТЧ! Футбол 2 (HD), Беларусь 5, MAX Sport 4 |
 | 06.11 21:55 | DERBY COUNTY — Bolton | EFL Championship | V sport + HD, Arena Sport 4, Arena Sport 6, Viaplay Sport, Nova Sport 5 |
-| 06.11 21:55 | Sevilla FC — Alavés | LaLiga EA Sports | TV 2 Sport Premium HD, TV 2 Sport Premium, Ziggo Sport 2, Nova Sport 6, Digi Sport 3, Cytavision Sports8 HD, CVSPORTS 4K1, DAZN LALIGA, Prima Sport 2, Arena Premium 3, Arena Premium 4, Sport 1 |
+| 06.11 21:55 | Sevilla FC — Alavés | LaLiga EA Sports | TV 2 Sport Premium HD, TV 2 Sport Premium, Ziggo Sport 2, Nova Sport 6, Digi Sport 3, Cytavision Sports8 HD, CVSPORTS 4K1, DAZN LALIGA, Prima Sport 2, Arena Premium 3, Arena Premium 4, Sport Klub 6, Sport 1 |
 | 06.11 21:55 | Cadí La Seu W — Hozono Global Jairis W | LF Endesa | Esport 3 |
 | 06.11 21:55 | Durán Maquinaria Ensino W — Inversus Gernika Bizkaia W | LF Endesa | M+ Deportes 6 |
 | 06.11 21:55 | פ.ס.ז W — לה האבר W | ליגה צרפתית בכדורגל הנשים | ספורט 5 Gold |
@@ -421,13 +323,17 @@
 | 07.11 08:30 | Аделаида — Иллаварра Хокс | Чемпионат Австралии Прямая трансляция | Старт Баскет |
 | 07.11 09:25 | Кимчхон — Аньянг | Чемпионат Южной Кореи К-Лига 1 Прямая трансляция | СТАРТ HD |
 | 07.11 10:30 | Мельбурн Юнайтед — Брисбен Буллетс | Чемпионат Австралии Прямая трансляция | Старт Баскет, ספורט 5 Live |
+| 07.11 10:30 | Naegohyang W — Kobe Leonessa W | Liga prvaka Azije (Ž) | Sport Klub 3 |
+| 07.11 10:30 | Hwacheon W — Ho Chi Minh City W | Liga prvaka Azije (Ž) | Sport Klub 5 |
 | 07.11 10:30 | Melbourne City FC — Western Sydney Wanderers FC | A-League Men | TNT Sports 1, Sportdigital FUSSBALL |
 | 07.11 10:40 | Локомотив W — Спартак W | Женщины Тур 25 Прямая трансляция | МАТЧ ПРЕМЬЕР HD |
 | 07.11 11:30 | HC Dynamo Pardubice U19 — BK Mladá Boleslav U19 | ELH | Oneplay Sport 2 |
 | 07.11 12:00 | ΑΠΟΕΛ — ΚΕΡΑΥΝΟΣ | ECOMMBX BASKET LEAGUE | Cytavision Sports4 HD |
+| 07.11 12:00 | Cayirova — Bandirma | Turska liga | Sport Klub 9 |
 | 07.11 12:20 | Tallinna FCI Levadia — Nõmme Kalju FC | Jalgpalli Premium Liiga | ETV |
 | 07.11 12:25 | Paide Linnameeskond — Tallinna FC Flora | Jalgpalli Premium Liiga | ETV2 |
 | 07.11 12:30 | FC Bihor — Slatina | digisport Liga a 2-a | Digi Sport 1, Prima Sport 1 |
+| 07.11 12:30 | Melbourne City W — Peking W | Liga prvaka Azije (Ž) | Sport Klub 4 |
 | 07.11 12:40 | Perth Glory — Newcastle United Jets | A-League (4. Spieltag) | Sportdigital FUSSBALL, TNT Sports 4 |
 | 07.11 12:45 | SK Slavia Praha W — AC Sparta Praha W | FORTUNA LYGA | ČT sport |
 | 07.11 12:50 | FC FELGUEIRAS — LEIXÕES SC | LIGA PORTUGAL 2 | SPORT.TV1 |
@@ -437,11 +343,11 @@
 | 07.11 13:10 | Korona — Radomiak | PKO BP Ekstraklasa | CANAL+ Sport 3, Arena Sport 6, Arena Sport 3 |
 | 07.11 13:10 | Znicz Pruszków — Podhale Nowy Targ | Betclic 2. Liga | TVP Sport |
 | 07.11 13:25 | Como 1907 W — AS Roma W | Women's Italian Serie A Soccer | Fox Soccer Plus |
-| 07.11 13:30 | Ботев Враца — Локомотив Пловдив | efbet Лига | Diema Sport, diemasport |
-| 07.11 13:50 | 1. FC Nürnberg — SV Darmstadt 98 | 2. liga niemiecka | Sport1 4, Eleven Sports 1, nova sport, PPV1, Arena Premium 2, Arena Premium 3, V Sport 1 Suomi |
+| 07.11 13:30 | Botev Vratsa — Lokomotiv Plovdiv | efbet Лига | Diema Sport, diemasport, Sport Klub 8 |
+| 07.11 13:50 | 1. FC Nürnberg — SV Darmstadt 98 | 2. liga niemiecka | Sport1 4, Eleven Sports 1, nova sport, PPV1, Arena Premium 2, Arena Premium 3, Sport Klub 6, V Sport 1 Suomi |
 | 07.11 13:55 | Brann W — Molde W | Fotball - Toppserien kvinner | TV 2 Sport 1 HD, TV 2 Sport 1 |
-| 07.11 13:55 | Kiel — Arminia Bielefeld | 2. liga niemiecka | Eleven Sports 3, PPV2, Arena Premium 4 |
-| 07.11 13:55 | VfL Osnabrück — 1. FC Kaiserslautern | 2. liga niemiecka | Eleven Sports 2, Nova Sport 5, Prima Sport 2, Arena Premium 4 |
+| 07.11 13:55 | Kiel — Arminia Bielefeld | 2. liga niemiecka | Eleven Sports 3, PPV2, Arena Premium 4, Sport Klub 7 |
+| 07.11 13:55 | VfL Osnabrück — 1. FC Kaiserslautern | 2. liga niemiecka | Eleven Sports 2, Nova Sport 5, Prima Sport 2, Arena Premium 4, Sport Klub 3 |
 | 07.11 13:55 | מוקדמות U19 — משחק אחד U19 | המשחקים האולימפיים לנוער | 5MAX |
 | 07.11 13:55 | 1. FC Norimberk — SV Darmstadt |  | Nova Sport 3 |
 | 07.11 14:00 | Zemun — IMT | Super liga Srbije | Arena Premium 5, Arena Sport 1 |
@@ -452,18 +358,20 @@
 | 07.11 14:27 | Paksi FC — ZTE FC | Paksi FC - ZTE FC mérkőzés | M4 Sport |
 | 07.11 14:30 | Ρέξαμ — Γουλβς |  | Magenta Sport 7 |
 | 07.11 14:30 | Рексъм — Уулвърхямптън Уондърърс | Чемпиъншип | Diema Sport 3, diemasport 3 |
-| 07.11 14:30 | Turk Telekom — Korfez | Turska liga | Arena Sport 2, Arena Sport 5 |
+| 07.11 14:30 | Turk Telekom — Korfez | Turska liga | Arena Sport 2, Arena Sport 5, Sport Klub 9 |
 | 07.11 14:30 | Bristol City — Norwich City | Championship | V Sport Premium, V Sport Premium FI |
 | 07.11 14:30 | Portsmouth FC — Stoke City | Championship | V Sport Football, V Sport Football FI |
 | 07.11 14:40 | Manchester City W — West Ham United W | Women's Super League (9. Spieltag): Manchester City - West Ham United | Sportdigital1+ |
 | 07.11 14:45 | Απόλλων Καλαμαριάς — Πανσερραϊκός | Superbet League 2 | 10η Αγωνιστική | ΕΡΤ2 ΣΠΟΡ |
 | 07.11 14:45 | הפועל פ"ת — הפועל ר"ג | ליגת ווינר | Sport1 3 |
-| 07.11 14:55 | Malaga CF — Racing | LaLiga EA Sports | TV 2 Sport Premium HD, CANAL+ Sport, TV 2 Sport Premium, Ziggo Sport 2, Cytavision Sports8 HD, PPV3, S Sport, Arena Premium 3, Arena Premium 5 |
+| 07.11 14:55 | Malaga CF — Racing | LaLiga EA Sports | TV 2 Sport Premium HD, CANAL+ Sport, TV 2 Sport Premium, Ziggo Sport 2, Cytavision Sports8 HD, PPV3, S Sport, Arena Premium 3, Arena Premium 5, Sport Klub 5 |
 | 07.11 14:55 | Малага — Расинг | Прямая трансляция | МАТЧ! Футбол 2 (HD), Magenta Sport 3 League, MAX Sport 4 |
 | 07.11 15:00 | Csikszereda — U. Cluj | superliga Superliga | Digi Sport 1, Prima Sport 1, Arena Sport 7, Arena Sport 6 |
 | 07.11 15:00 | Burgos — RC Celta B | LALIGA HYPERMOTION | LALIGA TV HYPERMOTION |
 | 07.11 15:00 | Lokomotiv — Parma | VTB LIGA | Arena Premium 2 |
 | 07.11 15:00 | Proleter 023 — Vršac | PRVA LIGA SRBIJE | Arena Sport 10 |
+| 07.11 15:00 | Hansa — Sonnenhof | 3. Bundesliga | Sport Klub 10 |
+| 07.11 15:00 | Rot-Weiss — Alemannia | 3. Bundesliga | Sport Klub 4 |
 | 07.11 15:00 | Evropská liga — Fotbal | Evropská liga | Sport2 |
 | 07.11 15:00 | FC Rosengård W — Hammarby IF W | OBOS Damallsvenskan | SVT2 |
 | 07.11 15:25 | Зенит W — ЦСКА W | Суперлига Женщины Прямая трансляция | Матч ТВ, Телеканал «Матч ТВ» |
@@ -484,6 +392,7 @@
 | 07.11 16:00 | ΑΕΛ — KRASAVA Ε.Ν.Υ | ΚΥΠΡΙΑΚΟ ΠΡΩΤΑΘΛΗΜΑ | CVSPORTS Multiview, Cytavision Sports2 HD |
 | 07.11 16:00 | Čukarički — Radnički | Super liga Srbije | Arena Premium 5, Arena Sport 1 |
 | 07.11 16:00 | Gorica — Slaven Belupo | HNL | Arena Sport 3 |
+| 07.11 16:00 | Ljungskile SK — Landskrona Bois | Superettan | TV4 Sport Live 1 |
 | 07.11 16:00 | Örebro SK — Östers IF | Superettan | TV4 Sportkanalen |
 | 07.11 16:20 | RB Leipzig — Augsburg | Bundesliga | V sport 2 HD, Novasports 2HD, Arena Sport 5, Arena Sport 4 |
 | 07.11 16:20 | Dortmund — SV 07 Elversberg | Liga niemiecka | Eleven Sports 3, Nova Sport 4, Novasports 4 HD, PPV1, Arena Sport 6, Arena Sport 3, Novasports4HD |
@@ -526,7 +435,7 @@
 | 07.11 18:00 | Železničar — Radnički 1923 | MOZZARTBET SUPERLIGA | Arena Sport 1 |
 | 07.11 18:00 | Sutjeska — Petrovac | CRNOGORSKA LIGA | Arena Sport 8 |
 | 07.11 18:00 | Vellaznimi — Bora | basketboll | Sport 2 |
-| 07.11 18:10 | AJ Auxerre — Paris FC | Liga francuska | Eleven Sports 4, Arena Sport 4, Arena Sport 5 |
+| 07.11 18:10 | AJ Auxerre — Paris FC | Liga francuska | Eleven Sports 4, Cablenet Sports 2 HD, Arena Sport 4, Arena Sport 5 |
 | 07.11 18:10 | Mantova — Hellas Verona | Italian Serie B Soccer | ספורט 5 Gold, Fox Soccer Plus |
 | 07.11 18:15 | SD Eibar W — Real Sociedad W | Liga F | DAZN 4 |
 | 07.11 18:25 | Dziki Warszawa — Anwil Włocławek | PGE Basket Liga | Polsat Sport Extra 4, Polsat Sport 3 |
@@ -581,7 +490,7 @@
 | 07.11 20:30 | SV Oberbank Ried — LASK | AUSTRIJSKA LIGA | Arena Sport 3, Kanal1 Sport |
 | 07.11 20:30 | Peja — Sigal Prishtina | basketboll | Sport 2 |
 | 07.11 20:50 | Онсе Кальдас — Агильяс Дорадас | Колумбия Примера А Клаусура 2026 18 тур Прямая трансляция | viju+ Sport HD |
-| 07.11 20:55 | St. Etienne — Laval | Francuska 2.liga | ספורט 5 Stars, Arena Sport 6, Arena 1X2, Arena Sport 5 |
+| 07.11 20:55 | St. Etienne — Laval | Francuska 2.liga | ספורט 5 Stars, Cablenet Sports 3 HD, Arena Sport 6, Arena 1X2, Arena Sport 5 |
 | 07.11 21:10 | Grasshopper Club Zürich — FC Lausanne-Sport |  | SRF zwei |
 | 07.11 21:10 | Widzew Lodz — Pogon | PKO BP Ekstraklasa | CANAL+ Sport 3, Arena Sport 3, Arena Sport 7, Arena Sport 4 |
 | 07.11 21:15 | Hertha — Wolfsburg | 2. Bundesliga | NITRO, V sport 2 HD, Eleven Sports 4, Sport1 5, Nova Sport 5, Novasports Start HD, nova sport, PPV3, Arena Premium 4, Arena Premium 5 |
@@ -589,13 +498,12 @@
 | 07.11 21:30 | PETERBOROUGH — Reading FC | FA Cup Football | TNT Sports 1, TNT Sports 2, Nova Sport 6, Cytavision Sports7 HD, V Sport 1 Suomi |
 | 07.11 21:30 | Χέρτα Βερολίνου — Βόλφσμπουργκ | 2.Bundesliga | ΝovasportsStart |
 | 07.11 21:35 | AS ROMA — Sassuolo | Serie A (BBC Alba) | BBC ALBA, Go3 Sport Open, SPORT.TV3, Eleven Sports 2, Polsat Sport Extra 1, Ziggo Sport 4, МАТЧ! Футбол 1 (HD), Sport1 4, TV 2 Sport X, Magenta Sport 2, Digi Sport 3, Cytavision Sports4 HD, MAX Sport 3, Prima Sport 3, S Sport2, Arena Premium 2, Arena Sport 1, Match4, Sport 1, Sport1, TV4 Fotboll, MTV Urheilu 2 |
-| 07.11 21:35 | PARIS SAINT-GERMAIN — TROYES | LIGA FRANCESA | SPORT.TV4, Go3 Sport 2, Eleven Sports 3, Nova Sport 3, Arena Premium 1, Arena Premium 3, Arena Sport 2, Sport 4, TV3 Sport, Viaplay Sport, V Sport 2 Suomi |
+| 07.11 21:35 | PARIS SAINT-GERMAIN — TROYES | LIGA FRANCESA | SPORT.TV4, Go3 Sport 2, Eleven Sports 3, Nova Sport 3, Cablenet Sports 2 HD, Arena Premium 1, Arena Premium 3, Arena Sport 2, Sport 4, TV3 Sport, Viaplay Sport, V Sport 2 Suomi |
 | 07.11 21:40 | Пари Сен Жермен — Троа | Лига 1 на Франция | ספורט 5+, Diema Sport 3, diemasport 3 |
 | 07.11 21:50 | Валенсия — Реал | Чемпионат Испании Прямая трансляция | Матч ТВ, Телеканал «Матч ТВ», МАТЧ! Футбол 2 (HD), Беларусь 5, MAX Sport 4 |
 | 07.11 21:50 | Valencia CF — Real Madrid | LaLiga | Go3 Sport 1, TV 2 Sport 1 HD, CANAL+ Sport, TV 2 Sport 1, Ziggo Sport 1, Ziggo Sport Kanaal 14, Nova Sport 4, Digi Sport 2, Cytavision Sports8 HD, CVSPORTS 4K2, DAZN LALIGA, Prima Sport 2, S Sport, Arena Premium 3, Arena Premium 1, Sport 3 |
 | 07.11 21:51 | Lleida — Baskonia | Liga Endesa | DAZN Baloncesto, M+ Vamos, Старт Баскет, Arena Premium 4 |
-| 07.11 21:55 | St. Mirren FC — Rangers FC | LIGA ESCOCESA | SPORT.TV7, Polsat Sport 2, Sportdigital FUSSBALL2, Arena Sport 7, Arena Sport 2, Sport 5 |
-| 07.11 21:55 | מאלו W — מארסיי W | ליגה צרפתית בכדורגל הנשים | 5MAX |
+| 07.11 21:55 | St. Mirren FC — Rangers FC | LIGA ESCOCESA | SPORT.TV7, Polsat Sport 2, ספורט 5 Live, Sportdigital FUSSBALL2, Arena Sport 7, Arena Sport 2, Sport 5 |
 | 07.11 22:00 | MARCO 09 — PAREDES | Liga 3 Placard | Canal 11 |
 | 07.11 22:00 | Βαλένθια — Ρεάλ Μαδρίτης |  | Magenta Sport 3 League |
 | 07.11 22:00 | Σεντ Μίρεν — Ρέιντζερς |  | Magenta Sport 8, Magenta Sport Start |
@@ -603,7 +511,7 @@
 | 07.11 22:00 | Granada CF — CD Tenerife | LALIGA HYPERMOTION | LALIGA TV HYPERMOTION |
 | 07.11 22:00 | Concordia — Laval | Football universitaire | TVA Sports |
 | 07.11 22:15 | SPORTING CP — MOREIRENSE FC | Labdarúgás: Portugál bajnokság | Sport2, SPORT.TV1, Ziggo Sport 2, МАТЧ! Футбол 3 (HD), Sportdigital FUSSBALL, Magenta Sport 3, Cytavision Sports6 HD, Sport 1, TV4 Sportkanalen, Ziggo Sport 1, Ziggo Sport Kanaal 14 |
-| 07.11 22:20 | BOCA JUNIORS — DEFENSA Y JUSTICIA | CAMPEONATO DA ARGENTINA | SPORT.TV2, Sport1 3 |
+| 07.11 22:20 | Boca Juniors — Defensa y Justicia | Liga Argentina. Torneo Clausura | M+ Vamos 3, SPORT.TV2, Sport1 3 |
 | 07.11 22:30 | Cavalry FC — Supra du Québec | Canadian Premier League Soccer | OneSoccer, Fox Soccer Plus, TVA Sports 2, CBC |
 | 07.11 23:00 | Ατλέτικο Μινέιρο — Γκρέμιο | Copa do Brasil | Novasports2HD |
 | 07.11 23:00 | Philadelphia Union — Toronto FC | MLS Soccer | TSN4 |
@@ -624,16 +532,16 @@
 | 08.11 12:00 | Славия — ФК Барановичи | Чемпионат Беларуси | Беларусь 5 |
 | 08.11 12:30 | Ολυμπιακός Β’ — Ελλάς Σύρου | Superbet League 2 | 10η Αγωνιστική | ΕΡΤ2 ΣΠΟΡ |
 | 08.11 12:50 | CD FEIRENSE — LOUROSA FC | LIGA PORTUGAL 2 | SPORT.TV1 |
-| 08.11 12:51 | Barcelona — Rio Breogan | Liga Endesa | DAZN Baloncesto 3, Sport1 3, Magenta Sport 4, Diema Sport 2, diemasport 2, SportKlub |
+| 08.11 12:51 | Barcelona — Rio Breogan | Liga Endesa | DAZN Baloncesto 3, Sport1 3, Magenta Sport 4, Diema Sport 2, Cablenet Sports 2 HD, diemasport 2, SportKlub |
 | 08.11 12:55 | Крылья Советов — Оренбург | Тур 14 Прямая трансляция | МАТЧ ПРЕМЬЕР HD |
 | 08.11 12:55 | AEK — Panathinaikos | Чемпионат Греции Прямая трансляция | Старт Баскет, Sport1 4, Arena Sport 2, Arena Sport 3, ΣΚΑΪ, Sport 1 |
-| 08.11 12:55 | F.C. København — Brøndby IF | 3F Superliga | TV 2 Sport X |
 | 08.11 13:00 | SPORTING CP U23 — SC BRAGA U23 | Liga Next Gen | Canal 11 |
 | 08.11 13:00 | LOULETANO — SC COVILHÃ | Liga 3 Placard | Canal 11 |
 | 08.11 13:00 | Logroño United W — Sevilla FC W | Liga F | DAZN 2 |
 | 08.11 13:00 | Copenhagen — Brondby | Чемпионат Дании. Superliga | Sport 2, Arena Premium 3, Arena Sport 6 |
 | 08.11 13:00 | Mašinac W — Spartak W | SUPERLIGA Ž | Arena Sport 9 |
-| 08.11 13:00 | SC Heerenveen — Feyenoord | Eredivisie (12. Spieltag) | Sportdigital FUSSBALL, Go3 Sport 2, Polsat Sport Premium 1, СТАРТ HD, Sport1 5, ESPN 2 Netherlands, Prima Sport 5, Arena Sport 5 |
+| 08.11 13:00 | SC Heerenveen — Feyenoord | Eredivisie (12. Spieltag) | Sportdigital FUSSBALL, Go3 Sport 2, Polsat Sport Premium 1, СТАРТ HD, Sport1 5, Cablenet Sports 3 HD, ESPN 2 Netherlands, Prima Sport 5, Arena Sport 5 |
+| 08.11 13:00 | FC København — Brøndby IF | Superliga | TV 2 Sport X |
 | 08.11 13:10 | Polonia Bytom — Lechia Gdańsk | Betclic 1. Liga | TVP Sport |
 | 08.11 13:15 | Vitesse — De Graafschap | Eerste Divisie | ESPN Netherlands |
 | 08.11 13:15 | Χέρενφεϊν — Φέγενορντ | Eredivisie | Novasports Prime |
@@ -679,7 +587,7 @@
 | 08.11 15:00 | Halmstads BK — Djurgårdens IF | Allsvenskan | TV4 Sport Live 2, MTV Urheilu 2 |
 | 08.11 15:10 | Спартак — Акрон | Тур 14 Прямая трансляция | МАТЧ ПРЕМЬЕР HD |
 | 08.11 15:25 | Tromsø — Bodø/Glimt | Eliteserien | TV 2 Direkte HD, TV 2 Direkte Tekst hørselshem., 892 - TVN accessibility test, TV 2 Direkte |
-| 08.11 15:25 | FC Twente — Ajax Amsterdam | Liga holenderska | Polsat Sport 3, Sport1 5, Sportdigital FUSSBALL, ESPN Netherlands, Arena Sport 5 |
+| 08.11 15:25 | FC Twente — Ajax Amsterdam | Liga holenderska | Polsat Sport 3, Sport1 5, Sportdigital FUSSBALL, Cablenet Sports 3 HD, ESPN Netherlands, Arena Sport 5 |
 | 08.11 15:25 | ŁKS Łódź — Stal Rzeszów | Betclic 1. Liga | TVP Polonia |
 | 08.11 15:25 | Твенте — Аякс | Чемпионат Нидерландов Прямая трансляция | СТАРТ HD |
 | 08.11 15:30 | Тромсё — Будё-Глимт | Чемпионат Норвегии. Norwegian Eliteserien | Sport 2 |
@@ -693,7 +601,7 @@
 | 08.11 15:50 | Crystal Palace FC — Liverpool FC | Premier League | Sport1 3, V sport Premier League HD, CANAL+ Extra 1, Spíler1 TV, Cytavision Sports3 HD, Arena Sport 1, Arena Premium 1, See, V Sport Premium, V Sport Premium FI, V Sport 2 Suomi, Viaplay TV (FI) |
 | 08.11 15:55 | Sunderland — Chelsea FC | Premier League | TV3+ HD (N), CANAL+ Extra 3, Cytavision Sports4 HD, DAZN 2, nova sport, Arena Sport 5, Arena Sport 1, Arena Sport 7, TV3 Max, V Sport Football, V Sport Football FI, V Sport+ Suomi |
 | 08.11 15:55 | Osijek — Hajduk | SuperSport HNL | HTV 2, Arena Sport 3 |
-| 08.11 15:55 | RENNES — LILLE | LIGA FRANCESA | SPORT.TV7, Arena Sport 4, Arena Sport 8, Arena Sport 6 |
+| 08.11 15:55 | RENNES — LILLE | LIGA FRANCESA | SPORT.TV7, Cablenet Sports 1 HD, Arena Sport 4, Arena Sport 8, Arena Sport 6 |
 | 08.11 15:55 | Genoa — AC MILAN | SERIE A | SPORT.TV1, Eleven Sports 2, Sport1 4, Digi Sport 3, Prima Sport 2, S Sport2, Arena Premium 2, Arena Premium 4, Arena Sport 3, Sport 1, MTV Urheilu 3 |
 | 08.11 15:55 | GKS Katowice W — AP ORLEN Gdańsk W | Ekstraliga | TVP Sport |
 | 08.11 15:55 | AC Monza — Atalanta BC | Liga włoska | Eleven Sports 4, PPV4, Arena Sport 7, Arena Sport 2, Arena Sport 8, MTV Max |
@@ -702,7 +610,7 @@
 | 08.11 16:00 | Cray Wanderers FC — Stockport County | The FA Cup | BBC Two England, BBC Two, TNT Sports 3 |
 | 08.11 16:00 | Τζένοα — Μίλαν |  | Magenta Sport 1, Magenta Sport Start |
 | 08.11 16:00 | Μόντσα — Αταλάντα |  | Magenta Sport 2 |
-| 08.11 16:00 | Ανόρθωση — Ομόνοια | CYPRUS LEAGUE BY STOIXIMAN - Α' ΚΑΤΗΓΟΡΙΑ | Magenta Sport 3, OMONOIA TV |
+| 08.11 16:00 | Ανόρθωση — Ομόνοια | CYPRUS LEAGUE BY STOIXIMAN - Α' ΚΑΤΗΓΟΡΙΑ | Magenta Sport 3, OMONOIA TV, Cablenet Sports 2 HD |
 | 08.11 16:00 | Кристъл Палас — Ливърпул | Висша лига | Diema Sport 2, diemasport 2, Novasports Premier League |
 | 08.11 16:00 | Sepsi Sfantu Gheorghe — Voluntari | superliga Superliga | Digi Sport 1 |
 | 08.11 16:00 | ATP Paris — tournament | 2026 ATP 1000 - PARIS | Cytavision Sports5 HD, SPORT.TV6, Ziggo Sport 4, TV 2 Sport, TV4 Sportkanalen, MTV Urheilu 1 |
@@ -719,12 +627,12 @@
 | 08.11 16:30 | Wimborne Town — Crawley Town | FA Cup Football | TNT Sports 1 |
 | 08.11 16:30 | Juventus — Žalgiris | LKL čempionatas | BTV |
 | 08.11 16:55 | Галатасарай — Эсенлер Эрокспор | Чемпионат Турции Прямая трансляция | Старт Баскет |
-| 08.11 16:55 | Randers FC — FC Nordsjælland | 3F Superliga | TV 2 Sport X |
 | 08.11 17:00 | VITÓRIA SERNACHE — ATLÉTICO CP | Liga 3 Placard | Canal 11 |
 | 08.11 17:00 | VARZIM SC — AD FAFE | Liga 3 Placard | Canal 11 |
 | 08.11 17:00 | AEK — Levadiakos | SUPER LEAGUE | Magenta Sport 1 League, Cytavision Sports8 HD, Arena Sport 3 |
 | 08.11 17:00 | Левски — ЦСКА | efbet Лига | Diema Sport, diemasport |
 | 08.11 17:00 | Barcelona W — Madrid CFF W |  | DAZN 4 |
+| 08.11 17:00 | Randers FC — FC Nordsjælland | Superliga | TV 2 Sport X |
 | 08.11 17:00 | ATP — Stockholm Open | ATP | TV4 Tennis |
 | 08.11 17:10 | Real Sociedad — Rayo Vallecano | LaLiga EA Sports | TV 2 Sport Premium HD, TV 2 Sport Premium, Ziggo Sport 5, МАТЧ! Футбол 2 (HD), Nova Sport 4, MAX Sport 4, PPV2, Arena Premium 3 |
 | 08.11 17:15 | Ρεάλ Σοσιεδάδ — Ράγιο Βαγιεκάνο |  | Magenta Sport 3 League |
@@ -736,7 +644,7 @@
 | 08.11 17:30 | Paris — Bourg | FRANCUSKA LIGA | Arena Sport 5 |
 | 08.11 17:30 | IF Brommapojkarna — Mjällby AIF | Allsvenskan | TV4 Sport Live 3 |
 | 08.11 17:30 | Kalmar FF — IK Sirius FK | Allsvenskan | TV4 Fotboll, MTV Urheilu 2 |
-| 08.11 17:40 | SC Cambuur — PSV | Liga holenderska | Polsat Sport Extra 1, Sportdigital FUSSBALL, ESPN 2 Netherlands, PPV4, Kanal1 Sport |
+| 08.11 17:40 | SC Cambuur — PSV | Liga holenderska | Polsat Sport Extra 1, Sportdigital FUSSBALL, Cablenet Sports 3 HD, ESPN 2 Netherlands, PPV4, Kanal1 Sport |
 | 08.11 17:45 | AZ — Groningen | Eredivisie | ESPN 3 Netherlands |
 | 08.11 17:45 | Emmen — MVV | Eerste Divisie | ESPN Netherlands |
 | 08.11 17:45 | Άλκμααρ — Χρόνινγκεν | Eredivisie | Novasports1HD |
@@ -770,7 +678,7 @@
 | 08.11 18:55 | Вюрцбург — Бавария | Чемпионат Германии Прямая трансляция | Старт Баскет |
 | 08.11 18:55 | Viktoria Pilsen — Sparta Prag | Chance Liga (14. Spieltag): Viktoria Pilsen - Sparta Prag | Sportdigital FUSSBALL2, Sportdigital FUSSBALL |
 | 08.11 19:00 | Ίντερ — Κόμο |  | Magenta Sport 1 |
-| 08.11 19:00 | ΑΠΟΕΛ — Άρης Λεμεσού |  | Magenta Sport 3 |
+| 08.11 19:00 | ΑΠΟΕΛ — Άρης Λεμεσού |  | Magenta Sport 3, Cablenet Sports 1 HD |
 | 08.11 19:00 | CFR Cluj — U. CRAIOVA | superliga Superliga | Digi Sport 1, Prima Sport 1, Arena Sport 10 |
 | 08.11 19:00 | ΠΑΦΟΣ — ΟΜΟΝΟΙΑ 29ης ΜΑΙΟΥ | ΚΥΠΡΙΑΚΟ ΠΡΩΤΑΘΛΗΜΑ | Cytavision Sports1 HD |
 | 08.11 19:00 | Varaždin — Dinamo | HNL | Arena Sport 3 |
@@ -781,7 +689,7 @@
 | 08.11 19:30 | Βιγιαρεάλ — Χετάφε |  | Magenta Sport 3 League |
 | 08.11 19:30 | Θέλτα — Λεβάντε |  | Magenta Sport 4 League |
 | 08.11 19:30 | CELTA VIGO — LEVANTE | LA LIGA | Cytavision Sports5 HD, Prima Sport 2, Arena Premium 3 |
-| 08.11 19:30 | Real Madrid — Murcia | Liga Endesa | DAZN Baloncesto, SportKlub, Arena Sport 1 |
+| 08.11 19:30 | Real Madrid — Murcia | Liga Endesa | DAZN Baloncesto, Cablenet Sports 3 HD, SportKlub, Arena Sport 1 |
 | 08.11 19:30 | Real Sporting — Real Valladolid CF | LALIGA HYPERMOTION | LALIGA TV HYPERMOTION |
 | 08.11 19:30 | UD Las Palmas — CD Eldense | LALIGA HYPERMOTION | LALIGA TV HYPERMOTION 2 |
 | 08.11 19:40 | Балтика — Динамо | Тур 14 Прямая трансляция | МАТЧ ПРЕМЬЕР HD |
@@ -798,9 +706,9 @@
 | 08.11 21:10 | Lech — Zaglebie | PKO BP Ekstraklasa | CANAL+ Sport 3, Arena Sport 4 |
 | 08.11 21:10 | FKS Stal Mielec — Ruch Chorzów | Betclic 1. Liga | TVP Sport |
 | 08.11 21:15 | Lech — Rakow | Poljska liga | Arena Sport 6 |
-| 08.11 21:30 | FIORENTINA — Juventus FC | SERIE A | SPORT.TV4, TNT Sports 4, M+ Liga de Campeones, M+ Vamos, Eleven Sports 2, Ziggo Sport 2, МАТЧ! Футбол 1 (HD), TV 2 Sport X, Digi Sport 2, Cytavision Sports4 HD, MAX Sport 3, Prima Sport 2, S Sport2, Arena Premium 2, Arena Premium 3, Arena Sport 1, Sport 1, TNT Sports 1, Sport1, TV4 Fotboll, MTV Urheilu 2 |
+| 08.11 21:30 | FIORENTINA — Juventus FC | SERIE A | SPORT.TV4, TNT Sports 4, M+ Liga de Campeones, M+ Vamos, Eleven Sports 2, Ziggo Sport 2, МАТЧ! Футбол 1 (HD), Digi Sport 2, Cytavision Sports4 HD, MAX Sport 3, Prima Sport 2, S Sport2, Arena Premium 2, Arena Premium 3, Arena Sport 1, Sport 1, TNT Sports 1, Sport1, TV 2 Sport X, TV4 Fotboll, MTV Urheilu 2 |
 | 08.11 21:30 | Atlético — FC Barcelona | Чемпионат Испании Прямая трансляция | Матч ТВ, Телеканал «Матч ТВ», МАТЧ! Футбол 2 (HD), TSN3, Go3 Sport 1, TV 2 Sport Premium HD, TV 2 Sport Premium, Nova Sport 4, Magenta Sport 3 League, Digi Sport 1, Cytavision Sports8 HD, CVSPORTS 4K1, MAX Sport 4, Prima Sport 1, S Sport, Arena Premium 3, Arena Premium 1, Ziggo Sport 1, Ziggo Sport Kanaal 14, Беларусь 5, Sport 3 |
-| 08.11 21:40 | RC Lens — Olympique Marseille | LIGA FRANCESA | SPORT.TV7, Eleven Sports 4, Nova Sport 3, Arena Premium 4, Arena Sport 3, Sport 4, V Sport Premium, V Sport Premium FI, V Sport 2 Suomi |
+| 08.11 21:40 | RC Lens — Olympique Marseille | LIGA FRANCESA | SPORT.TV7, Eleven Sports 4, Nova Sport 3, Cablenet Sports 2 HD, Arena Premium 4, Arena Sport 3, Sport 4, V Sport Premium, V Sport Premium FI, V Sport 2 Suomi |
 | 08.11 21:45 | Φιορεντίνα — Γιουβέντους |  | Magenta Sport 1 |
 | 08.11 21:45 | Ланс — Марсилия | Лига 1 на Франция | Diema Sport 2, diemasport 2 |
 | 08.11 22:00 | PAÇOS FERREIRA — TROFENSE | Liga 3 Placard | Canal 11 |
@@ -810,481 +718,64 @@
 | 08.11 22:30 | CHICAGO — PHILADELPHIA | Basketball | Eurosport 1 HD (N), Cytavision Sports6 HD, Arena Premium 1, Arena Premium 2, Sport1, Go3 Sport 3, 6'eren, Eurosport 1 SE, TV5 Finland, Nova Sport 6, TVP Sport |
 | 08.11 22:30 | Σικάγο Μπουλς — Φιλαδέλφεια 76ερς |  | Magenta Sport 4 |
 | 08.11 22:30 | Чикаго Булс — Филаделфия Севънтисиксърс |  | Diema Sport 3, diemasport 3 |
-| 08.11 23:00 | Montreal Roses FC W — Vancouver Rise FC W | Northern Super League Soccer | TSN4 |
+| 08.11 23:00 | Montreal Roses FC W — Vancouver Rise FC W | Northern Super League Soccer | TSN5 |
 | 09.11 01:00 | Detroit Pistons — Los Angeles Lakers | NBA | DAZN Baloncesto 3, SPORT.TV1 |
 | 09.11 01:00 | Жуниор Барранкилья — Депортиво Кукута | Колумбия Примера А Клаусура 2026 18 тур Прямая трансляция | viju+ Sport HD |
 | 09.11 03:00 | Milwaukee Bucks — Boston Celtics | NBA Basketball | TSN5 |
 | 09.11 03:05 | Альянца — Льянерос | Колумбия Примера А Клаусура 2026 18 тур Прямая трансляция | viju+ Sport HD |
-| 09.11 14:00 | ATP 250 — STOCKHOLM | 2026 ATP 250 - STOCKHOLM | Cytavision Sports5 HD |
-| 09.11 14:30 | Черноморец — Янтра | Mr. Bit Втора лига | Diema Sport |
+| 09.11 14:00 | ATP — STOCKHOLM | 2026 ATP 250 - STOCKHOLM | Cytavision Sports5 HD, TV 2 Sport X, TV4 Sport Live 1, TV4 Tennis, TV12 |
+| 09.11 14:30 | Черноморец — Янтра | Mr. Bit Втора лига | Diema Sport, diemasport |
 | 09.11 14:30 | Politehnica Timisoara — CSM Resita | digisport Liga a 2-a | Digi Sport 1 |
 | 09.11 14:30 | Poli Timișoara — CSM Reșița |  | Prima Sport 1 |
-| 09.11 17:00 | Етър — Монтана | Mr. Bit Втора лига | Diema Sport |
+| 09.11 17:00 | Етър — Монтана | Mr. Bit Втора лига | Diema Sport, diemasport |
 | 09.11 17:00 | CS Dinamo — Ramnicu Valcea | digisport Liga a 2-a | Digi Sport 1 |
-| 09.11 19:00 | ATP 250 — STOCKHOLM | 2026 ATP 250 - STOCKHOLM | Cytavision Sports5 HD |
+| 09.11 17:00 | Napredak — Bor 1919 | PRVA LIGA SRBIJE | Arena Sport 10 |
+| 09.11 17:55 | Karsiyaka — Besiktas | TURSKA LIGA | Sport1 1, Arena Premium 2 |
+| 09.11 18:50 | Tatran Střešovice — AMIX Florbal MB | Livesport Superliga | ČT sport |
+| 09.11 18:50 | Danilovgrad — Jedinstvo | CKL, direktno | TVCG 2 |
+| 09.11 19:00 | ATP — STOCKHOLM | 2026 ATP 250 - STOCKHOLM | Cytavision Sports5 HD, TV4 Tennis, TV12 |
 | 09.11 19:00 | Ε.Ν.ΠΑΡΑΛΙΜΝΙΟΥ — ΑΠΟΛΛΩΝ | ECOMMBX BASKET LEAGUE | Cytavision Sports6 HD |
+| 09.11 19:00 | Crvena zvezda — Slovan | ABA LIGA | Arena Premium 1 |
+| 09.11 19:00 | Kolubara — Tamiš | KLS | Arena Premium 5 |
+| 09.11 19:00 | Javor Matis — TSC | PRVA LIGA SRBIJE | Arena Sport 10 |
+| 09.11 19:00 | FC Köln W — RB Leipzig W | Naisten Bundesliiga | V Sport 2 Suomi, Viaplay TV (FI) |
+| 09.11 19:50 | Atlético de Madrid W — Badalona Women W | Liga F | DAZN 1, M+ Vamos 2 |
 | 09.11 20:00 | FC Botoșani — Otelul Galati | superliga Superliga | Digi Sport 1, Prima Sport 1 |
-| 09.11 21:30 | Плимут Паркуей — Бъркамстед | ФА Къп | Diema Sport 2 |
-| 09.11 21:30 | PLYMOUTH PARKWAY — BERKHAMSTED | THE EMIRATES FA CUP | Cytavision Sports7 HD |
+| 09.11 20:00 | Široki — Cibona | ABA LIGA | Arena Sport 1 |
+| 09.11 20:00 | Hvidovre IF — Aarhus Fremad | 1. Division | TV3 Sport |
+| 09.11 20:30 | Plymouth Parkway — Berkhamsted | FA Cup Football | TNT Sports 1, Cytavision Sports7 HD, V Sport 2 Suomi |
+| 09.11 20:55 | וירטוס בולוניה — ורונה | כדורסל איטלקי | Sport1 1 |
+| 09.11 21:00 | Mega — Dubai | ABA LIGA | Arena Premium 1 |
+| 09.11 21:25 | Plymouth Argyle — Berkhamsted |  | Nova Sport 2 |
+| 09.11 21:30 | Плимут Паркуей — Бъркамстед | ФА Къп | Diema Sport 2, diemasport 2 |
+| 09.11 21:30 | CE Sabadell — Real Sociedad B | LALIGA HYPERMOTION | LALIGA TV HYPERMOTION |
+| 09.11 21:30 | Camp. Italiano serie C Sky WiFi 2026/27 AZ Picerno — Bari 13a g.ta | Calcio | Rai Sport |
+| 09.11 22:00 | Deportivo Abanca W — Valencia CF W | Liga F | DAZN 2 |
+| 09.11 22:00 | WTA — WTA Finals | WTA | TV 2 Sport |
 | 09.11 22:05 | SCU TORREENSE — UNIÃO DE LEIRIA | LIGA PORTUGAL 2 | SPORT.TV1 |
+| 10.11 02:00 | Detroit Pistons — Wasahington Wizards | NBA | Diema Sport 3, DAZN Baloncesto, diemasport 3, Sport1 |
+| 10.11 03:30 | HOUSTON ROCKETS — DENVER NUGGETS | NBA | SPORT.TV1, TSN2 |
+| 10.11 14:00 | ATP 250 — STOCKHOLM | 2026 ATP 250 - STOCKHOLM | Cytavision Sports5 HD |
+| 10.11 19:00 | Balkan Botevgrad — PAOK |  | Novasports PrimeHD |
+| 10.11 19:00 | ATP 250 — STOCKHOLM | 2026 ATP 250 - STOCKHOLM | Cytavision Sports5 HD |
+| 10.11 19:30 | Metalul Buzau — Steaua | digisport Liga a 2-a | Digi Sport 1 |
+| 10.11 19:40 | Real Madryt CF W — Paris FC W | Liga Mistrzyń UEFA | TVP Sport, Cablenet Sports 2 HD |
+| 10.11 19:45 | Hacken W — Chelsea FC Women W |  | Cablenet Sports 3 HD |
+| 10.11 20:25 | JL BOURG-EN-BRESSE — BUDUCNOST PODGORICA | EUROCUP | SPORT.TV2, Novasports 4 HD |
+| 10.11 21:00 | Rostock — Cedevita Olimpija |  | Novasports Start HD |
+| 10.11 21:30 | Manresa — KK Bosna |  | Novasports 5 HD |
+| 10.11 22:00 | Inter W — Manchester City W |  | Cablenet Sports 3 HD |
+| 10.11 22:00 | Roma W — Servette FCCF W |  | Cablenet Sports 1 HD |
+| 10.11 22:00 | Paris Saint-Germain W — Bayern Munchen W |  | Cablenet Sports 2 HD |
 
 ## Строки по сайтам
 
 | Когда | Сайт | Канал | Матч | Лига |
 |---|---|---|---|---|
-| 03.11 00:00 | tvarenasport.ba | Arena Sport 1 | Defensa — Independiente | Argentinska liga |
-| 03.11 00:00 | tvarenasport.com | Arena Premium 3 | Defensa y Justicia — Independiente | ARGENTINSKA LIGA |
-| 03.11 00:55 | sport1.maariv.co.il | Sport1 5 | ברגנטינו — סאנטוס | הברזילראו |
-| 03.11 01:00 | ssport.tv | S Sport2 | Miami — Florida | NCAA |
-| 03.11 02:00 | sport1tv.hu | Sport1 HU | Cleveland Cavaliers — Oklahoma City Thunder | alapszakasz |
-| 03.11 02:00 | ssport.tv | S Sport | Oklahoma City Thunder — Cleveland Cavaliers | NBA |
-| 03.11 02:00 | tvarenasport.ba | Arena Premium 1 | Cleveland — Oklahoma City | NBA |
-| 03.11 02:00 | tvarenasport.com | Arena Premium 1 | Cleveland — Oklahoma City | NBA |
-| 03.11 02:00 | sportklub.hr | Sport Klub 1 | Cleveland — Oklahoma City | NBA liga |
-| 03.11 02:00 | port.hu | Sport1 | Cleveland Cavaliers — Oklahoma City Thunder | Kosárlabda: NBA |
-| 03.11 02:00 | tv3.lt | Go3 Sport 1 | Thunder — Cavaliers | NBA rungtynės |
-| 03.11 02:00 | ipko.tv | Sport 1 | NBA Oklahoma City — Cleveland | basketboll |
-| 03.11 02:05 | oneplay.cz | Nova Sport 6 | Cleveland Cavaliers — Oklahoma City Thunder |  |
-| 03.11 03:29 | sporttv.pt | SPORT.TV1 | HOUSTON ROCKETS — BOSTON CELTICS | NBA |
-| 03.11 03:30 | ssport.tv | S Sport2 | Florida A&M — Florida St | NCAA |
-| 03.11 05:00 | cosmotetv.gr | Magenta Sport 4 | Λος Άντζελες Λέικερς — Μαϊάμι Χιτ |  |
-| 03.11 05:00 | sport1tv.hu | Sport1 HU | Los Angeles Lakers — Miami Heat | alapszakasz |
-| 03.11 05:00 | sportklub.hr | Sport Klub 1 | LA Lakers — Miami | NBA liga |
-| 03.11 05:00 | port.hu | Sport1 | Los Angeles Lakers — Miami Heat | Kosárlabda: NBA |
-| 03.11 07:00 | sport1tv.hu | Sport1 HU | Los Angeles Lakers — Miami Heat | alapszakasz |
-| 03.11 07:30 | sportklub.hr | Sport Klub 7 | Selekhmeteva — Kostović | WTA 250 Chennai |
-| 03.11 07:30 | sportklub.hr | Sport Klub 8 | Teichmann — Garland | WTA 250 Chennai |
-| 03.11 07:30 | sportklub.hr | Sport Klub 9 | Udvardy — Montgomery | WTA 250 Chennai |
-| 03.11 08:00 | sportklub.hr | Sport Klub 2 | Gibson — Oliynyikova | WTA 250 Hong Kong |
-| 03.11 08:00 | sportklub.hr | Sport Klub 4 | Yastremska — Sonmez | WTA 250 Hong Kong |
-| 03.11 08:00 | sportklub.hr | Sport Klub 5 | Ninomiya/Zhang — Hozumi/Klepač | WTA 250 Hong Kong |
-| 03.11 09:15 | sportklub.hr | Sport Klub 7 | Zakharova — Iatcenko | WTA 250 Chennai |
-| 03.11 09:15 | sportklub.hr | Sport Klub 8 | L. Fruhvirtova — Falkowska | WTA 250 Chennai |
-| 03.11 09:30 | sportklub.hr | Sport Klub 9 | Vandromme — Okamura | WTA 250 Chennai |
-| 03.11 09:40 | ntvplus.tv | СТАРТ HD | Ньюкасл Джетс — Шанхай Порт | АФК Лига Чемпионов Элита Прямая трансляция |
-| 03.11 09:40 | sport1.maariv.co.il | Sport1 5 | ניוקאסל ג'טס — שנגחאי פורט | ליגת האלופות אסיה |
-| 03.11 09:45 | poverkhnost.tv | Sport 1 | Ньюкасл Джетс — Шанхай Порт | AFC Champions League Elite |
-| 03.11 09:45 | sportklub.hr | Sport Klub 3 | Newcastle Jets — Shanghai Port | LP Azije ELITE |
-| 03.11 09:45 | sportklub.hr | Sport Klub 4 | Inglis — Joint | WTA 250 Hong Kong |
-| 03.11 09:45 | sportklub.hr | Sport Klub 5 | Jiang/Wong — Neel/Olmos | WTA 250 Hong Kong |
-| 03.11 10:00 | digisport.ro | Digi Sport 2 | Sorana Cirstea — Maria Timofeeva | tenis WTA Hong Kong ziua 2 |
-| 03.11 10:00 | programetv.ro | Digi Sport 2 | Sorana Cirstea — Maria Timofeeva ziua 2 | WTA Hong Kong |
-| 03.11 10:00 | sportklub.hr | Sport Klub 2 | Cirstea — Timofeeva | WTA 250 Hong Kong |
-| 03.11 11:00 | sportklub.hr | Sport Klub 7 | Tjen — Hui | WTA 250 Chennai |
-| 03.11 11:15 | sportklub.hr | Sport Klub 5 | Sakatsume — Valentova | WTA 250 Hong Kong |
-| 03.11 11:15 | sportklub.hr | Sport Klub 8 | Burrage — Adkar | WTA 250 Chennai |
-| 03.11 11:15 | sportklub.hr | Sport Klub 9 | Morvayova — P. Kudermetova | WTA 250 Chennai |
-| 03.11 11:19 | sporttv.pt | SPORT.TV1 | ESCÓCIA U16 — PORTUGAL U16 | FUTEBOL FEDERATIONS CUP SUB 16 - Regular |
-| 03.11 11:55 | ntvplus.tv | СТАРТ HD | Чонбук — Джохор | АФК Лига Чемпионов Элита Прямая трансляция |
-| 03.11 11:55 | ntvplus.tv | СТАРТ ТРИУМФ HD | Касива Рейсол — Тэджон | АФК Лига Чемпионов Элита Прямая трансляция |
-| 03.11 12:00 | diemaxtra.nova.bg | Diema Sport 3 | Висел Кобе — Рачабури | Елитна Шампионска лига на Азия |
-| 03.11 12:00 | poverkhnost.tv | Sport 1 | Касива Рейсол — Теджон | AFC Champions League Elite |
-| 03.11 12:00 | poverkhnost.tv | Sport 2 | Чонбук — Джохор | AFC Champions League Elite |
-| 03.11 12:00 | primaplay.ro | Prima Sport 3 | ATP Paris — tournament |  |
-| 03.11 12:00 | ziggosport.nl | Ziggo Sport 1 | ATP Paris — tournament |  |
-| 03.11 12:00 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
-| 03.11 12:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Paris — tournament |  |
-| 03.11 12:00 | sportklub.hr | Sport Klub 1 | Kashiwa — Daejon | LP Azije ELITE |
-| 03.11 12:00 | sportklub.hr | Sport Klub 10 | Shubladze — Samsonova | WTA 250 Hong Kong |
-| 03.11 12:00 | sportklub.hr | Sport Klub 2 | Rinderknech — F. Cerundolo | ATP Masters Paris |
-| 03.11 12:00 | sportklub.hr | Sport Klub 3 | Jeonbuk — Johor | LP Azije ELITE |
-| 03.11 12:00 | sportklub.hr | Sport Klub 4 | Halys — Fery | ATP Masters Paris |
-| 03.11 12:00 | sportklub.hr | Sport Klub 5 | Rublev — Etcheverry | ATP Masters Paris |
-| 03.11 12:00 | sportklub.hr | Sport Klub 6 | Kobe — Ratchaburi | LP Azije ELITE |
-| 03.11 12:00 | tvtid.tv2.dk | TV 2 Sport | Halys — Fery | ATP |
-| 03.11 12:00 | tvsporten.dk | TV 2 Sport | ATP Paris — tournament | ATP |
-| 03.11 12:00 | tvmatchen.nu | TV4 Tennis | ATP Paris — tournament | ATP |
-| 03.11 12:00 | tvmatsit.com | MTV Max | ATP Paris — tournament | ATP |
-| 03.11 12:05 | movistarplus.es | M+ Deportes 2 | Rinderknech — Cerundolo | Torneo de París |
-| 03.11 12:05 | movistarplus.es | M+ Deportes 3 | Halys — Fery | Torneo de París |
-| 03.11 12:05 | movistarplus.es | M+ Deportes 4 | Rublev — Etcheverry | Torneo de París |
-| 03.11 12:30 | sportklub.hr | Sport Klub 8 | Parks — Eala | WTA 250 Hong Kong |
-| 03.11 13:00 | sportklub.hr | Sport Klub 7 | Uchijima — Sramkova | WTA 250 Chennai |
-| 03.11 13:00 | sportklub.hr | Sport Klub 9 | Zolotareva — Stefanini | WTA 250 Chennai |
-| 03.11 13:45 | sportklub.hr | Sport Klub 10 | Tang/Ye — Karunaratne/Shek | WTA 250 Hong Kong |
-| 03.11 13:55 | movistarplus.es | M+ Liga de Campeones | Villarreal U19 — PSG U19 | UEFA Youth League |
-| 03.11 14:00 | sportklub.hr | Sport Klub 2 | Davidovich-Fokina — Kouame | ATP Masters Paris |
-| 03.11 14:00 | sportklub.hr | Sport Klub 4 | Tsitsipas — Tien | ATP Masters Paris |
-| 03.11 14:00 | sportklub.hr | Sport Klub 5 | Nakashima — Berrettini | ATP Masters Paris |
-| 03.11 14:00 | sportklub.hr | Sport Klub 7 | Nouza/Venus — Cabral/Tracy | ATP Masters Paris |
-| 03.11 14:00 | tvtid.tv2.dk | TV 2 Sport | Tsitsipas — Tien | ATP |
-| 03.11 14:05 | movistarplus.es | M+ Deportes 2 | Borges — Kouame | Torneo de París |
-| 03.11 14:05 | movistarplus.es | M+ Deportes 3 | Vallejo — Tien | Torneo de París |
-| 03.11 14:05 | movistarplus.es | M+ Deportes 4 | Nakashima — Berrettini | Torneo de París |
-| 03.11 14:10 | diemaxtra.nova.bg | Diema Sport 3 | Конг Ан Ха Ной — Киото Санга | Елитна Шампионска лига на Азия |
-| 03.11 14:10 | ntvplus.tv | СТАРТ HD | Порт — Пекин | АФК Лига Чемпионов Элита Прямая трансляция |
-| 03.11 14:10 | ntvplus.tv | СТАРТ ТРИУМФ HD | Конг Ан Ханой — Киото Санга | АФК Лига Чемпионов Элита Прямая трансляция |
-| 03.11 14:15 | diemaxtra.nova.bg | Diema Sport 2 | Порт — Пекин Гуоан | Елитна Шампионска лига на Азия |
-| 03.11 14:15 | poverkhnost.tv | Sport 1 | Порт — Бейцзин Гоань | AFC Champions League Elite |
-| 03.11 14:15 | poverkhnost.tv | Sport 2 | Ханой — Киото | AFC Champions League Elite |
-| 03.11 14:15 | sportklub.hr | Sport Klub 1 | Port — Peking | LP Azije ELITE |
-| 03.11 14:15 | sportklub.hr | Sport Klub 3 | Cong An Ha Noi — Kyoto | LP Azije ELITE |
-| 03.11 14:15 | sportklub.hr | Sport Klub 8 | Pridankina — Badosa | WTA 250 Hong Kong |
-| 03.11 14:45 | sportklub.hr | Sport Klub 9 | Sawangkaew — Hontama | WTA 250 Chennai |
-| 03.11 14:50 | epg.cyta.com.cy | PPV1 | MANCHESTER UTD U19 — ROMA U19 | UEFA YOUTH LEAGUE |
-| 03.11 15:00 | maxsport.live | MAX Sport 3 | Манчестър Юнайтед U19 — Рома U19 | УЕФА Младежка Шампионска лига |
-| 03.11 15:00 | tv24.co.uk | TNT Sports 2 | Manchester United U19 — AS Roma U19 | UEFA Youth League Football |
-| 03.11 15:00 | tv3.lt | Sport 1 | Edas Butvilas — Laslo Djere | Tenisas. ATP Challenger 100. Bratislava |
-| 03.11 15:00 | ipko.tv | Sport 1 | Youth League Manchester United U19 — Roma U19 | futbolli |
-| 03.11 15:00 | tvsporten.dk | TV3 Sport | Manchester United U19 — AS Roma U19 | UEFA Youth League |
-| 03.11 15:00 | alkass.net | Al Kass Three | Club Africain — Stade Tunisien | Tunis Derby |
-| 03.11 15:30 | alkass.net | Al Kass Six | Two East Bengal — Al-Seeb | AFC Champions League |
-| 03.11 15:45 | sportklub.hr | Sport Klub 2 | Đoković — Vacherot | ATP Masters Paris |
-| 03.11 15:45 | sportklub.hr | Sport Klub 4 | Paul — Rune | ATP Masters Paris |
-| 03.11 15:45 | sportklub.hr | Sport Klub 6 | East Bengal — Seeb | Liga prvaka Azije - TWO |
-| 03.11 15:45 | sportklub.hr | Sport Klub 7 | Bolelli/Vavassori — Schaitter/Wallner | ATP Masters Paris |
-| 03.11 16:00 | sportklub.hr | Sport Klub 5 | Michelsen — Lehecka | ATP Masters Paris |
-| 03.11 16:00 | tvtid.tv2.dk | TV 2 Sport | Rune — Paul | ATP |
-| 03.11 16:00 | tvsporten.dk | TV 2 Sport | ATP Paris — tournament | ATP |
-| 03.11 16:05 | movistarplus.es | M+ Deportes 2 | Djokovic — Vacherot | Torneo de París |
-| 03.11 16:05 | movistarplus.es | M+ Deportes 3 | Paul — Rune | Torneo de París |
-| 03.11 16:05 | movistarplus.es | M+ Deportes 4 | Michelsen — Lehecka | Torneo de París |
-| 03.11 16:05 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
-| 03.11 16:15 | alkass.net | Al Kass One | Al-Zawraa — Al-Riffa | Gulf Club Champions League |
-| 03.11 16:15 | alkass.net | Al Kass Eight | Al-Zawraa — Al-Riffa | Gulf Club Champions League |
-| 03.11 16:45 | alkass.net | Al Kass Four | Al-Shabab — Shaab Hadramaut | Gulf Club Champions League |
-| 03.11 16:50 | ipko.tv | Tring Sport 1 | ATL.MADRID U19 — BAYERN U19 ! | futbolli |
-| 03.11 16:55 | allente.no | TV 2 Sport 1 HD | Atlético U19 — Bayern U19 | UEFA Youth League |
-| 03.11 16:55 | movistarplus.es | M+ Liga de Campeones | Barcelona U19 — Aston Villa U19 | UEFA Youth League |
-| 03.11 16:55 | movistarplus.es | M+ Liga de Campeones 2 | At. Madrid U19 — Bayern Munich U19 | UEFA Youth League |
-| 03.11 16:55 | movistarplus.es | M+ Vamos | At. Madrid U19 — Bayern Munich U19 | UEFA Youth League |
-| 03.11 16:55 | tv2.no | TV 2 Sport 1 | Atlético U19 — Bayern U19 | UEFA Youth League |
-| 03.11 16:55 | ziggosport.nl | Ziggo Sport 3 | Atlético Madrid U19 — Bayern München U19 |  |
-| 03.11 16:55 | oneplay.cz | Nova Sport 4 | Atlético Madrid U19 — Bayern Mnichov U19 |  |
-| 03.11 17:00 | digisport.ro | Digi Sport 3 | Atletico Madrid U19 — Bayern Munchen U19 | digisport Youth League Grupe (etapa 4) |
-| 03.11 17:00 | epg.cyta.com.cy | Cytavision Sports6 HD | ATLETICO MADRID U19 — BAYERN MUNCHEN U19 | UEFA YOUTH LEAGUE |
-| 03.11 17:00 | epg.cyta.com.cy | PPV5 | ATLETICO MADRID U19 — BAYERN MUNCHEN U19 | UEFA YOUTH LEAGUE |
-| 03.11 17:00 | programetv.ro | Digi Sport 3 | Atletico Madrid U19 — Bayern Munchen Grupe U19 | Youth League |
-| 03.11 17:00 | programetv.ro | Prima Sport 2 | Atletico Madrid U19 — Bayern Munchen U19 | UEFA YOUTH LEAGUE |
-| 03.11 17:00 | tv24.co.uk | TNT Sports 4 | FC Barcelona U19 — Aston Villa U19 | UEFA Youth League Football |
-| 03.11 17:00 | tvsporten.dk | TV3 Sport | Atletico Madrid U19 — Bayern München U19 | UEFA Youth League |
-| 03.11 17:00 | tvmatsit.com | MTV Urheilu 2 | Atletico Madrid U19 — Bayern München U19 | UEFA Youth League |
-| 03.11 17:30 | sportklub.hr | Sport Klub 2 | Michelsen/Tien — Krawietz/Puetz | ATP Masters Paris |
-| 03.11 17:30 | sportklub.hr | Sport Klub 7 | Michelsen/Tien — Krawietz/Puetz | ATP Masters Paris |
-| 03.11 17:30 | alkass.net | Al Kass Five | Esteghlal Tehran — Al-Shamal | AFC Champions League Elite |
-| 03.11 17:45 | sportklub.hr | Sport Klub 4 | Bonzi — Fritz | ATP Masters Paris |
-| 03.11 17:55 | ntvplus.tv | СТАРТ HD | Эстеглал — Аль Шамаль | АФК Лига Чемпионов Элита Прямая трансляция |
-| 03.11 18:00 | diemaxtra.nova.bg | Diema Sport 3 | Естеглал — Шамал | Елитна Шампионска лига на Азия |
-| 03.11 18:00 | epg.cyta.com.cy | Cytavision Sports2 HD | ΑΕΛ — ΗΡΑΚΛΗΣ ΓΕΡΟΛΑΚΚΟΥ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA |
-| 03.11 18:00 | epg.cyta.com.cy | PPV2 | ΑΕΛ — ΗΡΑΚΛΗΣ ΓΕΡΟΛΑΚΚΟΥ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA |
-| 03.11 18:00 | poverkhnost.tv | Sport 1 | Эстегляль — Аль-Шамаль | AFC Champions League Elite |
-| 03.11 18:00 | poverkhnost.tv | Sport 2 | Аль-Хуссейн — Аль-Шорта | AFC Champions League Two |
-| 03.11 18:00 | tvarenasport.com | Arena Sport 10 | Jezero — Dečić | CRNOGORSKA LIGA |
-| 03.11 18:00 | sportklub.hr | Sport Klub 1 | Esteghlal — Shamal | LP Azije ELITE |
-| 03.11 18:00 | sportklub.hr | Sport Klub 3 | Hussein — Shorta | Liga prvaka Azije - TWO |
-| 03.11 18:00 | sportklub.hr | Sport Klub 6 | Polzela — Krka | Slovenska liga |
-| 03.11 18:00 | tvtid.tv2.dk | TV 2 Sport | Bonzi — Fritz | ATP |
-| 03.11 18:00 | alkass.net | Al Kass Six | Two Al-Hussein — Al-Shorta | AFC Champions League |
-| 03.11 18:05 | movistarplus.es | M+ Deportes 3 | Bonzi — Fritz | Torneo de París |
-| 03.11 18:25 | ntvplus.tv | Матч ТВ | Спартак — Волна | FONBET Кубок России Прямая трансляция |
-| 03.11 18:25 | ntvplus.tv | Телеканал «Матч ТВ» | Спартак — Волна | FONBET Кубок России Прямая трансляция |
-| 03.11 18:25 | ntvplus.tv | МАТЧ ПРЕМЬЕР HD | Спартак — Волна | Прямая трансляция |
-| 03.11 18:50 | sport5.co.il | ספורט 5+ | עירוני נהריה — מכבי עירוני רעננה | ליגה לאומית בכדורסל |
-| 03.11 18:50 | tv3.lt | Go3 Sport 2 | Tofas — Neptūnas | Europos taurė |
-| 03.11 19:00 | epg.cyta.com.cy | Cytavision Sports1 HD | ΚΑΡΜΙΩΤΙΣΣΑ — ΕΡΜΗΣ ΑΡΑΔΙΠΠΟΥ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA |
-| 03.11 19:00 | epg.cyta.com.cy | PPV1 | ΚΑΡΜΙΩΤΙΣΣΑ — ΕΡΜΗΣ ΑΡΑΔΙΠΠΟΥ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA |
-| 03.11 19:00 | epg.cyta.com.cy | Novasports 5 HD | Tofas — Neptunas |  |
-| 03.11 19:00 | epg.cyta.com.cy | Cytavision Sports8 HD | AEL — TALTECH ALEXELA | EUROPEAN NORTH BASKET LEAGUE |
-| 03.11 19:00 | primaplay.ro | PPV3 | ATP Paris — tournament |  |
-| 03.11 19:00 | trt.net.tr | TRT SPOR | TOFAŞ — NEPTUNAS KLAIPEDA | BKT EUROCUP BASKETBOL KARŞILAŞMASI |
-| 03.11 19:00 | trtspor.com.tr | TRT SPOR | TOFAŞ — NEPTUNAS KLAIPEDA | BKT EUROCUP BASKETBOL |
-| 03.11 19:00 | tvarenasport.ba | Arena Premium 1 | Triglav — Sloboda Užice | ABA 2 liga |
-| 03.11 19:00 | tvarenasport.ba | Arena Sport 2 | Tofas — Neptunas | Eurocup |
-| 03.11 19:00 | tvarenasport.com | Arena Premium 5 | Tofas — Neptunas | EVROKUP |
-| 03.11 19:00 | tvarenasport.com | Arena Sport 9 | Kranj — Sloboda Užice | ABA2 LIGA |
-| 03.11 19:00 | tvarenasport.hr | Arena Sport 4 | TRIGLAV — SLOBODA UŽICE | ABA2 LIGA |
-| 03.11 19:00 | tvarenasport.si | Arena Sport 1 | ECE Triglav Kranj — Sloboda Užice | ABA 2 Liga |
-| 03.11 19:00 | sportklub.hr | Sport Klub 10 | Tofas — Neptunas | Eurocup |
-| 03.11 19:00 | sportklub.hr | Sport Klub 5 | R. Cash/Nakashima — Van Assche/Vacherot | ATP Masters Paris |
-| 03.11 19:00 | novasports.gr | Novasports5HD | Τόφας — Νεπτούνας | EuroCup |
-| 03.11 19:00 | ipko.tv | TRT Spor | TOFAŞ — Neptunas Klaipeda | basketboll |
-| 03.11 19:00 | tvsporten.dk | Viaplay Sport News DK | Lyngby BK — Randers FC | DBU Pokalen |
-| 03.11 19:25 | tv-program.aktuality.sk | Nova Sport 2 | Salon Vilpas — Windrose Giants Antwerp |  |
-| 03.11 19:25 | sport5.co.il | ספורט 5 Stars | סאלו וילפאס — אנטוורפ ג'יינטס | ליגת האלופות בכדורסל |
-| 03.11 19:25 | oneplay.cz | Nova Sport 2 | Salon Vilpas — Windrose Giants Antwerp |  |
-| 03.11 19:30 | sport1tv.hu | Sport1 HU | Galatasaray — VfB Stuttgart | BL |
-| 03.11 19:30 | sport1tv.hu | Sport2 HU | Sahtar — Sporting | BL |
-| 03.11 19:30 | tvarenasport.ba | Arena Sport 1 | Salon — Antwerp | Fiba Liga prvaka |
-| 03.11 19:30 | sportklub.hr | Sport Klub 4 | Struff — Gea | ATP Masters Paris |
-| 03.11 19:30 | port.hu | Sport1 | Galatasaray — VfB Stuttgart | Labdarúgás: UEFA Bajnokok Ligája |
-| 03.11 19:30 | port.hu | Sport2 | Sahtar — Sporting | Labdarúgás: UEFA Bajnokok Ligája |
-| 03.11 19:30 | novasports.gr | Novasports Prime | ΠΑΟΚ — Ρόμα | Pre Game Show |
-| 03.11 19:30 | oneplay.cz | Nova Sport 4 | Galatasaray SK — VfB Stuttgart |  |
-| 03.11 19:30 | alkass.net | Al Kass One | Neom — Al-Duhail | Gulf Club Champions League |
-| 03.11 19:30 | alkass.net | Al Kass Eight | Neom — Al-Duhail | Gulf Club Champions League |
-| 03.11 19:30 | oneplay.cz | Nova Sport 6 | Šachtar Doněck — Sporting CP |  |
-| 03.11 19:34 | sporttv.pt | SPORT.TV5 | SHAKHTAR DONETSK — SPORTING CP | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:35 | ziggosport.nl | Ziggo Sport 1 | Galatasaray AS — VFB Stuttgart |  |
-| 03.11 19:35 | ziggosport.nl | Ziggo Sport 2 | Galatasaray AS — VFB Stuttgart |  |
-| 03.11 19:35 | ziggosport.nl | Ziggo Sport Kanaal 14 | Galatasaray AS — VFB Stuttgart |  |
-| 03.11 19:35 | sport5.co.il | ספורט 5 Live | גלאטסראיי — שטוטגרט | ליגת האלופות |
-| 03.11 19:35 | sport5.co.il | 5MAX | שחטאר דונייצק — ספורטינג ליסבון | ליגת האלופות |
-| 03.11 19:35 | ipko.tv | Tring Sport 1 | GALATASARAY — STUTTGART ! | futbolli |
-| 03.11 19:40 | digisport.ro | Digi Sport 2 | Sahtior Donetk — Sporting | ucl Champions League |
-| 03.11 19:40 | programetv.ro | Digi Sport 2 | Sahtior Donetk — Sporting | Champions League |
-| 03.11 19:40 | teleman.pl | CANAL+ Extra 2 | Galatasaray SK — VfB Stuttgart | Liga Mistrzów UEFA |
-| 03.11 19:40 | teleman.pl | CANAL+ Extra 3 | Szachtar Donieck — Sporting CP | Liga Mistrzów UEFA |
-| 03.11 19:40 | ziggosport.nl | Ziggo Sport 3 | Sjachtar Donetsk — Sporting CP |  |
-| 03.11 19:40 | ipko.tv | Tring Sport 2 | SHAKHTAR — SPORTING ! | futbolli |
-| 03.11 19:45 | cosmotetv.gr | Magenta Sport 2 | Σαχτάρ Ντόνετσκ — Σπόρτινγκ Λισαβόνας |  |
-| 03.11 19:45 | cosmotetv.gr | Magenta Sport 3 | Γαλατασαράι — Στουτγκάρδη |  |
-| 03.11 19:45 | digisport.ro | Digi Sport 1 | Galatasaray — Stuttgart | ucl Champions League |
-| 03.11 19:45 | epg.cyta.com.cy | Cytavision Sports3 HD | SHAKHTAR DONETSK — SPORTING LISBON | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:45 | epg.cyta.com.cy | CVSPORTS 4K1 | SHAKHTAR DONETSK — SPORTING LISBON | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:45 | epg.cyta.com.cy | PPV3 | SHAKHTAR DONETSK — SPORTING LISBON | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:45 | epg.cyta.com.cy | Cytavision Sports4 HD | GALATASARAY — STUTTGART | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:45 | epg.cyta.com.cy | CVSPORTS 4K2 | GALATASARAY — STUTTGART | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:45 | epg.cyta.com.cy | PPV4 | GALATASARAY — STUTTGART | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:45 | maxsport.live | MAX Sport 3 | Галатасарай — Щутгарт | УЕФА Шампионска лига |
-| 03.11 19:45 | maxsport.live | MAX Sport 4 | Атлетико Мадрид — Байерн Мюнхен | УЕФА Шампионска лига |
-| 03.11 19:45 | primaplay.ro | Prima Sport 1 | Galatasaray — Stuttgart |  |
-| 03.11 19:45 | primaplay.ro | Prima Sport 2 | Șahtior Donețk — Sporting Lisabona |  |
-| 03.11 19:45 | programetv.ro | Digi Sport 1 | Galatasaray — Stuttgart | Champions League |
-| 03.11 19:45 | programetv.ro | Prima Sport 1 | Galatasaray — Stuttgart | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:45 | programetv.ro | Prima Sport 2 | Sahtior — Sporting Lisabona | UEFA CHAMPIONS LEAGUE |
-| 03.11 19:45 | tvarenasport.ba | Arena Premium 2 | Galatasaray — Stuttgart | Liga prvaka |
-| 03.11 19:45 | tvarenasport.ba | Arena Premium 3 | Shakhtar — Sporting | Liga prvaka |
-| 03.11 19:45 | tvarenasport.com | Arena Premium 1 | Galatasaray — Stuttgart | UEFA LIGA ŠAMPIONA |
-| 03.11 19:45 | tvarenasport.com | Arena Premium 2 | Shakhtar — Sporting | UEFA LIGA ŠAMPIONA |
-| 03.11 19:45 | tvarenasport.hr | Arena Sport 2 | GALATASARAY — STUTTGART | LIGA PRVAKA |
-| 03.11 19:45 | tvarenasport.hr | Arena Sport 3 | SHAKHTAR — SPORTING | LIGA PRVAKA |
-| 03.11 19:45 | tv24.co.uk | TNT Sports 2 | Galatasaray — VfB Stuttgart | UEFA Champions League Football |
-| 03.11 19:45 | tv24.co.uk | TNT Sports 4 | Shakhtar Donetsk — Sporting CP | UEFA Champions League Football |
-| 03.11 19:45 | ipko.tv | Sport 1 | Galatasaray — Stuttgart | futbolli |
-| 03.11 19:45 | ipko.tv | Sport 2 | Shakhtar Donetsk — Sporting | futbolli |
-| 03.11 19:45 | tvsporten.dk | TV3 Sport | Galatasaray — VfB Stuttgart | Champions League |
-| 03.11 19:45 | tvsporten.dk | TV3 Max | Shakhtar Donetsk — Sporting Clube de Portugal | Champions League |
-| 03.11 19:45 | tvmatchen.nu | Viaplay Sport | Galatasaray — Vfb Stuttgart | Champions League |
-| 03.11 19:45 | tvmatsit.com | MTV Urheilu 1 | Galatasaray — VfB Stuttgart | Champions League |
-| 03.11 19:45 | tvmatsit.com | MTV Urheilu 2 | Shakhtar Donetsk — Sporting CP | Champions League |
-| 03.11 19:50 | rtcg.me | TVCG 2 | Budućnost — Kemnic | Eurokup, direktno |
-| 03.11 19:55 | tv-program.aktuality.sk | Nova Sport | BC Juventus Utena — BK KVIS Pardubice |  |
-| 03.11 19:55 | ntvplus.tv | Старт Баскет | Ювентус Утена — Пардубице | Лига Чемпионов Прямая трансляция |
-| 03.11 19:55 | sport1.maariv.co.il | Sport1 5 | פאוק סלוניקי — רומא | היורוקאפ |
-| 03.11 19:55 | oneplay.cz | Nova Sport 1 | BC Juventus Utena — BK KVIS Pardubice |  |
-| 03.11 19:55 | tvtid.tv2.dk | TV 2 Sport X | AGF W — FC Midtjylland W | A-Liga |
-| 03.11 20:00 | epg.cyta.com.cy | Novasports PrimeHD | PAOK — Roma |  |
-| 03.11 20:00 | tvarenasport.ba | Arena Premium 5 | Paok — BC Roma | Eurocup |
-| 03.11 20:00 | tvarenasport.ba | Arena Sport 3 | Juventus — Pardubice | FIBA Liga prvaka |
-| 03.11 20:00 | tvarenasport.com | Arena Premium 3 | PAOK — Roma | EVROKUP |
-| 03.11 20:00 | tvarenasport.com | Arena Premium 4 | Budućnost — Chemnitz | EVROKUP |
-| 03.11 20:00 | tvarenasport.com | Arena Sport 1 | FMP — Uralmash | VTB KUP |
-| 03.11 20:00 | tvarenasport.com | Arena Sport 2 | Juventus — Pardubice | FIBA LIGA ŠAMPIONA |
-| 03.11 20:00 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
-| 03.11 20:00 | sportklub.hr | Sport Klub 2 | Shelton — Norrie | ATP Masters Paris |
-| 03.11 20:00 | sportklub.hr | Sport Klub 8 | PAOK — Roma | Eurocup |
-| 03.11 20:00 | sportklub.hr | Sport Klub 9 | Budućnost — Chemnitz | Eurocup |
-| 03.11 20:00 | novasports.gr | Novasports Prime | ΠΑΟΚ — Ρόμα | EuroCup |
-| 03.11 20:00 | tvtid.tv2.dk | TV 2 Sport | Shelton — Norrie | ATP |
-| 03.11 20:00 | tvsporten.dk | TV 2 Sport X | AGF W — FC Midtjylland W | A-Liga |
-| 03.11 20:00 | tvmatchen.nu | TV4 Fotboll | IK Sirius FK — Halmstads BK | Allsvenskan |
-| 03.11 20:00 | tvmatchen.nu | TV4 Tennis | ATP Paris — tournament | ATP |
-| 03.11 20:10 | ntvplus.tv | СТАРТ HD | Аль Хиляль — Шабаб Аль Ахли | АФК Лига Чемпионов Элита Прямая трансляция |
-| 03.11 20:15 | poverkhnost.tv | Sport 1 | Аль-Хиляль — Шабаб Аль-Ахли | AFC Champions League Elite |
-| 03.11 20:15 | sportklub.hr | Sport Klub 6 | Hilal — Shabab Ahli | LP Azije ELITE |
-| 03.11 20:25 | teleman.pl | Polsat Sport Extra 4 | Ratiopharm Ulm — Bahcesehir College Stambuł | EuroCup |
-| 03.11 20:30 | epg.cyta.com.cy | Novasports Start HD | Athinaikos Qualco W — Kibirkstis W |  |
-| 03.11 20:30 | tvarenasport.com | Arena Sport 4 | Ulm — Bahcesehir | EVROKUP |
-| 03.11 20:30 | sportklub.hr | Sport Klub 3 | Ulm — Bahcesehir | Eurocup |
-| 03.11 20:30 | novasports.gr | Novasports4HD | Ουλμ — Μπαχτσεσεχίρ | EuroCup |
-| 03.11 20:30 | novasports.gr | ΝovasportsStart | Αθηναϊκός Qualco W — Κιμπίρκστις W | EuroLeague Γυναικών |
-| 03.11 20:30 | alkass.net | Al Kass Five | Al-Hilal — Shabab Al-Ahli | AFC Champions League Elite |
-| 03.11 20:30 | epg.cyta.com.cy | Novasports 4 HD | Ratiopharm Ulm — Bahcesehir |  |
-| 03.11 20:45 | digisport.ro | Digi Sport 1 | Galatasaray — Stuttgart | ucl Champions League |
-| 03.11 20:45 | sportklub.hr | Sport Klub 7 | R. Cash/Nakashima — Van Assche/Vacherot | ATP Masters Paris (UKLJUČENJE) |
-| 03.11 20:55 | ntvplus.tv | СТАРТ ТРИУМФ HD | Страсбур — Цибона | Лига Чемпионов Прямая трансляция |
-| 03.11 20:55 | webtv.sk | JOJ Šport | FIATC Girona — Patrioti Levice |  |
-| 03.11 20:55 | ipko.tv | Tring Sport 6 | BODO GLIMT — LILLE ! | futbolli |
-| 03.11 21:00 | epg.cyta.com.cy | Novasports 3 HD | Napoli — Aquila Basket Trento |  |
-| 03.11 21:00 | skysports.com | Sky Sports+ | Cambridge United U21 — Brighton and Hove Albion U21 | EFL Trophy - Southern Group G |
-| 03.11 21:00 | skysports.com | Sky Sports+ | Newport County AFC U21 — Crystal Palace U21 | EFL Trophy - Southern Group E |
-| 03.11 21:00 | skysports.com | Sky Sports+ | Rochdale — Doncaster Rovers | EFL Trophy - Northern Group H |
-| 03.11 21:00 | skysports.com | Sky Sports+ | Rotherham United U21 — Newcastle United U21 | EFL Trophy - Northern Group C |
-| 03.11 21:00 | tvarenasport.ba | Arena Sport 2 | Podgorica — Sloboda Tuzla | ABA 2 liga |
-| 03.11 21:00 | tvarenasport.ba | Arena Sport 6 | Basket Trento — Napoli | Eurocup |
-| 03.11 21:00 | tvarenasport.ba | Arena Sport 7 | Strasbourg — Cibona | FIBA Liga prvaka |
-| 03.11 21:00 | tvarenasport.com | Arena Sport 5 | Napoli — Trento | EVROKUP |
-| 03.11 21:00 | tvarenasport.com | Arena Sport 9 | Podgorica — Sloboda Tuzla | ABA2 LIGA |
-| 03.11 21:00 | tvarenasport.hr | Arena Sport 9 | PODGORICA — SLOBODA TUZTLA | ABA2 LIGA |
-| 03.11 21:00 | tvarenasport.si | Arena Sport 1 | Podgorica — Sloboda | ABA 2 Liga |
-| 03.11 21:00 | sportklub.hr | Sport Klub 1 | Strasbourg — Cibona | Liga prvaka |
-| 03.11 21:00 | sportklub.hr | Sport Klub 5 | Napoli — Trento | Eurocup |
-| 03.11 21:00 | tv24.co.uk | TNT Sports 1 | FC Barcelona — Aston Villa | UEFA Champions League Football |
-| 03.11 21:00 | novasports.gr | Novasports3HD | Νάπολι — Τρέντο | EuroCup |
-| 03.11 21:20 | movistarplus.es | Teledeporte | Unicaja — Reggiana | Basketball Champions League |
-| 03.11 21:25 | tv-program.aktuality.sk | Nova Sport 2 | Unicaja — Pallacanestro Reggiana |  |
-| 03.11 21:25 | ntvplus.tv | Старт Баскет | Уникаха — Реджана | Лига Чемпионов Прямая трансляция |
-| 03.11 21:25 | sport5.co.il | ספורט 5 Gold | פורטו — חובנטוד בדאלונה | ליגת האלופות בכדורסל |
-| 03.11 21:25 | webtv.sk | Nova Sport 2 | Unicaja — Pallacanestro Reggiana |  |
-| 03.11 21:25 | oneplay.cz | Nova Sport 2 | Unicaja — Pallacanestro Reggiana |  |
-| 03.11 21:30 | tvarenasport.com | Arena Sport 6 | Unicaja — Reggio Emilia | FIBA LIGA ŠAMPIONA |
-| 03.11 21:30 | sportklub.hr | Sport Klub 10 | Unicaja — Reggio Emilia | Liga prvaka |
-| 03.11 21:35 | movistarplus.es | M+ Vamos | Ruud — Jodar | Torneo de París |
-| 03.11 21:40 | tvtid.tv2.dk | TV 2 Charlie | Saint — Pierre |  |
-| 03.11 21:45 | allente.no | TV 2 Sport 1 HD | Atlético — Bayern | UEFA Champions League |
-| 03.11 21:45 | canal11.pt | Canal 11 | SCU TORREENSE W — SL BENFICA W | Liga BPI |
-| 03.11 21:45 | skysports.com | Sky Sports+ | Blackburn Rovers — Stoke City | Championship |
-| 03.11 21:45 | skysports.com | Sky Sports+ | Charlton Athletic — Bolton Wanderers | Championship |
-| 03.11 21:45 | skysports.com | Sky Sports+ | Derby County — Norwich City | Championship |
-| 03.11 21:45 | skysports.com | Sky Sports+ | Huddersfield Town — Luton Town | League 1 |
-| 03.11 21:45 | skysports.com | Sky Sports | Northampton Town — Oldham Athletic | League 2 |
-| 03.11 21:45 | skysports.com | Sky Sports+ | Portsmouth — Swansea City | Championship |
-| 03.11 21:45 | skysports.com | Sky Sports+ | Preston North End — Sheffield United | Championship |
-| 03.11 21:45 | skysports.com | Sky Sports+ | Queens Park Rangers — Burnley | Championship |
-| 03.11 21:45 | skysports.com | Sky Sports+ | Watford — Lincoln City | Championship |
-| 03.11 21:45 | skysports.com | Sky Sports | Wigan Athletic — Mansfield Town | League 1 |
-| 03.11 21:45 | sport1tv.hu | Sport1 HU | Atlético Madrid — Bayern München | BL |
-| 03.11 21:45 | sport1tv.hu | Sport2 HU | Manchester United — Roma | BL |
-| 03.11 21:45 | sports.kz | Телеканал «Qazsport» | Атлетико — Бавария | УЕФА Чемпиондар Лигасы 4 тур «Атлетико» (Испания) — «Бавария» (Германия) |
-| 03.11 21:45 | tv2.no | TV 2 Sport 1 | Atlético — Bayern | UEFA Champions League |
-| 03.11 21:45 | sportklub.hr | Sport Klub 2 | Ruud — Jodar | ATP Masters Paris |
-| 03.11 21:45 | port.hu | Sport1 | Atlético Madrid — Bayern München | Labdarúgás: UEFA Bajnokok Ligája |
-| 03.11 21:45 | port.hu | Sport2 | Manchester United — Roma | Labdarúgás: UEFA Bajnokok Ligája |
-| 03.11 21:45 | tv24.co.uk | TNT Sports 2 | Atlético Madrid — FC Bayern München | UEFA Champions League Football |
-| 03.11 21:45 | tv24.co.uk | TNT Sports 4 | Villarreal CF — Paris Saint-Germain | UEFA Champions League Football |
-| 03.11 21:45 | tv3.lt | TV3 | „Manchester United“ — „AS Roma“ | UEFA Čempionų lygos rungtynės |
-| 03.11 21:45 | oneplay.cz | Nova Sport 4 | FC Barcelona — Aston Villa |  |
-| 03.11 21:45 | oneplay.cz | Nova Sport 6 | Atlético Madrid — Bayern Mnichov |  |
-| 03.11 21:45 | tvmatsit.com | V Sport+ Suomi | Portsmouth — Swansea | Championship |
-| 03.11 21:50 | allente.no | V sport 1 HD (N) | West Bromwich — Southampton | Carabao Cup |
-| 03.11 21:50 | ziggosport.nl | Ziggo Sport 1 | Feyenoord — Internazionale |  |
-| 03.11 21:50 | ziggosport.nl | Ziggo Sport Kanaal 14 | Feyenoord — Internazionale |  |
-| 03.11 21:50 | ipko.tv | Tring Sport 1 | ATL.MADRID — BAYERN ! | futbolli |
-| 03.11 21:50 | ipko.tv | Tring Sport 3 | BARCELONA — ASTON VILLA ! | futbolli |
-| 03.11 21:50 | ipko.tv | Tring Sport 4 | FEYENOORD — INTER ! | futbolli |
-| 03.11 21:50 | ipko.tv | Tring Sport 5 | VILLARREAL — PARIS SG ! | futbolli |
-| 03.11 21:53 | movistarplus.es | M+ Liga de Campeones | At. Madrid — Bayern Múnich | UEFA Champions League |
-| 03.11 21:53 | movistarplus.es | M+ Liga de Campeones 2 | Barcelona — Aston Villa | UEFA Champions League |
-| 03.11 21:53 | movistarplus.es | M+ Liga de Campeones 5 | Feyenoord — Inter | UEFA Champions League |
-| 03.11 21:54 | sporttv.pt | SPORT.TV1 | WEST BROMWICH — SOUTHAMPTON | EFL CHAMPIONSHIP |
-| 03.11 21:55 | allente.no | V sport ultra HD | Manchester United — Roma | UEFA Champions League |
-| 03.11 21:55 | digisport.ro | Digi Sport 2 | Atletico Madrid — Bayern Munchen | ucl Champions League |
-| 03.11 21:55 | digisport.ro | Digi Sport 4 | Feyenoord — Inter | ucl Champions League |
-| 03.11 21:55 | programetv.ro | Digi Sport 2 | Atletico Madrid — Bayern Munchen | Champions League |
-| 03.11 21:55 | programetv.ro | Digi Sport 4 | Feyenoord — Inter | Champions League |
-| 03.11 21:55 | teleman.pl | CANAL+ Extra 1 | FC Barcelona — Aston Villa FC | Liga Mistrzów UEFA |
-| 03.11 21:55 | teleman.pl | CANAL+ 360 | Feyenoord Rotterdam — Inter Mediolan | Liga Mistrzów UEFA |
-| 03.11 21:55 | teleman.pl | CANAL+ Extra 2 | Atletico Madryt — FC Bayern Monachium | Liga Mistrzów UEFA |
-| 03.11 21:55 | teleman.pl | CANAL+ Extra 3 | Manchester United FC — AS Roma | Liga Mistrzów UEFA |
-| 03.11 21:55 | ziggosport.nl | Ziggo Sport 2 | FC Barcelona — Aston Villa |  |
-| 03.11 21:55 | ziggosport.nl | Ziggo Sport 3 | Atlético Madrid — Bayern München |  |
-| 03.11 21:55 | ziggosport.nl | Ziggo Sport 5 | Manchester United — AS Roma |  |
-| 03.11 21:55 | ziggosport.nl | Ziggo Sport 6 | Villarreal CF — Paris Saint-Germain |  |
-| 03.11 21:55 | sport1.maariv.co.il | Sport1 1 | ווסט ברומיץ — סאותהמפטון | צ'מפיונשיפ |
-| 03.11 21:55 | tvpassport.com | OneSoccer | Atlético Madrid — FC Bayern München | UEFA Champions League Soccer |
-| 03.11 21:55 | oneplay.cz | Nova Sport 3 | Manchester United — AS Řím |  |
-| 03.11 21:55 | oneplay.cz | Nova Sport 5 | LASK Linz — ŠK Slovan Bratislava |  |
-| 03.11 21:55 | ipko.tv | Tring Sport 2 | MAN.UNITED — ROMA ! | futbolli |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport 2 | Ατλέτικο Μαδρίτης — Μπάγερν Μονάχου |  |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport 3 | Μάντσεστερ Γιουνάιτεντ — Ρόμα |  |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport 4 | Μπαρτσελόνα — Άστον Βίλα |  |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport 5 | Βιγιαρεάλ — Παρί Σεν Ζερμέν |  |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport 7 | Φέγενορντ — Ίντερ |  |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport 8 | Μπόντο Γκλιμτ — Λιλ |  |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport 9 | Λίντσερ — Σλόβαν Μπρατισλάβας |  |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport 4K | Ατλέτικο Μαδρίτης — Μπάγερν Μονάχου |  |
-| 03.11 22:00 | cosmotetv.gr | Magenta Sport Start | Μάντσεστερ Γιουνάιτεντ — Ρόμα |  |
-| 03.11 22:00 | diemaxtra.nova.bg | Diema Sport 2 | Уест Бромич Албиън — Саутхямптън | Чемпиъншип |
-| 03.11 22:00 | digisport.ro | Digi Sport 1 | Barcelona — Aston Villa | ucl Champions League |
-| 03.11 22:00 | digisport.ro | Digi Sport 3 | Manchester United — Roma | ucl Champions League |
-| 03.11 22:00 | epg.cyta.com.cy | Cytavision Sports3 HD | MANCHESTER UTD — ROMA | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | CVSPORTS 4K1 | MANCHESTER UTD — ROMA | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | PPV3 | MANCHESTER UTD — ROMA | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | Cytavision Sports7 HD | VILLARREAL — PARIS SAINT_GERMAIN | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | PPV6 | VILLARREAL — PARIS SAINT_GERMAIN | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | Cytavision Sports6 HD | BARCELONA — ASTON VILLA | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | PPV5 | BARCELONA — ASTON VILLA | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | Cytavision Sports4 HD | ATLETICO MADRID — BAYERN MUNCHEN | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | CVSPORTS 4K2 | ATLETICO MADRID — BAYERN MUNCHEN | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | PPV4 | ATLETICO MADRID — BAYERN MUNCHEN | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | Cytavision Sports2 HD | FEYENOORD — INTER | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | epg.cyta.com.cy | PPV2 | FEYENOORD — INTER | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | livesoccertv.com | ART Sport 1 | Barcelona — Aston Villa | UEFA Champions League |
-| 03.11 22:00 | livesoccertv.com | ART Sport 2 | Manchester United — Roma | UEFA Champions League |
-| 03.11 22:00 | livesoccertv.com | ART Sport 3 | Atlético Madrid — Bayern München | UEFA Champions League |
-| 03.11 22:00 | livesoccertv.com | ART Sport 4 | Feyenoord — Internazionale | UEFA Champions League |
-| 03.11 22:00 | livesoccertv.com | ART Sport 5 | Villarreal — PSG | UEFA Champions League |
-| 03.11 22:00 | livesoccertv.com | ART Sport 6 | Bodø / Glimt — Lille | UEFA Champions League |
-| 03.11 22:00 | livesoccertv.com | SuperSport 2 Digitalb | West Bromwich Albion — Southampton | Championship |
-| 03.11 22:00 | maxsport.live | MAX Sport 1 | Виляреал — ПСЖ | УЕФА Шампионска лига |
-| 03.11 22:00 | maxsport.live | MAX Sport 2 | Манчестър Юнайтед — Рома | УЕФА Шампионска лига |
-| 03.11 22:00 | maxsport.live | MAX Sport 3 | Барселона — Астън Вила | УЕФА Шампионска лига |
-| 03.11 22:00 | maxsport.live | MAX Sport 4 | Шахтьор Донецк — Спортинг Лисабон | УЕФА Шампионска лига |
-| 03.11 22:00 | nova.bg | diemasport 2 | Уест Бромич Албиън — Саутхямптън | Чемпиъншип |
-| 03.11 22:00 | primaplay.ro | Prima Sport 1 | Barcelona — Aston Villa |  |
-| 03.11 22:00 | primaplay.ro | Prima Sport 2 | Atletico Madrid — Bayern Munchen |  |
-| 03.11 22:00 | primaplay.ro | Prima Sport 3 | Villarreal — PSG |  |
-| 03.11 22:00 | primaplay.ro | Prima Sport 4 | Manchester United — Roma |  |
-| 03.11 22:00 | primaplay.ro | Prima Sport 5 | Feyenoord — Inter Milano |  |
-| 03.11 22:00 | primaplay.ro | PPV1 | Bodo/Glimt — Lille |  |
-| 03.11 22:00 | primaplay.ro | PPV2 | Lask Linz — Slovan Bratislava |  |
-| 03.11 22:00 | programetv.ro | Digi Sport 1 | Barcelona — Aston Villa | Champions League |
-| 03.11 22:00 | programetv.ro | Digi Sport 3 | Manchester United — Roma | Champions League |
-| 03.11 22:00 | programetv.ro | Prima Sport 1 | Barcelona — Aston Villa | UEFA CHAMPIONS LEAGUE |
-| 03.11 22:00 | programetv.ro | Prima Sport 3 | Villarreal — Psg | Uefa Champions League |
-| 03.11 22:00 | programetv.ro | Prima Sport 4 | Man Utd — Roma | Uefa Champions League |
-| 03.11 22:00 | skysports.com | Sky Sports+ | Birmingham City — Millwall | Championship |
-| 03.11 22:00 | skysports.com | Sky Sports Main Event | West Bromwich Albion — Southampton | Championship |
-| 03.11 22:00 | skysports.com | Sky Sports Football | West Bromwich Albion — Southampton | Championship |
-| 03.11 22:00 | trt.net.tr | Tabii Spor | ATLETICO MADRID — BAYERN MÜNİH | UEFA ŞAMPİYONLAR LİGİ FUTBOL KARŞILAŞMASI |
-| 03.11 22:00 | tvarenasport.ba | Arena Premium 1 | Atletico M. — Bayern M. | Liga prvaka |
-| 03.11 22:00 | tvarenasport.ba | Arena Premium 2 | Manchester United — Roma | Liga prvaka |
-| 03.11 22:00 | tvarenasport.ba | Arena Premium 3 | Barcelona — Aston Villa | Liga prvaka |
-| 03.11 22:00 | tvarenasport.ba | Arena Premium 4 | Villarreal — PSG | Liga prvaka |
-| 03.11 22:00 | tvarenasport.ba | Arena Premium 5 | Bodo Glimt — Lille | Liga prvaka |
-| 03.11 22:00 | tvarenasport.ba | Arena Sport 1 | Feynoord — Inter | Liga prvaka |
-| 03.11 22:00 | tvarenasport.ba | Arena Sport 3 | LASK — Slovan | Liga prvaka |
-| 03.11 22:00 | tvarenasport.ba | Arena Sport 4 | WBA — Southampton | Engleska 2.liga |
-| 03.11 22:00 | tvarenasport.com | Arena Premium 1 | Atletico Madrid — Bayern | UEFA LIGA ŠAMPIONA |
-| 03.11 22:00 | tvarenasport.com | Arena Premium 2 | Barcelona — Aston Villa | UEFA LIGA ŠAMPIONA |
-| 03.11 22:00 | tvarenasport.com | Arena Premium 3 | Villarreal — PSG | UEFA LIGA ŠAMPIONA |
-| 03.11 22:00 | tvarenasport.com | Arena Premium 4 | Manchester United — Roma | UEFA LIGA ŠAMPIONA |
-| 03.11 22:00 | tvarenasport.com | Arena Premium 5 | Feyenoord — Inter | UEFA LIGA ŠAMPIONA |
-| 03.11 22:00 | tvarenasport.com | Arena Sport 1 | Bodo/Glimt — Lille | UEFA LIGA ŠAMPIONA |
-| 03.11 22:00 | tvarenasport.com | Arena Sport 2 | LASK — Slovan | UEFA LIGA ŠAMPIONA |
-| 03.11 22:00 | tvarenasport.com | Arena Sport 3 | WBA — Southampton | CHAMPIONSHIP |
-| 03.11 22:00 | tvarenasport.hr | Arena Sport 1 | ATLETICO MADRID — BAYERN | LIGA PRVAKA |
-| 03.11 22:00 | tvarenasport.hr | Arena Sport 2 | MANCHESTER UNITED — ROMA | LIGA PRVAKA |
-| 03.11 22:00 | tvarenasport.hr | Arena Sport 3 | BARCELONA — ASTON VILLA | LIGA PRVAKA |
-| 03.11 22:00 | tvarenasport.hr | Arena Sport 5 | VILLAREAL — PSG | LIGA PRVAKA |
-| 03.11 22:00 | tvarenasport.hr | Arena Sport 6 | WBA — SOUTHAMPTON | CHAMPIONSHIP |
-| 03.11 22:00 | tvarenasport.hr | Arena Sport 7 | FEYENOORD — INTER | LIGA PRVAKA |
-| 03.11 22:00 | tvarenasport.hr | Arena Sport 8 | BODO GLIMT — LILLE | LIGA PRVAKA |
-| 03.11 22:00 | tvarenasport.hr | Arena Sport 10 | LASK — SLOVAN BRATISLAVA | LIGA PRVAKA |
-| 03.11 22:00 | tvarenasport.si | Arena Sport 8 | West Brom — Southampton | EFL Championship |
-| 03.11 22:00 | sport5.co.il | ערוץ הספורט | ברצלונה — אסטון וילה | ליגת האלופות |
-| 03.11 22:00 | sport5.co.il | ספורט 5+ | אתלטיקו מדריד — באיירן מינכן | ליגת האלופות |
-| 03.11 22:00 | sport5.co.il | ספורט 5 Stars | ויאריאל — פ.ס.ז | ליגת האלופות |
-| 03.11 22:00 | sport5.co.il | 5MAX | מנצ׳סטר יונייטד — רומא | ליגת האלופות |
-| 03.11 22:00 | sport5.co.il | ספורט מובייל | ברצלונה — אסטון וילה | ליגת האלופות |
-| 03.11 22:00 | port.hu | Match4 | West Bromwich — Southampton | Labdarúgás: Angol másodosztály |
-| 03.11 22:00 | ipko.tv | Sport 1 | Barcelona — Aston Villa | futbolli |
-| 03.11 22:00 | ipko.tv | Sport 2 | Manchester United — Roma | futbolli |
-| 03.11 22:00 | ipko.tv | Sport 3 | Atletico Madrid — Bayern Munich | futbolli |
-| 03.11 22:00 | ipko.tv | Sport 4 | Feyenoord — Inter | futbolli |
-| 03.11 22:00 | ipko.tv | Sport 5 | Villarreal — PSG | futbolli |
-| 03.11 22:00 | ipko.tv | Sport 6 | Bodo Glimt — Lille | futbolli |
-| 03.11 22:00 | ipko.tv | SuperSport 2 | WBA — Southampton | futbolli |
-| 03.11 22:00 | tvtid.tv2.dk | TV 2 Sport X | Efter AGF W — FC Midtjylland W | A-Liga |
-| 03.11 22:00 | tvsporten.dk | TV3 Sport | FC Barcelona — Aston Villa | Champions League |
-| 03.11 22:00 | tvsporten.dk | Viaplay Sport News DK | Atletico Madrid — FC Bayern München | Champions League |
-| 03.11 22:00 | tvsporten.dk | TV3 Plus | Manchester United — AS Roma | Champions League |
-| 03.11 22:00 | tvsporten.dk | Viasat Ultra HD | Manchester United — AS Roma | Champions League |
-| 03.11 22:00 | tvsporten.dk | TV3 Max | Villarreal — Paris Saint Germain | Champions League |
-| 03.11 22:00 | tvmatchen.nu | V Sport 1 | FC Barcelona — Aston Villa | Champions League |
-| 03.11 22:00 | tvmatchen.nu | V Sport Football | Atletico Madrid — FC Bayern München | Champions League |
-| 03.11 22:00 | tvmatchen.nu | V Sport Premium | Manchester United — AS Roma | Champions League |
-| 03.11 22:00 | tvmatchen.nu | V Ultra HD | Manchester United — AS Roma | Champions League |
-| 03.11 22:00 | tvmatchen.nu | V Sport Extra | Villarreal — PSG | Champions League |
-| 03.11 22:00 | tvmatsit.com | V Sport 2 Suomi | West Bromwich Albion — Southampton | Championship |
-| 03.11 22:00 | tvmatsit.com | Viaplay TV (FI) | West Bromwich Albion — Southampton | Championship |
-| 03.11 22:00 | tvmatsit.com | MTV Urheilu 3 | Barcelona — Aston Villa | Champions League |
-| 03.11 22:00 | tvmatsit.com | MTV Urheilu 2 | Atletico Madrid — Bayern München | Champions League |
-| 03.11 22:00 | tvmatsit.com | MTV Urheilu 1 | Manchester United — AS Roma | Champions League |
-| 03.11 22:00 | novasports.gr | Novasports Prime | ΠΑΟΚ — Ρόμα | Post Game Show |
-| 03.11 23:00 | digisport.ro | Digi Sport 1 | Barcelona — Aston Villa | ucl Champions League |
-| 04.11 00:00 | port.hu | Sport2 | Villarreal — PSG | Labdarúgás: UEFA Bajnokok Ligája |
-| 04.11 02:25 | ntvplus.tv | МАТЧ! Футбол 3 (HD) | Интернасьонал — Коритиба | Прямая трансляция |
+| 04.11 07:45 | primaplay.ro | Prima Sport 2 | Villarreal — PSG |  |
+| 04.11 08:00 | sportklub.hr | Sport Klub 2 | Ružić — Charaeva | WTA 250 Hong Kong |
+| 04.11 08:00 | sportklub.hr | Sport Klub 4 | Fernandez — Kenin | WTA 250 Hong Kong |
+| 04.11 08:00 | primaplay.ro | Prima Sport 5 | Racing Santander — Espanyol |  |
 | 04.11 09:40 | ntvplus.tv | СТАРТ ТРИУМФ HD | Мельбурн Виктори — Персиб Бандунг | АФК Лига Чемпионов-2 Прямая трансляция |
 | 04.11 09:40 | sport1.maariv.co.il | Sport1 3 | מלבורן — פרסיב באנדונג | ליגת האלופות אסיה |
 | 04.11 09:40 | start.sportdigital.de | Sportdigital FUSSBALL2 | Melbourne Victory — Persib Bandung | AFC Champions League Two (Gruppenphase, 4. Spieltag): Melbourne Victory (AUS) - Persib Bandung (IDN) |
@@ -1292,6 +783,8 @@
 | 04.11 09:45 | poverkhnost.tv | Sport 1 | Мельбурн Виктори — Персиб | AFC Champions League Two |
 | 04.11 09:45 | sportklub.hr | Sport Klub 3 | Melbourne Victory — Persib Bandung | Liga prvaka Azije - TWO |
 | 04.11 09:55 | ntvplus.tv | МАТЧ ПРЕМЬЕР HD | Енисей — Нижний Новгород | Прямая трансляция |
+| 04.11 10:00 | sportklub.hr | Sport Klub 2 | Gibson — Sasnovich | WTA 250 Hong Kong |
+| 04.11 10:00 | sportklub.hr | Sport Klub 4 | Liu — Boulter | WTA 250 Hong Kong |
 | 04.11 10:30 | sportklub.hr | Sport Klub 6 | Bam Khatoon W — Naegohyang W | Liga prvaka Azije (Ž) |
 | 04.11 10:30 | sportklub.hr | Sport Klub 9 | 4.25 Sports Club W — Ho Chi Minh City W | Liga prvaka Azije (Ž) |
 | 04.11 11:00 | ntvplus.tv | Старт Баскет | Брисбен Буллетс — Перт Уайлдкэтс | Чемпионат Австралии Прямая трансляция |
@@ -1311,41 +804,69 @@
 | 04.11 12:00 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
 | 04.11 12:00 | ziggosport.nl | Ziggo Sport Kanaal 14 | ATP Paris — tournament |  |
 | 04.11 12:00 | sportklub.hr | Sport Klub 1 | Pohang Steelers — Gamba Osaka | LP Azije ELITE |
+| 04.11 12:00 | sportklub.hr | Sport Klub 10 | Gorgodze/Timofeeva — Cho/Cho | WTA 250 Hong Kong |
+| 04.11 12:00 | sportklub.hr | Sport Klub 2 | Halys — Tiafoe | ATP Masters Paris |
 | 04.11 12:00 | sportklub.hr | Sport Klub 3 | Seoul — Viettel | Liga prvaka Azije - TWO |
+| 04.11 12:00 | sportklub.hr | Sport Klub 4 | Bellucci — Rinderknech | ATP Masters Paris |
+| 04.11 12:00 | sportklub.hr | Sport Klub 5 | Arribage/Olivetti — J. Cash/Glasspool | ATP Masters Paris |
+| 04.11 12:00 | sportklub.hr | Sport Klub 7 | Luz/Matos — Navone/Tabilo | ATP Masters Paris |
 | 04.11 12:00 | tvtid.tv2.dk | TV 2 Sport X | Halys — Tiafoe | ATP |
 | 04.11 12:00 | tvsporten.dk | TV 2 Sport X | ATP Paris — tournament | ATP |
 | 04.11 12:00 | tvmatchen.nu | TV4 Tennis | ATP Paris — tournament | ATP |
 | 04.11 12:00 | tvmatsit.com | MTV Max | ATP Paris — tournament | ATP |
+| 04.11 12:05 | movistarplus.es | M+ Deportes 3 | Arribage/Olivetti — Cash/Glasspool | Torneo de París |
+| 04.11 12:05 | movistarplus.es | M+ Deportes 4 | Bellucci — Rinderknech | Torneo de París |
 | 04.11 12:30 | sportklub.hr | Sport Klub 6 | Kaya Iloilo W — Melbourne City W | Liga prvaka Azije (Ž) |
+| 04.11 12:30 | sportklub.hr | Sport Klub 8 | Joint — Sakkari | WTA 250 Hong Kong |
 | 04.11 12:30 | novasports.gr | Novasports6HD | Τζόιντ — Σάκκαρη | Τένις: WTA 250 |
 | 04.11 12:55 | ntvplus.tv | Матч ТВ | Ленинградец — СКА-Хабаровск | FONBET Кубок России Прямая трансляция |
 | 04.11 12:55 | ntvplus.tv | Телеканал «Матч ТВ» | Ленинградец — СКА-Хабаровск | FONBET Кубок России Прямая трансляция |
 | 04.11 12:55 | ntvplus.tv | МАТЧ ПРЕМЬЕР HD | Ленинградец — СКА-Хабаровск | Прямая трансляция |
+| 04.11 13:30 | movistarplus.es | M+ Deportes 3 | Paul — Merida | Torneo de París |
+| 04.11 13:30 | movistarplus.es | M+ Deportes 4 | Van assche — Tien | Torneo de París |
+| 04.11 13:30 | sportklub.hr | Sport Klub 10 | Harrison/Hewitt — Chan/Kato | WTA 250 Hong Kong |
+| 04.11 13:45 | sportklub.hr | Sport Klub 5 | Paul — Merida | ATP Masters Paris |
+| 04.11 13:45 | sportklub.hr | Sport Klub 7 | Andreozzi/Guinard — Pavlasek/Rikl | ATP Masters Paris |
 | 04.11 14:00 | tvarenasport.ba | Arena Premium 1 | Budućnost Krušik — Partizan | Kup Srbije |
 | 04.11 14:00 | tvarenasport.com | Arena Premium 1 | Budućnost Krušik — Partizan | KUP SRBIJE |
+| 04.11 14:00 | sportklub.hr | Sport Klub 4 | Van Assche — Tien | ATP Masters Paris |
 | 04.11 14:00 | ipko.tv | Sport 1 | Drita — Prishtina | futbolli |
 | 04.11 14:00 | ipko.tv | Sport 2 | Raiffeisen Liga e Pare Dinamo — Vellaznimi | futbolli |
-| 04.11 14:00 | tvtid.tv2.dk | TV 2 Sport X | Zverev — Musetti | ATP |
 | 04.11 14:10 | ntvplus.tv | СТАРТ HD | Бурирам Юнайтед — Касима Антлерс | АФК Лига Чемпионов Элита Прямая трансляция |
 | 04.11 14:10 | start.sportdigital.de | Sportdigital1+ | Buriram United — Kashima Antlers | AFC Champions League Elite (4. Spieltag): Buriram United (THA) - Kashima Antlers (JPN) |
 | 04.11 14:15 | diemaxtra.nova.bg | Diema Sport 3 | Бурирам Юнайтед — Кашима Антлерс | Елитна Шампионска лига на Азия |
 | 04.11 14:15 | nova.bg | diemasport 3 | Бурирам Юнайтед — Кашима Антлерс | Елитна Шампионска лига на Азия |
 | 04.11 14:15 | poverkhnost.tv | Sport 1 | Бурирам — Касима Антлерс | AFC Champions League Elite |
 | 04.11 14:15 | sportklub.hr | Sport Klub 1 | Buriram United — Kashima | LP Azije ELITE |
+| 04.11 14:15 | sportklub.hr | Sport Klub 8 | Lee/Wu — V. Williams/Xu | WTA 250 Hong Kong |
+| 04.11 14:30 | sportklub.hr | Sport Klub 2 | Zverev — Musetti | ATP Masters Paris |
 | 04.11 14:30 | sportklub.hr | Sport Klub 6 | Ayeyawady W — Kobe Leonessa W | Liga prvaka Azije (Ž) |
+| 04.11 14:30 | tvtid.tv2.dk | TV 2 Sport X | Zverev — Musetti | ATP |
 | 04.11 14:50 | epg.cyta.com.cy | PPV5 | LENS U19 — COMO U19 | UEFA YOUTH LEAGUE |
+| 04.11 15:00 | movistarplus.es | M+ Deportes 4 | Buse — Medvedev | Torneo de París |
 | 04.11 15:00 | tvarenasport.com | Arena Premium 2 | Crvena zvezda U19 — Bravo U19 | UEFA Liga Mladih |
+| 04.11 15:15 | sportklub.hr | Sport Klub 7 | Miedler/Oberleitner — Reymond/Sanchez | ATP Masters Paris |
 | 04.11 15:30 | cosmotetv.gr | Magenta Sport 2 | ΠΑΟΚ Κ19 U19 — Ζρίνσκι U19 |  |
+| 04.11 15:30 | movistarplus.es | M+ Deportes 3 | Etcheverry — De Minaur | Torneo de París |
 | 04.11 15:30 | tvarenasport.ba | Arena Sport 1 | Paok U19 — Zrinjski U19 | Uefa Liga prvaka mladi |
+| 04.11 15:30 | sportklub.hr | Sport Klub 5 | Etcheverry — De Minaur | ATP Masters Paris |
 | 04.11 15:40 | ntvplus.tv | СТАРТ ТРИУМФ HD | Аркадаг — Гол Гохар Сирдждан | АФК Лига Чемпионов-2 Прямая трансляция |
 | 04.11 15:45 | nova.bg | nova sport | Аркадаг — Гол Гохар | Шампионска лига на Азия 2 |
 | 04.11 15:45 | poverkhnost.tv | Sport 2 | Аркадаг — Гол Гохар | AFC Champions League Two |
 | 04.11 15:45 | sportklub.hr | Sport Klub 3 | Arkadag — Golgohar Sirjan | Liga prvaka Azije - TWO |
-| 04.11 16:00 | tvtid.tv2.dk | TV 2 Sport X | Djokovic — Hijakata | ATP |
+| 04.11 15:45 | alkass.net | Al Kass Two | Mustaqbal Al-Shamal — Mesaimeer | Jetour League |
+| 04.11 15:45 | alkass.net | Al Kass Six | Two Arkadag — Gol Gohar | AFC Champions League |
+| 04.11 15:45 | alkass.net | Al Kass Eight | Mustaqbal Al-Shamal — Mesaimeer | Jetour League |
+| 04.11 16:00 | sportklub.hr | Sport Klub 4 | Buse — Medvedev | ATP Masters Paris |
 | 04.11 16:05 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
 | 04.11 16:30 | sporttv.pt | SPORT.TV3 | ATP Paris — tournament | ATP MASTERS 1000 |
 | 04.11 16:30 | sportklub.hr | Sport Klub 10 | East Bengal W — Hwacheon W | Liga prvaka Azije (Ž) |
+| 04.11 16:30 | sportklub.hr | Sport Klub 2 | Đoković — Hijikata | ATP Masters Paris |
 | 04.11 16:30 | sportklub.hr | Sport Klub 9 | Nasaf W — Peking W | Liga prvaka Azije (Ž) |
+| 04.11 16:30 | tvtid.tv2.dk | TV 2 Sport X | Djokovic — Hijakata | ATP |
+| 04.11 16:30 | tvsporten.dk | TV 2 Sport X | ATP Paris — tournament | ATP |
+| 04.11 16:35 | movistarplus.es | M+ Deportes 4 | Borges — Khachanov | Torneo de París |
+| 04.11 16:45 | sportklub.hr | Sport Klub 7 | Gornes/Walkow — Doumbia/Pel | ATP Masters Paris |
 | 04.11 16:48 | tvpassport.com | TSN3 | Japan U17 W — Korea DPR U17 W | 2026 FIFA U-17 Women's World Cup |
 | 04.11 16:50 | movistarplus.es | Teledeporte | Japón U17 W — Corea del Norte U17 W | Mundial Sub-17 (F) |
 | 04.11 16:55 | movistarplus.es | M+ Liga de Campeones | Borussia Dortmund U19 — Betis U19 | UEFA Youth League |
@@ -1356,6 +877,7 @@
 | 04.11 17:00 | epg.cyta.com.cy | Cytavision Sports4 HD | BORUSSIA DORTMUND U19 — REAL BETIS U19 | UEFA YOUTH LEAGUE |
 | 04.11 17:00 | epg.cyta.com.cy | PPV3 | BORUSSIA DORTMUND U19 — REAL BETIS U19 | UEFA YOUTH LEAGUE |
 | 04.11 17:00 | tvmatsit.com | MTV Urheilu 2 | Borussia Dortmund U19 — Real Betis U19 | UEFA Youth League |
+| 04.11 17:00 | alkass.net | Al Kass One | Al-Nasr — Qatar SC | Gulf Club Champions League |
 | 04.11 17:15 | oneplay.cz | Sport1 | Rennes — Olympiacos | Evropská liga |
 | 04.11 17:20 | teleman.pl | Polsat Sport Premium 1 | Stade Rennais FC — Olympiakos SFP | Liga Europy UEFA |
 | 04.11 17:20 | sport1.maariv.co.il | Sport1 1 | רן — אולימפיאקוס | הליגה האירופית |
@@ -1364,9 +886,14 @@
 | 04.11 17:30 | cosmotetv.gr | Magenta Sport 3 | Ρεν — Ολυμπιακός |  |
 | 04.11 17:30 | epg.cyta.com.cy | Cytavision Sports6 HD | RENNES — OLYMPIACOS | UEFA EUROPA LEAGUE |
 | 04.11 17:30 | epg.cyta.com.cy | PPV4 | RENNES — OLYMPIACOS | UEFA EUROPA LEAGUE |
+| 04.11 17:30 | movistarplus.es | M+ Deportes 3 | Molcan — Fritz | Torneo de París |
+| 04.11 17:30 | trt.net.tr | Tabii Spor | RENNES — OLYMPIAKOS | UEFA AVRUPA LİGİ FUTBOL KARŞILAŞMASI |
 | 04.11 17:30 | tvarenasport.com | Arena Premium 2 | Rennes — Olympiacos | UEFA LIGA EVROPE |
+| 04.11 17:30 | sportklub.hr | Sport Klub 5 | Molcan — Fritz | ATP Masters Paris |
 | 04.11 17:30 | tv24.co.uk | TNT Sports 2 | Stade Rennais — Olympiacos | UEFA Europa League Football |
+| 04.11 17:45 | sportklub.hr | Sport Klub 4 | Borges — Khachanov | ATP Masters Paris |
 | 04.11 17:55 | ntvplus.tv | СТАРТ ТРИУМФ HD | Кувейт — Насаф | АФК Лига Чемпионов-2 Прямая трансляция |
+| 04.11 17:55 | alkass.net | Al Kass Five | Two Al-Rayyan — Al-Nahda | AFC Champions League |
 | 04.11 18:00 | diemaxtra.nova.bg | Diema Sport 2 | Ал Кувейт — Насаф Карши | Шампионска лига на Азия 2 |
 | 04.11 18:00 | epg.cyta.com.cy | Cytavision Sports1 HD | ΔΟΞΑ — ΟΛΥΜΠΙΑΚΟΣ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA |
 | 04.11 18:00 | epg.cyta.com.cy | PPV1 | ΔΟΞΑ — ΟΛΥΜΠΙΑΚΟΣ | ΚΥΠΕΛΛΟ ΚΥΠΡΟΥ COCA-COLA |
@@ -1375,10 +902,17 @@
 | 04.11 18:00 | poverkhnost.tv | Sport 1 | Аль-Кувейт — Насаф | AFC Champions League Two |
 | 04.11 18:00 | poverkhnost.tv | Sport 2 | Эр-Райян — Аль-Нахда | AFC Champions League Two |
 | 04.11 18:00 | sportklub.hr | Sport Klub 6 | Wahda — Khaldiya | Liga prvaka Azije - TWO |
-| 04.11 18:00 | tvtid.tv2.dk | TV 2 Sport X | ATP Paris — tournament | ATP |
+| 04.11 18:00 | alkass.net | Al Kass Six | Two Al-Wahda — Al-Khaldiya | AFC Champions League |
+| 04.11 18:15 | sportklub.hr | Sport Klub 2 | Molcan — Fritz | ATP Masters Paris |
+| 04.11 18:25 | trt.net.tr | TRT SPOR YILDIZ | BKT EUROCUP 2026-2027 SEZONU TÜRK TELEKOM — SKYLINERS FRANKFURT | BKT EUROCUP SEZONU TÜRK TELEKOM-SKYLINERS FRANKFURT |
 | 04.11 18:30 | tvarenasport.ba | Arena Premium 1 | Turk Telekom — Frankfurt | Eurocup |
 | 04.11 18:30 | tvarenasport.com | Arena Premium 5 | Turk Telekom — Skyliners | EVROKUP |
 | 04.11 18:30 | sportklub.hr | Sport Klub 5 | Turk Telekom — Frankfurt | Eurocup |
+| 04.11 18:30 | sportklub.hr | Sport Klub 7 | Bolelli/Vavassori — R. Cash/Nakashima | ATP Masters Paris |
+| 04.11 18:30 | tvtid.tv2.dk | TV 2 Sport X | ATP Paris — tournament | ATP |
+| 04.11 18:30 | alkass.net | Al Kass Two | Al-Bidda — Muaither | Jetour League |
+| 04.11 18:30 | alkass.net | Al Kass Eight | Ittihad Al-Gharafa — Umm Salal | Jetour League |
+| 04.11 18:35 | movistarplus.es | M+ Deportes 4 | Berrettini — Humbert | Torneo de París |
 | 04.11 18:50 | teleman.pl | TVP Sport | Legia Warszawa — Galatasaray Nef | Liga Mistrzów |
 | 04.11 18:50 | oneplaysport.cz | Oneplay Sport 1 | SK Artis Brno — Bohemians Praha 1905 | Chance Liga |
 | 04.11 18:50 | webtv.sk | JOJ Šport | MBK Ružomberok W — Meins Avenida W |  |
@@ -1387,7 +921,9 @@
 | 04.11 18:50 | oneplay.cz | Oneplay Sport 1 | SK Artis Brno — Bohemians Praha 1905 | Chance Liga |
 | 04.11 18:55 | bnt.bg | BNT 3 | Локомотив Пловдив — Нефтчи /Баку/ | среща от груповата фаза на FIBA Europe Cup |
 | 04.11 18:55 | movistarplus.es | Esport 3 | Lietkabelis — Kids&Us Manresa | EuroCup |
-| 04.11 18:55 | movistarplus.es | M+ Vamos | Lietkabelis — Kids&Us Manresa | EuroCup |
+| 04.11 18:55 | movistarplus.es | M+ Vamos 2 | Lietkabelis — Kids&Us Manresa | EuroCup |
+| 04.11 18:55 | tv-program.aktuality.sk | Nova Sport | Falco KC Szombathely — AEK BC |  |
+| 04.11 18:55 | tv-program.aktuality.sk | Nova Sport 2 | Legia Warszawa — Galatasaray MCT Technic |  |
 | 04.11 18:55 | ntvplus.tv | СТАРТ HD | Сомбатей — АЕК | Лига Чемпионов Прямая трансляция |
 | 04.11 18:55 | ntvplus.tv | Старт Баскет | Легия — Галатасарай | Лига Чемпионов Прямая трансляция |
 | 04.11 18:55 | sport5.co.il | ספורט 5 Live | אליצור רמלה W — ריגה W | יורוקאפ נשים |
@@ -1395,8 +931,8 @@
 | 04.11 18:55 | webtv.sk | Nova Sport 2 | Legia Warszawa — Galatasaray MCT Technic |  |
 | 04.11 18:55 | oneplay.cz | Nova Sport 1 | Falco KC Szombathely — AEK BC |  |
 | 04.11 18:55 | oneplay.cz | Nova Sport 2 | Legia Warszawa — Galatasaray MCT Technic |  |
+| 04.11 18:55 | alkass.net | Al Kass Seven | Erbil — Kazma | Gulf Club Champions League |
 | 04.11 18:55 | tv.dir.bg | BNT3 (БНТ3) | Локомотив Пловдив — Нефтчи /Баку/ | Баскетбол |
-| 04.11 19:00 | allente.no | TV 2 Sport Premium HD | Barcelona — Alavés | LaLiga EA Sports |
 | 04.11 19:00 | canal11.pt | Canal 11 | FC PENAFIEL U23 — FC FAMALICÃO U23 | Liga Next Gen |
 | 04.11 19:00 | cosmotetv.gr | Magenta Sport 4 | Φάλκο — ΑΕΚ |  |
 | 04.11 19:00 | epg.cyta.com.cy | Novasports 3 HD | Lietkabelis — Manresa |  |
@@ -1409,14 +945,18 @@
 | 04.11 19:00 | tvarenasport.com | Arena Sport 1 | Legia — Galatasaray | FIBA LIGA ŠAMPIONA |
 | 04.11 19:00 | tvarenasport.com | Arena Sport 9 | Hercegovac — TFT | ABA2 LIGA |
 | 04.11 19:00 | tvarenasport.hr | Arena Sport 4 | HERCEGOVAC — TFT SKOPJE | ABA2 LIGA |
+| 04.11 19:00 | tvarenasport.si | Arena Sport 2 | Hercegovac — TFT Skopje | ABA 2 Liga |
 | 04.11 19:00 | sportklub.hr | Sport Klub 10 | Legia — Galatasaray | Liga prvaka |
 | 04.11 19:00 | sportklub.hr | Sport Klub 3 | Lietkabelis — Manresa | Eurocup |
 | 04.11 19:00 | sportklub.hr | Sport Klub 8 | Riga — Le Mans | Eurocup |
 | 04.11 19:00 | sportklub.hr | Sport Klub 9 | Szombathely — AEK | Liga prvaka |
 | 04.11 19:00 | tv24.co.uk | TNT Sports 1 | Fenerbahçe — Liverpool | UEFA Champions League Football |
 | 04.11 19:00 | novasports.gr | Novasports3HD | Λιετκαμπέλις — Μανρέσα | EuroCup |
+| 04.11 19:30 | allente.no | TV 2 Sport Premium HD | Aek — Real Madrid | UEFA Champions League |
 | 04.11 19:30 | epg.cyta.com.cy | Novasports 5 HD | Cedevita Olimpija — Derthona |  |
 | 04.11 19:30 | epg.cyta.com.cy | Cytavision Sports8 HD | AEL W — ZABINY BRNO W | EURO CUP WOMEN |
+| 04.11 19:30 | movistarplus.es | M+ Deportes 3 | Tirante — Struff | Torneo de París |
+| 04.11 19:30 | sport1tv.hu | Sport1 HU | AEK Athén — Real Madrid | BL |
 | 04.11 19:30 | tv2.no | TV 2 Sport Premium | AEK — Real Madrid | UEFA Champions League |
 | 04.11 19:30 | tvarenasport.ba | Arena Premium 4 | Cedevita — Tortona | Eurocup |
 | 04.11 19:30 | tvarenasport.com | Arena Premium 3 | Cedevita Olimpija — Tortona | EVROKUP |
@@ -1436,7 +976,7 @@
 | 04.11 19:40 | teleman.pl | CANAL+ Extra 2 | Fenerbahce SK — Liverpool FC | Liga Mistrzów UEFA |
 | 04.11 19:40 | ziggosport.nl | Ziggo Sport 3 | AEK — Real Madrid |  |
 | 04.11 19:40 | ipko.tv | Tring Sport 1 | FENERBAHCE — LIVERPOOL ! | futbolli |
-| 04.11 19:40 | ipko.tv | Tring Sport 2 | AEK ATHENS — REAL MADRID ! |  |
+| 04.11 19:40 | ipko.tv | Tring Sport 2 | AEK ATHENS — REAL MADRID ! | futbolli |
 | 04.11 19:45 | cosmotetv.gr | Magenta Sport 2 | ΑΕΚ — Ρεάλ Μαδρίτης |  |
 | 04.11 19:45 | cosmotetv.gr | Magenta Sport 5 | Φενέρμπαχτσε — Λίβερπουλ |  |
 | 04.11 19:45 | cosmotetv.gr | Magenta Sport 4K | ΑΕΚ — Ρεάλ Μαδρίτης |  |
@@ -1453,6 +993,8 @@
 | 04.11 19:45 | programetv.ro | Digi Sport 1 | AEK Atena — Real Madrid | Champions League |
 | 04.11 19:45 | programetv.ro | Prima Sport 1 | AEK Atena — Real Madrid | UEFA CHAMPIONS LEAGUE |
 | 04.11 19:45 | programetv.ro | Prima Sport 2 | Fenerbahce — Liverpool | UEFA CHAMPIONS LEAGUE |
+| 04.11 19:45 | trt.net.tr | TRT 1 | Fenerbahçe — Liverpool | UEFA Şampiyonlar Ligi Grup Maçları |
+| 04.11 19:45 | trt.net.tr | Tabii Spor | AEK ATINA — REAL MADRID | UEFA ŞAMPİYONLAR LİGİ FUTBOL KARŞILAŞMASI |
 | 04.11 19:45 | tvarenasport.ba | Arena Premium 2 | AEK — Real M. | Liga prvaka |
 | 04.11 19:45 | tvarenasport.ba | Arena Premium 3 | Fenerbahce — Liverpool | Liga prvaka |
 | 04.11 19:45 | tvarenasport.com | Arena Premium 1 | AEK — Real Madrid | UEFA LIGA ŠAMPIONA |
@@ -1460,6 +1002,7 @@
 | 04.11 19:45 | tvarenasport.hr | Arena Sport 2 | FENERBAHCE — LIVERPOOL | LIGA PRVAKA |
 | 04.11 19:45 | tvarenasport.hr | Arena Sport 3 | AEK — REAL MADRID | LIGA PRVAKA |
 | 04.11 19:45 | ziggosport.nl | Ziggo Sport 2 | Fenerbahçe — Liverpool |  |
+| 04.11 19:45 | sportklub.hr | Sport Klub 4 | Berrettini — Humbert | ATP Masters Paris |
 | 04.11 19:45 | sport5.co.il | ערוץ הספורט | א.א.ק אתונה — ריאל מדריד | ליגת האלופות |
 | 04.11 19:45 | sport5.co.il | ספורט 5+ | פנרבחצ׳ה — ליברפול | ליגת האלופות |
 | 04.11 19:45 | sport5.co.il | ספורט מובייל | א.א.ק אתונה — ריאל מדריד | ליגת האלופות |
@@ -1477,8 +1020,13 @@
 | 04.11 19:55 | teleman.pl | Polsat Sport 3 | WKS Śląsk Wrocław — JL Bourg-en-Bresse | EuroCup |
 | 04.11 20:00 | tvarenasport.ba | Arena Sport 3 | Slask — Bourg | Eurocup |
 | 04.11 20:00 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
+| 04.11 20:00 | sportklub.hr | Sport Klub 2 | Michelsen — Alcaraz | ATP Masters Paris |
 | 04.11 20:00 | tvtid.tv2.dk | TV 2 Sport X | Michelsen — Alcaraz | ATP |
+| 04.11 20:00 | tvsporten.dk | TV 2 Sport X | ATP Paris — tournament | ATP |
 | 04.11 20:00 | tvmatchen.nu | TV4 Tennis | ATP Paris — tournament | ATP |
+| 04.11 20:00 | alkass.net | Al Kass One | Al-Ettifaq — Ajman | Gulf Club Champions League |
+| 04.11 20:00 | alkass.net | Al Kass Six | Two Al-Muharraq — Al-Jazira | AFC Champions League |
+| 04.11 20:05 | movistarplus.es | M+ Vamos | Michelsen — Alcaraz | Torneo de París |
 | 04.11 20:10 | ntvplus.tv | СТАРТ ТРИУМФ HD | Аль Мухаррак — Аль Джазира | АФК Лига Чемпионов-2 Прямая трансляция |
 | 04.11 20:15 | diemaxtra.nova.bg | Diema Sport 3 | Ал-Мухарак — Ал Джазира | Шампионска лига на Азия 2 |
 | 04.11 20:15 | nova.bg | diemasport 3 | Ал-Мухарак — Ал Джазира | Шампионска лига на Азия 2 |
@@ -1486,6 +1034,7 @@
 | 04.11 20:15 | poverkhnost.tv | Sport 1 | Аль-Мухаррак — Аль-Джазира | AFC Champions League Two |
 | 04.11 20:15 | poverkhnost.tv | Sport 2 | Аль-Таавун — Аль-Фейсали | AFC Champions League Two |
 | 04.11 20:15 | sportklub.hr | Sport Klub 6 | Taawoun — Faisaly | Liga prvaka Azije - TWO |
+| 04.11 20:15 | alkass.net | Al Kass Five | Two Al-Taawoun — Al-Faisaly | AFC Champions League |
 | 04.11 20:30 | epg.cyta.com.cy | Novasports Start HD | KK Bosna — Balkan Botevgrad |  |
 | 04.11 20:30 | maxsport.live | MAX Sport 2 | Босна — Балкан Ботевград | Еврокупа |
 | 04.11 20:30 | tvarenasport.ba | Arena Sport 2 | KK Bosna BHT — Balkan | Eurocup |
@@ -1495,11 +1044,15 @@
 | 04.11 20:40 | sport1.maariv.co.il | Sport1 1 | הפועל ירושלים — אריס סלוניקי | היורוקאפ |
 | 04.11 20:45 | digisport.ro | Digi Sport 1 | AEK Atena — Real Madrid | ucl Champions League |
 | 04.11 20:50 | tv3.lt | Go3 Sport 3 | Venice — Siauliai | Basketbols. EuroCup |
+| 04.11 20:50 | ipko.tv | Tring Sport 4 | DORTMUND — REAL BETIS ! | futbolli |
+| 04.11 20:50 | ipko.tv | Tring Sport 5 | LENS — COMO ! | futbolli |
 | 04.11 20:54 | sporttv.pt | SPORT.TV3 | HAPOEL JERUSALEM — ARIS SALÓNICA | EUROCUP |
+| 04.11 20:55 | tv-program.aktuality.sk | Nova Sport 2 | Telekom Baskets Bonn — Bnei Penlink Herzliya |  |
 | 04.11 20:55 | ntvplus.tv | Старт Баскет | Бонн — Бней | Лига Чемпионов Прямая трансляция |
 | 04.11 20:55 | sport5.co.il | 5MAX | בון — בני הרצליה | ליגת האלופות בכדורסל |
 | 04.11 20:55 | webtv.sk | Nova Sport 2 | Telekom Baskets Bonn — Bnei Penlink Herzliya |  |
 | 04.11 20:55 | oneplay.cz | Nova Sport 2 | Telekom Baskets Bonn — Bnei Penlink Herzliya |  |
+| 04.11 20:55 | ipko.tv | Tring Sport 6 | PSV — CLUB BRUGGE ! | futbolli |
 | 04.11 21:00 | epg.cyta.com.cy | Novasports 4 HD | Hapoel Jerusalem — Aris |  |
 | 04.11 21:00 | tvarenasport.ba | Arena Sport 6 | Hapoel Jerusalem — Aris | Eurocup |
 | 04.11 21:00 | tvarenasport.com | Arena Sport 4 | Hapoel Jerusalem — Aris | EVROKUP |
@@ -1525,12 +1078,18 @@
 | 04.11 21:40 | oneplay.cz | Oneplay Sport 4 | Real Madrid — Panathinaikos Athény | EL |
 | 04.11 21:45 | allente.no | TV 2 Sport 1 HD | Slavia Praha — Arsenal | UEFA Champions League |
 | 04.11 21:45 | epg.cyta.com.cy | Novasports PrimeHD | Real Madrid — Panathinaikos |  |
+| 04.11 21:45 | skysports.com | Sky Sports+ | Cardiff City — West Ham United | Championship |
+| 04.11 21:45 | skysports.com | Sky Sports+ | Oxford United — Reading | League 1 |
+| 04.11 21:45 | skysports.com | Sky Sports+ | Wrexham — Middlesbrough | Championship |
+| 04.11 21:45 | sport1tv.hu | Sport1 HU | RB Leipzig — Manchester City | BL |
+| 04.11 21:45 | sport1tv.hu | Sport2 HU | Slavia Praha — Arsenal | BL |
 | 04.11 21:45 | ssport.tv | S Sport | Real Madrid — Panathinaikos | EuroLeague |
 | 04.11 21:45 | teleman.pl | Polsat Sport Extra 4 | Real Madryt — Panathinaikos AKTOR Ateny | Euroliga |
 | 04.11 21:45 | tv2.no | TV 2 Sport 1 | Slavia Praha — Arsenal | UEFA Champions League |
 | 04.11 21:45 | tvarenasport.ba | Arena Premium 5 | Real Madrid — Panathinaikos | Euroliga |
 | 04.11 21:45 | tvarenasport.com | Arena Premium 3 | Real Madrid — Panathinaikos | EVROLIGA |
 | 04.11 21:45 | sportklub.hr | Sport Klub 1 | Real Madrid — Panathinaikos | Euroleague |
+| 04.11 21:45 | sportklub.hr | Sport Klub 2 | Fils — Machac | ATP Masters Paris |
 | 04.11 21:45 | port.hu | Sport1 | RB Leipzig — Manchester City | Labdarúgás: UEFA Bajnokok Ligája |
 | 04.11 21:45 | port.hu | Sport2 | Slavia Praha — Arsenal | Labdarúgás: UEFA Bajnokok Ligája |
 | 04.11 21:45 | tv24.co.uk | TNT Sports 1 | Slavia Praha — Arsenal | UEFA Champions League Football |
@@ -1546,10 +1105,8 @@
 | 04.11 21:50 | ziggosport.nl | Ziggo Sport 1 | PSV — Club Brugge |  |
 | 04.11 21:50 | ziggosport.nl | Ziggo Sport Kanaal 14 | PSV — Club Brugge |  |
 | 04.11 21:50 | ipko.tv | Tring Sport 1 | LEIPZIG — MAN.CITY ! | futbolli |
-| 04.11 21:50 | ipko.tv | Tring Sport 2 | PORTO — NAPOLI ! |  |
+| 04.11 21:50 | ipko.tv | Tring Sport 2 | PORTO — NAPOLI ! | futbolli |
 | 04.11 21:50 | ipko.tv | Tring Sport 3 | SLAVIA PRAGUE — ARSENAL ! | futbolli |
-| 04.11 21:50 | ipko.tv | Tring Sport 4 | DORTMUND — REAL BETIS ! | futbolli |
-| 04.11 21:50 | ipko.tv | Tring Sport 5 | LENS — COMO ! | futbolli |
 | 04.11 21:53 | movistarplus.es | M+ Liga de Campeones 2 | Borussia Dortmund — Betis | UEFA Champions League |
 | 04.11 21:53 | movistarplus.es | M+ Liga de Campeones 5 | Leipzig — Manchester City | UEFA Champions League |
 | 04.11 21:54 | programme-tv.net | Canal+ | Lens — Côme | Plateau Avant Match Uefa Champions League |
@@ -1571,7 +1128,6 @@
 | 04.11 21:55 | sport1.maariv.co.il | Sport1 3 | בריסטול סיטי — וולבס | צ'מפיונשיפ |
 | 04.11 21:55 | tvpassport.com | OneSoccer | RC Lens — Como | UEFA Champions League Soccer |
 | 04.11 21:55 | oneplay.cz | Nova Sport 3 | SK Slavia Praha — Arsenal FC |  |
-| 04.11 21:55 | ipko.tv | Tring Sport 6 | PSV — CLUB BRUGGE ! | futbolli |
 | 04.11 21:58 | programme-tv.net | L'Equipe | Lens — Côme | la Grande Soiree Ligue des Champions |
 | 04.11 22:00 | cosmotetv.gr | Magenta Sport 3 | Ντόρτμουντ — Μπέτις |  |
 | 04.11 22:00 | cosmotetv.gr | Magenta Sport 4 | Πόρτο — Νάπολι |  |
@@ -1616,6 +1172,9 @@
 | 04.11 22:00 | programetv.ro | Prima Sport 2 | Slavia Praga — Arsenal | UEFA CHAMPIONS LEAGUE |
 | 04.11 22:00 | programetv.ro | Prima Sport 3 | Dortmund — Betis | Uefa Champions League |
 | 04.11 22:00 | programme-tv.net | Canal+ | Lens — Côme | Ligue des Champions |
+| 04.11 22:00 | skysports.com | Sky Sports Main Event | Bristol City — Wolverhampton Wanderers | Championship |
+| 04.11 22:00 | skysports.com | Sky Sports Football | Bristol City — Wolverhampton Wanderers | Championship |
+| 04.11 22:00 | trt.net.tr | Tabii Spor | LEIPZIG — MANCHESTER CITY | UEFA ŞAMPİYONLAR LİGİ FUTBOL KARŞILAŞMASI |
 | 04.11 22:00 | tvarenasport.ba | Arena Premium 1 | Leipzig — Manchester City | Liga prvaka |
 | 04.11 22:00 | tvarenasport.ba | Arena Premium 2 | Borussia D. — Betis | Liga prvaka |
 | 04.11 22:00 | tvarenasport.ba | Arena Premium 3 | Slavia Prag — Arsenal | Liga prvaka |
@@ -1640,6 +1199,7 @@
 | 04.11 22:00 | tvarenasport.hr | Arena Sport 7 | SLAVIA PRAG — ARSENAL | LIGA PRVAKA |
 | 04.11 22:00 | tvarenasport.hr | Arena Sport 8 | PSV — CLUB BRUGGE | LIGA PRVAKA |
 | 04.11 22:00 | tvarenasport.hr | Arena Sport 9 | VIKING — SABAH | LIGA PRVAKA |
+| 04.11 22:00 | tvarenasport.si | Arena Sport 8 | Bristol City — Wolverhampton | EFL Championship |
 | 04.11 22:00 | ziggosport.nl | Ziggo Sport 2 | FC Porto — Napoli |  |
 | 04.11 22:00 | sport5.co.il | ערוץ הספורט | ר.ב. לייפציג — מנצ׳סטר סיטי | ליגת האלופות |
 | 04.11 22:00 | sport5.co.il | ספורט 5+ | סלביה פראג — ארסנל | ליגת האלופות |
@@ -1684,6 +1244,7 @@
 | 05.11 02:00 | sport5.co.il | ספורט מובייל | דטרויט — פילדלפיה | NBA |
 | 05.11 02:00 | tv3.lt | Go3 Sport 1 | 76ers — Pistons | NBA rungtynės |
 | 05.11 02:00 | ipko.tv | Sport 1 | NBA Philadelphia — Detroit | basketboll |
+| 05.11 02:10 | sportklub.hr | Sport Klub 2 | Oklahoma City — Cleveland | NBA liga |
 | 05.11 02:25 | ntvplus.tv | МАТЧ! Футбол 3 (HD) | Сан-Паулу — Коринтианс | Прямая трансляция |
 | 05.11 02:30 | tvarenasport.ba | Arena Sport 1 | Botafogo — Atletico MG | Brazilska liga |
 | 05.11 02:30 | tvarenasport.com | Arena Premium 3 | Botafogo — Atletico MG | BRAZILSKA LIGA |
@@ -1741,6 +1302,8 @@
 | 05.11 16:00 | tvsporten.dk | TV 2 Sport X | ATP Paris — tournament | ATP |
 | 05.11 17:00 | digisport.ro | Digi Sport 1 | Chindia Tragoviste — Popesti Leordeni | liga 2 Liga 2 |
 | 05.11 17:00 | primaplay.ro | Prima Sport 1 | Chindia Târgoviște — Popești Leordeni |  |
+| 05.11 17:00 | programetv.ro | Digi Sport 1 | Chindia Tragoviste — Popesti Leordeni | Liga 2 |
+| 05.11 17:00 | programetv.ro | Prima Sport 1 | FC Bihor — Slatina | LIGA 2 |
 | 05.11 17:30 | tvarenasport.hr | Arena Sport 1 | RENNES — OLYMPIACOS | EUROPA LIGA |
 | 05.11 18:00 | tvtid.tv2.dk | TV 2 Sport X | ATP Paris — tournament | ATP |
 | 05.11 18:00 | digisport.ro | Digi Sport 1 | Chindia Tragoviste — Popesti Leordeni | liga 2 Liga 2 |
@@ -1785,6 +1348,8 @@
 | 05.11 19:40 | allente.no | V sport 3 HD | Sparta Praha — Bournemouth | UEFA Europa League |
 | 05.11 19:40 | digisport.ro | Digi Sport 2 | Milan — Ferencvaros | uel Europa League |
 | 05.11 19:40 | digisport.ro | Digi Sport 4 | Trabzonspor — Freiburg | digisport Conference League |
+| 05.11 19:40 | programetv.ro | Digi Sport 2 | Milan — Ferencvaros | Europa League |
+| 05.11 19:40 | programetv.ro | Digi Sport 4 | Trabzonspor — Freiburg | Conference League |
 | 05.11 19:40 | ziggosport.nl | Ziggo Sport 5 | AC Milan — Ferencváros |  |
 | 05.11 19:40 | ziggosport.nl | Ziggo Sport 6 | Crystal Palace — TSG Hoffenheim |  |
 | 05.11 19:40 | oneplay.cz | Nova Sport 5 | AC Sparta Praha — AFC Bournemouth |  |
@@ -1815,6 +1380,9 @@
 | 05.11 19:45 | primaplay.ro | Prima Sport 2 | Milan — Ferencvaros |  |
 | 05.11 19:45 | primaplay.ro | Prima Sport 3 | Real Sociedad — Lyon |  |
 | 05.11 19:45 | primaplay.ro | Prima Sport 4 | Trabzonspor — Freiburg |  |
+| 05.11 19:45 | programetv.ro | Digi Sport 3 | Real Sociedad — Lyon | Europa League |
+| 05.11 19:45 | programetv.ro | Prima Sport 2 | Milan — Ferencvaros | UEFA EUROPA LEAGUE |
+| 05.11 19:45 | programetv.ro | Prima Sport 3 | Real Sociedad — Lyon | Uefa Europa League |
 | 05.11 19:45 | tvarenasport.ba | Arena Premium 1 | Crvena zvezda — Inter Escaldes | Konferencijska liga |
 | 05.11 19:45 | tvarenasport.ba | Arena Premium 2 | Lincoln — Hajduk | Konferencijska liga |
 | 05.11 19:45 | tvarenasport.ba | Arena Premium 3 | Anderlecht — Salzburg | Europska liga |
@@ -1867,7 +1435,7 @@
 | 05.11 19:55 | oneplay.cz | Oneplay Sport 1 | Hapoel Tel Aviv — FC Barcelona | EL |
 | 05.11 19:55 | oneplay.cz | Oneplay Sport 3 | Hapoel Tel Aviv — FC Barcelona | EL |
 | 05.11 19:55 | oneplay.cz | Oneplay Sport 4 | Hapoel Tel Aviv — FC Barcelona | EL |
-| 05.11 20:00 | epg.cyta.com.cy | Novasports 6 HD | Fenerbahce — Baskonia |  |
+| 05.11 20:00 | epg.cyta.com.cy | Novasports 3 HD | Fenerbahce — Baskonia |  |
 | 05.11 20:00 | ssport.tv | S Sport | Fenerbahçe Tarfin — Baskonia | EuroLeague |
 | 05.11 20:00 | tvarenasport.ba | Arena Premium 5 | Fenerbahce — Baskonia | Euroliga |
 | 05.11 20:00 | tvarenasport.com | Arena Sport 1 | Fenerbahce — Baskonia | EVROLIGA |
@@ -1929,6 +1497,8 @@
 | 05.11 21:55 | digisport.ro | Digi Sport 2 | Celta Vigo — Union Saint Gilloise | uel Europa League |
 | 05.11 21:55 | digisport.ro | Digi Sport 4 | Celtic — Besiktas | uel Europa League |
 | 05.11 21:55 | movistarplus.es | M+ Liga de Campeones 2 | Getafe — Brighton | UEFA Conference League |
+| 05.11 21:55 | programetv.ro | Digi Sport 2 | Celta Vigo — Union Saint Gilloise | Europa League |
+| 05.11 21:55 | programetv.ro | Digi Sport 4 | Celtic — Besiktas | Europa League |
 | 05.11 21:55 | ziggosport.nl | Ziggo Sport 5 | Bayer Leverkusen — Olympique Marseille |  |
 | 05.11 21:55 | ziggosport.nl | Ziggo Sport 6 | Celtic — Besiktas |  |
 | 05.11 21:55 | webtv.sk | JOJ Šport | Sunderland AFC — GNK Dinamo Záhreb |  |
@@ -1953,6 +1523,7 @@
 | 05.11 22:00 | epg.cyta.com.cy | Cytavision Sports7 HD | ALKMAAR — JUVENTUS | UEFA EUROPA LEAGUE |
 | 05.11 22:00 | epg.cyta.com.cy | CVSPORTS 4K2 | ALKMAAR — JUVENTUS | UEFA EUROPA LEAGUE |
 | 05.11 22:00 | epg.cyta.com.cy | PPV5 | ALKMAAR — JUVENTUS | UEFA EUROPA LEAGUE |
+| 05.11 22:00 | livesoccertv.com | RTSH 1 | CSU Craiova — Egnatia Rrogozhinë | UEFA Conference League |
 | 05.11 22:00 | livesoccertv.com | SuperSport 1 Digitalb | CSU Craiova — Egnatia Rrogozhinë | UEFA Conference League |
 | 05.11 22:00 | livesoccertv.com | SuperSport 2 Digitalb | AZ — Juventus | UEFA Europa League |
 | 05.11 22:00 | livesoccertv.com | SuperSport 3 Digitalb | Bayer Leverkusen — Olympique Marseille | UEFA Europa League |
@@ -1963,6 +1534,12 @@
 | 05.11 22:00 | primaplay.ro | Prima Sport 3 | Tenerife — UBT Cluj |  |
 | 05.11 22:00 | primaplay.ro | Prima Sport 4 | AZ Alkmaar — Juventus |  |
 | 05.11 22:00 | primaplay.ro | PPV1 | Celtic — Beșiktaș |  |
+| 05.11 22:00 | programetv.ro | Digi Sport 1 | Universitatea Craiova — Egnatia | Conference League |
+| 05.11 22:00 | programetv.ro | Digi Sport 3 | AZ Alkmaar — Juventus | Europa League |
+| 05.11 22:00 | programetv.ro | Prima Sport 1 | CS U Craiova — Egnatia | UEFA CONFERENCE LEAGUE |
+| 05.11 22:00 | programetv.ro | Prima Sport 2 | Celta Vigo — St. Gilloisse | UEFA EUROPA LEAGUE |
+| 05.11 22:00 | programetv.ro | Prima Sport 3 | Tenerife — U Cluj | Eurocup |
+| 05.11 22:00 | programetv.ro | Prima Sport 4 | Alkmaar — Juventus | Uefa Europa League |
 | 05.11 22:00 | programme-tv.net | Canal+ | Bayer Leverkusen — Marseille | Ligue Europa |
 | 05.11 22:00 | tvarenasport.ba | Arena Premium 1 | Sunderland — Dinamo | Europska liga |
 | 05.11 22:00 | tvarenasport.ba | Arena Premium 2 | Sturm — Celje | Europska liga |
@@ -2022,6 +1599,7 @@
 | 06.11 00:25 | start.sportdigital.de | Sportdigital FUSSBALL | Palmeiras — Remo | Campeonato Brasileiro (34. Spieltag) |
 | 06.11 00:30 | tvarenasport.com | Arena Premium 3 | Palmeiras — Remo | BRAZILSKA LIGA |
 | 06.11 02:25 | ntvplus.tv | МАТЧ! Футбол 3 (HD) | Крузейро — Баия | Прямая трансляция |
+| 06.11 03:00 | tvpassport.com | TSN5 | Duke — Coastal Carolina | College Basketball |
 | 06.11 04:00 | movistarplus.es | DAZN Baloncesto | Phoenix Suns — Orlando Magic | NBA |
 | 06.11 04:00 | ssport.tv | S Sport | Orlando Magic — Phoenix Suns | NBA |
 | 06.11 04:00 | tv3.lt | Go3 Sport 1 | Magic — Suns | NBA rungtynės |
@@ -2043,6 +1621,7 @@
 | 06.11 14:45 | sport5.co.il | ספורט 5 Live | בני יהודה — אחי נצרת | ליגה לאומית בכדורגל |
 | 06.11 14:45 | sport5.co.il | ספורט 5 Stars | מ.ס. קרית ים — מ.ס. אשדוד | ליגה לאומית בכדורגל |
 | 06.11 14:45 | sport5.co.il | 5MAX | הפועל ראשל"צ — הפועל רעננה | ליגה לאומית בכדורגל |
+| 06.11 15:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Paris — tournament | 2026 ATP 1000 - PARIS |
 | 06.11 15:00 | sporttv.pt | SPORT.TV2 | ATP Paris — tournament | ATP MASTERS 1000 |
 | 06.11 15:00 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
 | 06.11 15:00 | tvtid.tv2.dk | TV 2 Sport | ATP Paris — tournament | ATP |
@@ -2050,12 +1629,14 @@
 | 06.11 15:00 | tvmatchen.nu | TV4 Tennis | ATP Paris — tournament | ATP |
 | 06.11 15:00 | tvmatsit.com | MTV Urheilu 1 | ATP Paris — tournament | ATP |
 | 06.11 16:55 | maxsport.live | MAX Sport 4 | Ал Хазем — Ал Насър | Саудитска Професионална Лига |
+| 06.11 16:55 | sportklub.hr | Sport Klub 4 | Hazem — Nassr | Saudijska liga |
 | 06.11 17:00 | diemaxtra.nova.bg | Diema Sport | Септември — Локомотив София | efbet Лига |
 | 06.11 17:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Paris — tournament | 2026 ATP 1000 - PARIS |
 | 06.11 17:00 | ert.gr | ΕΡΤ2 ΣΠΟΡ | Σοφάδες — Κομοτηνή | Elite League | 7η Αγωνιστική |
 | 06.11 17:00 | nova.bg | diemasport | Септември — Локомотив София | efbet Лига |
 | 06.11 17:00 | sporttv.pt | SPORT.TV2 | ATP Paris — tournament | ATP MASTERS 1000 |
 | 06.11 17:00 | tvarenasport.com | Arena Premium 4 | Avtodor — UNICS | VTB LIGA |
+| 06.11 17:00 | sportklub.hr | Sport Klub 6 | Septemvri — Lokomotiv Sofia | Bugarska liga |
 | 06.11 17:30 | digisport.ro | Digi Sport 1 | UTA Arad — Petrolul | superliga Superliga |
 | 06.11 17:30 | primaplay.ro | Prima Sport 1 | UTA Arad — Petrolul Ploiești |  |
 | 06.11 17:30 | tvarenasport.ba | Arena Premium 1 | Uta Arad — Petrolul | Rumunska liga |
@@ -2064,6 +1645,7 @@
 | 06.11 18:30 | digisport.ro | Digi Sport 1 | UTA Arad — Petrolul | superliga Superliga |
 | 06.11 18:30 | tvarenasport.ba | Arena Sport 3 | Lokomotiv — Rubin | Ruska liga |
 | 06.11 18:30 | tvarenasport.com | Arena Sport 1 | Lokomotiv — Rubin | RUSKA LIGA |
+| 06.11 18:30 | sportklub.hr | Sport Klub 8 | Nafta — Olimpija | Slovenska 1. liga |
 | 06.11 18:45 | tv3.lt | Go3 Sport 1 | Stambulo „Bešiktaš“ — Kauno „Žalgiris“ | Eurolygos rungtynės |
 | 06.11 18:45 | tv3.lt | TV6 | Stambulo „Bešiktaš“ — Kauno „Žalgiris“ | Eurolygos rungtynės |
 | 06.11 18:50 | allente.no | SVT2 HD | Djurgaarden W — BK Haecken FF W | Damallsvenskan |
@@ -2091,12 +1673,14 @@
 | 06.11 19:00 | tvarenasport.ba | Arena Sport 1 | Lokomotiva — Rudeš | HNL |
 | 06.11 19:00 | tvarenasport.com | Arena Premium 2 | Besiktas — Zalgiris | EVROLIGA |
 | 06.11 19:00 | tvarenasport.hr | Arena Sport 1 | MOTOR — WISLA P | POLJSKA LIGA |
+| 06.11 19:00 | sportklub.hr | Sport Klub 3 | Besiktas — Zalgiris | Euroleague |
 | 06.11 19:00 | novasports.gr | Novasports4HD | Μπεσίκτας — Ζάλγκιρις Κάουνας | EuroLeague |
 | 06.11 19:00 | ipko.tv | Sport 2 | Dukagjini — Llapi | futbolli |
 | 06.11 19:00 | ipko.tv | TRT Spor | 14. Hafta Antalyaspor A.Ş — Bursaspor | futbolli |
 | 06.11 19:00 | tvmatchen.nu | Viaplay Sport | Djurgårdens IF W — BK Häcken W | OBOS Damallsvenskan |
 | 06.11 19:15 | diemaxtra.nova.bg | Diema Sport | Ботев Пловдив — Дунав | efbet Лига |
 | 06.11 19:15 | nova.bg | diemasport | Ботев Пловдив — Дунав | efbet Лига |
+| 06.11 19:15 | sportklub.hr | Sport Klub 4 | Botev Plovdiv — Dunav | Bugarska liga |
 | 06.11 19:20 | sport1.maariv.co.il | Sport1 3 | דינמו דרזדן — גרויתר פורת | הליגה הגרמנית השנייה |
 | 06.11 19:25 | teleman.pl | Eleven Sports 4 | Dynamo Drezno — SpVgg Greuther Fürth | 2. liga niemiecka |
 | 06.11 19:25 | teleman.pl | Eleven Sports 2 | Eintracht Brunszwik TSV — FC Energie Cottbus | 2. liga niemiecka |
@@ -2111,6 +1695,9 @@
 | 06.11 19:30 | tvarenasport.ba | Arena Premium 4 | Dresden — Greuter Furth | Njemačka 2.liga |
 | 06.11 19:30 | tvarenasport.com | Arena Premium 4 | E. Braunschweig — Cottbus | NEMAČKA 2. LIGA |
 | 06.11 19:30 | tvarenasport.com | Arena Premium 5 | Dresden — Greuter Furth | NEMAČKA 2. LIGA |
+| 06.11 19:30 | sportklub.hr | Sport Klub 1 | Dynamo Dresden — Greuther Furth | 2. Bundesliga |
+| 06.11 19:30 | sportklub.hr | Sport Klub 6 | Braunschweig — Cottbus | 2. Bundesliga |
+| 06.11 19:30 | sportklub.hr | Sport Klub 9 | Ittihad — Neom | Saudijska liga |
 | 06.11 19:30 | novasports.gr | Novasports2HD | Ντιναμό Δρέσδης — Γκρόιτερ Φιρτ | 2.Bundesliga |
 | 06.11 19:30 | tvmatsit.com | V Sport 2 Suomi | Eintracht Braunschweig — Energie Cottbus | 2. Bundesliiga |
 | 06.11 19:30 | tvmatsit.com | Viaplay TV (FI) | Dynamo Dresden — Greuther Fürth | 2. Bundesliiga |
@@ -2122,6 +1709,7 @@
 | 06.11 20:00 | primaplay.ro | PPV2 | CS Rm. Vâlcea — Argeș Pitești |  |
 | 06.11 20:00 | sporttv.pt | SPORT.TV4 | ATP Paris — tournament | ATP MASTERS 1000 |
 | 06.11 20:00 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
+| 06.11 20:00 | sportklub.hr | Sport Klub 10 | Viktoria Koln — Saarbrucken | 3. Bundesliga |
 | 06.11 20:00 | tvtid.tv2.dk | TV 2 Sport | ATP Paris — tournament | ATP |
 | 06.11 20:00 | tvsporten.dk | TV3 Sport | Silkeborg IF — Lyngby BK | Superliga |
 | 06.11 20:00 | tvsporten.dk | TV 2 Sport | ATP Paris — tournament | ATP |
@@ -2134,11 +1722,13 @@
 | 06.11 20:30 | tvarenasport.com | Arena Sport 5 | Rapid — WAC | AUSTRIJSKA LIGA |
 | 06.11 20:30 | sporttv.pt | SPORT.TV + | AFS — FC VIZELA | LIGA PORTUGAL 2 |
 | 06.11 21:00 | canal11.pt | Canal 11 | UNIÃO SANTARÉM — CD MAFRA | Liga 3 Placard |
+| 06.11 21:00 | epg.cyta.com.cy | Cablenet Sports 1 HD | Montpellier — Metz |  |
 | 06.11 21:00 | livesoccertv.com | ESPN 2 Netherlands | Willem II — PEC Zwolle | Eredivisie |
 | 06.11 21:00 | livesoccertv.com | ESPN 3 Netherlands | VVV — PSV II | Eerste Divisie |
 | 06.11 21:00 | livesoccertv.com | ESPN 4 Netherlands | Dordrecht — NAC Breda | Eerste Divisie |
 | 06.11 21:00 | tvarenasport.com | Arena Sport 10 | Vojvodina — Radnički | KLS |
 | 06.11 21:00 | tvarenasport.hr | Arena Sport 7 | MONTPELLIER — METZ | FRANCUSKA 2.LIGA |
+| 06.11 21:00 | sportklub.hr | Sport Klub 8 | Jadran — Bistrica | Slovenska 2. liga |
 | 06.11 21:00 | tv3.lt | Go3 Sport 2 | Olympiacos — Crvena Zvezda | Eurolygos rungtynės |
 | 06.11 21:10 | teleman.pl | Polsat Sport 3 | Enea Łaciate Astoria Bydgoszcz — PGE Start Lublin | PGE Basket Liga |
 | 06.11 21:10 | teleman.pl | Polsat Sport Extra 4 | Enea Łaciate Astoria Bydgoszcz — PGE Start Lublin | PGE Basket Liga |
@@ -2154,6 +1744,7 @@
 | 06.11 21:15 | ssport.tv | S Sport2 | Olympiacos — Kızılyıldız | EuroLeague |
 | 06.11 21:15 | tvarenasport.ba | Arena Sport 1 | Olympiacos — Crvena zvezda | Euroliga |
 | 06.11 21:15 | tvarenasport.com | Arena Premium 1 | Olympiacos — Crvena zvezda | EVROLIGA |
+| 06.11 21:15 | sportklub.hr | Sport Klub 3 | Olympiacos — Crvena zvezda | Euroleague |
 | 06.11 21:15 | novasports.gr | Novasports Prime | Ολυμπιακός — Ερυθρός Αστέρας | EuroLeague |
 | 06.11 21:15 | tv3.lt | Go3 Sport 3 | Virtus — Dubai | Basketbols: Eirolīga |
 | 06.11 21:15 | tv.orf.at | ORF SPORT+ | Admira Wacker — SKN St. Pölten | LIVE Fußball ADMIRAL 2. Liga |
@@ -2184,6 +1775,8 @@
 | 06.11 21:30 | tvarenasport.com | Arena Sport 7 | Ascoli — Palermo | ITALIJANSKA 2. LIGA |
 | 06.11 21:30 | tvarenasport.com | Arena 1X2 | Wisla Krakow — Cracovia | POLJSKA LIGA |
 | 06.11 21:30 | tvarenasport.hr | Arena Sport 4 | WISLA KRAKOW — CRACOVIA | POLJSKA LIGA |
+| 06.11 21:30 | sportklub.hr | Sport Klub 1 | Hamburg — Monchengladbach | Bundesliga |
+| 06.11 21:30 | sportklub.hr | Sport Klub 5 | Virtus — Dubai | Euroleague |
 | 06.11 21:30 | novasports.gr | Novasports3HD | Αμβούργο — Γκλάντμπαχ | Bundesliga |
 | 06.11 21:30 | novasports.gr | ΝovasportsStart | Βίρτους Μπολόνια — Ντουμπάι | EuroLeague |
 | 06.11 21:30 | tvpassport.com | OneSoccer | Hamburger SV — Borussia Mönchengladbach | German First Division Soccer League |
@@ -2208,6 +1801,7 @@
 | 06.11 21:45 | epg.cyta.com.cy | Novasports 4 HD | Partizan — Maccabi Tel Aviv |  |
 | 06.11 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | VENEZIA — UDINESE | ITALIAN SERIE A |
 | 06.11 21:45 | epg.cyta.com.cy | Cytavision Sports6 HD | OXFORD CITY — LEICESTER | THE EMIRATES FA CUP |
+| 06.11 21:45 | epg.cyta.com.cy | Cablenet Sports 2 HD | Toulouse — Strasbourg |  |
 | 06.11 21:45 | ert.gr | ΕΡΤ2 ΣΠΟΡ | Όξφορντ — Λέστερ | Κύπελλο Αγγλίας |
 | 06.11 21:45 | maxsport.live | MAX Sport 3 | Венеция — Удинезе | Серия А |
 | 06.11 21:45 | nova.bg | diemasport | Тулуза — Страсбург | Лига 1 на Франция |
@@ -2224,6 +1818,7 @@
 | 06.11 21:45 | tvarenasport.hr | Arena Sport 2 | VENEZIA — UDINESE | TALIJANSKA LIGA |
 | 06.11 21:45 | tvarenasport.hr | Arena Sport 3 | TOULOUSE — STRASBOURG | FRANCUSKA LIGA |
 | 06.11 21:45 | tvarenasport.hr | Arena Sport 5 | OXFORD — LEICESTER | FA CUP |
+| 06.11 21:45 | sportklub.hr | Sport Klub 4 | Partizan — Maccabi | Euroleague |
 | 06.11 21:45 | sport5.co.il | ערוץ הספורט | פרטיזן בלגרד — מכבי ת"א | יורוליג |
 | 06.11 21:45 | sport5.co.il | ספורט מובייל | פרטיזן בלגרד — מכבי ת"א | יורוליג |
 | 06.11 21:45 | webtv.sk | Sport 1 | Venezia — Udinese |  |
@@ -2278,6 +1873,7 @@
 | 06.11 22:00 | tvarenasport.com | Arena Sport 4 | Derby — Bolton | CHAMPIONSHIP |
 | 06.11 22:00 | tvarenasport.hr | Arena Sport 1 | EVERTON — COVENTRY | PREMIER LEAGUE |
 | 06.11 22:00 | tvarenasport.hr | Arena Sport 6 | DERBY COUNTY — BOLTON | CHAMPIONSHIP |
+| 06.11 22:00 | sportklub.hr | Sport Klub 6 | Sevilla — Alaves | Španjolska liga |
 | 06.11 22:00 | port.hu | Match4 | Everton — Coventry | Labdarúgás: Premier League |
 | 06.11 22:00 | novasports.gr | Novasports Premier League | Έβερτον — Κόβεντρι | Premier League |
 | 06.11 22:00 | ipko.tv | Sport 1 | La Liga Sevilla — Alaves | futbolli |
@@ -2303,16 +1899,20 @@
 | 07.11 08:30 | ntvplus.tv | Старт Баскет | Аделаида — Иллаварра Хокс | Чемпионат Австралии Прямая трансляция |
 | 07.11 09:25 | ntvplus.tv | СТАРТ HD | Кимчхон — Аньянг | Чемпионат Южной Кореи К-Лига 1 Прямая трансляция |
 | 07.11 10:30 | ntvplus.tv | Старт Баскет | Мельбурн Юнайтед — Брисбен Буллетс | Чемпионат Австралии Прямая трансляция |
+| 07.11 10:30 | sportklub.hr | Sport Klub 3 | Naegohyang W — Kobe Leonessa W | Liga prvaka Azije (Ž) |
+| 07.11 10:30 | sportklub.hr | Sport Klub 5 | Hwacheon W — Ho Chi Minh City W | Liga prvaka Azije (Ž) |
 | 07.11 10:30 | sport5.co.il | ספורט 5 Live | מלבורן יונייטד — בריסביין בולטס | ליגת הכדורסל האוסטרלית (NBL) |
 | 07.11 10:30 | tv24.co.uk | TNT Sports 1 | Melbourne City FC — Western Sydney Wanderers FC | A-League Men |
 | 07.11 10:35 | start.sportdigital.de | Sportdigital FUSSBALL | Melbourne City — Western Sydney Wanderers | A-League (4. Spieltag) |
 | 07.11 10:40 | ntvplus.tv | МАТЧ ПРЕМЬЕР HD | Локомотив W — Спартак W | Женщины Тур 25 Прямая трансляция |
 | 07.11 11:30 | oneplaysport.cz | Oneplay Sport 2 | HC Dynamo Pardubice U19 — BK Mladá Boleslav U19 | ELH |
 | 07.11 12:00 | epg.cyta.com.cy | Cytavision Sports4 HD | ΑΠΟΕΛ — ΚΕΡΑΥΝΟΣ | ECOMMBX BASKET LEAGUE |
+| 07.11 12:00 | sportklub.hr | Sport Klub 9 | Cayirova — Bandirma | Turska liga |
 | 07.11 12:20 | jupiter.err.ee | ETV | Tallinna FCI Levadia — Nõmme Kalju FC | Jalgpalli Premium Liiga |
 | 07.11 12:25 | jupiter.err.ee | ETV2 | Paide Linnameeskond — Tallinna FC Flora | Jalgpalli Premium Liiga |
 | 07.11 12:30 | digisport.ro | Digi Sport 1 | Bihor Oradea — CSM Slatina | digisport Liga a 2-a |
 | 07.11 12:30 | primaplay.ro | Prima Sport 1 | FC Bihor — Slatina |  |
+| 07.11 12:30 | sportklub.hr | Sport Klub 4 | Melbourne City W — Peking W | Liga prvaka Azije (Ž) |
 | 07.11 12:40 | start.sportdigital.de | Sportdigital FUSSBALL | Perth Glory — Newcastle United Jets | A-League (4. Spieltag) |
 | 07.11 12:45 | ceskatelevize.cz | ČT sport | SK Slavia Praha W — AC Sparta Praha W | FORTUNA LYGA |
 | 07.11 12:45 | tv24.co.uk | TNT Sports 4 | Perth Glory — Newcastle Jets | A-League Men |
@@ -2331,6 +1931,7 @@
 | 07.11 13:30 | diemaxtra.nova.bg | Diema Sport | Ботев Враца — Локомотив Пловдив | efbet Лига |
 | 07.11 13:30 | digisport.ro | Digi Sport 1 | Bihor Oradea — CSM Slatina | digisport Liga a 2-a |
 | 07.11 13:30 | nova.bg | diemasport | Ботев Враца — Локомотив Пловдив | efbet Лига |
+| 07.11 13:30 | sportklub.hr | Sport Klub 8 | Botev Vratsa — Lokomotiv Plovdiv | Bugarska liga |
 | 07.11 13:50 | sport1.maariv.co.il | Sport1 4 | נירנברג — דארמשטאט | הליגה הגרמנית השנייה |
 | 07.11 13:55 | allente.no | TV 2 Sport 1 HD | Brann W — Molde W | Fotball - Toppserien kvinner |
 | 07.11 13:55 | teleman.pl | Eleven Sports 3 | Holstein Kiel — DSC Arminia Bielefeld | 2. liga niemiecka |
@@ -2350,6 +1951,9 @@
 | 07.11 14:00 | tvarenasport.com | Arena Premium 3 | Nurnberg — Darmstadt | NEMAČKA 2. LIGA |
 | 07.11 14:00 | tvarenasport.com | Arena Premium 4 | Osnabruck — Kaiserslautern | NEMAČKA 2. LIGA |
 | 07.11 14:00 | tvarenasport.com | Arena Sport 1 | Zemun — IMT | MOZZARTBET SUPERLIGA |
+| 07.11 14:00 | sportklub.hr | Sport Klub 3 | Osnabruck — Kaiserslautern | 2. Bundesliga |
+| 07.11 14:00 | sportklub.hr | Sport Klub 6 | Nurnberg — Darmstadt | 2. Bundesliga |
+| 07.11 14:00 | sportklub.hr | Sport Klub 7 | Kiel — Arminia | 2. Bundesliga |
 | 07.11 14:00 | tv3.lt | TV6 | Jurbarko „Jurbarkas-Karys-Manvesta“ — Telšių „Telšiai“ | URBO-NKL rungtynės |
 | 07.11 14:00 | ipko.tv | Sport 1 | Feronikeli ’74 — Ballkani | futbolli |
 | 07.11 14:00 | tvmatsit.com | V Sport 1 Suomi | Nürnberg — Darmstadt | 2. Bundesliiga |
@@ -2379,6 +1983,7 @@
 | 07.11 14:30 | tvarenasport.com | Arena 1X2 | Wrexham — Wolves | CHAMPIONSHIP |
 | 07.11 14:30 | tvarenasport.hr | Arena Sport 1 | LEEDS — TOTTENHAM | PREMIER LEAGUE |
 | 07.11 14:30 | tvarenasport.hr | Arena Sport 4 | WREXHAM — WOLVES | CHAMPIONSHIP |
+| 07.11 14:30 | sportklub.hr | Sport Klub 9 | Turk Telekom — Korfez | Turska liga |
 | 07.11 14:30 | port.hu | M4 Sport | Paksi FC — ZTE FC | OTP Bank Liga |
 | 07.11 14:30 | novasports.gr | Novasports Premier League | Λιντς — Τότεναμ | Premier League |
 | 07.11 14:30 | tvsporten.dk | TV3 Max | Wrexham FC — Wolverhampton Wanderers | Championship |
@@ -2413,6 +2018,9 @@
 | 07.11 15:00 | tvarenasport.com | Arena Premium 5 | Malaga — Racing | ŠPANSKA LIGA |
 | 07.11 15:00 | tvarenasport.com | Arena Sport 10 | Proleter 023 — Vršac | PRVA LIGA SRBIJE |
 | 07.11 15:00 | tvarenasport.hr | Arena Sport 6 | CSIKSZEREDA — U. CLUJ | RUMUNJSKA LIGA |
+| 07.11 15:00 | sportklub.hr | Sport Klub 10 | Hansa — Sonnenhof | 3. Bundesliga |
+| 07.11 15:00 | sportklub.hr | Sport Klub 4 | Rot-Weiss — Alemannia | 3. Bundesliga |
+| 07.11 15:00 | sportklub.hr | Sport Klub 5 | Malaga — Racing | Španjolska liga |
 | 07.11 15:00 | oneplay.cz | Sport2 | Evropská liga — Fotbal | Evropská liga |
 | 07.11 15:00 | tvmatchen.nu | SVT2 | FC Rosengård W — Hammarby IF W | OBOS Damallsvenskan |
 | 07.11 15:25 | ntvplus.tv | Матч ТВ | Зенит W — ЦСКА W | Суперлига Женщины Прямая трансляция |
@@ -2460,6 +2068,7 @@
 | 07.11 16:00 | tvarenasport.hr | Arena Sport 5 | CAGLIARI — FROSINONE | TALIJANSKA LIGA |
 | 07.11 16:00 | ipko.tv | Sport 1 | Serie A Torino — Lecce | futbolli |
 | 07.11 16:00 | ipko.tv | Sport 2 | Serie A Cagliari — Frosinone | futbolli |
+| 07.11 16:00 | tvmatchen.nu | TV4 Sport Live 1 | Ljungskile SK — Landskrona Bois | Superettan |
 | 07.11 16:00 | tvmatchen.nu | TV4 Sportkanalen | Örebro SK — Östers IF | Superettan |
 | 07.11 16:00 | tvmatchen.nu | TV4 Sport Live 3 | Cagliari — Frosinone | Serie A |
 | 07.11 16:00 | tvmatchen.nu | TV4 Sport Live 4 | Torino — Lecce | Serie A |
@@ -2589,10 +2198,10 @@
 | 07.11 18:00 | ziggosport.nl | Ziggo Sport 4 | ATP Paris — tournament |  |
 | 07.11 18:00 | ipko.tv | Sport 2 | Vellaznimi — Bora | basketboll |
 | 07.11 18:00 | ipko.tv | Sport 4 | Galatasaray — Amedspor | futbolli |
-| 07.11 18:00 | tvtid.tv2.dk | TV 2 Sport | ATP Paris — tournament | ATP |
 | 07.11 18:10 | teleman.pl | Eleven Sports 4 | AJ Auxerre — Paris FC | Liga francuska |
 | 07.11 18:10 | sport5.co.il | ספורט 5 Gold | מנטובה — ורונה | כדורגל איטלקי |
 | 07.11 18:10 | tvpassport.com | Fox Soccer Plus | Mantova — Hellas Verona | Italian Serie B Soccer |
+| 07.11 18:15 | epg.cyta.com.cy | Cablenet Sports 2 HD | Auxerre — Paris FC |  |
 | 07.11 18:15 | movistarplus.es | DAZN 4 | SD Eibar W — Real Sociedad W | Liga F |
 | 07.11 18:15 | tvarenasport.ba | Arena Sport 4 | Auxerre — Paris | Francuska liga |
 | 07.11 18:15 | tvarenasport.hr | Arena Sport 5 | AUXERRE — PARIS FC | FRANCUSKA LIGA |
@@ -2748,6 +2357,7 @@
 | 07.11 20:30 | ipko.tv | Sport 2 | Peja — Sigal Prishtina | basketboll |
 | 07.11 20:50 | ntvplus.tv | viju+ Sport HD | Онсе Кальдас — Агильяс Дорадас | Колумбия Примера А Клаусура 2026 18 тур Прямая трансляция |
 | 07.11 20:55 | sport5.co.il | ספורט 5 Stars | סנט אטיין — לאבאל | ליגה צרפתית שנייה |
+| 07.11 21:00 | epg.cyta.com.cy | Cablenet Sports 3 HD | Saint-Etienne — Laval |  |
 | 07.11 21:00 | tvarenasport.ba | Arena Sport 6 | St. Etienne — Laval | Francuska 2.liga |
 | 07.11 21:00 | tvarenasport.com | Arena 1X2 | Saint-Etienne — Laval | FRANCUSKA 2. LIGA |
 | 07.11 21:00 | tvarenasport.hr | Arena Sport 5 | ST. ETIENNE — LAVAL | FRANCUSKA 2.LIGA |
@@ -2790,6 +2400,7 @@
 | 07.11 21:45 | diemaxtra.nova.bg | Diema Sport 3 | Пари Сен Жермен — Троа | Лига 1 на Франция |
 | 07.11 21:45 | digisport.ro | Digi Sport 3 | Roma — Sassuolo | serie a Serie A |
 | 07.11 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | ROMA — SASSUOLO | ITALIAN SERIE A |
+| 07.11 21:45 | epg.cyta.com.cy | Cablenet Sports 2 HD | Paris Saint-Germain — Troyes |  |
 | 07.11 21:45 | maxsport.live | MAX Sport 3 | Рома — Сасуоло | Серия А |
 | 07.11 21:45 | nova.bg | diemasport 3 | Пари Сен Жермен — Троа | Лига 1 на Франция |
 | 07.11 21:45 | primaplay.ro | Prima Sport 3 | Roma — Sassuolo |  |
@@ -2826,6 +2437,7 @@
 | 07.11 21:55 | ziggosport.nl | Ziggo Sport 1 | Valencia CF — Real Madrid |  |
 | 07.11 21:55 | ziggosport.nl | Ziggo Sport Kanaal 14 | Valencia CF — Real Madrid |  |
 | 07.11 21:55 | ntvplus.tv | Старт Баскет | Ллейда — Баскония | Чемпионат Испании Прямая трансляция |
+| 07.11 21:55 | sport5.co.il | ספורט 5 Live | סנט מירן — ריינג'רס | ליגה סקוטית |
 | 07.11 21:55 | sport5.co.il | 5MAX | מאלו W — מארסיי W | ליגה צרפתית בכדורגל הנשים |
 | 07.11 21:55 | oneplay.cz | Nova Sport 4 | Valencia CF — Real Madrid |  |
 | 07.11 21:55 | oneplay.cz | Nova Sport 6 | Peterborough United — Reading FC |  |
@@ -2849,11 +2461,13 @@
 | 07.11 22:00 | tvarenasport.com | Arena Premium 1 | Valencia — Real Madrid | ŠPANSKA LIGA |
 | 07.11 22:00 | tvarenasport.com | Arena Premium 4 | Lleida — Baskonia | ŠPANSKA LIGA |
 | 07.11 22:00 | tvarenasport.com | Arena Sport 2 | St. Mirren — Rangers | ŠKOTSKA LIGA |
+| 07.11 22:00 | sport5.co.il | 5MAX | אברדין — היברניאן | ליגה סקוטית |
 | 07.11 22:00 | tvpassport.com | TVA Sports | Concordia — Laval | Football universitaire |
 | 07.11 22:00 | ipko.tv | Sport 3 | La Liga Valencia — Real Madrid | futbolli |
 | 07.11 22:00 | ipko.tv | Sport 5 | Premierliga e Skocise St.Mirren — Rangers | futbolli |
 | 07.11 22:00 | tvmatsit.com | V Sport 1 Suomi | Peterborough — Reading | FA Cup |
 | 07.11 22:15 | port.hu | Sport2 | Sporting — Moreirense | Labdarúgás: Portugál bajnokság |
+| 07.11 22:20 | movistarplus.es | M+ Vamos 3 | Boca Juniors — Defensa y Justicia | Liga Argentina. Torneo Clausura |
 | 07.11 22:20 | sporttv.pt | SPORT.TV1 | SPORTING CP — MOREIRENSE FC | LIGA PORTUGAL BETCLIC |
 | 07.11 22:20 | sporttv.pt | SPORT.TV2 | BOCA JUNIORS — DEFENSA Y JUSTICIA | CAMPEONATO DA ARGENTINA |
 | 07.11 22:20 | sport1.maariv.co.il | Sport1 3 | בוקה ג'וניורס — דפנסה | הליגה הארגנטינאית |
@@ -2920,11 +2534,11 @@
 | 08.11 12:55 | ntvplus.tv | Старт Баскет | АЕК — Панатинаикос | Чемпионат Греции Прямая трансляция |
 | 08.11 12:55 | sport1.maariv.co.il | Sport1 3 | ברצלונה — בראוגן | כדורסל ספרדי |
 | 08.11 12:55 | sport1.maariv.co.il | Sport1 4 | א.א.ק — פנאתינייקוס | כדורסל יווני |
-| 08.11 12:55 | tvtid.tv2.dk | TV 2 Sport X | F.C. København — Brøndby IF | 3F Superliga |
 | 08.11 13:00 | canal11.pt | Canal 11 | SPORTING CP U23 — SC BRAGA U23 | Liga Next Gen |
 | 08.11 13:00 | canal11.pt | Canal 11 | LOULETANO — SC COVILHÃ | Liga 3 Placard |
 | 08.11 13:00 | cosmotetv.gr | Magenta Sport 4 | Μπαρτσελόνα — Μπρέογκαν |  |
 | 08.11 13:00 | diemaxtra.nova.bg | Diema Sport 2 | Барселона — Рио Бреоган | Лига Ендеса |
+| 08.11 13:00 | epg.cyta.com.cy | Cablenet Sports 2 HD | Barcelona — Rio Breogan |  |
 | 08.11 13:00 | movistarplus.es | DAZN 2 | Logroño United W — Sevilla FC W | Liga F |
 | 08.11 13:00 | nova.bg | diemasport 2 | Барселона — Рио Бреоган | Лига Ендеса |
 | 08.11 13:00 | poverkhnost.tv | Sport 2 | Копенгаген — Брондбю | Чемпионат Дании. Superliga |
@@ -2943,6 +2557,7 @@
 | 08.11 13:10 | teleman.pl | TVP Sport | Polonia Bytom — Lechia Gdańsk | Betclic 1. Liga |
 | 08.11 13:10 | ntvplus.tv | СТАРТ HD | Херенвен — Фейеноорд | Чемпионат Нидерландов Прямая трансляция |
 | 08.11 13:10 | sport1.maariv.co.il | Sport1 5 | הירנביין — פיינורד | הליגה ההולנדית |
+| 08.11 13:15 | epg.cyta.com.cy | Cablenet Sports 3 HD | SC Heerenveen — Feyenoord |  |
 | 08.11 13:15 | livesoccertv.com | ESPN 2 Netherlands | Heerenveen — Feyenoord | Eredivisie |
 | 08.11 13:15 | livesoccertv.com | ESPN Netherlands | Vitesse — De Graafschap | Eerste Divisie |
 | 08.11 13:15 | primaplay.ro | Prima Sport 5 | Heerenveen — Feyenoord |  |
@@ -3071,6 +2686,7 @@
 | 08.11 15:25 | ntvplus.tv | СТАРТ HD | Твенте — Аякс | Чемпионат Нидерландов Прямая трансляция |
 | 08.11 15:25 | sport1.maariv.co.il | Sport1 5 | טוונטה — איאקס | הליגה ההולנדית |
 | 08.11 15:25 | start.sportdigital.de | Sportdigital FUSSBALL | FC Twente Enschede — Ajax Amsterdam | Eredivisie (12. Spieltag) |
+| 08.11 15:30 | epg.cyta.com.cy | Cablenet Sports 3 HD | Twente — Ajax |  |
 | 08.11 15:30 | livesoccertv.com | ESPN Netherlands | Twente — Ajax | Eredivisie |
 | 08.11 15:30 | poverkhnost.tv | Sport 2 | Тромсё — Будё-Глимт | Чемпионат Норвегии. Norwegian Eliteserien |
 | 08.11 15:30 | tvarenasport.com | Arena Sport 5 | Twente — Ajax | HOLANDSKA LIGA |
@@ -3110,6 +2726,8 @@
 | 08.11 16:00 | epg.cyta.com.cy | Cytavision Sports4 HD | SUNDERLAND — CHELSEA | PREMIER LEAGUE |
 | 08.11 16:00 | epg.cyta.com.cy | Cytavision Sports3 HD | CRYSTAL PALACE — LIVERPOOL | PREMIER LEAGUE |
 | 08.11 16:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP Paris — tournament | 2026 ATP 1000 - PARIS |
+| 08.11 16:00 | epg.cyta.com.cy | Cablenet Sports 1 HD | Rennes — Lille |  |
+| 08.11 16:00 | epg.cyta.com.cy | Cablenet Sports 2 HD | Ανόρθωση — Ομόνοια |  |
 | 08.11 16:00 | maxsport.live | MAX Sport 3 | Дженоа — Милан | Серия А |
 | 08.11 16:00 | movistarplus.es | DAZN 2 | Sunderland — Chelsea | Premier League |
 | 08.11 16:00 | nova.bg | diemasport 2 | Кристъл Палас — Ливърпул | Висша лига |
@@ -3192,7 +2810,6 @@
 | 08.11 16:30 | tv3.lt | BTV | Juventus — Žalgiris | LKL čempionatas |
 | 08.11 16:30 | tvmatchen.nu | Viaplay Sport | 1. FC Köln — Bayer Leverkusen | Bundesliga |
 | 08.11 16:55 | ntvplus.tv | Старт Баскет | Галатасарай — Эсенлер Эрокспор | Чемпионат Турции Прямая трансляция |
-| 08.11 16:55 | tvtid.tv2.dk | TV 2 Sport X | Randers FC — FC Nordsjælland | 3F Superliga |
 | 08.11 17:00 | canal11.pt | Canal 11 | VITÓRIA SERNACHE — ATLÉTICO CP | Liga 3 Placard |
 | 08.11 17:00 | canal11.pt | Canal 11 | VARZIM SC — AD FAFE | Liga 3 Placard |
 | 08.11 17:00 | cosmotetv.gr | Magenta Sport 1 League | ΑΕΚ — Λεβαδειακός |  |
@@ -3229,6 +2846,7 @@
 | 08.11 17:30 | tvmatsit.com | MTV Urheilu 2 | Kalmar FF — IK Sirius | Allsvenskan |
 | 08.11 17:40 | teleman.pl | Polsat Sport Extra 1 | SC Cambuur — PSV Eindhoven | Liga holenderska |
 | 08.11 17:40 | start.sportdigital.de | Sportdigital FUSSBALL | SC Cambuur-Leeuwarden — PSV Eindhoven | Eredivisie (12. Spieltag) |
+| 08.11 17:45 | epg.cyta.com.cy | Cablenet Sports 3 HD | SC Cambuur — PSV Eindhoven |  |
 | 08.11 17:45 | livesoccertv.com | ESPN 2 Netherlands | Cambuur — PSV | Eredivisie |
 | 08.11 17:45 | livesoccertv.com | ESPN 3 Netherlands | AZ — Groningen | Eredivisie |
 | 08.11 17:45 | livesoccertv.com | ESPN Netherlands | Emmen — MVV | Eerste Divisie |
@@ -3323,6 +2941,7 @@
 | 08.11 19:00 | digisport.ro | Digi Sport 2 | Inter — Como | serie a Serie A |
 | 08.11 19:00 | epg.cyta.com.cy | Cytavision Sports4 HD | INTER — COMO | ITALIAN SERIE A |
 | 08.11 19:00 | epg.cyta.com.cy | Cytavision Sports1 HD | ΠΑΦΟΣ — ΟΜΟΝΟΙΑ 29ης ΜΑΙΟΥ | ΚΥΠΡΙΑΚΟ ΠΡΩΤΑΘΛΗΜΑ |
+| 08.11 19:00 | epg.cyta.com.cy | Cablenet Sports 1 HD | ΑΠΟΕΛ — Άρης |  |
 | 08.11 19:00 | maxsport.live | MAX Sport 3 | Интер — Комо | Серия А |
 | 08.11 19:00 | primaplay.ro | Prima Sport 1 | CFR Cluj — Universitatea Craiova |  |
 | 08.11 19:00 | primaplay.ro | Prima Sport 2 | Inter — Como |  |
@@ -3383,6 +3002,7 @@
 | 08.11 20:00 | digisport.ro | Digi Sport 1 | CFR Cluj — Universitatea Craiova | superliga Superliga |
 | 08.11 20:00 | digisport.ro | Digi Sport 4 | Vitoria — Porto | digisport Liga Portugal |
 | 08.11 20:00 | epg.cyta.com.cy | Cytavision Sports7 HD | GUIMARAES — PORTO | PORTUGUESE LEAGUE |
+| 08.11 20:00 | epg.cyta.com.cy | Cablenet Sports 3 HD | Real Madrid — UCAM Murcia |  |
 | 08.11 20:00 | primaplay.ro | Prima Sport 5 | Beșiktaș — Genclerbirligi |  |
 | 08.11 20:00 | teleman.pl | SportKlub | Real Madryt — UCAM Murcia | Liga hiszpańska |
 | 08.11 20:00 | tvarenasport.ba | Arena Premium 5 | Vojvodina — Crvena zvezda | Super liga Srbije |
@@ -3433,11 +3053,11 @@
 | 08.11 21:40 | ziggosport.nl | Ziggo Sport 2 | Fiorentina — Juventus |  |
 | 08.11 21:40 | ntvplus.tv | МАТЧ! Футбол 1 (HD) | Фиорентина — Ювентус | Прямая трансляция |
 | 08.11 21:40 | oneplay.cz | Nova Sport 3 | RC Lens — Olympique Marseille |  |
-| 08.11 21:40 | tvtid.tv2.dk | TV 2 Sport X | Fiorentina — Juventus | Serie A |
 | 08.11 21:45 | cosmotetv.gr | Magenta Sport 1 | Φιορεντίνα — Γιουβέντους |  |
 | 08.11 21:45 | diemaxtra.nova.bg | Diema Sport 2 | Ланс — Марсилия | Лига 1 на Франция |
 | 08.11 21:45 | digisport.ro | Digi Sport 2 | Fiorentina — Juventus | serie a Serie A |
 | 08.11 21:45 | epg.cyta.com.cy | Cytavision Sports4 HD | FIORENTINA — JUVENTUS | ITALIAN SERIE A |
+| 08.11 21:45 | epg.cyta.com.cy | Cablenet Sports 2 HD | Lens — Marseille |  |
 | 08.11 21:45 | maxsport.live | MAX Sport 3 | Фиорентина — Ювентус | Серия А |
 | 08.11 21:45 | nova.bg | diemasport 2 | Ланс — Марсилия | Лига 1 на Франция |
 | 08.11 21:45 | primaplay.ro | Prima Sport 2 | Fiorentina — Juventus |  |
@@ -3506,7 +3126,7 @@
 | 08.11 22:30 | tvmatsit.com | TV5 Finland | Chicago Bulls — Philadelphia 76ers | NBA |
 | 08.11 22:35 | oneplay.cz | Nova Sport 6 | Chicago Bulls — Philadelphia 76ers |  |
 | 08.11 23:00 | digisport.ro | Digi Sport 1 | Atletico Madrid — Barcelona | la liga La Liga |
-| 08.11 23:00 | tvpassport.com | TSN4 | Montreal Roses FC W — Vancouver Rise FC W | Northern Super League Soccer |
+| 08.11 23:00 | tvpassport.com | TSN5 | Montreal Roses FC W — Vancouver Rise FC W | Northern Super League Soccer |
 | 08.11 23:45 | teleman.pl | TVP Sport | Chicago Bulls — Philadelphia 76ers | NBA |
 | 09.11 01:00 | movistarplus.es | DAZN Baloncesto 3 | Detroit Pistons — Los Angeles Lakers | NBA |
 | 09.11 01:00 | sporttv.pt | SPORT.TV1 | DETROIT PISTONS — LA LAKERS | NBA |
@@ -3514,226 +3134,118 @@
 | 09.11 03:00 | tvpassport.com | TSN5 | Milwaukee Bucks — Boston Celtics | NBA Basketball |
 | 09.11 03:05 | ntvplus.tv | viju+ Sport HD | Альянца — Льянерос | Колумбия Примера А Клаусура 2026 18 тур Прямая трансляция |
 | 09.11 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 250 — STOCKHOLM | 2026 ATP 250 - STOCKHOLM |
+| 09.11 14:00 | tvsporten.dk | TV 2 Sport X | ATP — Stockholm Open | ATP |
+| 09.11 14:00 | tvmatchen.nu | TV4 Sport Live 1 | ATP — Stockholm Open | ATP |
+| 09.11 14:00 | tvmatchen.nu | TV4 Tennis | ATP — Stockholm Open | ATP |
+| 09.11 14:00 | tvmatchen.nu | TV12 | ATP — Stockholm Open | ATP |
 | 09.11 14:30 | diemaxtra.nova.bg | Diema Sport | Черноморец — Янтра | Mr. Bit Втора лига |
 | 09.11 14:30 | digisport.ro | Digi Sport 1 | Politehnica Timisoara — CSM Resita | digisport Liga a 2-a |
+| 09.11 14:30 | nova.bg | diemasport | Черноморец — Янтра | Mr. Bit Втора лига |
 | 09.11 14:30 | primaplay.ro | Prima Sport 1 | Poli Timișoara — CSM Reșița |  |
 | 09.11 15:30 | digisport.ro | Digi Sport 1 | Politehnica Timisoara — CSM Resita | digisport Liga a 2-a |
 | 09.11 17:00 | diemaxtra.nova.bg | Diema Sport | Етър — Монтана | Mr. Bit Втора лига |
 | 09.11 17:00 | digisport.ro | Digi Sport 1 | CS Dinamo — Ramnicu Valcea | digisport Liga a 2-a |
+| 09.11 17:00 | nova.bg | diemasport | Етър — Монтана | Mr. Bit Втора лига |
+| 09.11 17:00 | tvarenasport.com | Arena Sport 10 | Napredak — Bor 1919 | PRVA LIGA SRBIJE |
+| 09.11 17:55 | sport1.maariv.co.il | Sport1 1 | קרשיאקה — בשיקטאש | כדורסל טורקי |
 | 09.11 18:00 | digisport.ro | Digi Sport 1 | CS Dinamo — Ramnicu Valcea | digisport Liga a 2-a |
+| 09.11 18:00 | tvarenasport.com | Arena Premium 2 | Karsiyaka — Besiktas | TURSKA LIGA |
+| 09.11 18:50 | ceskatelevize.cz | ČT sport | Tatran Střešovice — AMIX Florbal MB | Livesport Superliga |
+| 09.11 18:50 | rtcg.me | TVCG 2 | Danilovgrad — Jedinstvo | CKL, direktno |
 | 09.11 19:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 250 — STOCKHOLM | 2026 ATP 250 - STOCKHOLM |
 | 09.11 19:00 | epg.cyta.com.cy | Cytavision Sports6 HD | Ε.Ν.ΠΑΡΑΛΙΜΝΙΟΥ — ΑΠΟΛΛΩΝ | ECOMMBX BASKET LEAGUE |
+| 09.11 19:00 | tvarenasport.com | Arena Premium 1 | Crvena zvezda — Slovan | ABA LIGA |
+| 09.11 19:00 | tvarenasport.com | Arena Premium 5 | Kolubara — Tamiš | KLS |
+| 09.11 19:00 | tvarenasport.com | Arena Sport 10 | Javor Matis — TSC | PRVA LIGA SRBIJE |
+| 09.11 19:00 | tvmatchen.nu | TV4 Tennis | ATP — Stockholm Open | ATP |
+| 09.11 19:00 | tvmatchen.nu | TV12 | ATP — Stockholm Open | ATP |
+| 09.11 19:00 | tvmatsit.com | V Sport 2 Suomi | FC Köln W — RB Leipzig W | Naisten Bundesliiga |
+| 09.11 19:00 | tvmatsit.com | Viaplay TV (FI) | FC Köln W — RB Leipzig W | Naisten Bundesliiga |
+| 09.11 19:50 | movistarplus.es | DAZN 1 | Atlético de Madrid W — Badalona Women W | Liga F |
+| 09.11 19:50 | movistarplus.es | M+ Vamos 2 | Atlético de Madrid W — Badalona Women W | Liga F |
 | 09.11 20:00 | digisport.ro | Digi Sport 1 | Botosani — Otelul Galati | superliga Superliga |
 | 09.11 20:00 | primaplay.ro | Prima Sport 1 | FC Botoșani — Oțelul Galați |  |
+| 09.11 20:00 | tvarenasport.com | Arena Sport 1 | Široki — Cibona | ABA LIGA |
+| 09.11 20:00 | tvsporten.dk | TV3 Sport | Hvidovre IF — Aarhus Fremad | 1. Division |
+| 09.11 20:30 | tv24.co.uk | TNT Sports 1 | Plymouth Parkway — Berkhamsted | FA Cup Football |
+| 09.11 20:55 | sport1.maariv.co.il | Sport1 1 | וירטוס בולוניה — ורונה | כדורסל איטלקי |
 | 09.11 21:00 | digisport.ro | Digi Sport 1 | Botosani — Otelul Galati | superliga Superliga |
+| 09.11 21:00 | tvarenasport.com | Arena Premium 1 | Mega — Dubai | ABA LIGA |
+| 09.11 21:25 | webtv.sk | Nova Sport 2 | Plymouth Argyle — Berkhamsted |  |
+| 09.11 21:25 | oneplay.cz | Nova Sport 2 | Plymouth Argyle — Berkhamsted |  |
 | 09.11 21:30 | diemaxtra.nova.bg | Diema Sport 2 | Плимут Паркуей — Бъркамстед | ФА Къп |
 | 09.11 21:30 | epg.cyta.com.cy | Cytavision Sports7 HD | PLYMOUTH PARKWAY — BERKHAMSTED | THE EMIRATES FA CUP |
+| 09.11 21:30 | movistarplus.es | LALIGA TV HYPERMOTION | CE Sabadell — Real Sociedad B | LALIGA HYPERMOTION |
+| 09.11 21:30 | nova.bg | diemasport 2 | Плимут Паркуей — Бъркамстед | ФА Къп |
+| 09.11 21:30 | raiplay.it | Rai Sport | Camp. Italiano serie C Sky WiFi 2026/27 AZ Picerno — Bari 13a g.ta | Calcio |
+| 09.11 21:30 | tvmatsit.com | V Sport 2 Suomi | Plymouth Parkway — Berkhamsted | FA Cup |
+| 09.11 22:00 | movistarplus.es | DAZN 2 | Deportivo Abanca W — Valencia CF W | Liga F |
+| 09.11 22:00 | tvsporten.dk | TV 2 Sport | WTA — WTA Finals | WTA |
 | 09.11 22:05 | sporttv.pt | SPORT.TV1 | SCU TORREENSE — UNIÃO DE LEIRIA | LIGA PORTUGAL 2 |
+| 10.11 02:00 | diemaxtra.nova.bg | Diema Sport 3 | Детройт Пистънс — Вашингтон Уизардс |  |
+| 10.11 02:00 | movistarplus.es | DAZN Baloncesto | Detroit Pistons — Washington Wizards | NBA |
+| 10.11 02:00 | nova.bg | diemasport 3 | Детройт Пистънс — Вашингтон Уизардс |  |
+| 10.11 02:00 | port.hu | Sport1 | Detroit Pistons — Wasahington Wizards | Kosárlabda: NBA |
+| 10.11 03:30 | sporttv.pt | SPORT.TV1 | HOUSTON ROCKETS — DENVER NUGGETS | NBA |
+| 10.11 03:30 | tvpassport.com | TSN2 | Houston Rockets — Denver Nuggets | NBA Basketball |
+| 10.11 14:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 250 — STOCKHOLM | 2026 ATP 250 - STOCKHOLM |
+| 10.11 19:00 | epg.cyta.com.cy | Novasports PrimeHD | Balkan Botevgrad — PAOK |  |
+| 10.11 19:00 | epg.cyta.com.cy | Cytavision Sports5 HD | ATP 250 — STOCKHOLM | 2026 ATP 250 - STOCKHOLM |
+| 10.11 19:30 | digisport.ro | Digi Sport 1 | Metalul Buzau — Steaua | digisport Liga a 2-a |
+| 10.11 19:40 | teleman.pl | TVP Sport | Real Madryt CF W — Paris FC W | Liga Mistrzyń UEFA |
+| 10.11 19:45 | epg.cyta.com.cy | Cablenet Sports 3 HD | Hacken W — Chelsea FC Women W |  |
+| 10.11 19:45 | epg.cyta.com.cy | Cablenet Sports 2 HD | Real Madrid W — Paris FC W |  |
+| 10.11 20:25 | sporttv.pt | SPORT.TV2 | JL BOURG-EN-BRESSE — BUDUCNOST PODGORICA | EUROCUP |
+| 10.11 20:30 | digisport.ro | Digi Sport 1 | Metalul Buzau — Steaua | digisport Liga a 2-a |
+| 10.11 20:30 | epg.cyta.com.cy | Novasports 4 HD | JL Bourg — Buducnost |  |
+| 10.11 21:00 | epg.cyta.com.cy | Novasports Start HD | Rostock — Cedevita Olimpija |  |
+| 10.11 21:30 | epg.cyta.com.cy | Novasports 5 HD | Manresa — KK Bosna |  |
+| 10.11 22:00 | epg.cyta.com.cy | Cablenet Sports 3 HD | Inter W — Manchester City W |  |
+| 10.11 22:00 | epg.cyta.com.cy | Cablenet Sports 1 HD | Roma W — Servette FCCF W |  |
+| 10.11 22:00 | epg.cyta.com.cy | Cablenet Sports 2 HD | Paris Saint-Germain W — Bayern Munchen W |  |
 
 ## Снято фильтрами повторов
 
 | Когда | Сайт | Канал | Заголовок | Фильтр | Почему |
 |---|---|---|---|---|---|
-| 2026-11-03 00:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Racing - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 01:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Deportivo - Osasuna | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 01:00 | ipko.tv | TRT Spor | Trendyol 1. Lig Futbol Karşılaşması 13. Hafta Metro Holding Kayserispor - Muğlas | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 01:00 | tv3.lt | Go3 Sport Open | Krepšinis - NCAA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 01:05 | ipko.tv | Tring Sport 1 | BAYERN vs PARIS SG | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 01:05 | ipko.tv | Tring Sport 3 | CLEVELAND vs NEW YORK | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 01:08 | ipko.tv | Tring Sport 2 | ATALANTA vs SASSUOLO | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 01:45 | port.hu | Match4 | Labdarúgás: Premier League: Newcastle - Everton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 02:00 | alkass.net | Al Kass Five | AFC Champions League Elite Al-Wasl (UAE) vs. Al-Quwa Al-Jawiya (Iraq) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 02:00 | alkass.net | Al Kass Six | AFC Champions League Elite Al-Gharafa (Qatar) vs. Al-Qadsiah (Saudi Arabia) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 02:00 | alkass.net | Al Kass Seven | AFC Champions League Elite Al-Wasl (UAE) vs. Al-Quwa Al-Jawiya (Iraq) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 02:15 | ipko.tv | Sport 2 | Futboll: Sassuolo - Fiorentina | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 02:40 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. Santa Clara - SL Benfica | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 03:00 | alkass.net | Al Kass Three | Doha Bank Stars League Al-Arabi vs. Al-Rayyan | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 03:00 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Slovan Bratislava - Stuttgart | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 03:05 | ipko.tv | Tring Sport 1 | ARSENAL vs ATL.MADRID | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 03:05 | ipko.tv | Tring Sport 2 | VENEZIA vs LECCE | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 03:30 | ipko.tv | Tring Sport 3 | DENVER vs GOLDEN STATE | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 04:02 | mediaklikk.hu | M4 Sport | Merkantil Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 04:15 | alkass.net | Al Kass Six | AFC Champions League Elite Tractor (Iran) vs. Neftchi (Uzbekistan) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 04:30 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Sigal Prishtina - Bashkimi | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 04:40 | tv3.lt | Sport 1 | Vokietijos BBL lyga. Alba Berlin - Ratiopharm Ulm | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 04:45 | ipko.tv | Sport 1 | Futboll: La Liga Deportivo A Coruna - Osasuna | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 04:55 | tv3.lt | Go3 Sport 1 | Eurolygos rungtynės. "Real" - "Fenerbahce" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 05:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Getafe - Sevilla | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 05:00 | ipko.tv | Tring Sport 2 | SASSUOLO vs TORINO | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 05:00 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 05:10 | ipko.tv | Tring Sport 1 | JUVENTUS vs DORTMUND | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 05:15 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Shakhtar Donetsk - AEK | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 05:30 | alkass.net | Al Kass Three | Doha Bank Stars League Al-Sailiya vs. Lusail | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 05:40 | allente.no | TV 2 Sport 2 HD | Tennis: Turneringsoppsummering: Atp500, London - Queens | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 06:40 | ipko.tv | Tring Sport 3 | HOUSTON vs NEW YORK | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 06:45 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Peja - Rahoveci | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 06:50 | ipko.tv | Sport 1 | Futboll: Ligue 1 Lille - Lens | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 07:00 | ipko.tv | Tring Sport 2 | ELVERSBERG vs LEVERKUSEN | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 07:00 | port.hu | Match4 | Labdarúgás: Olasz Bajnokság Serie A: Sassuolo - Fiorentina | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 07:00 | tv3.lt | Go3 Sport 1 | LaLiga. "Barcelona" - "Alaves" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 07:00 | tv3.lt | Go3 Sport Open | Krepšinis: ACB league 2023/24. "Baskonia" - "Manresa" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 07:03 | tvpassport.com | OneSoccer | UEFA Women's Champions League Soccer: Chelsea vs. AS Roma | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 07:10 | ipko.tv | Tring Sport 1 | STUTTGART vs VIKING | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 07:10 | movistarplus.es | M+ LALIGA | LALIGA EA SPORTS (T26/27): FC Barcelona - Deportivo Alavés | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 07:29 | movistarplus.es | M+ Vamos | Torneo de París (T2026): Musetti - Hurkacz | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 08:05 | movistarplus.es | Teledeporte | Liga F (T26/27): Costa Adeje Tenerife - Athletic | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 08:34 | tv.orf.at | ORF SPORT+ | Silent Sports + Tennis Herren Einzel Davis Cup 2025 Qualifikation Österreich - F | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 08:49 | tv3.lt | Go3 Sport 1 | Krepšinis - NCAA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 08:50 | tv3.lt | Go3 Sport Open | NBA rungtynės. "Thunder" - "Cavaliers" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:00 | alkass.net | Al Kass Six | AFC Champions League Elite Al-Ittihad (Saudi Arabia) vs. Al-Ain (UAE) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Athletic - Real Sociedad | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:00 | ipko.tv | Sport 1 | Futboll: Serie A Bologna - Monza | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:00 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve LASK - Liverpool | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:00 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Rahoveci - Vellaznimi | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:00 | movistarplus.es | M+ LALIGA | LALIGA HYPERMOTION (T26/27): Real Sociedad B - Girona FC | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:00 | port.hu | Match4 | Labdarúgás: Olasz Bajnokság Serie A: Atalanta - Parma | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:00 | tvpassport.com | OneSoccer | UEFA Women's Champions League Soccer: OL Lyonnes vs. Internazionale | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:05 | ipko.tv | Tring Sport 1 | FENERBAHCE vs ROMA | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 09:15 | movistarplus.es | M+ Deportes | Torneo de París (T2026): Musetti - Hurkacz | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 10:00 | allente.no | V sport Premier League HD | Premier League: Newcastle - Everton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 10:05 | movistarplus.es | Teledeporte | Superliga BSR (T26/27): Amiab Albacete - Ilunión | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 10:30 | tv3.lt | Go3 Sport 2 | LaLiga. "Athletic" - "Real Sociedad" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 10:55 | ipko.tv | Tring Sport 1 | REAL MADRID vs INTER | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 10:55 | ipko.tv | Tring Sport 2 | KOLN vs HOFFENHEIM | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Liverpool - Villarreal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:00 | ert.gr | ΕΡΤ2 ΣΠΟΡ | Ποδόσφαιρο | Superbet League 2 | ΑΕ Λάρισα-Ολυμπιακός Β | 9η Αγωνιστική | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:00 | ipko.tv | Tring Sport 2 | DORTMUND vs HAMBURG | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:01 | tvpassport.com | OneSoccer | UEFA Women's Champions League Soccer: FC Bayern München vs. Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:10 | ipko.tv | Tring Sport 3 | SAN ANTONIO vs NEW YORK | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:15 | ipko.tv | Sport 1 | Futboll: Serie A Juventus - Napoli | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:15 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Viking - Bayern Munich | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:15 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Bora - Sigal Prishtina | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:30 | tv3.lt | Sport 1 | Graikijos krepšinio lyga. Panathinaikos - AS Karditsas | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 11:50 | trt.net.tr | Tabii Spor | ŞAMPİYONLAR LİGİ FUTBOL KARŞILAŞMASI INTER – SHAKHTAR DONETSK | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 12:13 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 12:15 | allente.no | V sport Premier League HD | Premier League: Bournemouth - Leeds | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 12:50 | ipko.tv | Tring Sport 1 | DORTMUND vs VILLARREAL | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 12:53 | ipko.tv | Tring Sport 2 | FROSINONE vs JUVENTUS | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 12:55 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Como - Manchester United | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 13:00 | allente.no | V sport 1 HD (N) | 2. Bundesliga: Eintracht Frankfurt - Hamburg | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 13:00 | allente.no | V sport 2 HD | Bundesliga: Bayern - Dortmund | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 13:00 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): Real Betis - Málaga CF | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 13:30 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Arsenal - Lille | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 13:30 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Bashkimi - Peja | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 13:30 | tvpassport.com | OneSoccer | UEFA Women's Champions League Soccer: Arsenal vs. Benfica | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 13:40 | trt.net.tr | Tabii Spor | ŞAMPİYONLAR LİGİ FUTBOL KARŞILAŞMASI BAYERN MUNIH – ARSENAL | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 14:00 | movistarplus.es | DAZN 1 | Liga F (T26/27): Sevilla - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 14:05 | tv3.lt | Go3 Sport 2 | Serie A. "Atalanta" - "Parma" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 14:30 | allente.no | V sport Premier League HD | Premier League: Brentford - Nottingham Forest | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 14:50 | ipko.tv | Tring Sport 1 | PSV vs SHAKHTAR | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 14:55 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Bayern - Arsenal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 14:55 | ipko.tv | Tring Sport 2 | INTER vs MONZA | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 15:00 | allente.no | V sport 2 HD | EFL Championship: Stoke - Preston | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 15:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Elche - Valencia | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 15:30 | tvpassport.com | OneSoccer | UEFA Champions League Soccer: VfB Stuttgart vs. Atlético Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 15:45 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Roma - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 15:45 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Trepca - Golden Eagle Ylli | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 16:00 | allente.no | V sport + HD | 2. Bundesliga: St. Pauli - Nürnberg | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 16:10 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 16:20 | ipko.tv | Tring Sport 3 | TORONTO vs ORLANDO | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 16:30 | tv3.lt | Go3 Sport 2 | NBA rungtynės. "Thunder" - "Cavaliers" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 16:50 | ipko.tv | Tring Sport 2 | BAYERN vs STUTTGART | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 17:00 | ert.gr | ΕΡΤ2 ΣΠΟΡ | Ποδόσφαιρο | Superbet League 2 | Νίκη Βόλου – Καρδίτσα | 9η Αγωνιστική | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 17:30 | tv3.lt | Go3 Sport 1 | Serie A. "Milan" - "Inter" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 17:30 | tvpassport.com | OneSoccer | UEFA Champions League Soccer: Sabah FK vs. Borussia Dortmund | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 17:47 | movistarplus.es | M+ LALIGA | LALIGA EA SPORTS (T26/27): Villarreal CF - RCD Espanyol de Barcelona | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 18:00 | allente.no | V sport + HD | 2. Bundesliga: Karlsruhe - Heidenheim | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 18:00 | ipko.tv | Sport 3 | Futboll: Europa League Hoffenheim - Besiktas | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 18:00 | trt.net.tr | Tabii Spor | Fenerbahçe - Slavia Prag | UEFA Şampiyonlar Ligi Grup Maçları | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 18:30 | tv3.lt | Sport 1 | Vokietijos BBL lyga. Basketball Braunschweig - Wurzburg Baskets | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 19:10 | ipko.tv | Tring Sport 3 | NEW YORK vs OKLAHOMA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 19:20 | tv3.lt | Go3 Sport 1 | LaLiga. "Racing" - "Real" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 19:30 | tvpassport.com | OneSoccer | UEFA Champions League Soccer: Fenerbahçe vs. Slavia Praha | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 19:38 | movistarplus.es | M+ Liga de Campeones 2 | UEFA Champions League (T26/27): Shakhtar - Sporting Portugal | угаданный эфир не на ровной минуте | эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись |
-| 2026-11-03 19:50 | tv3.lt | Go3 Sport 3 | Basketbols: BCL. Juventus Utena - Pardubice | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 19:50 | tv3.lt | LRT Plius | FIBA čempionų lyga. Utenos "Juventus" - Pardubicės KVIS | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 20:00 | allente.no | V sport + HD | Superliga: Brøndby - AGF | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 20:00 | ert.gr | ΕΡΤ2 ΣΠΟΡ | Ποδόσφαιρο Σάλας | Α’ Εθνική | ΑΣΕ Δούκας – ΑΕΛ | 6η Αγωνιστική | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 20:00 | ert.gr | ERT Cosmos | Ποδόσφαιρο Σάλας | Α’ Εθνική | ΑΣΕ Δούκας – ΑΕΛ | 6η Αγωνιστική | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 20:00 | ert.gr | ERT Cosmos Cyprus | Ποδόσφαιρο Σάλας | Α’ Εθνική | ΑΣΕ Δούκας – ΑΕΛ | 6η Αγωνιστική | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 20:00 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): FC Barcelona - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 20:05 | movistarplus.es | M+ Deportes 2 | Torneo de París (T2026): Shelton - Norrie | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 20:05 | movistarplus.es | M+ Deportes 3 | Torneo de París (T2026): Struff - Gea (sonido ambiente) | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 20:25 | movistarplus.es | M+ Vamos 2 | Euroliga femenina (T26/27): Basket Landes - Casademont Zaragoza | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 21:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Levante - Atlético | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 21:00 | skysports.com | Sky Sports+ | Cambridge United vs Brighton and Hove Albion U21 | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00 |
-| 2026-11-03 21:00 | skysports.com | Sky Sports+ | Newport County AFC vs Crystal Palace U21 | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00 |
-| 2026-11-03 21:00 | skysports.com | Sky Sports+ | Rochdale vs Doncaster Rovers | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00 |
-| 2026-11-03 21:00 | skysports.com | Sky Sports+ | Rotherham United vs Newcastle United U21 | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 4 игр в 03.11 21:00 |
-| 2026-11-03 21:00 | tv3.lt | Go3 Sport 2 | Krepšinis - NCAA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 21:10 | tv3.lt | Go3 Sport 1 | NBA rungtynės. Bostono „Celtics“ - Orlando „Magic“ | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 21:45 | skysports.com | Sky Sports+ | Blackburn Rovers vs Stoke City | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports+ | Charlton Athletic vs Bolton Wanderers | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports+ | Derby County vs Norwich City | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports+ | Huddersfield Town vs Luton Town | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports | Northampton Town vs Oldham Athletic | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports» у skysports.com: 2 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports+ | Portsmouth vs Swansea City | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports+ | Preston North End vs Sheffield United | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports+ | Queens Park Rangers vs Burnley | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports+ | Watford vs Lincoln City | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 21:45 |
-| 2026-11-03 21:45 | skysports.com | Sky Sports | Wigan Athletic vs Mansfield Town | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports» у skysports.com: 2 игр в 03.11 21:45 |
-| 2026-11-03 22:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: SK Sigma Olomouc-FC Zbrojovka Brno | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 22:00 | programetv.ro | Prima Sport 2 | Atletico Madrid – Bayern Munchen | поздний показ у сайта без флага | та же пара у этого сайта раньше: 03.11 21:55 |
-| 2026-11-03 22:00 | skysports.com | Sky Sports+ | Birmingham City vs Millwall | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 9 игр в 03.11 22:00 |
-| 2026-11-03 22:00 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 22:05 | movistarplus.es | M+ Deportes 2 | Torneo de París (T2026): Ruud - Jodar | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (03.11 21:40): 03.11 21:35 |
-| 2026-11-03 22:08 | movistarplus.es | DAZN 1 | Premier League (T26/27): Manchester City - Brighton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 22:30 | oneplaysport.cz | Oneplay Sport 4 | CHL: FK Jablonec-SK Slavia Praha | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 22:30 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. FC Porto - Estoril | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 22:55 | tv3.lt | Go3 Sport 2 | LaLiga. "Racing" - "Real" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 23:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Rayo Vallecano - Celta | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 23:15 | dagenstv.com | Eurosport 2 | Basket: Utah Jazz – Portland Trail Blazers | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 23:20 | allente.no | Eurosport Norge HD | NBA: Portland Trail Blazers - Oklahoma City Thunder: 03.11.2026 22:20. | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 23:25 | tv3.lt | Go3 Sport 1 | Europos taurė. "Tofas" - "Neptūnas" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-03 23:30 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): R. Racing Club - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 00:00 | movistarplus.es | M+ Vamos | Torneo de París (T2026): Djokovic - Vacherot | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 00:00 | port.hu | Sport2 | Labdarúgás: UEFA Bajnokok Ligája: Villarreal - PSG, csoportkör, 4. forduló, 1. n | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 00:00 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 00:00 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 00:01 | movistarplus.es | Esport 3 | Basketball Champions League (T26/27): Oporto - Joventut | угаданный эфир не на ровной минуте | эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись |
-| 2026-11-04 00:15 | ipko.tv | Sport 2 | Futboll: Liga e Kampioneve Manchester United - Roma | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (03.11 22:00): 03.11 22:00 |
-| 2026-11-04 00:15 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Atletico Madrid - Bayern Munich | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (03.11 22:00): 03.11 22:00 |
-| 2026-11-04 00:20 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 00:50 | tv3.lt | Go3 Sport 2 | Bundesliga. "Werder" - "Hoffenheim" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 01:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: SK Artis Brno-FC Zlín | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 01:05 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Bodø/Glimt - Lille | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 01:05 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Bodø/Glimt - Lille | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 00:30 | alkass.net | Al Kass Four | Tunis Derby Club Africain vs. Stade Tunisien | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 00:45 | tv3.lt | Go3 Sport 2 | Bundesliga. "Werder" - "Hoffenheim" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 01:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Bodø/Glimt - Lille | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 01:05 | ipko.tv | Tring Sport 1 | MONACO vs JUVENTUS | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 01:05 | ipko.tv | Tring Sport 3 | SACRAMENTO vs MILWAUKEE | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 01:08 | ipko.tv | Tring Sport 2 | ELVERSBERG vs LEVERKUSEN | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 01:11 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 01:20 | ipko.tv | Sport 1 | Futboll: Liga e Kampioneve Barcelona - Aston Villa | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 01:30 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): Shakhtar - Sporting Portugal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 02:00 | movistarplus.es | Teledeporte | Basketball Champions League (T26/27): Oporto - Joventut | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 02:20 | movistarplus.es | M+ Deportes | Euroliga femenina (T26/27): Basket Landes - Casademont Zaragoza | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 02:00 | alkass.net | Al Kass Five | AFC Champions League Two Al-Hussein (Jordan) vs. Al-Shorta (Iraq) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 02:00 | alkass.net | Al Kass Six | AFC Champions League Elite Al-Hilal (Saudi Arabia) vs. Shabab Al-Ahli (UAE) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 02:15 | alkass.net | Al Kass Two | Gulf Club Champions League Neom (Saudi Arabia) vs. Al-Duhail (Qatar) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 02:15 | alkass.net | Al Kass Seven | Gulf Club Champions League Neom (Saudi Arabia) vs. Al-Duhail (Qatar) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 02:25 | ipko.tv | Sport 2 | Futboll: Liga e Kampioneve Shakhtar Donetsk - Sporting | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 02:25 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Atletico Madrid - Manchester United | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 02:45 | tv3.lt | Go3 Sport 2 | Bundesliga. "Bayern" - "Borussia" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 02:40 | tv3.lt | Go3 Sport 2 | Bundesliga. "Bayern" - "Borussia" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 03:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Manchester United - Roma | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 03:20 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): Fenerbahçe - Liverpool | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 03:30 | ipko.tv | Sport 1 | Futboll: Liga e Kampioneve Galatasaray - Stuttgart | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 03:35 | ipko.tv | Tring Sport 2 | KOLN vs HOFFENHEIM | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 03:40 | ipko.tv | Tring Sport 1 | ATALANTA vs DORTMUND | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 04:00 | alkass.net | Al Kass Six | AFC Champions League Elite Al-Sadd (Qatar) vs. Al-Ahli (Saudi Arabia) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 04:05 | sports.kz | Телеканал «Qazsport» | Футбол. УЕФА Чемпиондар Лигасы. 4 тур. «Шахтёр Донецк» (Украина) — «Спортинг» (П | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 04:10 | movistarplus.es | M+ Deportes | Torneo de París (T2026): Ruud - Jodar | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 04:30 | port.hu | Match4 | Labdarúgás: Angol másodosztály: West Bromwich - Southampton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 04:30 | port.hu | Match4 | Labdarúgás: Angol másodosztály: West Bromwich - Southampton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 04:35 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Villarreal - Napoli | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 04:35 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Vëllaznimi - Golden Eagle Ylli | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 04:58 | tvpassport.com | OneSoccer | Canadian Championship: Forge FC vs. CF Montréal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Villarreal - Psg | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 05:10 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): Leipzig - Manchester City | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:10 | tv3.lt | Go3 Sport 1 | Serie A. "Frosinone" - "Torino" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:10 | tv3.lt | Go3 Sport Open | Europos taurė. "Tofas" - "Neptūnas" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:25 | movistarplus.es | M+ LALIGA | LALIGA EA SPORTS (T26/27): Elche CF - Valencia CF | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 05:28 | movistarplus.es | M+ Vamos | Torneo de Viena (T2026): De Miñaur - Alcaraz | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 05:28 | movistarplus.es | M+ Vamos | Torneo de Viena (T2026): De Miñaur - Alcaraz | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 05:30 | alkass.net | Al Kass Three | Jetour League Al-Waab vs. Al-Kharaitiyat | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 05:31 | movistarplus.es | M+ Deportes | Euroliga femenina (T26/27): Fenerbahce - Valencia Basket | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:33 | ipko.tv | Tring Sport 2 | CAGLIARI vs PARMA | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:40 | ipko.tv | Sport 1 | Futboll: Youth League Manchester United - Roma | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:40 | tv3.lt | Go3 Sport 2 | Krepšinis: ACB league 2023/24. "Baskonia" - "Manresa" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:45 | ipko.tv | Tring Sport 1 | BAYERN vs UNION SG | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 05:50 | ipko.tv | Tring Sport 3 | ORLANDO vs HOUSTON | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 06:35 | movistarplus.es | M+ Deportes | Euroliga femenina (T26/27): Fenerbahce - Valencia Basket | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 06:35 | movistarplus.es | M+ Deportes | Euroliga femenina (T26/27): Fenerbahce - Valencia Basket | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 06:05 | movistarplus.es | M+ Vamos | Torneo de Viena (T2026): De Miñaur - Alcaraz | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 06:50 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Leipzig - PSV Eindhoven | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 06:50 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Bora - Trepça | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 07:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Elche - Valencia | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3745,32 +3257,39 @@
 | 2026-11-04 07:40 | ipko.tv | Tring Sport 1 | REAL MADRID vs MAN.CITY | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 08:00 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): Villarreal - PSG | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 08:05 | movistarplus.es | Teledeporte | Basketball Champions League (T26/27): Unicaja - Reggiana | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 08:28 | mediaklikk.hu | M4 Sport | Sportpercek, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 08:50 | movistarplus.es | M+ Vamos | Torneo de París (T2026): Ruud - Jodar | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 08:55 | trt.net.tr | Tabii Spor | UEFA ŞAMPİYONLAR LİGİ FUTBOL KARŞILAŞMASI SHAKHTAR DONETSK - SPORTING | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 08:55 | tv3.lt | Go3 Sport Open | LaLiga. "Barcelona" - "Alaves" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 09:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Racing - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 09:00 | ipko.tv | Sport 1 | Futboll: La Liga Levante - Atletico Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 09:00 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Slovan Bratislava - Stuttgart | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 09:00 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Rahoveci - Vellaznimi | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 09:00 | tv3.lt | Go3 Sport 2 | Serie A. "Frosinone" - "Torino" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 09:00 | tv3.lt | Go3 Sport 1 | Krepšinis: ACB league 2023/24. "Baskonia" - "Manresa" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 09:20 | movistarplus.es | Esport 3 | FIBA Europe Cup (T26/27): Basquet Girona - Levicki Patrioti | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 09:05 | tv3.lt | Go3 Sport 2 | Serie A. "Frosinone" - "Torino" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 09:05 | tv3.lt | Go3 Sport 1 | Krepšinis: ACB league 2023/24. "Baskonia" - "Manresa" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 09:11 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 09:17 | movistarplus.es | Esport 3 | FIBA Europe Cup (T26/27): Basquet Girona - Levicki Patrioti | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 09:30 | ipko.tv | Tring Sport 2 | BOLOGNA vs LAZIO | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 09:30 | movistarplus.es | M+ Deportes | Torneo de París (T2026): Djokovic - Vacherot | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 09:40 | ipko.tv | Tring Sport 1 | TOTTENHAM vs SLAVIA PRAGUE | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 09:50 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): Barcelona - Aston Villa | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 10:00 | allente.no | V sport Premier League HD | Premier League: Coventry - Sunderland | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 10:00 | oneplaysport.cz | Oneplay Sport 1 | EL: FC Barcelona-Valencia Basket | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 10:10 | ipko.tv | Tring Sport 3 | CHICAGO vs ATLANTA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 10:20 | tv3.lt | Sport 1 | Vokietijos krepšinio taurė. Veolia Towers Hamburg - FC Bayern München | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 10:50 | tv3.lt | Go3 Sport 1 | Krepšinio Čempionų lyga. "Juventus" - "Pardubice" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 10:45 | tv3.lt | Go3 Sport 1 | Krepšinio Čempionų lyga. "Juventus" - "Pardubice" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 11:00 | ert.gr | ΕΡΤ2 ΣΠΟΡ | Ποδόσφαιρο | League Cup Πορτογαλίας | Προημιτελικά | Μπενφίκα – Ζιλ Βιθέντε | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 11:00 | trt.net.tr | Tabii Spor | UEFA AVRUPA LİGİ FUTBOL KARŞILAŞMASI FERENCVAROS – TORREENSE | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 11:10 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Bodo Glimt - Dortmund | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 11:15 | ipko.tv | Sport 1 | Futboll: La Liga Racing Santander - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 11:15 | ipko.tv | Sport 2 | Basketboll: NBA Oklahoma City - Cleveland | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 11:30 | ipko.tv | Tring Sport 2 | GENOA vs NAPOLI | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 11:35 | ipko.tv | Tring Sport 1 | AEK vs LASK | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 11:45 | movistarplus.es | Teledeporte | Basketball Champions League (T26/27): Oporto - Joventut | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 12:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: SK Artis Brno-FC Zlín | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 12:00 | port.hu | Sport1 | Labdarúgás: UEFA Bajnokok Ligája: LASK - Slovan, csoportkör, 4. forduló, 1. nap | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 12:00 | tvpassport.com | OneSoccer | Canadian Championship: Forge FC vs. CF Montréal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 12:05 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 12:07 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 12:15 | allente.no | V sport Premier League HD | Premier League: Hull - Ipswich | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 13:00 | allente.no | V sport 1 HD (N) | Carabao Cup: West Bromwich - Southampton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 13:00 | oneplaysport.cz | Oneplay Sport 3 | CHL: FK Jablonec-SK Slavia Praha | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3778,33 +3297,35 @@
 | 2026-11-04 13:20 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Betis - Porto | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 13:30 | ipko.tv | Tring Sport 1 | LILLE vs REAL BETIS | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 13:30 | ipko.tv | Tring Sport 2 | BAYERN vs STUTTGART | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 13:35 | trt.net.tr | Tabii Spor | UEFA ŞAMPİYONLAR LİGİ FUTBOL KARŞILAŞMASI BARCELONA - ASTON VILLA | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 13:55 | ipko.tv | Tring Sport 3 | SAN ANTONIO vs OKLAHOMA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 14:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Galatasaray - Stuttgart | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 14:00 | movistarplus.es | DAZN 1 | Liga F (T26/27): Granada - Atlético de Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 14:10 | movistarplus.es | M+ Deportes | Euroliga femenina (T26/27): Basket Landes - Casademont Zaragoza | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 14:28 | mediaklikk.hu | M4 Sport | Merkantil Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 14:20 | movistarplus.es | M+ Deportes | Euroliga femenina (T26/27): Basket Landes - Casademont Zaragoza | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 14:30 | allente.no | V sport Premier League HD | Premier League: Bournemouth - Leeds | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 14:40 | tv3.lt | Go3 Sport 2 | NBA rungtynės. Bostono „Celtics“ - Orlando „Magic“ | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 14:50 | tv3.lt | Go3 Sport 1 | LaLiga. "Athletic" - "Real Sociedad" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 15:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Real Betis - Málaga | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 14:30 | mediaklikk.hu | M4 Sport | Merkantil Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 14:30 | tv3.lt | Go3 Sport 1 | LaLiga. "Athletic" - "Real Sociedad" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 14:35 | tv3.lt | Go3 Sport 2 | NBA rungtynės. Bostono „Celtics“ - Orlando „Magic“ | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 15:00 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): At. Madrid - Bayern Múnich | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 15:00 | oneplaysport.cz | Oneplay Sport 3 | CHL: Bohemians Praha 1905-AC Sparta Praha | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 15:00 | port.hu | Sport2 | Labdarúgás: UEFA Bajnokok Ligája: Feyenoord - Internazionale, csoportkör, 4. for | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 15:00 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. Gil Vicente - FC Porto | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 15:25 | ipko.tv | Tring Sport 2 | DORTMUND vs HAMBURG | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 15:30 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Real Betis - Málaga | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 15:30 | ipko.tv | Sport 3 | Futboll: Europa League Lyon - Crystal Palace | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 15:30 | ipko.tv | Tring Sport 1 | LIVERPOOL vs ATL.MADRID | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 15:45 | trt.net.tr | Tabii Spor | Galatasaray - Stuttgart | UEFA Şampiyonlar Ligi Grup Maçları | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 16:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Atlético - Bayern | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 16:45 | allente.no | V sport Premier League HD | Premier League: Brentford - Nottingham Forest | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 16:50 | tv3.lt | Go3 Sport 1 | Europos taurė. "Tofas" - "Neptūnas" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 16:45 | tv3.lt | Go3 Sport 1 | Europos taurė. "Tofas" - "Neptūnas" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 16:50 | tv3.lt | Go3 Sport 2 | Krepšinio Čempionų lyga. "Juventus" - "Pardubice" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 17:00 | allente.no | V sport 2 HD | Bundesliga: Bayern - Dortmund | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 17:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Villarreal - Espanyol | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 17:25 | ipko.tv | Tring Sport 2 | JUVENTUS vs PARMA | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 17:30 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Villarreal - Espanyol | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 17:30 | ipko.tv | Tring Sport 1 | PORTO vs MAN.CITY | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 17:40 | ipko.tv | Sport 3 | Futboll: Europa League Celta Vigo - Juventus | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 17:45 | port.hu | Match4 | Labdarúgás: Olasz Bajnokság Serie A: Juventus - Napoli | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 18:00 | movistarplus.es | DAZN 1 | Premier League (T26/27): Newcastle - Everton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 17:46 | movistarplus.es | DAZN 1 | Premier League (T26/27): Newcastle - Everton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 18:00 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): Real Betis - Málaga CF | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 18:21 | movistarplus.es | M+ LALIGA | LALIGA EA SPORTS (T26/27): FC Barcelona - Deportivo Alavés | угаданный эфир не на ровной минуте | эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись |
 | 2026-11-04 18:25 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Golden Eagle Ylli - Rahoveci | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3817,15 +3338,19 @@
 | 2026-11-04 19:45 | ipko.tv | Sport 3 | Futboll: Europa League Besiktas - Crystal Palace | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 20:00 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): R. Racing Club - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 20:00 | tv3.lt | Sport 1 | Šiaurės Europos krepšinio lyga. BC CIU - BC Hipocredit Jonava | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 20:25 | movistarplus.es | DAZN 1 | Premier League (T26/27): Tottenham - Crystal Palace | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 20:09 | movistarplus.es | DAZN 1 | Premier League (T26/27): Tottenham - Crystal Palace | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 20:30 | allente.no | V sport + HD | Bundesliga: Union Berlin - Köln | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 21:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Getafe - Sevilla | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 21:00 | tv3.lt | Go3 Sport 2 | Europos taurė. "Tofas" - "Neptūnas" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 21:35 | dagenstv.com | Eurosport 2 | Basket: Cleveland Cavaliers – Oklahoma City Thunder | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 21:45 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Getafe - Sevilla | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 21:45 | skysports.com | Sky Sports+ | Cardiff City vs West Ham United | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 3 игр в 04.11 21:45 |
+| 2026-11-04 21:45 | skysports.com | Sky Sports+ | Oxford United vs Reading | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 3 игр в 04.11 21:45 |
+| 2026-11-04 21:45 | skysports.com | Sky Sports+ | Wrexham vs Middlesbrough | мультикаст: канал сайта показывает несколько игр разом | «Sky Sports+» у skysports.com: 3 игр в 04.11 21:45 |
+| 2026-11-04 21:55 | rts.rs | РТС 2 | Фудбал - ЛШ: Борусија - Бетис, пренос | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 22:00 | programetv.ro | Prima Sport 4 | Porto – Napoli | поздний показ у сайта без флага | та же пара у этого сайта раньше: 04.11 21:55 |
 | 2026-11-04 22:00 | tv3.lt | Sport 1 | Tenisas. ATP Challenger 100. Bratislava. Edas Butvilas - Laslo Djere | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-04 22:55 | tv3.lt | Go3 Sport 2 | Krepšinis - NCAA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 23:00 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-04 23:00 | tv3.lt | Go3 Sport 2 | Krepšinis - NCAA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 23:05 | raspored.hrt.hr | HTV 2 | Nogomet, Liga prvaka: Leipzig - Manchester City, 2.pol. | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (04.11 22:00): 04.11 21:55 |
 | 2026-11-04 23:30 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): Getafe CF - Sevilla FC | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-04 23:45 | tv3.lt | Go3 Sport 1 | Europos taurė. "Riga Zelli" - "Le Mans" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3842,8 +3367,7 @@
 | 2026-11-05 01:20 | ntvplus.tv | viju+ Sport HD | Футбол. Колумбия. Примера А. Клаусура 2026. 17 тур. Прямая трансляция. Депортиво | повтор по flashscore: матч уже сыгран | эталон: Dep. Pasto - Jaguares de Cordoba 04.11 01:20 (fs_id MFeijQ4j) |
 | 2026-11-05 01:30 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): Fenerbahçe - Liverpool | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 01:30 | movistarplus.es | M+ Deportes | Euroliga de baloncesto (T26/27): Real Madrid - Panathinaikos | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 01:47 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 02:10 | sportklub.hr | Sport Klub 2 | Košarka - NBA liga: Cleveland - Oklahoma City | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (05.11 03:00): 03.11 02:00 |
+| 2026-11-05 01:49 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 02:10 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. SC Braga - Sporting CP | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 02:20 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Betis - Feyenoord | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 02:25 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Peja - Rahoveci | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3853,8 +3377,8 @@
 | 2026-11-05 03:00 | ipko.tv | Tring Sport 1 | SPORTING vs ARSENAL | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 03:05 | ipko.tv | Tring Sport 2 | HANNOVER vs WOFLSBURG | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 03:20 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): Leipzig - Manchester City | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 03:25 | movistarplus.es | M+ Deportes | EuroCup (T26/27): Lietkabelis - Kids&Us Manresa | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 03:31 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 03:30 | movistarplus.es | M+ Deportes | EuroCup (T26/27): Lietkabelis - Kids&Us Manresa | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 03:33 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 04:30 | ipko.tv | Sport 3 | Futboll: Europa League Dinamo - Anderlecht | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 04:30 | port.hu | Match4 | Labdarúgás: Angol másodosztály: Bristol - Wolverhampton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 04:30 | port.hu | Match4 | Labdarúgás: Angol másodosztály: Bristol - Wolverhampton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3863,8 +3387,8 @@
 | 2026-11-05 05:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Fotballkveld: Porto - Napoli | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 05:00 | ipko.tv | SuperSport 2 | Panathinaikos-AEK | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 05:00 | ipko.tv | Tring Sport 2 | ELVERSBERG vs LEVERKUSEN | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 05:00 | movistarplus.es | Esport 3 | Eurocopa femenina de la FIBA (T26/27): Ostrava - Uni Girona | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 05:01 | tvpassport.com | OneSoccer | Bundesliga Soccer: FC Bayern München vs. Borussia Dortmund | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 05:05 | movistarplus.es | Esport 3 | Eurocopa femenina de la FIBA (T26/27): Ostrava - Uni Girona | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 05:05 | tv3.lt | Go3 Sport Open | Krepšinio Čempionų lyga. "Juventus" - "Pardubice" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 05:10 | tv3.lt | Sport 1 | Vokietijos krepšinio taurė. Veolia Towers Hamburg - FC Bayern München | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 05:25 | ipko.tv | Tring Sport 3 | DENVER vs LA LAKERS | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3872,14 +3396,13 @@
 | 2026-11-05 05:30 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): PSV Eindhoven - Brujas | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 05:30 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): PSV Eindhoven - Brujas | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 05:47 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 05:50 | movistarplus.es | M+ Deportes | EuroCup (T26/27): Burgos - Rostock | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 05:50 | movistarplus.es | M+ Deportes | EuroCup (T26/27): Burgos - Rostock | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 05:55 | movistarplus.es | M+ Deportes | EuroCup (T26/27): Burgos - Rostock | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 05:55 | movistarplus.es | M+ Deportes | EuroCup (T26/27): Burgos - Rostock | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 06:45 | ipko.tv | Sport 3 | Futboll: Conference League Twente - Thun | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 06:50 | ipko.tv | Sport 1 | Futboll: Liga e Kampioneve AEK Athens - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 06:50 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Bashkimi - Peja | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 07:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Barcelona - Alavés | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 07:00 | ipko.tv | Tring Sport 2 | AUGSBURG vs SCHALKE | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 07:00 | tvpassport.com | OneSoccer | Concacaf Caribbean Cup: Violette vs. Portmore United | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 07:00 | tvpassport.com | OneSoccer | Concacaf Caribbean Cup: Violette vs. Portmore United | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 07:30 | tv3.lt | Go3 Sport Open | NBA rungtynės. "76ers" - "Pistons" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 07:35 | ipko.tv | Tring Sport 1 | BODO GLIMT vs INTER | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3912,15 +3435,16 @@
 | 2026-11-05 11:45 | ipko.tv | Sport 2 | Basketboll: NBA Detroit - New York | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 11:55 | movistarplus.es | M+ Vamos | Brasileirao (T2026): At. Paraense - Vasco Gama | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 12:00 | oneplaysport.cz | Oneplay Sport 3 | CHL: Bohemians Praha 1905-AC Sparta Praha | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 12:05 | movistarplus.es | M+ Deportes 2 | Torneo de París (T2026): Halys - Tiafoe | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 12:10 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. Santa Clara - SL Benfica | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 12:15 | allente.no | V sport Premier League HD | Premier League: Chelsea - Manchester United | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 12:30 | allente.no | Eurosport Norge HD | Basketball: NBA: NBA: Utah Jazz - Portland Trail Blazers | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 12:30 | tv3.lt | Go3 Sport 1 | Europos taurė. "Lietkabelis" - "Manresa" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 13:00 | allente.no | V sport 1 HD (N) | Carabao Cup: Bristol City - Wolverhampton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 13:00 | allente.no | V sport + HD | Carabao Cup: West Bromwich - Southampton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 13:00 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): Getafe CF - Sevilla FC | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 13:00 | oneplaysport.cz | Oneplay Sport 1 | EL: Real Madrid-Panathinaikos Athény | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 13:00 | port.hu | Sport2 | Labdarúgás: UEFA Bajnokok Ligája: Viking - Sabah, csoportkör, 4. forduló, 2. nap | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-05 13:05 | allente.no | Eurosport Norge HD | NBA: Portland Trail Blazers - Oklahoma City Thunder: 05.11.2026 12:05. | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 13:10 | ipko.tv | Tring Sport 2 | BAYERN vs STUTTGART | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 13:20 | ipko.tv | Tring Sport 1 | REAL MADRID vs JUVENTUS | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 13:30 | ipko.tv | Sport 1 | Futboll: Serie A Lazio - Cagliari | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3931,6 +3455,7 @@
 | 2026-11-05 14:00 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): Borussia Dortmund - Betis | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 14:30 | allente.no | V sport Premier League HD | Premier League: Coventry - Sunderland | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 14:30 | ipko.tv | Sport 2 | Basketboll: FIBA Europe Cup Bashkimi - Chalon/Saone | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 14:30 | movistarplus.es | M+ Deportes 2 | Torneo de París (T2026): Zverev - Musetti | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 14:30 | tv3.lt | Go3 Sport 1 | Europos taurė. "Venice" - "Siauliai" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 15:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Racing - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 15:00 | ipko.tv | Tring Sport 3 | ORLANDO vs BOSTON | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3940,10 +3465,12 @@
 | 2026-11-05 15:10 | ipko.tv | Tring Sport 2 | DORTMUND vs HAMBURG | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 15:15 | ipko.tv | Tring Sport 1 | DORTMUND vs INTER | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 15:30 | tv3.lt | Go3 Sport 2 | Europos taurė. "Lietkabelis" - "Manresa" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 15:30 | tvpassport.com | TSN2 | Raptors in 30: 2026: Toronto Raptors vs. Denver Nuggets | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 15:45 | ipko.tv | Sport 1 | Futboll: Ligue 1 Le Havre - PSG | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 15:45 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Inter - Shakhtar | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 15:50 | movistarplus.es | M+ Liga de Campeones | UEFA Champions League (T26/27): AEK Atenas - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 16:00 | tvpassport.com | OneSoccer | UEFA Champions League Soccer: Atlético Madrid vs. FC Bayern München | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 16:30 | movistarplus.es | M+ Deportes 2 | Torneo de París (T2026): Djokovic - Hijikata | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 16:30 | tv3.lt | Go3 Sport 1 | NBA rungtynės. "Mavericks" - "Spurs" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 16:45 | allente.no | V sport Premier League HD | Premier League: Hull - Ipswich | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 16:45 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Golden Eagle Ylli - Rahoveci | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -3965,10 +3492,12 @@
 | 2026-11-05 19:10 | ipko.tv | Tring Sport 1 | BAYERN vs BODO GLIMT | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 19:30 | allente.no | V sport ultra HD | Bundesliga: Bayern München - Dortmund | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 19:45 | ipko.tv | SuperSport 4 | Europa Conference League - Golat Direkt | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 19:45 | programetv.ro | Prima Sport 4 | Trabzonspor – Freiburg | поздний показ у сайта без флага | та же пара у этого сайта раньше: 05.11 19:40 |
 | 2026-11-05 19:45 | tvarenasport.ba | Arena Sport 5 | Rennes - Olympiacos | повтор по flashscore: матч уже сыгран | эталон: Rennes - Olympiacos Piraeus 04.11 17:30 (fs_id fTyRNTVP) |
 | 2026-11-05 19:50 | movistarplus.es | M+ LALIGA | Copa del Rey Mapfre (T26/27): Tarancón - Levante | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 20:00 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): Rayo Vallecano - RC Celta | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 20:00 | tvpassport.com | OneSoccer | UEFA Champions League Soccer: RC Lens vs. Como | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-05 20:05 | movistarplus.es | M+ Deportes 2 | Torneo de París (T2026): Michelsen - Alcaraz | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 20:10 | tv3.lt | Sport 1 | Turkijos krepšinio lyga. Fenerbahce - Tofas | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 20:31 | movistarplus.es | M+ Vamos | Previa Euroliga de baloncesto (T26/27): Hapoel Tel Aviv - FC Barcelona | угаданный эфир не на ровной минуте | эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись |
 | 2026-11-05 20:45 | movistarplus.es | M+ Vamos | Euroliga de baloncesto (T26/27): Hapoel Tel Aviv - FC Barcelona | поздний показ у сайта без флага | та же пара у этого сайта раньше: 05.11 20:31 |
@@ -3978,6 +3507,7 @@
 | 2026-11-05 21:10 | ipko.tv | Tring Sport 1 | PARIS SG vs SLOVAN BRATISLAVA | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 21:30 | ipko.tv | Tring Sport 3 | DETROIT vs CLEVELAND | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 21:30 | webtv.sk | JOJ Šport | Štúdio UEFA | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (05.11 22:00): 05.11 21:55 |
+| 2026-11-05 21:35 | movistarplus.es | M+ Deportes 2 | Torneo de París (T2026): Fils - Machac | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 22:00 | ipko.tv | SuperSport 5 | Europa Conference League - Golat Direkt | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 23:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Aek - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-05 23:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Rayo Vallecano - Celta | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4004,6 +3534,7 @@
 | 2026-11-06 02:00 | tv3.lt | Go3 Sport Open | Europos taurė. "Riga Zelli" - "Le Mans" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 02:20 | ipko.tv | Sport 3 | Futboll: Conference League Trabzonspor - Freiburg | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 02:25 | ipko.tv | Sport 2 | Futboll: Europa League Crystal Palace - Hoffenheim | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-06 02:30 | tvpassport.com | TSN5 | Raptors in 30: 2026: Toronto Raptors vs. Denver Nuggets | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 02:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 03:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Fotballkveld: Viking - Sabah | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 03:25 | movistarplus.es | M+ Deportes | Euroliga de baloncesto (T26/27): Fenerbahce - Baskonia | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4026,7 +3557,6 @@
 | 2026-11-06 07:00 | tv3.lt | Go3 Sport 1 | Europos taurė. "Riga Zelli" - "Le Mans" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 07:00 | tv3.lt | Go3 Sport 2 | Krepšinio Čempionų lyga. "Juventus" - "Pardubice" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 07:00 | tv3.lt | Go3 Sport Open | Eurolygos rungtynės. "Real" - "Panathinaikos" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-06 07:00 | tvpassport.com | OneSoccer | UEFA Women's Champions League Soccer: Austria Wien vs. Juventus | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 07:00 | tvpassport.com | OneSoccer | UEFA Women's Champions League Soccer: Austria Wien vs. Juventus | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 07:30 | movistarplus.es | M+ Liga de Campeones | UEFA Europa League (T26/27): Celtic - Besiktas | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 07:50 | movistarplus.es | M+ Vamos | Euroliga de baloncesto (T26/27): Hapoel Tel Aviv - FC Barcelona | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4055,7 +3585,6 @@
 | 2026-11-06 12:00 | tv3.lt | Sport 1 | Vokietijos BBL lyga. Basketball Braunschweig - Wurzburg Baskets | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 12:15 | allente.no | V sport Premier League HD | Premier League: Manchester City - Brighton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 12:30 | tv3.lt | Go3 Sport Open | NBA rungtynės. "Magic" - "Suns" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-06 12:45 | allente.no | Eurosport 1 HD (N) | Basketball: NBA: NBA: Oklahoma City Thunder - Cleveland Cavaliers | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 12:55 | allente.no | V sport 1 HD (N) | UEFA Europa League: Lillestrøm - Viktoria Plzen | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 12:55 | tv2.no | Eurosport 2 | NBA: Oklahoma City Thunder - Cleveland Cavaliers | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 13:00 | allente.no | TV 2 Sport 1 HD | UEFA Champions League: Manchester United - Roma | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4066,6 +3595,7 @@
 | 2026-11-06 13:20 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Porto - Napoli | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 13:25 | ipko.tv | Sport 1 | Futboll: Albi Mall Superliga Ballkani - Drenica | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 13:30 | movistarplus.es | M+ Liga de Campeones | UEFA Europa League (T26/27): AZ Alkmaar - Juventus | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-06 13:40 | movistarplus.es | M+ Vamos 3 | Euroliga femenina (T26/27): Fenerbahce - Valencia Basket | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 14:00 | movistarplus.es | DAZN 1 | Premier League (T26/27): Liverpool - Arsenal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 14:30 | allente.no | V sport Premier League HD | Premier League: Tottenham - Crystal Palace | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 14:30 | ipko.tv | Sport 2 | Basketboll: NBA Oklahoma City - Cleveland | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4080,6 +3610,7 @@
 | 2026-11-06 15:55 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Real Betis - Málaga | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 16:00 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. FC Porto - Estoril | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 16:02 | movistarplus.es | DAZN 1 | Liga F (T26/27): Sevilla - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-06 16:15 | movistarplus.es | M+ Vamos 3 | Euroliga femenina (T26/27): Basket Landes - Casademont Zaragoza | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 16:40 | tv3.lt | Go3 Sport 1 | Eurolygos rungtynės. "Fenerbahce" - "Baskonia" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 16:45 | allente.no | V sport Premier League HD | Premier League: Aston Villa - Fulham | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 16:45 | ipko.tv | Sport 2 | Basketboll: ProCredit Superliga Sigal Prishtina - Trepça | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4103,6 +3634,8 @@
 | 2026-11-06 21:00 | port.hu | Sport1 | Labdarúgás: UEFA Bajnokok Ligája: Barcelona - Aston Villa, csoportkör, 4. fordul | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 21:23 | movistarplus.es | DAZN Baloncesto 3 | Liga U (T26/27): Força Lleida - Unicaja | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 21:30 | movistarplus.es | DAZN LALIGA | DAZN Previa (T26/27): Sevilla - Alavés | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (06.11 22:00): 06.11 22:00 |
+| 2026-11-06 21:31 | movistarplus.es | M+ Vamos 3 | Previa Euroliga de baloncesto (T26/27): Partizan - Maccabi Tel Aviv | угаданный эфир не на ровной минуте | эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись |
+| 2026-11-06 21:45 | movistarplus.es | M+ Vamos 3 | Euroliga de baloncesto (T26/27): Partizan - Maccabi Tel Aviv (VO) | поздний показ у сайта без флага | та же пара у этого сайта раньше: 06.11 21:31 |
 | 2026-11-06 22:00 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. SL Benfica - Alverca | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 23:00 | port.hu | Sport1 | Labdarúgás: UEFA Bajnokok Ligája: Fenerbahce - Liverpool, csoportkör, 4. forduló | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-06 23:30 | oneplaysport.cz | Oneplay Sport 3 | CHL: Bohemians Praha 1905-AC Sparta Praha | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4147,7 +3680,6 @@
 | 2026-11-07 07:00 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. Casa Pia - Sporting CP | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 07:00 | tv3.lt | Go3 Sport 1 | Europos taurė. "Tofas" - "Neptūnas" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 07:00 | tv3.lt | Go3 Sport 2 | Eurolygos rungtynės. "Olimpia Milano" - "Valencia" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-07 07:00 | tvpassport.com | OneSoccer | UEFA Conference League Soccer: Getafe CF vs. Brighton & Hove Albion | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 07:10 | movistarplus.es | M+ Deportes | Euroliga de baloncesto (T26/27): Hapoel Tel Aviv - FC Barcelona | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 08:00 | tv3.lt | Go3 Sport Open | Europos taurė. "Lietkabelis" - "Manresa" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 09:00 | allente.no | TV 2 Sport 1 HD | Fotball - Toppserien kvinner: Stabæk - Aalesund | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4156,15 +3688,14 @@
 | 2026-11-07 09:00 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Vellaznimi - Bashkimi | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 09:00 | tv3.lt | Go3 Sport 1 | Eurolygos rungtynės. "Olympiacos" - "Crvena Zvezda" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 09:00 | tv3.lt | Go3 Sport 2 | Eurolygos rungtynės. Stambulo „Bešiktaš“ - Kauno „Žalgiris“ | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-07 09:00 | tvpassport.com | OneSoccer | Canadian Championship: Forge FC vs. CF Montréal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 09:30 | movistarplus.es | M+ Vamos | LF Endesa (T26/27): Spar Girona - Valencia Basket | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 09:40 | movistarplus.es | M+ Vamos 2 | Brasileirao (T2026): Palmeiras - Remo | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 10:00 | tv3.lt | Go3 Sport Open | Eurolygos rungtynės. "Partizan" - "Maccabi" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 10:30 | oneplaysport.cz | Oneplay Sport 1 | EL: Besiktas Istanbul-Žalgiris Kaunas | очередь: матч уже сыгран | эталон: Besiktas - Zalgiris Kaunas 06.11 19:00 (fs_id jLvV98po) |
 | 2026-11-07 10:30 | tv3.lt | Sport 1 | Tenisas. ATP Challenger 125. Porto. Edas Butvilas - Michael Geerts | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-07 11:00 | allente.no | TV 2 Sport 1 HD | Fotball - Toppserien kvinner: LSK Kvinner - Brann | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 11:00 | tv3.lt | Go3 Sport 1 | Eurolygos rungtynės. "Virtus" - "Dubai" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 11:00 | tv3.lt | Go3 Sport 2 | NBA rungtynės. "Mavericks" - "Spurs" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-07 11:15 | allente.no | TV 2 Sport 1 HD | Fotball - Toppserien kvinner: LSK Kvinner - Brann | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 11:15 | ipko.tv | Sport 1 | Futboll: Serie A Juventus - Napoli | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 11:15 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Feyenoord - Inter | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 11:15 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Golden Eagle Ylli - Rahoveci | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4178,7 +3709,6 @@
 | 2026-11-07 13:00 | tv2.no | Eurosport 2 | NBA: Oklahoma City Thunder - Cleveland Cavaliers | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 13:30 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Barcelona - Aston Villa | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 13:30 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Peja - Bora | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-07 13:40 | movistarplus.es | M+ Vamos 3 | Euroliga femenina (T26/27): Fenerbahce - Valencia Basket | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 13:45 | port.hu | Spíler1 TV | Labdarúgás: Premier League - Előzetes | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 13:50 | allente.no | V sport 2 HD | Bundesliga: Hamburg - Mönchengladbach | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 13:50 | movistarplus.es | M+ Vamos 3 | Euroliga femenina (T26/27): Basket Landes - Casademont Zaragoza | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4187,7 +3717,6 @@
 | 2026-11-07 14:55 | sport5.co.il | ספורט 5 Stars | ליגה צרפתית שנייה: מונפלייה - מץ, מחזור 12 | повтор по flashscore: матч уже сыгран | эталон: Montpellier - Metz 06.11 21:00 (fs_id KANaRkbT) |
 | 2026-11-07 15:00 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 15:50 | raiplay.it | Rai Sport | Calcio. Serie A Women Athora: Milan-Inter - 6a g.ta | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-07 16:15 | movistarplus.es | M+ Vamos 3 | Euroliga femenina (T26/27): Basket Landes - Casademont Zaragoza | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 17:00 | allente.no | TV 2 Sport 1 HD | Eliteserien: Bodø/Glimt - Viking | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 17:00 | movistarplus.es | DAZN 2 | Liga F (T26/27): Athletic - Real Madrid | поздний показ у сайта без флага | та же пара у этого сайта раньше: 07.11 16:50 |
 | 2026-11-07 17:30 | livesoccertv.com | ESPN 2 Netherlands | Den Bosch vs Utrecht II | мультикаст: канал сайта показывает несколько игр разом | «ESPN 2 Netherlands» у livesoccertv.com: 2 игр в 07.11 17:30 |
@@ -4197,11 +3726,11 @@
 | 2026-11-07 19:30 | tvheute.at | Das Erste | Sportschau: Fußball-Bundesliga - Der 9. Spieltag | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 20:00 | port.hu | Match4 | Labdarúgás: Premier League: Fulham - Newcastle | поздний повтор: пара была раньше у другого сайта | та же пара раньше: 07.11 16:50 [V sport Premier League 1 HD, CANAL+ Extra 2, Cytavision Sports7 HD, Arena Sport 1, Arena Premium 2, Arena Sport 4, TV3 Max, V Sport Football, V Sport Football FI, V Sport+ Suomi, ΝovasportsStart, Sport1 3] |
 | 2026-11-07 21:00 | movistarplus.es | DAZN LALIGA | DAZN Previa (T26/27): Valencia - Real Madrid | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (07.11 22:00): 07.11 22:00 |
-| 2026-11-07 21:16 | movistarplus.es | M+ Vamos 3 | Previa Euroliga de baloncesto (T26/27): Virtus - Dubai | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 21:30 | movistarplus.es | LALIGA TV HYPERMOTION 2 | Próximo partido: Las Palmas - Eldense | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-07 21:30 | movistarplus.es | M+ Vamos 3 | Euroliga de baloncesto (T26/27): Virtus - Dubai (VO) | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-07 21:30 | movistarplus.es | LALIGA TV HYPERMOTION | Previa LaLiga HyperMotion (T26/27): Granada - Tenerife | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (07.11 22:00): 07.11 22:00 |
+| 2026-11-07 21:55 | sport5.co.il | 5MAX | ליגה צרפתית בכדורגל הנשים: מאלו - מארסיי, מחזור 8 | мультикаст: канал сайта показывает несколько игр разом | «5MAX» у sport5.co.il: 2 игр в 07.11 21:55 |
 | 2026-11-07 22:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: FC Slovan Liberec-Bohemians Praha 1905 | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-07 22:00 | sport5.co.il | 5MAX | ליגה סקוטית: אברדין - היברניאן, מחזור 13 | мультикаст: канал сайта показывает несколько игр разом | «5MAX» у sport5.co.il: 2 игр в 07.11 22:00 |
 | 2026-11-07 23:45 | port.hu | Spíler1 TV | Labdarúgás: Premier League: Nottingham Forest - Manchester City | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 00:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: SK Artis Brno-FC Zlín | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 00:00 | raiplay.it | Rai Sport | Calcio Femminile: Serie A Women Athora 2026/27 Milan - Inter | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4213,6 +3742,7 @@
 | 2026-11-08 01:00 | ipko.tv | Sport 2 | Basketboll: Procredit Superliga Vëllaznimi - Bora | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 01:45 | tv3.lt | Go3 Sport Open | NBA rungtynės. "Magic" - "Suns" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 02:00 | allente.no | TV 2 Sport 2 HD | Tennis: Turneringsoppsummering: Atp500, London - Queens | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-08 02:00 | tvpassport.com | OneSoccer | Canadian Championship: Forge FC vs. CF Montréal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 02:15 | port.hu | Match4 | Labdarúgás: Premier League: Fulham - Newcastle | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 02:25 | ipko.tv | Sport 3 | Futboll: La Liga Osasuna - Athletic Bilbao | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 03:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Málaga - Racing | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4237,7 +3767,6 @@
 | 2026-11-08 07:00 | tv3.lt | Go3 Sport 2 | Eurolygos rungtynės. "Fenerbahce" - "Baskonia" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 07:00 | tv3.lt | Go3 Sport Open | Eurolygos rungtynės. "Olympiacos" - "Crvena Zvezda" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 07:00 | tvpassport.com | OneSoccer | Concacaf Central American Cup Soccer: Alianza FC vs. Marathón | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-08 07:00 | tvpassport.com | OneSoccer | Concacaf Central American Cup Soccer: Alianza FC vs. Marathón | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 09:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Valencia - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 09:00 | ipko.tv | Sport 1 | Futboll: Albi Mall Superliga Feronikeli ’74 - Ballkani | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 09:00 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Bodo Glimt - Lille | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4252,8 +3781,8 @@
 | 2026-11-08 11:10 | ipko.tv | Sport 1 | Futboll: Albi Mall Superliga Gjilani - Malisheva | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 11:15 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Atletico Madrid - Bayern Munich | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 11:30 | tvpassport.com | OneSoccer | Concacaf Central American Cup Soccer: Olimpia vs. Cartaginés | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-08 11:30 | tvpassport.com | OneSoccer | Concacaf Central American Cup Soccer: Olimpia vs. Cartaginés | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 11:35 | movistarplus.es | M+ Vamos 2 | Euroliga de baloncesto (T26/27): Real Madrid - Panathinaikos | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-08 12:00 | tvtid.tv2.dk | TV 2 Sport X | 3F Superliga: Før F.C. København-Brøndby IF | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (08.11 13:00): 08.11 12:55 |
 | 2026-11-08 12:45 | ert.gr | ERT Cosmos | Ποδόσφαιρο | Superbet League 2 | Ολυμπιακός Β’ – Ελλάς Σύρου | 10η Αγωνιστική | поздний показ у сайта без флага | та же пара у этого сайта раньше: 08.11 12:30 |
 | 2026-11-08 12:45 | ert.gr | ERT Cosmos Cyprus | Ποδόσφαιρο | Superbet League 2 | Ολυμπιακός Β’ – Ελλάς Σύρου | 10η Αγωνιστική | поздний показ у сайта без флага | та же пара у этого сайта раньше: 08.11 12:30 |
 | 2026-11-08 12:50 | sports.kz | Телеканал «Qazsport» | Футбол. Қазақстан Республикасының Кубогы. Финал. «Ордабасы» — «Қайсар». Прямая т | повтор по flashscore: матч уже сыгран | эталон: Ordabasy - Kaisar Kyzylorda 07.11 13:00 (fs_id 654e2TUh) |
@@ -4263,13 +3792,10 @@
 | 2026-11-08 13:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: FC Zbrojovka Brno-FC Baník Ostrava | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 13:30 | tvpassport.com | OneSoccer | Bundesliga Soccer: 1. FSV Mainz 05 vs. FC Bayern München | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 14:00 | ipko.tv | Sport 4 | Futboll: Raiffeisen Liga e Pare Vellaznimi - Trepca | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-08 14:55 | allente.no | TV4 HD | Allsvenskan: Allsvenskan: IFK Gothenburg - Malmoe FF (M) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-08 14:55 | allente.no | TST2 | Allsvenskan: Allsvenskan: IFK Gothenburg - Malmoe FF (M) | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
-| 2026-11-08 14:55 | rtcg.me | TVCG 2 | Fudbal: Budućnost - Otrant CFL, direktno | повтор по flashscore: матч уже сыгран | эталон: Buducnost - Otrant 07.11 16:00 (fs_id 4CYawVjL) |
-| 2026-11-08 15:00 | tvarenasport.com | Arena Sport 9 | Budućnost - Otrant | повтор по flashscore: матч уже сыгран | эталон: Buducnost - Otrant 07.11 16:00 (fs_id 4CYawVjL) |
+| 2026-11-08 14:55 | rtcg.me | TVCG 2 | Fudbal: Budućnost - Otrant CFL, direktno | повтор по flashscore: матч уже сыгран | эталон: Buducnost - Otrant 07.11 15:00 (fs_id 4CYawVjL) |
+| 2026-11-08 15:00 | tvarenasport.com | Arena Sport 9 | Budućnost - Otrant | повтор по flashscore: матч уже сыгран | эталон: Buducnost - Otrant 07.11 15:00 (fs_id 4CYawVjL) |
 | 2026-11-08 15:50 | sports.kz | Телеканал «Qazsport» | Футбол. Италия Чемпионаты. 11 тур. «Торино» — «Лечче». Прямая трансляция | повтор по flashscore: матч уже сыгран | эталон: Torino - Lecce 07.11 16:00 (fs_id fT79MiIU) |
 | 2026-11-08 15:55 | oneplaysport.cz | Oneplay Sport 4 | CHL: SK Slavia Praha-SK Artis Brno | поздний показ у сайта без флага | та же пара у этого сайта раньше: 08.11 15:45 |
-| 2026-11-08 16:30 | tvtid.tv2.dk | TV 2 Sport X | 3F Superliga: Før Randers FC-FC Nordsjælland | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (08.11 17:00): 08.11 16:55 |
 | 2026-11-08 17:00 | allente.no | V sport + HD | EFL Championship: Birmingham - Swansea | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 17:30 | tv.orf.at | ORF 1 | ADMIRAL Fußball Bundesliga 12.Runde: Puntigamer Sturm Graz - Red Bull Salzburg D | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (08.11 18:00): 08.11 17:55 |
 | 2026-11-08 17:35 | movistarplus.es | M+ Deportes | Euroliga de baloncesto (T26/27): Fenerbahce - Baskonia | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
@@ -4293,10 +3819,113 @@
 | 2026-11-08 22:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: FC Zlín-1. FC Slovácko | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 22:30 | tv3.lt | TV6 | NBA rungtynės. Filadelfijos „76ers“ - Čikagos „Bulls“ | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-08 22:45 | port.hu | Spíler1 TV | Labdarúgás: Premier League: Brighton - Brentford | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 00:00 | allente.no | V sport Premier League HD | Premier League: Crystal Palace - Liverpool | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 00:00 | ipko.tv | Sport 1 | Futboll: Serie A Fiorentina - Juventus | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (08.11 21:45): 08.11 21:45 |
 | 2026-11-09 00:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: FK Pardubice-FC Slovan Liberec | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 00:00 | tv3.lt | Go3 Sport 1 | Ligue 1. PSG - "Troyes" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 00:00 | tv3.lt | Go3 Sport Open | Krepšinis - NCAA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-09 00:00 | tvpassport.com | Fox Soccer Plus | Women's Italian Serie A Soccer: SS Lazio vs. Napoli Women | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 00:15 | ipko.tv | Sport 3 | Futboll: La Liga Atletico Madrid - Barcelona | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (08.11 22:00): 08.11 22:00 |
 | 2026-11-09 00:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 00:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 01:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Atlético - Barcelona | показ пары дальше от матча, чем другой показ у сайта | у сайта есть показ ближе к началу матча (08.11 22:00): 08.11 21:55 |
+| 2026-11-09 01:00 | tv3.lt | Go3 Sport 2 | Serie A. "Roma" - "Sassuolo" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 01:33 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 02:15 | ipko.tv | Sport 1 | Futboll: Serie A Inter - Como | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 02:25 | ipko.tv | Sport 3 | Futboll: ALBI Mall Superliga Drenica - Drita | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 02:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 03:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Celta - Levante | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 03:00 | tv3.lt | Go3 Sport 2 | LaLiga. "Osasuna" - "Athletic" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-09 03:00 | tvpassport.com | OneSoccer | UEFA Europa League Soccer: Bayer 04 Leverkusen vs. Olympique de Marseille | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 03:22 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-09 03:30 | ert.gr | ΕΡΤ2 ΣΠΟΡ | Basket | Elite League | ΑΣ Παπάγου – Πανιώνιος | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 04:30 | ipko.tv | Sport 1 | Futboll: Serie A Genoa - Milan | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 04:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 04:35 | ipko.tv | Sport 3 | Futboll: La Liga Elche - Betis | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 04:55 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Villarreal - Getafe | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 05:00 | tv3.lt | Go3 Sport 1 | Serie A. "Inter" - "Como" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 05:00 | tv3.lt | Go3 Sport Open | LaLiga. "Atlético" - "Barcelona" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-09 05:00 | tvpassport.com | OneSoccer | UEFA Europa League Soccer: Celtic vs. Besiktas | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
 | 2026-11-09 05:05 | movistarplus.es | Esport 3 | Liga Endesa (T26/27): Barcelona - Breogán | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 06:45 | ipko.tv | Sport 1 | Futboll: Serie A Napoli - Lazio | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 06:45 | ipko.tv | Sport 3 | Futboll: Liga e Kampioneve Galatasaray - Stuttgart | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 07:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Real Sociedad - Rayo Vallecano | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 07:00 | tv3.lt | Go3 Sport 1 | Nyderlandų lyga. "Heerenveen" - "Feyenoord" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 07:00 | tv3.lt | Go3 Sport Open | Eurolygos rungtynės. "Virtus" - "Dubai" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 09:00 | allente.no | TV 2 Sport 1 HD | LaLiga EA Sports: Elche - Real Betis | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 09:00 | tv3.lt | Go3 Sport 1 | LaLiga. "Osasuna" - "Athletic" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 09:00 | tv3.lt | Go3 Sport Open | Ligue 1. PSG - "Troyes" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 09:40 | allente.no | TV 2 Sport 2 HD | Tennis: Turneringsoppsummering: Atp500, London - Queens | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 09:50 | tv3.lt | Go3 Sport 2 | NBA rungtynės. Filadelfijos „76ers“ - Čikagos „Bulls“ | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 10:00 | allente.no | V sport Premier League HD | Premier League: Manchester United - Aston Villa | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 11:32 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 11:40 | movistarplus.es | M+ Vamos | Premier League (T26/27): Manchester Utd. - Aston Villa | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 11:40 | tv3.lt | Sport 1 | Graikijos krepšinio lyga. Aris - Panathinaikos | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 12:00 | tv3.lt | Go3 Sport 2 | Eurolygos rungtynės. "Partizan" - "Maccabi" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 12:30 | allente.no | TV 2 Sport 1 HD | Eliteserien: Fredrikstad - Brann | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 13:00 | allente.no | V sport 2 HD | 2. Bundesliga: Hertha Berlin - Wolfsburg | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 13:00 | allente.no | V sport + HD | EFL Championship: Wrexham - Wolverhampton | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 13:00 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): Villarreal CF - Getafe CF | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 13:00 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 14:00 | oneplaysport.cz | Oneplay Sport 3 | CHL: FK Jablonec-FK Mladá Boleslav | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 14:00 | tv3.lt | Go3 Sport 2 | LaLiga. "Valencia" - "Real" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 14:00 | tv3.lt | Sport 1 | Turkijos krepšinio lyga. Fenerbahce - Tofas | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 14:30 | allente.no | TV 2 Sport 1 HD | Eliteserien: Lillestrøm - Aalesund | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 14:30 | allente.no | V sport Premier League HD | Premier League: Sunderland - Chelsea | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 15:00 | allente.no | V sport 2 HD | Bundesliga: Köln - Leverkusen | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 15:00 | allente.no | V sport + HD | EFL Championship: Birmingham - Swansea | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 15:00 | tv3.lt | Go3 Sport 1 | Krepšinis - NCAA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 16:00 | oneplaysport.cz | Oneplay Sport 3 | CHL: FC Slovan Liberec-Bohemians Praha 1905 | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 16:00 | tv3.lt | Go3 Sport 2 | LaLiga. "Atlético" - "Barcelona" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 16:00 | tv3.lt | Sport 1 | Portugalijos "Primeira" futbolo lyga. Estrela - SL Benfica | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 16:05 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 16:20 | raiplay.it | Rai Sport | Pallacanestro. Serie A2 Old Wild West: Montecatini-Pistoia - 8a g.ta | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 16:30 | allente.no | TV 2 Sport 1 HD | Eliteserien: Hamkam - Sarpsborg 08 | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 16:45 | allente.no | V sport Premier League HD | Premier League: Fulham - Newcastle | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 17:00 | allente.no | V sport 2 HD | Bundesliga: Freiburg - Union Berlin | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 17:00 | allente.no | V sport + HD | Superliga: AGF - Horsens | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 17:09 | movistarplus.es | DAZN 1 | Premier League (T26/27): Brighton - Brentford | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 17:35 | tv3.lt | Go3 Sport Open | NBA rungtynės. "Magic" - "Warriors" | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 18:00 | oneplaysport.cz | Oneplay Sport 3 | CHL: FC Viktoria Plzeň-AC Sparta Praha | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 18:00 | tv3.lt | Sport 1 | Vokietijos BBL lyga. Wurzburg Baskets - Bayern München | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 18:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 19:00 | allente.no | V sport 2 HD | Bundesliga: Hoffenheim - Schalke | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 19:00 | allente.no | V sport + HD | Superliga: Midtjylland - Sønderjyske | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 19:00 | allente.no | TV 2 Sport Premium HD | LaLiga EA Sports: Valencia - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 19:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: FC Zbrojovka Brno-FC Baník Ostrava | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 19:45 | tv3.lt | Go3 Sport Open | NBA rungtynės. Filadelfijos „76ers“ - Čikagos „Bulls“ | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 20:00 | movistarplus.es | DAZN LALIGA | LALIGA EA SPORTS (T26/27): Valencia CF - Real Madrid | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 20:00 | tv3.lt | Go3 Sport 2 | Krepšinis - NCAA | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 20:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 21:00 | allente.no | TV 2 Sport 1 HD | Eliteserien: Viking - Kfum Oslo | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 21:00 | allente.no | V sport 2 HD | Bundesliga: Stuttgart - Werder Bremen | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 21:30 | tv3.lt | Sport 1 | Graikijos krepšinio lyga. AEK Athens - Panathinaikos | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 21:55 | port.hu | Spíler2 TV | Labdarúgás: La Liga: Atlético de Madrid - FC Barcelona | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 21:55 | tv3.lt | Go3 Sport Open | Nyderlandų lyga. "Heerenveen" - "Feyenoord" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 22:10 | ert.gr | ΕΡΤ2 ΣΠΟΡ | Ποδόσφαιρο | Superbet League 2 | Απόλλων Καλαμαριάς – Πανσερραϊκός | 10η Αγωνιστ | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 22:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 23:00 | allente.no | TV 2 Sport 1 HD | Eliteserien: Sandefjord - Molde | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 23:00 | allente.no | V sport 2 HD | Bundesliga: Hamburg - Mönchengladbach | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 23:00 | oneplaysport.cz | Oneplay Sport 1 | CHL: FC Hradec Králové-SK Sigma Olomouc | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 23:05 | allente.no | Eurosport 1 HD (N) | NBA: Chicago Bulls - Philadelphia 76ers: 09.11.2026 22:05. | угаданный эфир без эталона (баскет/теннис) | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 23:18 | mediaklikk.hu | M4 Sport | OTP Bank Liga, műsor, élő adásban | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-09 23:55 | tv3.lt | Go3 Sport Open | Bundesliga. "Cologne" - "Bayer" | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-10 00:30 | webtv.sk | Sport 2 | Fotbal | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-10 00:36 | movistarplus.es | DAZN 1 | Premier League (T26/27): Ipswich - Bournemouth | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-10 01:30 | port.hu | Match4 | Labdarúgás: Premier League: Everton - Coventry | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+| 2026-11-10 03:30 | port.hu | Match4 | Labdarúgás: Premier League: Fulham - Newcastle | угаданный эфир без эталона | эфир угадан, а пары нет в эталоне в ±3 ч — запись |
+
+## Не разобрано
+
+- trtavaz.com.tr сетка: не открылась — браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.trtavaz.com.tr/yayin-akisi/2026-11-05", waiting until "domcontentloaded"
+
+- trtavaz.com.tr сетка: не открылась — браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.trtavaz.com.tr/yayin-akisi/2026-11-06", waiting until "domcontentloaded"
+
+- trtavaz.com.tr сетка: не открылась — браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.trtavaz.com.tr/yayin-akisi/2026-11-07", waiting until "domcontentloaded"
+

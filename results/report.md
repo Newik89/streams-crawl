@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 4718 с.
+Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 5110 с.
 
 | Сайт | Результат |
 |---|---|
@@ -20,30 +20,30 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 17, пусто — 4 |
+| flashscore.mobi | расписание есть — 19, пусто — 2 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 26 |
-| m.eredmenyek.com | расписание есть — 10, пусто — 4 |
+| m.eredmenyek.com | расписание есть — 12, пусто — 2 |
 | m.flashscore.bg | расписание есть — 7 |
-| m.flashscore.com.tr | расписание есть — 15, пусто — 3 |
+| m.flashscore.com.tr | расписание есть — 16, пусто — 2 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 17, пусто — 4 |
+| m.flashscore.gr | расписание есть — 19, пусто — 2 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
-| m.flashscore.pl | расписание есть — 9, пусто — 3 |
+| m.flashscore.pl | расписание есть — 10, пусто — 2 |
 | m.flashscore.pt | расписание есть — 6 |
-| m.flashscore.ro | расписание есть — 9, пусто — 3 |
-| m.flashscore.ru | расписание есть — 14, пусто — 4 |
+| m.flashscore.ro | расписание есть — 10, пусто — 2 |
+| m.flashscore.ru | расписание есть — 15, пусто — 3 |
 | m.flashscore.se | расписание есть — 6 |
-| m.flashscore.sk | расписание есть — 9, пусто — 3 |
-| m.flashscore.ua | расписание есть — 9, пусто — 3 |
-| m.livesport.cz | расписание есть — 9, пусто — 3 |
+| m.flashscore.sk | расписание есть — 10, пусто — 2 |
+| m.flashscore.ua | расписание есть — 10, пусто — 2 |
+| m.livesport.cz | расписание есть — 10, пусто — 2 |
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 6 |
@@ -73,7 +73,7 @@
 | sport1.maariv.co.il | пусто — 2, расписание есть — 4 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
-| sport5.co.il | расписание есть — 6 |
+| sport5.co.il | расписание есть — 5, пусто — 1 |
 | sporteventz.com | расписание есть — 1 |
 | sporting.pt | расписание есть — 1 |
 | sportklub.hr | расписание есть — 10 |
@@ -85,7 +85,7 @@
 | teleman.pl | расписание есть — 30 |
 | tring.al | пусто — 1 |
 | trt.net.tr | расписание есть — 1 |
-| trtavaz.com.tr | расписание есть — 6 |
+| trtavaz.com.tr | расписание есть — 3, не открылась — 3 |
 | trtspor.com.tr | расписание есть — 1 |
 | tv-program.aktuality.sk | расписание есть — 1 |
 | tv.dir.bg | расписание есть — 42 |
@@ -94,7 +94,7 @@
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 6 |
+| tv8.com.tr | расписание есть — 5, пусто — 1 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -111,6 +111,20 @@
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
+## Не открылись — 3
+
+| Сайт | Канал | Что ответил | Ссылка |
+|---|---|---|---|
+| trtavaz.com.tr | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.trtavaz.com.tr/yayin-akisi/2026-11-05", waiting until "domc | https://www.trtavaz.com.tr/yayin-akisi/2026-11-05 |
+| trtavaz.com.tr | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.trtavaz.com.tr/yayin-akisi/2026-11-06", waiting until "domc | https://www.trtavaz.com.tr/yayin-akisi/2026-11-06 |
+| trtavaz.com.tr | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.trtavaz.com.tr/yayin-akisi/2026-11-07", waiting until "domc | https://www.trtavaz.com.tr/yayin-akisi/2026-11-07 |
+
 ## Оценка
 
-- ✅ обход в норме: не открылись 0 из 1598 страниц (0%), сайтов без удачи 0 из 106 (0%)
+- ✅ обход в норме: не открылись 3 из 1598 страниц (0%), сайтов без удачи 0 из 106 (0%)
