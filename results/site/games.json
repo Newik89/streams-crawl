@@ -1,16 +1,16 @@
 {
- "собрано": "2026-11-03 22:46",
- "игр": 39,
+ "собрано": "2026-11-04 04:06",
+ "игр": 66,
  "окно": 6,
  "по_окнам": {
   "2": 567,
   "5": 528,
-  "6": 39
+  "6": 66
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "sportklub.hr": 661
+  "sportklub.hr": 684
  },
  "другие_виды": [],
  "на_разбор": [],
@@ -29,7 +29,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T09:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Melbourne Victory - Persib Bandung"
     }
    ]
@@ -47,7 +47,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T10:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): Bam Khatoon - Naegohyang"
     }
    ]
@@ -65,7 +65,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-04T10:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): 4.25 Sports Club - Ho Chi Minh City"
     }
    ]
@@ -83,7 +83,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-04T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Pohang Steelers - Gamba Osaka"
     }
    ]
@@ -101,7 +101,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Seoul - Viettel"
     }
    ]
@@ -119,7 +119,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T12:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): Kaya Iloilo - Melbourne City"
     }
    ]
@@ -137,7 +137,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-04T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - LP Azije ELITE: Buriram United - Kashima"
     }
    ]
@@ -155,7 +155,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T14:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): Ayeyawady - Kobe Leonessa"
     }
    ]
@@ -173,7 +173,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T15:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Arkadag - Golgohar Sirjan"
     }
    ]
@@ -191,7 +191,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-04T16:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): East Bengal - Hwacheon"
     }
    ]
@@ -209,7 +209,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-04T16:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet - Liga prvaka Azije (Ž): Nasaf - Peking"
     }
    ]
@@ -227,7 +227,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T18:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Wahda - Khaldiya"
     }
    ]
@@ -245,7 +245,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-04T18:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Turk Telekom - Frankfurt"
     }
    ]
@@ -263,7 +263,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-04T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Legia - Galatasaray"
     }
    ]
@@ -281,7 +281,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Lietkabelis - Manresa"
     }
    ]
@@ -299,7 +299,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-04T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Riga - Le Mans"
     }
    ]
@@ -317,7 +317,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-04T19:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Szombathely - AEK"
     }
    ]
@@ -335,7 +335,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-04T19:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Cedevita Olimpija - Tortona"
     }
    ]
@@ -353,7 +353,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-04T20:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Taawoun - Faisaly"
     }
    ]
@@ -371,7 +371,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-04T20:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Bosna - Balkan Botevgrad"
     }
    ]
@@ -389,7 +389,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 10",
      "start_kyiv": "2026-11-04T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Venezia - Siauliai"
     }
    ]
@@ -407,7 +407,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-04T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Hapoel Jerusalem - Aris"
     }
    ]
@@ -425,7 +425,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 9",
      "start_kyiv": "2026-11-04T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Bonn - Herzliya"
     }
    ]
@@ -443,7 +443,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-04T21:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Maxima Roma - London"
     }
    ]
@@ -461,7 +461,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 8",
      "start_kyiv": "2026-11-04T21:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Burgos - Rostock"
     }
    ]
@@ -479,7 +479,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-04T21:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Real Madrid - Panathinaikos"
     }
    ]
@@ -497,7 +497,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-05T05:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - NBA liga: Sacramento - LA Lakers"
     }
    ]
@@ -515,7 +515,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-05T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Lion City Sailors - Adelaide United"
     }
    ]
@@ -533,7 +533,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-05T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Machida - Shanghai Shenhua"
     }
    ]
@@ -551,7 +551,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-05T12:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Kitchee - Phnom Penh Crown"
     }
    ]
@@ -569,7 +569,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-05T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Pathum United - Tai Po"
     }
    ]
@@ -587,7 +587,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-05T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Kuching City - Gangwon"
     }
    ]
@@ -605,7 +605,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-05T14:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Nogomet: Liga prvaka Azije - TWO: Svay Rieng - Tampines Rovers"
     }
    ]
@@ -623,7 +623,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-05T19:15",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Efes - Paris"
     }
    ]
@@ -641,7 +641,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 5",
      "start_kyiv": "2026-11-05T20:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Fenerbahce - Baskonia"
     }
    ]
@@ -659,7 +659,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 3",
      "start_kyiv": "2026-11-05T20:45",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Hapoel Tel Aviv - Barcelona"
     }
    ]
@@ -677,7 +677,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 6",
      "start_kyiv": "2026-11-05T21:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Asvel - Bayern"
     }
    ]
@@ -695,7 +695,7 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 1",
      "start_kyiv": "2026-11-05T21:30",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Euroleague: Armani - Valencia"
     }
    ]
@@ -713,8 +713,494 @@
      "source": "sportklub.hr",
      "channel": "Sport Klub 7",
      "start_kyiv": "2026-11-05T22:00",
-     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793664000000&toTime=1794268799999&communityIdentifier=sk_hr&languageId=181",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Eurocup: Tenerife - Cluj"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Saudijska liga",
+   "home": "Hazem",
+   "away": "Nassr",
+   "start_kyiv": "2026-11-06T16:55",
+   "start_utc": "2026-11-06T14:55",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "start_kyiv": "2026-11-06T16:55",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Saudijska liga: Hazem - Nassr"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bugarska liga",
+   "home": "Septemvri",
+   "away": "Lokomotiv Sofia",
+   "start_kyiv": "2026-11-06T17:00",
+   "start_utc": "2026-11-06T15:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "start_kyiv": "2026-11-06T17:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarska liga: Septemvri - Lokomotiv Sofia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Slovenska 1. liga",
+   "home": "Nafta",
+   "away": "Olimpija",
+   "start_kyiv": "2026-11-06T18:30",
+   "start_utc": "2026-11-06T16:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "start_kyiv": "2026-11-06T18:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Slovenska 1. liga: Nafta - Olimpija"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Besiktas",
+   "away": "Zalgiris",
+   "start_kyiv": "2026-11-06T19:00",
+   "start_utc": "2026-11-06T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "start_kyiv": "2026-11-06T19:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Besiktas - Zalgiris"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bugarska liga",
+   "home": "Botev Plovdiv",
+   "away": "Dunav",
+   "start_kyiv": "2026-11-06T19:15",
+   "start_utc": "2026-11-06T17:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "start_kyiv": "2026-11-06T19:15",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarska liga: Botev Plovdiv - Dunav"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Dynamo Dresden",
+   "away": "Greuther Furth",
+   "start_kyiv": "2026-11-06T19:30",
+   "start_utc": "2026-11-06T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "start_kyiv": "2026-11-06T19:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Dynamo Dresden - Greuther Furth"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Braunschweig",
+   "away": "Cottbus",
+   "start_kyiv": "2026-11-06T19:30",
+   "start_utc": "2026-11-06T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "start_kyiv": "2026-11-06T19:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Braunschweig - Cottbus"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Saudijska liga",
+   "home": "Ittihad",
+   "away": "Neom",
+   "start_kyiv": "2026-11-06T19:30",
+   "start_utc": "2026-11-06T17:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "start_kyiv": "2026-11-06T19:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Saudijska liga: Ittihad - Neom"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Viktoria Koln",
+   "away": "Saarbrucken",
+   "start_kyiv": "2026-11-06T20:00",
+   "start_utc": "2026-11-06T18:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "start_kyiv": "2026-11-06T20:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Viktoria Koln - Saarbrucken"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Slovenska 2. liga",
+   "home": "Jadran",
+   "away": "Bistrica",
+   "start_kyiv": "2026-11-06T21:00",
+   "start_utc": "2026-11-06T19:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "start_kyiv": "2026-11-06T21:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Slovenska 2. liga: Jadran - Bistrica"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Olympiacos",
+   "away": "Crvena zvezda",
+   "start_kyiv": "2026-11-06T21:15",
+   "start_utc": "2026-11-06T19:15",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "start_kyiv": "2026-11-06T21:15",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Olympiacos - Crvena zvezda"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bundesliga",
+   "home": "Hamburg",
+   "away": "Monchengladbach",
+   "start_kyiv": "2026-11-06T21:30",
+   "start_utc": "2026-11-06T19:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 1",
+     "start_kyiv": "2026-11-06T21:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bundesliga: Hamburg - Monchengladbach"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Virtus",
+   "away": "Dubai",
+   "start_kyiv": "2026-11-06T21:30",
+   "start_utc": "2026-11-06T19:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "start_kyiv": "2026-11-06T21:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Virtus - Dubai"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Euroleague",
+   "home": "Partizan",
+   "away": "Maccabi",
+   "start_kyiv": "2026-11-06T21:45",
+   "start_utc": "2026-11-06T19:45",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "start_kyiv": "2026-11-06T21:45",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Euroleague: Partizan - Maccabi"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Sevilla",
+   "away": "Alaves",
+   "start_kyiv": "2026-11-06T22:00",
+   "start_utc": "2026-11-06T20:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "start_kyiv": "2026-11-06T22:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Sevilla - Alaves"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Liga prvaka Azije (Ž)",
+   "home": "Naegohyang W",
+   "away": "Kobe Leonessa W",
+   "start_kyiv": "2026-11-07T10:30",
+   "start_utc": "2026-11-07T08:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "start_kyiv": "2026-11-07T10:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Liga prvaka Azije (Ž): Naegohyang - Kobe Leonessa"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Liga prvaka Azije (Ž)",
+   "home": "Hwacheon W",
+   "away": "Ho Chi Minh City W",
+   "start_kyiv": "2026-11-07T10:30",
+   "start_utc": "2026-11-07T08:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "start_kyiv": "2026-11-07T10:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Liga prvaka Azije (Ž): Hwacheon - Ho Chi Minh City"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Cayirova",
+   "away": "Bandirma",
+   "start_kyiv": "2026-11-07T12:00",
+   "start_utc": "2026-11-07T10:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "start_kyiv": "2026-11-07T12:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Cayirova - Bandirma"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Liga prvaka Azije (Ž)",
+   "home": "Melbourne City W",
+   "away": "Peking W",
+   "start_kyiv": "2026-11-07T12:30",
+   "start_utc": "2026-11-07T10:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "start_kyiv": "2026-11-07T12:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Liga prvaka Azije (Ž): Melbourne City - Peking"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Bugarska liga",
+   "home": "Botev Vratsa",
+   "away": "Lokomotiv Plovdiv",
+   "start_kyiv": "2026-11-07T13:30",
+   "start_utc": "2026-11-07T11:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 8",
+     "start_kyiv": "2026-11-07T13:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Bugarska liga: Botev Vratsa - Lokomotiv Plovdiv"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Osnabruck",
+   "away": "Kaiserslautern",
+   "start_kyiv": "2026-11-07T14:00",
+   "start_utc": "2026-11-07T12:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 3",
+     "start_kyiv": "2026-11-07T14:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Osnabruck - Kaiserslautern"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Nurnberg",
+   "away": "Darmstadt",
+   "start_kyiv": "2026-11-07T14:00",
+   "start_utc": "2026-11-07T12:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 6",
+     "start_kyiv": "2026-11-07T14:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Nurnberg - Darmstadt"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "2. Bundesliga",
+   "home": "Kiel",
+   "away": "Arminia",
+   "start_kyiv": "2026-11-07T14:00",
+   "start_utc": "2026-11-07T12:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 7",
+     "start_kyiv": "2026-11-07T14:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet: 2. Bundesliga: Kiel - Arminia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Turska liga",
+   "home": "Turk Telekom",
+   "away": "Korfez",
+   "start_kyiv": "2026-11-07T14:30",
+   "start_utc": "2026-11-07T12:30",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 9",
+     "start_kyiv": "2026-11-07T14:30",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Turska liga: Turk Telekom - Korfez"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Hansa",
+   "away": "Sonnenhof",
+   "start_kyiv": "2026-11-07T15:00",
+   "start_utc": "2026-11-07T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 10",
+     "start_kyiv": "2026-11-07T15:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Hansa - Sonnenhof"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "3. Bundesliga",
+   "home": "Rot-Weiss",
+   "away": "Alemannia",
+   "start_kyiv": "2026-11-07T15:00",
+   "start_utc": "2026-11-07T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 4",
+     "start_kyiv": "2026-11-07T15:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - 3. Bundesliga: Rot-Weiss - Alemannia"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "F",
+   "league": "Španjolska liga",
+   "home": "Malaga",
+   "away": "Racing",
+   "start_kyiv": "2026-11-07T15:00",
+   "start_utc": "2026-11-07T13:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "start_kyiv": "2026-11-07T15:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1793750400000&toTime=1794355199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Nogomet - Španjolska liga: Malaga - Racing"
     }
    ]
   }
