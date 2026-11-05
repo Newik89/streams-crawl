@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 5116 с.
+Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 4729 с.
 
 | Сайт | Результат |
 |---|---|
@@ -20,20 +20,20 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 20, пусто — 1 |
+| flashscore.mobi | расписание есть — 19, пусто — 2 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
-| jupiter.err.ee | не открылась — 18 |
+| jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 26 |
-| m.eredmenyek.com | расписание есть — 13, пусто — 1 |
+| m.eredmenyek.com | расписание есть — 12, пусто — 2 |
 | m.flashscore.bg | расписание есть — 7 |
 | m.flashscore.com.tr | расписание есть — 17, пусто — 1 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 20, пусто — 1 |
+| m.flashscore.gr | расписание есть — 19, пусто — 2 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
 | m.flashscore.pl | расписание есть — 11, пусто — 1 |
@@ -70,7 +70,7 @@
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | расписание есть — 5, пусто — 1 |
+| sport1.maariv.co.il | расписание есть — 4, пусто — 2 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
 | sport5.co.il | расписание есть — 6 |
@@ -88,13 +88,13 @@
 | trtavaz.com.tr | расписание есть — 6 |
 | trtspor.com.tr | расписание есть — 1 |
 | tv-program.aktuality.sk | расписание есть — 1 |
-| tv.dir.bg | расписание есть — 42 |
+| tv.dir.bg | не открылась — 42 |
 | tv.orf.at | расписание есть — 24 |
 | tv.sport1.de | расписание есть — 1 |
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | расписание есть — 5, пусто — 1 |
+| tv8.com.tr | расписание есть — 4, пусто — 2 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -111,29 +111,53 @@
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
-## Не открылись — 18
+## Не открылись — 42
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| jupiter.err.ee | ETV | HTTP 403; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=4&month=11&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=5&month=11&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=6&month=11&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=7&month=11&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=8&month=11&year=2026&channel=etv |
-| jupiter.err.ee | ETV | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=9&month=11&year=2026&channel=etv |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=4&month=11&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=5&month=11&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=6&month=11&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=7&month=11&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=8&month=11&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV+ | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=9&month=11&year=2026&channel=etvpluss |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=4&month=11&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=5&month=11&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=6&month=11&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=7&month=11&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=8&month=11&year=2026&channel=etv2 |
-| jupiter.err.ee | ETV2 | HTTP 520; браузер: HTTP 520 (браузер), защита: не опознана | https://services.err.ee/api/tvSchedule/getTimelineSchedule?day=9&month=11&year=2026&channel=etv2 |
+| tv.dir.bg | BNT1 (БНТ1) | HTTP 500 | https://tv.dir.bg/load/programs?channel=57&day=2026-11-05 |
+| tv.dir.bg | BNT1 (БНТ1) | HTTP 500 | https://tv.dir.bg/load/programs?channel=57&day=2026-11-06 |
+| tv.dir.bg | BNT1 (БНТ1) | HTTP 500 | https://tv.dir.bg/load/programs?channel=57&day=2026-11-07 |
+| tv.dir.bg | BNT1 (БНТ1) | HTTP 500 | https://tv.dir.bg/load/programs?channel=57&day=2026-11-08 |
+| tv.dir.bg | BNT1 (БНТ1) | HTTP 500 | https://tv.dir.bg/load/programs?channel=57&day=2026-11-09 |
+| tv.dir.bg | BNT1 (БНТ1) | HTTP 500 | https://tv.dir.bg/load/programs?channel=57&day=2026-11-10 |
+| tv.dir.bg | BNT2 (БНТ2) | HTTP 500 | https://tv.dir.bg/load/programs?channel=99&day=2026-11-05 |
+| tv.dir.bg | BNT2 (БНТ2) | HTTP 500 | https://tv.dir.bg/load/programs?channel=99&day=2026-11-06 |
+| tv.dir.bg | BNT2 (БНТ2) | HTTP 500 | https://tv.dir.bg/load/programs?channel=99&day=2026-11-07 |
+| tv.dir.bg | BNT2 (БНТ2) | HTTP 500 | https://tv.dir.bg/load/programs?channel=99&day=2026-11-08 |
+| tv.dir.bg | BNT2 (БНТ2) | HTTP 500 | https://tv.dir.bg/load/programs?channel=99&day=2026-11-09 |
+| tv.dir.bg | BNT2 (БНТ2) | HTTP 500 | https://tv.dir.bg/load/programs?channel=99&day=2026-11-10 |
+| tv.dir.bg | BNT3 (БНТ3) | HTTP 500 | https://tv.dir.bg/load/programs?channel=82&day=2026-11-05 |
+| tv.dir.bg | BNT3 (БНТ3) | HTTP 500 | https://tv.dir.bg/load/programs?channel=82&day=2026-11-06 |
+| tv.dir.bg | BNT3 (БНТ3) | HTTP 500 | https://tv.dir.bg/load/programs?channel=82&day=2026-11-07 |
+| tv.dir.bg | BNT3 (БНТ3) | HTTP 500 | https://tv.dir.bg/load/programs?channel=82&day=2026-11-08 |
+| tv.dir.bg | BNT3 (БНТ3) | HTTP 500 | https://tv.dir.bg/load/programs?channel=82&day=2026-11-09 |
+| tv.dir.bg | BNT3 (БНТ3) | HTTP 500 | https://tv.dir.bg/load/programs?channel=82&day=2026-11-10 |
+| tv.dir.bg | BNT4 (БНТ4) | HTTP 500 | https://tv.dir.bg/load/programs?channel=64&day=2026-11-05 |
+| tv.dir.bg | BNT4 (БНТ4) | HTTP 500 | https://tv.dir.bg/load/programs?channel=64&day=2026-11-06 |
+| tv.dir.bg | BNT4 (БНТ4) | HTTP 500 | https://tv.dir.bg/load/programs?channel=64&day=2026-11-07 |
+| tv.dir.bg | BNT4 (БНТ4) | HTTP 500 | https://tv.dir.bg/load/programs?channel=64&day=2026-11-08 |
+| tv.dir.bg | BNT4 (БНТ4) | HTTP 500 | https://tv.dir.bg/load/programs?channel=64&day=2026-11-09 |
+| tv.dir.bg | BNT4 (БНТ4) | HTTP 500 | https://tv.dir.bg/load/programs?channel=64&day=2026-11-10 |
+| tv.dir.bg | Ring.bg (bTV Sport) | HTTP 500 | https://tv.dir.bg/load/programs?channel=59&day=2026-11-05 |
+| tv.dir.bg | Ring.bg (bTV Sport) | HTTP 500 | https://tv.dir.bg/load/programs?channel=59&day=2026-11-06 |
+| tv.dir.bg | Ring.bg (bTV Sport) | HTTP 500 | https://tv.dir.bg/load/programs?channel=59&day=2026-11-07 |
+| tv.dir.bg | Ring.bg (bTV Sport) | HTTP 500 | https://tv.dir.bg/load/programs?channel=59&day=2026-11-08 |
+| tv.dir.bg | Ring.bg (bTV Sport) | HTTP 500 | https://tv.dir.bg/load/programs?channel=59&day=2026-11-09 |
+| tv.dir.bg | Ring.bg (bTV Sport) | HTTP 500 | https://tv.dir.bg/load/programs?channel=59&day=2026-11-10 |
+| tv.dir.bg | bTV | HTTP 500 | https://tv.dir.bg/load/programs?channel=61&day=2026-11-05 |
+| tv.dir.bg | bTV | HTTP 500 | https://tv.dir.bg/load/programs?channel=61&day=2026-11-06 |
+| tv.dir.bg | bTV | HTTP 500 | https://tv.dir.bg/load/programs?channel=61&day=2026-11-07 |
+| tv.dir.bg | bTV | HTTP 500 | https://tv.dir.bg/load/programs?channel=61&day=2026-11-08 |
+| tv.dir.bg | bTV | HTTP 500 | https://tv.dir.bg/load/programs?channel=61&day=2026-11-09 |
+| tv.dir.bg | bTV | HTTP 500 | https://tv.dir.bg/load/programs?channel=61&day=2026-11-10 |
+| tv.dir.bg | bTV Action | HTTP 500 | https://tv.dir.bg/load/programs?channel=95&day=2026-11-05 |
+| tv.dir.bg | bTV Action | HTTP 500 | https://tv.dir.bg/load/programs?channel=95&day=2026-11-06 |
+| tv.dir.bg | bTV Action | HTTP 500 | https://tv.dir.bg/load/programs?channel=95&day=2026-11-07 |
+| tv.dir.bg | bTV Action | HTTP 500 | https://tv.dir.bg/load/programs?channel=95&day=2026-11-08 |
+| tv.dir.bg | bTV Action | HTTP 500 | https://tv.dir.bg/load/programs?channel=95&day=2026-11-09 |
+| tv.dir.bg | bTV Action | HTTP 500 | https://tv.dir.bg/load/programs?channel=95&day=2026-11-10 |
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 18 из 1598 страниц (1%), сайтов без удачи 1 из 106 (1%)
+- ✅ обход в норме: не открылись 42 из 1598 страниц (3%), сайтов без удачи 1 из 106 (1%)
