@@ -1,0 +1,1292 @@
+<!DOCTYPE html >
+<html lang="de" dir="ltr" class="theme-light">
+<head>
+<script>document.documentElement.classList.remove('theme-light')</script>
+<script>
+// Sollte eigentlich von Server gesetzt werden um FLIC zu vermeiden, ist hier nicht möglich
+// https://css-tricks.com/a-complete-guide-to-dark-mode-on-the-web/#storing-preferences > Using Cookies with PHP
+function getCookie(name) {
+const re = new RegExp(name + "=([^;]+)");
+const cookie = re.exec(document.cookie);
+if (cookie != null) {
+const value = cookie[1];
+if (value != "null") {
+return unescape(value);
+}
+}
+return null;
+}
+const htmlElementClass = document.documentElement.classList;
+const themeMode = getCookie('mode');
+if (themeMode) {
+htmlElementClass.add("theme-" + themeMode);
+} else {
+const preferredColorSchemeDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+if (preferredColorSchemeDark) {
+htmlElementClass.add("theme-dark");
+} else {
+htmlElementClass.add("theme-light");
+}
+}
+</script>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ORF SPORT+ Programm - tv.ORF.at</title>
+<link rel="stylesheet" href="//orf.at/fonts/fonts-universal-compat.css" type="text/css"/>
+<!-- builded:css -->
+<link rel="stylesheet" type="text/css" href="/orf-epg/resources/css/main.min-20261104113536.css" />
+<!-- endbuilded -->
+<!-- builded:less -->
+<link rel="stylesheet" type="text/css" href="/orf-epg/resources/css/main.less.min-20261104113536.css" />
+<!-- endbuilded -->
+
+<!-- builded:js -->
+<script src="/orf-epg/resources/js/main.min-20261104113534.js"></script>
+<!-- endbuilded -->
+
+<script src="https://assets.orf.at/vue-storyserver/vue.min-2.6.11.js"></script>
+<script defer src="https://assets.orf.at/vue-storyserver/share/js/app.js"></script>
+<script type="module" src="//orf.at/oon/media/9.3/oonmedia.js"></script>
+<script>
+var settings = {
+"sitemap": {
+"url": "/resources/sitemap/sitemap-standard.json"
+},
+"breakpoint": {
+"mobile": 320,
+"tablet": 590,
+"desktop": 1020
+},
+"responsive": true
+};
+</script>
+<script>
+$(document).ready(function () {
+let channelId = "#orfs";
+$("#channel-navigation ." + channelId.substr(1,4)).toggleClass("active");
+$(channelId).toggleClass("active");
+// scroll to current channel
+if (window.innerWidth < settings.breakpoint.tablet) {
+setTimeout(function() {
+let $navigation = $("#channel-navigation");
+let $selected = $(channelId);
+let scrollTo = $selected.position().left - $navigation.width()/2 + $selected.width()/2 + 54;
+if (scrollTo > 0) {
+$navigation.scrollLeft(scrollTo);
+}
+}, 500);
+}
+});
+</script>
+<link rel="shortcut icon" type="image/png" href="/resources/assets/favicon.png">
+<link rel="apple-touch-icon" href="/resources/assets/touch-icon-iphone.png"/>
+<link rel="apple-touch-icon" sizes="76x76" href="/resources/assets/touch-icon-ipad.png"/>
+<link rel="apple-touch-icon" sizes="120x120" href="/resources/assets/touch-icon-iphone-retina.png"/>
+<link rel="apple-touch-icon" sizes="152x152" href="/resources/assets/touch-icon-ipad-retina.png"/>
+<link rel='preload' href='https://data-d6e13c60e8.orf.at/iomm/latest/manager/base/es6/bundle.js' as='script' id='IOMmBundle' crossorigin>
+<link rel='preload' href='https://data-d6e13c60e8.orf.at/iomm/latest/bootstrap/loader.js' as='script' crossorigin>
+<meta name="robots" content="NOODP, NOYDIR" />
+<meta name="format-detection" content="telephone=no" />
+<meta property="fb:admins" content="100000441983612" />
+<meta property="og:site_name" content="tv.ORF.at" />
+<link rel="canonical" href="https://tv.orf.at/program/orfs/index.html" />
+<meta property="og:url" content="https://tv.orf.at/program/orfs/index.html" />
+<meta property="og:title" content="ORF SPORT+ - tv.ORF.at">
+<meta name="twitter:title" content="ORF SPORT+ - tv.ORF.at">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://tv.orf.at/resources/assets/og-fallback-orfs.png" />
+<meta property="twitter:image" content="https://tv.orf.at/resources/assets/og-fallback-orfs.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="627" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta name="description" content='tv.ORF.at: ORF SPORT + zeigt die besten Momente aus dem Spitzen- und Breitensport und bringt ein breites Programm zu den Randsportarten aus Österreich.' />
+<meta property="og:description" content='tv.ORF.at: ORF SPORT + zeigt die besten Momente aus dem Spitzen- und Breitensport und bringt ein breites Programm zu den Randsportarten aus Österreich.'  />
+<meta name="twitter:description" content='tv.ORF.at: ORF SPORT + zeigt die besten Momente aus dem Spitzen- und Breitensport und bringt ein breites Programm zu den Randsportarten aus Österreich.' />
+<meta property="og:type" content="website" />
+</head>
+<body id="top" class="orfon-margin-responsive ">
+<div id="skiplinks">
+<a accesskey="1" href="#content">Zum Inhalt [AK+1]</a>
+<a href="#subNav" accesskey="3">Zur tv.ORF.at-Navigation [AK+3]</a>
+<a accesskey="4" href="#broadcast-list">Zum aktuellen Programm [AK+4]</a>
+</div>
+<div class="wrapper">
+<header class="header">
+<nav aria-label="ORF.at Navigation">
+<ul id="ss-networkNavigation" class="network-navigation" tabindex="-1">
+<li><a href="https://tv.orf.at/">Fernsehen</a></li>
+<li><a href="https://on.orf.at/">ORF ON</a></li>
+<li><a href="https://kids.orf.at/">KIDS</a></li>
+<li><a href="https://sound.orf.at/">Sound</a></li>
+<li><a href="https://debatte.orf.at/">Debatte</a></li>
+<li><a href="https://oesterreich.orf.at/">&Ouml;sterreich</a></li>
+<li><a href="https://wetter.orf.at/">Wetter</a></li>
+<li><a href="https://sport.orf.at/">Sport</a></li>
+<li><a href="https://orf.at/" lang="en">News</a></li>
+<li id="sitemap-menu" class="network-navigation-sitemap">
+<a href="https://orf.at/uebersicht" id="sitemap-button" role="button" aria-haspopup="true">ORF.at im &Uuml;berblick</a>
+<div id="sitemap" class="network-navigation-sitemap-content"></div>
+</li>
+</ul>
+</nav>
+<div class="top-area-wrapper">
+<div class="logo-area">
+<a href="/index.html" title="tv.ORF.at" aria-label="ORF TV-Programm">
+<img class="orf-brick" src="/resources/assets/orf-brick.svg" alt="ORF-Logo">
+<div class="logo-text">TV-Programm</div>
+</a>
+</div>
+<div class="flag-area">
+<div class="box search">
+<form action="/suche104.jsp" method="get" role="search">
+<label>
+<input class="search-input" type="search" name="qterm" placeholder="Suchen" autocapitalize="off">
+<input type="hidden" name="frontSearch" value="true" >
+</label>
+<button class="search-button" type="submit"><span class="sr-only">Suchen</span></button>
+</form>
+</div>
+<div class="vue-settings-toggle" data-format="button"></div>
+</div>
+<nav class="drawer-navigation">
+<button class="drawer-button" aria-expanded="false" aria-controls="drawer-wrapper">
+<span class="sr-only">Navigation</span>
+<span class="drawer-button-image"></span>
+</button>
+<div class="drawer-wrapper" id="drawer-wrapper" aria-hidden="true">
+<div class="drawer-content">
+<ul class="drawer-network-navigation">
+<li class="tv-program has-children visible">
+<a href="https://tv.orf.at">TV-Programm</a>
+<ul class="site-navigation" tabindex="-1">
+<li class="">
+<a href="/program/index.html">Programm</a>
+</li>
+<li class=""><a href="/sendungssites/index.html">
+<span class="sr-only">Sendungen von A bis Z</span>
+<span aria-hidden="true">Sendungen A-Z</span>
+</a></li>
+<li class=""><a href="/barrierefrei/index.html">
+<span class="sr-only">Barrierefrei</span>
+<span aria-hidden="true">Barrierefrei</span>
+</a></li>
+<li class="theme-settings"><a class="vue-settings-toggle" data-format="menu">Einstellungen</a></li>
+<li class="search-item ">
+<a href="/suche104.html">Suche</a>
+</li>
+<li class="has-children ">
+<button aria-expanded="false">Channels</button>
+<ul class="site-nav-level2" aria-label="submenu">
+<li class=""><a href="/orf1/index.html">ORF 1</a></li>
+<li class=""><a href="/orf2/index.html">ORF 2</a></li>
+<li class=""><a href="/orf3/index.html">ORF III</a></li>
+<li class=""><a href="/orfs/index.html">ORF Sport+</a></li>
+<li class=""><a href="/kids/index.html">ORF KIDS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://orf.at/">News</a></li>
+<li><a href="https://sport.orf.at/">Sport</a></li>
+<li><a href="https://wetter.orf.at/">Wetter</a></li>
+<li><a href="https://oesterreich.orf.at/">&Ouml;sterreich</a></li>
+<li><a href="https://debatte.orf.at">Debatte</a></li>
+<li><a href="https://sound.orf.at">Sound</a></li>
+<li><a href="https://on.orf.at/">ORF ON</a></li>
+<li><a href="https://kids.orf.at/">ORF KIDS</a></li>
+<li><a href="https://orf.at/uebersicht/">Alle ORF Angebote</a></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+<div class="vue-settings" data-selector="html"></div>
+<div class="site-navigation-wrapper">
+<nav aria-label="tv.ORF.at Navigation" id="subNav">
+<ul class="site-navigation" tabindex="-1">
+<li class="">
+<a href="/program/index.html">Programm</a>
+</li>
+<li class=""><a href="/sendungssites/index.html">
+<span class="sr-only">Sendungen von A bis Z</span>
+<span aria-hidden="true">Sendungen A-Z</span>
+</a></li>
+<li class=""><a href="/barrierefrei/index.html">
+<span class="sr-only">Barrierefrei</span>
+<span aria-hidden="true">Barrierefrei</span>
+</a></li>
+<li class="theme-settings"><a class="vue-settings-toggle" data-format="menu">Einstellungen</a></li>
+<li class="search-item ">
+<a href="/suche104.html">Suche</a>
+</li>
+<li class="has-children ">
+<button aria-expanded="false">Channels</button>
+<ul class="site-nav-level2" aria-label="submenu">
+<li class=""><a href="/orf1/index.html">ORF 1</a></li>
+<li class=""><a href="/orf2/index.html">ORF 2</a></li>
+<li class=""><a href="/orf3/index.html">ORF III</a></li>
+<li class=""><a href="/orfs/index.html">ORF Sport+</a></li>
+<li class=""><a href="/kids/index.html">ORF KIDS</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<div class="drawer-dimmer"></div>
+<main id="content">
+<h1 class="sr-only">TV-Programm ORF SPORT+</h1>
+<div class="tv-program">
+<div class="sticky-navigation">
+<div class="ds-navigation scrollable-lane-container">
+<div class="scrollable-lane">
+<button class="scroll left" title="Vorherige  Tage anzeigen" aria-label="Vorherige  Tage anzeigen"><span class="arrow"></span></button>
+<ul id="day-navigation" class="scrollable">
+<li class="lane-item ds-day " data-ds-day-index="-30" inert tabindex="-1">
+<a title="Fr 09.10." href="/program/orfs/index~_day-09-10-2026_-db4bf2261b30ae0784388d988389b998944a4948.html">
+<div class="ds-weekday">Fr</div>
+<div class="ds-date">09.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-29" inert tabindex="-1">
+<a title="Sa 10.10." href="/program/orfs/index~_day-10-10-2026_-03442fbde4f6f5212b70e28549196bcfc679ea88.html">
+<div class="ds-weekday">Sa</div>
+<div class="ds-date">10.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-28" inert tabindex="-1">
+<a title="So 11.10." href="/program/orfs/index~_day-11-10-2026_-0eacfe4b1c59b4917a481ee5cb1e0c156e294079.html">
+<div class="ds-weekday">So</div>
+<div class="ds-date">11.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-27" inert tabindex="-1">
+<a title="Mo 12.10." href="/program/orfs/index~_day-12-10-2026_-a6728a4f589d5a381ff312537ba82e8a2fc1fa44.html">
+<div class="ds-weekday">Mo</div>
+<div class="ds-date">12.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-26" inert tabindex="-1">
+<a title="Di 13.10." href="/program/orfs/index~_day-13-10-2026_-8250a1b9e510c2e695e2818988a06ecf54df4d26.html">
+<div class="ds-weekday">Di</div>
+<div class="ds-date">13.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-25" inert tabindex="-1">
+<a title="Mi 14.10." href="/program/orfs/index~_day-14-10-2026_-8b58d61f3f5e645cce8cfa9b4261b286e0ee469b.html">
+<div class="ds-weekday">Mi</div>
+<div class="ds-date">14.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-24" inert tabindex="-1">
+<a title="Do 15.10." href="/program/orfs/index~_day-15-10-2026_-9ea33fd3558791e839f75515cb84ebe867fde04d.html">
+<div class="ds-weekday">Do</div>
+<div class="ds-date">15.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-23" inert tabindex="-1">
+<a title="Fr 16.10." href="/program/orfs/index~_day-16-10-2026_-76a6580f2411ddada7810fe33d1914365ce6061e.html">
+<div class="ds-weekday">Fr</div>
+<div class="ds-date">16.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-22" inert tabindex="-1">
+<a title="Sa 17.10." href="/program/orfs/index~_day-17-10-2026_-437eb73b8ba25fdbed4697eff430ece2d8de7923.html">
+<div class="ds-weekday">Sa</div>
+<div class="ds-date">17.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-21" inert tabindex="-1">
+<a title="So 18.10." href="/program/orfs/index~_day-18-10-2026_-16126c6b2885db483d610c7c9363bd3b9b4fb38d.html">
+<div class="ds-weekday">So</div>
+<div class="ds-date">18.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-20" inert tabindex="-1">
+<a title="Mo 19.10." href="/program/orfs/index~_day-19-10-2026_-0c9ff1cd45cda773705d4b72ddc9579a1851864f.html">
+<div class="ds-weekday">Mo</div>
+<div class="ds-date">19.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-19" inert tabindex="-1">
+<a title="Di 20.10." href="/program/orfs/index~_day-20-10-2026_-10848a40b42f17b470359effffa175e7177fbabd.html">
+<div class="ds-weekday">Di</div>
+<div class="ds-date">20.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-18" inert tabindex="-1">
+<a title="Mi 21.10." href="/program/orfs/index~_day-21-10-2026_-f5a2b3406750d78b8208540e2cc5db09f06aaed9.html">
+<div class="ds-weekday">Mi</div>
+<div class="ds-date">21.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-17" inert tabindex="-1">
+<a title="Do 22.10." href="/program/orfs/index~_day-22-10-2026_-e83bf39931f7a2397c73d6a51d4e26b17e19f7b5.html">
+<div class="ds-weekday">Do</div>
+<div class="ds-date">22.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-16" inert tabindex="-1">
+<a title="Fr 23.10." href="/program/orfs/index~_day-23-10-2026_-c1fe5c5a54ecc55ac34fece714beca1c3550ddbf.html">
+<div class="ds-weekday">Fr</div>
+<div class="ds-date">23.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-15" inert tabindex="-1">
+<a title="Sa 24.10." href="/program/orfs/index~_day-24-10-2026_-c3ce61addf90f971d346c931a3ee7b26b4630e2a.html">
+<div class="ds-weekday">Sa</div>
+<div class="ds-date">24.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-14" inert tabindex="-1">
+<a title="So 25.10." href="/program/orfs/index~_day-25-10-2026_-0b8c4dd4925d48e08d097101f10c6f26c4a386e0.html">
+<div class="ds-weekday">So</div>
+<div class="ds-date">25.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-13" inert tabindex="-1">
+<a title="Mo 26.10." href="/program/orfs/index~_day-26-10-2026_-95ba1e879907c2307efd3d467adcbb519b71a853.html">
+<div class="ds-weekday">Mo</div>
+<div class="ds-date">26.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-12" inert tabindex="-1">
+<a title="Di 27.10." href="/program/orfs/index~_day-27-10-2026_-8cb40f60bf4dc1ba320ad55609df09b46c223fa2.html">
+<div class="ds-weekday">Di</div>
+<div class="ds-date">27.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-11" inert tabindex="-1">
+<a title="Mi 28.10." href="/program/orfs/index~_day-28-10-2026_-29844c2b1db919b386ed663cf8d97f09e26c38a9.html">
+<div class="ds-weekday">Mi</div>
+<div class="ds-date">28.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-10" inert tabindex="-1">
+<a title="Do 29.10." href="/program/orfs/index~_day-29-10-2026_-f191ec24a5fc6db84e55cb2cd7562616f63837d9.html">
+<div class="ds-weekday">Do</div>
+<div class="ds-date">29.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-9" inert tabindex="-1">
+<a title="Fr 30.10." href="/program/orfs/index~_day-30-10-2026_-4c109ec806d5cf78c59399f690a26c06e82d52f4.html">
+<div class="ds-weekday">Fr</div>
+<div class="ds-date">30.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-8" inert tabindex="-1">
+<a title="Sa 31.10." href="/program/orfs/index~_day-31-10-2026_-4ee6da85bedd6512ce30fd882b46056b281da84d.html">
+<div class="ds-weekday">Sa</div>
+<div class="ds-date">31.10.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-7" inert tabindex="-1">
+<a title="So 01.11." href="/program/orfs/index~_day-01-11-2026_-020ee68c75d3ab0ef5f97a34653c0e1cb832b3e1.html">
+<div class="ds-weekday">So</div>
+<div class="ds-date">01.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-6" inert tabindex="-1">
+<a title="Mo 02.11." href="/program/orfs/index~_day-02-11-2026_-f96e8ae3a1c35d55dee6046d4a8b1054c6402827.html">
+<div class="ds-weekday">Mo</div>
+<div class="ds-date">02.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-5" inert tabindex="-1">
+<a title="Di 03.11." href="/program/orfs/index~_day-03-11-2026_-1c57a2823d26ec426e6a79fcd60103939e644913.html">
+<div class="ds-weekday">Di</div>
+<div class="ds-date">03.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-4" inert tabindex="-1">
+<a title="Mi 04.11." href="/program/orfs/index~_day-04-11-2026_-f340f4ee1207a934e4feaacd060bed93e303664d.html">
+<div class="ds-weekday">Mi</div>
+<div class="ds-date">04.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-3" inert tabindex="-1">
+<a title="Do 05.11." href="/program/orfs/index~_day-05-11-2026_-cacf45327ca194a37a5231169d67ac596e2bad3b.html">
+<div class="ds-weekday">Do</div>
+<div class="ds-date">05.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-2" inert tabindex="-1">
+<a title="Fr 06.11." href="/program/orfs/index~_day-06-11-2026_-4eb6e4642262f5c11f5360a33ca1e953a402a880.html">
+<div class="ds-weekday">Fr</div>
+<div class="ds-date">06.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="-1" inert tabindex="-1">
+<a title="Gestern 07.11." href="/program/orfs/index~_day-07-11-2026_-8674d4180b1914ebf4f04618ce0460871df88086.html">
+<div class="ds-weekday">Gestern</div>
+<div class="ds-date">07.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="0" inert tabindex="-1">
+<a title="Heute 08.11." href="/program/orfs/index~_day-08-11-2026_-1d145ab9cce0d4cd7cc97eeee7907b11313cb37a.html">
+<div class="ds-weekday">Heute</div>
+<div class="ds-date">08.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="1" inert tabindex="-1">
+<a title="Morgen 09.11." href="/program/orfs/index~_day-09-11-2026_-17c4471d4158ea61f42d763d375305cc6d8dfd03.html">
+<div class="ds-weekday">Morgen</div>
+<div class="ds-date">09.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="2" inert tabindex="-1">
+<a title="Di 10.11." href="/program/orfs/index~_day-10-11-2026_-cf5bc7b64b0e152a29fcc91e4ede2b67f886187f.html">
+<div class="ds-weekday">Di</div>
+<div class="ds-date">10.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="3" inert tabindex="-1">
+<a title="Mi 11.11." href="/program/orfs/index~_day-11-11-2026_-956ba9d9dad8251a28955b171459f492638f6606.html">
+<div class="ds-weekday">Mi</div>
+<div class="ds-date">11.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="4" inert tabindex="-1">
+<a title="Do 12.11." href="/program/orfs/index~_day-12-11-2026_-ec4ca8c697b05185162d77c52234c93e38d39460.html">
+<div class="ds-weekday">Do</div>
+<div class="ds-date">12.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day ds-selected" data-ds-day-index="5" inert tabindex="-1">
+<a title="Fr 13.11." href="/program/orfs/index~_day-13-11-2026_-abaf466d7772d928f2a655b73430593b1a87c4f0.html">
+<div class="ds-weekday">Fr</div>
+<div class="ds-date">13.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="6" inert tabindex="-1">
+<a title="Sa 14.11." href="/program/orfs/index~_day-14-11-2026_-c33342a67067a4568dd379de1028da2504cf2cad.html">
+<div class="ds-weekday">Sa</div>
+<div class="ds-date">14.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="7" inert tabindex="-1">
+<a title="So 15.11." href="/program/orfs/index~_day-15-11-2026_-6f050f538c52d578ca6a714142df843907d23e32.html">
+<div class="ds-weekday">So</div>
+<div class="ds-date">15.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="8" inert tabindex="-1">
+<a title="Mo 16.11." href="/program/orfs/index~_day-16-11-2026_-cb2e52f3f191864ae480840304ac215515563cd4.html">
+<div class="ds-weekday">Mo</div>
+<div class="ds-date">16.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="9" inert tabindex="-1">
+<a title="Di 17.11." href="/program/orfs/index~_day-17-11-2026_-2ea45583e7556e85a48515380a2fdbcbb1c392eb.html">
+<div class="ds-weekday">Di</div>
+<div class="ds-date">17.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="10" inert tabindex="-1">
+<a title="Mi 18.11." href="/program/orfs/index~_day-18-11-2026_-92ed663208ac629ca462e27725f74179917ee0ab.html">
+<div class="ds-weekday">Mi</div>
+<div class="ds-date">18.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="11" inert tabindex="-1">
+<a title="Do 19.11." href="/program/orfs/index~_day-19-11-2026_-5e6e3f2fe891696aa921afa18fb463004d0801c0.html">
+<div class="ds-weekday">Do</div>
+<div class="ds-date">19.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="12" inert tabindex="-1">
+<a title="Fr 20.11." href="/program/orfs/index~_day-20-11-2026_-4ebebacd018b83431788b5098afb86eb74e7a35b.html">
+<div class="ds-weekday">Fr</div>
+<div class="ds-date">20.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="13" inert tabindex="-1">
+<a title="Sa 21.11." href="/program/orfs/index~_day-21-11-2026_-03d2d676a75a78f52508623062ae97ed01a1629a.html">
+<div class="ds-weekday">Sa</div>
+<div class="ds-date">21.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="14" inert tabindex="-1">
+<a title="So 22.11." href="/program/orfs/index~_day-22-11-2026_-5b4104f0ebe28cc05ddac07401aadd9394f3797c.html">
+<div class="ds-weekday">So</div>
+<div class="ds-date">22.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="15" inert tabindex="-1">
+<a title="Mo 23.11." href="/program/orfs/index~_day-23-11-2026_-4b99349bd8740ab25afe5e4a000a9701e02c1a91.html">
+<div class="ds-weekday">Mo</div>
+<div class="ds-date">23.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="16" inert tabindex="-1">
+<a title="Di 24.11." href="/program/orfs/index~_day-24-11-2026_-a89305e2c2abd5c916ee9882e8017fad74296a9d.html">
+<div class="ds-weekday">Di</div>
+<div class="ds-date">24.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="17" inert tabindex="-1">
+<a title="Mi 25.11." href="/program/orfs/index~_day-25-11-2026_-1a741ea9420599e8b156d77f9a12b6d84bad3fcc.html">
+<div class="ds-weekday">Mi</div>
+<div class="ds-date">25.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="18" inert tabindex="-1">
+<a title="Do 26.11." href="/program/orfs/index~_day-26-11-2026_-cef934c17c90a4bcaf13452752bfd854c704301b.html">
+<div class="ds-weekday">Do</div>
+<div class="ds-date">26.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="19" inert tabindex="-1">
+<a title="Fr 27.11." href="/program/orfs/index~_day-27-11-2026_-e264b1052aa76839b98f2779498d7c02267dde11.html">
+<div class="ds-weekday">Fr</div>
+<div class="ds-date">27.11.</div>
+</a>
+</li>
+<li class="lane-item ds-day " data-ds-day-index="20" inert tabindex="-1">
+<a title="Sa 28.11." href="/program/orfs/index~_day-28-11-2026_-b9ba45ea91f6cabacc5e29a816d95c63e8b87bfd.html">
+<div class="ds-weekday">Sa</div>
+<div class="ds-date">28.11.</div>
+</a>
+</li>
+</ul>
+<button class="scroll right" title="Nachfolgende Tage anzeigen" aria-label="Nachfolgende Tage anzeigen"><span class="arrow"></span></button>
+</div>
+</div>
+<script>
+function scrollDN () {
+setTimeout(function() {
+let $navigation = $("#day-navigation");
+let $selected = $("#day-navigation .ds-selected");
+let scrollTo = $selected.position().left - $navigation.width() / 2 + $selected.width() / 2;
+if (scrollTo > 0) {
+$navigation.scrollLeft(scrollTo);
+}
+}, 500);
+}
+$(document).ready(function() {
+scrollDN()
+});
+// https://stackoverflow.com/a/13123626/2046802
+$(window).bind("pageshow", function(event) {
+if (event.originalEvent.persisted) {
+scrollDN();
+}
+});
+const container = document.querySelector("#day-navigation");
+const dayItems = container.querySelectorAll("li");
+const io = new IntersectionObserver((entries) => {
+for (const entry of entries) {
+const li = entry.target;
+const visible = entry.isIntersecting && entry.intersectionRatio >= 0.90;
+if (visible) {
+li.inert = false;
+li.removeAttribute('tabindex');
+} else {
+li.inert = true;
+li.tabIndex = -1;
+}
+}
+}, {
+root: container,
+rootMargin: '0px',
+threshold: [0, 0.01, 0.5, 0.99, 1]
+});
+dayItems.forEach(li => io.observe(li));
+</script>
+<div id="channel-navigation" class="channel-navigation">
+<div id="orf1" class="slide">
+<a class="channel-logo orf1" href="/program/orf1/index~_day-13-11-2026_-abaf466d7772d928f2a655b73430593b1a87c4f0.html" title="ORF 1 Programm">
+<span class="sr-only">ORF 1 Programm</span></a>
+</div>
+<div id="orf2" class="slide">
+<a class="channel-logo orf2" href="/program/orf2/index~_day-13-11-2026_-abaf466d7772d928f2a655b73430593b1a87c4f0.html" title="ORF 2 Programm">
+<span class="sr-only">ORF 2 Programm</span></a>
+</div>
+<div id="orf3" class="slide">
+<a class="channel-logo orf3" href="/program/orf3/index~_day-13-11-2026_-abaf466d7772d928f2a655b73430593b1a87c4f0.html" title="ORF III Programm">
+<span class="sr-only">ORF III Programm</span></a>
+</div>
+<div id="orfs" class="slide">
+<a class="channel-logo orfs" href="/program/orfs/index~_day-13-11-2026_-abaf466d7772d928f2a655b73430593b1a87c4f0.html" title="ORF SPORT+ Programm">
+<span class="sr-only">ORF SPORT+ Programm</span></a>
+</div>
+<div id="kids" class="slide">
+<a class="channel-logo kids" href="/program/kids/index~_day-13-11-2026_-abaf466d7772d928f2a655b73430593b1a87c4f0.html" title="ORF KIDS Programm">
+<span class="sr-only">ORF KIDS Programm</span></a>
+</div>
+</div>
+</div>
+<div class="mobile-banner">
+<div class="mobile-banner-title">
+<span>Werbung</span>
+<img class="mobile-banner-close" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Cpath%20fill%3D%22%23FFF%22%20stroke%3D%22%23000%22%20stroke-width%3D%226%22%20stroke-miterlimit%3D%2210%22%20d%3D%22M134.7%20174.7h-70c-22%200-40-18-40-40v-70c0-22%2018-40%2040-40h70c22%200%2040%2018%2040%2040v70c0%2022-18%2040-40%2040z%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%226%22%20stroke-miterlimit%3D%2210%22%20d%3D%22M59%20139.7l81.3-81.4M58.7%2059l81.8%2081.8%22%2F%3E%3C%2Fsvg%3E" alt="Werbung schließen">
+</div>
+<div id="mobile-banner-target"></div>
+</div>
+<ul id="broadcast-list" class="broadcast-list orfs">
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T06:00:00.000+01:00" data-end-time="2026-11-13T07:07:12.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-0">06:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-0"><a href="silentspor3890.html">Silent Sports +</a></div>
+<div class="episode-title">Tanzen WM 2025 Formation Latein</div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T07:07:12.000+01:00" data-end-time="2026-11-13T07:59:16.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-1">07:07</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-1"><a href="silentspor3844.html">Silent Sports +</a></div>
+<div class="episode-title">Rhythmische Sportgymnastik: Austria Finals Innsbruck</div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T08:00:00.000+01:00" data-end-time="2026-11-13T08:29:41.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-2">08:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-2"><a href="yogamagazi1290.html">Yoga Magazin</a></div>
+<div class="episode-title">Folge 297</div>
+<div class="meta-data">Gymnastik  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T08:30:00.000+01:00" data-end-time="2026-11-13T09:00:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-3">08:30</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-3"><a href="fussballfr582.html">Fußball Frauen Champions League: Highlights von Spieltag 4</a></div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T09:00:00.000+01:00" data-end-time="2026-11-13T10:00:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-4">09:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-4"><a href="fiawecstun140.html">FIA WEC 2026: 6 Stunden von Monza, Highlights</a></div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T10:00:00.000+01:00" data-end-time="2026-11-13T16:59:30.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-5">10:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-5"><a href="livelichti144.html">LIVE Licht ins Dunkel Challenge</a></div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T17:00:00.000+01:00" data-end-time="2026-11-13T17:29:30.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-6">17:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-6"><a href="livepresse778.html">LIVE Pressekonferenz Fußball</a></div>
+<div class="episode-title">ÖFB MD-1 vor Österreich - Irland</div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T17:30:00.000+01:00" data-end-time="2026-11-13T17:54:30.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-7">17:30</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-7"><a href="liveworldj518.html">LIVE World Judo Tour 2026</a></div>
+<div class="episode-title">Grand Prix Zagreb - Tag 1</div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T17:55:00.000+01:00" data-end-time="2026-11-13T20:00:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-8">17:55</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-8"><a href="livefussba1788.html">LIVE Fußball ADMIRAL Frauen Bundesliga</a></div>
+<div class="episode-title">13. Runde: Sturm Graz - First Vienna aus Graz</div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T20:00:00.000+01:00" data-end-time="2026-11-13T20:15:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-9">20:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-9"><a href="sport8540.html">Sport 20</a></div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T20:15:00.000+01:00" data-end-time="2026-11-13T20:44:30.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-10">20:15</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-10"><a href="livezvyout102.html">LIVE/zv. Youth Olympic Games Dakar 2026: Schlussfeier</a></div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T20:45:00.000+01:00" data-end-time="2026-11-13T21:45:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-11">20:45</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-11"><a href="youtholymp162.html">Youth Olympic Games Dakar 2026</a></div>
+<div class="episode-title">Highlights von Tag 13</div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T21:45:00.000+01:00" data-end-time="2026-11-13T22:45:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-12">21:45</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-12"><a href="billardoes100.html">Billard ÖSTM Pool 2026, Highlights aus Mödling</a></div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T22:45:00.000+01:00" data-end-time="2026-11-13T23:45:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-13">22:45</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-13"><a href="judoworldt114.html">Judo World Tour 2026: Grand Prix Zagreb, Highlights von Tag 1</a></div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-13T23:45:00.000+01:00" data-end-time="2026-11-14T00:15:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-14">23:45</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-14"><a href="fussballfr582.html">Fußball Frauen Champions League: Highlights von Spieltag 4</a></div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-14T00:15:00.000+01:00" data-end-time="2026-11-14T01:00:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-15">00:15</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-15"><a href="fussballad430.html">Fußball ADMIRAL Bundesliga</a></div>
+<div class="episode-title">Highlights der 12. Runde</div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-14T01:00:00.000+01:00" data-end-time="2026-11-14T02:00:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-16">01:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-16"><a href="youtholymp160.html">Youth Olympic Games Dakar 2026</a></div>
+<div class="episode-title">Highlights von Tag 12</div>
+<div class="meta-data">Übertragung  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-14T02:00:00.000+01:00" data-end-time="2026-11-14T03:00:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-17">02:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-17"><a href="fiawecstun140.html">FIA WEC 2026: 6 Stunden von Monza, Highlights</a></div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-14T03:00:00.000+01:00" data-end-time="2026-11-14T04:30:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-18">03:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-18"><a href="sport8526.html">Sport</a></div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-14T03:00:00.000+01:00" data-end-time="2026-11-14T04:30:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-19">03:00</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-19"><a href="fussballfr584.html">Fußball Frauen Champions League Gruppenphase: Benfica Lissabon - Austria Wien, Highlights</a></div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li  class="broadcast" data-channel="orfs" data-start-time="2026-11-14T04:30:00.000+01:00" data-end-time="2026-11-14T06:00:00.000+01:00">
+<div class="broadcast-text">
+<div class="broadcast-prefix">
+</div>
+<div class="broadcast-content">
+<div class="broadcast-date">
+<div class="start-time" id="start-time-20">04:30</div>
+</div>
+<div class="broadcast-titles">
+<div class="series-title" aria-describedby="start-time-20"><a href="basketball596.html">Basketball Damen EM Qualifikation 2027: Österreich - Lettland, Highlights</a></div>
+<div class="meta-data">  </div>
+<div class="meta-data-icons">
+<svg class="meta-ut" xmlns="http://www.w3.org/2000/svg" width="30" height="25"  viewBox="0 0 30 25" role="img" aria-labelledby="ut">
+<title id="ut">mit Teletext Untertitel</title>
+<g id="UT" transform="translate(-124 -316)">
+<path class="iconframe" id="RahmenUT" d="M3,2A1,1,0,0,0,2,3V22a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1H3M3,0H27a3,3,0,0,1,3,3V22a3,3,0,0,1-3,3H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0Z" transform="translate(124 316)"/>
+<path id="UT-2" data-name="UT" d="M-.784-3.424A3.633,3.633,0,0,1-1.68-.7,3.47,3.47,0,0,1-4.192.16,4.361,4.361,0,0,1-5.608-.056,2.747,2.747,0,0,1-6.68-.712a2.945,2.945,0,0,1-.68-1.112,4.767,4.767,0,0,1-.24-1.6V-11.36h1.856v7.936a2.357,2.357,0,0,0,.376,1.5,1.437,1.437,0,0,0,1.176.456,1.437,1.437,0,0,0,1.176-.456,2.357,2.357,0,0,0,.376-1.5V-11.36H-.784ZM8.16-9.7H5.376V0H3.52V-9.7H.736V-11.36H8.16Z" transform="translate(139 334)"/>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</main>
+<footer class="page-footer" id="page-footer">
+<div class="back-to-front" hidden>
+<a href="/index.html">Zur&uuml;ck zur Startseite</a>
+</div>
+<ul class="footer-network">
+<li><a href="https://orf.at/" lang="en">News</a></li>
+<li><a href="https://sport.orf.at/">Sport</a></li>
+<li><a href="https://wetter.orf.at/">Wetter</a></li>
+<li><a href="https://oesterreich.orf.at/">&Ouml;sterreich</a></li>
+<li><a href="https://debatte.orf.at/">Debatte</a></li>
+<li><a href="https://sound.orf.at/">Sound</a></li>
+<li><a href="https://on.orf.at/">ORF ON</a></li>
+<li><a href="https://kids.orf.at/">ORF KIDS</a></li>
+<li class="tv-program has-children visible">
+<a href="https://tv.orf.at">TV-Programm</a>
+<ul class="site-navigation" tabindex="-1">
+<li class="">
+<a href="/program/index.html">Programm</a>
+</li>
+<li class=""><a href="/sendungssites/index.html">
+<span class="sr-only">Sendungen von A bis Z</span>
+<span aria-hidden="true">Sendungen A-Z</span>
+</a></li>
+<li class=""><a href="/barrierefrei/index.html">
+<span class="sr-only">Barrierefrei</span>
+<span aria-hidden="true">Barrierefrei</span>
+</a></li>
+<li class="theme-settings"><a class="vue-settings-toggle" data-format="menu">Einstellungen</a></li>
+<li class="search-item ">
+<a href="/suche104.html">Suche</a>
+</li>
+<li class="has-children ">
+<button aria-expanded="false">Channels</button>
+<ul class="site-nav-level2" aria-label="submenu">
+<li class=""><a href="/orf1/index.html">ORF 1</a></li>
+<li class=""><a href="/orf2/index.html">ORF 2</a></li>
+<li class=""><a href="/orf3/index.html">ORF III</a></li>
+<li class=""><a href="/orfs/index.html">ORF Sport+</a></li>
+<li class=""><a href="/kids/index.html">ORF KIDS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://orf.at/uebersicht/">Alle ORF-Angebote</a></li>
+</ul>
+<ul class="footer-service">
+<li><a href="https://der.orf.at/kontakt">Kontakt</a></li>
+<li><a href="https://orf.at/stories/datenschutz">Datenschutzerklärung</a></li>
+<li><a href="#" id="show-didomi">Datenschutzeinstellungen</a></li>
+<li><a href="https://orf.at/stories/impressum/">Offenlegung</a></li>
+<li><a href="https://zukunft.orf.at/show_content2.php?s2id=183">Bekanntgabe laut ORF-G</a></li>
+<li><a href="https://publikumsrat.orf.at/">Publikumsrat</a></li>
+<li><img class="orf-brick" src="/resources/assets/orf-brick.svg" alt="ORF-Logo"></li>
+</ul>
+</footer>
+</div>
+<script>
+var oewa_category = "Service/ProgrammeUndLokalfuehrer/TVprogramme";
+var oewa_path = "/v2tv/program/orfs";
+var oewa_unique = "list/2026-11-13";
+var oewa_data = {
+"cn": "at",
+"st": "at_w_atorf",
+"sv": "in",
+"ps": "lin",
+"sc":"yes"
+};
+oewa_data.cp = oewa_category + oewa_path;
+if (oewa_unique) {
+oewa_data.cp += "/" + oewa_unique;
+}
+if(document.querySelector('body.webview')) {
+// Check if mode is Android or iOS app or desktop
+if (typeof orfonapp !== 'undefined' && typeof orfonapp.triggerOEWA === 'function') {
+orfonapp.triggerOEWA(oewa_data.cp);
+} else if (navigator.vendor === "Apple Computer, Inc." && navigator.userAgent.indexOf("afari") === -1 && navigator.platform.indexOf("iP") === 0) {
+$("iframe.triggerOEWAiframe").remove();
+// Pseudo URL request
+$("<iframe />")
+.addClass("triggerOEWAiframe")
+.attr("src", "at.orf.ios://oewa/" + oewa_data.cp)
+.attr({"width": "0", "height": "0"})
+.css("border", "0 none")
+.appendTo(document.body);
+}
+} else {
+if (window.oewa_consentless_init) {
+window.oewa_consentless_init(oewa_data);
+}
+}
+</script>
+<div id="ad-banner" class="banner sitebar-banner" aria-hidden="true"></div>
+<script>
+var renderMobile = true;
+var renderParallax = false;
+function isUserFromAustria() {
+const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const language = navigator.language;
+const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+// Zeitzone ist der stärkste Indikator für Österreich
+if (timeZone === "Europe/Vienna") {
+return true;
+}
+// Spracheinstellung genau auf "de-AT" prüfen (österreichisches Deutsch)
+if (language.toLowerCase().startsWith("de-AT") || locale.startsWith("de-AT")) {
+return true;
+}
+return false;
+}
+oon.adition.loadAll("tv.orf.at").then(function(response) {
+var isDesktop = oon.responsive.isDesktop();
+var domain = "tv.orf.at";
+var path = "/channellist";
+var platform = isDesktop ? "web" : "mob";
+var placement = "";
+if (isDesktop) {
+placement = "sb";
+} else {
+if (renderParallax) {
+placement = "par";
+} else {
+placement = "stat";
+}
+}
+var aditionId = oon.adition.lookup(path, platform, placement);
+console.log(domain, path, platform, placement, aditionId);
+if (aditionId) {
+var sitepage = oon.adition.adformat(domain + path);
+var $mobileBanner = $(".mobile-banner");
+adition.srq.push(function(api) {
+oon.adition.setDidomi(api);
+api.events.onPostRender(function (adTarget) {
+if (adTarget.id === "mobile-banner-target") {
+$(".mobile-banner").addClass("mobile-banner-visible");
+}
+});
+api.setShb(1);
+api.setProfile("test", oon.adition.isTest());
+api.setProfile("sitepage", sitepage);
+api.setProfile("subcategory", "tvprogramme");
+api.setProfile("z1", isUserFromAustria().toString());
+if (isDesktop) {
+api.setProfile("viewport", "full");
+api.configureRenderSlot("ad-banner").setContentunitId(aditionId);
+api.renderSlot("ad-banner").load().completeRendering();
+} else {
+if (renderMobile) {
+$(".mobile-banner-close").click(() => {
+$mobileBanner.remove();
+});
+var adTarget = "mobile-banner-target";
+if (renderParallax) {
+$mobileBanner.empty();
+oon.parallax(".mobile-banner");
+adTarget = "px-wrapper";
+}
+api.setProfile("viewport", oon.responsive.isTablet() ? "tablet" : "phone");
+api.configureRenderSlot(adTarget).setContentunitId(aditionId);
+api.renderSlot(adTarget).load().completeRendering();
+}
+}
+});
+}
+});
+</script>
+<script defer src="https://assets.orf.at/vue-storyserver/settings/js/app.js"></script>
+<script type="module" src="//pipe.orf.at/globus-2025/code/index.js"></script>
+</body>
+</html>
+
