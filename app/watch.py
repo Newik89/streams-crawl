@@ -111,7 +111,10 @@ GitHub-ом», «Заказать сбор» отказывают с объяс�
       на прогон; заявка точно не ушла или прогон не остановился за 10
       минут → ТРЕВОГА. Прогон ждёт очереди, хотя впереди никого, → НЕ
       отменяем (к сайтам он не ходил, новый встал бы туда же): 20 минут —
-      строка-предупреждение, 60 — одна ТРЕВОГА. → 0.
+      строка-предупреждение, 60 — одна ТРЕВОГА. Страница состояния GitHub
+      пишет о настоящем сбое Actions (`actions_down`, у сторожа — `trouble`)
+      → его беда, терпим дольше: отмена — `CANCEL_CONFIRM_MINUTES_GITHUB_DOWN`,
+      очередь — `QUEUE_ALARM_MINUTES_GITHUB_DOWN`, причина в словах. → 0.
   С4. КАЖДЫЙ открытый заказ книги — своей записью, новый заказ слежку за
       прежним не вытесняет (`decide`; сайт на сервере — `decide_server`).
       Битая запись (не разобрать — `record_problem`, разбор упал) → одна
@@ -132,7 +135,9 @@ GitHub-ом», «Заказать сбор» отказывают с объяс�
          дальше. → 0;
       в) готов и ЕГО результат влит (у всех видов, и у короткого) или
          вытеснен в очереди более полным (replaced) → закрываем. → 0;
-      г) сорвался (не стартовал за 10 минут, кончился не успехом, завис и
+      г) сорвался (не стартовал за 10 минут — кроме настоящего сбоя Actions у
+         самого GitHub (`trouble`): тогда «не стартовал» не выносим и ждём, не
+         перезаказываем, предел — `ORDER_TTL_HOURS`; кончился не успехом, завис и
          отменяется, его результат на GitHub перекрыт следующим раньше, чем
          попал на сервер) → закрываем заказ; что дальше — `RECOVERY` по виду
          (ВИДЫ ЗАКАЗОВ): ПЛАНОВЫЙ → слот сорвавшимся, решает С6 (0);
@@ -405,11 +410,18 @@ API_SILENT_GITHUB_DOWN_MINUTES = 180
 #: части нам важны
 STATUS_URL = "https://www.githubstatus.com/api/v2/components.json"
 STATUS_COMPONENTS = ("API Requests", "Actions")
-#: ключ GitHub только на чтение (fine-grained, Actions: read): в окружении
-#: или строкой в /etc/streams-schedule.env — тогда 5000 запросов/час и
-#: сбои «для неавторизованных» нас не касаются. Нет — открытый API, 60/час
-TOKEN_ENV = "STREAMS_GITHUB_TOKEN"
+#: ключ GitHub БЕЗ ПРАВ (classic, public access — только представиться): в
+#: окружении или строкой в /etc/streams-schedule.env — тогда 5000 запросов/час
+#: и сбои «для неавторизованных» нас не касаются. Нет — открытый API, 60/час.
+#: Имя — READ: `STREAMS_GITHUB_TOKEN` читает `trigger._token` для прямого
+#: запуска обхода кнопкой, ему нужен ключ с правами (ревизия 08.11.2026).
+#: `STREAMS_ENV_FILE` — другой файл окружения (проба ярлыка кладёт во временный)
+TOKEN_ENV = "STREAMS_GITHUB_READ_TOKEN"
 ENV_FILE = Path("/etc/streams-schedule.env")
+#: С3/С4: «сбой у GitHub» для очереди и старта прогонов — только настоящий сбой
+#: именно Actions; жёлтое «degraded_performance» и беды API сюда не идут,
+#: иначе любая жёлтая плашка откладывала бы перезаказ на часы
+ACTIONS_DOWN = ("Actions: partial_outage", "Actions: major_outage")
 
 #: С3: потолки длительности прогона по виду, минут (05.10). Цифры — из
 #: истории 100 прогонов (#101–#200, 25.09–05.10) с запасом ×1,5 и не ниже
@@ -593,26 +605,32 @@ class Runs(list):
     (лимит запросов), не JSON. Сторожу и сверкам заявки хватает пустоты
     списка: пустой — «сверить не с чем» (у репозитория прогонов сотни).
     Пометка нужна только ожиданию старта (З7): «GitHub ответил, а прогона
-    нет» и «GitHub не ответил» — разные решения."""
+    нет» и «GitHub не ответил» — разные решения. `failure` — подробности
+    неудачи ЭТОГО запроса (как `LAST_FAILURE`), едут вместе со списком: другие
+    запросы (страница состояния, лимит) глобальную запись затирают."""
     ok = True
+    failure: dict = {}
 
     @classmethod
-    def silent(cls) -> "Runs":
+    def silent(cls, failure: dict | None = None) -> "Runs":
         out = cls()
         out.ok = False
+        out.failure = dict(failure) if failure else {}
         return out
 
 
 def github_token() -> str:
-    """Ключ GitHub только на чтение: переменная `TOKEN_ENV`, иначе строка
-    `TOKEN_ENV=…` в `ENV_FILE` (cron переменных службы не видит). Нет — ""."""
+    """Ключ GitHub без прав: переменная `TOKEN_ENV`, иначе строка `TOKEN_ENV=…`
+    (можно с `export `) в файле окружения — `STREAMS_ENV_FILE` или `ENV_FILE`
+    (cron переменных службы не видит). Нет — ""."""
     token = os.environ.get(TOKEN_ENV, "").strip()
     if token:
         return token
+    env_file = Path(os.environ.get("STREAMS_ENV_FILE") or ENV_FILE)
     try:
-        for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
+        for line in env_file.read_text(encoding="utf-8").splitlines():
             key, _, value = line.partition("=")
-            if key.strip() == TOKEN_ENV:
+            if key.strip().removeprefix("export ").strip() == TOKEN_ENV:
                 return value.strip().strip('"').strip("'")
     except OSError:
         pass
@@ -644,7 +662,12 @@ def _get_json(url: str, headers: dict | None = None, timeout: int = 20):
         with urllib.request.urlopen(req, timeout=timeout) as answer:
             data = json.loads(answer.read().decode("utf-8"))
     except urllib.error.HTTPError as error:
+        try:
+            body = error.read(300).decode("utf-8", "replace")   # «API rate limit exceeded», «secondary rate limit»
+        except Exception:                                      # noqa: BLE001
+            body = ""
         LAST_FAILURE = {"url": url, "code": error.code, "reason": str(error.reason)[:200],
+                        "body": body,
                         "retry_after": error.headers.get("Retry-After"),
                         "remaining": error.headers.get("X-RateLimit-Remaining")}
         return None
@@ -664,11 +687,11 @@ def github_runs(slug: str, limit: int = RUNS_LIMIT, workflow: str = "") -> Runs:
     url = f"{API}/repos/{slug}/actions/{where}?per_page={limit}"
     data = _get_json(url, github_headers())
     if data is None:
-        return Runs.silent()
+        return Runs.silent(LAST_FAILURE)
     if not isinstance(data, dict) or not isinstance(data.get("workflow_runs"), list):
         LAST_FAILURE = {"url": url, "code": 200, "kind": "format",
                         "reason": "в ответе нет списка workflow_runs"}
-        return Runs.silent()
+        return Runs.silent(LAST_FAILURE)
     return Runs(data["workflow_runs"])
 
 
@@ -696,6 +719,14 @@ def _trouble_text(trouble: "str | Callable[[], str] | None") -> str:
     return (trouble() if callable(trouble) else trouble) or ""
 
 
+def actions_down(theirs: str | None) -> str:
+    """С3/С4: из слов страницы состояния (`github_status`) оставить только
+    настоящий сбой Actions (`ACTIONS_DOWN`) — тогда очередь и старт прогонов
+    ждут дольше. Жёлтое «degraded» и беды API → "" (обычное терпение)."""
+    text = theirs or ""
+    return text if any(mark in text for mark in ACTIONS_DOWN) else ""
+
+
 def silence_reason(theirs: str | None, quota: tuple[int, int] | None,
                    failure: dict | None = None) -> tuple[str, str, int]:
     """С1. Почему GitHub молчит и сколько терпеть: (вид, слова, минут до
@@ -715,27 +746,34 @@ def silence_reason(theirs: str | None, quota: tuple[int, int] | None,
     f = failure if failure is not None else LAST_FAILURE
     code = f.get("code")
     reason = str(f.get("reason") or "")
-    if theirs:
-        return "github", f"GitHub сам сообщает о сбое ({theirs})", API_SILENT_GITHUB_DOWN_MINUTES
+    body = str(f.get("body") or "")
+    # Порядок: сперва НАШИ беды с однозначным кодом ответа (лимит, отказ, чужой
+    # вид ответа) — их жёлтая плашка GitHub не отменяет; потом его сбой; потом
+    # 5xx и сеть. Иначе любое «degraded» глушило бы отозванный ключ на 3 часа.
     exhausted = (quota is not None and quota[0] == 0) or (
-        code in (403, 429) and (str(f.get("remaining")) == "0" or "rate limit" in reason.lower()))
+        code in (403, 429) and (str(f.get("remaining")) == "0"
+                                or "rate limit" in (reason + " " + body).lower()))
     if exhausted:
         left = f"остаток {quota[0]} из {quota[1]} в час" if quota else "без ключа — 60 в час"
+        tail = ("; ключ без прав снял бы это навсегда" if not quota or quota[1] <= 60
+                else "; кто-то много жал кнопки или шлёт заявки")
         return "limit", (f"исчерпан наш лимит запросов к GitHub ({left}) — снимется сам в "
-                         f"течение часа; ключ только на чтение снял бы это навсегда"), API_SILENT_MINUTES
+                         f"течение часа{tail}"), API_SILENT_MINUTES
     if code == 429 or (code == 403 and f.get("retry_after")):
         return "limit", "GitHub притормозил наши запросы (вторичный лимит) — отпустит сам", API_SILENT_MINUTES
     if code in (401, 403, 404):
         return "denied", (f"GitHub отвечает отказом {code}: репозиторий недоступен (закрыт или "
                           f"переименован) или ключ не подходит — это наша беда"), API_SILENT_MINUTES
+    if f.get("kind") == "format":
+        return "format", ("GitHub ответил, но список прогонов не в том виде — изменился его "
+                          "API, нужен разработчик"), API_SILENT_MINUTES
+    if theirs:
+        return "github", f"GitHub сам сообщает о сбое ({theirs})", API_SILENT_GITHUB_DOWN_MINUTES
     if code is not None and code >= 500:
         if theirs is None:
             return "github", (f"GitHub отвечает ошибкой {code}, его страница состояния тоже "
                               f"не отвечает"), API_SILENT_GITHUB_DOWN_MINUTES
         return "github", f"GitHub отвечает ошибкой {code}", API_SILENT_MINUTES
-    if f.get("kind") == "format":
-        return "format", ("GitHub ответил, но список прогонов не в том виде — изменился его "
-                          "API, нужен разработчик"), API_SILENT_MINUTES
     if code is None and theirs is None:
         return "network", ("ни GitHub, ни его страница состояния не отвечают — похоже, нет "
                            "связи у самого сервера (о лежащем сервере GitHub напомнит сам)"
