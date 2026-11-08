@@ -215,6 +215,8 @@ def team_alias_map(conn: sqlite3.Connection, lang: str | None = None,
       С1б. `sport` — вид спорта страницы (F | B | T): из спорных остаются
           команды этого вида (`team_sports_known`); `Milan` на баскетболе →
           Olimpia Milano, на футболе → AC Milan (владелец 09.11);
+      С1в. единственный хозяин написания, но его вид известен и другой —
+          написание молчит (синоним одного языка висит лишь на тёзке);
       С4. написание равно каноническому имени одной из команд (без регистра)
           — она и есть ответ, чужие записи не считаются;
       старое: владелец чужой категории («ASTON VILLA» на Aston Villa U19) не
@@ -264,6 +266,12 @@ def team_alias_map(conn: sqlite3.Connection, lang: str | None = None,
                 if len(items) > 1 and _clubs([canon_of[t] for t in items]) > 1:
                     continue
                 ids = items
+            if sport:
+                # С1в: единственный хозяин, но его вид точно другой («Αμβούργο»
+                # лишь на Hamburger SV, а страница баскетбольная) — молчим
+                known = sports.get(ids[-1], set())
+                if len(known) == 1 and sport not in known:
+                    continue
             out[alias] = (ids[-1], canon_of[ids[-1]])
         return out
     return _cached(conn, "team_aliases", build, extra=(lang, sport, _errors_stamp(conn)))
