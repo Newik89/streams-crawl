@@ -31,6 +31,33 @@ from app import db, dictionary                              # noqa: E402
 TARGET = ROOT / "data" / "dictionaries.json"
 
 
+def previous_team_sports(path: Path) -> dict[str, str]:
+    """Подсказки видов спорта из ПРЕЖНЕГО файла словарей — память между
+    выгрузками. Файла нет или он битый — пусто."""
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    prev = data.get("team_sports") if isinstance(data, dict) else None
+    return {k: v for k, v in (prev or {}).items() if isinstance(v, str) and v}
+
+
+def merge_team_sports(prev: dict[str, str], виды: dict[str, set]) -> dict[str, str]:
+    """Вид спорта по командам: что видно в событиях базы СЕЙЧАС (`виды`:
+    имя → виды) поверх памяти прежнего файла (`prev`). Подсказка не забывается
+    с текучкой событий: матч прошёл и команда ушла из базы — вид её не
+    сменился (книга 097, 08.11.2026: автокоммит словаря выбросил 107 команд,
+    и проверка main покраснела «ПРОПАЛА FCSB — Corvinul» на primaplay.ro —
+    сайте без вида спорта). Команда с двумя видами в базе («Barcelona» —
+    футбол и баскетбол) выбрасывается и из памяти; пустой вид — не подсказка."""
+    doubtful = {k for k, v in виды.items() if len(v) > 1}
+    merged = {k: v for k, v in prev.items() if k not in doubtful}
+    for k, v in виды.items():
+        if len(v) == 1 and next(iter(v)):
+            merged[k] = next(iter(v))
+    return dict(sorted(merged.items()))
+
+
 def export(conn, path: Path) -> dict[str, int]:
     """Выгружает команды, лиги и каналы вместе с их написаниями."""
     data: dict = {
@@ -68,8 +95,7 @@ def export(conn, path: Path) -> dict[str, int]:
             "  ON t.id IN (e.team_home_id, e.team_away_id) "
             "GROUP BY t.canonical_name, e.sport"):
         виды.setdefault(row["имя"], set()).add(row["вид"])
-    data["team_sports"] = {k: next(iter(v)) for k, v in sorted(виды.items())
-                           if len(v) == 1 and next(iter(v))}
+    data["team_sports"] = merge_team_sports(previous_team_sports(path), виды)
     for row in conn.execute(
             "SELECT t.canonical_name, t.country, "
             "       group_concat(a.alias, '|') AS aliases "
