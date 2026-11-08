@@ -812,6 +812,7 @@
       "name": "AD Torrejon",
       "country": null,
       "aliases": [
+        "AD Torrejón",
         "Τορεχόν",
         "АД Торрехон",
         "Торехон",
@@ -17906,6 +17907,15 @@
         "Атлетико Монсон",
         "Атлетико Монсон",
         "Атлетіко Монсон"
+      ]
+    },
+    {
+      "name": "Atletico Nacional",
+      "country": null,
+      "aliases": [
+        "Atlético Nacional",
+        "Атлетико Насионал",
+        "Атлетіко Насьйональ"
       ]
     },
     {
@@ -114867,6 +114877,7 @@
       "name": "Kahrabaa Ismailia",
       "country": null,
       "aliases": [
+        "Kahraba",
         "Καραμπαά Ισμαΐγια",
         "Кахраба Исмаилия",
         "Кахрабаа Ісмайлія",
@@ -120166,6 +120177,15 @@
         "ΣΠΑΡΤΑΚΟΣ",
         "Китиу",
         "Кітіу"
+      ]
+    },
+    {
+      "name": "Kittay B.",
+      "country": null,
+      "aliases": [
+        "Κιτάι Μπ. (Ηπα)",
+        "Китти Б. (Сша)",
+        "Кіттей Б."
       ]
     },
     {
@@ -193667,6 +193687,7 @@
       "name": "Samanod",
       "country": null,
       "aliases": [
+        "Samanod",
         "Σαμανόντ",
         "Саманод",
         "Саманод"
@@ -212925,6 +212946,21 @@
         "Stusek J. (Γερ)",
         "Stusek J. (Гер)",
         "Штусек Ю."
+      ]
+    },
+    {
+      "name": "Stusek J. (Ger) RETIRED",
+      "country": null,
+      "aliases": [
+        "Stusek J. (Ger) FELADTA",
+        "Stusek J. (Ger) GERI ÇEKILDI",
+        "Stusek J. (Ger) KRECZ",
+        "Stusek J. (Ger) RETRAS",
+        "Stusek J. (Ger) SKREČ",
+        "Stusek J. (Ger) SKREČ",
+        "Stusek J. (Γερ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Stusek J. (Гер) ОТКАЗ",
+        "Штусек Ю. (Ger) ВІДМОВА"
       ]
     },
     {
@@ -237084,6 +237120,7 @@
       "name": "WE SC",
       "country": null,
       "aliases": [
+        "WE",
         "Τέλεκομ Αιγύπτου",
         "ВЕ СК",
         "УИ СК"
@@ -243360,6 +243397,21 @@
       ]
     },
     {
+      "name": "Yushchenko V. (Wrl) RETIRED",
+      "country": null,
+      "aliases": [
+        "Yushchenko V. (Wrl) FELADTA",
+        "Yushchenko V. (Wrl) GERI ÇEKILDI",
+        "Yushchenko V. (Wrl) KRECZ",
+        "Yushchenko V. (Wrl) RETRAS",
+        "Yushchenko V. (Wrl) SKREČ",
+        "Yushchenko V. (Wrl) SKREČ",
+        "Yushchenko V. (Κοσ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Ющенко В. (Wrl) ВІДМОВА",
+        "Ющенко В. (Мир) ОТКАЗ"
+      ]
+    },
+    {
       "name": "Yushchenko V./Turkmen D.",
       "country": null,
       "aliases": [
@@ -243481,6 +243533,7 @@
       "country": null,
       "aliases": [
         "ZED",
+        "Zed",
         "ΖΕΝΤ",
         "ΖΕΝΤ (Αιγ)",
         "ЗЕД",
@@ -253023,6 +253076,18 @@
         "БРАЗИЛІЯ: Сул-Матогросенсе (Жінки)",
         "БРАЗИЛИЯ: Matogrossense Women",
         "БРАЗИЛИЯ: Матогросензе - жени"
+      ]
+    },
+    {
+      "name": "BRAZIL: Matogrossense Women - Play Offs",
+      "slug": "brazil-matogrossense-women-play-offs",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "BRAZIL: Matogrossense - Žene - Playoff",
+        "BRAZÍLIA: Matogrossense - női - Play Off",
+        "ΒΡΑΖΙΛΙΑ: Ματογκροσένσε Γυναίκες - Πλέι Οφς",
+        "БРАЗИЛИЯ: Матогросензе - жени - Плейофи"
       ]
     },
     {
@@ -287041,6 +287106,7 @@
       "aliases": [
         "(Parovi) 1/2 Finale",
         "(Parovi) 1/4 Finale",
+        "(parovi) FINALE",
         "WTA - DEBEL: Hong Kong (Hong Kong), twarda",
         "WTA - DUBLU: Hong Kong (Hong Kong), suprafață dură",
         "WTA - PÁROS: Hongkong (Hongkong), kemény",
@@ -295718,6 +295784,7 @@
   "team_sports": {
     "AC Milan": "F",
     "AD Marco 09": "F",
+    "AEK Athens": "F",
     "AIK": "F",
     "APOEL": "F",
     "AS Roma": "F",
@@ -295732,6 +295799,9 @@
     "Aguilas": "F",
     "Ajax": "F",
     "Akron Togliatti": "F",
+    "Al Qanah": "F",
+    "Al Rayyan": "F",
+    "Al Sadd": "F",
     "Alanyaspor": "F",
     "Alaves": "F",
     "Alaves W": "F",
@@ -295753,6 +295823,7 @@
     "Antigua and Barbuda": "F",
     "Anwil Wloclawek": "B",
     "Apollon": "B",
+    "Arab Contractors": "F",
     "Arda": "F",
     "Argentina": "F",
     "Armenia": "F",
@@ -295760,6 +295831,7 @@
     "Artis Brno": "F",
     "Aston Villa": "F",
     "Aston Villa W": "F",
+    "Asyut Petroleum": "F",
     "Atalanta": "F",
     "Ath Bilbao": "F",
     "Athens Kallithea": "F",
@@ -295890,6 +295962,7 @@
     "Digenis Akritas": "F",
     "Din. Zagreb": "F",
     "Dinamo Bucharest": "B",
+    "Dinamo City": "F",
     "Djurgarden": "F",
     "Drenica": "F",
     "Drita": "F",
@@ -295900,6 +295973,7 @@
     "Dynamo Vladivostok": "B",
     "Dziugas Telsiai": "F",
     "Egypt": "F",
+    "El Gaish": "F",
     "Elche": "F",
     "Eldense": "F",
     "Ellas Syrou": "F",
@@ -296041,6 +296115,7 @@
     "KFUM Oslo": "F",
     "KK Bosna": "B",
     "KK Krka Novo mesto": "B",
+    "Kahrabaa Ismailia": "F",
     "Kalmar": "F",
     "Kamaz": "F",
     "Kansas": "B",
@@ -296150,6 +296225,7 @@
     "Mirassol": "F",
     "Mjallby": "F",
     "Mladost": "F",
+    "Modern Sport": "F",
     "Moldova": "F",
     "Monaco": "F",
     "Montana": "F",
@@ -296299,6 +296375,7 @@
     "Saint-Malo W": "F",
     "Salamanca": "F",
     "Salzburg": "F",
+    "Samanod": "F",
     "Samara": "B",
     "Samobor": "B",
     "Sampdoria": "F",
@@ -296327,6 +296404,7 @@
     "Siniakova K./Townsend T.": "T",
     "Sirius": "F",
     "Siroki Brijeg": "B",
+    "Skenderbeu": "F",
     "Slask Wroclaw": "B",
     "Slavia Mozyr": "F",
     "Slavia Prague": "F",
@@ -296449,6 +296527,8 @@
     "Vitoria Sernache": "F",
     "Vojvodina": "F",
     "Vushtrria": "F",
+    "WE SC": "F",
+    "Wadi Degla": "F",
     "Wales": "F",
     "Washington Wizards": "B",
     "Waterford": "F",
@@ -296459,6 +296539,7 @@
     "Wurzburg": "B",
     "Wurzburger Kickers": "F",
     "Yantra Gabrovo": "F",
+    "ZED": "F",
     "Zaglebie": "F",
     "Zalgiris Kaunas": "B",
     "Zeljeznicar": "F",
