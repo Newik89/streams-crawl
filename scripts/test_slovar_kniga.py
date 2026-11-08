@@ -148,6 +148,28 @@ n2 = dictionary.note_error(conn, "Динамо", "двусмысленно")
 rows = conn.execute("SELECT count(*) FROM dictionary_errors WHERE alias='Динамо'").fetchone()[0]
 check("С9 вторая встреча не плодит строку", n1 and not n2 and rows == 1, (n1, n2, rows))
 
+# С8 — выгрузка/загрузка: книга едет с словарями, слитая команда не выгружается
+sys.path.insert(0, str(ROOT / "scripts"))
+import json  # noqa: E402
+import dict_sync  # noqa: E402
+out = TMP / "dictionaries.json"
+counts = dict_sync.export(conn, out)
+dumped = json.loads(out.read_text(encoding="utf-8"))
+names_out = {t["name"] for t in dumped["teams"]}
+check("С8 выгрузка: книга ошибок в файле", counts["ошибок в книге"] >= 4 and len(dumped["dictionary_errors"]) == counts["ошибок в книге"], counts)
+check("С8 выгрузка: слитая «Milan» не выгружена, AC Milan — да", "Milan" not in names_out and "AC Milan" in names_out, sorted(names_out)[:5])
 conn.close()
+os.environ["STREAMS_DB"] = str(TMP / "fresh.db")
+fresh = db.connect()
+db.init_db(fresh)
+dict_sync.load(fresh, out)
+q = dictionary.quarantined(fresh)
+check("С8 загрузка в чистую базу: карантин восстановлен", any(a == "Bayer Leverkusen" for a, _, _ in q), q)
+m_fresh = dictionary.team_alias_map(fresh)
+check("С8 после загрузки Bayer Leverkusen → Bayer Leverkusen", m_fresh.get("Bayer Leverkusen", (0, ""))[1] == "Bayer Leverkusen", m_fresh.get("Bayer Leverkusen"))
+dict_sync.load(fresh, out)
+n_err = fresh.execute("SELECT count(*) FROM dictionary_errors").fetchone()[0]
+check("С8/С9 повторная загрузка не плодит строки книги", n_err == counts["ошибок в книге"], n_err)
+fresh.close()
 print(f"\n{green}/{total} зелёных")
 raise SystemExit(0 if green == total else 1)
