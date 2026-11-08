@@ -96,11 +96,23 @@ def export(conn, path: Path) -> dict[str, int]:
             "GROUP BY t.canonical_name, e.sport"):
         виды.setdefault(row["имя"], set()).add(row["вид"])
     data["team_sports"] = merge_team_sports(previous_team_sports(path), виды)
-    for row in conn.execute(
+    # С8 (карточка словаря 09.11): команда, слитая в другую (`merged_into`),
+    # в выгрузку не идёт — её написания уже у выжившей; база старше миграции
+    # (без колонки) выгружается по-старому
+    try:
+        rows = conn.execute(
             "SELECT t.canonical_name, t.country, "
             "       group_concat(a.alias, '|') AS aliases "
             "FROM teams t LEFT JOIN team_aliases a ON a.team_id = t.id "
-            "GROUP BY t.id ORDER BY t.canonical_name"):
+            "WHERE t.merged_into IS NULL "
+            "GROUP BY t.id ORDER BY t.canonical_name").fetchall()
+    except Exception:
+        rows = conn.execute(
+            "SELECT t.canonical_name, t.country, "
+            "       group_concat(a.alias, '|') AS aliases "
+            "FROM teams t LEFT JOIN team_aliases a ON a.team_id = t.id "
+            "GROUP BY t.id ORDER BY t.canonical_name").fetchall()
+    for row in rows:
         data["teams"].append({
             "name": row["canonical_name"], "country": row["country"],
             "aliases": sorted((row["aliases"] or "").split("|")) if row["aliases"] else [],
@@ -129,10 +141,24 @@ def export(conn, path: Path) -> dict[str, int]:
             "source": row["domain"],
         })
 
+    # Книга ошибок словаря (карточка 09.11, С8): едет вместе со словарями,
+    # чтобы обход на GitHub знал карантин. Команда — именем, не id: id на
+    # другой машине другой. Базы старше миграции таблицы не имеют
+    data["dictionary_errors"] = []
+    try:
+        for r in conn.execute(
+                "SELECT e.alias, e.lang, e.class, t.canonical_name AS team, "
+                "e.source_domain, e.led_to, e.truth, e.note, e.answered_by "
+                "FROM dictionary_errors e LEFT JOIN teams t ON t.id = e.team_id "
+                "ORDER BY e.class, e.alias, e.lang"):
+            data["dictionary_errors"].append({k: r[k] for k in r.keys()})
+    except Exception:
+        pass
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n",
                     encoding="utf-8")
     return {"команд": len(data["teams"]), "лиг": len(data["leagues"]),
-            "каналов": len(data["channels"])}
+            "каналов": len(data["channels"]),
+            "ошибок в книге": len(data["dictionary_errors"])}
 
 
 def load(conn, path: Path) -> dict[str, int]:
@@ -141,12 +167,28 @@ def load(conn, path: Path) -> dict[str, int]:
     data = json.loads(path.read_text(encoding="utf-8"))
     domains = {r["domain"]: r["id"] for r in
                conn.execute("SELECT id, domain FROM sources")}
-    added = {"команд": 0, "лиг": 0, "каналов": 0}
+    added = {"команд": 0, "лиг": 0, "каналов": 0, "ошибок в книге": 0}
 
     for item in data.get("teams", []):
         for alias in item.get("aliases") or [item["name"]]:
             dictionary.remember_team(conn, alias, item["name"], item.get("country"))
         added["команд"] += 1
+    # книга ошибок — ПОСЛЕ команд: строка карантина держит команду по id
+    # (С3 читает тройку alias, lang, team_id), а id есть, только когда
+    # команда уже заведена (до 09.11 книга грузилась первой и в чистой базе
+    # теряла команду). Словарь спрашивают после загрузки — карантин
+    # действует с первого чтения; повтор ничего не плодит (С9)
+    for item in data.get("dictionary_errors", []):
+        team = conn.execute("SELECT id FROM teams WHERE canonical_name = ?",
+                            (item.get("team") or "",)).fetchone()
+        dictionary.note_error(conn, item["alias"], item["class"], lang=item.get("lang"),
+                              team_id=team["id"] if team else None,
+                              source_domain=item.get("source_domain"),
+                              led_to=item.get("led_to"), truth=item.get("truth"),
+                              note=item.get("note"),
+                              answered_by=item.get("answered_by") or "программа")
+        added["ошибок в книге"] += 1
+    conn.commit()
     for item in data.get("leagues", []):
         for alias in item.get("aliases") or [item["name"]]:
             dictionary.remember_league(conn, alias, item["name"],

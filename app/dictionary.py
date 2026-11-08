@@ -62,14 +62,33 @@ def _kind(text: str) -> tuple[str, bool]:
     return names.category(text), "3x3" in text.lower()
 
 
-def _clubs(canonicals: list[str]) -> int:
-    """Сколько РАЗНЫХ клубов среди имён: похожие сливаются в одну кучку."""
+def _plain_words(name: str) -> set[str]:
+    """Слова имени без регистра, диакритики, дефисов и точек:
+    `Atl. Madrid` → {atl, madrid}, `Al-Sadd` → {al, sadd}."""
+    folded = unicodedata.normalize("NFKD", name or "")
+    plain = "".join(c for c in folded if not unicodedata.combining(c)).casefold()
+    return set(plain.replace("-", " ").replace(".", " ").split())
+
+
+def _same_club(one: str, two: str) -> bool:
+    """Два канонических имени — один клуб? Карточка словаря 09.11 (случай 098):
+    одного сходства ≥ SAME_CLUB мало — `Dynamo Moscow`/`Dyn. Kyiv`, `Barcelona`/
+    `Baskonia` (70) и `Racing Santander`/`Racing Club` проходили как один клуб, и
+    спорное написание уходило последней записи. Теперь ещё и слова одного имени
+    должны целиком входить в другое (`Milan` ⊂ `AC Milan`, `Al Sadd` = `Al-Sadd`)."""
     from . import names                      # names словарь не импортирует
+    if names.similarity(one, two) < SAME_CLUB:
+        return False
+    a, b = _plain_words(one), _plain_words(two)
+    return bool(a) and bool(b) and (a <= b or b <= a)
+
+
+def _clubs(canonicals: list[str]) -> int:
+    """Сколько РАЗНЫХ клубов среди имён: имена одного клуба — в одну кучку."""
     groups: list[list[str]] = []
     for name in canonicals:
         for group in groups:
-            if any(names.similarity(name, other) >= SAME_CLUB
-                   for other in group):
+            if any(_same_club(name, other) for other in group):
                 group.append(name)
                 break
         else:
@@ -77,44 +96,298 @@ def _clubs(canonicals: list[str]) -> int:
     return len(groups)
 
 
-def team_alias_map(conn: sqlite3.Connection) -> dict[str, tuple[int, str]]:
-    """Написание → (id команды, каноническое имя) — только бесспорные.
+# ── книга ошибок словаря (карточка словаря 09.11.2026) ──────────────────────
+
+#: классы книги ошибок; первые два — карантин: словарь запись не отдаёт
+ERROR_CLASSES = ("пара", "коллизия", "двусмысленно", "слито", "возможный дубль")
+QUARANTINE = ("пара", "коллизия")
+
+#: пара матча, записанная одним именем: «A - B», «A – B», «A vs B», «A v B».
+#: Пробелы по обе стороны обязательны — `Fleury-Merogis` одна команда
+_PAIR_RE = re.compile(r"\S\s+(?:-|–|—|vs\.?|v)\s+\S", re.IGNORECASE)
+
+
+def is_pair_name(text: str) -> bool:
+    """Правило С5: пара — не команда."""
+    return bool(_PAIR_RE.search(text or ""))
+
+
+def note_error(conn: sqlite3.Connection, alias: str, cls: str,
+               lang: str | None = None, team_id: int | None = None,
+               source_domain: str | None = None, led_to: str | None = None,
+               truth: str | None = None, note: str | None = None,
+               answered_by: str = "программа") -> bool:
+    """Строка в книгу ошибок. Правило С9: одна строка на (alias, lang, class) —
+    повторная встреча обновляет время, не плодит строку. У карантина
+    («пара», «коллизия») ключ ещё и команда: одно написание без языка
+    бывает ошибочно прицеплено к двум клубам («Parma» → AS Roma и Palermo),
+    и каждая такая запись — своя строка карантина (С3 читает тройку
+    alias, lang, team_id). Возвращает True, если строка новая."""
+    if cls not in ERROR_CLASSES:
+        raise ValueError(f"класс книги ошибок: {cls!r}")
+    if cls in QUARANTINE:
+        row = conn.execute(
+            "SELECT id FROM dictionary_errors WHERE alias = ? AND lang IS ? "
+            "AND class = ? AND team_id IS ?", (alias, lang, cls, team_id)).fetchone()
+    else:
+        row = conn.execute(
+            "SELECT id FROM dictionary_errors WHERE alias = ? AND lang IS ? "
+            "AND class = ?", (alias, lang, cls)).fetchone()
+    if row:
+        conn.execute("UPDATE dictionary_errors SET created_at = datetime('now'), "
+                     "team_id = COALESCE(?, team_id), led_to = COALESCE(?, led_to), "
+                     "truth = COALESCE(?, truth) WHERE id = ?",
+                     (team_id, led_to, truth, row[0]))
+        return False
+    conn.execute(
+        "INSERT INTO dictionary_errors (alias, lang, team_id, class, source_domain, "
+        "led_to, truth, note, answered_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (alias, lang, team_id, cls, source_domain, led_to, truth, note, answered_by))
+    return True
+
+
+def quarantined(conn: sqlite3.Connection) -> set[tuple[str, str | None, int | None]]:
+    """Записи (alias, lang, team_id), которые словарь не отдаёт (С3)."""
+    marks = ",".join("?" * len(QUARANTINE))
+    try:
+        return {(r["alias"], r["lang"], r["team_id"]) for r in conn.execute(
+            f"SELECT alias, lang, team_id FROM dictionary_errors WHERE class IN ({marks})",
+            QUARANTINE)}
+    except sqlite3.OperationalError:        # база старше карточки, init_db ещё не было
+        return set()
+
+
+def _errors_stamp(conn: sqlite3.Connection) -> tuple:
+    try:
+        return tuple(conn.execute("SELECT count(*), max(id) FROM dictionary_errors").fetchone())
+    except sqlite3.OperationalError:
+        return (0, None)
+
+
+def merged_map(conn: sqlite3.Connection) -> dict[int, int]:
+    """Проигравший при слиянии → выживший (С6, `teams.merged_into`), по цепочке."""
+    try:
+        raw = {r["id"]: r["merged_into"] for r in conn.execute(
+            "SELECT id, merged_into FROM teams WHERE merged_into IS NOT NULL")}
+    except sqlite3.OperationalError:        # колонки ещё нет
+        return {}
+    out: dict[int, int] = {}
+    for tid in raw:
+        target, hops = raw[tid], 0
+        while target in raw and hops < 10:
+            target, hops = raw[target], hops + 1
+        out[tid] = target
+    return out
+
+
+def team_sports_known(conn: sqlite3.Connection) -> dict[int, set[str]]:
+    """Вид спорта команды (F | B | T): по событиям базы и по памяти
+    `team_sports` из data/dictionaries.json (книга 097). Команда с двумя
+    видами — оба (такая не сужает спор)."""
+    import json
+    from pathlib import Path
+    out: dict[int, set[str]] = {}
+    try:
+        for r in conn.execute("SELECT t.id AS id, e.sport AS sport FROM events e "
+                              "JOIN teams t ON t.id IN (e.team_home_id, e.team_away_id) "
+                              "GROUP BY t.id, e.sport"):
+            out.setdefault(r["id"], set()).add(r["sport"])
+    except sqlite3.OperationalError:
+        pass
+    path = Path(__file__).resolve().parent.parent / "data" / "dictionaries.json"
+    try:
+        memory = json.loads(path.read_text(encoding="utf-8")).get("team_sports") or {}
+    except (OSError, ValueError, AttributeError):
+        memory = {}
+    if memory:
+        for r in conn.execute("SELECT id, canonical_name FROM teams"):
+            sport = memory.get(r["canonical_name"])
+            if isinstance(sport, str) and sport:
+                out.setdefault(r["id"], set()).add(sport)
+    return out
+
+
+def langs_of(lang) -> frozenset[str] | None:
+    """Язык сайта для словаря: один код («sr»), несколько (`site_lang.of`:
+    сербохорватский сайт — hr, sr, bs, плюс английский) или None — не знаем."""
+    if not lang:
+        return None
+    if isinstance(lang, str):
+        return frozenset({lang})
+    out = frozenset(x for x in lang if x)
+    return out or None
+
+
+#: ответы `TeamNames.decide`: «ответ», «спор» (С2), «чужой вид» (С1в),
+#: «нет» — написания в словаре нет
+DECIDED, DISPUTED, OTHER_SPORT, UNKNOWN = "ответ", "спор", "чужой вид", "нет"
+
+
+class TeamNames:
+    """Словарь команд, прочитанный из базы ОДИН раз: написание → команда с
+    учётом языка сайта и вида спорта. Дальше отвечает без базы — годится и
+    разбору, который соединение уже закрыл. Строит `team_names(conn)`.
 
     Одно написание бывает у нескольких команд: «Dinamo» — Загреб, Бухарест
     и Москва, «מכבי חיפה» — Maccabi Haifa и (ошибкой сверки) Maccabi Rishon.
     Раньше выигрывала последняя запись, и #2168 шла «Dynamo Moscow» вместо
-    Загреба. Спорное написание словарь теперь не отдаёт — такую игру
-    решает эталон flashscore (пакет C, 14.09). Не спор: команды одного
-    клуба (похожие имена) — берём последнюю запись, как раньше; владелец
-    чужой категории при своей («ASTON VILLA» и на Aston Villa U19) — его не
-    считаем, голое имя за юношами и женщинами не закрепляется (06.09)."""
-    def build() -> dict[str, tuple[int, str]]:
-        owners: dict[str, dict[int, str]] = {}
+    Загреба. Спорное написание словарь не отдаёт — такую игру решает эталон
+    flashscore (пакет C, 14.09). Правила карточки словаря 09.11 — в `decide`.
+
+    В работе (разбор, сверка, заливка, витрина) словарь спрашивают БЕЗ языка
+    и вида: замер окна 49 на копии живой базы — язык сайта и вид спорта у игр
+    без эталона подменяли клуб (карточка, раздел 3 «ЗАМЕР окна 49»). Язык и
+    вид — по запросу (`team_alias_map(conn, lang, sport)`), для отчётов.
+    Виды спорта читаются, только если их просят (`with_sports`): это 8 МБ
+    памяти `team_sports` и запрос по событиям на каждую перестройку."""
+
+    def __init__(self, conn: sqlite3.Connection, with_sports: bool = False):
+        bad = quarantined(conn)
+        #: проигравший при слиянии → выживший (С6, `merged_into`)
+        self.merged = merged_map(conn)
+        self.canon_of: dict[int, str] = {}
+        #: написание → [(команда, её языки записей)], последняя запись — в конце
+        self.rows: dict[str, list[tuple[int, frozenset]]] = {}
+        # одинаковые наборы языков — один объект: написаний сто с лишним
+        # тысяч, а наборов — десятки (словарь живёт в памяти витрины)
+        pool: dict[frozenset, frozenset] = {}
         for r in conn.execute(
-                "SELECT a.alias, a.team_id, t.canonical_name "
-                "FROM team_aliases a JOIN teams t ON t.id = a.team_id "
-                "ORDER BY a.id"):
-            per = owners.setdefault(r["alias"], {})
-            per.pop(r["team_id"], None)      # последняя запись — в конец
-            per[r["team_id"]] = r["canonical_name"]
+                "SELECT a.alias, a.lang, a.team_id FROM team_aliases a "
+                "JOIN teams t ON t.id = a.team_id ORDER BY a.id"):
+            if (r["alias"], r["lang"], r["team_id"]) in bad:
+                continue                                      # С3
+            tid = self.merged.get(r["team_id"], r["team_id"])  # С6
+            per = self.rows.setdefault(r["alias"], [])
+            had = frozenset()
+            for i, (t, ls) in enumerate(per):
+                if t == tid:
+                    had = ls
+                    del per[i]
+                    break
+            langs = had | {r["lang"]}
+            per.append((tid, pool.setdefault(langs, langs)))
+        for tid, canon in conn.execute("SELECT id, canonical_name FROM teams"):
+            self.canon_of[tid] = canon
+        #: вид спорта команды (`team_sports_known`) — только по просьбе; у
+        #: выжившего — и виды проигравших: их события могли ещё не переехать
+        self.sports: dict[int, set[str]] | None = None
+        if with_sports:
+            self.sports = team_sports_known(conn)
+            for loser, winner in self.merged.items():
+                if loser in self.sports:
+                    self.sports.setdefault(winner, set()).update(self.sports[loser])
+
+    def decide(self, alias: str, lang=None, sport: str | None = None) -> tuple:
+        """(вердикт, команды). Правила по порядку, первое сработавшее решает:
+          С3. записи карантина (книга ошибок «пара», «коллизия») не участвуют,
+              слитая команда (`merged_into`) читается как выжившая — так
+              словарь и прочитан (`__init__`);
+          С4. написание равно каноническому имени одной из команд (без
+              регистра) — она и есть ответ, чужие записи не считаются. Первым:
+              иначе запись с языком уводила «Valencia Basket» (es) в Palencia
+              (замер на копии живой базы 09.11, окно 49);
+          С1. `lang` — язык сайта (код или несколько): из спорных остаются
+              команды с записью этого языка; таких нет — с записью без языка;
+              осталась одна — ответ;
+          С1б. `sport` — вид спорта страницы (F | B | T): из спорных остаются
+              команды, известные только в этом виде; `Milan` на баскетболе →
+              Olimpia Milano, на футболе → AC Milan (владелец 09.11);
+          старое: владелец чужой категории («ASTON VILLA» на Aston Villa U19)
+              не считается (06.09); команды одного клуба (похожие имена) —
+              последняя запись;
+          С2. клубов больше одного — «спор», словарь молчит; команды спора —
+              вторым элементом (книга ошибок «двусмысленно» пишет их, `canon`);
+          С1в. единственный хозяин, вид страницы известен, а у хозяина вид
+              известен и ДРУГОЙ (ровно один) — «чужой вид», словарь молчит.
+        Без `lang` и `sport` ответ тот же, что у плоского `team_alias_map`."""
+        if sport and self.sports is None:
+            raise ValueError("словарь прочитан без видов спорта: team_names(conn, with_sports=True)")
+        return self._decide(alias, langs_of(lang), sport or None)
+
+    def _decide(self, alias: str, langs, sport) -> tuple:
+        per = self.rows.get(alias)
+        if not per:
+            return UNKNOWN, []
+        ids = [t for t, _ in per]
+        if len(ids) > 1:                                              # С4
+            own = [t for t in ids if self.canon_of[t].casefold() == alias.casefold()]
+            if len(own) == 1:
+                ids = own
+        if len(ids) > 1 and langs:                                    # С1
+            narrowed = [t for t, ls in per if ls & langs] or \
+                       [t for t, ls in per if None in ls] or ids
+            if len(narrowed) == 1:
+                ids = narrowed
+        if len(ids) > 1 and sport:                                    # С1б
+            by_sport = [t for t in ids if self.sports.get(t) == {sport}]
+            if len(by_sport) == 1:
+                ids = by_sport
+        if len(ids) > 1:
+            kind = _kind(alias)
+            items = [t for t in ids if _kind(self.canon_of[t]) == kind] or ids
+            if len(items) > 1 and _clubs([self.canon_of[t] for t in items]) > 1:
+                return DISPUTED, items                                # С2
+            ids = items
+        if sport:                                                     # С1в
+            known = self.sports.get(ids[-1], set())
+            if len(known) == 1 and sport not in known:
+                return OTHER_SPORT, ids[-1:]
+        return DECIDED, ids[-1:]
+
+    def owner(self, alias: str, lang=None, sport: str | None = None) -> tuple[int, str] | None:
+        """(id команды, каноническое имя) или None — словарь молчит."""
+        verdict, ids = self.decide(alias, lang, sport)
+        return (ids[0], self.canon_of[ids[0]]) if verdict == DECIDED else None
+
+    def disputed(self, alias: str, lang=None, sport: str | None = None) -> list[str]:
+        """Канонические имена команд спора (С2); пусто — спора нет."""
+        verdict, ids = self.decide(alias, lang, sport)
+        return [self.canon_of[t] for t in ids] if verdict == DISPUTED else []
+
+
+def _merge_stamp(conn: sqlite3.Connection) -> tuple:
+    """Слияние меняет `merged_into` и переносит написания UPDATE'ом — число
+    строк при этом то же, и кэш по счёту строк не заметил бы перемены."""
+    try:
+        merged = tuple(conn.execute(
+            "SELECT count(merged_into), coalesce(sum(merged_into), 0) FROM teams").fetchone())
+    except sqlite3.OperationalError:        # колонки ещё нет
+        merged = (0, 0)
+    return merged + tuple(conn.execute(
+        "SELECT coalesce(sum(team_id), 0) FROM team_aliases").fetchone())
+
+
+def team_names(conn: sqlite3.Connection, with_sports: bool = False) -> TeamNames:
+    """Словарь команд (`TeamNames`), пока таблицы не менялись — готовый."""
+    return _cached(conn, "team_aliases", lambda: TeamNames(conn, with_sports),
+                   extra=("TeamNames", with_sports, _errors_stamp(conn), _merge_stamp(conn)))
+
+
+def team_alias_map(conn: sqlite3.Connection, lang=None,
+                   sport: str | None = None) -> dict[str, tuple[int, str]]:
+    """Написание → (id команды, каноническое имя) — только бесспорные
+    (правила — `TeamNames.decide`). `lang` — язык сайта (С1), `sport` — вид
+    спорта страницы (С1б, С1в); без них — как с 14.09."""
+    def build() -> dict[str, tuple[int, str]]:
+        book = team_names(conn, with_sports=bool(sport))
         out: dict[str, tuple[int, str]] = {}
-        for alias, per in owners.items():
-            items = list(per.items())
-            if len(items) > 1:
-                kind = _kind(alias)
-                items = [(t, c) for t, c in items if _kind(c) == kind] or items
-                if len(items) > 1 and _clubs([c for _, c in items]) > 1:
-                    continue
-            out[alias] = items[-1]
+        for alias in book.rows:
+            hit = book.owner(alias, lang, sport)
+            if hit:
+                out[alias] = hit
         return out
-    return _cached(conn, "team_aliases", build)
+    return _cached(conn, "team_aliases", build,
+                   extra=(langs_of(lang), sport, _errors_stamp(conn), _merge_stamp(conn)))
 
 
-def team_overrides(conn: sqlite3.Connection) -> dict[str, str]:
+def team_overrides(conn: sqlite3.Connection, lang=None,
+                   sport: str | None = None) -> dict[str, str]:
     """Сырое имя → каноническое. Отдаём готовым словарём: в разборе он
-    спрашивается на каждое имя, а ходить в базу столько раз незачем."""
+    спрашивается на каждое имя, а ходить в базу столько раз незачем.
+    `lang` — язык сайта (С1), `sport` — вид спорта страницы (С1б): спорные
+    написания решаются по ним."""
     return {alias: canon for alias, (_, canon)
-            in team_alias_map(conn).items()}
+            in team_alias_map(conn, lang, sport).items()}
 
 
 #: словари «написание → владелец» считаются заметно (у спорных имён —
@@ -123,9 +396,9 @@ def team_overrides(conn: sqlite3.Connection) -> dict[str, str]:
 _CACHE: dict[tuple, dict] = {}
 
 
-def _cached(conn: sqlite3.Connection, table: str, build) -> dict:
+def _cached(conn: sqlite3.Connection, table: str, build, extra=None):
     main = conn.execute("PRAGMA database_list").fetchone()
-    key = (main[2], table, *conn.execute(
+    key = (main[2], table, extra, *conn.execute(
         f"SELECT count(*), max(id) FROM {table}").fetchone(),
         *conn.execute("SELECT count(*), max(id) FROM teams").fetchone(),
         *conn.execute("SELECT count(*), max(id) FROM leagues").fetchone())
@@ -195,7 +468,16 @@ def remember_team(conn: sqlite3.Connection, raw: str, canonical: str,
                   country: str | None = None, lang: str | None = None,
                   sole: bool = False) -> int:
     """Закрепляет «сырое имя → команда». Команда с таким каноническим именем
-    уже есть — цепляем алиас к ней, а не заводим двойника."""
+    уже есть — цепляем алиас к ней, а не заводим двойника.
+    С5 (карточка словаря 09.11): пара матча — не команда. Каноническое имя-пара
+    («La Duchere - Nimes») не заводится вовсе — строка в книгу, ответ 0;
+    написание-пара к настоящей команде не цепляется — в книгу, команда
+    находится/заводится как обычно."""
+    if is_pair_name(canonical):
+        note_error(conn, canonical, "пара", lang=lang, led_to=canonical,
+                   note="каноническое имя — пара матча, команда не заведена")
+        conn.commit()
+        return 0
     row = conn.execute("SELECT id FROM teams WHERE canonical_name = ?",
                        (canonical,)).fetchone()
     if row:
@@ -206,7 +488,11 @@ def remember_team(conn: sqlite3.Connection, raw: str, canonical: str,
             (canonical, _unique_slug(conn, "teams", slugify(canonical, "team")),
              country))
         team_id = cur.lastrowid
-    _attach(conn, "team_aliases", "team_id", team_id, raw, lang, sole)
+    if is_pair_name(raw):
+        note_error(conn, raw, "пара", lang=lang, team_id=team_id, led_to=canonical,
+                   note="написание — пара матча, к команде не прицеплено")
+    else:
+        _attach(conn, "team_aliases", "team_id", team_id, raw, lang, sole)
     conn.commit()
     return team_id
 

@@ -133,6 +133,20 @@ def of(domain: str) -> frozenset[str] | None:
     return frozenset(langs) | {"en"}
 
 
+def of_game(game: dict | None) -> frozenset[str] | None:
+    """Языки сайтов игры (`of` по её записям `entries[].source`): имя игры
+    пришло с одного из них. Пишется в книгу ошибок словаря у спорного имени
+    (`canon.note_disputed`, карточка словаря 09.11, С2). Хоть один сайт без
+    языка или записей нет — None, язык неизвестен."""
+    out: set[str] = set()
+    for entry in (game or {}).get("entries") or []:
+        own = of(entry.get("source") or "")
+        if own is None:
+            return None
+        out |= own
+    return frozenset(out) or None
+
+
 @lru_cache(maxsize=1)
 def _tagged() -> dict[str, frozenset[str]]:
     """Латинские слова с языками из `data/word_langs.json`: ключ кучки —
