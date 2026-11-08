@@ -21,7 +21,7 @@ from datetime import datetime, timedelta
 
 from rapidfuzz import fuzz
 
-from . import dictionary, names
+from . import dictionary, names, site_lang
 
 #: с этого сходства пишем в библиотеку молча (порог склейки проекта)
 SURE = names.SIMILAR_ENOUGH
@@ -1261,8 +1261,64 @@ def apply(conn: sqlite3.Connection, aligned: dict) -> tuple[int, int]:
             if ask and dictionary.enqueue(conn, "team", game[side].strip(),
                                           suggestion=ref[side].strip()):
                 queued += 1
+    note_disputed(conn, aligned)
     conn.commit()
     return fixed, queued
+
+
+def book_lang(langs: frozenset[str] | None) -> str | None:
+    """Язык сайта для строки книги ошибок: коды через пробел без
+    английского (он у всех сайтов); английский сайт — «en»; неизвестно — None."""
+    if not langs:
+        return None
+    own = sorted(x for x in langs if x != "en")
+    return " ".join(own) if own else "en"
+
+
+def note_disputed(conn: sqlite3.Connection, aligned: dict) -> int:
+    """С2 карточки словаря 09.11: спорное написание (одно написание у
+    нескольких клубов, словарь его не отдаёт) — строка в книгу ошибок классом
+    «двусмысленно»: сырая строка (`alias`) → сайт и язык → куда могло повести
+    (`led_to`, команды спора) → что оказалось правдой (`truth` — эталон
+    уверенной пары; у «с сомнением» и «мимо» пусто). Спор — по плоскому
+    словарю (язык сайта и вид спорта спор в работе не решают — замер окна 49
+    на копии живой базы: «Спартак» с русского сайта язык уводил в Spartak
+    Varna, «Βαρέζε» в баскетболе — в футбольный Varese FC); книга копит
+    каждое спорное имя с сайтом, языком и правдой эталона — по ней язык
+    можно будет включать там, где правда повторяется. Пишет разбор, а не
+    словарь: чтение словаря базу не меняет. Одна строка на (написание,
+    язык, класс) — повторная встреча лишь обновляет время (С9). Возвращает,
+    сколько строк книги новых."""
+    if not conn.execute("SELECT 1 FROM sqlite_master "
+                        "WHERE name = 'dictionary_errors'").fetchone():
+        return 0                  # база старше карточки, init_db ещё не было
+    book = dictionary.team_names(conn)
+    new = 0
+    sides: list[tuple[dict, str, str]] = []
+    for game, ref, _ in aligned.get("sure", []):
+        sides += [(game, game.get("home") or "", ref.get("home") or ""),
+                  (game, game.get("away") or "", ref.get("away") or "")]
+    for game, _ref, _ in aligned.get("ask", []):
+        sides += [(game, game.get("home") or "", ""), (game, game.get("away") or "", "")]
+    for game in aligned.get("missed", []):
+        sides += [(game, game.get("home") or "", ""), (game, game.get("away") or "", "")]
+    for game, mine, truth in sides:
+        mine = mine.strip()
+        if not mine:
+            continue
+        rivals = book.disputed(mine)
+        if not rivals:
+            continue
+        langs = site_lang.of_game(game)
+        sites = sorted({(e.get("source") or "").strip().lower()
+                        for e in game.get("entries") or []} - {""})
+        if dictionary.note_error(
+                conn, mine, "двусмысленно", lang=book_lang(langs),
+                source_domain=", ".join(sites[:3]) or None,
+                led_to=" | ".join(rivals[:5]), truth=truth.strip() or None,
+                note=f"вид спорта {game.get('sport') or '?'}"):
+            new += 1
+    return new
 
 
 def retime(aligned: dict) -> int:

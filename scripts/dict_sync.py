@@ -169,8 +169,15 @@ def load(conn, path: Path) -> dict[str, int]:
                conn.execute("SELECT id, domain FROM sources")}
     added = {"команд": 0, "лиг": 0, "каналов": 0, "ошибок в книге": 0}
 
-    # книга ошибок — первой: карантин должен действовать до того, как
-    # написания команд лягут в словарь (С3, С8); повтор ничего не плодит (С9)
+    for item in data.get("teams", []):
+        for alias in item.get("aliases") or [item["name"]]:
+            dictionary.remember_team(conn, alias, item["name"], item.get("country"))
+        added["команд"] += 1
+    # книга ошибок — ПОСЛЕ команд: строка карантина держит команду по id
+    # (С3 читает тройку alias, lang, team_id), а id есть, только когда
+    # команда уже заведена (до 09.11 книга грузилась первой и в чистой базе
+    # теряла команду). Словарь спрашивают после загрузки — карантин
+    # действует с первого чтения; повтор ничего не плодит (С9)
     for item in data.get("dictionary_errors", []):
         team = conn.execute("SELECT id FROM teams WHERE canonical_name = ?",
                             (item.get("team") or "",)).fetchone()
@@ -182,11 +189,6 @@ def load(conn, path: Path) -> dict[str, int]:
                               answered_by=item.get("answered_by") or "программа")
         added["ошибок в книге"] += 1
     conn.commit()
-
-    for item in data.get("teams", []):
-        for alias in item.get("aliases") or [item["name"]]:
-            dictionary.remember_team(conn, alias, item["name"], item.get("country"))
-        added["команд"] += 1
     for item in data.get("leagues", []):
         for alias in item.get("aliases") or [item["name"]]:
             dictionary.remember_league(conn, alias, item["name"],
