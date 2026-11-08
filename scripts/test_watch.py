@@ -65,7 +65,7 @@ def fake_runs(slug, limit=0, workflow=""):
     API["queue"]. GitHub молчит (runs пуст) — молчит про оба."""
     API["calls"] += 1
     if not API["runs"]:
-        return watch.Runs.silent()
+        return watch.Runs.silent(API.get("failure"))   # подробности неудачи — как у настоящего github_runs
     source = API["queue"] if workflow == watch.QUEUE_WORKFLOW else API["runs"]
     return watch.Runs(dict(r) for r in source)
 
@@ -76,11 +76,13 @@ def fake_wait(order, slug, kinds, **k):
 
 
 REAL_WAIT = watch.wait_for_start          # настоящее ожидание — для правила З7
+real_runs = watch.github_runs          # настоящий — для проверок с подменой urlopen
 watch.github_runs = fake_runs
 #: С1: что «говорит о себе» GitHub и остаток лимита — без сети; разбор
 #: страницы состояния (чистая функция) проверяется напрямую — `real_status`
 STATUS = {"text": "", "quota": None}
 real_status = watch.github_status
+real_rate_limit = watch.github_rate_limit
 watch.github_status = lambda data=None: STATUS["text"]
 watch.github_rate_limit = lambda: STATUS["quota"]
 watch.wait_for_start = fake_wait
@@ -959,6 +961,87 @@ check("…ожил → «снова отвечает … не было связ�
       any("не было связи у самого сервера" in n for n in notes_after(edge)), notes_after(edge))
 STATUS["text"] = ""
 watch.LAST_FAILURE = {}
+# наша беда с кодом ответа важнее жёлтой плашки GitHub (ревизия 08.11: порядок разбора)
+reset(K("16:30"), [])
+STATUS["text"] = "API Requests: degraded_performance"
+API["failure"] = {"url": "x", "code": 404, "reason": "Not Found"}
+edge = last_id()
+ticks("16:30", "16:45", "17:00", "17:15", "17:30")
+check("GitHub жёлтый, но нам ответили 404 → наша беда важнее: тревога через час, в ней «отказом 404»",
+      len(alarms_after(edge)) == 1 and "отказом 404" in alarms_after(edge)[0]
+      and jget("crawl_silent").get("why") == "denied", (alarms_after(edge), jget("crawl_silent")))
+API["failure"] = None
+STATUS["text"] = ""
+API["runs"] = [probe]
+tick(K("17:45"))
+check("silence_reason: 401 при жёлтом GitHub → denied; лимит 0 при жёлтом → limit; тело «secondary rate limit» при 403 → limit",
+      sr("API Requests: degraded_performance", (59, 60), {"code": 401, "reason": "Unauthorized"})[0] == "denied"
+      and sr("API Requests: degraded_performance", (0, 60), {})[0] == "limit"
+      and sr("", (59, 60), {"code": 403, "reason": "Forbidden",
+                            "body": '{"message":"You have exceeded a secondary rate limit"}'})[0] == "limit")
+check("silence_reason: с ключом (лимит 5000) фраза про ключ не печатается",
+      "ключ без прав" not in sr("", (0, 5000), {})[1] and "ключ без прав" in sr("", (0, 60), {})[1])
+check("actions_down: только настоящий сбой Actions",
+      watch.actions_down("Actions: partial_outage") == "Actions: partial_outage"
+      and watch.actions_down("API Requests: degraded_performance; Actions: major_outage") != ""
+      and watch.actions_down("Actions: degraded_performance") == ""
+      and watch.actions_down("API Requests: partial_outage") == "" and watch.actions_down(None) == "")
+# _get_json и разбор лимита — с подменой urlopen, без сети
+import email  # noqa: E402
+import io  # noqa: E402
+import tempfile  # noqa: E402
+import urllib.error  # noqa: E402
+from pathlib import Path as _Path  # noqa: E402
+
+
+class _Resp(io.BytesIO):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def fake_urlopen(code=None, body=b"", headers=None):
+    def opener(req, timeout=20):
+        if code is None:
+            return _Resp(body)
+        hdrs = email.message_from_string("".join(f"{k}: {v}\n" for k, v in (headers or {}).items()))
+        raise urllib.error.HTTPError(req.full_url, code, "Forbidden", hdrs, io.BytesIO(body))
+    return opener
+
+
+saved_urlopen = watch.urllib.request.urlopen
+watch.urllib.request.urlopen = fake_urlopen(403, b'{"message":"API rate limit exceeded for 1.2.3.4"}',
+                                            {"X-RateLimit-Remaining": "0"})
+got = watch._get_json("https://api.github.com/x")
+check("_get_json при 403 лимита → None; LAST_FAILURE: код 403, остаток 0, тело с «rate limit»",
+      got is None and watch.LAST_FAILURE.get("code") == 403 and watch.LAST_FAILURE.get("remaining") == "0"
+      and "rate limit" in watch.LAST_FAILURE.get("body", "").lower(), watch.LAST_FAILURE)
+check("…и silence_reason по ней → limit", sr("", None, watch.LAST_FAILURE)[0] == "limit")
+check("github_runs при неудаче несёт подробности с собой (Runs.failure)",
+      (lambda r: r.ok is False and r.failure.get("code") == 403)(real_runs("Newik89/streams-crawl", 5)))
+watch.urllib.request.urlopen = fake_urlopen(None, b'{"resources": {"core": {"remaining": 4999, "limit": 5000}}}')
+check("github_rate_limit разбирает ответ → (4999, 5000), LAST_FAILURE пуст",
+      real_rate_limit() == (4999, 5000) and watch.LAST_FAILURE == {})
+watch.urllib.request.urlopen = fake_urlopen(None, b'{"workflow_runs": "not a list"}')
+check("github_runs при ответе не той формы → failure.kind = format",
+      real_runs("Newik89/streams-crawl", 5).failure.get("kind") == "format")
+watch.urllib.request.urlopen = saved_urlopen
+watch.LAST_FAILURE = {}
+# ключ из файла окружения (STREAMS_ENV_FILE), с export и кавычками; переменная главнее файла
+_env_file = _Path(tempfile.mkdtemp(prefix="watch-env-")) / "env"
+_env_file.write_text('A=1\nexport STREAMS_GITHUB_READ_TOKEN="ghp_testfile"\n', encoding="utf-8")
+os.environ["STREAMS_ENV_FILE"] = str(_env_file)
+os.environ.pop(watch.TOKEN_ENV, None)
+check("github_token: из файла окружения, понимает export и кавычки", watch.github_token() == "ghp_testfile")
+check("github_headers с ключом — Bearer", watch.github_headers().get("Authorization") == "Bearer ghp_testfile")
+os.environ[watch.TOKEN_ENV] = "ghp_env"
+check("переменная окружения главнее файла", watch.github_token() == "ghp_env")
+os.environ.pop(watch.TOKEN_ENV)
+os.environ.pop("STREAMS_ENV_FILE")
+check("имя переменной — READ, не то, что читает trigger для запуска кнопкой",
+      watch.TOKEN_ENV == "STREAMS_GITHUB_READ_TOKEN" and watch.TOKEN_ENV != "STREAMS_GITHUB_TOKEN")
 
 # ── С2. проверку оборвали посреди заказа досрочного ─────────────────────────
 rule("С2", "проверку оборвали посреди заказа досрочного (перезагрузка)")
@@ -1102,6 +1185,19 @@ ticks("12:15", "12:30", "12:45")
 check("прогон не остановился за 15 мин → одна ТРЕВОГА «не остановился», отмену не повторяем",
       len(alarms_after(edge)) == 1 and "не остановился" in alarms_after(edge)[0]
       and len(TAGS) == 1, (TAGS, notes_after(edge)))
+# …а при настоящем сбое Actions у GitHub отмена может не применяться — терпим час, причина в словах
+reset(K("12:00"), [yday, stray])
+STATUS["text"] = "Actions: partial_outage"
+tick(K("12:00"))
+edge = last_id()
+ticks("12:15", "12:30", "12:45")
+check("сбой Actions у GitHub: отмена не подтверждена 45 мин → тревоги ещё нет, вторую заявку не шлём",
+      alarms_after(edge) == [] and len(TAGS) == 1, (TAGS, notes_after(edge)))
+ticks("13:00")
+check("…60 мин → одна ТРЕВОГА «не остановился» с причиной «сам сообщает о сбое»",
+      len(alarms_after(edge)) == 1 and "не остановился" in alarms_after(edge)[0]
+      and "сам сообщает о сбое" in alarms_after(edge)[0], alarms_after(edge))
+STATUS["text"] = ""
 reset(K("12:00"), [yday, stray])
 PUSH_OK[0] = False
 edge = last_id()

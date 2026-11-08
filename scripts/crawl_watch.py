@@ -10,9 +10,12 @@ r"""Сторож заказа обхода — cron сервера раз в 15 
 исполнение: функция `tick` вызывает шаги в том же порядке, что правила в
 шапке, по одной функции на правило:
 
-    С1  see_github     GitHub не отвечает → пропуск проверки, через час ТРЕВОГА
+    С1  see_github     GitHub не отвечает → пропуск проверки; почему молчит — страница
+                       состояния GitHub, наш лимит, код ответа (`watch.silence_reason`);
+                       через час (чужой сбой или сеть сервера — через 3) ТРЕВОГА с причиной
     С2  resume_early   прошлую проверку оборвали посреди заказа досрочного
-    С3  cancel_stuck   зависший прогон → одна заявка отмены; стоящая очередь → строка, ТРЕВОГА
+    С3  cancel_stuck   зависший прогон → одна заявка отмены; стоящая очередь → строка, ТРЕВОГА;
+                       настоящий сбой Actions у GitHub (`Round.trouble`) → терпение дольше
     С4  follow_order   КАЖДЫЙ открытый заказ книги: ждать / забрать / закрыть / сорвался / состарился
     С5  audit_slot     плановая заявка на слот не приходила → слот сорвавшийся
     С6  order_early    сорвавшийся слот → один досрочный обход либо ТРЕВОГА
@@ -29,7 +32,11 @@ r"""Сторож заказа обхода — cron сервера раз в 15 
 (`/var/log/streams-watch.log`). Проверка идёт под общим с заявкой замком
 (`watch.order_lock`, правило З1). Запросов к API GitHub за проверку: один
 свой (список прогонов) и по одному у каждой заявки, которую сторож подаёт
-(своя заявка — не больше одной за проверку, кроме досрочного).
+(своя заявка — не больше одной за проверку, кроме досрочного). Пока GitHub
+молчит или что-то стоит — ещё страница состояния githubstatus.com и
+`/rate_limit` (оба в лимит не входят). С ключом без прав
+(`STREAMS_GITHUB_READ_TOKEN` в /etc/streams-schedule.env, `watch.github_token`)
+запросы именные — 5000 в час вместо 60 и без сбоев «для неавторизованных».
 """
 
 from __future__ import annotations
@@ -123,11 +130,13 @@ class Round:
         self._trouble: str | None = None  # что GitHub говорит о себе — раз за проверку
 
     def trouble(self) -> str:
-        """Что GitHub сам сообщает о сбое API или Actions (страница состояния,
-        `watch.github_status`) — спрашивается один раз за проверку и только
-        когда какому-то правилу это понадобилось; "" — сбоя нет."""
+        """Настоящий сбой Actions у GitHub (страница состояния,
+        `watch.github_status` → `watch.actions_down`): очередь стоит и прогоны
+        не стартуют не по нашей вине. Спрашивается один раз за проверку и
+        только когда какому-то правилу это понадобилось; "" — сбоя нет
+        (жёлтое «degraded» и беды API сюда не считаются)."""
         if self._trouble is None:
-            self._trouble = watch.github_status() or ""
+            self._trouble = watch.actions_down(watch.github_status())
         return self._trouble
 
     def log(self, words: str) -> None:
@@ -223,13 +232,16 @@ def see_github(t: Round) -> bool:
     if since is None:
         silent, since = {"since": watch.when(t.now)}, t.now
     minutes = (t.now - since).total_seconds() / 60
+    failure = dict(getattr(t.runs, "failure", {}) or {})   # неудача ИМЕННО списка прогонов — до других запросов
     theirs = watch.github_status()                 # что GitHub говорит о себе (None — страница молчит)
-    t._trouble = theirs or ""
+    t._trouble = watch.actions_down(theirs)
     quota = watch.github_rate_limit()              # не упёрлись ли мы в лимит
-    kind, why, patience = watch.silence_reason(theirs, quota)
+    kind, why, patience = watch.silence_reason(theirs, quota, failure)
     silent["why"] = kind
     if theirs:
         silent["github_down"] = theirs
+    else:
+        silent.pop("github_down", None)            # GitHub ожил, а список ещё молчит — причина уже не его
     t.log(f"GitHub не ответил на список прогонов (молчит {minutes:.0f} мин; {why}) — "
           f"подожду следующей проверки")
     if minutes >= patience and not silent.get("alarmed"):
