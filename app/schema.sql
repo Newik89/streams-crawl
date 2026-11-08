@@ -290,3 +290,23 @@ CREATE TABLE IF NOT EXISTS visit_days_done (
     day     TEXT PRIMARY KEY,
     made_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- Книга ошибок словаря команд (карточка словаря 09.11.2026, решение владельца
+-- 08.11 «ничего не удалять»): сырая строка → сайт/язык → куда повело → верный
+-- смысл. Классы: пара | коллизия | двусмысленно | слито | возможный дубль.
+-- Записи классов «пара» и «коллизия» — карантин: сама строка в team_aliases
+-- живёт, но словарь её не отдаёт (app/dictionary.py, правило С3).
+CREATE TABLE IF NOT EXISTS dictionary_errors (
+    id            INTEGER PRIMARY KEY,
+    alias         TEXT NOT NULL,            -- сырая строка (написание)
+    lang          TEXT,                     -- язык записи словаря
+    team_id       INTEGER REFERENCES teams(id) ON DELETE SET NULL,
+    class         TEXT NOT NULL,            -- пара | коллизия | двусмысленно | слито | возможный дубль
+    source_domain TEXT,                     -- сайт, где встретилось
+    led_to        TEXT,                     -- куда повело (каноническое имя)
+    truth         TEXT,                     -- верный смысл, если известен
+    note          TEXT,
+    answered_by   TEXT NOT NULL DEFAULT 'программа',
+    created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS dictionary_errors_alias ON dictionary_errors (alias, class);
