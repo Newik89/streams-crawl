@@ -239,6 +239,35 @@ check("угаданный эфир «Übertragung» несёт слово сло
       "его в markers.json нет, отсев молча резал все такие строки)",
       guessed_orf and all(passes(p) for p in guessed_orf))
 
+print("tv.orf.at 13.11.2026 — пресс-конференция с парой в названии (книга 096, #10075)")
+# настоящая страница ORF SPORT+ за 13.11 из сбора #426: «LIVE Pressekonferenz Fußball
+# ÖFB MD-1 vor Österreich - Irland» — честный LIVE, но это получасовая пресс-конференция
+# за день до матча, а не матч; стоп-слово ищется словарём языка сайта (книга 084)
+from app import site_lang  # noqa: E402
+ORF_DE = MARKERS.for_langs(site_lang.of("tv.orf.at"))
+orf13 = parse("tv.orf.at", "orf_sport_plus_2026-11-13.html",
+              "https://tv.orf.at/program/orfs/index~_day-13-11-2026_"
+              "-abaf466d7772d928f2a655b73430593b1a87c4f0.html", day=date(2026, 11, 13))
+pk = find(orf13, "Pressekonferenz")
+check("строка «LIVE Pressekonferenz … ÖFB MD-1 vor Österreich - Irland» прочитана как эфир сайта",
+      len(pk) == 1 and said(pk[0]) == SITE_LIVE, [(p.title, said(p)) for p in pk])
+verdict_pk = live.check(pk[0], ORF_DE) if pk else None
+check("…но стоп-слово «Pressekonferenz» (словарь, язык de) её снимает — это не матч",
+      verdict_pk is not None and not verdict_pk.ok
+      and "стоп-слово" in verdict_pk.reason and "pressekonferenz" in verdict_pk.reason.lower(),
+      verdict_pk)
+sturm = find(orf13, "Sturm Graz - First Vienna")
+check("соседний LIVE-матч Sturm Graz — First Vienna того же дня остаётся",
+      len(sturm) == 1 and live.check(sturm[0], ORF_DE).ok,
+      [(p.title, live.check(p, ORF_DE)) for p in sturm])
+check("на странице 13.11 этим словом снята ровно одна строка",
+      sum("pressekonferenz" in live.check(p, ORF_DE).reason.lower() for p in orf13) == 1)
+check("слово ищется и у других немецкоязычных сайтов (tv.sport1.de), а на хорватском — нет",
+      bool(MARKERS.for_langs(site_lang.of("tv.sport1.de")).found(
+          MARKERS.for_langs(site_lang.of("tv.sport1.de")).stop_title, "Pressekonferenz vor dem Spiel"))
+      and not MARKERS.for_langs(site_lang.of("sportklub.hr")).found(
+          MARKERS.for_langs(site_lang.of("sportklub.hr")).stop_title, "Pressekonferenz vor dem Spiel"))
+
 print("raspored.hrt.hr — (R) и «prijenos»")
 hrt = parse("raspored.hrt.hr", "hrt_mreza=3_datum=2026-10-08.txt",
             "https://raspored.hrt.hr/format/text.xml?mreza=3&datum=2026-10-08",
