@@ -77,6 +77,12 @@ def fake_wait(order, slug, kinds, **k):
 
 REAL_WAIT = watch.wait_for_start          # настоящее ожидание — для правила З7
 watch.github_runs = fake_runs
+#: С1: что «говорит о себе» GitHub и остаток лимита — без сети; разбор
+#: страницы состояния (чистая функция) проверяется напрямую — `real_status`
+STATUS = {"text": "", "quota": None}
+real_status = watch.github_status
+watch.github_status = lambda data=None: STATUS["text"]
+watch.github_rate_limit = lambda: STATUS["quota"]
 watch.wait_for_start = fake_wait
 REAL_RESULT = watch.result_state              # настоящая сверка — для правила С4в
 RESULT_ASKED: list[tuple] = []                # с чем сторож спрашивал судьбу результата
@@ -872,6 +878,87 @@ API["runs"] = [probe]
 tick(K("16:45"))
 check("короткая тишина (одна проверка) → ни тревоги, ни «отбоя»", notes_after(edge) == [],
       notes_after(edge))
+# GitHub сам сообщает о сбое (08.11.2026, «timeouts for unauthenticated users»)
+reset(K("16:30"), [])
+STATUS["text"] = "API Requests: degraded_performance"
+edge = last_id()
+ticks("16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00")
+check("GitHub пишет о своём сбое → через час тревоги ещё нет (терпение 3 часа)",
+      alarms_after(edge) == [] and jget("crawl_silent").get("github_down") == "API Requests: degraded_performance",
+      (alarms_after(edge), jget("crawl_silent")))
+ticks("18:15", "18:30", "18:45", "19:00", "19:15", "19:30")
+check("молчит 3 часа при сбое GitHub → одна ТРЕВОГА, в ней причина «сбой на стороне GitHub»",
+      len(alarms_after(edge)) == 1 and "сбой на стороне GitHub" in alarms_after(edge)[0]
+      and "degraded_performance" in alarms_after(edge)[0], alarms_after(edge))
+API["runs"] = [probe]
+edge = last_id()
+tick(K("19:45"))
+check("ответил → «снова отвечает … сбой был на стороне GitHub», память стёрта",
+      any("сбой был на стороне GitHub" in n for n in notes_after(edge)) and jget("crawl_silent") == {},
+      notes_after(edge))
+STATUS["text"] = ""
+# наш лимит исчерпан (кто-то много жал кнопки) — причина в тревоге, терпение прежнее
+reset(K("16:30"), [])
+STATUS["quota"] = (0, 60)
+edge = last_id()
+ticks("16:30", "16:45", "17:00", "17:15", "17:30")
+check("лимит исчерпан → тревога через час, в ней остаток «0 из 60»",
+      len(alarms_after(edge)) == 1 and "0 из 60" in alarms_after(edge)[0], alarms_after(edge))
+STATUS["quota"] = None
+API["runs"] = [probe]
+tick(K("17:45"))
+# разбор страницы состояния — чистая функция
+check("github_status: все части в порядке → пусто",
+      real_status({"components": [{"name": "API Requests", "status": "operational"},
+                                  {"name": "Actions", "status": "operational"},
+                                  {"name": "Copilot", "status": "major_outage"}]}) == "")
+check("github_status: сбой API и Actions → обе части с их состоянием",
+      real_status({"components": [{"name": "API Requests", "status": "degraded_performance"},
+                                  {"name": "Actions", "status": "partial_outage"}]})
+      == "API Requests: degraded_performance; Actions: partial_outage")
+check("github_status: страница не ответила или не та форма → пусто",
+      real_status({}) == "" and real_status({"components": "нет"}) == "")
+check("github_headers: без ключа — открытый запрос, с ключом — Bearer",
+      "Authorization" not in watch.github_headers() or not os.environ.get(watch.TOKEN_ENV))
+# почему молчит — чистая функция `silence_reason` (вид, слова, терпение)
+sr = watch.silence_reason
+check("silence_reason: страница пишет о сбое → github, 180 мин",
+      sr("API Requests: degraded_performance", (59, 60), {})[0::2] == ("github", 180))
+check("…лимит исчерпан по остатку → limit, 60 мин, в словах «0 из 60»",
+      sr("", (0, 60), {})[0::2] == ("limit", 60) and "0 из 60" in sr("", (0, 60), {})[1])
+check("…403 с остатком 0 в заголовке → limit",
+      sr("", None, {"code": 403, "remaining": "0", "reason": "Forbidden"})[0] == "limit")
+check("…429 → limit", sr("", None, {"code": 429, "reason": "Too Many Requests"})[0] == "limit")
+check("…404 → denied, 60 мин", sr("", (59, 60), {"code": 404, "reason": "Not Found"})[0::2] == ("denied", 60))
+check("…502 при молчащей странице состояния → github, 180 мин",
+      sr(None, None, {"code": 502, "reason": "Bad Gateway"})[0::2] == ("github", 180))
+check("…502 при здоровой странице → github, 60 мин",
+      sr("", (59, 60), {"code": 502, "reason": "Bad Gateway"})[0::2] == ("github", 60))
+check("…ответ не той формы → format, 60 мин",
+      sr("", (59, 60), {"code": 200, "kind": "format"})[0::2] == ("format", 60))
+check("…всё молчит без кода ответа → network, 180 мин",
+      sr(None, None, {"code": None, "reason": "URLError: timed out"})[0::2] == ("network", 180))
+check("…таймаут при здоровой странице → unknown, 60 мин",
+      sr("", (59, 60), {"code": None, "reason": "timed out"})[0::2] == ("unknown", 60))
+# сеть самого сервера: ни GitHub, ни его страница состояния не отвечают
+reset(K("16:30"), [])
+STATUS["text"] = None
+watch.LAST_FAILURE = {"url": "x", "code": None, "reason": "URLError: timed out"}
+edge = last_id()
+ticks("16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00")
+check("сеть сервера (всё молчит) → через час тревоги нет, причина в памяти — network",
+      alarms_after(edge) == [] and jget("crawl_silent").get("why") == "network",
+      (alarms_after(edge), jget("crawl_silent")))
+ticks("18:15", "18:30", "18:45", "19:00", "19:15", "19:30")
+check("…3 часа → одна ТРЕВОГА со словами «сеть самого сервера»",
+      len(alarms_after(edge)) == 1 and "сеть самого сервера" in alarms_after(edge)[0], alarms_after(edge))
+API["runs"] = [probe]
+edge = last_id()
+tick(K("19:45"))
+check("…ожил → «снова отвечает … не было связи у самого сервера»",
+      any("не было связи у самого сервера" in n for n in notes_after(edge)), notes_after(edge))
+STATUS["text"] = ""
+watch.LAST_FAILURE = {}
 
 # ── С2. проверку оборвали посреди заказа досрочного ─────────────────────────
 rule("С2", "проверку оборвали посреди заказа досрочного (перезагрузка)")
@@ -973,6 +1060,22 @@ check("…прогон наконец пошёл (создан 100 мин наз
 API["runs"] = [yday, finished(q25, K("13:50"))]
 tick(K("14:00"))
 check("…прогон закончился → память очереди чиста", jget("crawl_queue") == {}, jget("crawl_queue"))
+# очередь стоит, а GitHub сам пишет о сбое Actions → его беда: терпение 3 часа, причина в словах
+reset(K("11:50"), [yday, q25])
+order_of(f"{DAY} 11:35", 2)
+STATUS["text"] = "Actions: partial_outage"
+edge = last_id()
+ticks("11:50", "12:00", "12:15", "12:30", "12:45", "13:00")
+check("очередь стоит при сбое Actions у GitHub → предупреждение с причиной, через час тревоги нет",
+      alarms_after(edge) == [] and TAGS == [] and ORDERS == []
+      and any("ждёт очереди" in n and "сам сообщает о сбое" in n for n in notes_after(edge)),
+      (alarms_after(edge), notes_after(edge)))
+ticks("13:30", "14:00", "14:30", "14:45")
+check("…стоит 3 часа → одна ТРЕВОГА, в ней причина «GitHub сам сообщает о сбое»",
+      len(alarms_after(edge)) == 1 and "сам сообщает о сбое" in alarms_after(edge)[0], alarms_after(edge))
+STATUS["text"] = ""
+API["runs"] = [yday, finished(q25, K("14:50"))]
+tick(K("15:00"))
 run2 = mkrun(K("10:00"), status="in_progress", title="Обход full-2")
 wait2 = mkrun(K("10:10"), status="pending", title="Обход full-6")
 check("ждущий за зависшим не отменяется — только сам зависший",
@@ -1383,6 +1486,18 @@ order_of(f"{DAY} 13:00", 6)
 tick(K("13:10"))
 check("РУЧНОЙ заказ 13:00 не стартовал за 10 мин → один повтор той же глубины",
       ORDERS == [6] and state_get().get("reordered") is True, (ORDERS, state_get()))
+# …а при сбое Actions у самого GitHub «не стартовал» не выносится: перезаказ встал бы в ту же беду
+reset(K("13:10"), [yday])
+order_of(f"{DAY} 13:00", 6)
+STATUS["text"] = "Actions: major_outage"
+edge = last_id()
+tick(K("13:10"))
+check("заказ без прогона 10 мин при сбое Actions у GitHub → ни повтора, ни тревоги — ждём",
+      ORDERS == [] and alarms_after(edge) == [] and not state_get().get("reordered"),
+      (ORDERS, notes_after(edge), state_get()))
+STATUS["text"] = ""
+tick(K("13:25"))
+check("…GitHub ожил, прогона так и нет → теперь один повтор", ORDERS == [6], ORDERS)
 reset(K("13:15"), [probe, mfail])
 order_of(f"{DAY} 13:00", 6)
 cw.order_crawl = refused_order
