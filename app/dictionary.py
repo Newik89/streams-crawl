@@ -172,8 +172,35 @@ def merged_map(conn: sqlite3.Connection) -> dict[int, int]:
     return out
 
 
-def team_alias_map(conn: sqlite3.Connection,
-                   lang: str | None = None) -> dict[str, tuple[int, str]]:
+def team_sports_known(conn: sqlite3.Connection) -> dict[int, set[str]]:
+    """Вид спорта команды (F | B | T): по событиям базы и по памяти
+    `team_sports` из data/dictionaries.json (книга 097). Команда с двумя
+    видами — оба (такая не сужает спор)."""
+    import json
+    from pathlib import Path
+    out: dict[int, set[str]] = {}
+    try:
+        for r in conn.execute("SELECT t.id AS id, e.sport AS sport FROM events e "
+                              "JOIN teams t ON t.id IN (e.team_home_id, e.team_away_id) "
+                              "GROUP BY t.id, e.sport"):
+            out.setdefault(r["id"], set()).add(r["sport"])
+    except sqlite3.OperationalError:
+        pass
+    path = Path(__file__).resolve().parent.parent / "data" / "dictionaries.json"
+    try:
+        memory = json.loads(path.read_text(encoding="utf-8")).get("team_sports") or {}
+    except (OSError, ValueError, AttributeError):
+        memory = {}
+    if memory:
+        for r in conn.execute("SELECT id, canonical_name FROM teams"):
+            sport = memory.get(r["canonical_name"])
+            if isinstance(sport, str) and sport:
+                out.setdefault(r["id"], set()).add(sport)
+    return out
+
+
+def team_alias_map(conn: sqlite3.Connection, lang: str | None = None,
+                   sport: str | None = None) -> dict[str, tuple[int, str]]:
     """Написание → (id команды, каноническое имя) — только бесспорные.
 
     Одно написание бывает у нескольких команд: «Dinamo» — Загреб, Бухарест
@@ -185,6 +212,9 @@ def team_alias_map(conn: sqlite3.Connection,
           команда, слитая в другую (`merged_into`), читается как выжившая;
       С1. `lang` — язык сайта: среди спорных записей сперва те, что с этим
           языком, затем без языка, затем любые; остался один клуб — ответ;
+      С1б. `sport` — вид спорта страницы (F | B | T): из спорных остаются
+          команды этого вида (`team_sports_known`); `Milan` на баскетболе →
+          Olimpia Milano, на футболе → AC Milan (владелец 09.11);
       С4. написание равно каноническому имени одной из команд (без регистра)
           — она и есть ответ, чужие записи не считаются;
       старое: владелец чужой категории («ASTON VILLA» на Aston Villa U19) не
@@ -209,6 +239,7 @@ def team_alias_map(conn: sqlite3.Connection,
             per.append((tid, r["lang"]))
         for tid, canon in conn.execute("SELECT id, canonical_name FROM teams"):
             canon_of[tid] = canon
+        sports = team_sports_known(conn) if sport else {}
         out: dict[str, tuple[int, str]] = {}
         for alias, per in rows.items():
             ids = [t for t, _ in per]
@@ -218,6 +249,10 @@ def team_alias_map(conn: sqlite3.Connection,
                                [t for t, l in per if l is None] or ids
                     if len(set(narrowed)) == 1:
                         ids = narrowed
+                if len(set(ids)) > 1 and sport:
+                    by_sport = [t for t in ids if sports.get(merged.get(t, t), sports.get(t)) == {sport}]
+                    if len(set(by_sport)) == 1:
+                        ids = by_sport
                 if len(set(ids)) > 1:
                     own = [t for t in set(ids) if canon_of[t].casefold() == alias.casefold()]
                     if len(own) == 1:
@@ -231,15 +266,17 @@ def team_alias_map(conn: sqlite3.Connection,
                 ids = items
             out[alias] = (ids[-1], canon_of[ids[-1]])
         return out
-    return _cached(conn, "team_aliases", build, extra=(lang, _errors_stamp(conn)))
+    return _cached(conn, "team_aliases", build, extra=(lang, sport, _errors_stamp(conn)))
 
 
-def team_overrides(conn: sqlite3.Connection, lang: str | None = None) -> dict[str, str]:
+def team_overrides(conn: sqlite3.Connection, lang: str | None = None,
+                   sport: str | None = None) -> dict[str, str]:
     """Сырое имя → каноническое. Отдаём готовым словарём: в разборе он
     спрашивается на каждое имя, а ходить в базу столько раз незачем.
-    `lang` — язык сайта (С1): спорные написания решаются по нему."""
+    `lang` — язык сайта (С1), `sport` — вид спорта страницы (С1б): спорные
+    написания решаются по ним."""
     return {alias: canon for alias, (_, canon)
-            in team_alias_map(conn, lang).items()}
+            in team_alias_map(conn, lang, sport).items()}
 
 
 #: словари «написание → владелец» считаются заметно (у спорных имён —

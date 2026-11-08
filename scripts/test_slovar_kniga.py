@@ -113,6 +113,23 @@ conn.commit()
 m3 = dictionary.team_alias_map(conn)
 check("С6 «Milan» после слияния → AC Milan", m3.get("Milan", (0, ""))[1] == "AC Milan", m3.get("Milan"))
 
+# С1б — вид спорта страницы
+olimpia = R(conn, "Milan", "Olimpia Milano")
+other_b = R(conn, "Virtus Bologna", "Virtus Bologna")
+other_f = R(conn, "Inter", "Inter")
+# команда «Milan» остаётся слитой в AC Milan (С6) — иначе С4 отдаст её саму
+conn.execute("INSERT INTO events (sport, team_home_id, team_away_id, start_utc, start_kyiv) "
+             "VALUES ('B', ?, ?, '2026-11-09 18:00:00', '2026-11-09 20:00:00')", (olimpia, other_b))
+conn.execute("INSERT INTO events (sport, team_home_id, team_away_id, start_utc, start_kyiv) "
+             "VALUES ('F', ?, ?, '2026-11-09 18:00:00', '2026-11-09 20:00:00')", (milan, other_f))
+conn.commit()
+mb = dictionary.team_alias_map(conn, sport="B")
+mf = dictionary.team_alias_map(conn, sport="F")
+mn = dictionary.team_alias_map(conn)
+check("С1б Milan на баскетбольной странице → Olimpia Milano", mb.get("Milan", (0, ""))[1] == "Olimpia Milano", mb.get("Milan"))
+check("С1б Milan на футбольной странице → AC Milan", mf.get("Milan", (0, ""))[1] == "AC Milan", mf.get("Milan"))
+check("С1б Milan без вида — молчит", "Milan" not in mn, mn.get("Milan"))
+
 # С9 — книга без мусора
 n1 = dictionary.note_error(conn, "Динамо", "двусмысленно")
 n2 = dictionary.note_error(conn, "Динамо", "двусмысленно")
