@@ -120,6 +120,15 @@ class Round:
         self.sent = False               # своя заявка повтора в эту проверку уже ушла
         self.owner_stopped: set = set() # id прогонов, остановленных кнопкой владельца
         self.ordered_ids: set = set()   # id прогонов, отвечающих заказам книги
+        self._trouble: str | None = None  # что GitHub говорит о себе — раз за проверку
+
+    def trouble(self) -> str:
+        """Что GitHub сам сообщает о сбое API или Actions (страница состояния,
+        `watch.github_status`) — спрашивается один раз за проверку и только
+        когда какому-то правилу это понадобилось; "" — сбоя нет."""
+        if self._trouble is None:
+            self._trouble = watch.github_status() or ""
+        return self._trouble
 
     def log(self, words: str) -> None:
         """Строка только в журнал cron."""
@@ -194,29 +203,46 @@ def run_of(t: Round, rec: dict) -> dict | None:
 
 def see_github(t: Round) -> bool:
     """С1. Берём список прогонов. GitHub не ответил — сторож в эту проверку
-    слеп: пропускаем её; молчит `API_SILENT_MINUTES` подряд — одна ТРЕВОГА;
-    снова ответил после тревоги — строка «отбой»."""
+    слеп: пропускаем её и смотрим, почему молчит: страница состояния GitHub
+    (`watch.github_status`) и остаток нашего лимита (`watch.github_rate_limit`).
+    GitHub сам пишет о сбое → это его беда, ждём `API_SILENT_GITHUB_DOWN_MINUTES`;
+    иначе `API_SILENT_MINUTES`. Дождались — одна ТРЕВОГА с причиной; снова
+    ответил после тревоги — строка «отбой»."""
     t.runs = watch.github_runs(t.slug, workflow=watch.CRAWL_WORKFLOW)
     silent = watch.load_json(t.conn, "crawl_silent")
     since = watch.moment(silent.get("since", ""))
     if t.runs:
         if silent.get("alarmed"):
+            was = {"github": " — сбой был на стороне GitHub",
+                   "network": " — не было связи у самого сервера"}.get(silent.get("why"), "")
             t.say(f"GitHub снова отвечает на список прогонов (молчал с "
-                  f"{watch.hm(since)}) — сторож опять видит обходы")
+                  f"{watch.hm(since)}{was}) — сторож опять видит обходы")
         if silent:
             t.save("crawl_silent", {})
         return True
     if since is None:
         silent, since = {"since": watch.when(t.now)}, t.now
     minutes = (t.now - since).total_seconds() / 60
-    t.log(f"GitHub не ответил на список прогонов (молчит {minutes:.0f} мин) — "
+    theirs = watch.github_status()                 # что GitHub говорит о себе (None — страница молчит)
+    t._trouble = theirs or ""
+    quota = watch.github_rate_limit()              # не упёрлись ли мы в лимит
+    kind, why, patience = watch.silence_reason(theirs, quota)
+    silent["why"] = kind
+    if theirs:
+        silent["github_down"] = theirs
+    t.log(f"GitHub не ответил на список прогонов (молчит {minutes:.0f} мин; {why}) — "
           f"подожду следующей проверки")
-    if minutes >= watch.API_SILENT_MINUTES and not silent.get("alarmed"):
+    if minutes >= patience and not silent.get("alarmed"):
         silent["alarmed"] = True
+        ours = {"github": " Это сбой на стороне GitHub — чинить у нас нечего, ждём.",
+                "network": " Похоже, это сеть самого сервера — проверьте, жив ли он.",
+                "denied": " Это наша беда — нужен человек.",
+                "format": " Нужен разработчик."}.get(kind, "")
         t.say(f"ТРЕВОГА — GitHub уже {minutes:.0f} мин (с {watch.hm(since)}) не "
               f"отвечает сторожу на список прогонов: сбои и зависания обхода сейчас "
               f"не видны, отмен и досрочных заказов сторож не делает. Плановые "
-              f"заявки уходят как обычно; ответит GitHub — сторож сверится сам")
+              f"заявки уходят как обычно; ответит GitHub — сторож сверится сам. "
+              f"Причина: {why}.{ours}")
     t.save("crawl_silent", silent)
     return False
 
@@ -319,7 +345,8 @@ def cancel_stuck(t: Round) -> None:
                 "close": "больше не заказываю — данные основного сбора уже влиты"}.get(
                 watch.recovery(watch.failure_of(rec, "failed")),
                 "больше не заказываю, подаю тревогу")
-    for action, rid, words in watch.queue_decisions(t.runs, t.now, t.queue, t.slug):
+    for action, rid, words in watch.queue_decisions(t.runs, t.now, t.queue, t.slug,
+                                                    trouble=t.trouble):
         if action == "forget":
             t.queue.pop(rid)
         elif action == "seen":
@@ -328,7 +355,8 @@ def cancel_stuck(t: Round) -> None:
             t.say(words)
             t.queue.setdefault(rid, {})["warned" if action == "warn" else "alarmed"] = True
     t.save("crawl_queue", t.queue)
-    decisions = watch.cancel_decisions(t.runs, t.now, t.cancels, t.slug, own, t.queue)
+    decisions = watch.cancel_decisions(t.runs, t.now, t.cancels, t.slug, own, t.queue,
+                                       trouble=t.trouble)
     for action, rid, words in decisions:
         if action in ("forget", "confirmed") and t.cancels[rid].get("by") == "владелец":
             # остановил владелец кнопкой: заказ этого прогона (любой) С4
@@ -432,7 +460,8 @@ def judge(t: Round, rec: dict, run: dict | None) -> tuple[str, str, str]:
                                f"кнопкой — ничего не перезаказываю, следующий "
                                f"плановый пойдёт по расписанию"), result
     hidden = bool(t.oldest and order["at"] < t.oldest)
-    verdict, words = watch.decide(order, run, t.now, rec, result, hidden, replaced)
+    verdict, words = watch.decide(order, run, t.now, rec, result, hidden, replaced,
+                                  trouble=t.trouble)
     if verdict == "wait" and run is not None and str(run.get("id")) in t.cancelling:
         verdict, words = "failed", f"прогон #{run.get('run_number')} завис, отменяю его"
     return verdict, words, result

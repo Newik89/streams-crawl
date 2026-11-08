@@ -98,8 +98,11 @@ GitHub-ом», «Заказать сбор» отказывают с объяс�
 
 ПРАВИЛА СТОРОЖА — в том же порядке, что шаги в `crawl_watch.tick`
 (что случилось → что делаем → сколько обходов закажет сторож):
-  С1. GitHub не ответил на список прогонов → проверку пропускаем; молчит
-      час подряд → одна ТРЕВОГА; снова ответил → строка «отбой». → 0.
+  С1. GitHub не ответил на список прогонов → проверку пропускаем; пока
+      молчит, сторож смотрит страницу состояния GitHub (`github_status`) и
+      остаток лимита (`github_rate_limit`): GitHub сам пишет о сбое API или
+      Actions → ждём `API_SILENT_GITHUB_DOWN_MINUTES`, иначе час; дождались
+      → одна ТРЕВОГА с причиной; снова ответил → строка «отбой». → 0.
   С2. Прошлую проверку оборвали посреди заказа досрочного или повтора
       (перезагрузка сервера; намерение пишется ДО заявки — `ordering`,
       `retrying`): заявка успела уйти → её ведёт С4; не успела → ТРЕВОГА;
@@ -276,7 +279,7 @@ GitHub-ом», «Заказать сбор» отказывают с объяс�
       пойдёт (`stuck`; у GitHub `run_started_at` — время создания); warned,
       alarmed — строка и ТРЕВОГА уже были. Пишет и читает сторож; запись
       уходит, когда прогон закончился или выпал из списка.
-  crawl_silent — с какого времени GitHub молчит (С1, UTC ISO), JSON {since,
+  crawl_silent — с какого времени GitHub молчит (С1, UTC ISO), JSON {since, github_down,
       alarmed}.
       Пишет и читает сторож; стирается, когда GitHub ответил.
 Кнопка «Сбросить память сторожа» (`reset_memory`) стирает всё, что сторож
@@ -306,7 +309,9 @@ import re
 import subprocess
 import sqlite3
 import time
+import urllib.error
 import urllib.request
+from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -391,6 +396,20 @@ LOCK_POLL_SECONDS = 0.5
 #: С1: GitHub молчит на список прогонов дольше стольких минут — тревога
 #: (лимит запросов снимается за час: дольше — уже не лимит)
 API_SILENT_MINUTES = 60
+#: С1: GitHub сам пишет на своей странице состояния о сбое API или Actions —
+#: это не наша беда, чинить нечего: тревога только если молчание тянется
+#: дольше (08.11.2026: «Increase in timeouts for some unauthenticated users»,
+#: 12:36–13:56 Киев; тревога в 13:45 ушла владельцу впустую)
+API_SILENT_GITHUB_DOWN_MINUTES = 180
+#: страница состояния GitHub (открытая, в лимит API не входит) и какие её
+#: части нам важны
+STATUS_URL = "https://www.githubstatus.com/api/v2/components.json"
+STATUS_COMPONENTS = ("API Requests", "Actions")
+#: ключ GitHub только на чтение (fine-grained, Actions: read): в окружении
+#: или строкой в /etc/streams-schedule.env — тогда 5000 запросов/час и
+#: сбои «для неавторизованных» нас не касаются. Нет — открытый API, 60/час
+TOKEN_ENV = "STREAMS_GITHUB_TOKEN"
+ENV_FILE = Path("/etc/streams-schedule.env")
 
 #: С3: потолки длительности прогона по виду, минут (05.10). Цифры — из
 #: истории 100 прогонов (#101–#200, 25.09–05.10) с запасом ×1,5 и не ниже
@@ -416,9 +435,13 @@ QUEUE_WARN_MINUTES = 20
 #: сделает. Прогон ждём дальше: GitHub сам снимет его через сутки, тогда
 #: заказ сорвётся и пойдёт по таблице `RECOVERY`
 QUEUE_ALARM_MINUTES = 60
+#: С3: очередь стоит, а GitHub сам пишет о сбое Actions — его беда, терпим дольше
+QUEUE_ALARM_MINUTES_GITHUB_DOWN = 180
 #: С3: заявка отмены исполняется за 1–2 минуты (замер 06.10: 50 секунд); не
 #: остановился за столько — тревога
 CANCEL_CONFIRM_MINUTES = 10
+#: С3: отмена не подтверждается, а GitHub сам пишет о сбое — терпим дольше
+CANCEL_CONFIRM_MINUTES_GITHUB_DOWN = 60
 #: GitHub сам обрывает прогон через столько минут (`timeout-minutes` в
 #: crawl.yml) — для слов в строках сторожа
 HARD_LIMIT_MINUTES = 150
@@ -580,22 +603,155 @@ class Runs(list):
         return out
 
 
+def github_token() -> str:
+    """Ключ GitHub только на чтение: переменная `TOKEN_ENV`, иначе строка
+    `TOKEN_ENV=…` в `ENV_FILE` (cron переменных службы не видит). Нет — ""."""
+    token = os.environ.get(TOKEN_ENV, "").strip()
+    if token:
+        return token
+    try:
+        for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
+            key, _, value = line.partition("=")
+            if key.strip() == TOKEN_ENV:
+                return value.strip().strip('"').strip("'")
+    except OSError:
+        pass
+    return ""
+
+
+def github_headers() -> dict:
+    """Заголовки запроса к API GitHub; с ключом (`github_token`) — именованный
+    запрос, без него — открытый."""
+    headers = {"Accept": "application/vnd.github+json",
+               "User-Agent": "streams-schedule-watch"}
+    token = github_token()
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    return headers
+
+
+#: последняя неудача запроса к GitHub — для С1 `silence_reason`: {url, code,
+#: reason, retry_after, remaining, kind}; пусто — последний запрос удался
+LAST_FAILURE: dict = {}
+
+
+def _get_json(url: str, headers: dict | None = None, timeout: int = 20):
+    """GET → разобранный JSON; сеть, HTTP-ошибка, не JSON → None, подробности —
+    в `LAST_FAILURE` (код ответа, причина, заголовки лимита)."""
+    global LAST_FAILURE
+    req = urllib.request.Request(url, headers=headers or {"User-Agent": "streams-schedule-watch"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as answer:
+            data = json.loads(answer.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        LAST_FAILURE = {"url": url, "code": error.code, "reason": str(error.reason)[:200],
+                        "retry_after": error.headers.get("Retry-After"),
+                        "remaining": error.headers.get("X-RateLimit-Remaining")}
+        return None
+    except (OSError, ValueError) as error:
+        LAST_FAILURE = {"url": url, "code": None,
+                        "reason": f"{type(error).__name__}: {error}"[:200]}
+        return None
+    LAST_FAILURE = {}
+    return data
+
+
 def github_runs(slug: str, limit: int = RUNS_LIMIT, workflow: str = "") -> Runs:
     """Последние прогоны репозитория (`workflow` — только этого файла), один
     запрос. GitHub не ответил — пустой список с `ok` False."""
+    global LAST_FAILURE
     where = f"workflows/{workflow}/runs" if workflow else "runs"
-    req = urllib.request.Request(
-        f"{API}/repos/{slug}/actions/{where}?per_page={limit}",
-        headers={"Accept": "application/vnd.github+json",
-                 "User-Agent": "streams-schedule-watch"})
-    try:
-        with urllib.request.urlopen(req, timeout=20) as answer:
-            data = json.loads(answer.read().decode("utf-8"))
-    except (OSError, ValueError):
+    url = f"{API}/repos/{slug}/actions/{where}?per_page={limit}"
+    data = _get_json(url, github_headers())
+    if data is None:
         return Runs.silent()
     if not isinstance(data, dict) or not isinstance(data.get("workflow_runs"), list):
+        LAST_FAILURE = {"url": url, "code": 200, "kind": "format",
+                        "reason": "в ответе нет списка workflow_runs"}
         return Runs.silent()
     return Runs(data["workflow_runs"])
+
+
+def github_status(data: dict | None = None) -> str | None:
+    """С1. Что GitHub сам говорит о себе на странице состояния: "" — всё в
+    порядке; None — страница не ответила (судить не по чему); иначе «API
+    Requests: degraded_performance; Actions: partial_outage» — только части
+    из `STATUS_COMPONENTS`. `data` — готовый ответ (для проверок)."""
+    if data is None:
+        data = _get_json(STATUS_URL, timeout=10)
+    if not isinstance(data, dict):
+        return None
+    bad = []
+    for part in data.get("components") or []:
+        if not isinstance(part, dict):
+            continue
+        if part.get("name") in STATUS_COMPONENTS and part.get("status") not in (None, "", "operational"):
+            bad.append(f"{part['name']}: {part['status']}")
+    return "; ".join(bad)
+
+
+def _trouble_text(trouble: "str | Callable[[], str] | None") -> str:
+    """`trouble` сторожа — строка или функция (страница состояния спрашивается
+    только когда до слов и правда дошло) → строка, "" — сбоя у GitHub нет."""
+    return (trouble() if callable(trouble) else trouble) or ""
+
+
+def silence_reason(theirs: str | None, quota: tuple[int, int] | None,
+                   failure: dict | None = None) -> tuple[str, str, int]:
+    """С1. Почему GitHub молчит и сколько терпеть: (вид, слова, минут до
+    тревоги). `theirs` — `github_status` (None — страница состояния не
+    ответила), `quota` — `github_rate_limit`, `failure` — `LAST_FAILURE`.
+      github  — GitHub сам пишет о сбое, либо отвечает 5xx при недоступной
+                странице состояния: его беда — `API_SILENT_GITHUB_DOWN_MINUTES`
+      network — ни GitHub, ни его страница состояния не отвечают, кода ответа
+                нет: сеть самого сервера — столько же (о лежащем сервере
+                GitHub напомнит сам через /alive)
+      limit   — исчерпан наш лимит (60/час без ключа) или вторичный лимит
+                (429, Retry-After): снимется сам за час — `API_SILENT_MINUTES`
+      denied  — 401/403/404 не по лимиту: репозиторий закрыт/переименован,
+                ключ не подходит — наша беда, `API_SILENT_MINUTES`
+      format  — ответ не той формы: API изменился — `API_SILENT_MINUTES`
+      unknown — не ответил вовремя — `API_SILENT_MINUTES`"""
+    f = failure if failure is not None else LAST_FAILURE
+    code = f.get("code")
+    reason = str(f.get("reason") or "")
+    if theirs:
+        return "github", f"GitHub сам сообщает о сбое ({theirs})", API_SILENT_GITHUB_DOWN_MINUTES
+    exhausted = (quota is not None and quota[0] == 0) or (
+        code in (403, 429) and (str(f.get("remaining")) == "0" or "rate limit" in reason.lower()))
+    if exhausted:
+        left = f"остаток {quota[0]} из {quota[1]} в час" if quota else "без ключа — 60 в час"
+        return "limit", (f"исчерпан наш лимит запросов к GitHub ({left}) — снимется сам в "
+                         f"течение часа; ключ только на чтение снял бы это навсегда"), API_SILENT_MINUTES
+    if code == 429 or (code == 403 and f.get("retry_after")):
+        return "limit", "GitHub притормозил наши запросы (вторичный лимит) — отпустит сам", API_SILENT_MINUTES
+    if code in (401, 403, 404):
+        return "denied", (f"GitHub отвечает отказом {code}: репозиторий недоступен (закрыт или "
+                          f"переименован) или ключ не подходит — это наша беда"), API_SILENT_MINUTES
+    if code is not None and code >= 500:
+        if theirs is None:
+            return "github", (f"GitHub отвечает ошибкой {code}, его страница состояния тоже "
+                              f"не отвечает"), API_SILENT_GITHUB_DOWN_MINUTES
+        return "github", f"GitHub отвечает ошибкой {code}", API_SILENT_MINUTES
+    if f.get("kind") == "format":
+        return "format", ("GitHub ответил, но список прогонов не в том виде — изменился его "
+                          "API, нужен разработчик"), API_SILENT_MINUTES
+    if code is None and theirs is None:
+        return "network", ("ни GitHub, ни его страница состояния не отвечают — похоже, нет "
+                           "связи у самого сервера (о лежащем сервере GitHub напомнит сам)"
+                           ), API_SILENT_GITHUB_DOWN_MINUTES
+    return "unknown", f"GitHub не ответил вовремя ({reason or 'без подробностей'})", API_SILENT_MINUTES
+
+
+def github_rate_limit() -> tuple[int, int] | None:
+    """С1. Остаток запросов к API за этот час: (осталось, лимит); сам запрос
+    в лимит не входит. GitHub не ответил — None."""
+    data = _get_json(f"{API}/rate_limit", github_headers(), timeout=10)
+    try:
+        core = data["resources"]["core"]
+        return int(core["remaining"]), int(core["limit"])
+    except (TypeError, KeyError, ValueError):
+        return None
 
 
 def crawl_only(runs: list[dict], slug: str = "") -> list[dict]:
@@ -1558,12 +1714,16 @@ def queue_waits(runs: list[dict], now: datetime, slug: str = "") -> list[dict]:
 
 
 def queue_decisions(runs: list[dict], now: datetime, queue: dict,
-                    slug: str = "") -> list[tuple[str, str, str]]:
+                    slug: str = "", trouble: "str | Callable[[], str]" = ""
+                    ) -> list[tuple[str, str, str]]:
     """Очередь GitHub стоит (С3): [(действие, id прогона, слова)]. seen —
     прогон всё ещё ждёт: запомнить, когда видели (по этой отметке `stuck`
     считает, когда он пошёл); warn — одна строка-предупреждение; alarm —
     одна ТРЕВОГА; forget — прогон закончился или выпал из списка, забыть.
-    `queue` — память `crawl_queue`."""
+    `queue` — память `crawl_queue`. `trouble` — что GitHub говорит о себе
+    (`github_status`; спрашивается, только когда очередь и правда стоит):
+    сбой у GitHub → тревога через `QUEUE_ALARM_MINUTES_GITHUB_DOWN`, а не
+    `QUEUE_ALARM_MINUTES`, и причина в словах."""
     waiting = {str(w["run"].get("id")): w for w in queue_waits(runs, now, slug)}
     alive = {str(r.get("id")) for r in active_crawls(runs, slug)}
     out = [("forget", rid, "") for rid in queue if rid not in alive]
@@ -1572,31 +1732,37 @@ def queue_decisions(runs: list[dict], now: datetime, queue: dict,
         seen = queue.get(rid, {})
         out.append(("seen", rid, ""))
         what = f"прогон #{r.get('run_number')} ({describe(*run_kind(r))})"
-        if minutes >= QUEUE_ALARM_MINUTES and not seen.get("alarmed"):
+        theirs = _trouble_text(trouble)
+        patience = QUEUE_ALARM_MINUTES_GITHUB_DOWN if theirs else QUEUE_ALARM_MINUTES
+        tail = f" GitHub сам сообщает о сбое ({theirs}) — это его беда, ждём." if theirs else ""
+        if minutes >= patience and not seen.get("alarmed"):
             out.append(("alarm", rid,
                         f"ТРЕВОГА — {what} {minutes:.0f} мин ждёт очереди, хотя "
                         f"впереди никого: очередь GitHub стоит. Не отменяю — новый "
                         f"заказ встал бы в ту же очередь; GitHub сам снимет прогон "
-                        f"через сутки, тогда заказ пойдёт по таблице RECOVERY"))
+                        f"через сутки, тогда заказ пойдёт по таблице RECOVERY.{tail}"))
         elif not seen.get("warned"):
             out.append(("warn", rid,
                         f"{what} {minutes:.0f} мин ждёт очереди, хотя впереди никого "
                         f"(обычно — минута). Не отменяю: к сайтам он не ходил, новый "
-                        f"заказ встал бы туда же. Через {QUEUE_ALARM_MINUTES} мин — "
-                        f"тревога"))
+                        f"заказ встал бы туда же. Через {patience} мин — "
+                        f"тревога.{tail}"))
     return out
 
 
 def cancel_decisions(runs: list[dict], now: datetime, cancels: dict,
                      slug: str = "", own: dict | None = None,
-                     queue: dict | None = None) -> list[tuple[str, str, str]]:
+                     queue: dict | None = None,
+                     trouble: "str | Callable[[], str]" = "") -> list[tuple[str, str, str]]:
     """Отмена зависших (С3): [(действие, id прогона, слова)]. cancel — подать
     заявку отмены; confirmed — GitHub подтвердил, прогон остановлен; alarm —
     прогон не остановился за `CANCEL_CONFIRM_MINUTES` после заявки (тревога
-    один раз); forget — прогона уже нет в списке, забыть.
+    один раз; GitHub сам пишет о сбое — `CANCEL_CONFIRM_MINUTES_GITHUB_DOWN`
+    и причина в словах); forget — прогона уже нет в списке, забыть.
     `cancels` — память `crawl_cancel`: прогон, который в ней есть, второй
     заявки отмены не получает. `own` — {id прогона заказа сторожа: что
-    сторож сделает с этим заказом дальше (С4г)}."""
+    сторож сделает с этим заказом дальше (С4г)}. `trouble` — `github_status`
+    строкой или функцией."""
     own = own or {}
     by_id = {str(r.get("id")): r for r in crawl_only(runs, slug)}
     out = []
@@ -1613,10 +1779,15 @@ def cancel_decisions(runs: list[dict], now: datetime, cancels: dict,
         asked = moment(c.get("at", ""))
         since = (utc(now) - asked).total_seconds() / 60 if asked else 0
         if since >= CANCEL_CONFIRM_MINUTES and not c.get("alarmed"):
+            theirs = _trouble_text(trouble)
+            if theirs and since < CANCEL_CONFIRM_MINUTES_GITHUB_DOWN:
+                continue
+            tail = (f" GitHub сам сообщает о сбое ({theirs}) — потому, видимо, и не "
+                    f"останавливается." if theirs else "")
             out.append(("alarm", rid,
                         f"ТРЕВОГА — прогон #{number} не остановился за {since:.0f} мин "
                         f"после заявки отмены; GitHub всё равно оборвёт его через "
-                        f"{HARD_LIMIT_MINUTES} мин после старта"))
+                        f"{HARD_LIMIT_MINUTES} мин после старта.{tail}"))
     for s in stuck(runs, now, slug, queue):
         r = s["run"]
         rid = str(r.get("id"))
@@ -1683,7 +1854,8 @@ def order_kind(state: dict) -> str:
 
 def decide(order: dict, run: dict | None, now: datetime, state: dict,
            result: str, hidden: bool = False,
-           replaced_by: dict | None = None) -> tuple[str, str]:
+           replaced_by: dict | None = None,
+           trouble: "str | Callable[[], str]" = "") -> tuple[str, str]:
     """Что с заказом сейчас (С4): (вердикт, слова). closed — по заказу всё
     решено раньше (забран, сорвался и обработан, вытеснен); expired — заказ
     старше `ORDER_TTL_HOURS` и не закрыт (С4д); wait — рано судить (С4а);
@@ -1695,7 +1867,9 @@ def decide(order: dict, run: dict | None, now: datetime, state: dict,
     раньше, чем попал на сервер (С4г).
     `result` — судьба результата прогона (`result_state`); `hidden` —
     список прогонов полон, а заказ старше самого старого в нём: прогона
-    заказа может быть просто не видно — «не стартовал» не выносим."""
+    заказа может быть просто не видно — «не стартовал» не выносим. `trouble`
+    — что GitHub говорит о себе (`github_status`): сбой у него → прогона
+    нет не по нашей вине, «не стартовал» тоже не выносим, ждём."""
     if not is_open(state):
         return "closed", "по заказу всё решено раньше"
     now = utc(now)
@@ -1708,6 +1882,12 @@ def decide(order: dict, run: dict | None, now: datetime, state: dict,
         if hidden:
             return "wait", (f"прогона заказа {order['stamp']} нет среди последних "
                             f"{RUNS_LIMIT} прогонов — он старше их, судить не по чему, жду")
+        theirs = _trouble_text(trouble)
+        if theirs:
+            # сбой у самого GitHub: «не стартовал» не выносим — перезаказ встал бы
+            # в ту же беду и удвоил бы обход, когда GitHub оживёт; предел — ORDER_TTL_HOURS
+            return "wait", (f"заявка {order['stamp']} ушла {age:.0f} мин назад, прогона нет, "
+                            f"но GitHub сам сообщает о сбое ({theirs}) — жду, не перезаказываю")
         return "failed", f"обход не стартовал за {age:.0f} мин после заявки {order['stamp']}"
     number = run.get("run_number")
     if (run.get("status") or "") in RUNNING:
