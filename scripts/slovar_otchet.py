@@ -36,6 +36,10 @@ r"""Отчёт по словарю команд — ТОЛЬКО ЧТЕНИЕ (�
      `AC Milan`), или сокращение/инициалы (`Atl.` → Atletico, `PSG`), или
      хвост ` WO` у теннисистов → «сливать точно»; но если обе эталонные и
      страна не подтверждает — только «возможный дубль»;
+     5а. имена РАЗНЫЕ на вид (не п. 5 первой части), вид спорта известен не
+     у обеих и футбола нет ни у одной → «возможный дубль» (окно 49: баскетбол
+     Oldenburg, Chemnitz, Heidelberg не сливать с VfB Oldenburg, Chemnitzer,
+     Heidelberg Utd);
   6. улики (любая достаточна): один матч эталона `fs:` под двумя именами
      (events.flags одинаковы, та же сторона); общее написание С ЯЗЫКОМ у
      обеих; Y эталону неизвестна и совпавшее написание у X — с языком
@@ -174,8 +178,17 @@ def team_sport_memory() -> dict[str, str]:
 
 
 def collect(conn: sqlite3.Connection) -> dict:
-    teams = {r["id"]: dict(r) for r in conn.execute(
-        "SELECT id, canonical_name, country FROM teams")}
+    """Отчёт по словарю. Команды, уже слитые в другую (`teams.merged_into`,
+    шаг 4 — `slovar_klassifikator.py`), в отчёт не входят: их написания
+    переехали к выжившему. Для классификатора отчёт отдаёт и сами правила
+    (ключи с «_»: `_решить`, `_выживший`, `_пары`, `_дк`, `_команды`) — одно
+    правило в одном месте."""
+    try:
+        teams = {r["id"]: dict(r) for r in conn.execute(
+            "SELECT id, canonical_name, country FROM teams WHERE merged_into IS NULL")}
+    except sqlite3.OperationalError:          # база старше карточки
+        teams = {r["id"]: dict(r) for r in conn.execute(
+            "SELECT id, canonical_name, country FROM teams")}
     by_canon_ci: dict[str, list[int]] = defaultdict(list)
     for tid, t in teams.items():
         by_canon_ci[t["canonical_name"].casefold()].append(tid)
@@ -309,7 +322,9 @@ def collect(conn: sqlite3.Connection) -> dict:
     def same_fs_match(x: int, y: int) -> bool:
         return any(x in ids and y in ids for ids in fs_side.values())
 
-    def decide(x: int, y: int) -> tuple[str, str]:
+    def decide(x: int, y: int, langs: set | frozenset = frozenset()) -> tuple[str, str]:
+        """Правило С6 для пары (X, Y); `langs` — языки написаний X, равных
+        канону Y (перевод эталона, п. 6)."""
         nx, ny = teams[x]["canonical_name"], teams[y]["canonical_name"]
         sx, sy = sport_of(x), sport_of(y)
         if sx and sy and not (sx & sy):
@@ -334,6 +349,17 @@ def collect(conn: sqlite3.Connection) -> dict:
                  or "RETIRED" in nx or "RETIRED" in ny)
         if same_norm or tails:
             return "сливать точно", "имена совпали после нормализации / хвост WO, RETIRED"
+        if not (sx and sy) and "F" not in (sx | sy):
+            # п. 4а (окно 49, классификатор на копии живой базы 09.11): имена
+            # разные на вид, а вид спорта известен не у обеих и футбола нет —
+            # голое имя города у баскетбола (Oldenburg, Chemnitz, Heidelberg —
+            # клубы BBL) уходило в футбольные VfB Oldenburg, Chemnitzer,
+            # Heidelberg Utd, и баскетбольная игра шла на витрине футбольным
+            # клубом. Клубные слова и сокращения — футбольные: сливаем их,
+            # только когда хоть у одной стороны известен футбол
+            return "возможный дубль", (f"вид известен не у обеих "
+                                       f"({''.join(sorted(sx)) or '?'}/{''.join(sorted(sy)) or '?'}) "
+                                       f"и футбола нет — без улики вида не сливаем")
         if only_club_tokens_differ(nx, ny) or only_club_tokens_differ(ny, nx):
             return "сливать точно", "разница только в клубных словах (FC, SC, Utd…)"
         wx, wy = norm(nx).split(), norm(ny).split()
@@ -361,13 +387,20 @@ def collect(conn: sqlite3.Connection) -> dict:
     buckets: dict[str, list[tuple]] = defaultdict(list)
     for x, y, sim in same:
         langs = seen[(min(x, y), max(x, y))]
-        verdict, why = decide(x, y)
+        verdict, why = decide(x, y, langs)
         win, lose = (x, y) if score(x) >= score(y) else (y, x)
         buckets[verdict].append((teams[win]["canonical_name"], teams[lose]["canonical_name"],
                                  sim, why))
     out["С6"] = {k: sorted(v) for k, v in buckets.items()}
     out["Дк"] = [[teams[i]["canonical_name"] for i in ids]
                  for ids in by_canon_ci.values() if len(ids) > 1]
+    # для классификатора (шаг 4): те же правила — те же функции
+    out["_решить"] = decide
+    out["_выживший"] = lambda x, y: (x, y) if score(x) >= score(y) else (y, x)
+    out["_пары"] = [(x, y, sim, frozenset(seen[(min(x, y), max(x, y))]))
+                    for x, y, sim in same]
+    out["_дк"] = [sorted(ids) for ids in by_canon_ci.values() if len(ids) > 1]
+    out["_команды"] = teams
     return out
 
 
