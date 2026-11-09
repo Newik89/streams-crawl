@@ -141,9 +141,12 @@ def export(conn, path: Path) -> dict[str, int]:
             "source": row["domain"],
         })
 
-    # Книга ошибок словаря (карточка 09.11, С8): едет вместе со словарями,
-    # чтобы обход на GitHub знал карантин. Команда — именем, не id: id на
-    # другой машине другой. Базы старше миграции таблицы не имеют
+    # Книга ошибок словаря (карточка 09.11, С8): едет вместе со словарями —
+    # для восстановления базы из файла (`load`). Обход на GitHub книгу НЕ
+    # читает (ревизия 09.11): там базы нет, `sport.py` и `audit_run.py` берут
+    # из файла `teams[].aliases` целиком; карантин действует на сервере, где
+    # ставятся имена. Команда — именем, не id: id на другой машине другой.
+    # Базы старше миграции таблицы не имеют
     data["dictionary_errors"] = []
     try:
         for r in conn.execute(
@@ -169,6 +172,14 @@ def load(conn, path: Path) -> dict[str, int]:
                conn.execute("SELECT id, domain FROM sources")}
     added = {"команд": 0, "лиг": 0, "каналов": 0, "ошибок в книге": 0}
 
+    # С10 (ревизия 09.11): решения «не пара» (имя с тире — одна команда) —
+    # ДО команд: без них `remember_team` не заведёт `Banik Most - Sous`
+    # (правило С5). Команда этим строкам не нужна
+    for item in data.get("dictionary_errors", []):
+        if item.get("class") == dictionary.NOT_PAIR:
+            dictionary.note_error(conn, item["alias"], item["class"], lang=item.get("lang"),
+                                  led_to=item.get("led_to"), note=item.get("note"),
+                                  answered_by=item.get("answered_by") or "программа")
     for item in data.get("teams", []):
         for alias in item.get("aliases") or [item["name"]]:
             dictionary.remember_team(conn, alias, item["name"], item.get("country"))

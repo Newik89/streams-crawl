@@ -99,8 +99,16 @@ def _clubs(canonicals: list[str]) -> int:
 # ── книга ошибок словаря (карточка словаря 09.11.2026) ──────────────────────
 
 #: классы книги ошибок; первые два — карантин: словарь запись не отдаёт
-ERROR_CLASSES = ("пара", "коллизия", "двусмысленно", "слито", "возможный дубль")
+ERROR_CLASSES = ("пара", "коллизия", "двусмысленно", "слито", "возможный дубль",
+                 "не пара", "снято")
 QUARANTINE = ("пара", "коллизия")
+#: С10 (ревизия 09.11): решение «имя с тире — ОДНА команда» (`Banik Most - Sous`).
+#: Пишет классификатор (flashscore или поиск с источником) и слово владельца
+#: (кнопка ✎). Пока строки нет, правило С5 считает имя с тире парой матча
+NOT_PAIR = "не пара"
+#: С11 (ревизия 09.11): карантин, снятый словом владельца. Строка книги не
+#: стирается — меняет класс, прежний класс остаётся в заметке
+LIFTED = "снято"
 
 #: пара матча, записанная одним именем: «A - B», «A – B», «A vs B», «A v B».
 #: Пробелы по обе стороны обязательны — `Fleury-Merogis` одна команда
@@ -158,10 +166,86 @@ def quarantined(conn: sqlite3.Connection) -> set[tuple[str, str | None, int | No
 
 
 def _errors_stamp(conn: sqlite3.Connection) -> tuple:
+    """Метка книги для кэша словаря. Третье число — сумма номеров строк
+    КАРАНТИНА: снятие карантина (С11) меняет класс строки, а число строк и
+    наибольший номер при этом те же — без суммы кэш перемены не заметил бы."""
+    marks = ",".join("?" * len(QUARANTINE))
     try:
-        return tuple(conn.execute("SELECT count(*), max(id) FROM dictionary_errors").fetchone())
+        return tuple(conn.execute(
+            "SELECT count(*), max(id), "
+            f"coalesce(sum(CASE WHEN class IN ({marks}) THEN id END), 0) "
+            "FROM dictionary_errors", QUARANTINE).fetchone())
     except sqlite3.OperationalError:
-        return (0, None)
+        return (0, None, 0)
+
+
+def is_confirmed_team_name(conn: sqlite3.Connection, text: str) -> bool:
+    """С10: про этот текст с тире в книге есть решение «не пара» — одна команда."""
+    try:
+        return conn.execute("SELECT 1 FROM dictionary_errors WHERE alias = ? AND class = ?",
+                            (text, NOT_PAIR)).fetchone() is not None
+    except sqlite3.OperationalError:        # база старше карточки
+        return False
+
+
+def is_blocked_pair(conn: sqlite3.Connection, text: str) -> bool:
+    """С5: текст — пара матча («La Duchere - Feurs»), и решения «не пара»
+    (С10) про него нет. Такое имя командой не считается нигде: ни словарю,
+    ни игре — даже если команда с таким именем в базе уже лежит."""
+    return is_pair_name(text) and not is_confirmed_team_name(conn, text)
+
+
+def confirm_team_name(conn: sqlite3.Connection, text: str, why: str,
+                      answered_by: str = "программа") -> bool:
+    """С10: записать решение «имя с тире — одна команда» (`why` — почему и
+    источник). Строки «пара» про этот же текст БЕЗ команды («канон — пара
+    матча, команда не заведена», их пишет С5) устарели — переводятся в
+    «снято». Возвращает True, если решение новое."""
+    conn.execute(
+        "UPDATE dictionary_errors SET class = ?, "
+        "note = 'было: пара; ' || coalesce(note, '') || ' → имя подтверждено: одна команда' "
+        "WHERE alias = ? AND class = 'пара' AND team_id IS NULL", (LIFTED, text))
+    return note_error(conn, text, NOT_PAIR, led_to=text, note=why, answered_by=answered_by)
+
+
+def lift_quarantine(conn: sqlite3.Connection, alias: str, team_id: int,
+                    who: str, why: str) -> int:
+    """С11: слово владельца снимает карантин с написания `alias` у команды
+    `team_id` (записи любого языка). Строка книги остаётся: класс → «снято»,
+    прежний класс — в заметке. Возвращает, сколько строк снято."""
+    marks = ",".join("?" * len(QUARANTINE))
+    try:
+        return conn.execute(
+            "UPDATE dictionary_errors SET class = ?, answered_by = ?, "
+            "note = 'было: ' || class || '; ' || coalesce(note, '') || ' → ' || ? "
+            f"WHERE alias = ? AND team_id IS ? AND class IN ({marks})",
+            (LIFTED, who, why, alias, team_id, *QUARANTINE)).rowcount
+    except sqlite3.OperationalError:        # база старше карточки
+        return 0
+
+
+def alive_team(conn: sqlite3.Connection, team_id: int) -> int:
+    """С6: команда слита в другую (`teams.merged_into`) — номер ВЫЖИВШЕЙ, по
+    цепочке; не слита — её же номер."""
+    for _ in range(10):
+        try:
+            row = conn.execute("SELECT merged_into FROM teams WHERE id = ?",
+                               (team_id,)).fetchone()
+        except sqlite3.OperationalError:    # колонки ещё нет
+            return team_id
+        if not row or row[0] is None:
+            return team_id
+        team_id = row[0]
+    return team_id
+
+
+def team_id_by_name(conn: sqlite3.Connection, canonical: str) -> int | None:
+    """Команда по каноническому имени; слитая — ВЫЖИВШАЯ (С6). Нет — None.
+    Ревизия 09.11: поиск по имени отдавал проигравшую, и игра с именем
+    `Al Sadd` (flashscore пишет и `Al-Sadd`) садилась на слитую команду."""
+    row = conn.execute("SELECT id FROM teams WHERE canonical_name = ?",
+                       (canonical,)).fetchone()
+    return alive_team(conn, row[0]) if row else None
 
 
 def merged_map(conn: sqlite3.Connection) -> dict[int, int]:
@@ -464,37 +548,68 @@ def _attach(conn: sqlite3.Connection, table: str, key: str, owner: int,
                  f"VALUES (?, ?, ?)", (owner, raw, lang))
 
 
+#: слово владельца в книге (С10, С11)
+OWNER = "владелец"
+
+
 def remember_team(conn: sqlite3.Connection, raw: str, canonical: str,
                   country: str | None = None, lang: str | None = None,
-                  sole: bool = False) -> int:
-    """Закрепляет «сырое имя → команда». Команда с таким каноническим именем
-    уже есть — цепляем алиас к ней, а не заводим двойника.
-    С5 (карточка словаря 09.11): пара матча — не команда. Каноническое имя-пара
-    («La Duchere - Nimes») не заводится вовсе — строка в книгу, ответ 0;
-    написание-пара к настоящей команде не цепляется — в книгу, команда
-    находится/заводится как обычно."""
-    if is_pair_name(canonical):
-        note_error(conn, canonical, "пара", lang=lang, led_to=canonical,
-                   note="каноническое имя — пара матча, команда не заведена")
-        conn.commit()
-        return 0
-    row = conn.execute("SELECT id FROM teams WHERE canonical_name = ?",
-                       (canonical,)).fetchone()
-    if row:
-        team_id = row["id"]
-    else:
+                  sole: bool = False, owner_word: bool = False) -> int:
+    """Закрепляет «сырое имя → команда». Возвращает номер команды или 0 —
+    «команды нет» (0 в событие писать нельзя: `event_team_id`).
+
+    Правила по порядку:
+      С5. пара матча — не команда. Канон с тире («La Duchere - Nimes») без
+          решения «не пара» не заводится: строка в книгу, ответ 0. Написание
+          с тире к обычной команде не цепляется: строка в книгу.
+      С10. у имени с тире есть решение «не пара» (`confirm_team_name`:
+          классификатор или владелец) — это обычная команда: заводится,
+          написания (и с тире) к ней цепляются. `Banik Most - Sous`.
+      С6. команда с таким именем уже есть — цепляем к ней; она слита в
+          другую (`merged_into`) — к ВЫЖИВШЕЙ (`team_id_by_name`).
+      С11. слово владельца: `sole` (кнопка ✎) или `owner_word` (ответ в
+          очереди «Названия») снимает карантин с этого написания у этой
+          команды (`lift_quarantine`). Только `sole` — ещё и решение «не
+          пара» для имени с тире: ✎ — явная правка, а в очереди строка
+          студии с двумя матчами не должна стать написанием (книга 094)."""
+    pair_canon = is_pair_name(canonical)
+    if is_blocked_pair(conn, canonical):
+        if not sole:                                                   # С5
+            note_error(conn, canonical, "пара", lang=lang, led_to=canonical,
+                       note="каноническое имя — пара матча, команда не заведена")
+            conn.commit()
+            return 0
+        confirm_team_name(conn, canonical, "слово владельца (кнопка ✎): "
+                          "имя с тире — одна команда", OWNER)          # С10
+    team_id = team_id_by_name(conn, canonical)                         # С6
+    if team_id is None:
         cur = conn.execute(
             "INSERT INTO teams (canonical_name, slug, country) VALUES (?, ?, ?)",
             (canonical, _unique_slug(conn, "teams", slugify(canonical, "team")),
              country))
         team_id = cur.lastrowid
-    if is_pair_name(raw):
+    if is_pair_name(raw) and not (sole or pair_canon
+                                  or is_confirmed_team_name(conn, raw)):
         note_error(conn, raw, "пара", lang=lang, team_id=team_id, led_to=canonical,
-                   note="написание — пара матча, к команде не прицеплено")
+                   note="написание — пара матча, к команде не прицеплено")    # С5
     else:
+        if sole and is_pair_name(raw) and raw != canonical:
+            confirm_team_name(conn, raw, "слово владельца (кнопка ✎): "
+                              "написание с тире — имя одной команды", OWNER)  # С10
         _attach(conn, "team_aliases", "team_id", team_id, raw, lang, sole)
+        if sole or owner_word:                                         # С11
+            lift_quarantine(conn, raw, team_id, OWNER,
+                            "карантин снят словом владельца")
     conn.commit()
     return team_id
+
+
+def event_team_id(conn: sqlite3.Connection, canonical: str) -> int | None:
+    """Номер команды для СОБЫТИЯ по имени эталона: находит или заводит
+    (`remember_team`), слитая — выжившая (С6). None — команды нет: имя
+    эталона — обрывок пары («La Duchere - Feurs», правило С5). Ревизия 09.11:
+    в событие писался 0, и сверка падала на внешнем ключе."""
+    return remember_team(conn, canonical, canonical) or None
 
 
 def remember_league(conn: sqlite3.Connection, raw: str, canonical: str,
@@ -762,7 +877,13 @@ def resolve(conn: sqlite3.Connection, item_id: int, canonical: str,
         remember = REMEMBER.get(item["kind"])
         if remember is None:
             raise ValueError(f"нечего закреплять для вида {item['kind']}")
-        remember(conn, item["raw_value"], canonical)
+        if item["kind"] == "team":
+            # С11: ответил сам владелец (пометки программы нет) — его слово
+            # снимает карантин с этого написания у этой команды
+            remember_team(conn, item["raw_value"], canonical,
+                          owner_word=not answered_by)
+        else:
+            remember(conn, item["raw_value"], canonical)
 
     conn.execute("UPDATE moderation SET status = 'done', suggestion = ?, "
                  "answered_by = ? WHERE id = ?",

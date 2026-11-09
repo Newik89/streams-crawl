@@ -293,7 +293,14 @@ aliases_before = conn.execute("SELECT count(*) FROM team_aliases").fetchone()[0]
 teams_before = conn.execute("SELECT count(*) FROM teams").fetchone()[0]
 plan: list = []
 na_poisk: list = []
-res = K.run(conn, kat, poisk, plan, na_poisk)
+zhurnal: list = []
+perenos: list = []
+# К9: снимок до прогона — что у какой команды лежало
+snap_alias = dict(conn.execute("SELECT id, team_id FROM team_aliases").fetchall())
+snap_event = {r[0]: (r[1], r[2]) for r in conn.execute(
+    "SELECT id, team_home_id, team_away_id FROM events")}
+snap_merged = dict(conn.execute("SELECT id, merged_into FROM teams").fetchall())
+res = K.run(conn, kat, poisk, plan, na_poisk, zhurnal, perenos)
 conn.commit()
 verdicts = {(w, l): v for w, l, v, _ in plan}
 print(f"  (слияния: {plan})")
@@ -368,6 +375,58 @@ check("ничего не удалено: написаний столько же"
 check("ничего не удалено: команд столько же",
       conn.execute("SELECT count(*) FROM teams").fetchone()[0] == teams_before)
 check("К8 сверка игр посчитана", res["игр"] == conn.execute("SELECT count(*) FROM events").fetchone()[0])
+
+# К9 — журнал переноса полон: по нему база возвращается к снимку до прогона
+back_alias = dict(conn.execute("SELECT id, team_id FROM team_aliases").fetchall())
+back_event = {r[0]: [r[1], r[2]] for r in conn.execute(
+    "SELECT id, team_home_id, team_away_id FROM events")}
+back_merged = dict(conn.execute("SELECT id, merged_into FROM teams").fetchall())
+for row in reversed(perenos):                       # откат: с конца, «куда» → «откуда»
+    if row["что"] == "написание":
+        back_alias[row["номер"]] = row["откуда"]
+    elif row["что"] == "событие":
+        back_event[row["номер"]][0 if row["поле"] == "team_home_id" else 1] = row["откуда"]
+    else:
+        back_merged[row["номер"]] = row["откуда"]
+moved = sum(1 for r in perenos if r["что"] == "написание")
+check("К9 в журнале переноса — каждое переехавшее написание",
+      moved == res["итог"]["написаний переехало"] and moved > 0, (moved, dict(res["итог"])))
+check("К9 откат по журналу возвращает написания, события и слияния к снимку до прогона",
+      back_alias == snap_alias and {k: tuple(v) for k, v in back_event.items()} == snap_event
+      and back_merged == snap_merged)
+check("К9 в журнале у слияния — имена и причина",
+      any(r["что"] == "команда" and r.get("имя") == "ADO Den Haag" and r.get("куда_имя") == "Den Haag"
+          and "Ф4" in r.get("почему", "") for r in perenos))
+
+# К11 — имя с тире, признанное одной командой, — в книге решением «не пара»
+row = conn.execute("SELECT note FROM dictionary_errors WHERE alias='Banik Most - Sous' "
+                   "AND class='не пара'").fetchone()
+check("К11 П3: Banik Most - Sous в книге «не пара» с причиной", row is not None and "П3" in row[0],
+      row and row[0])
+check("К11 после решения написание с тире к Banik Most - Sous учится (С10 словаря)",
+      R(conn, "Баник Мост - Соуш", "Banik Most - Sous", lang="ru") == banik
+      and dictionary.team_alias_map(conn).get("Баник Мост - Соуш", (0, ""))[1] == "Banik Most - Sous")
+check("К11 пара из карантина решением «не пара» не стала",
+      not dictionary.is_confirmed_team_name(conn, "Genoa - Milan")
+      and not dictionary.is_confirmed_team_name(conn, "La Duchere - Nimes"))
+
+# К10 — сверка с проверенным журналом
+check("К10 тот же журнал — отличий нет",
+      not any(K.sverit(zhurnal, zhurnal).values()))
+changed = [dict(r) for r in zhurnal]
+gone = changed.pop(0)
+flip = next(r for r in changed if r["вид"] == "слияние")
+flip["решение"] = "поиск" if flip["решение"] != "поиск" else "сливать"
+changed.append({"вид": "слияние", "имена": ["Новая А", "Новая Б"], "решение": "сливать",
+                "почему": "проба"})
+diff = K.sverit(zhurnal, changed)
+check("К10 новое, пропавшее и сменившее решение — названы",
+      [r["имена"] for r in diff["новые"]] == [["Новая А", "Новая Б"]]
+      and [r["имена"] for r in diff["пропали"]] == [gone["имена"]]
+      and [new["имена"] for _old, new in diff["решение сменилось"]] == [flip["имена"]], diff)
+check("К10 слияние в журнале узнаётся при любом порядке имён",
+      not any(K.sverit(zhurnal, [dict(r, имена=r["имена"][::-1]) if r["вид"] == "слияние" else r
+                                 for r in zhurnal]).values()))
 
 # К6 — второй прогон
 book_before = conn.execute("SELECT count(*) FROM dictionary_errors").fetchone()[0]

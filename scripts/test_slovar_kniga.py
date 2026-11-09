@@ -254,6 +254,100 @@ check("кэш: после слияния (UPDATE) Getafe → Getafe CF",
       dictionary.team_alias_map(conn).get("Getafe", (0, ""))[1] == "Getafe CF",
       dictionary.team_alias_map(conn).get("Getafe"))
 
+# ── ревизия 09.11 (вечер): С6 по имени, С5 без нуля в событии, С10, С11 ──
+
+# С6 — имя слитой команды ведёт к ВЫЖИВШЕЙ (flashscore пишет и Al-Sadd, и Al Sadd)
+sadd = R(conn, "Al-Sadd", "Al-Sadd")
+sadd_lose = R(conn, "Al Sadd", "Al Sadd")
+conn.execute("UPDATE team_aliases SET team_id=? WHERE team_id=?", (sadd, sadd_lose))
+conn.execute("UPDATE teams SET merged_into=? WHERE id=?", (sadd, sadd_lose))
+conn.commit()
+got = R(conn, "Al Sadd", "Al Sadd")
+check("С6 remember_team по имени слитой команды → выжившая", got == sadd, (got, sadd, sadd_lose))
+check("С6 team_id_by_name: слитая → выжившая, нет такой → None",
+      dictionary.team_id_by_name(conn, "Al Sadd") == sadd
+      and dictionary.team_id_by_name(conn, "Нет Такой Команды") is None)
+R(conn, "السد", "Al Sadd", lang="ar")
+owner = conn.execute("SELECT team_id FROM team_aliases WHERE alias='السد'").fetchone()[0]
+check("С6 новое написание к имени слитой ложится выжившей", owner == sadd, (owner, sadd))
+check("С6 event_team_id по имени слитой → выжившая",
+      dictionary.event_team_id(conn, "Al Sadd") == sadd)
+
+# С5 — обрывок пары: номера команды для события нет (None, не 0)
+check("С5 event_team_id: обрывок пары «La Duchere - Feurs» → None",
+      dictionary.event_team_id(conn, "La Duchere - Feurs") is None)
+
+# С10 — «не пара»: имя с тире, признанное одной командой
+rc = R(conn, "Banik Most - Sous", "Banik Most - Sous")
+old_rows = conn.execute("SELECT count(*) FROM dictionary_errors WHERE alias='Banik Most - Sous' "
+                        "AND class='пара'").fetchone()[0]
+check("С10 до решения имя с тире не заводится (С5), строка «пара» в книге",
+      rc == 0 and old_rows == 1, (rc, old_rows))
+new = dictionary.confirm_team_name(conn, "Banik Most - Sous",
+                                   "поиск: клуб из Моста — https://example.org/banik")
+conn.commit()
+banik = R(conn, "Banik Most - Sous", "Banik Most - Sous")
+check("С10 после решения «не пара» команда заводится", new and banik > 0, (new, banik))
+got = R(conn, "Баник Мост - Соуш", "Banik Most - Sous", lang="ru")
+check("С10 написание с тире к такой команде цепляется и отдаётся словарём",
+      got == banik and dictionary.team_alias_map(conn).get("Баник Мост - Соуш", (0, ""))[1]
+      == "Banik Most - Sous", dictionary.team_alias_map(conn).get("Баник Мост - Соуш"))
+left = {r[0]: r[1] for r in conn.execute(
+    "SELECT class, count(*) FROM dictionary_errors WHERE alias='Banik Most - Sous' GROUP BY class")}
+check("С10 прежняя строка «пара» про это имя переведена в «снято», решение — одно",
+      left == {"снято": 1, "не пара": 1}, left)
+check("С10 повтор решения строку не плодит",
+      not dictionary.confirm_team_name(conn, "Banik Most - Sous", "повтор"))
+att = conn.execute("SELECT count(*) FROM team_aliases WHERE alias='Genoa - Milan'").fetchone()[0]
+R(conn, "Genoa - Milan", "Genoa")
+check("С10 чужая пара матча по-прежнему не цепляется (С5)",
+      conn.execute("SELECT count(*) FROM team_aliases WHERE alias='Genoa - Milan'").fetchone()[0]
+      == att == 0, att)
+
+# С11 — слово владельца снимает карантин
+sociedad = R(conn, "Real Sociedad", "Real Sociedad")
+R(conn, "Реал С.", "Real Sociedad")
+dictionary.note_error(conn, "Реал С.", "коллизия", team_id=sociedad,
+                      led_to="Real Sociedad", truth="Real Madrid")
+conn.commit()
+check("С11 до слова владельца написание в карантине молчит",
+      "Реал С." not in dictionary.team_alias_map(conn))
+R(conn, "Реал С.", "Real Sociedad", sole=True)                # кнопка ✎, та же команда
+check("С11 кнопка ✎ в ту же команду снимает карантин — словарь отвечает",
+      dictionary.team_alias_map(conn).get("Реал С.", (0, ""))[1] == "Real Sociedad",
+      dictionary.team_alias_map(conn).get("Реал С."))
+row = conn.execute("SELECT class, note, answered_by FROM dictionary_errors "
+                   "WHERE alias='Реал С.'").fetchone()
+check("С11 строка книги не стёрта: «снято», прежний класс в заметке, ответил владелец",
+      row is not None and row[0] == "снято" and "было: коллизия" in row[1]
+      and row[2] == "владелец", row and tuple(row))
+osasuna = R(conn, "Osasuna", "Osasuna")
+R(conn, "Осасуна П.", "Osasuna")
+R(conn, "Осасуна Б.", "Osasuna")
+for alias in ("Осасуна П.", "Осасуна Б."):
+    dictionary.note_error(conn, alias, "коллизия", team_id=osasuna, led_to="Osasuna")
+    dictionary.enqueue(conn, "team", alias, suggestion="Osasuna")
+conn.commit()
+ids = {r["raw_value"]: r["id"] for r in conn.execute(
+    "SELECT id, raw_value FROM moderation WHERE raw_value LIKE 'Осасуна%'")}
+dictionary.resolve(conn, ids["Осасуна П."], "Osasuna",
+                   answered_by="ответила программа: проба")
+dictionary.resolve(conn, ids["Осасуна Б."], "Osasuna")        # ответил владелец
+m_q = dictionary.team_alias_map(conn)
+check("С11 ответ ПРОГРАММЫ в очереди карантин не снимает", "Осасуна П." not in m_q)
+check("С11 ответ ВЛАДЕЛЬЦА в очереди карантин снимает",
+      m_q.get("Осасуна Б.", (0, ""))[1] == "Osasuna", m_q.get("Осасуна Б."))
+dictionary.enqueue(conn, "team", "Villarreal - Paris-SG", suggestion="Villarreal")
+studio = conn.execute("SELECT id FROM moderation WHERE raw_value='Villarreal - Paris-SG'").fetchone()[0]
+dictionary.resolve(conn, studio, "Villarreal")
+check("С11 ответ в очереди строку с парой написанием не делает (книга 094)",
+      conn.execute("SELECT count(*) FROM team_aliases WHERE alias='Villarreal - Paris-SG'").fetchone()[0] == 0)
+duchere = R(conn, "Lyon - La Duchère", "Lyon-La Duchere", sole=True)   # ✎: явная правка
+check("С11/С10 кнопка ✎ цепляет написание с тире и пишет решение «не пара» от владельца",
+      conn.execute("SELECT team_id FROM team_aliases WHERE alias='Lyon - La Duchère'").fetchone()[0] == duchere
+      and conn.execute("SELECT answered_by FROM dictionary_errors WHERE alias='Lyon - La Duchère' "
+                       "AND class='не пара'").fetchone()[0] == "владелец")
+
 # С9 — книга без мусора
 n1 = dictionary.note_error(conn, "Динамо", "двусмысленно")
 n2 = dictionary.note_error(conn, "Динамо", "двусмысленно")
@@ -284,6 +378,47 @@ check("С8 после загрузки Bayer Leverkusen → Bayer Leverkusen", m
 dict_sync.load(fresh, out)
 n_err = fresh.execute("SELECT count(*) FROM dictionary_errors").fetchone()[0]
 check("С8/С9 повторная загрузка не плодит строки книги", n_err == counts["ошибок в книге"], n_err)
+check("С10 загрузка в чистую базу: команда с тире заведена, её написание с тире — при ней",
+      fresh.execute("SELECT count(*) FROM team_aliases a JOIN teams t ON t.id = a.team_id "
+                    "WHERE t.canonical_name='Banik Most - Sous' AND a.alias='Баник Мост - Соуш'"
+                    ).fetchone()[0] == 1)
 fresh.close()
+
+# С5 — сверка (`canon_backfill.py`) на игре, где сторона эталона — обрывок пары:
+# не падает, стороне-обрывку команду не ставит, обычной — ставит (ревизия 09.11:
+# раньше в событие шёл 0 и UPDATE падал на внешнем ключе)
+import subprocess  # noqa: E402
+os.environ["STREAMS_DB"] = str(TMP / "backfill.db")
+bf = db.connect()
+db.init_db(bf)
+bf.execute("INSERT INTO events (sport, start_utc, start_kyiv, team_home_auto, team_away_auto, flags) "
+           "VALUES ('F', '2026-11-15 14:00', '2026-11-15 16:00', 'Lyon', 'La Duchere - Feurs', 'fs:abc12345')")
+# вторая игра: «команда» с именем-обрывком в базе УЖЕ лежит (заведена до карточки)
+bf.execute("INSERT INTO teams (canonical_name, slug) VALUES ('Sous B - Nestemice', 'sous-b-nestemice')")
+bf.execute("INSERT INTO events (sport, start_utc, start_kyiv, team_home_auto, team_away_auto, flags) "
+           "VALUES ('F', '2026-11-15 11:00', '2026-11-15 13:00', 'Banik Most', 'Sous B - Nestemice', 'fs:def67890')")
+bf.commit()
+bf.close()
+games_file = TMP / "games.json"
+games_file.write_text(json.dumps({"games": [], "эталон": [{
+    "sport": "F", "home": "Lyon", "away": "La Duchere - Feurs", "fs_id": "abc12345",
+    "league": "FRANCE: Coupe de France", "start_kyiv": "2026-11-15T16:00", "names": {}}, {
+    "sport": "F", "home": "Banik Most", "away": "Sous B - Nestemice", "fs_id": "def67890",
+    "league": "CZECH REPUBLIC: Ustecky KP", "start_kyiv": "2026-11-15T13:00", "names": {}}]},
+    ensure_ascii=False), encoding="utf-8")
+run = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / "scripts" / "canon_backfill.py"),
+                      "--file", str(games_file)], capture_output=True, text=True,
+                     encoding="utf-8", errors="replace", env=dict(os.environ))
+bf = db.connect()
+row = bf.execute("SELECT th.canonical_name, e.team_away_id FROM events e "
+                 "LEFT JOIN teams th ON th.id = e.team_home_id WHERE e.flags = 'fs:abc12345'").fetchone()
+row2 = bf.execute("SELECT th.canonical_name, e.team_away_id FROM events e "
+                  "LEFT JOIN teams th ON th.id = e.team_home_id WHERE e.flags = 'fs:def67890'").fetchone()
+bf.close()
+check("С5 сверка на обрывке пары не падает", run.returncode == 0, (run.stdout + run.stderr)[-600:])
+check("С5 сверка: обычной стороне команда поставлена, обрывку — нет",
+      row is not None and row[0] == "Lyon" and row[1] is None, row and tuple(row))
+check("С5 сверка: «команда»-обрывок, уже лежащая в базе, игре тоже не ставится",
+      row2 is not None and row2[0] == "Banik Most" and row2[1] is None, row2 and tuple(row2))
 print(f"\n{green}/{total} зелёных")
 raise SystemExit(0 if green == total else 1)
