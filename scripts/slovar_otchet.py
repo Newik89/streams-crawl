@@ -401,6 +401,7 @@ def collect(conn: sqlite3.Connection) -> dict:
                     for x, y, sim in same]
     out["_дк"] = [sorted(ids) for ids in by_canon_ci.values() if len(ids) > 1]
     out["_команды"] = teams
+    out["_вид"] = sport_of          # виды команды: события + память + слова (Ф-правила)
     return out
 
 
