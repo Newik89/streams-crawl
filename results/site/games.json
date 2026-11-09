@@ -1,16 +1,16 @@
 {
- "собрано": "2026-11-09 04:06",
- "игр": 27,
+ "собрано": "2026-11-09 09:57",
+ "игр": 29,
  "окно": 6,
  "по_окнам": {
   "2": 422,
   "5": 528,
-  "6": 27
+  "6": 29
  },
  "оценка": "",
  "эталон": [],
  "разобрано": {
-  "sportklub.hr": 772
+  "sportklub.hr": 761
  },
  "другие_виды": [],
  "на_разбор": [],
@@ -343,6 +343,24 @@
   {
    "guess": 0,
    "sport": "B",
+   "league": "Eurocup",
+   "home": "Neptunas",
+   "away": "Slask",
+   "start_kyiv": "2026-11-10T19:00",
+   "start_utc": "2026-11-10T17:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "start_kyiv": "2026-11-10T19:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1794182400000&toTime=1794787199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Eurocup: Neptunas - Slask"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
    "league": "Slovenska liga",
    "home": "Krka",
    "away": "Gorica",
@@ -409,6 +427,24 @@
      "start_kyiv": "2026-11-10T21:00",
      "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1794182400000&toTime=1794787199999&communityIdentifier=sk_hr&languageId=181",
      "raw_title": "Košarka - Liga prvaka: Spartak - Cholet"
+    }
+   ]
+  },
+  {
+   "guess": 0,
+   "sport": "B",
+   "league": "Liga prvaka",
+   "home": "Bilbao",
+   "away": "Alba",
+   "start_kyiv": "2026-11-10T21:00",
+   "start_utc": "2026-11-10T19:00",
+   "entries": [
+    {
+     "source": "sportklub.hr",
+     "channel": "Sport Klub 5",
+     "start_kyiv": "2026-11-10T21:00",
+     "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1794182400000&toTime=1794787199999&communityIdentifier=sk_hr&languageId=181",
+     "raw_title": "Košarka - Liga prvaka: Bilbao - Alba"
     }
    ]
   },

@@ -1,7 +1,7 @@
 {
  "когда": "2026-11-09",
  "режим": "полный обход, окно 6 суток",
- "прогон": "42559820462",
+ "прогон": "42597194848",
  "начат_киев": "2026-11-09",
  "пояса": {
   "allente.no": "Europe/Oslo",
@@ -128,7 +128,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 144874,
+   "байт": 144994,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=556_fromTime=1794182400000_toTime=1794787199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -147,7 +147,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 144120,
+   "байт": 144220,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1075_fromTime=1794182400000_toTime=1794787199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -166,7 +166,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 131103,
+   "байт": 131743,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=923_fromTime=1794182400000_toTime=1794787199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -204,7 +204,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 189451,
+   "байт": 190087,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=928_fromTime=1794182400000_toTime=1794787199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -223,7 +223,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 116365,
+   "байт": 122487,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=728_fromTime=1794182400000_toTime=1794787199999_communityIdentifier=sk_hr_languageId=181.html"
@@ -242,7 +242,7 @@
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 142852,
+   "байт": 142884,
    "меток времени": 0,
    "чем": "requests",
    "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=927_fromTime=1794182400000_toTime=1794787199999_communityIdentifier=sk_hr_languageId=181.html"
