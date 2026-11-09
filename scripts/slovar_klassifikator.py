@@ -16,7 +16,9 @@ git (имя, вид, страна, переводы на зеркалах flashs
     venv/bin/python scripts/slovar_klassifikator.py --fs-katalog k.json \
         --spisok s.md --na-poisk p.json                                           # и списки
     venv/bin/python scripts/slovar_klassifikator.py --fs-katalog k.json \
-        --poisk resheniya.json --apply                                            # записать (копия базы и «да»)
+        --poisk resheniya.json --sverit staryj-zhurnal.json                       # показ + сверка с проверенным журналом (К10)
+    venv/bin/python scripts/slovar_klassifikator.py --fs-katalog k.json \
+        --poisk resheniya.json --perenos perenos.json --apply                     # записать (копия базы и «да»)
 
 Правила по порядку:
 
@@ -86,6 +88,20 @@ git (имя, вид, страна, переводы на зеркалах flashs
       и 0 переездов.
   К7. Без `--apply` — показ на копии базы во временной папке.
   К8. Сверка «игр старым/новым словарём»: сколько живых игр поменяли имя.
+  К9. Журнал переноса (`--perenos`, ревизия 09.11): каждое перенесённое
+      написание, каждое переехавшее событие и каждая смена `merged_into` —
+      строкой «что, номер, откуда, куда». Без него одно слияние через месяц
+      не откатить: в базе перенос следа не оставляет. С `--apply` ключ
+      обязателен.
+  К10. Сверка с проверенным журналом (`--sverit`, ревизия 09.11): база и
+      каталог flashscore меняются каждый день, итог записи может отличаться
+      от того, что смотрели на копии. Показ печатает отличия от старого
+      журнала решений: новые пары, пропавшие, сменившие решение. Писать
+      (`--apply`) — когда каждое отличие объяснено.
+  К11. Имя с тире, признанное одной командой (П3 или поиск «одна команда»), —
+      в книгу решением «не пара» (`dictionary.confirm_team_name`, правило С10
+      словаря): с ним `remember_team` заводит такую команду и учит её
+      написания, а не пишет «пара матча».
 """
 from __future__ import annotations
 
@@ -206,9 +222,13 @@ def _where(kat: fs_katalog.Katalog, name: str) -> str:
 
 # ── К1–К3: слияние ───────────────────────────────────────────────────────────
 
-def _merge(conn: sqlite3.Connection, win: int, lose: int, why: str) -> Counter:
-    """К2: команда `lose` сливается в `win`. Ничего не стирается."""
+def _merge(conn: sqlite3.Connection, win: int, lose: int, why: str,
+           perenos: list | None = None) -> Counter:
+    """К2: команда `lose` сливается в `win`. Ничего не стирается. `perenos` —
+    журнал переноса (К9): сюда ложится каждая перемена, по нему слияние
+    откатывается (вернуть `team_id`, `team_*_id`, `merged_into` на «откуда»)."""
     got = Counter()
+    log = perenos.append if perenos is not None else (lambda _row: None)
     win_name = conn.execute("SELECT canonical_name FROM teams WHERE id = ?", (win,)).fetchone()[0]
     lose_name = conn.execute("SELECT canonical_name FROM teams WHERE id = ?", (lose,)).fetchone()[0]
     if dictionary.note_error(conn, lose_name, "слито", team_id=lose, led_to=lose_name,
@@ -226,12 +246,22 @@ def _merge(conn: sqlite3.Connection, win: int, lose: int, why: str) -> Counter:
         else:
             conn.execute("UPDATE team_aliases SET team_id = ? WHERE id = ?", (win, a["id"]))
             got["написаний переехало"] += 1
-    got["событий переехало"] += conn.execute(
-        "UPDATE events SET team_home_id = ? WHERE team_home_id = ?", (win, lose)).rowcount
-    got["событий переехало"] += conn.execute(
-        "UPDATE events SET team_away_id = ? WHERE team_away_id = ?", (win, lose)).rowcount
+            log({"что": "написание", "номер": a["id"], "написание": a["alias"],
+                 "язык": a["lang"], "откуда": lose, "откуда_имя": lose_name,
+                 "куда": win, "куда_имя": win_name})
+    for field in ("team_home_id", "team_away_id"):
+        for r in conn.execute(f"SELECT id FROM events WHERE {field} = ?", (lose,)).fetchall():
+            log({"что": "событие", "номер": r["id"], "поле": field,
+                 "откуда": lose, "куда": win})
+        got["событий переехало"] += conn.execute(
+            f"UPDATE events SET {field} = ? WHERE {field} = ?", (win, lose)).rowcount
+    for r in conn.execute("SELECT id FROM teams WHERE merged_into = ?", (lose,)).fetchall():
+        log({"что": "команда", "номер": r["id"], "поле": "merged_into",
+             "откуда": lose, "куда": win})
     conn.execute("UPDATE teams SET merged_into = ? WHERE merged_into = ?", (win, lose))
     conn.execute("UPDATE teams SET merged_into = ? WHERE id = ?", (win, lose))
+    log({"что": "команда", "номер": lose, "поле": "merged_into", "откуда": None,
+         "куда": win, "имя": lose_name, "куда_имя": win_name, "почему": why})
     got["слияний"] += 1
     return got
 
@@ -248,7 +278,7 @@ def _evidence(conn: sqlite3.Connection, kat: fs_katalog.Katalog, tid: int, name:
 
 def merge_round(conn: sqlite3.Connection, kat: fs_katalog.Katalog, poisk: dict,
                 plan: list | None = None, na_poisk: list | None = None,
-                zhurnal: list | None = None) -> Counter:
+                zhurnal: list | None = None, perenos: list | None = None) -> Counter:
     """Один круг К1–К2 по текущему состоянию базы. `plan` — куда записать
     слияния (выживший, проигравший, вердикт, почему); `na_poisk` — пары,
     которые решает только поиск (Ф6)."""
@@ -304,7 +334,7 @@ def merge_round(conn: sqlite3.Connection, kat: fs_katalog.Katalog, poisk: dict,
                         and teams[other]["canonical_name"] not in spelled):
                     win, lose = cand, other
                     break
-        got.update(_merge(conn, win, lose, f"{label}: {fs_why}"))
+        got.update(_merge(conn, win, lose, f"{label}: {fs_why}", perenos))
         got[label] += 1
         gone.add(lose)
         if plan is not None:
@@ -422,6 +452,8 @@ def quarantine(conn: sqlite3.Connection, kat: fs_katalog.Katalog, poisk: dict,
                     continue
             if verdict == "команда":
                 got["поиск: не пара" if why.startswith("поиск") else "flashscore: не пара"] += 1
+                if dictionary.confirm_team_name(conn, text, why):          # К11
+                    got["книга: не пара"] += 1
                 continue
             what = ("написание — пара матча" if dictionary.is_pair_name(a["alias"])
                     else "каноническое имя команды — пара матча")
@@ -490,7 +522,7 @@ def shown_names(conn: sqlite3.Connection) -> dict[int, tuple[str, str]]:
 
 def run(conn: sqlite3.Connection, kat: fs_katalog.Katalog, poisk: dict | None = None,
         plan: list | None = None, na_poisk: list | None = None,
-        zhurnal: list | None = None) -> dict:
+        zhurnal: list | None = None, perenos: list | None = None) -> dict:
     """К1–К6 по базе `conn` (в транзакции; фиксирует вызывающий). `zhurnal` —
     каждое решение (вид, имена, решение, почему) для проверки владельцем."""
     db.init_db(conn)
@@ -500,7 +532,7 @@ def run(conn: sqlite3.Connection, kat: fs_katalog.Katalog, poisk: dict | None = 
     rounds = []
     for i in range(КРУГОВ):
         got = merge_round(conn, kat, poisk, plan, na_poisk if i == 0 else None,
-                          zhurnal if i == 0 else None)
+                          zhurnal if i == 0 else None, perenos)
         rounds.append(got["слияний"])
         # круги после первого видят те же пары заново: считаем только слияния
         total.update(got if i == 0 else {k: v for k, v in got.items()
@@ -516,7 +548,8 @@ def run(conn: sqlite3.Connection, kat: fs_katalog.Katalog, poisk: dict | None = 
 KEYS = ("слияний", "сливать: flashscore", "сливать: поиск", "flashscore: разные", "поиск: разные",
         "на поиск: слияние", "написаний переехало", "написание осталось у проигравшего",
         "событий переехало", "книга: слито", "книга: возможный дубль",
-        "flashscore: не пара", "поиск: не пара", "книга: пара", "на поиск: пара",
+        "flashscore: не пара", "поиск: не пара", "книга: не пара", "книга: пара",
+        "на поиск: пара",
         "flashscore: написание своё", "поиск: написание своё", "книга: коллизия",
         "на поиск: коллизия")
 
@@ -529,6 +562,38 @@ def show_result(res: dict) -> None:
     print(f"игр в базе: {res['игр']}, имя на витрине поменялось у {len(res['игр_с_другим_именем'])}")
     for eid, old, new in res["игр_с_другим_именем"][:15]:
         print(f"  #{eid}: {old[0]} — {old[1]}  →  {new[0]} — {new[1]}")
+
+
+def _zhurnal_key(row: dict) -> tuple:
+    """Ключ строки журнала решений: вид, имена и язык записи (у слияния
+    порядок имён не важен — как у решения поиска)."""
+    return (*poisk_key(row["вид"], *row["имена"]), row.get("язык") or "")
+
+
+def sverit(old: list[dict], new: list[dict]) -> dict:
+    """К10: чем журнал решений `new` отличается от проверенного `old`.
+    → {"новые": [...], "пропали": [...], "решение сменилось": [(было, стало)]}."""
+    a = {_zhurnal_key(r): r for r in old}
+    b = {_zhurnal_key(r): r for r in new}
+    return {"новые": [b[k] for k in b if k not in a],
+            "пропали": [a[k] for k in a if k not in b],
+            "решение сменилось": [(a[k], b[k]) for k in b
+                                  if k in a and a[k]["решение"] != b[k]["решение"]]}
+
+
+def show_sverka(diff: dict, limit: int = 40) -> None:
+    def line(r: dict) -> str:
+        return f"{r['вид']}: {' | '.join(r['имена'])} → {r['решение']} ({r['почему'][:90]})"
+    total = sum(len(v) for v in diff.values())
+    print(f"сверка с проверенным журналом: отличий {total}"
+          + ("" if total else " — решения те же"))
+    for name in ("новые", "пропали"):
+        print(f"  {name}: {len(diff[name])}")
+        for r in diff[name][:limit]:
+            print("    " + line(r))
+    print(f"  решение сменилось: {len(diff['решение сменилось'])}")
+    for old, new in diff["решение сменилось"][:limit]:
+        print(f"    БЫЛО  {line(old)}\n    СТАЛО {line(new)}")
 
 
 def load_katalog(path: str) -> fs_katalog.Katalog:
@@ -550,7 +615,14 @@ def main() -> int:
     ap.add_argument("--spisok", default="", help="записать список слияний в файл (markdown)")
     ap.add_argument("--na-poisk", default="", help="записать список «на поиск» (json)")
     ap.add_argument("--zhurnal", default="", help="записать журнал всех решений (json)")
+    ap.add_argument("--perenos", default="", help="журнал переноса — что откуда куда переехало "
+                                                  "(json; с --apply обязателен, К9)")
+    ap.add_argument("--sverit", default="", help="проверенный журнал решений (json): показать, "
+                                                 "чем нынешние решения от него отличаются (К10)")
     args = ap.parse_args()
+    if args.apply and not args.perenos:
+        print("с --apply нужен --perenos <файл>: без журнала переноса слияние не откатить (К9)")
+        return 1
     target = Path(db.db_path())
     if not target.exists():
         print(f"нет базы {target}")
@@ -573,8 +645,14 @@ def main() -> int:
     plan: list = []
     na_poisk: list = []
     zhurnal: list = []
+    perenos: list = []
     try:
-        res = run(conn, kat, poisk, plan, na_poisk, zhurnal)
+        res = run(conn, kat, poisk, plan, na_poisk, zhurnal, perenos)
+        if args.apply:
+            # К9: журнал переноса — на диск ДО фиксации: записать не вышло
+            # (нет папки, нет места) — база остаётся как была
+            Path(args.perenos).write_text(json.dumps(perenos, ensure_ascii=False, indent=1),
+                                          encoding="utf-8")
         conn.commit()
     finally:
         conn.close()
@@ -596,6 +674,13 @@ def main() -> int:
         Path(args.zhurnal).write_text(json.dumps(zhurnal, ensure_ascii=False, indent=1),
                                       encoding="utf-8")
         print(f"журнал решений: {args.zhurnal} ({len(zhurnal)} строк)")
+    if args.perenos:
+        if not args.apply:
+            Path(args.perenos).write_text(json.dumps(perenos, ensure_ascii=False, indent=1),
+                                          encoding="utf-8")
+        print(f"журнал переноса: {args.perenos} ({len(perenos)} строк)")
+    if args.sverit:
+        show_sverka(sverit(json.loads(Path(args.sverit).read_text(encoding="utf-8")), zhurnal))
     return 0
 
 

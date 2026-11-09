@@ -108,9 +108,13 @@ def main() -> int:
         # потому что написание спорное («CSKA» — и Москва, и София), а id
         # среди его владельцев — оставляем как было (пакет C, 14.09)
         spelled = dictionary.team_alias_map(conn)
+        # С6 (ревизия 09.11): хозяин написания — ВЫЖИВШАЯ команда; запись,
+        # оставшаяся у слитой, вторым хозяином не считается
+        merged = dictionary.merged_map(conn)
         owners_of: dict[str, set[int]] = {}
         for r in conn.execute("SELECT DISTINCT alias, team_id FROM team_aliases"):
-            owners_of.setdefault(r["alias"], set()).add(r["team_id"])
+            owners_of.setdefault(r["alias"], set()).add(
+                merged.get(r["team_id"], r["team_id"]))
         respelled = 0
         for r in conn.execute(
                 "SELECT id, team_home_auto, team_away_auto, team_home_id, "
@@ -166,9 +170,14 @@ def main() -> int:
                 canon_name = (canon_name or "").strip()
                 if not canon_name or names.is_placeholder(canon_name):
                     continue
-                row = conn.execute("SELECT id FROM teams WHERE canonical_name = ?",
-                                   (canon_name,)).fetchone()
-                if row and row["id"] == r[field]:
+                # С5 (ревизия 09.11): имя эталона — обрывок пары — не команда,
+                # даже если такая «команда» в базе уже лежит: сторону не трогаем
+                if dictionary.is_blocked_pair(conn, canon_name):
+                    continue
+                # С6 (ревизия 09.11): команда по имени эталона — ВЫЖИВШАЯ;
+                # слитая (`merged_into`) больше игр не получает
+                known_id = dictionary.team_id_by_name(conn, canon_name)
+                if known_id is not None and known_id == r[field]:
                     continue
                 if r[field] is not None \
                         and owners_of.get((raw or "").strip()) == {r[field]}:
@@ -184,7 +193,7 @@ def main() -> int:
                                  (cur["canonical_name"] or "").strip().lower())
                     if not (same_bare and names._AGE_RE.search(canon_name)):
                         continue
-                sets[field] = (row["id"] if row else None, canon_name)
+                sets[field] = (known_id, canon_name)
             if not sets:
                 continue
             renamed += 1
@@ -193,9 +202,14 @@ def main() -> int:
                       f"{r['team_away_auto']} → {ref.get('home')} — {ref.get('away')}")
             if args.dry_run:
                 continue
-            values = {field: team_id if team_id else dictionary.remember_team(
-                          conn, canon_name, canon_name)
+            # С5 (ревизия 09.11): имя эталона — обрывок пары («La Duchere -
+            # Feurs») — команды нет (`event_team_id` → None): сторону не
+            # трогаем. Раньше сюда шёл 0, и UPDATE падал на внешнем ключе
+            values = {field: team_id or dictionary.event_team_id(conn, canon_name)
                       for field, (team_id, canon_name) in sets.items()}
+            values = {field: team_id for field, team_id in values.items() if team_id}
+            if not values:
+                continue
             conn.execute("UPDATE events SET " +
                          ", ".join(f"{k} = ?" for k in values) +
                          " WHERE id = ?", (*values.values(), r["id"]))
@@ -292,9 +306,12 @@ def main() -> int:
             for field, canon_name in (("team_home_id", ref.get("home")),
                                       ("team_away_id", ref.get("away"))):
                 canon_name = (canon_name or "").strip()
-                if canon_name:
-                    sets[field] = dictionary.remember_team(
-                        conn, canon_name, canon_name)
+                # С5/С6 (ревизия 09.11): обрывок пары — None, сторону не
+                # ставим; слитая команда — выжившая
+                team_id = dictionary.event_team_id(conn, canon_name) \
+                    if canon_name else None
+                if team_id:
+                    sets[field] = team_id
             if sets:
                 direct += conn.execute(
                     "UPDATE events SET " +
