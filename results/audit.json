@@ -1,14 +1,8 @@
 {
  "прогон": "raw_live",
- "собрано": "2026-11-09 20:02",
- "подозрений": 34,
+ "собрано": "2026-11-10 07:39",
+ "подозрений": 29,
  "разделы": [
-  {
-   "название": "1/9. Признак эфира или повтора есть, а разбор его не читает",
-   "строки": [
-    "ert.gr: в данных text:(Ζ) ×3 (~0.5 на страницу — похоже на «идёт сейчас»), честного эфира 0 — проверить и внести в KNOWN_NOT_FLAGS"
-   ]
-  },
   {
    "название": "2. Слово эфира не в словаре markers.json",
    "строки": [
@@ -24,44 +18,39 @@
    ]
   },
   {
-   "название": "5. Передачи легли не на свой день",
+   "название": "6. Помеченный эфир прошёл отсев и пропал",
    "строки": [
-    "tvpassport.com: 1 стр. легли не на свой день — www.tvpassport.com__tv-listings_stations_tsn2-hd_5920_2026-11-10.html: страница 10.11, а 16 из 28 передач — 11.11"
+    "tvarenasport.com: 2 строк(и) с пометкой эфира сняты «повтор по flashscore: матч уже сыгран», а время эталона — заглушка тура (≥5 матчей лиги в одну минуту): сайт, скорее всего, прав — 15.11 18:00 Arena Sport 10 «Hercegovac — Zlatibor» (эталон SERBIA: First League: 8 матчей в 19:00 14.11); 15.11 20:00 Arena Sport 10 «Tamiš — Mladost» (эталон SERBIA: First League: 8 матчей в 19:00 14.11)"
    ]
   },
   {
    "название": "7. Кличка: вторая команда сошлась, эта — нет",
    "строки": [
-    "digisport.ro: «CS Dinamo» ≠ «CS Din. Bucuresti»? — 09.11 17:00 «CS Dinamo — Ramnicu Valcea» ↔ эталон «CS Din. Bucuresti — Ramnicu Valcea» (ROMANIA: Liga 2; у сайта лига «digisport Liga a 2-a»)",
+    "allente.no: «Aston Villa» ≠ «Al Sharjah»? — 15.11 14:30 «Manchester United — Aston Villa» ↔ эталон «United FC — Al Sharjah» (UNITED ARAB EMIRATES: League Cup; у сайта лига «Premier League») — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "digisport.ro: «Finalnda» ≠ «Finland»? — 15.11 19:00 «Finalnda — San Marino» ↔ эталон «Finland — San Marino» (EUROPE: UEFA Nations League - League C; у сайта лига «liga natiunilor Nations League Grupe (et»)",
-    "digisport.ro: «Muntenegru» ≠ «Montenegro»? — 15.11 16:00 «Cipru — Muntenegru» ↔ эталон «Cyprus — Montenegro» (EUROPE: UEFA Nations League - League C; у сайта лига «liga natiunilor Nations League Grupe (et»)",
-    "digisport.ro: «Tara Galilor» ≠ «Wales»? — 14.11 18:55 «Norvegia — Tara Galilor» ↔ эталон «Norway — Wales» (EUROPE: UEFA Nations League - League A; у сайта лига «liga natiunilor Nations League») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
-    "programetv.ro: «CS Dinamo» ≠ «CS Din. Bucuresti»? — 09.11 17:00 «CS Dinamo — Ramnicu Valcea» ↔ эталон «CS Din. Bucuresti — Ramnicu Valcea» (ROMANIA: Liga 2; у сайта лига «Liga a 2-a»)",
-    "programetv.ro: «Poli Timișoara» ≠ «Politehnica Timisoara»? — 09.11 14:30 «Poli Timișoara — CSM Reșița» ↔ эталон «Politehnica Timisoara — CSM Resita» (ROMANIA: Liga 2; у сайта лига «LIGA 2»)",
     "programme-tv.net: «Grande-Bretagne. Qualifications à l'EuroBasket féminin. 1re journée. Groupe M. W» ≠ «Great Britain W»? — 11.11 18:30 «France W — Grande-Bretagne. Qualifications à l'EuroBasket féminin. 1re journée. Groupe M. W» ↔ эталон «France W — Great Britain W» (EUROPE: EuroBasket Women - Qualification - Second stage; у сайта лига «Ball Qualifications a Leurobasket Femini»)",
-    "sporttv.pt: «BIELORRÚSSIA» ≠ «Belarus»? — 15.11 18:50 «BIELORRÚSSIA — ALBÂNIA» ↔ эталон «Belarus — Albania» (EUROPE: UEFA Nations League - League C; у сайта лига «UEFA NATIONS LEAGUE - FUTEBOL»)",
-    "sporttv.pt: «FRANÇA» ≠ «France»? — 15.11 21:35 «FRANÇA — TURQUIA» ↔ эталон «France — Turkey» (EUROPE: UEFA Nations League - League A; у сайта лига «UEFA NATIONS LEAGUE - FUTEBOL»)",
-    "sporttv.pt: «SÃO MARINO» ≠ «San Marino»? — 15.11 18:50 «FINLÂNDIA — SÃO MARINO» ↔ эталон «Finland — San Marino» (EUROPE: UEFA Nations League - League C; у сайта лига «UEFA NATIONS LEAGUE - FUTEBOL»)",
     "teleman.pl: «Bahcesehir College Stambuł» ≠ «Bahcesehir Kol.»? — 11.11 17:55 «Bahcesehir College Stambuł — BC Lietkabelis» ↔ эталон «Bahcesehir Kol. — Lietkabelis» (EUROPE: Eurocup; у сайта лига «Koszykówka mężczyzn: EuroCup»)",
-    "teleman.pl: «Białoruś» ≠ «Belarus»? — 15.11 18:50 «Białoruś — Albania» ↔ эталон «Belarus — Albania» (EUROPE: UEFA Nations League - League C; у сайта лига «Piłka nożna: Liga Narodów»)",
     "teleman.pl: «KS Uniwersytet Jagielloński W» ≠ «UJ Krakow W»? — 14.11 13:40 «KS Uniwersytet Jagielloński W — UKS SMS Łódź W» ↔ эталон «UJ Krakow W — UKS SMS Lodz W» (POLAND: Ekstraliga Women; у сайта лига «Piłka nożna kobiet: ORLEN Ekstraliga»)",
     "tv3.lt: «Mažeikių „M Basket“» ≠ «Mazeikiai»? — 14.11 14:00 «Alytaus „Patriotai“ — Mažeikių „M Basket“» ↔ эталон «Alytaus Patriotai — Mazeikiai» (LITHUANIA: NKL; у сайта лига «URBO-NKL rungtynės») — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "tvarenasport.ba: «Farska Ostrva U19» ≠ «Faroe Islands U19»? — 11.11 18:00 «Srbija U19 — Farska Ostrva U19» ↔ эталон «Serbia U19 — Faroe Islands U19» (EUROPE: Euro U19 - Qualification - Round 2 - League B; у сайта лига «UEFA U19»)",
     "tvarenasport.com: «Farska Ostrva U19» ≠ «Faroe Islands U19»? — 11.11 18:00 «Srbija U19 — Farska Ostrva U19» ↔ эталон «Serbia U19 — Faroe Islands U19» (EUROPE: Euro U19 - Qualification - Round 2 - League B; у сайта лига «UEFA U19»)",
-    "tvarenasport.com: «Spartak ŽK» ≠ «Sp. Subotica»? — 14.11 14:00 «Teleoptik — Spartak ŽK» ↔ эталон «Teleoptik — Sp. Subotica» (SERBIA: Mozzart Bet Prva Liga; у сайта лига «PRVA LIGA SRBIJE»)"
+    "tvarenasport.com: «Spartak ŽK» ≠ «Sp. Subotica»? — 14.11 14:00 «Teleoptik — Spartak ŽK» ↔ эталон «Teleoptik — Sp. Subotica» (SERBIA: Mozzart Bet Prva Liga; у сайта лига «PRVA LIGA SRBIJE»)",
+    "webtv.sk: «ligová fáze Lotyšsko» ≠ «Latvia»? — 15.11 15:45 «ligová fáze Lotyšsko — Arménie» ↔ эталон «Latvia — Armenia» (EUROPE: UEFA Nations League - League C; у сайта лига «») — эфир угадан: сверка с эталоном СНИМЕТ строку"
    ]
   },
   {
    "название": "10. Одна страница на разные дни или каналы",
    "строки": [
-    "movistarplus.es: 4 запрос(ов) впустую — 4 одинаковых (дни 2026-11-09…2026-11-13) — www.movistarplus.es__programacion-tv_multi6_2026-11-09.html; 2 одинаковых (дни 2026-11-12…2026-11-14) — www.movistarplus.es__programacion-tv_multi6_2026-11-12.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу",
-    "unian.tv: 4 запрос(ов) впустую — 5 одинаковых (дни 2026-11-10…2026-11-14) — unian.tv__10.11.2026.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу"
+    "movistarplus.es: 5 запрос(ов) впустую — 6 одинаковых (дни 2026-11-10…2026-11-15) — www.movistarplus.es__programacion-tv_multi6_2026-11-10.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу",
+    "unian.tv: 5 запрос(ов) впустую — 6 одинаковых (дни 2026-11-10…2026-11-15) — unian.tv__10.11.2026.html. Параметр дня сайт не слышит или адрес канала отдаёт чужую страницу"
    ]
   },
   {
    "название": "12. Женская лига без слова «женская»: команды шли мужскими",
    "строки": [
-    "ssport.tv: 1 строк(и) лиги «ncaa» шли мужскими, а эталон знает их женскими (USA: NCAA Women) — турнир в _WOMEN_LEAGUES (app/leagues.py) — 15.11 22:00 «Baylor — Texas»"
+    "ssport.tv: 1 строк(и) лиги «ncaa» шли мужскими, а эталон знает их женскими (USA: NCAA Women) — турнир в _WOMEN_LEAGUES (app/leagues.py) — 15.11 22:00 «Baylor — Texas»",
+    "tv3.lt: 1 строк(и) лиги «ncaa» шли мужскими, а эталон знает их женскими (USA: NCAA Women) — турнир в _WOMEN_LEAGUES (app/leagues.py) — 15.11 22:00 «Baylor — Texas»",
+    "tvsporten.dk: 2 строк(и) лиги «a-liga» шли мужскими, а эталон знает их женскими (DENMARK: A-Liga Women) — турнир в _WOMEN_LEAGUES (app/leagues.py) — 15.11 12:30 «ASA Aarhus — Brøndby IF»; 15.11 14:00 «FC København — FC Midtjylland»"
    ]
   },
   {
@@ -69,56 +58,58 @@
    "строки": [
     "allente.no: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: стоп-слово в заголовке ×1 — 12.11 21:35 Yle TV2 HD «Studio: UEFA Nations League: UEFA Nations League: Albania - » = эталон Albania — Finland 21:45 (lfBbB5E4) [отсев: стоп-слово в заголовке: Studio]",
     "bbc.co.uk: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «угаданный эфир без эталона» ×1 — 14.11 19:20 BBC ALBA «SPFL 2026/27 Season,League 1 - Hamilton v Ross County» = эталон Hamilton — Ross County 19:30 (nZlLxMWq) [снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись]",
-    "cosmotetv.gr: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: нет маркера прямого эфира ×1 — 14.11 16:30 Magenta Sport 4 «Μπάσκετ: Φιλαδέλφεια 76ερς - Τορόντο Ράπτορς» = эталон Papagou — Chalkida 17:00 (E1pD70Gc) [отсев: нет маркера прямого эфира]",
+    "cosmotetv.gr: 3 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: нет маркера прямого эфира ×3 — 14.11 16:30 Magenta Sport 4 «Μπάσκετ: Φιλαδέλφεια 76ερς - Τορόντο Ράπτορς» = эталон Papagou — Chalkida 17:00 (E1pD70Gc) [отсев: нет маркера прямого эфира]; 15.11 17:00 Magenta Sport 2 «Ποδόσφαιρο: Τζένοα - Μίλαν» = эталон Marko — Zakynthos 18:00 (CpGv7woI) [отсев: нет маркера прямого эфира]; 15.11 17:00 Magenta Sport 2 «Ποδόσφαιρο: Τζένοα - Μίλαν» = эталон Panserraikos — Karditsa 18:00 (0O3ePK0n) [отсев: нет маркера прямого эфира]",
     "ipko.tv: 5 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «угаданный эфир без эталона» ×5 — 12.11 19:00 SuperSport 3 «Turqi-Belgjike» = эталон Turkey — Belgium 19:00 (AJh0DeXa) [снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись]; 12.11 21:45 SuperSport 1 «Itali-France» = эталон Italy — France 21:45 (IqxRBrde) [снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись]; 12.11 21:45 SuperSport 2 «Shqiperi-Finlande» = эталон Albania — Finland 21:45 (lfBbB5E4) [снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись]; 12.11 21:45 SuperSport 3 «Ceki-Spanje» = эталон Czech Republic — Spain 21:45 (vBfNkJec) [снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись]",
     "npo.nl: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: стоп-слово в заголовке ×1 — 13.11 21:10 NPO3 «NOS Voetbal Nations League Nederland - Griekenland voorbesch» = эталон Netherlands — Greece 21:45 (GzS4tf1n) [отсев: стоп-слово в заголовке: voorbeschouwing]",
     "primaplay.ro: 2 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «мультикаст: канал сайта показывает несколько игр разом» ×2 — 13.11 21:30 PPV1 «Leganes - Burgos» = эталон Leganes — Burgos CF 21:30 (Isu3IKt0) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «PPV1» у primaplay.ro: 2 игр в 13.11 21:30]; 13.11 21:45 PPV1 «Liechtenstein - Azerbaidjan» = эталон Liechtenstein — Azerbaijan 21:45 (K0OYkbnR) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «PPV1» у primaplay.ro: 2 игр в 13.11 21:45]",
     "skysports.com: 17 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «мультикаст: канал сайта показывает несколько игр разом» ×17 — 10.11 21:00 Sky Sports+ «Barnet vs Leyton Orient» = эталон Barnet — Leyton Orient 21:00 (td0P80Rj) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 13 игр в 10.11 21:00]; 10.11 21:00 Sky Sports+ «Bristol Rovers vs Reading» = эталон Bristol Rovers — Reading 21:00 (UNHCxxoe) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 13 игр в 10.11 21:00]; 10.11 21:00 Sky Sports+ «Burton Albion vs Notts County» = эталон Burton — Notts County 21:00 (6Tje6hm2) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 13 игр в 10.11 21:00]; 10.11 21:00 Sky Sports+ «Crewe Alexandra vs Wigan Athletic» = эталон Crewe — Wigan 21:00 (6POZyjxf) [снято фильтром «мультикаст: канал сайта показывает несколько игр разом»: «Sky Sports+» у skysports.com: 13 игр в 10.11 21:00]",
-    "teleman.pl: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: на витрине, но не сведена с эталоном: «KS Uniwersytet Jagielloński W — UKS SMS Łódź W» ×1 — 14.11 13:40 TVP Sport «Piłka nożna kobiet: ORLEN Ekstraliga» = эталон UJ Krakow W — UKS SMS Lodz W 13:45 (hnbcoG0b) [на витрине, но не сведена с эталоном: «KS Uniwersytet Jagielloński W — UKS SMS Łódź W»]"
+    "teleman.pl: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: на витрине, но не сведена с эталоном: «KS Uniwersytet Jagielloński W — UKS SMS Łódź W» ×1 — 14.11 13:40 TVP Sport «Piłka nożna kobiet: ORLEN Ekstraliga» = эталон UJ Krakow W — UKS SMS Lodz W 13:45 (hnbcoG0b) [на витрине, но не сведена с эталоном: «KS Uniwersytet Jagielloński W — UKS SMS Łódź W»]",
+    "tv3.lt: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «показ пары дальше от матча, чем другой показ у сайта» ×1 — 15.11 15:50 LRT Plius «Europos moterų krepšinio čempionato atrankos rungtynės. Suom» = эталон Finland W — Lithuania W 16:00 (KSX3965K) [снято фильтром «показ пары дальше от матча, чем другой показ у сайта»: у сайта есть показ ближе к началу матча (15.11 16:00): 12.11 18:30]"
    ]
   }
  ],
  "справка": [
   "kanal1sport.sk class:live ×70 — проверено: «Vysielame» у всех строк подряд (kanal1sport_sk.py, 01.09)",
-  "mediaklikk.hu class:elo ×235 — проверено: «Élő» спрятана (`display:none`) у всех, кроме идущей сейчас (06.10)",
+  "mediaklikk.hu class:elo ×239 — проверено: «Élő» спрятана (`display:none`) у всех, кроме идущей сейчас (06.10)",
   "mediaklikk.hu class:live ×3 — проверено: плеер прямого эфира канала, не передача (06.10)",
-  "skai.gr class:live-img ×93 — проверено: LIVE — эфир канала в этот час, не матч (skai_gr.py)",
+  "skai.gr class:live-img ×90 — проверено: LIVE — эфир канала в этот час, не матч (skai_gr.py)",
   "skai.gr class:live ×6 — проверено: пункт меню «Live» сайта (06.10)",
-  "unian.tv class:tv-item__now ×1 — проверено: «Зараз в ефірі» — идёт сейчас (unian_tv.py)",
-  "alkass.net: угаданных эфиров снято 7 (повтор / нет в эталоне)",
-  "allente.no: угаданных эфиров снято 64 (повтор / нет в эталоне)",
+  "alkass.net: угаданных эфиров снято 8 (повтор / нет в эталоне)",
+  "allente.no: угаданных эфиров снято 62 (повтор / нет в эталоне)",
   "bbc.co.uk: угаданных эфиров снято 1 (повтор / нет в эталоне)",
-  "dagenstv.com: угаданных эфиров снято 4 (повтор / нет в эталоне)",
+  "dagenstv.com: угаданных эфиров снято 6 (повтор / нет в эталоне)",
   "digisport.ro: угаданных эфиров снято 4 (повтор / нет в эталоне)",
-  "ert.gr: угаданных эфиров снято 6 (повтор / нет в эталоне)",
-  "ipko.tv: угаданных эфиров снято 84 (повтор / нет в эталоне)",
-  "mediaklikk.hu: угаданных эфиров снято 2 (повтор / нет в эталоне)",
-  "movistarplus.es: угаданных эфиров снято 92 (повтор / нет в эталоне)",
-  "oneplaysport.cz: угаданных эфиров снято 17 (повтор / нет в эталоне)",
-  "port.hu: угаданных эфиров снято 14 (повтор / нет в эталоне)",
+  "ert.gr: угаданных эфиров снято 8 (повтор / нет в эталоне)",
+  "ipko.tv: угаданных эфиров снято 58 (повтор / нет в эталоне)",
+  "mediaklikk.hu: угаданных эфиров снято 3 (повтор / нет в эталоне)",
+  "movistarplus.es: угаданных эфиров снято 93 (повтор / нет в эталоне)",
+  "oneplaysport.cz: угаданных эфиров снято 16 (повтор / нет в эталоне)",
+  "port.hu: угаданных эфиров снято 16 (повтор / нет в эталоне)",
   "programme-tv.net: угаданных эфиров снято 4 (повтор / нет в эталоне)",
   "raiplay.it: угаданных эфиров снято 2 (повтор / нет в эталоне)",
   "skysports.com: помеченных эфиром снято фильтром «мультикаст: канал сайта показывает несколько игр разом» — 17",
   "sports.kz: угаданных эфиров снято 13 (повтор / нет в эталоне)",
-  "trt.net.tr: угаданных эфиров снято 3 (повтор / нет в эталоне)",
+  "trt.net.tr: угаданных эфиров снято 4 (повтор / нет в эталоне)",
   "trtspor.com.tr: угаданных эфиров снято 1 (повтор / нет в эталоне)",
   "tv.orf.at: угаданных эфиров снято 2 (повтор / нет в эталоне)",
-  "tv2.no: угаданных эфиров снято 5 (повтор / нет в эталоне)",
-  "tv3.lt: угаданных эфиров снято 97 (повтор / нет в эталоне)",
+  "tv2.no: угаданных эфиров снято 7 (повтор / нет в эталоне)",
+  "tv3.lt: угаданных эфиров снято 88 (повтор / нет в эталоне)",
   "tvarenasport.ba: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
-  "tvpassport.com: угаданных эфиров снято 1 (повтор / нет в эталоне)",
-  "vsetv.com: угаданных эфиров снято 6 (повтор / нет в эталоне)",
+  "tvpassport.com: угаданных эфиров снято 2 (повтор / нет в эталоне)",
+  "tvtid.tv2.dk: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
+  "vsetv.com: угаданных эфиров снято 7 (повтор / нет в эталоне)",
   "sportklub.hr: «Trabzon» ≠ «Trabzonspor» — проверено, в словарь не кладём: есть и «1461 Trabzon» — одно слово сводило бы оба клуба (06.10)",
   "tvarenasport.com: «BSK 1926» ≠ «Bacevac» — проверено, в словарь не кладём: BSK — ещё Borča и Banja Luka, а год чистка снимает (06.10)",
+  "digisport.ro: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "dr.dk: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "epg.cyta.com.cy: 2 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "programme-tv.net: 2 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "programme-tv.net: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "rtcg.me: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "skysports.com: 6 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "sporttv.pt: 2 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "sporttv.pt: 4 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "tvarenasport.com: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "tvmatchen.nu: 1 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
-  "tvsporten.dk: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
+  "tvsporten.dk: 4 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)",
   "tvtid.tv2.dk: 3 честн. строк(и) не сходятся с английскими именами эталона, но канон сведёт их по местным (не подозрение)"
  ],
  "показано_нет": [
@@ -150,6 +141,26 @@
    "fs_id": "E1pD70Gc",
    "эталон": "Papagou — Chalkida",
    "начало": "2026-11-14T17:00",
+   "шаг": "отсев: нет маркера прямого эфира"
+  },
+  {
+   "сайт": "cosmotetv.gr",
+   "канал": "Magenta Sport 2",
+   "показ": "2026-11-15T17:00",
+   "подпись": "Ποδόσφαιρο: Τζένοα - Μίλαν",
+   "fs_id": "CpGv7woI",
+   "эталон": "Marko — Zakynthos",
+   "начало": "2026-11-15T18:00",
+   "шаг": "отсев: нет маркера прямого эфира"
+  },
+  {
+   "сайт": "cosmotetv.gr",
+   "канал": "Magenta Sport 2",
+   "показ": "2026-11-15T17:00",
+   "подпись": "Ποδόσφαιρο: Τζένοα - Μίλαν",
+   "fs_id": "0O3ePK0n",
+   "эталон": "Panserraikos — Karditsa",
+   "начало": "2026-11-15T18:00",
    "шаг": "отсев: нет маркера прямого эфира"
   },
   {
@@ -411,6 +422,16 @@
    "эталон": "UJ Krakow W — UKS SMS Lodz W",
    "начало": "2026-11-14T13:45",
    "шаг": "на витрине, но не сведена с эталоном: «KS Uniwersytet Jagielloński W — UKS SMS Łódź W»"
+  },
+  {
+   "сайт": "tv3.lt",
+   "канал": "LRT Plius",
+   "показ": "2026-11-15T15:50",
+   "подпись": "Europos moterų krepšinio čempionato atrankos rungtynės. Suomija - Lietuva",
+   "fs_id": "KSX3965K",
+   "эталон": "Finland W — Lithuania W",
+   "начало": "2026-11-15T16:00",
+   "шаг": "снято фильтром «показ пары дальше от матча, чем другой показ у сайта»: у сайта есть показ ближе к началу матча (15.11 16:00): 12.11 18:30"
   }
  ]
 }
