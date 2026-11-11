@@ -503,7 +503,12 @@ def pull_result(t: Round, words: str) -> None:
               f"на каждой проверке; не обновится витрина — проверьте сервер "
               f"(/var/log/streams-update.log)")
     crawl_hook.clear(t.conn)
-    t.log(f"забор: {pull()}")
+    said = pull()
+    if said == crawl_hook.PULL_STARTED:
+        # правило З1 (книга 101): забор пошёл — строка над витриной пишет
+        # «сервер забирает результат», а не краснеет «итог так и не доехал»
+        crawl_hook.mark_pull(t.conn, t.rec.get("what") or "обход")
+    t.log(f"забор: {said}")
     t.rec["pulls"] = tries + 1
 
 

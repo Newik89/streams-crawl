@@ -273,6 +273,12 @@ def create_app() -> Flask:
                 continue
         return stamp or "?"
 
+    def _pull_words(since: str) -> str:
+        """Хвост строки статуса, пока сервер забирает результат (правило З2,
+        `crawl_hook.pulling`; книга 101): обход уже прошёл, это не сбой."""
+        return (f"закончен в {since}, сервер забирает результат — "
+                "на витрине через несколько минут…")
+
     def site_crawl_status() -> dict | None:
         """Строка под шапкой админки про кнопку «Обойти сайт»: заказан →
         идёт → ✅ ВЫПОЛНЕН (владелец 20.09: флеш пропадает при обновлении,
@@ -282,6 +288,7 @@ def create_app() -> Flask:
             req_raw = db.get_setting(conn, "site_crawl_request")
             res_raw = db.get_setting(conn, "site_crawl_result")
             run = crawl_hook.running(conn)
+            pull = crawl_hook.pull_mark(conn)
         finally:
             conn.close()
         req = (req_raw.split("|") + ["", ""])[:2] if req_raw else None
@@ -303,6 +310,10 @@ def create_app() -> Flask:
                 return {"cls": "ok",
                         "text": f"Обход сайта {req[0]}: идёт с "
                                 f"{run.get('since_day') or run['since']}…"}
+            since = crawl_hook.pulling(pull, f"site-{req[0]}", req[1])
+            if since:
+                return {"cls": "ok",
+                        "text": f"Обход сайта {req[0]}: {_pull_words(since)}"}
             if минуло(req[1], 30):
                 return {"cls": "error",
                         "text": f"Обход сайта {req[0]}: заказан в "
@@ -355,6 +366,7 @@ def create_app() -> Flask:
                          "text": f"{_run_words(run['what'])}: {state} "
                                  f"с {run.get('since_day') or run['since']}…"}]
             line = health.request_line(conn)
+            pull = crawl_hook.pull_mark(conn)
             date_raw = db.get_setting(conn, "date_scan_request")
             date_done = None
             if date_raw and "|" in date_raw:
@@ -386,6 +398,9 @@ def create_app() -> Flask:
                 lines.append({"cls": "ok",
                               "text": f"{words}: ✅ ВЫПОЛНЕН, влито в "
                                       f"{день_время(date_done)}"})
+            elif (since := crawl_hook.pulling(pull, f"date-{day}", stamp)):
+                lines.append({"cls": "ok",
+                              "text": f"{words}: {_pull_words(since)}"})
             elif минуло(stamp, 30):
                 lines.append({"cls": "error",
                               "text": f"{words}: заказан в {день_время(stamp)}, "
@@ -403,6 +418,9 @@ def create_app() -> Flask:
                 lines.append({"cls": "ok",
                               "text": f"{name}: ✅ ВЫПОЛНЕН — собрано "
                                       f"{line['crawl']}{tail}"})
+            elif (since := crawl_hook.pulling(pull, "full", line["asked"])):
+                lines.append({"cls": "ok",
+                              "text": f"{name}: {_pull_words(since)}"})
             elif минуло(line["asked"], 30):
                 lines.append({"cls": "error",
                               "text": f"{name}: заказан в "
@@ -985,6 +1003,14 @@ def create_app() -> Flask:
         finally:
             conn.close()
         said = crawl_hook.start_pull() if event == "done-ok" else "забор не нужен"
+        if said == crawl_hook.PULL_STARTED:
+            # правило З1 (книга 101): забор пошёл — строка статуса пишет
+            # «сервер забирает результат», а не краснеет «итог не доехал»
+            conn = db.connect()
+            try:
+                crawl_hook.mark_pull(conn, what or "обход")
+            finally:
+                conn.close()
         return jsonify({"ok": True, "pull": said})
 
     @app.route("/games/<int:event_id>/seen", methods=["POST"])

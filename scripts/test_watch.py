@@ -1279,6 +1279,24 @@ tick(K("08:15"))
 check("…следующая проверка видит результат на сервере → заказ закрыт, «забран сторожем»",
       pulled == [1] and state_get().get("done") is True
       and any("забран сторожем" in n for n in notes_after(edge)), notes_after(edge))
+# книга 101, правило З1: забор сторожа ставит ту же отметку, что забор по стуку
+reset(K("08:00"), [yday, done6])
+order_of(f"{DAY} 06:15", 6)
+RESULT[0] = "pending"
+setting("crawl_pull", "")
+cw.pull = lambda: "тест: забор не запустился"
+tick(K("08:00"))
+check("забор сторожа не запустился → отметки забора нет",
+      not setting("crawl_pull"), setting("crawl_pull"))
+reset(K("08:00"), [yday, done6])
+order_of(f"{DAY} 06:15", 6)
+RESULT[0] = "pending"
+cw.pull = lambda: crawl_hook.PULL_STARTED
+tick(K("08:00"))
+check("забор сторожа пошёл → отметка забора этого заказа: строка над витриной "
+      "пишет «сервер забирает результат», а не краснеет",
+      (setting("crawl_pull") or "").endswith("|full-6"), setting("crawl_pull"))
+setting("crawl_pull", "")
 reset(K("08:00"), [yday, done6])
 order_of(f"{DAY} 06:15", 6)
 RESULT[0] = "pending"
