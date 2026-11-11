@@ -51,6 +51,13 @@ RECENT_HOURS = 1
 #: Один порог на всех: им живут и server_crawl.py, и кнопка «Обойти сайт»
 SITE_GAP_HOURS = 20
 PULL_SCRIPT = db.ROOT / "scripts" / "hook_pull.sh"
+#: забор результата по стуку «закончил» (git pull + заливка) идёт 2–5 минут.
+#: В эти минуты отметка «идёт» уже снята, а метка сбора ещё прежняя — витрина
+#: краснела «итог так и не доехал», хотя обход прошёл (владелец 11.11,
+#: книга 101). Забору верим 20 минут: дольше — сорвался, пусть краснеет
+PULL_STALE = 20 * 60
+#: ответ `start_pull`, когда забор пошёл — только тогда ставится отметка забора
+PULL_STARTED = "забор запущен"
 
 
 def _secret() -> bytes:
@@ -185,6 +192,60 @@ def is_probe(what: str) -> bool:
     return (what or "").startswith(("proba", "probeurl"))
 
 
+# ── забор результата: «обход закончен, сервер забирает» (книга 101) ──────────
+# Правила:
+#   З1. Стук «закончил — удачно» принят и забор запущен → отметка забора
+#       (`crawl_pull` = «время|что», `mark_pull`). Провал, проба, забор не
+#       запустился — отметки нет.
+#   З2. Пока отметка свежая, строка статуса заказа пишет «закончен в ЧЧ:ММ,
+#       сервер забирает результат» вместо красного «итог так и не доехал».
+#   З3. Отметка старше `PULL_STALE` (20 мин), а итога нет — забор сорвался,
+#       строка краснеет как раньше.
+#   З4. Забор относится к заказу, только если стук пришёл ПОСЛЕ заказа:
+#       забор прошлого обхода не прикрывает новый заказ.
+#   З5. Вид забора — тот же, что у строки: полный обход (`full-N`, `days-N`),
+#       скан даты (`date-ГГГГ-ММ-ДД`), «Обойти сайт» (`site-домен`). Дозабор
+#       и переразбор (`redo-…`, `reparse-…`) метку сбора не двигают — чужую
+#       строку не прикрывают.
+
+def mark_pull(conn: sqlite3.Connection, what: str) -> None:
+    """Правило З1: сервер пошёл забирать результат обхода `what`."""
+    db.set_setting(conn, "crawl_pull", f"{int(time.time())}|{what}")
+
+
+def pull_mark(conn: sqlite3.Connection) -> str:
+    """Отметка забора как есть («время|что») — для `pulling`."""
+    return db.get_setting(conn, "crawl_pull") or ""
+
+
+def pulling(mark: str, kind: str, asked: str) -> str:
+    """Правила З2–З5: с какого времени («ЧЧ:ММ» по Киеву) сервер забирает
+    результат заказа; не забирает — пустая строка.
+
+    mark  — отметка забора (`pull_mark`);
+    kind  — вид строки: `full` (полный обход на N суток), `date-ГГГГ-ММ-ДД`
+            (скан даты) или `site-домен` («Обойти сайт»);
+    asked — когда заказали, «ГГГГ-ММ-ДД ЧЧ:ММ» по часам сервера (так его
+            пишут кнопки и `request_crawl.py`).
+    """
+    try:
+        ts, what = (mark or "").split("|", 1)
+        ts = int(ts)
+        ordered = datetime.strptime((asked or "").strip(), "%Y-%m-%d %H:%M")
+    except ValueError:
+        return ""
+    if time.time() - ts > PULL_STALE:                         # З3
+        return ""
+    # З4: заказ записан с точностью до минуты, часами сервера — так же и сверяем
+    if datetime.fromtimestamp(ts).replace(second=0, microsecond=0) < ordered:
+        return ""
+    if kind == "full":                                        # З5
+        same = bool(re.fullmatch(r"(?:full|days)-\d+", what))
+    else:
+        same = what == kind
+    return datetime.fromtimestamp(ts, KYIV).strftime("%H:%M") if same else ""
+
+
 def queue_behind(busy: dict, kind: str, value: str) -> bool:
     """Пустить плановую заявку, хотя «сбор идёт» (05.10): идёт проба или
     полный обход МЕНЬШЕЙ глубины. Обход GitHub и так встаёт в очередь за
@@ -289,6 +350,6 @@ def start_pull() -> str:
              "--unit", f"streams-hook-pull-{int(time.time())}",
              "/bin/sh", str(PULL_SCRIPT)],
             check=True, capture_output=True, timeout=20)
-        return "забор запущен"
+        return PULL_STARTED
     except (OSError, subprocess.SubprocessError) as e:
         return f"забор не запустился: {type(e).__name__}"
