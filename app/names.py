@@ -203,12 +203,52 @@ def _whole_exonyms() -> dict[str, str]:
     return out
 
 
+@lru_cache(maxsize=1)
+def _country_exonyms() -> dict[str, str]:
+    """Справочник сборных: написание страны на любом языке → её английское
+    имя (оба — как после `_tidy`: заглавные, без диакритики). Только разделы
+    `_сборные…` файла `data/aliases.json`: клубные сокращения (`PSG`,
+    раздел `_клубы целиком`) странами не считаются."""
+    if not ALIASES_FILE.exists():
+        return {}
+    raw = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))
+    out: dict[str, str] = {}
+    for key, block in raw.items():
+        if key.startswith("_сборные") and isinstance(block, dict):
+            out.update({k.upper(): v.upper() for k, v in block.items()})
+    return out
+
+
+@lru_cache(maxsize=1)
+def _country_names() -> frozenset[str]:
+    """Английские имена стран справочника (`SCOTLAND`, `USA`)."""
+    return frozenset(_country_exonyms().values())
+
+
+def country_of(name: str) -> str:
+    """Имя ЦЕЛИКОМ — страна из справочника сборных: её английское имя
+    заглавными («Scotia» → `SCOTLAND`, «Liettua W» → `LITHUANIA`, «Scotland
+    U21» → `SCOTLAND`). Не страна — пустая строка. Пометки пола, возраста и
+    состава на ответ не влияют — их отдаёт `category`. Книга 102, правило Э1."""
+    голое = "".join(c for c in unicodedata.normalize("NFKD", name or "")
+                    if not unicodedata.combining(c))
+    ключ = _tidy(голое, exonyms=False)
+    if not ключ:
+        return ""
+    англ = _country_exonyms().get(ключ)
+    if англ:
+        return англ
+    return ключ if ключ in _country_names() else ""
+
+
 def reload() -> None:
     """Перечитать `data/aliases.json`. Нужно после правки файла в живом
     процессе — админка и обход держат словарь в памяти."""
     aliases.cache_clear()
     _strip_rules.cache_clear()
     _whole_exonyms.cache_clear()
+    _country_exonyms.cache_clear()
+    _country_names.cache_clear()
     readings.cache_clear()
 
 
