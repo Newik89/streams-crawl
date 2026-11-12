@@ -262,16 +262,26 @@ def compare(old: dict, new: dict) -> list[str]:
     pairs = [(a[k], b[k]) for k in sorted(set(a) & set(b))]
     kept = [b[k] for k in sorted(set(a) & set(b))]
     fresh = [b[k] for k in sorted(set(b) - set(a))]
+    taken: list[dict] = []     # новые игры, которые уже заняла старая («имя», «время»)
+    left: list = []
     for k in sorted(set(a) - set(b)):
         same, how = twin(a[k], fresh, refs)
         if same:
             fresh.remove(same)
+            taken.append(same)
             to = (f"{same['home']} — {same['away']}" if how == "имя"
                   else same["start_kyiv"].replace("T", " "))
             print(f"  ~ {how}: {kniga._show(a[k])} → {to}")
             pairs.append((a[k], same))
             continue
-        host = absorbed(a[k], kept)
+        left.append(k)
+    for k in left:
+        # склеена — в игру, что была и в старом разборе, или в НОВУЮ, которую
+        # уже заняла другая старая игра: две старые строки сошлись в одну и
+        # та сменила имя («Czarnogóra — Latvija» и «Muntenegru — Letonia» →
+        # «Czarnogóra — Letonia», книга 104: без этого вторая считалась
+        # пропавшей, хотя её канал стоит при общей игре)
+        host = absorbed(a[k], kept) or absorbed(a[k], taken)
         if host:
             print(f"  ~ склеена: {kniga._show(a[k])} → {kniga._show(host)}")
             pairs.append((a[k], host))

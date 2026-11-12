@@ -374,6 +374,21 @@ def _country_names() -> frozenset[str]:
     return frozenset(_country_exonyms().values())
 
 
+@lru_cache(maxsize=1)
+def _fresh_country_keys() -> frozenset[str]:
+    """Ключи написаний стран, которые дал `data/countries.json` и которых не
+    было в старых разделах `_… целиком` файла `aliases.json` (правило Т8 в
+    `readings`: у таких написаний остаётся и чтение «как написано»)."""
+    old: set[str] = set()
+    if ALIASES_FILE.exists():
+        raw = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))
+        for key, block in raw.items():
+            if key.startswith("_") and "целиком" in key and isinstance(block, dict):
+                old.update(k.upper() for k in block)
+    return frozenset(k for k, country in _country_file().items()
+                     if k not in old and k != country)
+
+
 def _light(name: str) -> str:
     """Имя для ТОЧНОГО сравнения: без пометок пола и возраста, без значков и
     знаков, заглавными. В отличие от `_tidy`, слова «FC», «SC», «Club» не
@@ -542,6 +557,7 @@ def reload() -> None:
     _country_file.cache_clear()
     _country_exonyms.cache_clear()
     _country_names.cache_clear()
+    _fresh_country_keys.cache_clear()
     _country_english.cache_clear()
     _country_display.cache_clear()
     _letter_readings.cache_clear()
@@ -672,10 +688,22 @@ def readings(name: str) -> tuple[str, ...]:
     if not _CYRILLIC_RE.search(cmp_name) and not _HEBREW_RE.search(cmp_name):
         variants.extend(polish_readings(cmp_name))
     out: list[str] = []
+    raws: list[str] = []
+    whole, fresh = _whole_exonyms(), _fresh_country_keys()
     for v in variants:
-        t = _tidy(v)
+        raw = _tidy(v, exonyms=False)
+        t = whole.get(raw, raw)                     # то же, что `_tidy(v)`
         if t and t not in out:
             out.append(t)
+        # Т8 (книга 104): написание страны из нового справочника сводится к
+        # английскому имени, но чтение «как написано» остаётся (в конце):
+        # иначе соседнее НЕзнакомое написание теряет похожесть. Албанское
+        # «Ceki» было похоже на итальянское «Repubblica Ceca» (пара 72), а
+        # когда всё свелось к «CZECHIA», стало 54 — и строки ipko.tv «Ceki -
+        # Spanje» эталон перестал подтверждать (проверка GitHub 13.11)
+        if raw != t and raw in fresh and raw not in raws:
+            raws.append(raw)
+    out.extend(r for r in raws if r not in out)
     # точечная аббревиатура после чистки рассыпается на буквы («N.E.C» →
     # «N E C») и слитного написания эталона («NEC Nijmegen») не узнаёт —
     # добавляем чтение со склейкой таких букв (#2251, владелец 12.09)

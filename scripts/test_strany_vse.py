@@ -173,6 +173,50 @@ check("«Franca», «Grecia», «Kuwait SC», «Skoci», «Шотландия» 
       not any(names.country_in_english(x) for x in ("Franca", "Grecia", "Kuwait SC", "Skoci", "Шотландия")),
       [x for x in ("Franca", "Grecia", "Kuwait SC", "Skoci", "Шотландия") if names.country_in_english(x)])
 
+print("найдено на живых сборах 13.11: неопределённые албанские формы, сербские, «Bosnia», иврит")
+found = {"Ceki": "CZECHIA", "Itali": "ITALY", "Serbi": "SERBIA", "Angli": "ENGLAND", "Austri": "AUSTRIA",
+         "Maqedoni V": "NORTH MACEDONIA", "Letonija": "LATVIA", "Farska Ostrva U19": "FAROE ISLANDS",
+         "Νησιά Φερόε": "FAROE ISLANDS", "Република Ирландия": "IRELAND", "Bosnia": "BOSNIA HERZEGOVINA",
+         "EUA": "USA", "קניה": "KENYA", "סודן": "SUDAN", "מלאווי": "MALAWI", "Martinique": "MARTINIQUE"}
+wrong = {s: names.country_of(s) for s, want in found.items() if names.country_of(s) != want}
+check("«Ceki», «Itali», «Letonija», «Νησιά Φερόε», «Република Ирландия», «Bosnia», «קניה» — страны", not wrong, wrong)
+check("«Bosna» и «Босна» — баскетбольный клуб из Сараева, не страна",
+      countries("Bosna", "Босна") == ["", ""], countries("Bosna", "Босна"))
+
+print("Т8: новое знание не ухудшает догадку по буквам")
+kept = names.readings("Repubblica Ceca")
+check("написание страны сводится к английскому имени, но чтение «как написано» остаётся",
+      kept[0] == "CZECHIA" and "REPUBBLICA CECA" in kept, kept)
+check("незнакомое соседнее написание по-прежнему похоже: «Repubblica Cecha» ↔ «Repubblica Ceca»",
+      names.similarity("Repubblica Cecha", "Repubblica Ceca") >= names.SIMILAR_ENOUGH,
+      names.similarity("Repubblica Cecha", "Repubblica Ceca"))
+check("первое чтение — по-прежнему английское имя (ключ вида спорта по командам)",
+      names.readings("Dienvidāfrika")[0] == "SOUTH AFRICA" and names.readings("Scotland")[0] == "SCOTLAND",
+      (names.readings("Dienvidāfrika"), names.readings("Scotland")))
+
+print("книга 106: пара сборных не получает вид спорта «по командам»")
+sys.path.insert(0, str(ROOT / "scripts"))
+import parse_live  # noqa: E402
+
+single = {parse_live.sport_key(n): letter for n, letter in (
+    ("France", "F"), ("South Africa", "F"), ("Wales", "F"), ("New Zealand", "F"), ("Kasimpasa", "F"),
+    ("Amedspor", "F"), ("Andorra", "B"), ("Tenerife", "B"), ("Barcelona W", "B"))}
+check("«Francie - JAR», «Wales - Nový Zéland» (регби на Nova Sport) — не решаем",
+      parse_live.sport_by_teams("Francie", "JAR", single) == ""
+      and parse_live.sport_by_teams("Wales", "Nový Zéland", single) == "",
+      (parse_live.sport_by_teams("Francie", "JAR", single), parse_live.sport_by_teams("Wales", "Nový Zéland", single)))
+check("клубы — как раньше: «Kasımpaşa - Amedspor» → футбол",
+      parse_live.sport_by_teams("Kasımpaşa", "Amedspor", single) == "F",
+      parse_live.sport_by_teams("Kasımpaşa", "Amedspor", single))
+check("клуб-тёзка страны с клубом: «Andorra - Tenerife» → баскетбол",
+      parse_live.sport_by_teams("Andorra", "Tenerife", single) == "B",
+      parse_live.sport_by_teams("Andorra", "Tenerife", single))
+check("одна сторона неизвестна или виды разные — не решаем",
+      parse_live.sport_by_teams("Kasımpaşa", "Neznamy", single) == ""
+      and parse_live.sport_by_teams("Kasımpaşa", "Tenerife", single) == "",
+      (parse_live.sport_by_teams("Kasımpaşa", "Neznamy", single),
+       parse_live.sport_by_teams("Kasımpaşa", "Tenerife", single)))
+
 print("Т6: словарь подтверждённых имён справочнику не указ")
 names.set_overrides({"Anglia": "Scotland", "Škotska": "Croatia"})
 names.country_of.cache_clear()
