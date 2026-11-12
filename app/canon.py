@@ -48,6 +48,12 @@ def _learnable(mine: str, canon: str) -> bool:
     # заново нельзя: `_one_team` раньше звала только чистка, не учёба
     if not _one_team(mine, canon) or (":" in mine and ":" not in canon):
         return False
+    # написание — название ДРУГОЙ страны: «Scotia» (Шотландия) алиасом
+    # Хорватии не станет, даже когда правило программы свело игру с матчем
+    # эталона, а сайт ошибся в сопернике (книга 103, #9937)
+    mine_country, canon_country = names.country_of(mine), names.country_of(canon)
+    if mine_country and canon_country and mine_country != canon_country:
+        return False
     return (names.category(mine) == names.category(canon)
             and ("3x3" in mine.lower()) == ("3x3" in canon.lower()))
 #: единственный кандидат в окне времени — достаточно и такого сходства,
@@ -326,6 +332,60 @@ def _firm_side_bridge(game: dict, near: list,
     if _players(game, pick) or not _same_category(game, pick):
         return None
     return pick
+
+
+#: пометка правила (е) у игры: с кем на самом деле играет сборная в эту
+#: минуту по эталону («England - Croatia»). Игра остаётся как на сайте —
+#: витрина красит её розовым и ставит знак вопроса (решение владельца 12.11)
+RIVAL_DOUBT = "спор_соперник"
+#: окно правила (е): сетки сборных время держат точно
+RIVAL_WINDOW = timedelta(minutes=15)
+
+
+def _country_pair(game: dict) -> frozenset[str] | None:
+    """Обе стороны — сборные из справочника стран, разные: множество двух
+    стран (`names.country_of`); иначе None."""
+    pair = frozenset((names.country_of(game.get("home") or ""),
+                      names.country_of(game.get("away") or "")))
+    return pair if "" not in pair and len(pair) == 2 else None
+
+
+def _rival_slip(game: dict, near: list, start: datetime) -> dict | None:
+    """Правило (е), книга 103 (владелец 12.11, #9937): сайт канала подписал
+    матч «Anglia - Scotia», а у эталона в ту же минуту — England - Croatia
+    (Шотландия играет на день позже). Сборная не играет два матча сразу —
+    значит, сайт назвал не того соперника. Решение владельца 12.11: игру
+    НЕ склеивать с матчем эталона, оставить как на сайте канала и пометить
+    на витрине (`RIVAL_DOUBT`): сайт ближе к дате может исправиться сам.
+    Здесь — только поиск матча, с которым строка спорит. Он находится,
+    только если ВСЁ сразу:
+
+      1. обе стороны игры — сборные из справочника стран
+         (`names.country_of`), разные;
+      2. кандидат начинается в ту же минуту (± `RIVAL_WINDOW`), и одна из
+         его сторон — одна из этих двух стран;
+      3. пол и возраст те же (`_same_category`);
+      4. такой кандидат ОДИН на обе названные страны: играют в эту минуту
+         обе (каждая со своим соперником) — не знаем, какой матч показывают;
+      5. это не теннис и не пара игроков (`_players`).
+
+    Возвращает матч эталона или None. Неверное имя соперника словарь не
+    учит никаким правилом (`_learnable`: написание одной страны алиасом
+    другой не становится)."""
+    mine = _country_pair(game)
+    if mine is None:
+        return None
+    hits = []
+    for r, s in near:
+        if abs(start - s) > RIVAL_WINDOW:
+            continue
+        theirs = {names.country_of(r.get("home") or ""),
+                  names.country_of(r.get("away") or "")} - {""}
+        # пол и возраст — до подсчёта: «England U20 - Czech Republic U20» в
+        # 21:30 взрослому матчу 21:45 не соперник (проба на копии базы 12.11)
+        if mine & theirs and _same_category(game, r) and not _players(game, r):
+            hits.append(r)
+    return hits[0] if len(hits) == 1 else None
 
 
 def _league_core(label: str) -> str:
@@ -677,6 +737,7 @@ def align(games: list[dict], reference: list[dict],
         # пометка прошлого прогона (та же игра сопоставляется не раз —
         # `canon_backfill`) не должна пережить новое решение
         game.pop("канон_как", None)
+        game.pop(RIVAL_DOUBT, None)
         ref = by_sport.get(game.get("sport") or "", [])
         if not ref:
             continue                      # вида спорта нет в эталоне
@@ -810,6 +871,18 @@ def align(games: list[dict], reference: list[dict],
             out["missed"].append(game)
         elif best_score >= SURE:
             _sure(out, game, best, best_score)
+        elif (pair := _country_pair(game)) and not any(
+                _country_pair(r) == pair for r, _ in near):
+            # книга 103: сайт назвал две сборные, а матча между ними у эталона
+            # в окне нет. Обе стороны читаются твёрдо — «слабой» стороны, на
+            # которую рассчитаны правила ниже («явный лидер», «с сомнением»),
+            # тут нет: игра остаётся как на сайте («мимо»). Если одна из
+            # сборных в эту минуту играет у эталона с другим соперником
+            # (правило (е)) — игра получает пометку для витрины
+            slip = _rival_slip(game, near, start)
+            if slip is not None:
+                game[RIVAL_DOUBT] = f"{slip.get('home')} - {slip.get('away')}"
+            out["missed"].append(game)
         elif _clear_leader(game, best, best_score, near):
             # Лиги нет, но одна команда узнана твёрдо, а соперники в окне
             # далеко позади: `לברקוזן W` = Bayer Leverkusen W (83), вторая

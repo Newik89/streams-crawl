@@ -604,6 +604,87 @@ def remember_team(conn: sqlite3.Connection, raw: str, canonical: str,
     return team_id
 
 
+# ── сборные по справочнику стран (книга 102) ─────────────────────────────────
+# Жалоба владельца 12.11: «Scotia», «Suomi», «Liettua» витрина переводила
+# (справочник сборных в `data/aliases.json`), а в словарь они не попадали —
+# сторона оставалась без команды, игра висела в «Names to fix». Правила:
+#   Э1. Имя стороны ЦЕЛИКОМ — название страны из справочника сборных на любом
+#       языке (`names.country_of`; пометки пола и возраста не в счёт) — это
+#       сборная этой страны.
+#   Э2. Команда — только уже известная словарю: сборная с этим английским
+#       именем (её завёл эталон flashscore). У имени с пометкой («W», «U21»)
+#       — команда «страна + пометка»; нет такой — заводится рядом со сборной
+#       без пометки, тем же именем (flashscore пишет так же). Сборной без
+#       пометки нет вовсе — ничего не заводим.
+#   Э3. На одну страну две команды (двойники в словаре) — не решаем.
+#   Э4. Написание уже занято другой командой — не трогаем.
+#   Э5. Написание без пометки («Liettua» из «Liettua W») учится заодно — за
+#       сборной без пометки.
+# Запись — обычным `remember_team`: пары, карантин и слитые работают как везде.
+
+def _country_teams(conn: sqlite3.Connection) -> dict[tuple[str, str], list[tuple[int, str]]]:
+    """(страна, пометка) → [(номер, имя)] живых команд словаря."""
+    from . import names                      # names словарь не импортирует
+    out: dict[tuple[str, str], list[tuple[int, str]]] = {}
+    for r in conn.execute("SELECT id, canonical_name FROM teams WHERE merged_into IS NULL"):
+        name = r["canonical_name"] or ""
+        country = names.country_of(name)
+        if country:
+            out.setdefault((country, names.category(name)), []).append((r["id"], name))
+    return out
+
+
+def _bare_name(raw: str) -> str:
+    """Написание без пометок пола и возраста: «Liettua W» → «Liettua»."""
+    from . import names
+    return " ".join(names._AGE_RE.sub(" ", names._WOMEN_RE.sub(" ", raw)).split())
+
+
+def learn_country_sides(conn: sqlite3.Connection, raws) -> dict[str, list]:
+    """Правила Э1–Э5 для написаний сторон без команды. Возвращает, что вышло:
+    «выучено» — [(написание, команда)], «нет сборной», «спор» и «занято» —
+    написания, которые не тронуты (Э2, Э3, Э4)."""
+    from . import names
+    out: dict[str, list] = {"выучено": [], "нет сборной": [], "спор": [], "занято": []}
+    wanted = []
+    for raw in dict.fromkeys((r or "").strip() for r in raws):
+        country = names.country_of(raw) if raw else ""                 # Э1
+        if country:
+            wanted.append((raw, country, names.category(raw)))
+    if not wanted:
+        return out
+    teams = _country_teams(conn)
+    merged = merged_map(conn)
+
+    def free_for(alias: str, team_name: str) -> bool:                  # Э4
+        owners = {merged.get(r["team_id"], r["team_id"]) for r in conn.execute(
+            "SELECT team_id FROM team_aliases WHERE alias = ?", (alias,))}
+        return not owners or owners == {team_id_by_name(conn, team_name)}
+
+    def learn(alias: str, team_name: str) -> None:
+        if alias and remember_team(conn, alias, team_name):
+            out["выучено"].append((alias, team_name))
+
+    for raw, country, mark in wanted:
+        plain = teams.get((country, ""), [])
+        own = teams.get((country, mark), []) if mark else plain
+        if len(plain) > 1 or len(own) > 1:                             # Э3
+            out["спор"].append(raw)
+            continue
+        if not plain:                                                  # Э2
+            out["нет сборной"].append(raw)
+            continue
+        team_name = own[0][1] if own else f"{plain[0][1]} {mark}"
+        if not free_for(raw, team_name):                               # Э4
+            out["занято"].append(raw)
+            continue
+        learn(raw, team_name)
+        bare = _bare_name(raw)
+        if mark and bare != raw and free_for(bare, plain[0][1]):       # Э5
+            learn(bare, plain[0][1])
+    return out
+
+
 def event_team_id(conn: sqlite3.Connection, canonical: str) -> int | None:
     """Номер команды для СОБЫТИЯ по имени эталона: находит или заводит
     (`remember_team`), слитая — выжившая (С6). None — команды нет: имя

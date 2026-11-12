@@ -319,6 +319,21 @@ def main() -> int:
                     " WHERE id=? AND (team_home_id IS NULL "
                     "OR team_away_id IS NULL)",
                     (*sets.values(), game["id"])).rowcount
+        # Э1–Э5 (книга 102): сторона без команды, чьё имя ЦЕЛИКОМ — страна из
+        # справочника сборных («Scotia», «Suomi», «Liettua W»), — это сборная:
+        # написание уходит в словарь, номер команды поставит шаг ниже
+        loose = [raw for r in conn.execute(
+            "SELECT team_home_id, team_away_id, team_home_auto, team_away_auto "
+            "FROM events WHERE team_home_id IS NULL OR team_away_id IS NULL").fetchall()
+            for team_id, raw in ((r["team_home_id"], r["team_home_auto"]),
+                                 (r["team_away_id"], r["team_away_auto"]))
+            if team_id is None]
+        countries = dictionary.learn_country_sides(conn, loose)
+        if countries["выучено"]:
+            print(f"сборные по справочнику стран: выучено написаний "
+                  f"{len(countries['выучено'])}")
+            for raw, team in countries["выучено"][:10]:
+                print(f"  {raw} → {team}")
         # свежие алиасы → проставить id всем событиям, чьи сырые имена
         # словарь теперь знает (не только сопоставленным сейчас)
         # только бесспорные написания: «Dinamo» трёх клубов id не ставит
@@ -373,12 +388,24 @@ def main() -> int:
                 "away": r["team_away_auto"] or "",
                 "league": r["league_auto"] or "",
                 "start_kyiv": r["start_kyiv"], "entries": []} for r in rows]
-        for game, ref, _ in canon.align(
-                всё, reference, dictionary.league_overrides(conn))["sure"]:
+        relabel = canon.align(всё, reference, dictionary.league_overrides(conn))
+        for game, ref, _ in relabel["sure"]:
             if ref.get("fs_id"):
                 conn.execute("UPDATE events SET flags=? WHERE id=? "
                              "AND flags IS NULL",
                              (f"fs:{ref['fs_id']}", game["id"]))
+        # Книга 103 (решение владельца 12.11): сайт канала назвал соперника,
+        # которого у сборной в эту минуту по эталону нет («Anglia - Scotia»
+        # при England - Croatia). Игра остаётся как на сайте, а витрина красит
+        # её розовым и ставит знак вопроса. Список считается заново каждой
+        # сверкой: сайт исправился или игра прошла — пометка уходит сама
+        doubts = {str(game["id"]): game[canon.RIVAL_DOUBT]
+                  for game in relabel["missed"] if game.get(canon.RIVAL_DOUBT)}
+        db.set_setting(conn, "rival_doubts", json.dumps(doubts, ensure_ascii=False))
+        if doubts:
+            print(f"сайт называет другого соперника, чем эталон: {len(doubts)}")
+            for event_id, real in list(doubts.items())[:10]:
+                print(f"  #{event_id}: у эталона в эту минуту {real}")
         # Событие лежит в базе ПЕРЕВЁРНУТЫМ (#4512, владелец 03.10): ранняя
         # заливка завела «Bosna BH Telecom — Spartak Office Shoes», эталон
         # знает «Spartak Subotica — KK Bosna». Заливка такое событие находит

@@ -1133,6 +1133,16 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
     league_names = dictionary.league_overrides(conn)
     # имена каналов, как их пишут сайты, — для ссылки ↗ (13.10)
     names_on_site = site_names(conn)
+    # книга 103 (владелец 12.11): игры, где сайт канала назвал соперника,
+    # которого у сборной в эту минуту по эталону нет, — розовая строка со
+    # знаком вопроса. Список пишет сверка (`canon_backfill.py`): номер игры
+    # → настоящий матч эталона
+    try:
+        row = conn.execute("SELECT value FROM settings "
+                           "WHERE key = 'rival_doubts'").fetchone()
+        doubts = json.loads(row["value"]) if row and row["value"] else {}
+    except (ValueError, sqlite3.OperationalError):
+        doubts = {}
 
     # Что уже лежит в очереди на подтверждение (страница «Имена»): по этим
     # играм ответ найден, но ждёт вашего слова. Раньше витрина о них молчала,
@@ -1362,6 +1372,9 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             # «перенесён с 24.10 18:15» (владелец 24.10): прежнее время, если
             # матч сдвинули на 3 ч и больше (`db._add_triggers`)
             "moved_from": _moved_label(row["moved_from"]),
+            # «England - Croatia»: с кем сборная играет в эту минуту по
+            # эталону, если сайт назвал другого соперника (книга 103)
+            "doubt": doubts.get(str(row["id"]), ""),
             "channels": channels,
             # перечёркнутые «снят» — только витрине; API их не отдаёт
             "gone_channels": gone_channels,
