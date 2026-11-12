@@ -211,6 +211,21 @@ check("клубы — как раньше: «Kasımpaşa - Amedspor» → фут
 check("клуб-тёзка страны с клубом: «Andorra - Tenerife» → баскетбол",
       parse_live.sport_by_teams("Andorra", "Tenerife", single) == "B",
       parse_live.sport_by_teams("Andorra", "Tenerife", single))
+pairs = parse_live.country_pairs([
+    {"home": "Argentina", "away": "Uruguay", "sport": "F", "start_kyiv": "2026-11-14T01:00"},
+    {"home": "Spain W", "away": "France W", "sport": "B", "start_kyiv": "2026-11-13T20:00"},
+    {"home": "Spain", "away": "France", "sport": "F", "start_kyiv": "2026-11-15T21:45"},
+    {"home": "Real Madrid", "away": "Barcelona", "sport": "F", "start_kyiv": "2026-11-15T22:00"}])
+check("пару сборных решает эталон: «Argentina - Uruguay» есть в его окне → футбол (повторы снимут фильтры записей)",
+      parse_live.sport_by_teams("Argentina", "Uruguay", single, pairs) == "F"
+      and parse_live.sport_by_teams("Urugwaj", "Argentyna", single, pairs) == "F",
+      (parse_live.sport_by_teams("Argentina", "Uruguay", single, pairs),
+       parse_live.sport_by_teams("Urugwaj", "Argentyna", single, pairs)))
+check("пары в эталоне нет («Francie - JAR») или она в двух видах спорта («España - Francia») — не решаем",
+      parse_live.sport_by_teams("Francie", "JAR", single, pairs) == ""
+      and parse_live.sport_by_teams("España", "Francia", single, pairs) == "",
+      (parse_live.sport_by_teams("Francie", "JAR", single, pairs),
+       parse_live.sport_by_teams("España", "Francia", single, pairs)))
 check("одна сторона неизвестна или виды разные — не решаем",
       parse_live.sport_by_teams("Kasımpaşa", "Neznamy", single) == ""
       and parse_live.sport_by_teams("Kasımpaşa", "Tenerife", single) == "",
