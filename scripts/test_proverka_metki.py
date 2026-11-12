@@ -104,6 +104,25 @@ def main() -> int:
     check("без новой игры — канал sport5 и правда пропал", len(losses) == 1
           and "sport5.co.il" in losses[0], losses)
 
+    print("6. compare: две старые строки сошлись в одну новую с другим именем — не потеря (книга 104)")
+    pl = game("Czarnogóra", "Latvija", "2026-11-12T21:35",
+              [("Polsat Sport Premium 2", "teleman.pl"), ("Sport Klub 8", "sportklub.hr")])
+    ro = game("Muntenegru", "Letonia", "2026-11-12T21:45", [("PPV1", "primaplay.ro")])
+    both = game("Czarnogóra", "Letonia", "2026-11-12T21:35",
+                [("Polsat Sport Premium 2", "teleman.pl"), ("Sport Klub 8", "sportklub.hr"),
+                 ("PPV1", "primaplay.ro")])
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        losses = proverka.compare({"games": [pl, ro]}, {"games": [both]})
+    check("потерь нет: вторая строка склеена в общую игру", not losses, (losses, out.getvalue()))
+    check("в отчёте — «склеена»", "склеена" in out.getvalue(), out.getvalue())
+    lost = game("Czarnogóra", "Letonia", "2026-11-12T21:35",
+                [("Polsat Sport Premium 2", "teleman.pl"), ("Sport Klub 8", "sportklub.hr")])
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        losses = proverka.compare({"games": [pl, ro]}, {"games": [lost]})
+    check("а если канала второй строки при общей игре нет — это потеря", len(losses) == 1, losses)
+
     print(f"\nПроверок: {passed + len(failed)}, провалов: {len(failed)}")
     return 1 if failed else 0
 

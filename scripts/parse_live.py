@@ -679,6 +679,60 @@ def removed_row(фильтр: str, domain: str, r, почему: str) -> dict:
             "почему": почему}
 
 
+def sport_key(имя: str) -> tuple:
+    """Ключ команды для правила «вид спорта по командам»: чтение имени
+    ВМЕСТЕ с полом и возрастом («Mechelen W» — другая команда, чем
+    «Mechelen», и вид спорта у них может быть разный)."""
+    return ((names.readings(имя) or ("",))[0], names.category(имя))
+
+
+def country_pairs(reference: list[dict]) -> dict:
+    """Пары сборных эталона за всё его окно: {две страны} → виды спорта, в
+    которых эталон знает матч этих стран (пол и возраст не в счёт)."""
+    out: dict[frozenset, set] = {}
+    for ref in reference:
+        pair = frozenset((names.country_of(ref.get("home") or ""),
+                          names.country_of(ref.get("away") or "")))
+        if len(pair) == 2 and "" not in pair:
+            out.setdefault(pair, set()).add(ref.get("sport") or "F")
+    return out
+
+
+def sport_by_teams(home: str, away: str, однозначные: dict,
+                   пары_стран: dict | None = None) -> str:
+    """Вид спорта строки по КОМАНДАМ, без оглядки на время: клуб играет в
+    одном виде спорта. `однозначные` — ключ команды (`sport_key`) → буква
+    вида, только для команд с одним видом; `пары_стран` — пары сборных
+    эталона (`country_pairs`). Правила:
+
+      1. обе стороны должны быть известны и сойтись в одной букве — по одной
+         стороне не решаем;
+      2. (книга 106) сборная — не клуб: она играет во всех видах спорта
+         сразу. Если ОБЕ стороны — страны из справочника
+         (`names.country_of`), по командам не решаем (одна — это клуб-тёзка:
+         «Andorra — Tenerife» — баскетбол Испании). Решает пара: эталон
+         знает матч этих двух стран в своём окне и только в одном виде
+         спорта («Argentina - Uruguay», товарищеский: его повторы у movistar
+         — футбол, дальше их снимут фильтры записей) → этот вид; не знает —
+         правило молчит. Матч НАШЕГО вида у сборных
+         эталон знает по паре и времени (весь мировой футбол, баскетбол и
+         теннис дня — шаг «по эталону flashscore»); пары там нет — это
+         другой вид или запись: «Francie - JAR», «Wales - Nový Zéland» на
+         Nova Sport — регби, а по командам вышли бы футболом, раз справочник
+         стран теперь знает и ЮАР, и Новую Зеландию (проверка GitHub 13.11).
+         Такая строка идёт владельцу в очередь «Вид спорта», как и раньше.
+
+    Пусто — не решено."""
+    страны = [names.country_of(имя or "") for имя in (home, away)]
+    if all(страны):
+        виды = (пары_стран or {}).get(frozenset(страны), set())
+        return next(iter(виды)) if len(виды) == 1 else ""
+    буквы = {однозначные.get(sport_key(имя or "")) for имя in (home, away)}
+    if len(буквы) != 1 or None in буквы:
+        return ""
+    return буквы.pop()
+
+
 def sift(rows: list, keep, снято: list, фильтр: str, почему: str) -> list:
     """Оставить строки `(сайт, строка)`, для которых `keep(сайт, строка)`
     истинно; остальные записать в `снято` поимённо."""
@@ -1091,8 +1145,7 @@ def main() -> int:
         # другая команда, чем «Mechelen», и спорт у них может быть разный
         # (мужской Mechelen — футбол, женский — баскетбол; так женский
         # баскет cyta записывался футболом, #3535, владелец 28.09)
-        def _ключ_вида(имя: str) -> tuple:
-            return ((names.readings(имя) or ("",))[0], names.category(имя))
+        _ключ_вида = sport_key
 
         по_командам: dict[tuple, set] = {}
         for ref in reference_full:
@@ -1115,18 +1168,14 @@ def main() -> int:
         однозначные = {k: next(iter(v)) for k, v in по_командам.items()
                        if len(v) == 1}
         from_team = 0
+        пары_стран = country_pairs(reference_full)
         for domain, r in maybe:
             if r.ok:
                 continue
-            буквы = set()
-            for имя in (r.home, r.away):
-                буквы.add(однозначные.get(_ключ_вида(имя or "")))
-            # обе стороны должны быть известны и сойтись: у сборных за одним
-            # именем стоит и футбол, и баскетбол, и по одной стороне решать
-            # нельзя («Fidži - Kanada» — это могло быть что угодно)
-            if len(буквы) != 1 or None in буквы:
+            буква = sport_by_teams(r.home, r.away, однозначные, пары_стран)
+            if not буква:
                 continue
-            r.sport = буквы.pop()
+            r.sport = буква
             r.sport_word = "по командам эталона"
             r.ok, r.needs_review = True, False
             found.append((domain, r))

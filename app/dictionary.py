@@ -307,6 +307,50 @@ def langs_of(lang) -> frozenset[str] | None:
 DECIDED, DISPUTED, OTHER_SPORT, UNKNOWN = "ответ", "спор", "чужой вид", "нет"
 
 
+# ── С12: написание страны — только за сборной ЭТОЙ страны (книга 104) ────────
+# Сверка с живым словарём 12.11 нашла 17 написаний стран за чужой сборной:
+# «Island» (Исландия) — за Ирландией, «Bulharsko» — за Израилем, «Congo U20»
+# — за Gabon U20 и наоборот (зеркало flashscore отдало пару в обратном
+# порядке). Из-за них словарь либо отвечал неверно, либо «спорил» и молчал.
+# Правило: запись «написание страны A → сборная страны B» словарь НЕ ЧИТАЕТ
+# (в базе она остаётся — удалять и выключать записи можно только по слову
+# владельца). Страну написания называет справочник, и только по ТОЧНОМУ
+# знанию — написание буква в букву стоит в справочнике (`names.country_exact`;
+# догадки по транслиту запись не прячут). Сборная — команда с английским
+# именем страны (`names.country_in_english`). Клубов и игроков правило не
+# касается: «Austria» за Austria Vienna читается как раньше.
+# Скорость: словарь перечитывается после каждой записи в него, поэтому
+# «сборная ли команда» запоминается по имени (`_NATION_MEMO`), а написание
+# проверяется одним поиском в готовой таблице.
+
+#: имя команды → страна («» — не сборная); живёт, пока жив процесс
+_NATION_MEMO: dict[str, str] = {}
+
+
+def national_teams(canon_of: dict[int, str]) -> dict[int, str]:
+    """Номер команды → страна, для команд-сборных (имя — английское имя
+    страны, пометки пола и возраста не в счёт)."""
+    from . import names                      # names словарь не импортирует
+    out: dict[int, str] = {}
+    for tid, canon in canon_of.items():
+        country = _NATION_MEMO.get(canon)
+        if country is None:
+            country = (names.country_of(canon)
+                       if canon and names.country_in_english(canon) else "")
+            _NATION_MEMO[canon] = country
+        if country:
+            out[tid] = country
+    return out
+
+
+def foreign_country(alias: str, country: str) -> bool:
+    """Написание буква в букву — страна из справочника, и НЕ та, что
+    `country`."""
+    from . import names
+    mine = names.country_exact(alias or "")
+    return bool(mine) and mine != country
+
+
 class TeamNames:
     """Словарь команд, прочитанный из базы ОДИН раз: написание → команда с
     учётом языка сайта и вида спорта. Дальше отвечает без базы — годится и
@@ -330,6 +374,10 @@ class TeamNames:
         #: проигравший при слиянии → выживший (С6, `merged_into`)
         self.merged = merged_map(conn)
         self.canon_of: dict[int, str] = {}
+        for tid, canon in conn.execute("SELECT id, canonical_name FROM teams"):
+            self.canon_of[tid] = canon
+        #: сборная → её страна по справочнику (`national_teams`, С12)
+        nation = national_teams(self.canon_of)
         #: написание → [(команда, её языки записей)], последняя запись — в конце
         self.rows: dict[str, list[tuple[int, frozenset]]] = {}
         # одинаковые наборы языков — один объект: написаний сто с лишним
@@ -341,6 +389,8 @@ class TeamNames:
             if (r["alias"], r["lang"], r["team_id"]) in bad:
                 continue                                      # С3
             tid = self.merged.get(r["team_id"], r["team_id"])  # С6
+            if tid in nation and foreign_country(r["alias"], nation[tid]):
+                continue                                      # С12
             per = self.rows.setdefault(r["alias"], [])
             had = frozenset()
             for i, (t, ls) in enumerate(per):
@@ -350,8 +400,6 @@ class TeamNames:
                     break
             langs = had | {r["lang"]}
             per.append((tid, pool.setdefault(langs, langs)))
-        for tid, canon in conn.execute("SELECT id, canonical_name FROM teams"):
-            self.canon_of[tid] = canon
         #: вид спорта команды (`team_sports_known`) — только по просьбе; у
         #: выжившего — и виды проигравших: их события могли ещё не переехать
         self.sports: dict[int, set[str]] | None = None
@@ -628,6 +676,13 @@ def _country_teams(conn: sqlite3.Connection) -> dict[tuple[str, str], list[tuple
     out: dict[tuple[str, str], list[tuple[int, str]]] = {}
     for r in conn.execute("SELECT id, canonical_name FROM teams WHERE merged_into IS NULL"):
         name = r["canonical_name"] or ""
+        # сборная — команда с АНГЛИЙСКИМ именем страны (так её завёл эталон).
+        # Клуб-тёзка местного написания — «Franca» (бразильский баскетбол;
+        # «França» — Франция по-португальски), «Grecia» (Коста-Рика) — не
+        # сборная: иначе на страну выходило бы две команды, и Э3 переставало
+        # учить её написания вовсе (книга 104)
+        if not names.country_in_english(name):
+            continue
         country = names.country_of(name)
         if country:
             out.setdefault((country, names.category(name)), []).append((r["id"], name))
@@ -655,10 +710,15 @@ def learn_country_sides(conn: sqlite3.Connection, raws) -> dict[str, list]:
         return out
     teams = _country_teams(conn)
     merged = merged_map(conn)
+    nation = {tid: country for (country, _), found in teams.items() for tid, _ in found}
 
     def free_for(alias: str, team_name: str) -> bool:                  # Э4
         owners = {merged.get(r["team_id"], r["team_id"]) for r in conn.execute(
             "SELECT team_id FROM team_aliases WHERE alias = ?", (alias,))}
+        # запись за сборной ДРУГОЙ страны словарь не читает (С12) — и здесь
+        # она написание не занимает: «Island» за Ирландией Исландии не мешает
+        owners = {t for t in owners
+                  if not (t in nation and foreign_country(alias, nation[t]))}
         return not owners or owners == {team_id_by_name(conn, team_name)}
 
     def learn(alias: str, team_name: str) -> None:
@@ -680,7 +740,10 @@ def learn_country_sides(conn: sqlite3.Connection, raws) -> dict[str, list]:
             continue
         learn(raw, team_name)
         bare = _bare_name(raw)
-        if mark and bare != raw and free_for(bare, plain[0][1]):       # Э5
+        # Э5 — только если написание без пометки само страна: «Suomi N» из
+        # «Suomi N W» (местная буква пола, книга 105) мужской сборной не учим
+        if mark and bare != raw and names.country_of(bare) == country \
+                and free_for(bare, plain[0][1]):                       # Э5
             learn(bare, plain[0][1])
     return out
 
