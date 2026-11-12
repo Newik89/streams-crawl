@@ -51,11 +51,17 @@ def _learnable(mine: str, canon: str) -> bool:
     # написание — название ДРУГОЙ страны: «Scotia» (Шотландия) алиасом
     # Хорватии не станет, даже когда правило программы свело игру с матчем
     # эталона, а сайт ошибся в сопернике (книга 103, #9937)
-    mine_country, canon_country = names.country_of(mine), names.country_of(canon)
-    if mine_country and canon_country and mine_country != canon_country:
+    if _other_country(mine, canon):
         return False
     return (names.category(mine) == names.category(canon)
             and ("3x3" in mine.lower()) == ("3x3" in canon.lower()))
+
+
+def _other_country(mine: str, canon: str) -> bool:
+    """Написание — страна, имя эталона — тоже страна, и это РАЗНЫЕ страны
+    (`names.country_of`, справочник стран)."""
+    mine_country, canon_country = names.country_of(mine), names.country_of(canon)
+    return bool(mine_country and canon_country and mine_country != canon_country)
 #: единственный кандидат в окне времени — достаточно и такого сходства,
 #: чтобы спросить владельца (греческое `Φόλκερκ` против `Falkirk` даёт ~62)
 LONE = 60
@@ -686,6 +692,13 @@ def learn_by_id(conn: sqlite3.Connection, reference: list[dict]) -> tuple[int, i
                               (str(pair[1]).strip(), en_away)):
                 if not local or not en or local == en \
                         or (local, lang) in known_teams:
+                    continue
+                # зеркало изредка отдаёт пару в обратном порядке: «Congo U20»
+                # лежало алиасом Gabon U20, а «Gabon U20» — Congo U20, на шести
+                # языках (найдено сверкой с живым словарём 12.11, книга 104).
+                # Написание одной страны алиасом другой не становится — та же
+                # стена, что у сверки (`_learnable`)
+                if _other_country(local, en):
                     continue
                 dictionary.remember_team(conn, local, en, lang=lang)
                 known_teams.add((local, lang))

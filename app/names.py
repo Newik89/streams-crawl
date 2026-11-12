@@ -42,6 +42,8 @@ from .translit import hebrew_name_readings, to_english
 
 ROOT = Path(__file__).resolve().parent.parent
 ALIASES_FILE = ROOT / "data" / "aliases.json"
+#: справочник стран (книга 104): английское имя → написания на языках сайтов
+COUNTRIES_FILE = ROOT / "data" / "countries.json"
 
 # Порог похожести: 85 и выше — одна команда. Подобран на живом обходе 30.08
 # (`results/matches.md`): свои пары дают 85–100, заведомо разные — не выше 54.
@@ -200,23 +202,170 @@ def _whole_exonyms() -> dict[str, str]:
     for key, block in raw.items():
         if key.startswith("_") and "целиком" in key and isinstance(block, dict):
             out.update({k.upper(): v.upper() for k, v in block.items()})
+    # страны справочника `data/countries.json` (книга 104): то же правило —
+    # только имя целиком. Что уже записано в `aliases.json`, сильнее
+    for key, country in _country_exonyms().items():
+        out.setdefault(key, country)
+    return out
+
+
+# ── справочник стран (книги 102, 104, 105) ───────────────────────────────────
+# Жалоба владельца 12.11: названия стран «ты уже давно должен был перевести
+# и внести в базу-словарь». Книга 102 научила словарь странам, но справочник
+# знал 81 страну из двухсот с лишним (не было Ирана, Мальты, Перу) и читал
+# только латиницу: «Шотландия», «Σκωτία», «סקוטלנד» странами не считались.
+# Правила справочника:
+#   Т1. Страны лежат в `data/countries.json`: английское имя (как пишет
+#       flashscore) → написания на языках сайтов, ЛЮБЫМИ буквами, как на
+#       сайте. Старый раздел `_сборные целиком` в `aliases.json` читается
+#       тоже и при споре сильнее.
+#   Т2. Ключ написания считает программа — теми же чтениями букв, что и при
+#       сравнении имён (`_letter_readings` + `_tidy`): кириллица в двух
+#       чтениях, греческий, иврит, латиница без значков. Руками ключи не
+#       пишутся.
+#   Т3. Короткий ключ (меньше `_COUNTRY_KEY_MIN` букв) берётся, только если
+#       он — само английское имя («Peru», «Mali») или стоит в списке
+#       «короткие» файла («JAR» — ЮАР по-чешски). Иначе «Fas» (Марокко
+#       по-турецки) совпал бы с клубом FAS. У иврита порог выше
+#       (`_COUNTRY_KEY_MIN_HE`): гласных на письме нет, чтения гадательные.
+#   Т4. Один ключ у двух стран — ключ не берётся вовсе (сторож
+#       `test_strany_vse.py` требует, чтобы таких не было).
+#   Т5. Одна страна — одно имя: «Czech Republic» и «Czechia» — это `CZECHIA`
+#       (имя, которое уже стоит в `aliases.json`), «Bosnia and Herzegovina» —
+#       `BOSNIA HERZEGOVINA`.
+#   Т6. Имя со словарём подтверждённых имён (`_OVERRIDES`) здесь НЕ
+#       сверяется: справочник — чистое знание о странах, ошибочная запись
+#       словаря не должна сделать «Anglia» Шотландией (стена книги 103).
+#   Т7 (книга 105). Местная буква пола после страны — «Suomi N W», «Polska
+#       K W» (N, D, K, F, V — так женскую команду помечают финны, венгры,
+#       итальянцы, поляки, немцы, голландцы) — читается как страна, только
+#       когда пол уже назван («W» дала лига или само имя). «Suomi N» без
+#       «W» — не страна: буква в конце может быть частью имени.
+
+#: короче — только само английское имя или список «короткие» (Т3)
+_COUNTRY_KEY_MIN = 4
+_COUNTRY_KEY_MIN_HE = 5
+#: местные буквы женской команды после названия страны (Т7); те же, что у
+#: написаний flashscore (`canon._LOCAL_WOMEN`), кроме букв, которые
+#: `_WOMEN_RE` читает и так (Ž, Ж, Γ)
+_LOCAL_WOMEN_TAIL = re.compile(r"^(?P<country>.+?)\s+[NDKFV]$")
+#: венгерское «Dél-» в начале названия страны («Dél-Korea», «Dél-Szudán»)
+_HU_SOUTH = re.compile(r"^\s*D[ée]l[-\s]+(?=\w)", re.I)
+
+
+@lru_cache(maxsize=4096)
+def _letter_readings(name: str) -> tuple[str, ...]:
+    """Чтения имени по одним буквам, ещё до `_tidy`: транслит, у иврита —
+    все разумные огласовки, у кириллицы — болгарское и русское чтение.
+    Словарь подтверждённых имён сюда не входит (его добавляет `readings`)."""
+    # пометку пола снимаем ДО транслита: кириллическая «(Ж)» и греческая «Γ»
+    # иначе доезжают до сравнения буквами «Zh»/«G», которых _tidy уже не
+    # узнаёт, и «Австралия (Ж)» не сходилась с «Australia W» (06.09)
+    cmp_name = re.sub(r"\s{2,}", " ", _WOMEN_RE.sub(" ", name)).strip() or name
+    out = [to_english(cmp_name) or cmp_name]
+    if _HEBREW_RE.search(cmp_name):
+        # у иврита нет огласовок: одна буква читается двояко («פ» — и P, и
+        # F). Даём сравнению все разумные чтения, иначе «סנטה פה» остаётся
+        # «SNTA PA» и своё «Santa Fe» в эталоне не узнаёт (владелец 09.09)
+        out.extend(hebrew_name_readings(cmp_name))
+    if _CYRILLIC_RE.search(cmp_name):
+        out.append(to_english(_bulgarian(cmp_name)) or cmp_name)
+        out.append(to_english(_russian(cmp_name)) or cmp_name)
+    return tuple(out)
+
+
+def _plain_key(name: str) -> str:
+    """Ключ имени для словарей «целиком»: латиница без значков после `_tidy`.
+    У имени, где есть буквы другой письменности, такого ключа НЕТ: `_tidy`
+    чужие буквы выбрасывает, и от «Аль-Васл (UAE)» оставалось «UAE», от
+    «Скотт К. (Usa)» — «USA»: клуб и теннисист читались страной (найдено
+    сверкой с живым словарём 12.11, книга 104). Такое имя читают буквы
+    (`_letter_readings`)."""
+    голое = "".join(c for c in unicodedata.normalize("NFKD", name or "")
+                    if not unicodedata.combining(c))
+    if any(c.isalpha() and not c.isascii() for c in голое):
+        return ""
+    return _tidy(голое, exonyms=False)
+
+
+def _country_keys(name: str) -> list[str]:
+    """Ключи написания для справочника стран (Т2), без повторов: латиница
+    без значков (`_plain_key`) и все чтения букв — после `_tidy` без
+    экзонимов."""
+    # венгерское «Dél-» («Южный») без значка — испанский предлог «del», и
+    # `_tidy` его выбрасывает: «Dél-Szudán» совпадал с «Szudán» (Судан).
+    # Приклеиваем к слову: «Délszudán»
+    name = _HU_SOUTH.sub("Dél", name or "")
+    out: list[str] = []
+    # латинице без значков хватает одного ключа — транслит дал бы его же
+    # (и стоит впятеро дороже: словарь читает так 15 тысяч написаний сборных)
+    plain = _plain_key(name)
+    keys = [plain] if plain else [_tidy(text, exonyms=False)
+                                  for text in _letter_readings(name)]
+    for key in keys:
+        # «D.R. Congo» после чистки — «D R CONGO»: даём и слитное «DR CONGO»
+        for form in (key, _fold_singles(key)):
+            if form and form not in out:
+                out.append(form)
+    return out
+
+
+@lru_cache(maxsize=1)
+def _country_file() -> dict[str, str]:
+    """`data/countries.json` → {ключ написания: английское имя страны}, оба
+    как после `_tidy`. Правила Т2–Т4."""
+    if not COUNTRIES_FILE.exists():
+        return {}
+    raw = json.loads(COUNTRIES_FILE.read_text(encoding="utf-8"))
+    short_ok = {str(x).upper() for x in raw.get("короткие") or []}
+    out: dict[str, str] = {}
+    clash: set[str] = set()
+    for english, spellings in (raw.get("страны") or {}).items():
+        country = _tidy(english, exonyms=False)
+        if not country:
+            continue
+        for spelling in (english, *spellings):
+            least = (_COUNTRY_KEY_MIN_HE if _HEBREW_RE.search(spelling)
+                     else _COUNTRY_KEY_MIN)
+            for key in _country_keys(spelling):
+                if len(key.replace(" ", "")) < least and key != country \
+                        and key not in short_ok:
+                    continue                                       # Т3
+                if out.setdefault(key, country) != country:
+                    clash.add(key)                                 # Т4
+    for key in clash:
+        del out[key]
     return out
 
 
 @lru_cache(maxsize=1)
 def _country_exonyms() -> dict[str, str]:
     """Справочник сборных: написание страны на любом языке → её английское
-    имя (оба — как после `_tidy`: заглавные, без диакритики). Только разделы
-    `_сборные…` файла `data/aliases.json`: клубные сокращения (`PSG`,
-    раздел `_клубы целиком`) странами не считаются."""
-    if not ALIASES_FILE.exists():
-        return {}
-    raw = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))
+    имя (оба — как после `_tidy`: заглавные, без диакритики). Разделы
+    `_сборные…` файла `data/aliases.json` и `data/countries.json` (правила
+    Т1–Т5 выше): клубные сокращения (`PSG`, раздел `_клубы целиком`)
+    странами не считаются."""
     out: dict[str, str] = {}
-    for key, block in raw.items():
-        if key.startswith("_сборные") and isinstance(block, dict):
-            out.update({k.upper(): v.upper() for k, v in block.items()})
-    return out
+    if ALIASES_FILE.exists():
+        raw = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))
+        for key, block in raw.items():
+            if key.startswith("_сборные") and isinstance(block, dict):
+                out.update({k.upper(): v.upper() for k, v in block.items()})
+    old_names = set(out.values())
+    for key, country in _country_file().items():
+        # Т5: имя страны из старого раздела остаётся именем — «Czechia» из
+        # файла не становится написанием «Czech Republic» (вышел бы круг)
+        if key not in old_names:
+            out.setdefault(key, country)                           # Т1
+
+    def one_name(country: str) -> str:                             # Т5
+        seen = set()
+        while country in out and out[country] != country and country not in seen:
+            seen.add(country)
+            country = out[country]
+        return country
+
+    return {key: one_name(country) for key, country in out.items()}
 
 
 @lru_cache(maxsize=1)
@@ -225,30 +374,180 @@ def _country_names() -> frozenset[str]:
     return frozenset(_country_exonyms().values())
 
 
+def _light(name: str) -> str:
+    """Имя для ТОЧНОГО сравнения: без пометок пола и возраста, без значков и
+    знаков, заглавными. В отличие от `_tidy`, слова «FC», «SC», «Club» не
+    выбрасывает: «Kuwait SC» — клуб, «Kuwait» — сборная."""
+    bare = _AGE_RE.sub(" ", _WOMEN_RE.sub(" ", name or ""))
+    plain = "".join(c for c in unicodedata.normalize("NFKD", bare)
+                    if not unicodedata.combining(c))
+    if any(c.isalpha() and not c.isascii() for c in plain):
+        return ""                      # не латиница — английским именем не бывает
+    return " ".join(_NON_WORD_RE.sub(" ", plain.upper()).split())
+
+
+@lru_cache(maxsize=1)
+def _country_english() -> frozenset[str]:
+    """АНГЛИЙСКИЕ имена стран (вид `_light`): имена старого раздела
+    (`CZECHIA`), имена `data/countries.json` («Czech Republic») и их
+    написания, отличные лишь знаками и союзом («Trinidad & Tobago» при
+    «Trinidad and Tobago», «D.R. Congo» при «DR Congo»)."""
+    english: set[str] = set()
+    if ALIASES_FILE.exists():
+        raw = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))
+        for key, block in raw.items():
+            if key.startswith("_сборные") and isinstance(block, dict):
+                english.update(_light(v) for v in block.values())
+    if COUNTRIES_FILE.exists():
+        raw = json.loads(COUNTRIES_FILE.read_text(encoding="utf-8"))
+        for main, spellings in (raw.get("страны") or {}).items():
+            same = _fold_singles(_tidy(main, exonyms=False))
+            english.update(
+                _light(s) for s in (main, *spellings)
+                if s.isascii() and _fold_singles(_tidy(s, exonyms=False)) == same)
+    english.discard("")
+    return frozenset(english)
+
+
+def country_in_english(name: str) -> bool:
+    """Имя ЦЕЛИКОМ — английское имя страны («Scotland W», «Czech Republic»),
+    а не её местное написание и не клуб с её именем. Так flashscore зовёт
+    сборные. Сюда НЕ попадают: «Franca» (бразильский баскетбол; «França» —
+    Франция по-португальски), «Grecia» (Коста-Рика), «Kuwait SC», «Andorra
+    CF», «Mexico FC» — сборными словарь их не считает
+    (`dictionary._country_teams`, книга 104)."""
+    return _light(name) in _country_english()
+
+
+#: слова формы клуба: с ними имя — клуб, а не страна («Kuwait SC», «Andorra
+#: CF», «Stade Tunisien»). Предлоги и союзы из `_NOISE_WORDS` сюда не входят —
+#: они бывают в названии страны («Trinidad and Tobago», «El Salvador»)
+_CLUB_WORDS = _NOISE_WORDS - {"DE", "DEL", "DI", "DA", "LE", "LA", "EL", "LOS",
+                              "VAN", "OF", "THE", "AND", "I"}
+
+
+@lru_cache(maxsize=1)
+def _country_display() -> dict[str, str]:
+    """Имя страны справочника → как показать человеку: английское имя из
+    `data/countries.json` («CZECHIA» → «Czech Republic», «SALVADOR» → «El
+    Salvador»). Страны только старого раздела здесь нет — её покажет
+    `suggest_canonical` обычным путём."""
+    if not COUNTRIES_FILE.exists():
+        return {}
+    known = _country_exonyms()
+    raw = json.loads(COUNTRIES_FILE.read_text(encoding="utf-8"))
+    out: dict[str, str] = {}
+    for main in raw.get("страны") or {}:
+        key = _tidy(main, exonyms=False)
+        out.setdefault(known.get(key, key), main)
+    return out
+
+
+def _country_plain(name: str) -> str:
+    """Страна по написанию как есть, без правила местной буквы пола."""
+    if not country_in_english(name):
+        # слово формы клуба в имени — это клуб («Kuwait SC»); английскому
+        # имени страны слова не мешают («US Virgin Islands»: «US» — и форма
+        # клуба у итальянцев). Латиницу читаем как есть, прочее — буквами
+        # (значки снимаем ДО разбора на слова: «Skócia» иначе рассыпалась на
+        # «SK» и «CIA», и Шотландия по-венгерски читалась клубом)
+        голое = "".join(c for c in unicodedata.normalize("NFKD", name)
+                        if not unicodedata.combining(c))
+        texts = (голое,) if голое.isascii() else _letter_readings(name)
+        for text in texts:
+            if _CLUB_WORDS & set(_NON_WORD_RE.sub(" ", text.upper()).split()):
+                return ""
+    known = _country_exonyms()
+    for key in _country_keys(name):
+        if key in known:
+            return known[key]
+        if key in _country_names():
+            return key
+    return ""
+
+
+@lru_cache(maxsize=16384)
 def country_of(name: str) -> str:
     """Имя ЦЕЛИКОМ — страна из справочника сборных: её английское имя
     заглавными («Scotia» → `SCOTLAND`, «Liettua W» → `LITHUANIA`, «Scotland
-    U21» → `SCOTLAND`). Не страна — пустая строка. Пометки пола, возраста и
-    состава на ответ не влияют — их отдаёт `category`. Книга 102, правило Э1."""
-    голое = "".join(c for c in unicodedata.normalize("NFKD", name or "")
+    U21» → `SCOTLAND`, «Шотландия» → `SCOTLAND`). Не страна — пустая строка.
+    Пометки пола, возраста и состава на ответ не влияют — их отдаёт
+    `category`. Книга 102, правило Э1; справочник — правила Т1–Т7 выше."""
+    name = name or ""
+    found = _country_plain(name)
+    if found or "W" not in category(name).split():
+        return found
+    # Т7: «Suomi N W» — страна с местной буквой пола, пол уже назван
+    bare = " ".join(_AGE_RE.sub(" ", _WOMEN_RE.sub(" ", name)).split())
+    m = _LOCAL_WOMEN_TAIL.match(bare)
+    return _country_plain(m["country"]) if m else ""
+
+
+def _raw_key(name: str) -> str:
+    """Написание «буква в букву» для быстрого поиска: без пометок пола и
+    возраста, без значков над буквами и знаков, строчными."""
+    bare = _AGE_RE.sub(" ", _WOMEN_RE.sub(" ", name or ""))
+    plain = "".join(c for c in unicodedata.normalize("NFKD", bare)
                     if not unicodedata.combining(c))
-    ключ = _tidy(голое, exonyms=False)
-    if not ключ:
-        return ""
-    англ = _country_exonyms().get(ключ)
-    if англ:
-        return англ
-    return ключ if ключ in _country_names() else ""
+    return " ".join("".join(c if c.isalnum() else " " for c in plain.casefold()).split())
+
+
+@lru_cache(maxsize=1)
+def _country_exact() -> dict[str, str]:
+    """Написания справочника как есть → страна: всё, что в
+    `data/countries.json` и старом разделе `aliases.json` записано и что
+    `country_of` страной признаёт (короткие и спорные сюда не попадают)."""
+    out: dict[str, str] = {}
+    clash: set[str] = set()
+
+    def put(spelling: str) -> None:
+        country = country_of(spelling)
+        key = _raw_key(spelling)
+        if country and key and out.setdefault(key, country) != country:
+            clash.add(key)
+
+    if COUNTRIES_FILE.exists():
+        raw = json.loads(COUNTRIES_FILE.read_text(encoding="utf-8"))
+        for main, spellings in (raw.get("страны") or {}).items():
+            for spelling in (main, *spellings):
+                put(spelling)
+    if ALIASES_FILE.exists():
+        raw = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))
+        for key, block in raw.items():
+            if key.startswith("_сборные") and isinstance(block, dict):
+                for spelling in (*block, *block.values()):
+                    put(spelling)
+    for key in clash:
+        del out[key]
+    return out
+
+
+@lru_cache(maxsize=32768)
+def country_exact(name: str) -> str:
+    """Страна, если имя — БУКВА В БУКВУ одно из написаний справочника (без
+    пометок пола и возраста, значков и регистра): «Island» → `ICELAND`,
+    «ISLÂNDIA» → `ICELAND`, «Конго U20» → `CONGO`. Строгая и быстрая родня
+    `country_of` (та ещё читает имя буквами — транслитом): словарь зовёт её
+    на каждую из 15 тысяч записей сборных (`dictionary.foreign_country`,
+    правило С12), и прятать запись он вправе только по точному знанию."""
+    return _country_exact().get(_raw_key(name), "")
 
 
 def reload() -> None:
-    """Перечитать `data/aliases.json`. Нужно после правки файла в живом
-    процессе — админка и обход держат словарь в памяти."""
+    """Перечитать `data/aliases.json` и `data/countries.json`. Нужно после
+    правки файла в живом процессе — админка и обход держат словарь в памяти."""
     aliases.cache_clear()
     _strip_rules.cache_clear()
     _whole_exonyms.cache_clear()
+    _country_file.cache_clear()
     _country_exonyms.cache_clear()
     _country_names.cache_clear()
+    _country_english.cache_clear()
+    _country_display.cache_clear()
+    _letter_readings.cache_clear()
+    country_of.cache_clear()
+    _country_exact.cache_clear()
+    country_exact.cache_clear()
     readings.cache_clear()
 
 
@@ -274,9 +573,7 @@ def is_country(name: str) -> bool:
     `data/aliases.json` — и его ключи (местные написания), и значения
     (английские имена).
     """
-    голое = "".join(c for c in unicodedata.normalize("NFKD", name or "")
-                    if not unicodedata.combining(c))
-    ключ = _tidy(голое, exonyms=False)
+    ключ = _plain_key(name)
     экзонимы = _whole_exonyms()
     return bool(ключ) and (ключ in экзонимы
                            or ключ in {v.upper() for v in экзонимы.values()})
@@ -369,20 +666,10 @@ def readings(name: str) -> tuple[str, ...]:
             confirmed = _OVERRIDES.get(bare)
     if confirmed:
         variants.append(to_english(confirmed) or confirmed)
-    # пометку пола снимаем ДО транслита: кириллическая «(Ж)» и греческая «Γ»
-    # иначе доезжают до сравнения буквами «Zh»/«G», которых _tidy уже не
-    # узнаёт, и «Австралия (Ж)» не сходилась с «Australia W» (06.09)
+    # чтения по буквам — общие со справочником стран (`_letter_readings`)
     cmp_name = re.sub(r"\s{2,}", " ", _WOMEN_RE.sub(" ", name)).strip() or name
-    variants.append(to_english(cmp_name) or cmp_name)
-    if _HEBREW_RE.search(cmp_name):
-        # у иврита нет огласовок: одна буква читается двояко («פ» — и P, и
-        # F). Даём сравнению все разумные чтения, иначе «סנטה פה» остаётся
-        # «SNTA PA» и своё «Santa Fe» в эталоне не узнаёт (владелец 09.09)
-        variants.extend(hebrew_name_readings(cmp_name))
-    if _CYRILLIC_RE.search(cmp_name):
-        variants.append(to_english(_bulgarian(cmp_name)) or cmp_name)
-        variants.append(to_english(_russian(cmp_name)) or cmp_name)
-    elif not _HEBREW_RE.search(cmp_name):
+    variants.extend(_letter_readings(name))
+    if not _CYRILLIC_RE.search(cmp_name) and not _HEBREW_RE.search(cmp_name):
         variants.extend(polish_readings(cmp_name))
     out: list[str] = []
     for v in variants:
@@ -465,9 +752,16 @@ def suggest_canonical(name: str) -> str:
     # #1961 «Francia W vs TBC W». Пол и возраст сохраняем: они не переводятся
     # диакритику снимаем: в словаре ключи ASCII (`ESPANA`, `MAGYARORSZAG`),
     # а `_tidy` режет чужие буквы в пробел — «España» давала «ESPA A»
-    голое = "".join(c for c in unicodedata.normalize("NFKD", raw)
-                    if not unicodedata.combining(c))
-    ключ = _tidy(голое, exonyms=False)
+    # страна на любом языке и любыми буквами — её английское имя, как у
+    # flashscore («Шотландия (Ж)» → «Scotland W», «Suomi N W» → «Finland W»);
+    # слова владельца 12.11: названия стран переводить всегда (книга 104)
+    страна = _country_display().get(country_of(raw))
+    if страна:
+        cat = category(raw)
+        return f"{страна} {cat}".strip() if cat else страна
+    # имя не латиницей ключа не имеет (`_plain_key`): «Аль-Васл (UAE)» не
+    # должно выйти на витрину «United Arab Emirates»
+    ключ = _plain_key(raw)
     англ = _whole_exonyms().get(ключ)
     if англ and англ != ключ:
         cat = category(raw)
