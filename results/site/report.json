@@ -1,7 +1,7 @@
 {
  "когда": "2026-11-13",
  "режим": "полный обход, окно 2 суток",
- "прогон": "43507616527",
+ "прогон": "43507893285",
  "начат_киев": "2026-11-13",
  "пояса": {
   "allente.no": "Europe/Oslo",
@@ -115,23 +115,42 @@
  },
  "строки": [
   {
-   "domain": "sporting.pt",
-   "channel": "",
+   "domain": "mojtv.hr",
+   "channel": "сетка спортканалов",
    "day_links": false,
-   "day": "",
+   "day": "2026-11-13",
    "locale": "en-GB",
-   "url": "https://www.sporting.pt/pt/ical",
+   "url": "https://mojtv.hr/tv-program/-2/sportski/2026-11-13.aspx",
    "browser": false,
    "post": null,
    "warmup": "",
    "post_json": null,
    "headers": null,
-   "итог": "расписание есть",
-   "почему": "",
-   "байт": 282255,
-   "меток времени": 18,
-   "чем": "requests",
-   "файл": "www.sporting.pt__pt_ical.html"
+   "итог": "не открылась",
+   "почему": "HTTP 403; браузер: HTTP 403 (браузер), защита: cloudflare",
+   "байт": 0,
+   "меток времени": 0,
+   "чем": "requests+browser",
+   "файл отказа": "mojtv.hr__tv-program_-2_sportski_2026-11-13.aspx.otkaz.html"
+  },
+  {
+   "domain": "mojtv.hr",
+   "channel": "сетка спортканалов",
+   "day_links": false,
+   "day": "2026-11-14",
+   "locale": "en-GB",
+   "url": "https://mojtv.hr/tv-program/-2/sportski/2026-11-14.aspx",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": null,
+   "headers": null,
+   "итог": "не открылась",
+   "почему": "HTTP 403; браузер: HTTP 403 (браузер), защита: cloudflare",
+   "байт": 0,
+   "меток времени": 0,
+   "чем": "requests+browser",
+   "файл отказа": "mojtv.hr__tv-program_-2_sportski_2026-11-14.aspx.otkaz.html"
   }
  ],
  "дозор": {
@@ -139,6 +158,14 @@
    "когда": "2026-09-21 13:43",
    "итог": "заглушка защиты"
   }
+ },
+ "читалки": {
+  "сайтов": 1,
+  "взято": {},
+  "не_взято": [
+   "mojtv.hr: ни одна читалка не отдала страницу с расписанием"
+  ],
+  "пропуск": ""
  },
  "оценка": {
   "код": 0,
