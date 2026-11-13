@@ -196,7 +196,8 @@ class Judge:
         shown = " ".join(x for x in (q.title, q.pair_text) if x)
         stop = (self.markers.found(self.markers.stop_title, shown)
                 or self.markers.found(self.markers.not_live, shown)
-                or self.markers.found(self.markers.stop_genre, q.league))
+                or self.markers.found(self.markers.stop_genre, q.league)
+                or live.episode_code(shown))
         if stop:
             return Answer("-", "запись или студия", f"слово «{stop}»")
 
@@ -277,9 +278,12 @@ class Judge:
             if not key:
                 continue
             canonical = canonical or self.league_names.get(key, "")
+            # и без хвоста тура: «Scottish Premiership (15. Spieltag)» —
+            # как чистит лигу обход (`leagues.clean`, книга 109)
             letter = (self.league_sports.get(_norm(key))
                       or self.league_sports.get(_norm(
-                          self.league_names.get(key, ""))))
+                          self.league_names.get(key, "")))
+                      or self.league_sports.get(_norm(leagues.clean(key))))
             if letter:
                 league = (letter, key)
                 break

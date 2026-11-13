@@ -315,6 +315,18 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
     return out
 
 
+#: код выпуска сериала «S5E0», «S02 E14» (сезон и серия) — так ipko.tv
+#: подписывает передачи: «S5E0 - Skoci-Maqedoni» вставало вопросом владельцу
+#: «Вид спорта» (книга 108). Матчи так не подписывают
+_EPISODE_CODE = re.compile(r"(?<![^\W_])S\d{1,2}\s?E\d{1,3}(?![^\W_])", re.I)
+
+
+def episode_code(text: str) -> str:
+    """Код выпуска сериала в тексте («S5E0») или пусто."""
+    m = _EPISODE_CODE.search(text or "")
+    return m.group(0) if m else ""
+
+
 @dataclass
 class Verdict:
     ok: bool                 # берём в ленту?
@@ -327,7 +339,8 @@ class Verdict:
 def check(program, markers: Markers) -> Verdict:
     """Решение по одной передаче. Порядок проверок важен — см. шапку модуля."""
     title = program.title or ""
-    stop = markers.found(markers.stop_title, title)
+    stop = (markers.found(markers.stop_title, title)
+            or episode_code(title) or episode_code(program.match_raw or ""))
     if stop:
         return Verdict(False, f"стоп-слово в заголовке: {stop}")
 

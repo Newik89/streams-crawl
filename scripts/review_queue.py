@@ -373,6 +373,20 @@ def review_sport(conn, apply: bool, days: int = ЖИВЁТ_ДНЕЙ,
     return 0
 
 
+def storozh_stran(conn) -> None:
+    """Сторож «страны в словаре команд» (`scripts/slovar_strany.py`, книга
+    110): строка в журнал заливки, а о НОВЫХ записях — строка в «Прогоны».
+    Сторож заливку не роняет: его ошибка — строка в журнале, не падение."""
+    try:
+        import slovar_strany
+        report = slovar_strany.collect(conn)
+        new = slovar_strany.note_new(conn, report)
+        print(f"словарь и страны: {slovar_strany.summary(report)}; "
+              f"новых с прошлого раза: {len(new)}")
+    except Exception as exc:                       # noqa: BLE001
+        print(f"словарь и страны: сторож не отработал — {exc!r}")
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__)
@@ -392,6 +406,8 @@ def main() -> int:
             code = review_sport(conn, args.apply, args.days)
         if args.apply:
             purge(conn)              # закрытое программой старше недели
+            if args.kind != "team":
+                storozh_stran(conn)  # раз за заливку (книга 110)
         return code
     finally:
         conn.close()

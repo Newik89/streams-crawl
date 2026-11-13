@@ -351,6 +351,18 @@ def foreign_country(alias: str, country: str) -> bool:
     return bool(mine) and mine != country
 
 
+def wrong_mark(alias: str, canon: str) -> bool:
+    """С13 (книга 110): написание буква в букву — страна из справочника, а
+    пометка пола/возраста у него не та, что у сборной: «Аргентина U20» за
+    Argentina U20 W, «Češka» за Czech Republic W (сверка 13.11 нашла 3 таких
+    записи). Такую запись словарь не читает — иначе мужская игра получает
+    женскую сборную. Написание, которого в справочнике нет буква в букву
+    (сокращения зеркал flashscore), правило не трогает."""
+    from . import names
+    return (bool(names.country_exact(alias or ""))
+            and names.category(alias or "") != names.category(canon or ""))
+
+
 class TeamNames:
     """Словарь команд, прочитанный из базы ОДИН раз: написание → команда с
     учётом языка сайта и вида спорта. Дальше отвечает без базы — годится и
@@ -391,6 +403,8 @@ class TeamNames:
             tid = self.merged.get(r["team_id"], r["team_id"])  # С6
             if tid in nation and foreign_country(r["alias"], nation[tid]):
                 continue                                      # С12
+            if tid in nation and wrong_mark(r["alias"], self.canon_of[tid]):
+                continue                                      # С13
             per = self.rows.setdefault(r["alias"], [])
             had = frozenset()
             for i, (t, ls) in enumerate(per):
