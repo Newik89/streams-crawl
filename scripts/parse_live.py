@@ -705,6 +705,17 @@ def honest_live(domain: str, r) -> bool:
         and not guessed(domain, r)
 
 
+def long_past(r, now: datetime | None = None) -> bool:
+    """Книга 113: игра началась больше трёх часов назад (или времени нет) —
+    на витрину ей уже незачем (`unconfirmed.KEEP_HOURS`)."""
+    from app import unconfirmed
+    start = getattr(r, "start_kyiv", None)
+    if start is None:
+        return True
+    now = now or datetime.now(start.tzinfo)
+    return start < now - timedelta(hours=unconfirmed.KEEP_HOURS)
+
+
 def unconfirmed_row(domain: str, r, виды: set) -> dict:
     """Книга 113: строка для красной строки витрины (ключ «без_эталона» в
     games.json; читает `app/unconfirmed.py`)."""
@@ -1316,7 +1327,9 @@ def main() -> int:
         матч = played_before(r.home, r.away, "", r.start_kyiv, индекс_эталона)
         if матч is None and contested_league(r, спорные):
             виды = contested_league(r, спорные)
-            if honest_live(domain, r):
+            # прошедшую игру красной не показываем (сбор 12.11 принёс от
+            # tring.al строки за 17.10) — она уходит в журнал снятого
+            if honest_live(domain, r) and not long_past(r):
                 без_эталона.append(unconfirmed_row(domain, r, виды))
                 continue
             снято.append(removed_row(
