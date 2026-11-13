@@ -686,6 +686,28 @@ def contested_league(r, спорные: dict) -> set:
     return set()
 
 
+def honest_live(domain: str, r) -> bool:
+    """Книга 113, К1: сайт САМ пометил строку прямым эфиром. Пометка есть
+    (`live_marker`), это не слово эталона и эфир не угадан программой."""
+    marker = getattr(r, "live_marker", "") or ""
+    return bool(marker) and marker != pipeline.REFERENCE_MARKER \
+        and not guessed(domain, r)
+
+
+def unconfirmed_row(domain: str, r, виды: set) -> dict:
+    """Книга 113: строка для красной строки витрины (ключ «без_эталона» в
+    games.json; читает `app/unconfirmed.py`)."""
+    program = r.program
+    return {"домен": domain, "канал": program.channel_raw or "",
+            "home": r.home, "away": r.away,
+            "league": r.league or program.league_raw or "",
+            "start_kyiv": (r.start_kyiv.strftime("%Y-%m-%dT%H:%M")
+                           if r.start_kyiv else ""),
+            "raw_title": (program.title or "")[:200],
+            "url": (program.source_url or "")[:500],
+            "виды": sorted(виды)}
+
+
 def removed_row(фильтр: str, domain: str, r, почему: str) -> dict:
     """Строка, снятая фильтром повторов, — поимённо для журнала разбора
     (принцип владельца «ничто не теряется молча»). `r` — строка отсева
@@ -1266,14 +1288,32 @@ def main() -> int:
     # журнал. Каждый следующий сбор проверит её заново — эталон дальних
     # дней наполняется ближе к игре. При бедном эталоне не снимаем.
     спорные = leagues.contested() if len(reference_full) >= ЭТАЛОН_БОГАТ else {}
-    for domain, r in unsolved:
+    # Книга 113 (слово владельца 13.11): такая строка с ЧЕСТНОЙ пометкой
+    # прямого эфира от сайта не снимается, а едет красной строкой на витрину
+    # владельца (`app/unconfirmed.py`, К1) — он удалит её сам. Эфир угадан
+    # программой или пометки нет — снята, как в книге 112.
+    # Заодно: строку со спорной лигой, не прошедшую сито `worth_asking`,
+    # раньше теряли молча — теперь она проходит тот же путь (красная строка
+    # или запись в журнал)
+    без_эталона: list[dict] = []
+    мимо_сита = [(domain, r) for domain, r in maybe
+                 if not r.ok and r.home and r.away
+                 and not worth_asking(domain, r, sporty)
+                 and contested_league(r, спорные)]
+    мимо = {id(r) for _d, r in мимо_сита}
+    for domain, r in unsolved + мимо_сита:
         матч = played_before(r.home, r.away, "", r.start_kyiv, индекс_эталона)
         if матч is None and contested_league(r, спорные):
             виды = contested_league(r, спорные)
+            if honest_live(domain, r):
+                без_эталона.append(unconfirmed_row(domain, r, виды))
+                continue
             снято.append(removed_row(
                 СНЯТО_СПОРНАЯ_ЛИГА, domain, r,
                 f"название лиги есть в видах {', '.join(sorted(виды))}; "
                 "эталон этой пары не знает ни в одном"))
+        elif id(r) in мимо:
+            continue        # сыгранный матч мимо сита — как раньше, молча
         elif матч is None:
             в_очередь.append((domain, r))
         else:
@@ -1755,6 +1795,9 @@ def main() -> int:
                # строки, снятые фильтрами повторов, поимённо (сайт, канал,
                # заголовок, время, фильтр, почему) — заливка ключ не читает
                "снято": снято,
+               # книга 113: прямой эфир со спорной лигой без эталона —
+               # красной строкой на витрину владельца, не в игры
+               "без_эталона": без_эталона,
                "games": [{
                    # игра целиком из «угаданных» источников: при заливке её
                    # сверяют с УЖЕ лежащими в базе событиями той же пары —

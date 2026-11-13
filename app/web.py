@@ -30,7 +30,7 @@ from flask import (Flask, abort, flash, jsonify, redirect, render_template, requ
                    session, url_for)
 
 from . import (crawl_hook, db, dictionary, emergency, health, names_page,
-               sources, store, trigger, visits, watch)
+               sources, store, trigger, unconfirmed, visits, watch)
 
 LOCAL_MODE = os.environ.get("STREAMS_LOCAL") == "1"
 #: отказ другу, когда в очереди GitHub уже ждёт заказанный сбор
@@ -851,6 +851,13 @@ def create_app() -> Flask:
         conn = db.connect()
         try:
             games = store.schedule(conn)
+            # книга 113: красные строки — прямой эфир, вид спорта которого
+            # эталон не подтвердил. Только вошедшему владельцу; гостям и API
+            # не отдаются (`app/unconfirmed.py`, К2)
+            if session.get("admin"):
+                red = unconfirmed.shown(conn)
+                if red:
+                    games = sorted(games + red, key=lambda g: g["start"])
             # когда сбор был в последний раз — внизу витрины (владелец 09.09)
             info = health.summary(conn)
             # счётчик на вкладке «Other Sport» в шапке витрины (владелец 03.10)
@@ -1054,6 +1061,20 @@ def create_app() -> Flask:
         finally:
             conn.close()
         return jsonify({"ok": True})
+
+    @app.route("/unconfirmed/remove", methods=["POST"])
+    def unconfirmed_remove():
+        """Кнопка «удалить» у красной строки витрины (книга 113, К5):
+        только вошедший владелец. Удалённую строку следующий сбор не вернёт."""
+        verify_csrf()
+        if not session.get("admin"):
+            abort(403)
+        conn = db.connect()
+        try:
+            known = unconfirmed.remove(conn, request.form.get("key", ""))
+        finally:
+            conn.close()
+        return jsonify({"ok": True, "known": known})
 
     @app.route("/games/<int:event_id>/unseen", methods=["POST"])
     def game_unseen(event_id: int):
