@@ -336,19 +336,35 @@ def sports_map(path=None) -> dict[str, str]:
         data = json.loads(file.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
-    out: dict[str, str] = {}
     def norm(s: str) -> str:
         return " ".join((s or "").lower().split())
+    # Правила ключей (книга 112, 13.11.2026 — «Friendly» считался
+    # баскетболом, и товарищеский матч Катар — Австралия сняло с витрины):
+    #   К1. ключ — канон лиги, его часть после «:» и все алиасы;
+    #   К2. часть после «:» — НЕ ключ, если перед «:» стоит сам вид спорта
+    #       («BASKETBALL: Friendly»): без головы от названия остаётся общее
+    #       слово, которое есть у любого вида;
+    #   К3. ключ, на который претендуют лиги РАЗНЫХ видов спорта
+    #       («Superliga», «Premier League», «1. liga»), вида не называет —
+    #       раньше побеждала та лига, что стояла в файле первой.
+    claims: dict[str, set[str]] = {}
     for league in data.get("leagues") or []:
         letter = league.get("sport")
         if letter not in ("F", "B", "T"):
             continue
         names = [league.get("name") or ""]
-        if ":" in names[0]:
-            names.append(names[0].split(":", 1)[1])
+        head, colon, tail = names[0].partition(":")
+        if colon and norm(head) not in SPORT_HEADS:           # К2
+            names.append(tail)
         names += league.get("aliases") or []
         for name in names:
             key = norm(name)
             if key:
-                out.setdefault(key, letter)
-    return out
+                claims.setdefault(key, set()).add(letter)
+    return {key: next(iter(letters)) for key, letters in claims.items()
+            if len(letters) == 1}                             # К3
+
+
+#: К2: слова вида спорта, которые словарь лиг ставит перед «:» вместо страны
+SPORT_HEADS = frozenset({"basketball", "football", "soccer", "tennis",
+                         "futsal", "баскетбол", "футбол", "теннис"})
