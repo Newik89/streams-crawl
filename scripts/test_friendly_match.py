@@ -19,10 +19,11 @@ Al Kass One и Four, эталон flashscore его знал, а на витри
 2. прежние заголовки читаются как раньше;
 3. правило К2 словаря лиг: часть после «:» — не ключ, если перед «:» стоит
    сам вид спорта;
-4. правило К3: название, на которое претендуют лиги разных видов спорта,
-   вида не называет — на ВСЁМ файле словаря; правило К4: кроме названий с
-   явным перевесом одного вида (втрое и больше: «Premier League» — 31
-   футбольная лига и 2 баскетбольные); однозначные названия — как раньше;
+4. правило К3: название, которое есть у лиг разных видов спорта, вида не
+   называет — на ВСЁМ файле словаря (слово владельца 13.11: такие лиги
+   записаны за несколькими видами, чтобы эталон искали в каждом из них);
+   строка с таким названием, которой эталон не знает ни в одном виде, —
+   не вопрос владельцу, а снята с записью в журнал;
 5. строка жалобы целиком: вид спорта — не баскетбол.
 
 В сеть не ходит, базу не трогает:
@@ -145,30 +146,51 @@ for лига in настоящий.get("leagues") or []:
         if norm(имя):
             претенденты.setdefault(norm(имя), {}).setdefault(
                 буква, set()).add(norm(лига.get("name") or ""))
-счёт = {k: {б: len(л) for б, л in v.items()} for k, v in претенденты.items()}
-спорные = {k for k, v in счёт.items() if len(v) > 1}
-с_перевесом = {k for k in спорные if leagues.clear_letter(счёт[k])}
-check(f"спорных названий {len(спорные)}: без явного перевеса "
-      f"{len(спорные - с_перевесом)} — ни одно не в карте",
-      not ((спорные - с_перевесом) & set(карта)),
-      sorted((спорные - с_перевесом) & set(карта))[:8])
-check(f"с явным перевесом {len(с_перевесом)} — у каждого вид большинства",
-      all(карта.get(k) == max(счёт[k], key=счёт[k].get) for k in с_перевесом))
-check("однозначные ключи все в карте с той же буквой",
-      all(карта.get(k) == next(iter(v)) for k, v in счёт.items()
+виды = {k: set(v) for k, v in претенденты.items()}
+спорные = {k for k, v in виды.items() if len(v) > 1}
+check(f"названий, общих для нескольких видов спорта, {len(спорные)} — "
+      "ни одно не называет вид", not (спорные & set(карта)),
+      sorted(спорные & set(карта))[:8])
+check("однозначные названия все в карте с той же буквой",
+      all(карта.get(k) == next(iter(v)) for k, v in виды.items()
           if len(v) == 1))
-print("   К4. Явный перевес (чистая функция)")
-check("31 футбольная и 2 баскетбольные → футбол",
-      leagues.clear_letter({"F": 31, "B": 2}) == "F")
-check("3 против 2 — перевеса нет", leagues.clear_letter({"F": 3, "B": 2}) == "")
-check("5 против 6 — перевеса нет", leagues.clear_letter({"F": 5, "B": 6}) == "")
-check("ровно втрое (3 против 1) — перевес",
-      leagues.clear_letter({"F": 3, "B": 1}) == "F")
-check("один вид — он и есть", leagues.clear_letter({"T": 1}) == "T")
-check("«Premier League» в настоящем словаре — футбол",
-      карта.get("premier league") == "F", счёт.get("premier league"))
-check("«Superliga» в настоящем словаре вида не называет",
-      "superliga" not in карта, счёт.get("superliga"))
+таблица = leagues.contested()
+check("`contested` отдаёт те же названия и их виды спорта",
+      таблица == {k: виды[k] for k in спорные},
+      sorted(set(таблица) ^ спорные)[:6])
+check("«Premier League» и «Superliga» — общие для футбола и баскетбола",
+      таблица.get("premier league") == {"F", "B"}
+      and таблица.get("superliga") == {"F", "B"},
+      (таблица.get("premier league"), таблица.get("superliga")))
+
+print("4а. Строка с общим названием лиги — судьбу решает эталон (parse_live)")
+sys.path.insert(0, str(ROOT / "scripts"))
+import parse_live                                   # noqa: E402
+from app.parsers import Program                     # noqa: E402
+
+
+class Строка:
+    def __init__(self, лига, сырая="", рубрика=""):
+        self.league = лига
+        self.program = Program(channel_raw="К", title="т", start=None,
+                               league_raw=сырая, sport_raw=рубрика)
+
+
+check("лига «Premier League» — общая: виды F и B",
+      parse_live.contested_league(Строка("Premier League"), таблица)
+      == {"F", "B"})
+check("с хвостом сезона «Premier League (T26/27)» — тоже общая",
+      parse_live.contested_league(Строка("Premier League (T26/27)"), таблица)
+      == {"F", "B"})
+check("сырая лига сайта «SUPERLIGA» — общая",
+      parse_live.contested_league(Строка("", сырая="SUPERLIGA"), таблица)
+      == {"F", "B"})
+check("«NBA» — не общая", parse_live.contested_league(Строка("NBA"), таблица)
+      == set())
+check("лиги нет — не общая",
+      parse_live.contested_league(Строка(""), таблица) == set())
+check("причина снятия названа словами",
+      "нескольких видах спорта" in parse_live.СНЯТО_СПОРНАЯ_ЛИГА)
 check("«friendly» вида не называет", "friendly" not in карта,
       карта.get("friendly"))
 for ключ, буква in (("la liga", "F"), ("serie a", "F"), ("nba", "B"),
