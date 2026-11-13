@@ -154,6 +154,11 @@ NET = "ConnectTimeout: HTTPSConnectionPool(host=…)"
 источник("dozor.com")
 источник("spr.tv", role="directory")
 источник("off.tv", enabled=0)
+# аудит 13.11.2026: в живой базе у эталона и зеркал роль та же, что у
+# телесайтов, — не считаться они должны по ИМЕНИ (`site_move.is_reference`)
+источник("www.flashscore.mobi")
+источник("m.flashscore.gr")
+источник("sporteventz.com")
 источник("www.wwwsite.tv")
 
 
@@ -241,7 +246,10 @@ print("П1. Заливка трёх сборов подряд (база)")
                строка("srv.tv", "не открылась", BAN),
                строка("dozor.com", "не открылась", BAN),
                строка("spr.tv", "не открылась", BAN),
-               строка("off.tv", "не открылась", BAN)]
+               строка("off.tv", "не открылась", BAN),
+               строка("www.flashscore.mobi", "не открылась", BAN),
+               строка("m.flashscore.gr", "не открылась", BAN),
+               строка("sporteventz.com", "не открылась", BAN)]
 поправить("ok.tv", gh_fail_streak=2, gh_fail_last_slot="99")
 for n, прогон in enumerate(("301", "302", "303")):
     site_move.after_import(conn, папка(f"сбор{прогон}", отчёт(прогон, сбор_строки)),
@@ -255,6 +263,14 @@ for n, прогон in enumerate(("301", "302", "303")):
 проверка("дозорный — не считается", настройки("dozor.com").get("gh_fail_streak"), None)
 проверка("справочник — не считается", настройки("spr.tv").get("gh_fail_streak"), None)
 проверка("выключенный — не считается", настройки("off.tv").get("gh_fail_streak"), None)
+for эталон in ("www.flashscore.mobi", "m.flashscore.gr", "sporteventz.com"):
+    проверка(f"эталон {эталон} (роль как у телесайта) — не считается",
+             настройки(эталон).get("gh_fail_streak"), None)
+from app.parsers import flashscore_mobi as _fs  # noqa: E402
+проверка("все зеркала эталона и сам эталон узнаются по имени",
+         all(site_move.is_reference(d) for d in [*_fs.LOCALES, _fs.DOMAIN]), True)
+проверка("телесайт эталоном не считается",
+         site_move.is_reference("teleman.pl") or site_move.is_reference("alkass.net"), False)
 новые = строки_прогонов(до)
 проверка("на третьем срыве — одна строка «кандидат» в «Прогонах»",
          sum("ban.tv: 3 сбора подряд не дался GitHub" in s for s in новые), 1)

@@ -336,19 +336,68 @@ def sports_map(path=None) -> dict[str, str]:
         data = json.loads(file.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
-    out: dict[str, str] = {}
-    def norm(s: str) -> str:
-        return " ".join((s or "").lower().split())
+    names_by_key = _league_claims(data)
+    return {key: next(iter(letters)) for key, letters in names_by_key.items()
+            if len(letters) == 1}                             # К3
+
+
+def _norm_key(s: str) -> str:
+    return " ".join((s or "").lower().split())
+
+
+def _league_claims(data: dict) -> dict[str, set[str]]:
+    """Название лиги → виды спорта, у которых есть лига с таким названием.
+
+    Правила ключей (книга 112, 13.11.2026 — «Friendly» считался баскетболом,
+    и товарищеский матч Катар — Австралия сняло с витрины):
+      К1. ключ — канон лиги, его часть после «:» и все алиасы;
+      К2. часть после «:» — НЕ ключ, если перед «:» стоит сам вид спорта
+          («BASKETBALL: Friendly»): без головы от названия остаётся общее
+          слово, которое есть у любого вида;
+      К3. название, которое есть у лиг РАЗНЫХ видов спорта («Superliga»,
+          «Premier League», «Liga hiszpańska»), вида спорта не называет.
+          Слово владельца 13.11: «мы заводили книгу, чтоб понимать, что эти
+          лиги есть в разных видах спорта, и это значит, что нужно искать
+          эталон в разных видах спорта». Такую строку ведёт эталон
+          (`scripts/parse_live.py`: пара в эталоне любого вида → его вид;
+          нет ни в одном — снята с записью в журнал, `СНЯТО_СПОРНАЯ_ЛИГА`).
+          Раньше побеждала лига, стоявшая в файле первой."""
+    claims: dict[str, set[str]] = {}
     for league in data.get("leagues") or []:
         letter = league.get("sport")
         if letter not in ("F", "B", "T"):
             continue
         names = [league.get("name") or ""]
-        if ":" in names[0]:
-            names.append(names[0].split(":", 1)[1])
+        head, colon, tail = names[0].partition(":")
+        if colon and _norm_key(head) not in SPORT_HEADS:      # К2
+            names.append(tail)
         names += league.get("aliases") or []
         for name in names:
-            key = norm(name)
+            key = _norm_key(name)
             if key:
-                out.setdefault(key, letter)
-    return out
+                claims.setdefault(key, set()).add(letter)
+    return claims
+
+
+def contested(path=None) -> dict[str, set[str]]:
+    """К3: названия лиг, которые есть у нескольких видов спорта → эти виды.
+    Файла словаря нет — пусто."""
+    import json
+    from pathlib import Path
+    file = Path(path) if path else Path(__file__).resolve().parent.parent         / "data" / "dictionaries.json"
+    try:
+        data = json.loads(file.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return {key: letters for key, letters in _league_claims(data).items()
+            if len(letters) > 1}
+
+
+def is_contested(names: tuple, table: dict[str, set[str]]) -> bool:
+    """Хоть одно из названий строки (лига, сырая лига, рубрика) — спорное."""
+    return any(_norm_key(name or "") in table for name in names)
+
+
+#: К2: слова вида спорта, которые словарь лиг ставит перед «:» вместо страны
+SPORT_HEADS = frozenset({"basketball", "football", "soccer", "tennis",
+                         "futsal", "баскетбол", "футбол", "теннис"})

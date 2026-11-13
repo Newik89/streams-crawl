@@ -21,7 +21,7 @@ from __future__ import annotations
 import os
 import sys
 import tempfile
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -39,8 +39,22 @@ from app import db, dictionary, store, visits  # noqa: E402
 visits.write = lambda *a, **k: None
 
 passed, failed = 0, []
-NOW = datetime(2026, 12, 4, 10, 0)     # сбор — до обеих дат матча
-SAT, SUN = "2026-12-05 18:15", "2026-12-06 18:15"
+# Даты считаются от сегодняшнего дня (аудит 13.11.2026): раньше были зашиты
+# 04–08.12.2026, а витрина (`store.schedule`) берёт настоящие часы — после
+# 06.12 тест покраснел бы сам. День 0 — «сегодня» (день сбора), матчи —
+# завтра («суббота») и послезавтра («воскресенье»).
+ДЕНЬ0 = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+
+def D(сдвиг: int, часы: str, разделитель: str = " ") -> str:
+    """Дата «день сбора + сдвиг» и время «ЧЧ:ММ» — как их хранит база."""
+    return f"{(ДЕНЬ0 + timedelta(days=сдвиг)):%Y-%m-%d}{разделитель}{часы}"
+
+
+NOW = ДЕНЬ0.replace(hour=10)           # сбор — до обеих дат матча
+SAT, SUN = D(1, "18:15"), D(2, "18:15")
+#: как витрина пишет прежнее время переноса: «ДД.ММ ЧЧ:ММ»
+БЫЛО = f"{(ДЕНЬ0 + timedelta(days=1)):%d.%m} 18:15"
 
 
 def check(name: str, cond: bool, extra="") -> None:
@@ -121,21 +135,21 @@ def main() -> int:
     e = event(conn, SAT)
     moved = lambda: conn.execute("SELECT moved_from FROM events WHERE id = ?",  # noqa: E731
                                  (e,)).fetchone()[0]
-    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", ("2026-12-05T18:15", e))
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(1, "18:15", "T"), e))
     check("то же время с «T» — не перенос", moved() is None, moved())
-    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", ("2026-12-05 17:15", e))
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(1, "17:15"), e))
     check("сдвиг на 1 ч (перевод часов) — не перенос", moved() is None, moved())
     conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (SAT, e))
     conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (SUN, e))
     check("перенос на сутки — прежнее время запомнено", moved() == SAT, moved())
-    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", ("2026-12-06 18:00", e))
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(2, "18:00"), e))
     check("поправка на 15 мин после переноса — пометка остаётся", moved() == SAT, moved())
-    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", ("2026-12-07 21:00", e))
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(3, "21:00"), e))
     check("второй перенос — хранится самое первое время", moved() == SAT, moved())
-    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", ("2026-12-05 19:00", e))
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(1, "19:00"), e))
     check("вернули к прежнему (ближе 3 ч) — пометка снята", moved() is None, moved())
-    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", ("2026-12-05 22:00", e))
-    check("сдвиг ровно на 3 ч — уже перенос", moved() == "2026-12-05 19:00", moved())
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(1, "22:00"), e))
+    check("сдвиг ровно на 3 ч — уже перенос", moved() == D(1, "19:00"), moved())
     conn.close()
 
     print("B1. строка со старой датой, тени ещё нет")
@@ -196,7 +210,7 @@ def main() -> int:
     print("B5. два кандидата (лига и кубок) — не гадаем")
     conn, src, ch = fresh()
     e1 = event(conn, SUN, flags="fs:AAA")
-    e2 = event(conn, "2026-12-04 20:00", flags="fs:BBB")
+    e2 = event(conn, D(0, "20:00"), flags="fs:BBB")
     for x in (e1, e2):
         mark(conn, x, src["tvarenasport.ba"], ch["ba"], miss=1)
     st = store.save_games(conn, [row(SAT)], now=NOW)
@@ -216,7 +230,7 @@ def main() -> int:
 
     print("B7. дальше двух суток — не перенос")
     conn, src, ch = fresh()
-    e = event(conn, "2026-12-08 18:15")
+    e = event(conn, D(4, "18:15"))
     mark(conn, e, src["tvarenasport.ba"], ch["ba"], miss=2)
     st = store.save_games(conn, [row(SAT)], now=NOW)
     check("не прилипло", st.moved == 0)
@@ -226,7 +240,7 @@ def main() -> int:
     conn, src, ch = fresh()
     e = event(conn, SUN)
     mark(conn, e, src["tvarenasport.ba"], ch["ba"], miss=2)
-    st = store.save_games(conn, [row("2026-12-06 18:30", source="tvarenasport.hr",
+    st = store.save_games(conn, [row(D(2, "18:30"), source="tvarenasport.hr",
                                      channel="Arena Sport 10")], now=NOW)
     check("строка HR легла к игре без «время?», перенос не сработал",
           st.moved == 0 and marks(conn, e).get((src["tvarenasport.hr"], ch["hr"])) == (0, 0),
@@ -240,12 +254,12 @@ def main() -> int:
     conn.execute("UPDATE events SET start_kyiv = ?, start_utc = ? WHERE id = ?", (SUN, SUN, e))
     conn.commit()
     games = {g["id"]: g for g in store.schedule(conn)}
-    check("в данных витрины — «05.12 18:15»", games.get(e, {}).get("moved_from") == "05.12 18:15",
+    check("в данных витрины — день и время прежнего начала", games.get(e, {}).get("moved_from") == БЫЛО,
           games.get(e, {}).get("moved_from"))
     conn.close()
     from app import web
     page = web.create_app().test_client().get("/schedule").get_data(as_text=True)
-    check("на странице — «перенесён с 05.12 18:15»", "перенесён с 05.12 18:15" in page)
+    check("на странице — «перенесён с <прежний день и время>»", f"перенесён с {БЫЛО}" in page)
 
     print("D. разовая пометка по снимкам (`moved_backfill.py`)")
     import importlib.util
@@ -256,20 +270,20 @@ def main() -> int:
     spec.loader.exec_module(mb)
     conn, src, ch = fresh("d.db")
     a = event(conn, SAT)                          # потом перенесут на сутки
-    b = event(conn, "2026-12-05 20:00")           # потом поправят на 1 ч
-    c = event(conn, "2026-12-05 21:00")           # перенесут и вернут назад
+    b = event(conn, D(1, "20:00"))           # потом поправят на 1 ч
+    c = event(conn, D(1, "21:00"))           # перенесут и вернут назад
     conn.commit()
     snap1 = TMP / "snap1.db"
     conn.execute(f"VACUUM INTO '{snap1.as_posix()}'")
     # сдвиги «в прошлом», до триггера: снимаем его на время подготовки
     conn.execute("DROP TRIGGER IF EXISTS events_moved_from_v1")
     conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (SUN, a))
-    conn.execute("UPDATE events SET start_kyiv = '2026-12-05 21:00' WHERE id = ?", (b,))
-    conn.execute("UPDATE events SET start_kyiv = '2026-12-06 21:00' WHERE id = ?", (c,))
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(1, "21:00"), b))
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(2, "21:00"), c))
     conn.commit()
     snap2 = TMP / "snap2.db"
     conn.execute(f"VACUUM INTO '{snap2.as_posix()}'")
-    conn.execute("UPDATE events SET start_kyiv = '2026-12-05 21:30' WHERE id = ?", (c,))
+    conn.execute("UPDATE events SET start_kyiv = ? WHERE id = ?", (D(1, "21:30"), c))
     conn.commit()
     first = mb.earliest([str(snap1), str(snap2)])
     check("самое раннее время — из первого снимка", first.get(a) == SAT, first.get(a))

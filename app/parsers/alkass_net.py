@@ -88,7 +88,13 @@ _SEP = re.compile(r"\s+(?:vs\.?|×|x)\s+", re.I)
 _GAP = re.compile(r"\s{2,}")
 _LEAGUE_END = re.compile(
     r"\b(?:ACL\s*2|ACL|League|Elite|Cup|Derby|Basketball|Championship|"
-    r"Trophy|Shield|Liga|Ligue|Supercup|Final|Friendly)\b", re.I)
+    r"Trophy|Shield|Liga|Ligue|Supercup|Final|Friendly|Friendlies|"
+    r"Qualifiers?|Qualification|Qualifying|Playoffs?|Play-offs?)\b", re.I)
+#: правило 5а (книга 112, 13.11.2026): служебное слово между турниром и
+#: хозяевами — «Friendly Match Qatar vs. Australia». Оно уходит в название
+#: турнира, а не в имя команды: иначе «Match Qatar» читалось как клуб
+#: «Match» с припиской страны, и Катар срезало правило 6
+_SERVICE = re.compile(r"^\s*(?:Match|Game|Fixture)\b\s*", re.I)
 
 #: правило 7
 _NATIONAL = re.compile(r"\s+national\s+team\b", re.I)
@@ -170,6 +176,10 @@ def split_title(title: str) -> tuple[str, str]:
         ends = [m for m in _LEAGUE_END.finditer(left) if left[m.end():].strip()]
         if ends:
             league, home = left[:ends[-1].end()], left[ends[-1].end():]
+    got = _SERVICE.match(home)                                # правило 5а
+    if league and got and home[got.end():].strip():
+        league = f"{league} {got.group(0)}"
+        home = home[got.end():]
     home, away = _side(home), _side(away)
     if len(home) < 2 or len(away) < 2:
         return "", " "
