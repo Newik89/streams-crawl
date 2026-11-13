@@ -399,6 +399,14 @@ def title(case: dict) -> str:
         if str(case.get("номер", "")).isdigit() else f"{case.get('номер')} {case.get('суть', '')}"
 
 
+def missing_numbers(numbers: list[str]) -> list[int]:
+    """Пропуски в номерах книги: случаи идут подряд от 1 до последнего.
+    Аудит 13.11.2026: случай 056 лежал в отдельной ветке и в main не попал —
+    дыру в номерах никто не видел."""
+    got = {int(n) for n in numbers if str(n).isdigit()}
+    return [n for n in range(1, max(got, default=0) + 1) if n not in got]
+
+
 def run_book(only: int | None = None) -> tuple[int, list[str], list[str]]:
     """→ (число случаев, красные, жёлтые). Печатает строку на случай."""
     cases = load_cases()
@@ -411,6 +419,12 @@ def run_book(only: int | None = None) -> tuple[int, list[str], list[str]]:
     if len(set(numbers)) != len(numbers):
         red.append("в книге повторяются номера случаев: " + ", ".join(
             sorted({n for n in numbers if numbers.count(n) > 1})))
+        print("❌ " + red[-1])
+    дыры = missing_numbers(numbers) if only is None else []
+    if дыры:
+        red.append("в книге пропущены номера случаев: "
+                   + ", ".join(f"{n:03d}" for n in дыры)
+                   + " — случай остался в чужой ветке или не записан")
         print("❌ " + red[-1])
     parsed: dict[str, tuple[dict | None, str]] = {}
     workdir = Path(tempfile.mkdtemp(prefix="kniga-"))

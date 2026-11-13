@@ -93,6 +93,14 @@
      строка розовая, у номера знак вопроса; подсказка называет настоящий матч */
   tr.game.doubt > td { background:#fde4ec; }
   tr.game.doubt > td:first-child { box-shadow:inset 3px 0 0 #d81b60; }
+  /* книга 113: прямой эфир, вид спорта которого эталон не подтвердил */
+  tr.game.unconfirmed > td { background:#fdd9d7; }
+  tr.game.unconfirmed > td:first-child { box-shadow:inset 3px 0 0 #c62828; }
+  .unc-mark { margin-left:6px; font-size:12px; font-weight:700; color:#b71c1c; }
+  .unc-del { margin-left:8px; padding:1px 8px; font-size:12px; cursor:pointer;
+             color:#b71c1c; background:transparent; border:1px solid #c62828;
+             border-radius:999px; }
+  .unc-del:hover { background:#c62828; color:#fff; }
   .doubt-mark { margin-left:6px; font-size:12px; font-weight:700; color:#ad1457;
                 border:1px solid #d81b60; border-radius:999px; padding:0 7px;
                 cursor:help; white-space:nowrap; }
@@ -102,6 +110,8 @@
     tr.game.ask > td { background:#2e2415; }
     .ask-go { color:#fbbf24; border-color:#a16207; }
     tr.game.doubt > td { background:#3a1c28; }
+    tr.game.unconfirmed > td { background:#4a1c1c; }
+    .unc-mark, .unc-del { color:#ef9a9a; border-color:#ef5350; }
     .doubt-mark { color:#f48fb1; border-color:#ad1457; }
   }
   /* окно правки канала: два поля и предпросмотр — два prompt подряд
@@ -250,7 +260,7 @@
       {% for g in games %}
       {# новизна: админу — «пока не прочитал» (unread), гостю — по часам (is_new) #}
       {% set свежая = (g.unread if admin else g.is_new) %}
-      <tr id="g{{ g.id }}" class="game{% if свежая %} fresh{% endif %}{% if admin and g.pending %} ask{% endif %}{% if g.doubt %} doubt{% endif %}" data-date="{{ day }}"
+      <tr id="g{{ g.id }}" class="game{% if свежая %} fresh{% endif %}{% if admin and g.pending %} ask{% endif %}{% if g.doubt %} doubt{% endif %}{% if g.unconfirmed %} unconfirmed{% endif %}" data-date="{{ day }}"
           data-sport="{{ g.sport }}"
           data-league="{{ g.league }}"
           data-live="{{ 1 if g.live else 0 }}"
@@ -261,10 +271,10 @@
           data-text="{{ (g.home ~ ' ' ~ g.away ~ ' ' ~ g.league ~ ' ' ~ (g.channels | map(attribute='name') | join(' '))) | lower }}">
         <td class="idx"></td>
         <td class="time"><span class="gdate">{{ day.strftime("%d.%m") }}</span>{{ g.time }}{% if g.live %}<span class="live">live</span>{% endif %}</td>
-        <td class="sport">{{ {"F":"⚽","B":"🏀","T":"🎾"}.get(g.sport, g.sport) }}{% if admin %}<button class="unread-dot" type="button" title="Вернуть в непрочитанные — игра снова подсветится как новая" aria-label="Вернуть в непрочитанные"></button>{% endif %}</td>
-        <td class="league"><span class="copy">{{ g.league }}</span>{% if admin and g.league %}<button class="edit" type="button" data-kind="league" data-raw="{{ g.league_auto or g.league }}" title="Исправить название лиги">✎</button>{% endif %}</td>
-        <td class="match">{% if g.title %}{# трансляция турнира без пары игроков (владелец 04.10): одной строкой, без «vs» и без правки имён — это не команды #}<b class="copy" title="Tournament broadcast: the players are not announced yet">{{ g.home }}{% if g.away %} — {{ g.away }}{% endif %}</b>{% else %}<b class="copy">{{ g.home }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.home_auto or g.home }}" title="Исправить название команды">✎</button>{% endif %} vs <b class="copy">{{ g.away }}</b>{% if admin %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.away_auto or g.away }}" title="Исправить название команды">✎</button>{% endif %}{% endif %}<span class="gid copy" title="Номер игры — клик копирует">#{{ g.id }}</span>{% if g.doubt %}<span class="doubt-mark" title="Сайт канала называет соперника, которого нет у flashscore: в это время там {{ g.doubt }}. Строка оставлена как на сайте канала — сайт может исправиться ближе к матчу">?</span>{% endif %}{% if admin and g.pending %}<a class="ask-go" href="{{ url_for('moderation_list') }}?focus={{ g.pending }}&amp;back=g{{ g.id }}" title="Название для этой игры уже найдено — осталось подтвердить">ждёт подтверждения →</a>{% endif %}{% if g.moved_from %}<div class="moved" title="Матч перенесли: прежнее время {{ g.moved_from }}. Каналы прежнего дня переехали сюда; зачёркнутые — их сайт новую дату ещё не подтвердил, «время?» — сайт пишет по-старому">перенесён с {{ g.moved_from }}</div>{% endif %}</td>
-        <td>{% for c in g.channels %}{# админ гасит «new» кликом (22.09), гостю — прежняя новизна по часам #}{# владельцу бейдж живёт до его клика, гостю — по часам (08.10) #}{% set fresh_ch = (c.new_ever and not c.seen) if admin else c.new %}<span class="chan{% if fresh_ch %} fresh{% endif %}{% if c.time_off %} timeoff{% endif %}" data-cid="{{ c.id }}"{% if c.custom %} data-nocc="1"{% endif %}>{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span>{% if c.new_source %}<span class="newsrc" title="Канал нового источника — на обкатке">новый</span>{% endif %}{% if fresh_ch %}<span class="newch" title="Канал добавился к этой игре недавно">new</span>{% endif %}{% if c.time_off %}<span class="timeoffch" title="Сайт канала пишет другое время, чем flashscore — перепроверить. Не подтвердит обход ближе к дате — канал погаснет сам">время?</span>{% endif %}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}{% if admin %}<button class="chan-edit" type="button" data-cid="{{ c.id }}" data-note="{{ c.country or '' }}" title="Изменить название канала и пометку перед ним">✎</button>{% endif %}</span>{% endfor %}{% for c in g.gone_channels %}<span class="chan gone" data-cid="{{ c.id }}" title="Канал убрал эту игру из своего расписания — если вернёт, отметка оживёт сама{% if admin %}. Клик копирует имя и убирает отметку из этой игры{% endif %}">{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span><span class="gonech">снят</span>{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}</span>{% endfor %}</td>
+        <td class="sport">{{ {"F":"⚽","B":"🏀","T":"🎾"}.get(g.sport, g.sport) }}{% if admin and not g.unconfirmed %}<button class="unread-dot" type="button" title="Вернуть в непрочитанные — игра снова подсветится как новая" aria-label="Вернуть в непрочитанные"></button>{% endif %}</td>
+        <td class="league"><span class="copy">{{ g.league }}</span>{% if admin and g.league and not g.unconfirmed %}<button class="edit" type="button" data-kind="league" data-raw="{{ g.league_auto or g.league }}" title="Исправить название лиги">✎</button>{% endif %}</td>
+        <td class="match">{% if g.title %}{# трансляция турнира без пары игроков (владелец 04.10): одной строкой, без «vs» и без правки имён — это не команды #}<b class="copy" title="Tournament broadcast: the players are not announced yet">{{ g.home }}{% if g.away %} — {{ g.away }}{% endif %}</b>{% else %}<b class="copy">{{ g.home }}</b>{% if admin and not g.unconfirmed %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.home_auto or g.home }}" title="Исправить название команды">✎</button>{% endif %} vs <b class="copy">{{ g.away }}</b>{% if admin and not g.unconfirmed %}<button class="edit" type="button" data-kind="team" data-raw="{{ g.away_auto or g.away }}" title="Исправить название команды">✎</button>{% endif %}{% endif %}{% if g.unconfirmed %}<span class="unc-mark" title="{{ g.hint }}">вид спорта не подтверждён</span><button class="unc-del" type="button" data-key="{{ g.unconfirmed }}" title="Убрать строку с витрины. Следующий сбор её не вернёт">удалить</button>{% else %}<span class="gid copy" title="Номер игры — клик копирует">#{{ g.id }}</span>{% endif %}{% if g.doubt %}<span class="doubt-mark" title="Сайт канала называет соперника, которого нет у flashscore: в это время там {{ g.doubt }}. Строка оставлена как на сайте канала — сайт может исправиться ближе к матчу">?</span>{% endif %}{% if admin and g.pending %}<a class="ask-go" href="{{ url_for('moderation_list') }}?focus={{ g.pending }}&amp;back=g{{ g.id }}" title="Название для этой игры уже найдено — осталось подтвердить">ждёт подтверждения →</a>{% endif %}{% if g.moved_from %}<div class="moved" title="Матч перенесли: прежнее время {{ g.moved_from }}. Каналы прежнего дня переехали сюда; зачёркнутые — их сайт новую дату ещё не подтвердил, «время?» — сайт пишет по-старому">перенесён с {{ g.moved_from }}</div>{% endif %}</td>
+        <td>{% for c in g.channels %}{# админ гасит «new» кликом (22.09), гостю — прежняя новизна по часам #}{# владельцу бейдж живёт до его клика, гостю — по часам (08.10) #}{% set fresh_ch = (c.new_ever and not c.seen) if admin else c.new %}<span class="chan{% if fresh_ch %} fresh{% endif %}{% if c.time_off %} timeoff{% endif %}" data-cid="{{ c.id }}"{% if c.custom %} data-nocc="1"{% endif %}>{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span>{% if c.new_source %}<span class="newsrc" title="Канал нового источника — на обкатке">новый</span>{% endif %}{% if fresh_ch %}<span class="newch" title="Канал добавился к этой игре недавно">new</span>{% endif %}{% if c.time_off %}<span class="timeoffch" title="Сайт канала пишет другое время, чем flashscore — перепроверить. Не подтвердит обход ближе к дате — канал погаснет сам">время?</span>{% endif %}{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}{% if admin and not g.unconfirmed %}<button class="chan-edit" type="button" data-cid="{{ c.id }}" data-note="{{ c.country or '' }}" title="Изменить название канала и пометку перед ним">✎</button>{% endif %}</span>{% endfor %}{% for c in g.gone_channels %}<span class="chan gone" data-cid="{{ c.id }}" title="Канал убрал эту игру из своего расписания — если вернёт, отметка оживёт сама{% if admin %}. Клик копирует имя и убирает отметку из этой игры{% endif %}">{% if c.country %}<span class="cc">{{ c.country }}|</span>{% endif %}<span class="copy">{{ c.name }}</span><span class="gonech">снят</span>{% if c.url %}<a class="chan-go" href="{{ c.url }}" target="_blank" rel="noopener" title="Открыть расписание канала">↗</a>{% endif %}</span>{% endfor %}</td>
       </tr>
       {% endfor %}
     </table>
@@ -474,6 +484,27 @@
       navigator.clipboard.writeText(text).then(done, old);
     } else { old(); }
   }
+  // ── кнопка «удалить» у красной строки (книга 113): строка без подтверждения
+  // эталоном уходит с витрины; сервер не принял — строка остаётся
+  document.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".unc-del");
+    if (!btn) return;
+    ev.preventDefault();
+    var row = btn.closest("tr.game");
+    var meta = document.querySelector('meta[name="csrf"]');
+    if (!meta || !row) return;
+    if (!confirm("Убрать эту строку с витрины?")) return;
+    var body = new URLSearchParams();
+    body.set("csrf_token", meta.content);
+    body.set("key", btn.dataset.key);
+    fetch("/unconfirmed/remove", { method: "POST", body: body })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); row.remove(); })
+      .catch(function (e) {
+        alert("Не получилось удалить строку (" + e.message
+              + "). Обнови страницу и попробуй ещё раз.");
+      });
+  });
+
   // ── клик по новой игре гасит её «новизну» (владелец 21.09) ───────────────
   // только в админке (у гостя нет meta csrf — его новизна гаснет по часам);
   // строка остаётся на месте до следующей смены фильтра

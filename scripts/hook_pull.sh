@@ -11,6 +11,13 @@ if [ -z "$remote" ]; then
   exit 1
 fi
 if [ "$remote" = "$(git rev-parse HEAD)" ]; then
+  # аудит 13.11: код забран, а заливка после него упала — раньше стук уходил
+  # с «нового нет», и сбор лежал невлитым до забора по часам. Теперь упавшую
+  # заливку повторяем (не больше двух раз подряд — scripts/import_retry.py)
+  if venv/bin/python scripts/import_retry.py >> $LOG 2>&1; then
+    echo "$(date '+%d.%m %H:%M') стук: нового нет, но прошлая заливка упала — повторяю" >> $LOG
+    exec flock -w 900 /run/streams-update.lock /root/streams-update.sh
+  fi
   echo "$(date '+%d.%m %H:%M') стук: нового на GitHub нет" >> $LOG
   exit 0
 fi

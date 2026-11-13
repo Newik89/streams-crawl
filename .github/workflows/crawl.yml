@@ -182,6 +182,23 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Библиотеки и браузер — из кэша GitHub (аудит 13.11.2026): сервер
+      # библиотек PyPI и сервер браузера были точкой отказа — лягут, и обход
+      # не дойдёт до сайтов. Ключ кэша — сам файл версий: поменяли версию —
+      # кэш собирается заново. Кэша нет или он неполный — ставим из сети,
+      # как раньше. Кэш GitHub кладёт сам, в конце удачного прогона
+      - name: Библиотеки — из кэша
+        uses: actions/cache@v4
+        with:
+          path: ~/wheelhouse
+          key: wheelhouse-py312-${{ hashFiles('requirements-crawl.txt') }}
+
+      - name: Браузер — из кэша
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ hashFiles('requirements-crawl.txt') }}
+
       - name: Поставить, что нужно
         run: |
           # Все версии закреплены в requirements-crawl.txt (владелец 03.10.2026:
@@ -190,7 +207,20 @@ jobs:
           # `selectolax.parser.HTMLParser` (на нём все 50 парсеров), GitHub
           # поставил её сам — разбор падал на импорте, обход #172 покраснел.
           # Обновление библиотек — только правкой этого файла и пробным запуском.
-          pip install -r requirements-crawl.txt
+          # Правила установки (аудит 13.11.2026):
+          #   У1. сперва — из папки кэша, без сети;
+          #   У2. в кэше чего-то нет — скачать библиотеки в папку кэша и
+          #       поставить из неё;
+          #   У3. и это не вышло — обычная установка из сети, как раньше.
+          mkdir -p ~/wheelhouse
+          if pip install --no-index --find-links ~/wheelhouse -r requirements-crawl.txt; then
+            echo "библиотеки поставлены из кэша, без сети"
+          elif pip download -d ~/wheelhouse -r requirements-crawl.txt \
+               && pip install --no-index --find-links ~/wheelhouse -r requirements-crawl.txt; then
+            echo "библиотеки скачаны и положены в кэш"
+          else
+            pip install -r requirements-crawl.txt
+          fi
           # ── Браузер (Chromium) — обход из-за него НЕ падает (книга 100) ──
           # 11.11.2026: у Ubuntu лёг DNS (archive.ubuntu.com не находился во
           # всём мире), строка `playwright install --with-deps chromium` 10
@@ -337,9 +367,22 @@ jobs:
 
       - name: Проверка читалок
         id: readers
-        if: github.event_name == 'schedule' || inputs.readers == 'yes'
+        # Аудит 13.11.2026: шаг был мёртвым — шёл только по часам самого
+        # GitHub, а сбор заказывает сервер; и список живых читалок не ехал в
+        # репозиторий. Слово владельца: проверять раз в сутки, в утреннем
+        # сборе. Теперь: в каждом полном сборе, но только если прошлой
+        # проверке больше 20 часов — то есть в первом сборе дня. Список
+        # ложится в results/readers.json и едет в репозиторий с результатом.
+        if: steps.guard.outputs.run == '1' && (inputs.readers == 'yes' || (steps.what.outputs.mode == 'full' && steps.what.outputs.only == '' && steps.what.outputs.urls == '' && steps.what.outputs.date == '' && steps.what.outputs.from_run == ''))
         continue-on-error: true
-        run: python scripts/check_readers.py
+        env:
+          W_FORCE: ${{ inputs.readers }}
+        run: |
+          if [ "$W_FORCE" = "yes" ]; then
+            python scripts/check_readers.py
+          else
+            python scripts/check_readers.py --if-older 20
+          fi
 
       - name: Какой сбор переразбираем
         id: prior
@@ -640,7 +683,7 @@ jobs:
           git add results/
           # список живых читалок обновляет шаг «Проверка читалок» — он тоже
           # едет в репозиторий, иначе следующий обход о нём не узнает
-          git add data/readers.json 2>/dev/null || true
+          # (лежит в results/readers.json — уже взят строкой выше)
           git diff --cached --quiet || git commit -m "Обход $(date -u +%d.%m.%Y\ %H:%M) UTC"
           # Пока обход шёл, в main могли запушить с компьютера (02.09 так
           # пропал итог полного обхода: push отбило, «|| true» смолчал).

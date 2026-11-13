@@ -28,7 +28,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import (broadcast, canon, channel_grid, daytime, db, dictionary,  # noqa: E402
-                 leagues, live, merge, names, pipeline, redo, sport, store)
+                 etalon_guard, leagues, live, merge, names, pipeline, redo,
+                 sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers import flashscore_mobi                     # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
@@ -92,6 +93,16 @@ def previous_counts(path: Path = PREVIOUS) -> dict[str, int]:
     if prev.get("окно") and prev.get("игр"):
         counts[str(prev["окно"])] = int(prev["игр"])
     return counts
+
+
+def previous_payload(path: Path = PREVIOUS) -> dict:
+    """games.json прошлого полного сбора целиком (эталон, игры, просадки) —
+    для сторожа эталона (`app/etalon_guard.py`); файла нет — пустой словарь."""
+    try:
+        prev = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return prev if isinstance(prev, dict) else {}
 
 
 def too_few(count: int, days: int, previous: dict[str, int]) -> str:
@@ -686,6 +697,39 @@ def contested_league(r, спорные: dict) -> set:
     return set()
 
 
+def honest_live(domain: str, r) -> bool:
+    """Книга 113, К1: сайт САМ пометил строку прямым эфиром. Пометка есть
+    (`live_marker`), это не слово эталона и эфир не угадан программой."""
+    marker = getattr(r, "live_marker", "") or ""
+    return bool(marker) and marker != pipeline.REFERENCE_MARKER \
+        and not guessed(domain, r)
+
+
+def long_past(r, now: datetime | None = None) -> bool:
+    """Книга 113: игра началась больше трёх часов назад (или времени нет) —
+    на витрину ей уже незачем (`unconfirmed.KEEP_HOURS`)."""
+    from app import unconfirmed
+    start = getattr(r, "start_kyiv", None)
+    if start is None:
+        return True
+    now = now or datetime.now(start.tzinfo)
+    return start < now - timedelta(hours=unconfirmed.KEEP_HOURS)
+
+
+def unconfirmed_row(domain: str, r, виды: set) -> dict:
+    """Книга 113: строка для красной строки витрины (ключ «без_эталона» в
+    games.json; читает `app/unconfirmed.py`)."""
+    program = r.program
+    return {"домен": domain, "канал": program.channel_raw or "",
+            "home": r.home, "away": r.away,
+            "league": r.league or program.league_raw or "",
+            "start_kyiv": (r.start_kyiv.strftime("%Y-%m-%dT%H:%M")
+                           if r.start_kyiv else ""),
+            "raw_title": (program.title or "")[:200],
+            "url": (program.source_url or "")[:500],
+            "виды": sorted(виды)}
+
+
 def removed_row(фильтр: str, domain: str, r, почему: str) -> dict:
     """Строка, снятая фильтром повторов, — поимённо для журнала разбора
     (принцип владельца «ничто не теряется молча»). `r` — строка отсева
@@ -1266,14 +1310,34 @@ def main() -> int:
     # журнал. Каждый следующий сбор проверит её заново — эталон дальних
     # дней наполняется ближе к игре. При бедном эталоне не снимаем.
     спорные = leagues.contested() if len(reference_full) >= ЭТАЛОН_БОГАТ else {}
-    for domain, r in unsolved:
+    # Книга 113 (слово владельца 13.11): такая строка с ЧЕСТНОЙ пометкой
+    # прямого эфира от сайта не снимается, а едет красной строкой на витрину
+    # владельца (`app/unconfirmed.py`, К1) — он удалит её сам. Эфир угадан
+    # программой или пометки нет — снята, как в книге 112.
+    # Заодно: строку со спорной лигой, не прошедшую сито `worth_asking`,
+    # раньше теряли молча — теперь она проходит тот же путь (красная строка
+    # или запись в журнал)
+    без_эталона: list[dict] = []
+    мимо_сита = [(domain, r) for domain, r in maybe
+                 if not r.ok and r.home and r.away
+                 and not worth_asking(domain, r, sporty)
+                 and contested_league(r, спорные)]
+    мимо = {id(r) for _d, r in мимо_сита}
+    for domain, r in unsolved + мимо_сита:
         матч = played_before(r.home, r.away, "", r.start_kyiv, индекс_эталона)
         if матч is None and contested_league(r, спорные):
             виды = contested_league(r, спорные)
+            # прошедшую игру красной не показываем (сбор 12.11 принёс от
+            # tring.al строки за 17.10) — она уходит в журнал снятого
+            if honest_live(domain, r) and not long_past(r):
+                без_эталона.append(unconfirmed_row(domain, r, виды))
+                continue
             снято.append(removed_row(
                 СНЯТО_СПОРНАЯ_ЛИГА, domain, r,
                 f"название лиги есть в видах {', '.join(sorted(виды))}; "
                 "эталон этой пары не знает ни в одном"))
+        elif id(r) in мимо:
+            continue        # сыгранный матч мимо сита — как раньше, молча
         elif матч is None:
             в_очередь.append((domain, r))
         else:
@@ -1720,6 +1784,30 @@ def main() -> int:
     previous = previous_counts()
     verdict = (too_few(len(games), window, previous)
                if args.strict and not args.date else "")
+    # Книга 114 (аудит 13.11): сторож эталона и запись «сайт просел на дату»
+    # (`app/etalon_guard.py`). Судим только полный плановый сбор: у скана
+    # даты и дозабора эталон неполный по делу.
+    # Э: эталон пустой или урезанный — сбор красный, результат не кладётся,
+    #    витрина остаётся на прошлом сборе, владельцу уходит тревога.
+    # С: просадки сайтов по датам — пока только запись в games.json
+    просадки: list[dict] = []
+    if args.strict and not args.date and not redo_mode:
+        прошлый = previous_payload()
+        сегодня = daytime.today("Europe/Kyiv")
+        эталон_плох = etalon_guard.etalon_error(etalon_guard.etalon_verdict(
+            reference_full, прошлый.get("эталон") or [], сегодня))
+        verdict = эталон_плох or verdict
+        просадки = etalon_guard.site_drops(
+            [{"start_kyiv": g.start.strftime("%Y-%m-%dT%H:%M"),
+              "entries": [{"source": e.source,
+                           "start_kyiv": e.start.strftime("%Y-%m-%dT%H:%M")}
+                          for e in g.entries]} for g in games],
+            прошлый, сегодня, window)
+        if просадки:
+            print(f"сайт просел на дату (только запись): {len(просадки)}")
+            for x in просадки[:20]:
+                print(f"   {x['сайт']} {x['дата']}: было {x['было']}, "
+                      f"стало {x['стало']}, сборов подряд {x['подряд']}")
     # «собрано» — ВСЕГДА в UTC: заливка (`store.log_run`) и возраст файла
     # (`crawl_fetch.age_hours`) считают метку UTC-часами. На GitHub так и
     # было само собой, а сервер (mojtv, киевский пояс) писал местное время —
@@ -1755,6 +1843,12 @@ def main() -> int:
                # строки, снятые фильтрами повторов, поимённо (сайт, канал,
                # заголовок, время, фильтр, почему) — заливка ключ не читает
                "снято": снято,
+               # книга 113: прямой эфир со спорной лигой без эталона —
+               # красной строкой на витрину владельца, не в игры
+               "без_эталона": без_эталона,
+               # книга 114: просадки «сайт, дата» против прошлого сбора —
+               # пока только запись (слово владельца: неделю наблюдаем)
+               "просадки": просадки,
                "games": [{
                    # игра целиком из «угаданных» источников: при заливке её
                    # сверяют с УЖЕ лежащими в базе событиями той же пары —

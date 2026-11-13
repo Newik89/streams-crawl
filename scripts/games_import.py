@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
-                 redo, site_move, sport_question, store, watch)
+                 redo, site_move, sport_question, store, unconfirmed, watch)
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -273,6 +273,13 @@ def main() -> int:
             print(f"нерешённых строк: {len(unsolved)}, "
                   f"в модерацию добавлено: {queued_review}, "
                   f"программа ответила сама: {answered}")
+        # книга 113: красные строки витрины владельца (прямой эфир, вид
+        # спорта которого эталон не подтвердил). Дозабор список не трогает
+        if not add_only:
+            красных = unconfirmed.after_import(
+                conn, _json.loads(path.read_text(encoding="utf-8")))
+            if красных:
+                print(f"красных строк на витрине владельца: {красных}")
         from datetime import datetime
         db.set_setting(conn, "last_import", datetime.now().strftime("%Y-%m-%d %H:%M"))
         # заливка дошла до конца — прежняя жалоба на дашборде снимается (A5)
