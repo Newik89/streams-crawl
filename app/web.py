@@ -45,6 +45,22 @@ FRIEND_PASSWORD = os.environ.get("STREAMS_FRIEND_PASSWORD") or None
 
 LOGIN_WINDOW = 300         # окно в секундах
 LOGIN_MAX_ATTEMPTS = 5
+#: Срок входа (владелец 13.11.2026, аудит: «сделай 24 часа»). Правила:
+#:   1. вход (владельца и друга) живёт 24 часа с минуты ввода пароля;
+#:   2. срок не продлевается заходами на сайт — через 24 часа пароль снова;
+#:   3. вход без отметки времени (сделан до этой правки) считается истёкшим;
+#:   4. истёкший вход стирается на любом адресе, и на витрине тоже.
+SESSION_HOURS = 24
+SESSION_SECONDS = SESSION_HOURS * 3600
+
+
+def session_expired(entered_at, now: float) -> bool:
+    """Правила 1–3: отметки нет, она не число, из будущего или старше срока."""
+    try:
+        age = now - float(entered_at)
+    except (TypeError, ValueError):
+        return True
+    return age < 0 or age > SESSION_SECONDS
 _LOGIN_ATTEMPTS: dict[str, list[float]] = defaultdict(list)
 
 #: Отдавать ли расписание наружу по API (ТЗ разд. 13).
@@ -188,6 +204,8 @@ def create_app() -> Flask:
     app.secret_key = _secret_key()
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    # кука входа живёт в браузере не дольше срока входа (правило 1)
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=SESSION_HOURS)
 
     @app.after_request
     def security_headers(resp):
@@ -452,6 +470,11 @@ def create_app() -> Flask:
 
     @app.before_request
     def require_login():
+        # срок входа (правила 1–4 у `SESSION_HOURS`): проверяется раньше
+        # всего остального и на открытых адресах тоже
+        if (session.get("admin") or session.get("friend")) and \
+                session_expired(session.get("at"), time.time()):
+            session.clear()
         if request.endpoint in PUBLIC:
             return None
         if not session.get("admin"):
@@ -496,6 +519,8 @@ def create_app() -> Flask:
             if _same_secret(typed, ADMIN_PASSWORD):
                 session.clear()
                 session["admin"] = True
+                session["at"] = int(time.time())
+                session.permanent = True
                 return redirect(safe_next(request.args.get("next"))
                                 or url_for("dashboard"))
             if FRIEND_PASSWORD and _same_secret(typed, FRIEND_PASSWORD):
@@ -503,6 +528,8 @@ def create_app() -> Flask:
                 # на витрине им открыты — вместо PIN, который подбирался
                 session.clear()
                 session["friend"] = True
+                session["at"] = int(time.time())
+                session.permanent = True
                 return redirect(url_for("schedule"))
             _LOGIN_ATTEMPTS[ip].append(time.time())
             flash("Неверный пароль.", "error")
