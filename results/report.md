@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 4846 с.
+Режим: полный обход, окно 6 суток. Запросов: 1598. Заняло 5412 с.
 
 | Сайт | Результат |
 |---|---|
@@ -9,7 +9,7 @@
 | aspor.com.tr | расписание есть — 1 |
 | atv.com.tr | расписание есть — 6 |
 | bbc.co.uk | расписание есть — 66 |
-| bnt.bg | расписание есть — 1 |
+| bnt.bg | не открылась — 1 |
 | canal11.pt | расписание есть — 1 |
 | canpl.ca | расписание есть — 1 |
 | ceskatelevize.cz | расписание есть — 6 |
@@ -18,32 +18,32 @@
 | diemaxtra.nova.bg | расписание есть — 3 |
 | digisport.ro | расписание есть — 4 |
 | dr.dk | расписание есть — 6 |
-| epg.cyta.com.cy | расписание есть — 1 |
+| epg.cyta.com.cy | не открылась — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 20, пусто — 1 |
+| flashscore.mobi | расписание есть — 19, пусто — 2 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 26 |
-| m.eredmenyek.com | расписание есть — 13, пусто — 1 |
+| m.eredmenyek.com | расписание есть — 12, пусто — 2 |
 | m.flashscore.bg | расписание есть — 7 |
-| m.flashscore.com.tr | расписание есть — 18 |
+| m.flashscore.com.tr | расписание есть — 17, пусто — 1 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 20, пусто — 1 |
+| m.flashscore.gr | расписание есть — 19, пусто — 2 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
-| m.flashscore.pl | расписание есть — 12 |
+| m.flashscore.pl | расписание есть — 11, пусто — 1 |
 | m.flashscore.pt | расписание есть — 6 |
-| m.flashscore.ro | расписание есть — 12 |
+| m.flashscore.ro | расписание есть — 11, пусто — 1 |
 | m.flashscore.ru | расписание есть — 17, пусто — 1 |
 | m.flashscore.se | расписание есть — 6 |
-| m.flashscore.sk | расписание есть — 12 |
-| m.flashscore.ua | расписание есть — 12 |
-| m.livesport.cz | расписание есть — 12 |
+| m.flashscore.sk | расписание есть — 11, пусто — 1 |
+| m.flashscore.ua | расписание есть — 11, пусто — 1 |
+| m.livesport.cz | расписание есть — 11, пусто — 1 |
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 6 |
@@ -70,7 +70,7 @@
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | расписание есть — 5, пусто — 1 |
+| sport1.maariv.co.il | расписание есть — 4, пусто — 2 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
 | sport5.co.il | расписание есть — 6 |
@@ -106,11 +106,18 @@
 | tvpassport.com | расписание есть — 54 |
 | tvsporten.dk | расписание есть — 6 |
 | tvtid.tv2.dk | расписание есть — 6 |
-| unian.tv | пусто — 4, расписание есть — 2 |
+| unian.tv | пусто — 3, расписание есть — 3 |
 | vsetv.com | расписание есть — 12 |
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
+## Не открылись — 2
+
+| Сайт | Канал | Что ответил | Ссылка |
+|---|---|---|---|
+| bnt.bg | сетка | ConnectTimeout: HTTPSConnectionPool(host='bnt.bg', port=443): Max retries exceeded with url: /program/bnt3 (Caused by ConnectTimeoutError(<HTTPSConnection(host= | https://bnt.bg/program/bnt3 |
+| epg.cyta.com.cy | сетка | ConnectTimeout: HTTPSConnectionPool(host='epg.cyta.com.cy', port=443): Max retries exceeded with url: /api/mediacatalog/fetchLiveSports?language=en&offset=0&cou | https://epg.cyta.com.cy/api/mediacatalog/fetchLiveSports?language=en&offset=0&count=200 |
+
 ## Оценка
 
-- ✅ обход в норме: не открылись 0 из 1598 страниц (0%), сайтов без удачи 0 из 106 (0%)
+- ✅ обход в норме: не открылись 2 из 1598 страниц (0%), сайтов без удачи 2 из 106 (2%)
