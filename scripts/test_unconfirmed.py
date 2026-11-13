@@ -102,6 +102,26 @@ check(f"сайт без своей пометки эфира ({угадайка}
 check("тот же сайт, но строку пометил сам (site_flag) — честная",
       parse_live.honest_live(угадайка, Строка("live", {"site_flag": "live"})))
 
+from zoneinfo import ZoneInfo  # noqa: E402
+
+КИЕВ = ZoneInfo("Europe/Kyiv")
+
+
+class СоВременем:
+    def __init__(self, когда):
+        self.start_kyiv = когда
+
+
+сейчас = datetime.now(КИЕВ)
+check("игра завтра — не прошедшая",
+      not parse_live.long_past(СоВременем(сейчас + timedelta(days=1))))
+check("игра началась час назад — ещё показываем",
+      not parse_live.long_past(СоВременем(сейчас - timedelta(hours=1))))
+check("игра месячной давности (tring.al, 17.10) — красной не идёт",
+      parse_live.long_past(СоВременем(сейчас - timedelta(days=27))))
+check("строка без времени — красной не идёт",
+      parse_live.long_past(СоВременем(None)))
+
 print("К3. Одна пара в одно время у нескольких каналов — одна строка")
 группа = unconfirmed.group([
     строка("Arsenal", "Hull City", ЗАВТРА, канал="Sport 1"),

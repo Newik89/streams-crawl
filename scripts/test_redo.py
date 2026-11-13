@@ -884,13 +884,15 @@ def run_plan(mode: dict, event="workflow_dispatch", fail_at: str = "",
 
 
 HEAD = ["Проверка параметров запуска", "actions/checkout@v4", "actions/setup-python@v5",
+        # кэш библиотек и браузера (аудит 13.11.2026): PyPI — не точка отказа
+        "Библиотеки — из кэша", "Браузер — из кэша",
         "Поставить, что нужно", "Не ходили ли уже сегодня", "Что запускаем",
         "Стук серверу — начали", "Самопроверка окружения"]
 TAIL = ["Разобрать скачанное", "Самопроверка прогона", "Показать итог прямо здесь"]
-check("crawl.yml: шагов 28 (26 с именем + checkout и setup-python), шаг «Дозабор» один, имена шагов не повторяются",
-      len(crawl_steps(crawl_yml)) == 28 and crawl_yml.count("      - name: ") == 26
+check("crawl.yml: шагов 30 (28 с именем + checkout и setup-python), шаг «Дозабор» один, имена шагов не повторяются",
+      len(crawl_steps(crawl_yml)) == 30 and crawl_yml.count("      - name: ") == 28
       and crawl_yml.count("id: redo\n") == 1
-      and len({s.get("name") for s in crawl_steps(crawl_yml) if s.get("name")}) == 26)
+      and len({s.get("name") for s in crawl_steps(crawl_yml) if s.get("name")}) == 28)
 # страницы прежнего сбора (31.10): кэш → запас старым видом → распаковка/проверка
 PAGES = ["Страницы прежнего сбора — из кэша", "Страницы прежнего сбора — старым видом",
          "Страницы прежнего сбора"]
