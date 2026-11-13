@@ -28,7 +28,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import (broadcast, canon, channel_grid, daytime, db, dictionary,  # noqa: E402
-                 leagues, live, merge, names, pipeline, redo, sport, store)
+                 etalon_guard, leagues, live, merge, names, pipeline, redo,
+                 sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers import flashscore_mobi                     # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
@@ -92,6 +93,16 @@ def previous_counts(path: Path = PREVIOUS) -> dict[str, int]:
     if prev.get("окно") and prev.get("игр"):
         counts[str(prev["окно"])] = int(prev["игр"])
     return counts
+
+
+def previous_payload(path: Path = PREVIOUS) -> dict:
+    """games.json прошлого полного сбора целиком (эталон, игры, просадки) —
+    для сторожа эталона (`app/etalon_guard.py`); файла нет — пустой словарь."""
+    try:
+        prev = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return prev if isinstance(prev, dict) else {}
 
 
 def too_few(count: int, days: int, previous: dict[str, int]) -> str:
@@ -1760,6 +1771,30 @@ def main() -> int:
     previous = previous_counts()
     verdict = (too_few(len(games), window, previous)
                if args.strict and not args.date else "")
+    # Книга 114 (аудит 13.11): сторож эталона и запись «сайт просел на дату»
+    # (`app/etalon_guard.py`). Судим только полный плановый сбор: у скана
+    # даты и дозабора эталон неполный по делу.
+    # Э: эталон пустой или урезанный — сбор красный, результат не кладётся,
+    #    витрина остаётся на прошлом сборе, владельцу уходит тревога.
+    # С: просадки сайтов по датам — пока только запись в games.json
+    просадки: list[dict] = []
+    if args.strict and not args.date and not redo_mode:
+        прошлый = previous_payload()
+        сегодня = daytime.today("Europe/Kyiv")
+        эталон_плох = etalon_guard.etalon_error(etalon_guard.etalon_verdict(
+            reference_full, прошлый.get("эталон") or [], сегодня))
+        verdict = эталон_плох or verdict
+        просадки = etalon_guard.site_drops(
+            [{"start_kyiv": g.start.strftime("%Y-%m-%dT%H:%M"),
+              "entries": [{"source": e.source,
+                           "start_kyiv": e.start.strftime("%Y-%m-%dT%H:%M")}
+                          for e in g.entries]} for g in games],
+            прошлый, сегодня, window)
+        if просадки:
+            print(f"сайт просел на дату (только запись): {len(просадки)}")
+            for x in просадки[:20]:
+                print(f"   {x['сайт']} {x['дата']}: было {x['было']}, "
+                      f"стало {x['стало']}, сборов подряд {x['подряд']}")
     # «собрано» — ВСЕГДА в UTC: заливка (`store.log_run`) и возраст файла
     # (`crawl_fetch.age_hours`) считают метку UTC-часами. На GitHub так и
     # было само собой, а сервер (mojtv, киевский пояс) писал местное время —
@@ -1798,6 +1833,9 @@ def main() -> int:
                # книга 113: прямой эфир со спорной лигой без эталона —
                # красной строкой на витрину владельца, не в игры
                "без_эталона": без_эталона,
+               # книга 114: просадки «сайт, дата» против прошлого сбора —
+               # пока только запись (слово владельца: неделю наблюдаем)
+               "просадки": просадки,
                "games": [{
                    # игра целиком из «угаданных» источников: при заливке её
                    # сверяют с УЖЕ лежащими в базе событиями той же пары —

@@ -30,19 +30,10 @@ def _token() -> str:
     env = os.environ.get("STREAMS_GITHUB_TOKEN", "").strip()
     if env:
         return env
-    # ключ, вставленный владельцем в админке (Настройки → Ключ GitHub):
-    # переносить секреты на сервер терминалом нельзя, поле на сайте — можно
-    try:
-        from . import db as _db
-        conn = _db.connect()
-        try:
-            saved = _db.get_setting(conn, "github_token").strip()
-        finally:
-            conn.close()
-        if saved:
-            return saved
-    except Exception:
-        pass
+    # Из базы ключ НЕ читаем (аудит 13.11.2026, слово владельца: «кнопки
+    # должны работать, ключ не должен быть засвечен»): ключ в базе уезжал бы
+    # во все её копии. Сервер заказывает сбор без ключа — записью в
+    # репозиторий по ключу-файлу (`plan_push`)
     answer = subprocess.run(
         ["git", "credential", "fill"],
         input="protocol=https\nhost=github.com\n\n",

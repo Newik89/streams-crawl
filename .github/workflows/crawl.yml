@@ -182,6 +182,23 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Библиотеки и браузер — из кэша GitHub (аудит 13.11.2026): сервер
+      # библиотек PyPI и сервер браузера были точкой отказа — лягут, и обход
+      # не дойдёт до сайтов. Ключ кэша — сам файл версий: поменяли версию —
+      # кэш собирается заново. Кэша нет или он неполный — ставим из сети,
+      # как раньше. Кэш GitHub кладёт сам, в конце удачного прогона
+      - name: Библиотеки — из кэша
+        uses: actions/cache@v4
+        with:
+          path: ~/wheelhouse
+          key: wheelhouse-py312-${{ hashFiles('requirements-crawl.txt') }}
+
+      - name: Браузер — из кэша
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ hashFiles('requirements-crawl.txt') }}
+
       - name: Поставить, что нужно
         run: |
           # Все версии закреплены в requirements-crawl.txt (владелец 03.10.2026:
@@ -190,7 +207,20 @@ jobs:
           # `selectolax.parser.HTMLParser` (на нём все 50 парсеров), GitHub
           # поставил её сам — разбор падал на импорте, обход #172 покраснел.
           # Обновление библиотек — только правкой этого файла и пробным запуском.
-          pip install -r requirements-crawl.txt
+          # Правила установки (аудит 13.11.2026):
+          #   У1. сперва — из папки кэша, без сети;
+          #   У2. в кэше чего-то нет — скачать библиотеки в папку кэша и
+          #       поставить из неё;
+          #   У3. и это не вышло — обычная установка из сети, как раньше.
+          mkdir -p ~/wheelhouse
+          if pip install --no-index --find-links ~/wheelhouse -r requirements-crawl.txt; then
+            echo "библиотеки поставлены из кэша, без сети"
+          elif pip download -d ~/wheelhouse -r requirements-crawl.txt \
+               && pip install --no-index --find-links ~/wheelhouse -r requirements-crawl.txt; then
+            echo "библиотеки скачаны и положены в кэш"
+          else
+            pip install -r requirements-crawl.txt
+          fi
           # ── Браузер (Chromium) — обход из-за него НЕ падает (книга 100) ──
           # 11.11.2026: у Ubuntu лёг DNS (archive.ubuntu.com не находился во
           # всём мире), строка `playwright install --with-deps chromium` 10

@@ -1931,27 +1931,13 @@ def create_app() -> Flask:
             graces = store.grace_map(conn)
             keys = conn.execute("SELECT id, key, note, revoked, created_at "
                                 "FROM api_keys ORDER BY id DESC").fetchall()
-            has_github = bool(db.get_setting(conn, "github_token").strip()
-                              or os.environ.get("STREAMS_GITHUB_TOKEN"))
         finally:
             conn.close()
         return render_template("settings.html", graces=graces, keys=keys,
-                               api_open=API_OPEN, has_github=has_github)
+                               api_open=API_OPEN)
 
-    @app.route("/settings/github-token", methods=["POST"])
-    def github_token():
-        """Ключ GitHub для кнопок обхода — вставляется владельцем на сайте
-        (05.09: секреты терминалом не носим). Пустая отправка удаляет ключ."""
-        verify_csrf()
-        value = (request.form.get("token") or "").strip()
-        conn = db.connect()
-        try:
-            db.set_setting(conn, "github_token", value)
-        finally:
-            conn.close()
-        flash("Ключ GitHub сохранён — кнопки обхода работают." if value
-              else "Ключ GitHub удалён.", "ok")
-        return redirect(url_for("settings_page"))
+    # адреса «/settings/github-token» больше нет (аудит 13.11.2026): ключ
+    # GitHub в базу не кладётся и сайтом не принимается (`trigger._token`)
 
     @app.route("/settings/apikey", methods=["POST"])
     def apikey_action():
