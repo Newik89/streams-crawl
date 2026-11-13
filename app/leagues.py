@@ -47,6 +47,12 @@ _YEAR_TAIL = re.compile(r"\s*\b(?:19|20)\d{2}\b\s*$")
 # Хвосты вроде `- JOGOS` (пометка сайта «матчи»), пустые скобки, двойные пробелы.
 _SITE_TAILS = re.compile(r"\s*[-–—]\s*(?:jogos|matches|mecze|мачове)\s*", re.I)
 _EMPTY_BRACKETS = re.compile(r"\(\s*\)|\[\s*\]")
+#: хвост тура или сезона в скобках в конце: «Scottish Premiership (15.
+#: Spieltag)», «ASOBAL (T26/27)» — в скобках есть цифра (книга 109: словарь
+#: искал подпись целиком и лигу не находил). Возраст в скобках («(U21)»,
+#: «(Sub-19)») — не хвост: это другая лига
+_ROUND_TAIL = re.compile(
+    r"\s*\((?!\s*(?:u|under|sub)[\s-]{0,3}\d)[^()]*\d[^()]*\)\s*$", re.I)
 _EDGE = " -–—:.,/|"
 
 #: возраст турнира: и коротко («U21», «U-21»), и словом — кипрский cyta
@@ -225,6 +231,7 @@ def clean(raw: str) -> str:
     text = _SPORT_PREFIX.sub("", text)
     text = _SPORT_SUFFIX.sub("", text)
     text = _SITE_TAILS.sub(" ", text)
+    text = _ROUND_TAIL.sub("", text)
     text = _SEASON.sub(" ", text)
     text = _SEASON_SHORT.sub(" ", text)
     text = _YEAR_TAIL.sub("", text)

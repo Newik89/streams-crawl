@@ -293,6 +293,8 @@
     "basquet"
    ],
    "турниры": [
+    "g-league",
+    "g league",
     "גביע ווינר",
     "ליגת ווינר סל",
     "יורוליג",
@@ -385,6 +387,7 @@
   "другие": {
    "_": "Другие виды спорта ПО ВИДАМ (03.10, владелец: «нам могут понадобиться и другие виды спорта, если будем делать API для flashscore»). Сейчас все они — «чужие»: строка отсеивается молча, вопрос владельцу не задаётся. Когда вид спорта понадобится — его список переезжает в основные буквы, код не меняется. Слово ищется целиком (регулярка _pattern), поэтому склоняемые формы перечислены отдельно.",
    "хоккей": [
+    "ullh",
     "nhl",
     "ahl",
     "shl",
@@ -533,6 +536,7 @@
     "volleyboll"
    ],
    "гандбол": [
+    "asobal",
     "ehf",
     "ehf european league",
     "ehf champions league",
@@ -608,6 +612,10 @@
     "прыжки в воду"
    ],
    "велоспорт": [
+    "ciclocross",
+    "cyclocross",
+    "cyklokros",
+    "cyklokross",
     "cycling",
     "kerékpár",
     "kerékpározás",
@@ -898,6 +906,8 @@
     "purjehdus"
    ],
    "зимние": [
+    "freeride",
+    "fwt",
     "ski",
     "skiing",
     "skiroll",
@@ -1169,6 +1179,8 @@
     "pesäpallo"
    ],
    "американский футбол": [
+    "football universitaire",
+    "football canadien",
     "futbol americano",
     "fútbol americano",
     "football américain",
@@ -1228,6 +1240,10 @@
     "американскому футболу"
    ],
    "флорбол и прочее с клюшкой": [
+    "wse",
+    "hockey sobre patines",
+    "hoquei patins",
+    "hóquei em patins",
     "florbal",
     "floorball",
     "unihockey",
@@ -1381,6 +1397,11 @@
     "triathlonu"
    ],
    "футзал и пляжный": [
+    "amp futbol",
+    "ampfutbol",
+    "amp football",
+    "amputee football",
+    "futbol amputowany",
     "futsal",
     "beach soccer",
     "plážový fotbal",
@@ -1459,6 +1480,8 @@
     "polo aquático"
    ],
    "ракетки": [
+    "падел",
+    "padel tour",
     "padel",
     "padelu",
     "бадминтон",
@@ -1505,6 +1528,9 @@
     "pöytätennis"
    ],
    "регби": [
+    "nations championship",
+    "me xv",
+    "rugby europe",
     "rugby",
     "ragby",
     "rugby league",
@@ -1814,7 +1840,15 @@
    "avsnitt",
    "епизод",
    "епизода",
-   "эпизод"
+   "эпизод",
+   "я серия",
+   "я серія"
+  ],
+  "студии и передачи с тире в названии — не матч (книга 108, аудит 13.11.2026: на витрине стояли играми «Fodbold: Nations League - Studie» tv2.dk, «Sport-Bild» orf.at, «ארץ הכדורגל - ליגה לאומית» и «ערב הכדורסל של ישראל - מחזור 6» sport5.co.il)": [
+   "studie",
+   "sport-bild",
+   "ארץ הכדורגל",
+   "ערב הכדורסל"
   ]
  },
  "stop_genre": {

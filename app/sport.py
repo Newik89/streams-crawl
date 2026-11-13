@@ -56,6 +56,11 @@ NAMES = {"F": "футбол", "B": "баскетбол", "T": "теннис"}
 #: и именем команды
 TEAMS_FILE = MARKERS_FILE.parent / "dictionaries.json"
 
+#: сетка «чужой вид спорта × язык сайта» — слова самого вида спорта на
+#: каждом языке наших сайтов (книга 107); турниры и сокращения — в
+#: `markers.json`
+GRID_FILE = MARKERS_FILE.parent / "sport_grid.json"
+
 #: кучка слов САМОГО вида спорта внутри буквы в `markers.json` («футбол» на
 #: языках сайтов); всё остальное у буквы — названия турниров
 SPORT_NAME_KEY = "вид спорта"
@@ -455,6 +460,23 @@ def _dictionary_teams():
         yield from team.get("aliases") or ()
 
 
+def grid_words(path: Path | None = None) -> dict[str, list[str]]:
+    """Сетка «чужой вид спорта × язык сайта» (`GRID_FILE`, книга 107): вид
+    (имя группы «другие») → все слова на всех языках. Файла нет — пусто."""
+    try:
+        data = json.loads((path or GRID_FILE).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    out: dict[str, list[str]] = {}
+    for group, langs in (data.get("виды") or {}).items():
+        words: list[str] = []
+        for lang, items in (langs or {}).items():
+            if lang != "_":
+                words.extend(w for w in items or () if w)
+        out[group] = words
+    return out
+
+
 def load(path: Path | None = None, override: dict | None = None,
          teams=None) -> Sports:
     data = json.loads((path or MARKERS_FILE).read_text(encoding="utf-8"))
@@ -463,7 +485,13 @@ def load(path: Path | None = None, override: dict | None = None,
     # «другие» — те же чужие виды, но разложенные по видам спорта (03.10,
     # владелец: позже понадобятся для API flashscore) — пока все отсеиваются,
     # а вид спорта словами едет во вкладку «Other Sport» админки
-    others = node.get("другие") or {}
+    others = dict(node.get("другие") or {})
+    # сетка «вид × язык сайта» (книга 107): слова `data/sport_grid.json`
+    # дописываются к группе «другие» с тем же именем. Проверка с подменой
+    # слов (`override`) сетку не читает — там слова заданы целиком
+    if not override:
+        for group, words in grid_words().items():
+            others[group] = _flatten(others.get(group)) + words
     groups = {}
     for group, words in others.items():
         if group == "_":
