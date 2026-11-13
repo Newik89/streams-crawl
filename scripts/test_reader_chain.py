@@ -199,6 +199,8 @@ check("битый файл — пора проверять", check_readers.stale
 yml = (ROOT / ".github" / "workflows" / "crawl.yml").read_text(encoding="utf-8")
 check("сбор зовёт проверку с правилом «раз в сутки»",
       "check_readers.py --if-older 20" in yml)
+check("на одну читалку — не больше 30 секунд (20 читалок — не дольше 10 минут)",
+      check_readers.TIMEOUT <= 30 and len(fetch.READERS) * check_readers.TIMEOUT <= 600)
 check("контрольная страница — на сегодня, а не на 06.09.2026",
       "1788642000" not in check_readers.CONTROL_URL)
 

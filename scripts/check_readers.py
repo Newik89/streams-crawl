@@ -51,7 +51,10 @@ def _athens_midnight() -> int:
 CONTROL_URL = (f"https://www.cosmotetv.gr/program?date={_athens_midnight()}"
                "&category=%CE%91%CE%B8%CE%BB%CE%B7%CF%84%CE%B9%CE%BA%CE%AC")
 CONTROL_WORD = "Ποδόσφαιρο"
-TIMEOUT = 90
+#: секунд на одну читалку. Было 90: двадцать читалок в худшем случае держали
+#: бы сбор полчаса. В третьем заходе читалке даётся `fetch.TIMEOUT` (30 с) —
+#: та, что отвечает дольше, там всё равно не пригодится (14.11.2026)
+TIMEOUT = fetch.TIMEOUT
 
 
 def check(pattern: str, extra: dict, url: str, word: str) -> dict:
