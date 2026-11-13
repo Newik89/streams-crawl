@@ -43,6 +43,15 @@ def utc(часов_назад: float) -> str:
     return миг.strftime("%Y-%m-%d %H:%M:%S")
 
 
+# Игра — завтра от настоящих часов (аудит 13.11.2026): раньше дата была
+# зашита (01.12.2026), а витрина берёт настоящие часы — со 02.12 тест
+# покраснел бы сам.
+_ЗАВТРА = datetime.now().replace(hour=20, minute=0, second=0,
+                                 microsecond=0) + timedelta(days=1)
+ЗАВТРА_КИЕВ = f"{_ЗАВТРА:%Y-%m-%d %H:%M}"
+ЗАВТРА_UTC = f"{_ЗАВТРА - timedelta(hours=3):%Y-%m-%d %H:%M}"
+
+
 def готовим(conn, канал: str, игра_назад: float, канал_назад: float,
             seen: int) -> int:
     """Игра с одним каналом: когда появилась игра, когда — её канал."""
@@ -50,7 +59,7 @@ def готовим(conn, канал: str, игра_назад: float, канал
         "INSERT INTO events (sport, league_auto, team_home_auto, "
         "team_away_auto, start_utc, start_kyiv, first_seen, last_seen) "
         "VALUES ('F', 'Liga', ?, 'Гости', ?, ?, ?, ?)",
-        (канал, "2026-12-01 17:00", "2026-12-01 20:00",
+        (канал, ЗАВТРА_UTC, ЗАВТРА_КИЕВ,
          utc(игра_назад), utc(0)))
     event_id = cur.lastrowid
     cur = conn.execute(

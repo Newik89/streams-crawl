@@ -61,6 +61,11 @@ def fake_runs(slug, limit=0, workflow=""):
 
 
 watch.github_runs = fake_runs
+# аудит 13.11.2026: без этих двух подмен сторож в тесте ходил на настоящий
+# githubstatus.com — при сбое у GitHub тест шёл бы по другой ветке и мог
+# покраснеть именно тогда, когда нужна срочная выкладка
+watch.github_status = lambda data=None: ""
+watch.github_rate_limit = lambda: None
 watch.result_state = lambda root, start, end, what, imported, cache=None: RESULT[0]
 trigger.push_request_tag = lambda kind, value: (TAGS.append((kind, value)) or (True, "тест"))
 trigger._repo_slug = lambda: SLUG

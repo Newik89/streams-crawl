@@ -305,9 +305,31 @@ def owner_decided(source, config: dict) -> bool:
 def schedule_sources(conn) -> list:
     """Включённые источники расписания — их качает обход и может качать
     сервер (`server_crawl.py` берёт только `role = 'schedule'`)."""
-    return conn.execute("SELECT id, domain, status, selector_config FROM sources "
+    rows = conn.execute("SELECT id, domain, status, selector_config FROM sources "
                         "WHERE enabled = 1 AND role = 'schedule' "
                         "ORDER BY domain").fetchall()
+    return [r for r in rows if not is_reference(r["domain"])]
+
+
+def is_reference(domain: str) -> bool:
+    """Эталон и справочники — НЕ кандидаты на перевод (аудит 13.11.2026).
+
+    Шапка обещала «справочники не считаются», но отбор шёл по роли
+    источника, а в живой базе у flashscore.mobi, его 19 зеркал и
+    sporteventz.com роль та же, что у телесайтов (`schedule`). Три срыва
+    GitHub увели бы эталон на сервер: обход GitHub переведённый сайт
+    пропускает, и эталона не стало бы в каждом сборе. Поэтому — по имени:
+      1. домен из `crawl.REFERENCE_DOMAINS`;
+      2. зеркало flashscore из `flashscore_mobi.LOCALES`;
+      3. сам эталон `flashscore_mobi.DOMAIN`.
+    Приставка `www.` не считается."""
+    from . import crawl
+    from .parsers import flashscore_mobi
+    name = (domain or "").strip().lower()
+    if name.startswith("www."):
+        name = name[4:]
+    return (name in crawl.REFERENCE_DOMAINS or name in flashscore_mobi.LOCALES
+            or name == flashscore_mobi.DOMAIN)
 
 
 def note(conn, text: str) -> None:
