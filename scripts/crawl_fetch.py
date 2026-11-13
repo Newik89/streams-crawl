@@ -58,7 +58,8 @@ sys.path.insert(0, str(ROOT))
 
 from urllib.parse import urljoin, urlsplit          # noqa: E402
 
-from app import crawl, daytime, fetch, protection, redo, site_move, timemarks, urls   # noqa: E402
+from app import (crawl, daytime, fetch, protection, reader_chain, redo,   # noqa: E402
+                 site_move, timemarks, urls)
 from app.parsers import flashscore_mobi                            # noqa: E402
 
 PLAN = ROOT / "data" / "crawl_plan.json"
@@ -435,6 +436,37 @@ def второй_заход(retry: list[dict], report: list[dict], fetcher, out:
             print(f"     ↳ {day_job['domain'].ljust(12)} {day_job['day']} "
                   f"{row['итог']} {row['почему'][:60]}")
     return healed
+
+
+def source_settings(plan: dict) -> dict:
+    """Настройки разбора по сайтам плана (свой или одолженный парсер, пояс) —
+    по ним третий заход проверяет, нашёл ли разбор строки на странице."""
+    out = {}
+    for source in plan.get("sources") or []:
+        domain = (source.get("domain") or "").removeprefix("www.")
+        if domain:
+            out[domain] = {"parser": source.get("parser") or "",
+                           "tz": site_tz(source)}
+    return out
+
+
+def третий_заход(items: list[dict], report: list[dict], fetcher, out: Path,
+                 settings: dict) -> dict:
+    """Третий заход — читалки (`app/reader_chain.py`, правила Ч1–Ч9): здесь
+    только сеть и запись страницы, порядок и условия — в модуле."""
+    print("\n" + "=" * 70)
+    print(f"третий заход — читалки: не открылось и со второго захода "
+          f"{len(items)} адрес(ов)\n")
+
+    def take(job, accept, only):
+        page = fetcher.via_readers(job["url"], accept=accept, only=only,
+                                   timeout=fetch.TIMEOUT)
+        fresh = {**job, **verdict(page)}
+        if page.ok and fresh["итог"] not in BROKEN:
+            сохранить_страницу(out, job, page, fresh)
+        return page, fresh, page.reader
+
+    return reader_chain.run(items, report, take, settings)
 
 
 def verdict(page: fetch.Page) -> dict:
@@ -910,6 +942,8 @@ def main() -> int:
     #: медленнее и другим способом (просьба владельца 09.09 — «если сбой,
     #: пробовать этот сайт повторно в конце, медленнее, и другим способом»)
     retry: list[dict] = []
+    #: итог третьего захода — читалок (`app/reader_chain.py`); пусто — не шёл
+    читалки_отчёт: dict = {}
     for i, job in enumerate(jobs, 1):
         # сайт с пометкой `browser` берём сразу браузером: обычный запрос
         # вернёт честный 200 и пустой каркас (`rtcg.me`)
@@ -959,6 +993,17 @@ def main() -> int:
         fetch.DELAY = args.delay
         fetcher.browser_only = args.browser
 
+        # Третий заход — читалки (книга 115, слово владельца 13.11): сайт
+        # жив, но блокирует GitHub и запросом, и браузером — страницу
+        # пробуют открытые читалки, и только потом очередь сервера.
+        # Правила Ч1–Ч9 — в `app/reader_chain.py`
+        остались = [item for item in retry if item["row"]["итог"] in BROKEN]
+        if остались:
+            итог_читалок = третий_заход(остались, report, fetcher, out,
+                                        source_settings(plan))
+            if итог_читалок["сайтов"] or итог_читалок["пропуск"]:
+                читалки_отчёт.update(итог_читалок)
+
     # дозор: помним, когда ходили и чем кончилось; пустил — громкий сигнал
     if probing:
         from datetime import datetime as _dt
@@ -1006,6 +1051,10 @@ def main() -> int:
                "дозор": {d: memory.get(d, {}) for d in sorted(DAILY_PROBE)}}
     if возврат:
         payload[site_move.SECTION] = возврат
+    # третий заход (книга 115): какие сайты взяты читалкой, какие не взял
+    # никто — по разделу сервер пишет уведомление и решает про свой ход
+    if читалки_отчёт:
+        payload["читалки"] = читалки_отчёт
     code, notes = assess(payload) if strict else (0, [])
     payload["оценка"] = {"код": code, "строки": notes, "строгая": strict}
     (out / "report.json").write_text(
@@ -1040,6 +1089,13 @@ def main() -> int:
         for r in broken:
             print(f"    {r['domain']}: {(r['почему'] or r['итог'])[:70]}")
             print(f"      {r['url']}")
+    if читалки_отчёт.get("взято") or читалки_отчёт.get("не_взято"):
+        lines += ["", "## Третий заход — читалки", ""]
+        for site, (name, got, total) in (читалки_отчёт.get("взято") or {}).items():
+            lines.append(f"- {site}: GitHub не пустили, взято через читалку "
+                         f"{name} — {got} из {total} страниц")
+        for text in читалки_отчёт.get("не_взято") or []:
+            lines.append(f"- {text}")
     if notes:
         lines += ["", "## Оценка", ""] + [f"- {_mark(n)}" for n in notes]
     (out / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

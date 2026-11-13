@@ -367,9 +367,22 @@ jobs:
 
       - name: Проверка читалок
         id: readers
-        if: github.event_name == 'schedule' || inputs.readers == 'yes'
+        # Аудит 13.11.2026: шаг был мёртвым — шёл только по часам самого
+        # GitHub, а сбор заказывает сервер; и список живых читалок не ехал в
+        # репозиторий. Слово владельца: проверять раз в сутки, в утреннем
+        # сборе. Теперь: в каждом полном сборе, но только если прошлой
+        # проверке больше 20 часов — то есть в первом сборе дня. Список
+        # ложится в results/readers.json и едет в репозиторий с результатом.
+        if: steps.guard.outputs.run == '1' && (inputs.readers == 'yes' || (steps.what.outputs.mode == 'full' && steps.what.outputs.only == '' && steps.what.outputs.urls == '' && steps.what.outputs.date == '' && steps.what.outputs.from_run == ''))
         continue-on-error: true
-        run: python scripts/check_readers.py
+        env:
+          W_FORCE: ${{ inputs.readers }}
+        run: |
+          if [ "$W_FORCE" = "yes" ]; then
+            python scripts/check_readers.py
+          else
+            python scripts/check_readers.py --if-older 20
+          fi
 
       - name: Какой сбор переразбираем
         id: prior
@@ -670,7 +683,7 @@ jobs:
           git add results/
           # список живых читалок обновляет шаг «Проверка читалок» — он тоже
           # едет в репозиторий, иначе следующий обход о нём не узнает
-          git add data/readers.json 2>/dev/null || true
+          # (лежит в results/readers.json — уже взят строкой выше)
           git diff --cached --quiet || git commit -m "Обход $(date -u +%d.%m.%Y\ %H:%M) UTC"
           # Пока обход шёл, в main могли запушить с компьютера (02.09 так
           # пропал итог полного обхода: push отбило, «|| true» смолчал).

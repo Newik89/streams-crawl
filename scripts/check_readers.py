@@ -36,9 +36,19 @@ sys.path.insert(0, str(ROOT))
 
 from app import fetch                                        # noqa: E402
 
-OUT = ROOT / "data" / "readers.json"
+OUT = fetch.READERS_FILE
 #: контрольная страница: закрыта для серверов и заведомо содержит слово
-CONTROL_URL = ("https://www.cosmotetv.gr/program?date=1788642000"
+def _athens_midnight() -> int:
+    """Начало сегодняшних суток в Афинах, секундами: адрес контрольной
+    страницы — на сегодня. До 13.11.2026 в адресе стояла дата 06.09.2026 —
+    страница давно прошедшего дня, сайт мог отдать её пустой."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    now = datetime.now(ZoneInfo("Europe/Athens"))
+    return int(now.replace(hour=0, minute=0, second=0, microsecond=0).timestamp())
+
+
+CONTROL_URL = (f"https://www.cosmotetv.gr/program?date={_athens_midnight()}"
                "&category=%CE%91%CE%B8%CE%BB%CE%B7%CF%84%CE%B9%CE%BA%CE%AC")
 CONTROL_WORD = "Ποδόσφαιρο"
 TIMEOUT = 90
@@ -83,13 +93,33 @@ def check(pattern: str, extra: dict, url: str, word: str) -> dict:
             "годится": not why, "почему": why, "байт": len(html), "секунд": spent}
 
 
+def stale(path: Path, hours: float, now: float | None = None) -> bool:
+    """Пора ли проверять читалки заново: файла нет, он битый или прошлой
+    проверке (поле «проверено», часы GitHub — UTC) больше `hours` часов."""
+    try:
+        was = json.loads(path.read_text(encoding="utf-8")).get("проверено") or ""
+        made = time.mktime(time.strptime(was, "%Y-%m-%d %H:%M"))
+    except (OSError, ValueError):
+        return True
+    return ((now or time.time()) - made) >= hours * 3600
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default=CONTROL_URL, help="контрольный адрес")
     ap.add_argument("--word", default=CONTROL_WORD, help="слово, которое обязано быть")
     ap.add_argument("--out", default=str(OUT))
+    ap.add_argument("--if-older", type=float, default=0, dest="if_older",
+                    help="проверять, только если прошлой проверке больше "
+                         "стольких часов (слово владельца 13.11: раз в сутки, "
+                         "в утреннем сборе); 0 — проверять всегда")
     args = ap.parse_args()
+
+    if args.if_older and not stale(Path(args.out), args.if_older):
+        print(f"читалки проверялись меньше {args.if_older:g} ч назад — "
+              "сегодня уже не проверяем")
+        return 0
 
     print(f"проверяю {len(fetch.READERS)} читалок на {args.url[:60]}…\n")
     rows = []

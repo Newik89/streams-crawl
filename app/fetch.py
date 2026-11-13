@@ -99,6 +99,9 @@ class Page:
     error: str = ""
     body: str = ""          # тело неудачного ответа — для разбора причины
     via: str = "requests"   # чем взяли: requests или browser
+    #: читалка, отдавшая страницу (шаблон, заголовки) — чтобы остальные
+    #: страницы сайта брать ею же (`app/reader_chain.py`, Ч7)
+    reader: tuple | None = None
 
     @property
     def ok(self) -> bool:
@@ -237,7 +240,10 @@ READER_MIN_BYTES = 20000
 #: `scripts/check_readers.py` и кладёт в этот файл: обход берёт порядок
 #: оттуда, от самой быстрой к медленной. Файла нет или он пуст — идём по
 #: списку сверху вниз, как записано в коде.
-READERS_FILE = Path(__file__).resolve().parent.parent / "data" / "readers.json"
+#: Лежит в `results/` (аудит 13.11.2026): папку `data/` закрывает `.gitignore`,
+#: и список, собранный на GitHub, в репозиторий не ехал — каждый сбор шёл по
+#: списку из кода, наугад. `results/` сбор кладёт в репозиторий сам.
+READERS_FILE = Path(__file__).resolve().parent.parent / "results" / "readers.json"
 
 
 def readers() -> list[tuple[str, dict]]:
@@ -571,12 +577,32 @@ class Fetcher:
         return Page(url, html, False)
 
 
-    def _through_readers(self, url: str, agent: str, verify: bool) -> "Page":
+    def via_readers(self, url: str, accept=None, only: tuple | None = None,
+                    timeout: int | None = None) -> "Page":
+        """Запасной путь для сайта, который блокирует GitHub
+        (`app/reader_chain.py`): страница через читалки, с паузой как у
+        обычного запроса. `accept(html)` — годится ли выдача (нашёл ли разбор
+        сайта строки); `only` — ходить одной этой читалкой."""
+        host = urlsplit(url).netloc
+        agent = self._agent.setdefault(host, AGENTS[len(self._agent) % len(AGENTS)])
+        self._wait(host)
+        verify = host.removeprefix("www.") not in BROKEN_TLS
+        return self._through_readers(url, agent, verify, accept=accept,
+                                     only=only, timeout=timeout)
+
+    def _through_readers(self, url: str, agent: str, verify: bool,
+                         accept=None, only: tuple | None = None,
+                         timeout: int | None = None) -> "Page":
         """Достать страницу через читалки — по очереди, пока не выйдет.
 
         Возвращает первую содержательную выдачу. Если не смогла ни одна, в
         ошибке перечислено, что ответила каждая: по этой строке в отчёте
         обхода видно, какую именно читалку чинить.
+
+        `accept(html)` — дополнительная проверка выдачи (читалка на отказ
+        часто отвечает «200» с пустышкой): не прошла — идём к следующей.
+        `only` — одна читалка (шаблон, заголовки) вместо всего списка.
+        `timeout` — секунд на читалку (по умолчанию `TIMEOUT * 3`).
         """
         import requests
         from urllib.parse import quote
@@ -591,11 +617,12 @@ class Fetcher:
                      f"{'?' + части.query + '&' if части.query else '?'}"
                      f"_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en")
         why = []
-        for pattern, extra in readers():
+        for pattern, extra in ([only] if only else readers()):
             through = pattern.format(url=url, enc=enc, translate=translate)
             name = urlsplit(through).netloc
             try:
-                answer = requests.get(through, timeout=TIMEOUT * 3, verify=verify,
+                answer = requests.get(through, timeout=timeout or TIMEOUT * 3,
+                                      verify=verify,
                                       headers={**headers(agent), **extra})
             except Exception as exc:
                 why.append(f"{name}: {type(exc).__name__}")
@@ -620,7 +647,11 @@ class Fetcher:
             if len(html) < READER_MIN_BYTES or protection_text(html):
                 why.append(f"{name}: пусто ({len(html)} байт)")
                 continue
-            return Page(url, html, False, via=f"reader:{name}")
+            if accept is not None and not accept(html):
+                why.append(f"{name}: страница без расписания")
+                continue
+            return Page(url, html, False, via=f"reader:{name}",
+                        reader=(pattern, extra))
         return Page(url, "", False, "читалки не отдали страницу — " + "; ".join(why))
 
     def get_with_fallback(self, url: str, local: Path | None = None,
