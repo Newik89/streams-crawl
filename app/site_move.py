@@ -63,6 +63,16 @@
       же: сайтов за заход, проверок в сутки, свободная память.
   Ц7. Уведомление при каждом использовании сервера вместо GitHub: разовый
       сбор (Ц3), перевод (Ц4), проба возврата не открылась, возврат (П4).
+  Ц8. (книга 119) Сбор с сервера должен быть завершён. Оборвался НЕ по
+      вине сайта (итог `FAIL`: программа сбора упала, разбор или заливка
+      упали, система закрыла программу из-за памяти, сам ход прервали
+      посреди сбора) — сайт остаётся «в долгу» (`server_crawl_owed`) и
+      сторож повторяет сбор каждые 15 минут, всего `SERVER_TRIES` попыток
+      (`_attempt`, `_failed`). Попытки кончились — ТРЕВОГА, долг снят
+      (`_give_up`). Ответ сайта (ok, ban, down) долгом не считается.
+      Память: порог `MIN_FREE_MB` по замеру; сбор уступает память сайту
+      (`yield_memory`) — если её не хватит, система закроет сбор, а сайт
+      останется, и сбор повторится по этому же правилу.
 
 ПРАВИЛА — по функции на правило (что случилось → что делаем):
   П1. Проба = СБОР GitHub. `import_kind`, `crawl_id`, `site_verdicts`,
@@ -247,6 +257,14 @@ MIN_FREE_MB = 250
 OOM_YIELD = 500
 #: куда это число пишется (Linux); на другой системе файла нет
 OOM_FILE = "/proc/self/oom_score_adj"
+#: книга 119 (Ц8): итог сбора с сервера «сбой» — сбор оборвался НЕ по вине
+#: сайта (шаг программы упал, система закрыла программу из-за памяти, сам
+#: ход прервали). Такой сбор остаётся «в долгу» и повторяется
+FAIL = "сбой"
+#: Ц8: столько попыток на один долг; дальше — ТРЕВОГА и долг снят
+SERVER_TRIES = 3
+#: Ц8: счётчик системы «сколько программ закрыто из-за нехватки памяти»
+VMSTAT_FILE = "/proc/vmstat"
 #: П2: потолок — не больше стольких сайтов, переведённых автоматически и
 #: всё ещё на сервере; дальше ТРЕВОГА раз в сутки (независимая проверка
 #: шага 11, 13.10)
@@ -286,6 +304,8 @@ STREAK_FIELDS = ("gh_fail_streak", "gh_fail_first", "gh_fail_why",
                  # Ц3: когда залит сбор со срывом и за какой сбор сервер
                  # уже сделал свой ход
                  "gh_fail_at", "server_oneoff_slot", "server_wait_noted",
+                 # Ц8: сбор с сервера в долгу (оборвался) и сколько было попыток
+                 "server_crawl_owed", "server_tries",
                  # Ц1: с какого часа сайт лежит, почему, ушло ли уведомление
                  "gh_down_first", "gh_down_why", "gh_down_noted")
 
@@ -654,6 +674,19 @@ def yield_memory(path: str = OOM_FILE) -> bool:
     return True
 
 
+def oom_kills(path: str = VMSTAT_FILE) -> int | None:
+    """Ц8: сколько раз система закрывала программы из-за нехватки памяти
+    (строка `oom_kill` в /proc/vmstat). Сбор сравнивает число до и после:
+    выросло — итогу сбора верить нельзя, это «сбой». Не Linux — None."""
+    try:
+        for line in Path(path).read_text().splitlines():
+            if line.startswith("oom_kill "):
+                return int(line.split()[1])
+    except (OSError, ValueError, IndexError):
+        return None
+    return None
+
+
 def memory_short(free: int | None) -> bool:
     """Обычный ход `server_crawl.py`, сайт переведён автоматикой: свободной
     памяти меньше `MIN_FREE_MB` — сайт откладываем (переведённые
@@ -897,11 +930,22 @@ def oneoff_due(conn, now: datetime) -> list[dict]:
     """Ц3/Ц4: сайты, которым пора сделать ход сервера: счёт «блокирует» ≥ 1,
     не `by_server`, не решённые владельцем; за этот сбор (`gh_fail_last_slot`)
     сервер ещё не ходил (`server_oneoff_slot`); с заливки сбора прошло
-    `ONEOFF_AFTER_MINUTES`. Порядок — по домену."""
+    `ONEOFF_AFTER_MINUTES`. Порядок — по домену.
+    Ц8: сюда же — сайты, чей сбор с сервера «в долгу» (`server_crawl_owed`:
+    прошлая попытка оборвалась не по вине сайта); им ждать 90 минут не
+    надо, и сайт может быть уже переведён на сервер. Признак — `owed`."""
     out = []
     for source in schedule_sources(conn):
         config = load_config(source)
-        if config.get("by_server") or owner_decided(source, config):
+        if owner_decided(source, config):
+            continue
+        if config.get("server_crawl_owed"):                    # Ц8
+            out.append({"id": source["id"], "domain": source["domain"],
+                        "config": config, "owed": True,
+                        "streak": int(config.get("gh_fail_streak") or 0),
+                        "slot": str(config["server_crawl_owed"])})
+            continue
+        if config.get("by_server"):
             continue
         streak = int(config.get("gh_fail_streak") or 0)
         slot = str(config.get("gh_fail_last_slot") or "")
@@ -911,7 +955,7 @@ def oneoff_due(conn, now: datetime) -> list[dict]:
         if at is not None and now - at < timedelta(minutes=ONEOFF_AFTER_MINUTES):
             continue
         out.append({"id": source["id"], "domain": source["domain"],
-                    "config": config, "streak": streak, "slot": slot})
+                    "config": config, "streak": streak, "slot": slot, "owed": False})
     out.sort(key=lambda c: c["domain"])
     return out
 
@@ -965,6 +1009,10 @@ def server_step(conn, now: datetime, crawl_site, fetch_one, plan_sources: dict,
     taken = 0
     for cand in queue:
         domain, config = cand["domain"], cand["config"]
+        if cand["owed"] and int(config.get("server_tries") or 0) >= SERVER_TRIES:
+            # Ц8: последнюю попытку прервали посреди сбора — итога не было
+            said.append(_give_up(conn, cand, config, "ход сервера прервался посреди сбора"))
+            continue
         refusal = check_refusal(taken, today, free())
         if refusal:
             text = (f"ход сервера по {domain} откладываю — {refusal}; "
@@ -977,22 +1025,29 @@ def server_step(conn, now: datetime, crawl_site, fetch_one, plan_sources: dict,
                 note(conn, text)
             said.append(text)
             break
-        config["server_oneoff_slot"] = cand["slot"]             # шаг 1
-        save_config(conn, cand["id"], config)
         taken += 1
         today += 1
-        depth = server_depth({"moved_by": "auto"})
-        if cand["streak"] >= FAILS_TO_MOVE:                     # шаг 3
+        if not cand["owed"]:
+            config["server_oneoff_slot"] = cand["slot"]         # шаг 1
+            save_config(conn, cand["id"], config)
+        if not cand["owed"] and cand["streak"] >= FAILS_TO_MOVE:    # шаг 3
             said += server_turn(conn, now, fetch_one, plan_sources, set_mode,
                                 only=domain, limit=1, free=free)
             row = conn.execute("SELECT selector_config FROM sources WHERE id = ?",
                                (cand["id"],)).fetchone()
-            if load_config(row).get("by_server"):
-                result = _crawl(crawl_site, domain, depth)
-                said.append(f"{domain}: после перевода сразу собран с сервера — "
-                            f"{result.get('итог')} {result.get('почему') or ''}".strip())
+            config = load_config(row)       # перевод переписал настройки сайта
+            if not config.get("by_server"):
+                continue
+        moved = bool(config.get("by_server"))
+        depth = server_depth(config if moved else {"moved_by": "auto"})
+        result = _attempt(conn, cand, config, crawl_site, depth)    # шаг 2 / Ц8
+        if result.get("итог") == FAIL:                          # Ц8: не вина сайта
+            said.append(_failed(conn, cand, config, result))
             continue
-        result = _crawl(crawl_site, domain, depth)              # шаг 2
+        if moved:
+            said.append(f"{domain}: после перевода сразу собран с сервера — "
+                        f"{result.get('итог')} {result.get('почему') or ''}".strip())
+            continue
         remember_check(conn, domain, {"итог": OK if result.get("итог") == "ok"
                                       else "не открылась",
                                       "почему": result.get("почему") or ""}, now)
@@ -1010,12 +1065,58 @@ def server_step(conn, now: datetime, crawl_site, fetch_one, plan_sources: dict,
 
 
 def _crawl(crawl_site, domain: str, depth: int) -> dict:
-    """Сбор сайта с сервера; сбой — как «лёг» (ход не обрываем)."""
+    """Сбор сайта с сервера. Упала сама программа сбора или итога нет — это
+    «сбой» (`FAIL`, Ц8), а не «сайт лёг»; ход по остальным сайтам идёт дальше."""
     try:
         got = crawl_site(domain, depth)
     except Exception as beda:              # noqa: BLE001 — остальные сайты идут дальше
-        return {"итог": "down", "почему": f"{type(beda).__name__}: {beda}"[:160]}
-    return got if isinstance(got, dict) else {"итог": "down", "почему": "нет итога"}
+        return {"итог": FAIL, "почему": f"{type(beda).__name__}: {beda}"[:160]}
+    return got if isinstance(got, dict) else {"итог": FAIL, "почему": "нет итога"}
+
+
+def _attempt(conn, cand: dict, config: dict, crawl_site, depth: int) -> dict:
+    """Ц8: одна попытка сбора сайта с сервера, с отметкой «в долгу».
+    Правило 1: ДО сбора пишем долг (`server_crawl_owed`) и номер попытки
+    (`server_tries`) — если ход прервут посреди сбора, следующий заход
+    сторожа увидит долг и повторит.
+    Правило 2: сбор дал итог от сайта (ok, ban, down) — долг снят.
+    Правило 3: итог «сбой» — долг остаётся, его разбирает `_failed`."""
+    config["server_crawl_owed"] = cand["slot"] or "долг"
+    config["server_tries"] = int(config.get("server_tries") or 0) + 1
+    save_config(conn, cand["id"], config)
+    result = _crawl(crawl_site, cand["domain"], depth)
+    if result.get("итог") != FAIL:
+        config.pop("server_crawl_owed", None)
+        config.pop("server_tries", None)
+        save_config(conn, cand["id"], config)
+    return result
+
+
+def _failed(conn, cand: dict, config: dict, result: dict) -> str:
+    """Ц8: попытка оборвалась не по вине сайта. Попыток меньше
+    `SERVER_TRIES` — строка в журнал, повтор при следующем заходе сторожа
+    (через 15 минут). Попытки кончились — `_give_up`."""
+    tries = int(config.get("server_tries") or 0)
+    why = " ".join(str(result.get("почему") or "").split())[:160] or "причина не названа"
+    if tries >= SERVER_TRIES:
+        return _give_up(conn, cand, config, why)
+    return (f"{cand['domain']}: сбор с сервера оборвался не по вине сайта ({why}) — "
+            f"попытка {tries} из {SERVER_TRIES}, повторю при следующем заходе "
+            f"сторожа (через 15 минут)")
+
+
+def _give_up(conn, cand: dict, config: dict, why: str) -> str:
+    """Ц8: попытки кончились — долг снимаем (иначе повтор шёл бы вечно) и
+    пишем владельцу ТРЕВОГУ: сайт остался без сбора не по своей вине."""
+    config.pop("server_crawl_owed", None)
+    config.pop("server_tries", None)
+    save_config(conn, cand["id"], config)
+    text = (f"ТРЕВОГА — {cand['domain']}: сбор с сервера оборвался "
+            f"{SERVER_TRIES} раза подряд не по вине сайта ({why}). Сайт остался "
+            f"без сбора; следующий сбор GitHub попробует его снова. Нужна "
+            f"проверка сервера (память, место на диске)")
+    note(conn, text)
+    return text
 
 
 # ── П3. глубина серверного сбора ────────────────────────────────────────────

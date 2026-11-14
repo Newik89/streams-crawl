@@ -305,8 +305,148 @@ def забыть_проверки() -> None:
 site_move.after_import(conn, папка("с3", "751", [строка("boom.tv", "не открылась", BAN)]), now=T0)
 сказано = site_move.server_step(conn, T1, упал, Адрес({}), ПЛАНЫ, plan_push.set_mode,
                                 free=lambda: 800)
-проверка("сбор с сервера упал с ошибкой — ход не оборван, сайт считается лёгшим",
+проверка("сбор с сервера упал с ошибкой — ход не оборван, причина в журнале",
          any("boom.tv" in s and "ConnectionError" in s for s in сказано))
+
+print("Ц8 (книга 119). Сбор оборвался не по вине сайта — повтор, потом тревога")
+проверка("упавший сбор — «в долгу», попытка 1; владельцу пока ничего",
+         (настройки("boom.tv").get("server_crawl_owed"), настройки("boom.tv").get("server_tries"),
+          any("попытка 1 из 3" in s and "через 15 минут" in s for s in сказано)),
+         ("751", 1, True))
+долг = site_move.oneoff_due(conn, T1 + timedelta(minutes=15))
+проверка("через 15 минут сайт снова в очереди сервера — 90 минут не ждём",
+         [(c["domain"], c["owed"]) for c in долг], [("boom.tv", True)])
+до = метка()
+сказано = site_move.server_step(conn, T1 + timedelta(minutes=15), упал, Адрес({}), ПЛАНЫ,
+                                plan_push.set_mode, free=lambda: 800)
+проверка("вторая попытка упала — «попытка 2 из 3», тревоги нет",
+         (any("попытка 2 из 3" in s for s in сказано), len(alarm_mail.new_alarms(conn, до))),
+         (True, 0))
+сказано = site_move.server_step(conn, T1 + timedelta(minutes=30), упал, Адрес({}), ПЛАНЫ,
+                                plan_push.set_mode, free=lambda: 800)
+проверка("третья попытка упала — ТРЕВОГА владельцу, одно письмо",
+         (any(s.startswith("ТРЕВОГА") and "boom.tv" in s and "3 раза подряд" in s for s in сказано),
+          len(alarm_mail.new_alarms(conn, до))), (True, 1))
+проверка("…долг снят: четвёртой попытки не будет",
+         (настройки("boom.tv").get("server_crawl_owed"), настройки("boom.tv").get("server_tries"),
+          site_move.oneoff_due(conn, T1 + timedelta(minutes=45))), (None, None, []))
+забыть_проверки()
+источник("flap.tv")
+ПЛАНЫ["flap.tv"] = сайт_плана("flap.tv")
+site_move.after_import(conn, папка("с4", "752", [строка("flap.tv", "не открылась", BAN)]), now=T0)
+site_move.server_step(conn, T1, Сбор({"flap.tv": {"итог": site_move.FAIL, "почему": "не хватило памяти"}}),
+                      Адрес({}), ПЛАНЫ, plan_push.set_mode, free=lambda: 800)
+до = метка()
+сбор = Сбор({})
+site_move.server_step(conn, T1 + timedelta(minutes=15), сбор, Адрес({}), ПЛАНЫ,
+                      plan_push.set_mode, free=lambda: 800)
+проверка("первая попытка оборвалась, вторая собрала сайт — сбор завершён",
+         ([d for d, _ in сбор.собирали], настройки("flap.tv").get("server_crawl_owed")),
+         (["flap.tv"], None))
+проверка("…владельцу — обычная строка «собрано разово с сервера», тревоги нет",
+         (sum("flap.tv" in s and "РАЗОВО С СЕРВЕРА" in s for s in строки_прогонов(до)),
+          len(alarm_mail.new_alarms(conn, до))), (1, 0))
+проверка("…и больше сервер за этот сбор к сайту не ходит",
+         site_move.oneoff_due(conn, T1 + timedelta(minutes=30)), [])
+забыть_проверки()
+источник("cut.tv", gh_fail_streak=1, gh_fail_last_slot="753", server_oneoff_slot="753",
+         server_crawl_owed="753", server_tries=1)
+ПЛАНЫ["cut.tv"] = сайт_плана("cut.tv")
+сбор = Сбор({})
+site_move.server_step(conn, T1, сбор, Адрес({}), ПЛАНЫ, plan_push.set_mode, free=lambda: 800)
+проверка("ход прервали посреди сбора (долг записан, итога нет) — сайт собран при "
+         "следующем заходе", ([d for d, _ in сбор.собирали],
+                              настройки("cut.tv").get("server_crawl_owed")), (["cut.tv"], None))
+источник("cut3.tv", gh_fail_streak=1, gh_fail_last_slot="754", server_oneoff_slot="754",
+         server_crawl_owed="754", server_tries=3)
+ПЛАНЫ["cut3.tv"] = сайт_плана("cut3.tv")
+сбор = Сбор({})
+сказано = site_move.server_step(conn, T1, сбор, Адрес({}), ПЛАНЫ, plan_push.set_mode,
+                                free=lambda: 800)
+проверка("прервали на третьей попытке — четвёртой нет, ТРЕВОГА, долг снят",
+         (сбор.собирали, any(s.startswith("ТРЕВОГА") and "cut3.tv" in s for s in сказано),
+          настройки("cut3.tv").get("server_crawl_owed")), ([], True, None))
+источник("moved.tv", by_server=True, moved_by="auto", server_crawl_owed="755", server_tries=1)
+ПЛАНЫ["moved.tv"] = сайт_плана("moved.tv")
+сбор = Сбор({})
+сказано = site_move.server_step(conn, T1, сбор, Адрес({}), ПЛАНЫ, plan_push.set_mode,
+                                free=lambda: 800)
+проверка("сайт уже переведён на сервер, а первый сбор оборвался — повтор тоже идёт",
+         ([d for d, _ in сбор.собирали], настройки("moved.tv").get("server_crawl_owed"),
+          настройки("moved.tv").get("by_server")), (["moved.tv"], None, True))
+сбор = Сбор({})
+conn.execute("UPDATE sources SET selector_config = ? WHERE domain = 'cut.tv'",
+             (json.dumps({"gh_fail_streak": 1, "gh_fail_last_slot": "756",
+                          "server_crawl_owed": "756", "server_tries": 1}),))
+conn.commit()
+site_move.server_step(conn, T1, сбор, Адрес({}), ПЛАНЫ, plan_push.set_mode, free=lambda: 100)
+проверка("памяти мало — и сбор «в долгу» ждёт, не идёт", сбор.собирали, [])
+conn.execute("UPDATE sources SET selector_config = '{}' WHERE domain = 'cut.tv'")
+conn.commit()
+
+print("Ц8. Сбор сайта с сервера: что считается «сбоем», а что — ответом сайта")
+server_crawl.РАБОЧАЯ = TMP / "раб"
+(server_crawl.РАБОЧАЯ / "x.tv").mkdir(parents=True)
+ОТЧЁТ_X = server_crawl.РАБОЧАЯ / "x.tv" / "report.json"
+шаги: list = []
+
+
+def шаг_подмена(отчёт_строки, упал_на: str = ""):
+    """Подмена `server_crawl.шаг`: сбор пишет отчёт (или не пишет — None),
+    шаг с именем `упал_на` отвечает «не вышло»."""
+    def шаг(команда, тег):
+        шаги.append(тег)
+        if тег == "качаю" and отчёт_строки is not None:
+            ОТЧЁТ_X.write_text(json.dumps({"строки": отчёт_строки}), encoding="utf-8")
+        return тег != упал_на
+    return шаг
+
+
+счёт = iter([])
+server_crawl.счётчик_закрытых = lambda: next(счёт)
+ЕСТЬ, ЛЕГ = [строка("x.tv", "расписание есть")], [строка("x.tv", "не открылась", NET)]
+счёт = iter([7, 7])
+server_crawl.шаг = шаг_подмена(ЕСТЬ)
+шаги.clear()
+проверка("всё прошло: страницы, разбор, заливка — «ok»",
+         (server_crawl.собрать_сайт("x.tv", 2)["итог"], шаги),
+         ("ok", ["качаю", "разбираю", "вливаю в базу"]))
+счёт = iter([7, 7])
+ОТЧЁТ_X.write_text(json.dumps({"строки": ЕСТЬ}), encoding="utf-8")   # вчерашний отчёт
+server_crawl.шаг = шаг_подмена(None, упал_на="качаю")
+проверка("программа сбора упала, отчёта нет — «сбой», вчерашний отчёт за свежий не принят",
+         server_crawl.собрать_сайт("x.tv", 2)["итог"], site_move.FAIL)
+счёт = iter([7, 8])
+server_crawl.шаг = шаг_подмена(ЛЕГ)
+итог = server_crawl.собрать_сайт("x.tv", 2)
+проверка("страница «не открылась», а система за это время закрыла программу из-за "
+         "памяти — «сбой», а не «сайт лёг»", (итог["итог"], "памяти" in итог["почему"]),
+         (site_move.FAIL, True))
+счёт = iter([7, 7])
+server_crawl.шаг = шаг_подмена(ЛЕГ)
+шаги.clear()
+проверка("страница «не открылась», память в порядке — сайт лёг («down»), разбор не идёт",
+         (server_crawl.собрать_сайт("x.tv", 2)["итог"], шаги), ("down", ["качаю"]))
+счёт = iter([7, 7])
+server_crawl.шаг = шаг_подмена([строка("x.tv", "не открылась", BAN)])
+проверка("сервер тоже заблокирован — «ban», как раньше",
+         server_crawl.собрать_сайт("x.tv", 2)["итог"], "ban")
+счёт = iter([7, 7])
+server_crawl.шаг = шаг_подмена(ЕСТЬ, упал_на="разбираю")
+проверка("страницы скачаны, разбор упал — «сбой»",
+         server_crawl.собрать_сайт("x.tv", 2)["итог"], site_move.FAIL)
+счёт = iter([7, 7])
+server_crawl.шаг = шаг_подмена(ЕСТЬ, упал_на="вливаю в базу")
+проверка("страницы разобраны, заливка упала — «сбой»",
+         server_crawl.собрать_сайт("x.tv", 2)["итог"], site_move.FAIL)
+счёт = iter([None, None])
+server_crawl.шаг = шаг_подмена(ЕСТЬ)
+проверка("счётчика памяти нет (не Linux) — сбор идёт как обычно",
+         server_crawl.собрать_сайт("x.tv", 2)["итог"], "ok")
+vm = TMP / "vmstat"
+vm.write_text("pgfault 10\noom_kill 4\nnr_free 5\n", encoding="utf-8")
+проверка("счётчик системы читается из строки oom_kill; файла нет — None",
+         (site_move.oom_kills(str(vm)), site_move.oom_kills(str(TMP / "нет-vmstat"))), (4, None))
 
 print("Ц6. Пределы: память, число сайтов за заход")
 for d in ("m1.tv", "m2.tv", "m3.tv", "m4.tv"):
