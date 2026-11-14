@@ -484,6 +484,47 @@ server_crawl.шаг = шаг_подмена(ЕСТЬ)
 server_crawl.собрать_сайт("x.tv", 2)
 проверка("во время скачивания не хватило памяти — страницам не верим, метки нет",
          МЕТКА_X.exists(), False)
+print("Ц8. Ежедневный сбор (06:40) оборвался — долг, повтор через 15 минут, не через сутки")
+счёт = iter([5, 5, 6])      # счётчик спрашивают только там, где отчёт есть, а сбор не прошёл
+проверка("сбор прошёл — не сбой", server_crawl.наш_сбой(ОТЧЁТ_X, True, True, 5), "")
+ОТЧЁТ_X.unlink()
+проверка("отчёта нет — программа сбора упала",
+         "упала" in server_crawl.наш_сбой(ОТЧЁТ_X, False, False, 5), True)
+ОТЧЁТ_X.write_text(json.dumps({"строки": ЛЕГ}), encoding="utf-8")
+проверка("сайт сам не ответил, память в порядке — это не наш сбой, повтора нет",
+         server_crawl.наш_сбой(ОТЧЁТ_X, False, False, 5), "")
+проверка("страницы скачаны, разбор или заливка упали — наш сбой",
+         "разбор" in server_crawl.наш_сбой(ОТЧЁТ_X, False, True, 5), True)
+проверка("за время сбора система закрыла программу из-за памяти — наш сбой",
+         "памяти" in server_crawl.наш_сбой(ОТЧЁТ_X, False, False, 5), True)
+источник("daily.tv", by_server=True, manual_only=True, max_days=4)      # как mojtv.hr
+ПЛАНЫ["daily.tv"] = сайт_плана("daily.tv")
+проверка("долг записан: первая попытка уже была",
+         (site_move.owe_crawl(conn, "daily.tv"), настройки("daily.tv").get("server_tries"),
+          bool(настройки("daily.tv").get("server_crawl_owed"))), (True, 1, True))
+проверка("сайта нет в базе — долга нет, без падения", site_move.owe_crawl(conn, "net.tv"), False)
+забыть_проверки()
+сбор = Сбор({})
+до = метка()
+сказано = site_move.server_step(conn, T1, сбор, Адрес({}), ПЛАНЫ, plan_push.set_mode,
+                                free=lambda: 800)
+проверка("сторож через 15 минут собирает сайт на его обычную глубину, долг снят",
+         (сбор.собирали, настройки("daily.tv").get("server_crawl_owed"),
+          any("daily.tv" in s and "повторён после обрыва" in s for s in сказано)),
+         ([("daily.tv", 4)], None, True))
+проверка("…сайт остался на сервере, владельцу — ни тревоги, ни лишней строки",
+         (настройки("daily.tv").get("by_server"), настройки("daily.tv").get("manual_only"),
+          len(alarm_mail.new_alarms(conn, до))), (True, True, 0))
+site_move.owe_crawl(conn, "daily.tv")
+сказано = site_move.server_step(conn, T1 + timedelta(minutes=15), упал, Адрес({}), ПЛАНЫ,
+                                plan_push.set_mode, free=lambda: 800)
+сказано += site_move.server_step(conn, T1 + timedelta(minutes=30), упал, Адрес({}), ПЛАНЫ,
+                                 plan_push.set_mode, free=lambda: 800)
+проверка("повторы тоже оборвались: после третьей попытки — ТРЕВОГА, долг снят",
+         (any(s.startswith("ТРЕВОГА") and "daily.tv" in s for s in сказано),
+          настройки("daily.tv").get("server_crawl_owed")), (True, None))
+conn.execute("DELETE FROM sources WHERE domain = 'daily.tv'")
+conn.commit()
 МЕТКА_X.write_text("x", encoding="utf-8")
 ОТЧЁТ_X.write_text(json.dumps({"строки": ЛЕГ}), encoding="utf-8")
 проверка("метка есть, но в отчёте нет страницы с расписанием — не продолжаем",

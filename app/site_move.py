@@ -1045,7 +1045,9 @@ def server_step(conn, now: datetime, crawl_site, fetch_one, plan_sources: dict,
             said.append(_failed(conn, cand, config, result))
             continue
         if moved:
-            said.append(f"{domain}: после перевода сразу собран с сервера — "
+            how = ("сбор с сервера повторён после обрыва" if cand["owed"]
+                   else "после перевода сразу собран с сервера")
+            said.append(f"{domain}: {how} — "
                         f"{result.get('итог')} {result.get('почему') or ''}".strip())
             continue
         remember_check(conn, domain, {"итог": OK if result.get("итог") == "ok"
@@ -1090,6 +1092,22 @@ def _attempt(conn, cand: dict, config: dict, crawl_site, depth: int) -> dict:
         config.pop("server_tries", None)
         save_config(conn, cand["id"], config)
     return result
+
+
+def owe_crawl(conn, domain: str) -> bool:
+    """Ц8: ежедневный сбор сайта «качает сервер» (`server_crawl.py`, 06:40)
+    оборвался не по вине сайта — записываем долг, первая попытка уже была.
+    Сторож повторит сбор при следующем заходе (`oneoff_due` → `server_step`).
+    Ответ — нашёлся ли сайт в базе."""
+    row = conn.execute("SELECT id, selector_config FROM sources WHERE domain = ?",
+                       (domain,)).fetchone()
+    if row is None:
+        return False
+    config = load_config(row)
+    config["server_crawl_owed"] = "ежедневный"
+    config["server_tries"] = 1
+    save_config(conn, row["id"], config)
+    return True
 
 
 def _failed(conn, cand: dict, config: dict, result: dict) -> str:
