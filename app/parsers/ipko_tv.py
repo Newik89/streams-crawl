@@ -93,6 +93,43 @@ def _pair(text: str) -> str:
     return " "
 
 
+#: книга 121 (14.11): с 13.11 у каналов SuperSport заголовок матча — пара через
+#: дефис БЕЗ пробелов («Spanje-Angli»), а описание — шаблон поставщика
+#: программы: «UEFA Nations League - Shikoni ndeshjen e futbollit në të cilën
+#: Spanja përballon Angli.» («смотрите матч, в котором A встречается с B»).
+#: Группы: лига (до тире), хозяева, гости
+_FACES = re.compile(r"^(?P<league>.*?)\s*[-–—]\s*Shikoni\s+ndeshjen\b.*?"
+                    r"\bnë\s+të\s+cilën\s+(?P<home>.+?)\s+përballon\s+"
+                    r"(?P<away>.+?)\.?\s*$", re.I)
+
+
+def _match_by_summary(title: str, about: str) -> tuple[str, str]:
+    """Книга 121: пара и лига матча, когда о нём говорит ОПИСАНИЕ-шаблон.
+
+    Раньше при заголовке без пары разбор брал «пару» из описания по первому
+    тире — выходило «UEFA Nations League - Shikoni ndeshjen…», и игра не
+    узнавалась: каналы SuperSport пропали с витрины. Правила:
+      1. описание не по шаблону `_FACES` — пусто (решает прежний путь);
+      2. заголовок — ровно один дефис без пробелов, по обе стороны имена
+         («Spanje-Angli») — пара берётся из заголовка: там имена в том же
+         написании, что знал словарь;
+      3. иначе пара — имена из описания («Spanja» и «Angli»);
+      4. лига — текст описания до тире («UEFA Nations League»).
+    Дефис без пробелов сам по себе парой не считается (ГРАБЛИ, «TIKI-TAKA»):
+    правило 2 работает только вместе с шаблоном описания.
+    Возвращает (пара «A - B», лига) или ("", "")."""
+    found = _FACES.match(about or "")
+    if not found:
+        return "", ""
+    home, away = found["home"].strip(), found["away"].strip()
+    parts = [p.strip() for p in title.split("-")]
+    if len(parts) == 2 and all(parts) and " - " not in title:
+        home, away = parts
+    if not home or not away:
+        return "", ""
+    return f"{home} - {away}", found["league"].strip()
+
+
 @register(DOMAIN)
 @register("stargate.ipko.tv")
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
@@ -122,14 +159,21 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         genres = [g for g in (show.get("genres") or []) if g]
         категория = " ".join((show.get("categories") or "").split())
         about = " ".join((show.get("summary") or "").split())
+        league = genres[0] if genres else ""
         pair = _pair(title)
         if not pair.strip():
-            pair = _pair(about)
+            # книга 121: описание-шаблон «…në të cilën A përballon B» — пара
+            # и лига из него; иначе прежний путь — пара из описания по тире
+            by_summary, summary_league = _match_by_summary(title, about)
+            if by_summary:
+                pair, league = by_summary, summary_league or league
+            else:
+                pair = _pair(about)
         out.append(Program(
             channel_raw=channel, title=title,
             start=start, raw_time=start.strftime("%H:%M"),
             description=about[:300],
-            league_raw=(genres[0] if genres else "")[:120],
+            league_raw=league[:120],
             sport_raw=" ".join(genres + [категория])[:60],
             match_raw=pair,
             source_url=url, extra={"day": start.date().isoformat()},
