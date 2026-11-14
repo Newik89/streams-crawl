@@ -155,10 +155,12 @@ def title_over_pair(program: Program, verdict: live.Verdict,
     эфира стояла), до вопроса эталону (`ask_reference`) дело не дошло, игра
     не узналась. Правила:
       1. зовём, когда отсев ПРИНЯЛ пару разборщика (`verdict.ok`);
-      2. эталон знает хотя бы одну сторону этой пары как команду — пару не
-         трогаем: разборщик прочитал верно;
+      2. эталон знает хотя бы одну сторону этой пары как команду ЛИБО
+         подтверждает саму пару на это время — пару не трогаем: разборщик
+         прочитал верно;
       3. иначе читаем пары из ЗАГОЛОВКА всеми читателями
-         (`live.split_candidates`), кроме самой пары разборщика;
+         (`live.split_candidates`), кроме самой пары разборщика и той же
+         пары с лишними словами заголовка вокруг;
       4. пару заголовка эталон подтвердил на это время ЦЕЛИКОМ (`how` —
          «пара» или «метки из эталона») — берём её, в порядке сторон эталона;
          прежняя пара — в пометку `TITLE_PAIR`;
@@ -170,6 +172,12 @@ def title_over_pair(program: Program, verdict: live.Verdict,
         return None
     if reference.knows_team(verdict.home) or reference.knows_team(verdict.away):
         return None                                             # правило 2
+    if reference.confirm(verdict.home, verdict.away, start_kyiv) is not None:
+        # правило 2 (вторая половина): имён эталон «в лоб» не знает, но пару
+        # на это время подтверждает (местные написания) — разборщик прав.
+        # Проверка на сборе 14.11: у ntvplus.tv верная пара «Перт Уайлдкэтс —
+        # Иллаварра Хокс» менялась на ту же с приклеенным началом заголовка
+        return None
     title = (program.title or "").strip()
     if not title or past_season(" ".join(x for x in (title, program.league_raw) if x),
                                 start_kyiv):
@@ -177,6 +185,10 @@ def title_over_pair(program: Program, verdict: live.Verdict,
     mine = (_plain(verdict.home), _plain(verdict.away))
     for home, away in live.split_candidates(title):              # правило 3
         if (_plain(home), _plain(away)) == mine:
+            continue
+        if mine[0] and mine[1] and mine[0] in _plain(home) and mine[1] in _plain(away):
+            # та же пара разборщика, только с лишними словами заголовка
+            # вокруг («Баскетбол. Прямая трансляция. Перт…») — она не лучше
             continue
         home = leagues.with_category(home, league_category)
         away = leagues.with_category(away, league_category)

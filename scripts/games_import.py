@@ -31,7 +31,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
-                 redo, site_move, sport_question, store, unconfirmed, watch)
+                 redo, silence, site_move, sport_question, store, unconfirmed,
+                 watch)
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -276,6 +277,11 @@ def main() -> int:
         # книга 113: красные строки витрины владельца (прямой эфир, вид
         # спорта которого эталон не подтвердил). Дозабор список не трогает
         if not add_only:
+            # книга 123: каналы, замолчавшие три сбора подряд, — строкой в
+            # «Прогоны» (один раз на тишину)
+            for строка_сторожа in silence.after_import(
+                    conn, _json.loads(path.read_text(encoding="utf-8"))):
+                print(f"сторож каналов: {строка_сторожа}")
             красных = unconfirmed.after_import(
                 conn, _json.loads(path.read_text(encoding="utf-8")))
             if красных:
