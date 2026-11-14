@@ -33,6 +33,7 @@ sys.path.insert(0, str(ROOT))
 from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
                  redo, silence, site_move, sport_question, store, unconfirmed,
                  watch)
+from app import fallback_read                                 # noqa: E402
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -282,6 +283,13 @@ def main() -> int:
             for строка_сторожа in silence.after_import(
                     conn, _json.loads(path.read_text(encoding="utf-8"))):
                 print(f"сторож каналов: {строка_сторожа}")
+            # книга 125: страницы, которые свой разборщик не прочитал, — одна
+            # строка на сайт в сутки
+            from datetime import datetime as _сейчас
+            for строка_чтения in fallback_read.after_import(
+                    conn, _json.loads(path.read_text(encoding="utf-8")),
+                    _сейчас.now(site_move.KYIV).strftime("%Y-%m-%d")):
+                print(f"запасное чтение: {строка_чтения}")
             красных = unconfirmed.after_import(
                 conn, _json.loads(path.read_text(encoding="utf-8")))
             if красных:
