@@ -1,0 +1,187 @@
+{
+ "проверено": "2026-11-14 06:17",
+ "контрольный адрес": "https://www.cosmotetv.gr/program?date=1794607200&category=%CE%91%CE%B8%CE%BB%CE%B7%CF%84%CE%B9%CE%BA%CE%AC",
+ "рабочие": [],
+ "все": [
+  {
+   "читалка": "r.jina.ai",
+   "шаблон": "https://r.jina.ai/{url}",
+   "заголовки": {
+    "x-respond-with": "html"
+   },
+   "годится": false,
+   "почему": "принесла заглушку защиты",
+   "байт": 217,
+   "секунд": 1.2
+  },
+  {
+   "читалка": "r.jina.ai",
+   "шаблон": "https://r.jina.ai/{url}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "пусто (17286 байт)",
+   "байт": 17286,
+   "секунд": 7.4
+  },
+  {
+   "читалка": "api.allorigins.win",
+   "шаблон": "https://api.allorigins.win/raw?url={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 522",
+   "байт": 7256,
+   "секунд": 20.0
+  },
+  {
+   "читалка": "api.codetabs.com",
+   "шаблон": "https://api.codetabs.com/v1/proxy?quest={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 522",
+   "байт": 7244,
+   "секунд": 19.6
+  },
+  {
+   "читалка": "corsproxy.io",
+   "шаблон": "https://corsproxy.io/?{enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 403",
+   "байт": 322,
+   "секунд": 0.2
+  },
+  {
+   "читалка": "api.cors.lol",
+   "шаблон": "https://api.cors.lol/?url={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 429",
+   "байт": 20,
+   "секунд": 0.3
+  },
+  {
+   "читалка": "proxy.corsfix.com",
+   "шаблон": "https://proxy.corsfix.com/?{enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 400",
+   "байт": 247,
+   "секунд": 0.7
+  },
+  {
+   "читалка": "thingproxy.freeboard.io",
+   "шаблон": "https://thingproxy.freeboard.io/fetch/{url}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "ConnectionError",
+   "секунд": 0.2
+  },
+  {
+   "читалка": "whateverorigin.org",
+   "шаблон": "https://whateverorigin.org/get?url={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 400",
+   "байт": 52,
+   "секунд": 0.6
+  },
+  {
+   "читалка": "api.scrape.do",
+   "шаблон": "https://api.scrape.do/?url={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 400",
+   "байт": 359,
+   "секунд": 0.4
+  },
+  {
+   "читалка": "api.allorigins.win",
+   "шаблон": "https://api.allorigins.win/raw?url={enc}&charset=UTF-8",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 522",
+   "байт": 7256,
+   "секунд": 19.6
+  },
+  {
+   "читалка": "api.codetabs.com",
+   "шаблон": "https://api.codetabs.com/v1/proxy/?quest={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 522",
+   "байт": 7244,
+   "секунд": 19.6
+  },
+  {
+   "читалка": "corsproxy.io",
+   "шаблон": "https://corsproxy.io/?url={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 401",
+   "байт": 81,
+   "секунд": 0.0
+  },
+  {
+   "читалка": "cors.eu.org",
+   "шаблон": "https://cors.eu.org/{url}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 403",
+   "байт": 4545,
+   "секунд": 0.2
+  },
+  {
+   "читалка": "test.cors.workers.dev",
+   "шаблон": "https://test.cors.workers.dev/?{url}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 429",
+   "байт": 5552,
+   "секунд": 0.1
+  },
+  {
+   "читалка": "yacdn.org",
+   "шаблон": "https://yacdn.org/proxy/{url}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "ConnectionError",
+   "секунд": 10.0
+  },
+  {
+   "читалка": "www.whateverorigin.org",
+   "шаблон": "https://www.whateverorigin.org/get?url={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "пусто (11180 байт)",
+   "байт": 11180,
+   "секунд": 0.3
+  },
+  {
+   "читалка": "cors-get-proxy.sirjosh.workers.dev",
+   "шаблон": "https://cors-get-proxy.sirjosh.workers.dev/?url={enc}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "HTTP 429",
+   "байт": 5565,
+   "секунд": 0.1
+  },
+  {
+   "читалка": "api.microlink.io",
+   "шаблон": "https://api.microlink.io/?url={enc}&meta=false&palette=false&data.html.selector=html&data.html.type=html",
+   "заголовки": {},
+   "годится": false,
+   "почему": "страница без контрольного слова",
+   "байт": 215685,
+   "секунд": 3.1
+  },
+  {
+   "читалка": "www-cosmotetv-gr.translate.goog",
+   "шаблон": "{translate}",
+   "заголовки": {},
+   "годится": false,
+   "почему": "страница без контрольного слова",
+   "байт": 129971,
+   "секунд": 1.2
+  }
+ ]
+}
