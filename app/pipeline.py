@@ -138,6 +138,33 @@ def past_season(text: str, when: datetime | None) -> bool:
     return any(int(m.group(1)) < current for m in _SEASON.finditer(text or ""))
 
 
+def pair_guesses(program: Program, with_field: bool = True) -> list[tuple[str, str]]:
+    """Книга 124: ВСЕ догадки о паре строки для вопроса эталону, по порядку
+    надёжности. Откуда читаем:
+      1. поле пары разборщика (`with_field`; у `title_over_pair` его нет —
+         эту пару эталон уже не узнал);
+      2. заголовок — все читатели (`live.split_candidates`);
+      3. первая строка описания (`live.lead`): 47 разборщиков из 89 умеют
+         брать пару из описания, каждый по-своему, — общий читатель делает
+         это для всех;
+      4. фразы-шаблоны «A встречается с B» в описании (`live.phrase_pairs`).
+    Повторы убраны. В ленту догадка идёт, только если её подтвердил эталон."""
+    texts = []
+    if with_field:
+        texts.append((program.match_raw or "").strip())
+    texts.append((program.title or "").strip())
+    texts.append(live.lead(program.description or ""))
+    out: list[tuple[str, str]] = []
+    for text in texts:
+        for pair in live.split_candidates(text):
+            if pair not in out:
+                out.append(pair)
+    for pair in live.phrase_pairs(program.description or ""):
+        if pair not in out:
+            out.append(pair)
+    return out
+
+
 #: книга 122: пометка строки «пару разборщика заменила пара из заголовка» —
 #: в ней прежняя пара разборщика (для журнала разбора)
 TITLE_PAIR = "пара_из_заголовка"
@@ -179,11 +206,10 @@ def title_over_pair(program: Program, verdict: live.Verdict,
         # Иллаварра Хокс» менялась на ту же с приклеенным началом заголовка
         return None
     title = (program.title or "").strip()
-    if not title or past_season(" ".join(x for x in (title, program.league_raw) if x),
-                                start_kyiv):
+    if past_season(" ".join(x for x in (title, program.league_raw) if x), start_kyiv):
         return None
     mine = (_plain(verdict.home), _plain(verdict.away))
-    for home, away in live.split_candidates(title):              # правило 3
+    for home, away in pair_guesses(program, with_field=False):   # правило 3
         if (_plain(home), _plain(away)) == mine:
             continue
         if mine[0] and mine[1] and mine[0] in _plain(home) and mine[1] in _plain(away):
@@ -226,18 +252,25 @@ def ask_reference(program: Program, verdict: live.Verdict,
         return None
     # догадки — и из поля пары, и из заголовка: парсер кладёт в поле « »,
     # когда пары не нашёл, а заголовок её держит («Al Nassr-Al Neom», ipko)
-    candidates: list[tuple[str, str]] = []
-    for text in ((program.match_raw or "").strip(), (program.title or "").strip()):
-        for pair in live.split_candidates(text):
-            if pair not in candidates:
-                candidates.append(pair)
+    # книга 124: к ним — первая строка описания и фразы-шаблоны (`pair_guesses`).
+    # Догадке, которая взялась ТОЛЬКО из описания, нужна пара целиком: описание
+    # — свободный текст, и «одной стороной» там сходится что угодно (на сборе
+    # 14.11 «Fotbal - Liga národů» у oneplay.cz стало «игрой»)
+    candidates = pair_guesses(program)
+    without_description = pair_guesses(
+        Program(channel_raw=program.channel_raw, title=program.title, start=program.start,
+                match_raw=program.match_raw, description=""))
+    only_described = [pair for pair in candidates if pair not in without_description]
     confirmed: list[tuple[str, str, Confirmed]] = []
     for home, away in candidates:
         # пол и возраст турнира — к догадке сразу: «Polska - Belgia» в женском
         # отборе должна сойтись с «Poland W — Belgium W», а не с мужской парой
+        described = (home, away) in only_described
         home = leagues.with_category(home, league_category)
         away = leagues.with_category(away, league_category)
         got = reference.confirm(home, away, start_kyiv)
+        if got is not None and described and got.how not in ("пара", MARKS_HOW):
+            continue                       # из описания — только целая пара
         if got is not None:
             confirmed.append((home, away, got))
             if got.how == "пара":

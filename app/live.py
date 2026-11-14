@@ -253,6 +253,44 @@ def several_matches(parts: list[str]) -> bool:
     return len(parts) >= 3 and any(_CONJ.search(p) for p in parts[1:-1])
 
 
+#: книга 124 (опись 89 разборщиков, 14.11): разделители и слова «против»,
+#: которые знают отдельные разборщики, а общий читатель не знал. « v » и
+#: «vs.» — английские сетки (4 и 3 разборщика), « / » и « | » — по 2–3,
+#: «gegen» (нем.), «ndaj» (алб.), «mot» (швед./норв.), «kontra» (польск.,
+#: хорв.), «против» / «проти» / «срещу» (рус., укр., болг.), «karşı» (тур.).
+#: Это ДОГАДКИ: в ленту пара идёт, только если её подтвердил эталон
+_MORE_SPLIT = re.compile(
+    r"\s+(?:[vV]|[vV][sS]\.|gegen|ndaj|mot|kontra|против|проти|срещу|karşı|/|\|)\s+")
+#: фразы-шаблоны «A встречается с B» в описании передачи (книга 121, ipko.tv:
+#: «…në të cilën Spanja përballon Angli.»). Новый язык — новая строка здесь
+_FACES_PHRASES = (
+    re.compile(r"\bnë\s+të\s+cilën\s+(?P<home>.+?)\s+përballon\s+(?P<away>[^.!?]+)", re.I),
+)
+#: первая строка описания длиннее — это уже рассказ, а не подпись матча
+LEAD_MAX = 90
+
+
+def phrase_pairs(text: str) -> list[tuple[str, str]]:
+    """Правило 7 (книга 124): пары из фраз-шаблонов «A встречается с B» —
+    где угодно в тексте (описание передачи). Только догадки для эталона."""
+    out: list[tuple[str, str]] = []
+    for pattern in _FACES_PHRASES:
+        for m in pattern.finditer(text or ""):
+            pair = _sides(m["home"], m["away"])
+            if pair and pair not in out:
+                out.append(pair)
+    return out
+
+
+def lead(text: str) -> str:
+    """Первая строка описания — до конца предложения или строки; длиннее
+    `LEAD_MAX` — пусто: многие сайты держат пару подзаголовком («Prishtina -
+    Drita»), а длинный текст — уже рассказ о передаче."""
+    first = re.split(r"(?<=[.!?])\s+|\n", (text or "").strip(), maxsplit=1)[0].strip()
+    first = first.rstrip(".!? ")
+    return first if 0 < len(first) <= LEAD_MAX else ""
+
+
 def _sides(left: str, right: str) -> tuple[str, str] | None:
     """Пара из двух кусков подписи — обвязка счищается как в `split_teams`."""
     home = _trim(_LEFT_JUNK.sub("", left))
@@ -281,7 +319,11 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
       5. дефис без пробелов («Al Nassr-Al Neom», «Levante-Ath Bilbao»,
          ipko.tv) или с пробелом лишь с одной стороны («Aston Villa- Viking»):
          пара — на каждом таком дефисе; тире среди пробелов при этом нет,
-         иначе дефис — часть имени («Saint-Étienne - Lyon»).
+         иначе дефис — часть имени («Saint-Étienne - Lyon»);
+      6. (книга 124, выжимка из 89 разборщиков) разделители и слова
+         «против», которые знали только отдельные разборщики (`_MORE_SPLIT`:
+         « v », «vs.», « / », « | », «gegen», «ndaj», «mot», «kontra»,
+         «против», «срещу», «karşı»): ровно один такой разделитель — пара.
 
     Повторы убраны, порядок сохранён. Скобки с хвостом («(BRA)», «(se
     speciálním studiem)») вырезаны у всех догадок, как в `split_teams`."""
@@ -312,6 +354,9 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
         if not _SPLIT.search(text):                              # правило 5
             for m in _TIGHT_DASH.finditer(text):
                 add(_sides(text[:m.start()], text[m.end():]))
+        more = _MORE_SPLIT.split(text)
+        if len(more) == 2:                                       # правило 6
+            add(_sides(more[0], more[1]))
     return out
 
 
