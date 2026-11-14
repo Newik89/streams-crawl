@@ -1980,6 +1980,7 @@ def main() -> int:
     payload.update(redo.games_mark(report_data))
     # книга 125: память каналов страниц — следующему сбору; счёт страниц, не
     # прочитанных своим разборщиком, — серверу для уведомления
+    fallback_read.own_rows(запасное, parsed_counts)       # З6: сайт целиком без строк?
     payload[fallback_read.PAGES_KEY] = память_страниц
     payload[fallback_read.COUNT_KEY] = запасное
     for сайт, счёт in sorted(запасное.items()):
