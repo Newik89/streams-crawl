@@ -356,6 +356,10 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
                 add(_sides(text[:m.start()], text[m.end():]))
         more = _MORE_SPLIT.split(text)
         if len(more) == 2:                                       # правило 6
+            # рубрика перед парой через тире — долой: «SPFL 2026/27 Season,
+            # League 1 - Hamilton v Ross County» (bbc.co.uk, сбор 14.11) —
+            # чистая догадка «Hamilton» — «Ross County» идёт первой
+            add(_sides(_SPLIT.split(more[0])[-1], more[1]))
             add(_sides(more[0], more[1]))
     return out
 

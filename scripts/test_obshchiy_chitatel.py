@@ -68,6 +68,9 @@ for подпись, пара in (
         ("Левски срещу Лудогорец", ("Левски", "Лудогорец")),
         ("Fenerbahçe karşı Galatasaray", ("Fenerbahçe", "Galatasaray"))):
     проверка(f"«{подпись}»", пара in live.split_candidates(подпись), True)
+проверка("рубрика перед парой через тире отрезается, чистая догадка — первой (bbc.co.uk)",
+         live.split_candidates("SPFL 2026/27 Season,League 1 - Hamilton v Ross County")[:2],
+         [("SPFL 2026/27 Season,League 1", "Hamilton v Ross County"), ("Hamilton", "Ross County")])
 проверка("два таких разделителя — не гадаем",
          ("Arsenal", "Chelsea v Spurs") in live.split_candidates("Arsenal v Chelsea v Spurs"), False)
 проверка("прежние правила на месте: « - », « vs », « at », слитный дефис",
