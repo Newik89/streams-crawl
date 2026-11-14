@@ -344,6 +344,9 @@ def _firm_side_bridge(game: dict, near: list,
 #: минуту по эталону («England - Croatia»). Игра остаётся как на сайте —
 #: витрина красит её розовым и ставит знак вопроса (решение владельца 12.11)
 RIVAL_DOUBT = "спор_соперник"
+#: книга 120, правило Н1: пометка «сайт записал пару наоборот — стороны
+#: переставлены по эталону»
+REVERSED = "пара_наоборот"
 #: окно правила (е): сетки сборных время держат точно
 RIVAL_WINDOW = timedelta(minutes=15)
 
@@ -586,6 +589,62 @@ def _after_common(words: list[str], other: set[str]) -> list[str]:
             if not ok and len(w) >= ODD_WORD_MIN and not w.isdigit()]
 
 
+def _flip_reversed(game: dict, near: list) -> dict | None:
+    """Книга 120, правило Н1: сайт записал пару НАОБОРОТ.
+
+    Случай #10237 (14.11): movistarplus.es подписал матч «Inglaterra -
+    España», у эталона — «Spain - England». Сверка сравнивает стороны по
+    местам (первую с первой, вторую со второй), поэтому свой матч набрал 33,
+    а чужой «Finland - San Marino» по похожести букв — 85 и стал «явным
+    лидером»: 34 строки каналов уехали к чужой игре. Правила:
+      1. зовём, только когда по местам ни одна пара эталона не сошлась;
+      2. переставляем стороны игры и ищем пары эталона, сошедшиеся твёрдо
+         (`SURE`);
+      3. такая пара ровно одна — это тот же матч: стороны игры ПЕРЕСТАВЛЯЕМ
+         по эталону (дальше всё — словарь, витрина — идёт по местам) и
+         ставим пометку `REVERSED`;
+      4. ни одной или несколько — игру не трогаем.
+    Заглушку («TBC») не переставляем. Возвращает найденную пару эталона."""
+    home, away = game.get("home") or "", game.get("away") or ""
+    if not home or not away or names.is_placeholder(home) or names.is_placeholder(away):
+        return None
+    turned = dict(game, home=away, away=home)
+    hits = [r for r, _ in near if _pair_score(turned, r) >= SURE]
+    if len(hits) != 1:
+        return None
+    game["home"], game["away"] = away, home
+    game[REVERSED] = True
+    return hits[0]
+
+
+def dictionary_disputes(game: dict, ref: dict) -> str:
+    """Книга 120, правило Н2 — «стена словаря»: буквы не могут назначить
+    команде, которую словарь знает твёрдо, ДРУГУЮ команду.
+
+    «Inglaterra» словарь знает как England; пара эталона «Finland - San
+    Marino» похожа буквами, но England — не Finland. Правила:
+      1. сторона игры известна словарю (`names.known_team`: страна из
+         справочника или подтверждённое имя);
+      2. её имя по словарю НЕ сходится со стороной эталона на том же месте
+         (`names.same_team`, английское имя и местные написания эталона);
+      3. тогда пара спорит со словарём — решением программы (мост, явный
+         лидер, твёрдая сторона, возрастной кандидат) её принимать нельзя.
+    Словарь стороны не знает — стена молчит: для неё и нужны эти решения.
+    Возвращает причину словами или пустую строку."""
+    for side in ("home", "away"):
+        mine = game.get(side) or ""
+        known = names.known_team(mine)
+        if not known:
+            continue
+        theirs = [ref.get(side) or ""]
+        theirs += [pair[0 if side == "home" else 1] for pair in _sides(ref, "lat")]
+        if any(t and names.similarity(known, t) >= SURE for t in theirs):
+            continue
+        return (f"словарь знает «{mine}» как {known}, а у эталона на этом месте "
+                f"«{ref.get(side)}»")
+    return ""
+
+
 def _clear_leader(game: dict, best: dict, best_score: int,
                   near: list) -> bool:
     """Лидер без лиги, но без сомнений: одна сторона узнана твёрдо
@@ -768,6 +827,12 @@ def align(games: list[dict], reference: list[dict],
             score = _pair_score(game, r)
             if score > best_score:
                 best, best_score = r, score
+        if best_score < SURE:
+            # Н1 (книга 120): по местам не сошлось — не записал ли сайт пару
+            # наоборот; если да, стороны игры уже переставлены по эталону
+            turned = _flip_reversed(game, near)
+            if turned is not None:
+                best, best_score = turned, _pair_score(game, turned)
         lone = LONE
         if (best_score < SURE
                 and _script(f"{game['home']} {game['away']}") == "he"):
@@ -926,7 +991,13 @@ def _sure(out: dict, game: dict, ref: dict, score: int, how: str = "") -> None:
     другая игра: в «мимо».
 
     `how` — причина, если решили не буквы, а правило программы (`HOW_*`):
-    ложится в `game["канон_как"]`, если там ещё пусто (см. `align`)."""
+    ложится в `game["канон_как"]`, если там ещё пусто (см. `align`).
+
+    Н2 (книга 120): решение программы (`how`), которое спорит со словарём
+    (`dictionary_disputes`), не принимается — игра остаётся как на сайте."""
+    if how and how != HOW_LETTERS and dictionary_disputes(game, ref):
+        out["missed"].append(game)
+        return
     if foreign_league(game, ref):
         # книга 095 (#9362): сайт подписал St. Gallen — Lugano «Чемпионат
         # Дании. Superliga», словарь честно перевёл в DENMARK, и верный матч

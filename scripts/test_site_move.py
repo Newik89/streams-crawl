@@ -501,10 +501,10 @@ site_move.server_turn(conn, T2 + timedelta(minutes=10), кач, ПЛАН_ДОМ�
 проверка("дальше — «за сутки уже 5»", any("за сутки уже 5" in s for s in строки_прогонов(до)))
 T3 = datetime(2026, 10, 17, 6, 40, tzinfo=KYIV)
 кач = Качалка({})
-site_move.server_turn(conn, T3, кач, ПЛАН_ДОМЕНЫ, plan_push.set_mode, free=lambda: 350)
-проверка("свободно 350 МБ — никого не качаем", кач.спросили, [])
-проверка("…строка «нужно не меньше 400»",
-         any("свободно 350 МБ" in s and "не меньше 400" in s for s in строки_прогонов(до)))
+site_move.server_turn(conn, T3, кач, ПЛАН_ДОМЕНЫ, plan_push.set_mode, free=lambda: 200)
+проверка("свободно 200 МБ — никого не качаем", кач.спросили, [])
+проверка("…строка «нужно не меньше 250»",
+         any("свободно 200 МБ" in s and "не меньше 250" in s for s in строки_прогонов(до)))
 кач = Качалка({})
 site_move.server_turn(conn, T3, кач, ПЛАН_ДОМЕНЫ, plan_push.set_mode, free=lambda: None)
 проверка("память неизвестна — тоже не качаем", кач.спросили, [])
@@ -943,12 +943,12 @@ server_crawl.проверить_адрес = Качалка({})
 server_crawl.замок_заливки = _свободно
 sys.argv = ["server_crawl.py", "--force"]
 источник("mojlike.tv", by_server=True, manual_only=True, max_days=4)   # как mojtv.hr
-server_crawl.свободно_мб = lambda: 350
+server_crawl.свободно_мб = lambda: 200
 до = последний_прогон()
 server_crawl.main()
 автоматом = sorted(d for d, _, авто in server_crawl.сайты() if авто)
 только_сайты = sorted(к[к.index("--only") + 1] for к in команды if "crawl_fetch.py" in " ".join(к))
-проверка("обычный ход, свободно 350 МБ: переведённый владельцем (mojtv-подобный) "
+проверка("обычный ход, свободно 200 МБ: переведённый владельцем (mojtv-подобный) "
          "качается, как до 13.10", только_сайты, ["mojlike.tv"])
 проверка("…переведённые автоматикой (ban.tv, morning.tv) — откладываются",
          автоматом, ["ban.tv", "morning.tv"])
