@@ -326,6 +326,24 @@ site_move.server_step(conn, T1 + timedelta(minutes=15), сбор, Адрес({})
                       plan_push.set_mode, free=lambda: 100)
 проверка("через 15 минут памяти всё ещё мало — вторую строку владельцу не пишем",
          sum("откладываю" in s for s in строки_прогонов(до_памяти)), 1)
+print("Книга 119. Порог памяти по замеру и «закрывай сбор, а не сайт»")
+проверка("порог — 250 МБ (замер 14.11: браузер берёт около 230)", site_move.MIN_FREE_MB, 250)
+проверка("свободно 249 — мало", site_move.memory_short(249), True)
+проверка("свободно ровно 250 — хватает", site_move.memory_short(250), False)
+проверка("обычные для сервера 350–390 — хватает (при прежних 400 было «мало»)",
+         (site_move.memory_short(350), site_move.memory_short(390)), (False, False))
+проверка("разовая проверка: 249 — отказ с числами, 250 — можно",
+         ("свободно 249 МБ" in site_move.check_refusal(0, 0, 249)
+          and f"не меньше {site_move.MIN_FREE_MB}" in site_move.check_refusal(0, 0, 249),
+          site_move.check_refusal(0, 0, 250)), (True, ""))
+файл_уступки = TMP / "oom_score_adj"
+проверка("правило 1: сбор пишет системе число уступки",
+         (site_move.yield_memory(str(файл_уступки)), файл_уступки.read_text()),
+         (True, str(site_move.OOM_YIELD)))
+проверка("…число больше нуля: система закроет сбор раньше сайта",
+         0 < site_move.OOM_YIELD <= 1000)
+проверка("правило 2: файла нет (не Linux) — без падения, ответ «не получилось»",
+         site_move.yield_memory(str(TMP / "нет-такой-папки" / "oom_score_adj")), False)
 сбор = Сбор({})
 забыть_проверки()
 site_move.server_step(conn, T1, сбор, Адрес({}), ПЛАНЫ, plan_push.set_mode, free=lambda: 800)

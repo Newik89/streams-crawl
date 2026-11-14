@@ -252,6 +252,7 @@ def ход_по_сторожу(conn, now=None, crawl_site=None, fetch_one=None,
     now = now or datetime.now(site_move.KYIV)
     if not site_move.oneoff_due(conn, now):
         return []
+    site_move.yield_memory()   # книга 119: кончится память — закроют сбор, не сайт
     lock = lock or замок_заливки
     with lock() as занято:
         return site_move.server_step(
@@ -309,6 +310,7 @@ def main() -> int:
                          "скачал 3 сбора подряд; открылся — перевести на "
                          "сервер (app/site_move.py, П2)")
     args = ap.parse_args()
+    site_move.yield_memory()   # книга 119: кончится память — закроют сбор, не сайт
 
     if args.once:
         conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
