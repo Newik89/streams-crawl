@@ -273,7 +273,7 @@ STREAK_FIELDS = ("gh_fail_streak", "gh_fail_first", "gh_fail_why",
                  "server_fail_alarm",
                  # Ц3: когда залит сбор со срывом и за какой сбор сервер
                  # уже сделал свой ход
-                 "gh_fail_at", "server_oneoff_slot",
+                 "gh_fail_at", "server_oneoff_slot", "server_wait_noted",
                  # Ц1: с какого часа сайт лежит, почему, ушло ли уведомление
                  "gh_down_first", "gh_down_why", "gh_down_noted")
 
@@ -941,7 +941,15 @@ def server_step(conn, now: datetime, crawl_site, fetch_one, plan_sources: dict,
         domain, config = cand["domain"], cand["config"]
         refusal = check_refusal(taken, today, free())
         if refusal:
-            said.append(f"ход сервера по {domain} откладываю — {refusal}")
+            text = (f"ход сервера по {domain} откладываю — {refusal}; "
+                    f"попробую снова при следующем заходе сторожа (раз в 15 минут)")
+            # владельцу — одна строка на сбор, а не каждые 15 минут: иначе
+            # сайт остался бы без сбора молча (сервер на 1 ГБ, 14.11.2026)
+            if str(config.get("server_wait_noted") or "") != cand["slot"] and taken == 0:
+                config["server_wait_noted"] = cand["slot"]
+                save_config(conn, cand["id"], config)
+                note(conn, text)
+            said.append(text)
             break
         config["server_oneoff_slot"] = cand["slot"]             # шаг 1
         save_config(conn, cand["id"], config)
