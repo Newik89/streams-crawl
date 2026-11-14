@@ -1021,6 +1021,22 @@ def similarity(one: str, two: str) -> int:
     return best
 
 
+def known_team(name: str) -> str:
+    """Команда, которую словарь знает ТВЁРДО (книга 120, «стена словаря»):
+    страна из справочника сборных (`country_of`) или подтверждённое имя
+    (`set_overrides`), по-английски. Словарь имени не знает — пустая строка.
+    Похожесть букв тут не участвует: только точное знание."""
+    name = (name or "").strip()
+    country = country_of(name)
+    if country:
+        return country
+    confirmed = _OVERRIDES.get(name)
+    if not confirmed:
+        bare = " ".join(_AGE_RE.sub(" ", _WOMEN_RE.sub(" ", name)).split())
+        confirmed = _OVERRIDES.get(bare) if bare != name else None
+    return (to_english(confirmed) or confirmed) if confirmed else ""
+
+
 def same_team(one: str, two: str, threshold: int = SIMILAR_ENOUGH) -> bool:
     """Одна ли это команда. Разная категория — сразу нет, как бы похоже ни
     было написано."""
