@@ -29,7 +29,7 @@ sys.path.insert(0, str(ROOT))
 
 from app import (broadcast, canon, channel_grid, daytime, db, dictionary,  # noqa: E402
                  etalon_guard, leagues, live, merge, names, pipeline, redo,
-                 sport, store)
+                 silence, sport, store)
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers import flashscore_mobi                     # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
@@ -103,6 +103,23 @@ def previous_payload(path: Path = PREVIOUS) -> dict:
     except (OSError, ValueError):
         return {}
     return prev if isinstance(prev, dict) else {}
+
+
+def silence_keys(payload: dict, previous: dict, parsed: dict, full: bool) -> list[dict]:
+    """Книга 123 (сторож «канал замолчал», `app/silence.py`): дописывает в
+    итог разбора счёт игр по каналам и записи о молчащих каналах.
+    Правило 1: полный сбор (`full`) — счёт считается заново, тишина
+    сверяется с прошлым сбором.
+    Правило 2: дозабор и скан одной даты — оба ключа переносятся из прошлого
+    сбора как есть (М5): неполный сбор тишину не судит и счёт не портит.
+    Возвращает записи о молчащих каналах."""
+    if full:
+        payload[silence.COUNTS_KEY] = silence.channel_counts(payload.get("games") or [])
+        payload[silence.SILENT_KEY] = silence.check(payload[silence.COUNTS_KEY], previous, parsed)
+    else:
+        payload[silence.COUNTS_KEY] = previous.get(silence.COUNTS_KEY) or {}
+        payload[silence.SILENT_KEY] = previous.get(silence.SILENT_KEY) or []
+    return payload[silence.SILENT_KEY]
 
 
 def too_few(count: int, days: int, previous: dict[str, int]) -> str:
@@ -1135,9 +1152,15 @@ def main() -> int:
     judge = Reference(reference_full)
     league_sports, pair_sports = leagues.sports_map(), leagues.pair_sports()
     by_rule: dict[int, int] = {}       # номер правила → сколько строк
+    # книга 122: сколько строк какого сайта взяли пару из заголовка вместо
+    # пары разборщика — сигнал «сайт сменил запись, разборщик пора поправить»
+    из_заголовка: dict[str, int] = {}
     for domain, programs in pages:
         for r in pipeline.run(programs, markers, sports, league_sports,
                               pair_sports, judge, domain=domain):
+            if (r.program.extra or {}).get(pipeline.TITLE_PAIR):
+                сайт = _bare_domain(domain)
+                из_заголовка[сайт] = из_заголовка.get(сайт, 0) + 1
             if r.sport_rule:
                 by_rule[r.sport_rule] = by_rule.get(r.sport_rule, 0) + 1
             if r.team_word:
@@ -1885,6 +1908,11 @@ def main() -> int:
                "без_эталона": без_эталона,
                # книга 117: прошедшие строки, отброшенные сразу, — счётом
                "прошедшие": прошедшие,
+               # книга 122: {сайт: строк} — пара взята из заголовка, а не у
+               # разборщика (его пару эталон не знает)
+               "пара_из_заголовка": из_заголовка,
+               # книга 123: счёт игр по каналам сайтов и молчащие каналы —
+               # заполняются ниже (`silence_keys`)
                # книга 114: просадки «сайт, дата» против прошлого сбора —
                # пока только запись (слово владельца: неделю наблюдаем)
                "просадки": просадки,
@@ -1927,6 +1955,15 @@ def main() -> int:
     # итог «только добавить», ничего не гася; и только помеченное. Прочим
     # отчётам — ничего
     payload.update(redo.games_mark(report_data))
+    # книга 123: сторож «канал замолчал» судит только полный плановый сбор
+    # (как сторож эталона выше); дозабор и скан даты счёт переносят как есть
+    молчат = silence_keys(payload, previous_payload(), parsed_counts,
+                          full=bool(args.strict and not args.date and not redo_mode))
+    if молчат:
+        print(f"каналы молчат (страницы читаются, игр нет): {len(молчат)}")
+        for x in молчат[:20]:
+            print(f"   {x['сайт']} — {x['канал']}: было игр {x['было']}, "
+                  f"сборов подряд {x['подряд']}")
     if redo_mode:
         payload = redo.only_redone(payload)
     games_out = out.parent / "games.json"
