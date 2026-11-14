@@ -1135,9 +1135,15 @@ def main() -> int:
     judge = Reference(reference_full)
     league_sports, pair_sports = leagues.sports_map(), leagues.pair_sports()
     by_rule: dict[int, int] = {}       # номер правила → сколько строк
+    # книга 122: сколько строк какого сайта взяли пару из заголовка вместо
+    # пары разборщика — сигнал «сайт сменил запись, разборщик пора поправить»
+    из_заголовка: dict[str, int] = {}
     for domain, programs in pages:
         for r in pipeline.run(programs, markers, sports, league_sports,
                               pair_sports, judge, domain=domain):
+            if (r.program.extra or {}).get(pipeline.TITLE_PAIR):
+                сайт = _bare_domain(domain)
+                из_заголовка[сайт] = из_заголовка.get(сайт, 0) + 1
             if r.sport_rule:
                 by_rule[r.sport_rule] = by_rule.get(r.sport_rule, 0) + 1
             if r.team_word:
@@ -1885,6 +1891,9 @@ def main() -> int:
                "без_эталона": без_эталона,
                # книга 117: прошедшие строки, отброшенные сразу, — счётом
                "прошедшие": прошедшие,
+               # книга 122: {сайт: строк} — пара взята из заголовка, а не у
+               # разборщика (его пару эталон не знает)
+               "пара_из_заголовка": из_заголовка,
                # книга 114: просадки «сайт, дата» против прошлого сбора —
                # пока только запись (слово владельца: неделю наблюдаем)
                "просадки": просадки,

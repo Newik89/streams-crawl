@@ -138,6 +138,59 @@ def past_season(text: str, when: datetime | None) -> bool:
     return any(int(m.group(1)) < current for m in _SEASON.finditer(text or ""))
 
 
+#: книга 122: пометка строки «пару разборщика заменила пара из заголовка» —
+#: в ней прежняя пара разборщика (для журнала разбора)
+TITLE_PAIR = "пара_из_заголовка"
+
+
+def title_over_pair(program: Program, verdict: live.Verdict,
+                    reference: Reference | None, start_kyiv: datetime | None,
+                    league_category: str = ""):
+    """Книга 122 (общее правило для ВСЕХ сайтов, слово владельца 14.11:
+    «чтоб этот опыт был применим для всех»).
+
+    Случай ipko.tv 13.11: сайт сменил запись, и разборщик выдал «пару» из
+    обрывка описания («UEFA Nations League» — «Shikoni ndeshjen…»), хотя
+    заголовок держал настоящую — «Spanje-Angli». Отсев пару принял (пометка
+    эфира стояла), до вопроса эталону (`ask_reference`) дело не дошло, игра
+    не узналась. Правила:
+      1. зовём, когда отсев ПРИНЯЛ пару разборщика (`verdict.ok`);
+      2. эталон знает хотя бы одну сторону этой пары как команду — пару не
+         трогаем: разборщик прочитал верно;
+      3. иначе читаем пары из ЗАГОЛОВКА всеми читателями
+         (`live.split_candidates`), кроме самой пары разборщика;
+      4. пару заголовка эталон подтвердил на это время ЦЕЛИКОМ (`how` —
+         «пара» или «метки из эталона») — берём её, в порядке сторон эталона;
+         прежняя пара — в пометку `TITLE_PAIR`;
+      5. не подтвердил — остаётся пара разборщика, как раньше: правило
+         ничего не отнимает.
+    Пометку эфира не трогаем: её дал сайт. Прошлый сезон в подписи — мимо.
+    Возвращает (новый вердикт, ответ эталона) либо None."""
+    if reference is None or start_kyiv is None or not verdict.ok:
+        return None
+    if reference.knows_team(verdict.home) or reference.knows_team(verdict.away):
+        return None                                             # правило 2
+    title = (program.title or "").strip()
+    if not title or past_season(" ".join(x for x in (title, program.league_raw) if x),
+                                start_kyiv):
+        return None
+    mine = (_plain(verdict.home), _plain(verdict.away))
+    for home, away in live.split_candidates(title):              # правило 3
+        if (_plain(home), _plain(away)) == mine:
+            continue
+        home = leagues.with_category(home, league_category)
+        away = leagues.with_category(away, league_category)
+        got = reference.confirm(home, away, start_kyiv)
+        if got is None or got.how not in ("пара", MARKS_HOW):    # правило 4
+            continue
+        if got.swapped:
+            home, away = away, home
+        program.extra[TITLE_PAIR] = f"{verdict.home} - {verdict.away}"
+        return (live.Verdict(True, "", live_marker=verdict.live_marker,
+                             home=home, away=away), got)
+    return None                                                  # правило 5
+
+
 def ask_reference(program: Program, verdict: live.Verdict,
                   reference: Reference | None, start_kyiv: datetime | None,
                   league_category: str = ""):
@@ -244,6 +297,15 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         row.live_marker = verdict.live_marker
         row.home, row.away = verdict.home, verdict.away
         row.by_reference = confirmed.how
+    else:
+        # книга 122: пара разборщика эталону незнакома, а в заголовке стоит
+        # пара, которую эталон подтверждает, — берём пару заголовка. Эфир
+        # при этом остаётся словом сайта (не «угадан»)
+        better = title_over_pair(program, verdict, reference, row.start_kyiv,
+                                 row.league_category)
+        if better is not None:
+            verdict = better[0]
+            row.home, row.away = verdict.home, verdict.away
     rescued = confirmed is not None        # эфир строке дал эталон, не сайт
     # книга 095 (#9541): сторона пары — имя своего канала («Sport 2 - Program
     # Sportiv» у ipko) — заставка канала, а не матч: ни на витрину, ни в очередь
