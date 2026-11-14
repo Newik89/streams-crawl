@@ -2136,9 +2136,9 @@ check("плановый дошёл и забран, а 2 адреса упали
 edge = last_id()
 tick(K("11:00"))
 redo_rec = [r for r in book() if r.get("what") == f"redo-{rid7}"]
-check("…через 70 мин → ОДИН дозабор только упавших down/net (403 не берём): заявка redo <id прогона>, строка, без тревоги",
+check("…через 70 мин → ОДИН дозабор упавших: лёг, нет ответа и закрытая 403 (книга 118): заявка redo <id прогона>, строка, без тревоги",
       ORDERS == [f"redo-{rid7}"] and alarms_after(edge) == []
-      and any("ДОЗАБОР" in n and "все 2" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
+      and any("ДОЗАБОР" in n and "все 3" in n for n in notes_after(edge)), (ORDERS, notes_after(edge)))
 check("…в книге запись redo-<id> с пометкой «дозабор заказа <id записи сбора>», у сбора — redo",
       len(redo_rec) == 1 and redo_rec[0].get("who") == "сторож: дозабор"
       and redo_rec[0].get("redo_of") == next(r["id"] for r in book() if r.get("what") == "full-6")

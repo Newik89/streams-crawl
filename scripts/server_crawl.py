@@ -197,6 +197,70 @@ def разовая_проверка(conn, домен: str, now=None, fetch_one=N
             free=free or site_move.free_mb)
 
 
+def итог_сбора(report_path: Path) -> dict:
+    """Что сервер получил от сайта (книга 118, Ц3/Ц5), по report.json его
+    сбора: ok — хоть одна страница с расписанием; ban — сайт заблокировал и
+    сервер (заглушка, 403, 429); down — не ответил (таймаут, 5xx, нет
+    отчёта). Возвращает {итог, почему}."""
+    from app import redo
+    try:
+        строки = json.loads(report_path.read_text(encoding="utf-8")).get("строки")
+    except (OSError, ValueError):
+        return {"итог": "down", "почему": "отчёта сбора нет"}
+    строки = [с for с in (строки if isinstance(строки, list) else [])
+              if isinstance(с, dict)]
+    if any(с.get("итог") == site_move.OK for с in строки):
+        return {"итог": "ok", "почему": ""}
+    закрытые = [с for с in строки if redo.row_class(с) == "ban"]
+    первая = (закрытые or строки or [{}])[0]
+    почему = " ".join(f"{первая.get('итог') or 'пусто'}: "
+                      f"{первая.get('почему') or ''}".split())[:160]
+    return {"итог": "ban" if закрытые else "down", "почему": почему}
+
+
+def собрать_сайт(домен: str, дней: int) -> dict:
+    """Книга 118 (Ц3, Ц4): сбор ОДНОГО сайта с сервера и заливка в базу —
+    те же три шага, что у сайтов «качает сервер» в обычном ходе. Пометку
+    «качает сервер» не трогает. Возвращает `итог_сбора`."""
+    куда = РАБОЧАЯ / домен
+    print(f"{домен}: разовый сбор с сервера на {дней} дн. → {куда}")
+    ок = шаг([PY, "scripts/crawl_fetch.py", "--full", "--only", домен,
+              "--days", str(дней), "--out", str(куда)], "качаю")
+    итог = итог_сбора(куда / "report.json")
+    if итог["итог"] != "ok":
+        return итог
+    if ок:
+        ок = шаг([PY, "scripts/parse_live.py", "--dir", str(куда),
+                  "--days", str(дней), "--md", str(куда / "matches.md")],
+                 "разбираю")
+    if ок:
+        ок = шаг([PY, "scripts/games_import.py", "--file",
+                  str(куда / "games.json"), "--who", f"сервер {домен}"],
+                 "вливаю в базу")
+    if not ок:
+        return {"итог": "down", "почему": "страницы скачаны, но разбор или "
+                                          "заливка не прошли — журнал сбора"}
+    return итог
+
+
+def ход_по_сторожу(conn, now=None, crawl_site=None, fetch_one=None,
+                   set_mode=None, plan=None, lock=None, free=None) -> list[str]:
+    """Книга 118 (Ц6): зовёт сторож (`crawl_watch.py`) раз в 15 минут. Нечего
+    делать — выходит сразу, без сети и без замка. Есть сайты, которым пора
+    (`site_move.oneoff_due`) — берёт замок заливки и делает ход сервера
+    (`site_move.server_step`). Подмены — для проверок."""
+    now = now or datetime.now(site_move.KYIV)
+    if not site_move.oneoff_due(conn, now):
+        return []
+    lock = lock or замок_заливки
+    with lock() as занято:
+        return site_move.server_step(
+            conn, now, crawl_site or собрать_сайт, fetch_one or проверить_адрес,
+            plan if plan is not None else план_по_доменам(),
+            set_mode or plan_push.set_mode, busy=занято,
+            free=free or site_move.free_mb)
+
+
 #: свободная память, МБ (MemAvailable) — перед каждым сайтом обычного хода,
 #: переведённым автоматикой (`moved_by=auto`); проверки подменяют
 свободно_мб = site_move.free_mb

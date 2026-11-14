@@ -272,8 +272,10 @@ from app.parsers import flashscore_mobi as _fs  # noqa: E402
 проверка("телесайт эталоном не считается",
          site_move.is_reference("teleman.pl") or site_move.is_reference("alkass.net"), False)
 новые = строки_прогонов(до)
-проверка("на третьем срыве — одна строка «кандидат» в «Прогонах»",
-         sum("ban.tv: 3 сбора подряд не дался GitHub" in s for s in новые), 1)
+проверка("на ВТОРОМ срыве (слово владельца 13.11) — одна строка «кандидат» в «Прогонах»",
+         sum("ban.tv: 2 сбора подряд блокирует GitHub и читалки" in s for s in новые), 1)
+проверка("на третьем срыве строка «кандидат» не повторяется",
+         sum("подряд блокирует GitHub и читалки" in s and "ban.tv" in s for s in новые), 1)
 проверка("строка «кандидат» — уведомление, не ТРЕВОГА",
          any("ТРЕВОГА" in s for s in новые), False)
 site_move.after_import(conn, папка("сбор303", отчёт("303", сбор_строки)), who="переразбор",
@@ -331,10 +333,10 @@ site_move.after_import(conn, папка("масс", отчёт("801", [стро�
                                                    for i in range(3)] + хорошие)), now=T0)
 проверка("12 сайтов, не дались 4 (33 %) — массовый: срыв не засчитан",
          настройки("mass1.tv").get("gh_fail_streak"), None)
-site_move.after_import(conn, папка("норм", отчёт("802", [строка("mass1.tv", "не открылась", NET)]
+site_move.after_import(conn, папка("норм", отчёт("802", [строка("mass1.tv", "не открылась", BAN)]
                                                 + хорошие + [строка(f"h{i}.tv", "пусто")
                                                              for i in range(3)])), now=T0)
-проверка("12 сайтов, не дался 1 — обычный сбор: срыв засчитан",
+проверка("12 сайтов, блокирует 1 — обычный сбор: срыв засчитан",
          настройки("mass1.tv").get("gh_fail_streak"), 1)
 проверка("кнопка «Обойти сайт» (один сайт) — не массовый",
          site_move.is_mass([строка("x.tv", "не открылась", NET)], {"x.tv": {"итог": "fail"}}), False)
@@ -362,12 +364,12 @@ for n, прогон in enumerate(("811", "812", "813")):
 
 print("П1. Сквозная заливка games_import.py (тот же путь, что на сервере)")
 источник("e2e.tv")
-путь = папка("e2e", отчёт("777", [строка("e2e.tv", "не открылась", NET)]))
+путь = папка("e2e", отчёт("777", [строка("e2e.tv", "не открылась", BAN)]))
 готово = subprocess.run([sys.executable, str(ROOT / "scripts" / "games_import.py"),
                          "--file", str(путь.parent / "games.json"), "--who", "тест"],
                         capture_output=True, text=True, encoding="utf-8", env=os.environ)
 проверка("заливка прошла", готово.returncode, 0)
-проверка("в журнале заливки — строка счёта", "перевод сайтов: e2e.tv: не дался GitHub 1 сбор подряд"
+проверка("в журнале заливки — строка счёта", "перевод сайтов: e2e.tv: блокирует GitHub и читалки 1 сбор подряд"
          in готово.stdout)
 проверка("счёт e2e.tv = 1 в базе", настройки("e2e.tv").get("gh_fail_streak"), 1)
 
@@ -439,15 +441,15 @@ st = conn.execute("SELECT status, fail_count FROM sources WHERE domain='ban.tv'"
 проверка("перевод — уведомление, не ТРЕВОГА", any("ТРЕВОГА" in s for s in новые), False)
 проверка("разовая проверка записана в память", site_move.checks_today(conn, T1), 1)
 
-print("П2. Сервер тоже не скачал → не переводим, ТРЕВОГА одна на серию")
-источник("dead.tv", gh_fail_streak=4, gh_fail_last_slot="310", gh_fail_why="не открылась: HTTP 503")
+print("Ц5. Сервер тоже получил блокировку → не переводим, ТРЕВОГА одна на серию")
+источник("dead.tv", gh_fail_streak=4, gh_fail_last_slot="310", gh_fail_why="не открылась: HTTP 403")
 до = последний_прогон()
-кач = Качалка({"dead.tv": ("не открылась", "HTTP 503")})
+кач = Качалка({"dead.tv": ("не открылась", "HTTP 403")})
 site_move.server_turn(conn, T1, кач, ПЛАН_ДОМЕНЫ, plan_push.set_mode, free=lambda: 800)
 проверка("dead.tv не переведён", настройки("dead.tv").get("by_server"), None)
 первые = строки_прогонов(до)
-проверка("ТРЕВОГА «не отвечает ни GitHub, ни серверу»",
-         sum(s.startswith("перевод сайтов: ТРЕВОГА — dead.tv не отвечает ни GitHub") for s in первые), 1)
+проверка("ТРЕВОГА «жив, но не пускает ни GitHub и читалки, ни сервер»",
+         sum(s.startswith("перевод сайтов: ТРЕВОГА — dead.tv жив, но не пускает ни GitHub") for s in первые), 1)
 проверка("тревога попадёт в письмо (alarm_mail)", len(alarm_mail.new_alarms(conn, до)), 1)
 до = последний_прогон()
 site_move.server_turn(conn, T1 + timedelta(days=1), кач, ПЛАН_ДОМЕНЫ, plan_push.set_mode,
@@ -455,6 +457,17 @@ site_move.server_turn(conn, T1 + timedelta(days=1), кач, ПЛАН_ДОМЕН�
 вторые = строки_прогонов(до)
 проверка("назавтра — строка без ТРЕВОГИ", (len(вторые), any("ТРЕВОГА" in s for s in вторые)), (1, False))
 проверка("…и в ней сказано, когда уходило письмо", "письмо об этом уходило 14.10" in вторые[0])
+print("Ц5. Серверу сайт не ответил (таймаут, 5xx) → «лёг»: ни перевода, ни тревоги, ни строки владельцу")
+источник("lying.tv", gh_fail_streak=2, gh_fail_last_slot="311", gh_fail_why="заглушка защиты: cloudflare")
+до = последний_прогон()
+сказано = site_move.server_turn(conn, T1, Качалка({"lying.tv": ("не открылась", "HTTP 503")}),
+                                {"lying.tv": сайт_плана("lying.tv")}, plan_push.set_mode,
+                                only="lying.tv", free=lambda: 800)
+проверка("lying.tv не переведён", настройки("lying.tv").get("by_server"), None)
+проверка("в журнале — «для сервера сайт сейчас лежит … тревоги нет»",
+         any("lying.tv" in s and "сейчас лежит" in s and "тревоги нет" in s for s in сказано), True)
+проверка("строк владельцу и письма нет", (строки_прогонов(до), len(alarm_mail.new_alarms(conn, до))), ([], 0))
+проверка("пометка письма не ставится", настройки("lying.tv").get("server_fail_alarm"), None)
 site_move.after_import(conn, папка("ожил", отчёт("320", [строка("dead.tv", "расписание есть")])), now=T1)
 проверка("удача на GitHub закрывает серию (и пометку письма)",
          (настройки("dead.tv").get("gh_fail_streak"), настройки("dead.tv").get("server_fail_alarm")),
@@ -531,9 +544,9 @@ site_move.server_turn(conn, datetime(2026, 10, 18, 6, 40, tzinfo=KYIV), взры
                       {"boom.tv": сайт_плана("boom.tv"), "boom2.tv": сайт_плана("boom2.tv")},
                       set_mode_сбой, free=lambda: 800, limit=10)
 новые = строки_прогонов(до)
-проверка("качалка упала — «не дошли» с причиной, заход идёт дальше",
-         any(s.startswith("перевод сайтов: ТРЕВОГА — boom.tv") and "ConnectionError" in s
-             for s in новые))
+проверка("качалка упала — «не дошли»: сайт считается лёгшим (Ц5), тревоги нет, заход идёт дальше",
+         (any("ТРЕВОГА" in s and "boom.tv:" in s for s in новые),
+          any("boom2.tv" in s for s in новые)), (False, True))
 проверка("set_mode упал — строка «перевод не доделан», сайт не на сервере",
          (any("boom2.tv" in s and "перевод не доделан: TimeoutError" in s for s in новые),
           настройки("boom2.tv").get("by_server")), (True, None))
@@ -867,7 +880,12 @@ print("П5. Пометки и страницы админки")
          site_move.mark({"by_server": True, "moved_by": "auto", "moved_at": "2026-10-14 06:40",
                          "gh_probe_last": "2026-10-21 09:30"}),
          "переведён на сервер автоматически 14.10; проба GitHub 21.10 не открылась")
-проверка("серия срывов", site_move.mark({"gh_fail_streak": 2}), "не дался GitHub 2 сбора подряд")
+проверка("серия срывов: первый сбор — сервер добирает разово (Ц3)",
+         site_move.mark({"gh_fail_streak": 1}),
+         "не дался GitHub 1 сбор подряд — сервер разово соберёт его сам")
+проверка("сайт лежит — пометка «ждём, сервер не трогаем» (Ц1)",
+         site_move.mark({"gh_down_first": "2026-10-13 09:30"}),
+         "лежит с 13.10 — ждём, сервер не трогаем")
 проверка("кандидат", "кандидат на перевод" in site_move.mark({"gh_fail_streak": 3}))
 обзор = {m["domain"]: m for m in site_move.overview(conn)}
 проверка("«Сломанные»: ban.tv на сервере (авто), e2e.tv со срывом",

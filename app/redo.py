@@ -325,8 +325,14 @@ def skip_reason(row: dict, never=frozenset(), strict: bool = False) -> str:
         return "строка отчёта битая"
     if _bare(row.get("domain")) in never:
         return "сайт дозора"
+    # Книга 118 (Ц2, слово владельца 13.11.2026: «повторный прогон через
+    # какое-то время с GitHub», потом читалки): закрытую страницу (заглушка
+    # защиты, 403, 429) дозабор теперь БЕРЁТ — GitHub пробует ещё раз, не
+    # пустили — читалки (`crawl_fetch.redo_fetch`). До 13.11 к закрывшим не
+    # ходили вовсе. Сайт, не открывший `REDO_SITE_FAILS` адреса подряд,
+    # дальше не трогаем — частить к закрытому сайту дозабор не будет
     if kind == "ban":
-        return "закрыт (защита, 403/429)"
+        return NIGHT_UNDATED if strict and not dated(row) else ""
     why = str(row.get("почему") or "")
     if "защит" in why.lower():
         return "страница защиты"

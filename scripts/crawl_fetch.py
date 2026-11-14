@@ -517,7 +517,7 @@ def один_адрес(source: dict) -> dict | None:
     return jobs[0] if jobs else None
 
 
-def проба_одним_адресом(source: dict, fetcher) -> dict:
+def проба_одним_адресом(source: dict, fetcher, readers: bool = False) -> dict:
     """Скачать `один_адрес` сайта (обычный запрос, отказали — браузер, как в
     обходе) и сказать, что пришло: строка отчёта без сохранения страницы —
     в разбор она не идёт (`app/site_move.py`, П2, П4, П6)."""
@@ -536,7 +536,32 @@ def проба_одним_адресом(source: dict, fetcher) -> dict:
                                          extra=job.get("headers"))
     finally:
         fetcher.browser_only = было
-    return {"domain": job["domain"], "url": job["url"], **verdict(page)}
+    row = {"domain": job["domain"], "url": job["url"], **verdict(page)}
+    # Книга 118 (слово владельца 13.11: «еженедельная проба GitHub + читалки
+    # для всех сайтов на сервере»): GitHub получил блокировку — ту же страницу
+    # пробуют читалки. Только на GitHub (проба возврата): откроется — сайт
+    # вернётся на GitHub и будет браться третьим заходом. Сервер читалками
+    # не проверяет: его вопрос — пускает ли сайт сам сервер
+    if readers and redo.row_class(row) == "ban" \
+            and reader_chain.eligible(job, row):
+        try:
+            plan = json.loads(PLAN.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            plan = {}
+        setting = source_settings(plan).get(job["domain"].removeprefix("www."), {})
+
+        def accept(html: str) -> bool:
+            rows = reader_chain.parser_rows(job, html, setting)
+            return rows is None or rows > 0
+
+        second = fetcher.via_readers(job["url"], accept=accept,
+                                     timeout=fetch.TIMEOUT)
+        got = verdict(second)
+        if second.ok and got["итог"] not in BROKEN:
+            name = (second.via or "").removeprefix("reader:")
+            row = {"domain": job["domain"], "url": job["url"], **got,
+                   "почему": reader_chain.NOTE.format(name=name)}
+    return row
 
 
 def проба_возврата(plan: dict, fetcher, now: datetime | None = None,
@@ -555,7 +580,7 @@ def проба_возврата(plan: dict, fetcher, now: datetime | None = None
     for source in по_серверу:
         if source["domain"] not in пора:
             continue
-        row = проба_одним_адресом(source, fetcher)
+        row = проба_одним_адресом(source, fetcher, readers=True)
         раздел[source["domain"]] = site_move.return_item(row, now)
         site_move.return_remember(память, source["domain"], row, now)
         print(f"проба вернуть на GitHub: {source['domain']} — {row['итог']} "
@@ -741,6 +766,33 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
               f"{(job.get('channel') or 'сетка')[:18].ljust(18)} было: {was[:40]} → {got[:50]}")
         lines.append(f"| {job['domain']} | {(job.get('channel') or 'сетка').replace('|', '/')} "
                      f"| {was} | {got} | {job['url']} |")
+    # Книга 118 (Ц2, слово владельца 13.11): страницы, которые GitHub и в
+    # дозаборе не пустили (заглушка, 403, 429), пробуют читалки — по тем же
+    # правилам, что в третьем заходе обхода (`app/reader_chain.py`).
+    # Взятая страница ложится свежей строкой с пометкой «(дозабор)»
+    закрытые = []
+    for index, row in zip(choice.index, choice.rows):
+        сейчас = fresh.get(index, row)
+        if redo.row_class(сейчас) == "ban":
+            закрытые.append({"job": redo.job_of(row), "row": dict(сейчас),
+                             "index": index})
+    if закрытые:
+        try:
+            настройки = source_settings(json.loads(PLAN.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            настройки = {}
+        третий_заход(закрытые, [r for r in report.get("строки") or []
+                                if isinstance(r, dict)], fetcher, out, настройки)
+        for item in закрытые:
+            if item["row"].get("итог") in BROKEN:
+                continue
+            item["row"]["почему"] = (item["row"].get("почему") or "") + " (дозабор)"
+            fresh[item["index"]] = item["row"]
+            passed = [p for p in passed if p.get("url") != item["job"]["url"]]
+            lines.append(f"| {item['job']['domain']} "
+                         f"| {(item['job'].get('channel') or 'сетка').replace('|', '/')} "
+                         f"| закрыт (защита, 403/429) | {item['row']['итог']} "
+                         f"{item['row']['почему']} | {item['job']['url']} |")
     merged = redo.merge(report, fresh, choice, from_run, os.environ.get("GITHUB_RUN_ID", ""),
                         passed)
     # сайт с короткой программой не сломан (как в обходе): 404 при живом сайте

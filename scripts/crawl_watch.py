@@ -983,7 +983,29 @@ def main() -> int:
             # отметки «жив» нет: замок, занятый 40+ мин подряд, — тоже беда
             # (законно его держат минуты), пусть /alive и В5 её заметят
             return 0
-        return _run(check=False)
+        code = _run(check=False)
+    # Книга 118 (Ц6, слово владельца 13.11): ход сервера по сайтам, которые
+    # блокируют GitHub и читалки, — «сразу, не дожидаясь утра». ПОСЛЕ общего
+    # замка заявок: сбор сайта идёт минуты, заявки сбора его ждать не должны.
+    # Сбой хода сторожа не роняет — строка в журнал
+    server_move()
+    return code
+
+
+def server_move() -> None:
+    """Ход сервера (`server_crawl.ход_по_сторожу`): нечего делать — выходит
+    сразу, без сети."""
+    try:
+        import server_crawl
+        conn = db.connect(db.BUSY_TIMEOUT_SCRIPT)
+        try:
+            for line in server_crawl.ход_по_сторожу(conn):
+                print(f"{_now():%d.%m %H:%M} ход сервера: {line}")
+        finally:
+            conn.close()
+    except Exception as beda:                  # noqa: BLE001 — см. выше
+        print(f"{_now():%d.%m %H:%M} ход сервера: ошибка "
+              f"{type(beda).__name__}: {beda}")
 
 
 def _run(check: bool) -> int:
