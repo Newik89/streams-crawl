@@ -62,6 +62,29 @@
   {{ h.run.rows_found }}, игр в базу {{ h.run.events_upserted }}.</p>
 {% endif %}
 
+{# книга 118 (слово владельца 13.11): какие сайты собирает не GitHub, а наш
+   сервер, — на главной, чтобы адрес сервера был на виду #}
+<h2>Собирает сервер <span class="muted">({{ on_server|length }})</span></h2>
+{% if on_server %}
+<div style="overflow-x:auto">
+<table>
+  <tr><th>Сайт</th><th>Почему на сервере</th><th>Сервер последний раз скачал</th></tr>
+  {% for m in on_server %}
+  <tr>
+    <td><a href="{{ url_for('source_edit', source_id=m.id) }}"><b>{{ m.domain }}</b></a></td>
+    <td style="overflow-wrap:anywhere">{{ m.mark }}</td>
+    <td class="muted">{{ m.server_ok or '—' }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% else %}
+<p class="muted">Все сайты собирает GitHub — с адреса сервера не собирается ни один.</p>
+{% endif %}
+{% if server_soon %}
+<p class="muted">На очереди у сервера: {% for m in server_soon %}<a href="{{ url_for('source_edit', source_id=m.id) }}">{{ m.domain }}</a> — {{ m.mark }}{% if not loop.last %}; {% endif %}{% endfor %}.</p>
+{% endif %}
+
 {% include "_emergency.html" %}
 
 <h2>Требует внимания</h2>

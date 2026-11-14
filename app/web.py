@@ -551,10 +551,15 @@ def create_app() -> Flask:
             scan = {"request": db.get_setting(conn, "day_scan_request"),
                     "result": db.get_setting(conn, "day_scan_result"),
                     "imported": db.get_setting(conn, "last_import")}
+            # книга 118: сайты «собирает сервер» и те, что на очереди к нему
+            from . import site_move
+            moves = site_move.overview(conn)
             return render_template("dashboard.html", c=sources.counts(conn),
                                    db_path=db.db_path(), scan=scan,
                                    h=health.summary(conn),
-                                   req=health.request_line(conn))
+                                   req=health.request_line(conn),
+                                   on_server=[m for m in moves if m["server"]],
+                                   server_soon=[m for m in moves if not m["server"]])
         finally:
             conn.close()
 

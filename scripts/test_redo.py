@@ -358,9 +358,9 @@ check("не берём: страницу защиты с кодом 5xx, отв�
       == ["страница защиты", "ответ 4xx", "сайт дозора", "", ""])
 rows_mix = [ok(1), down(2), ban(3), net(4), row(5, why="HTTP 503, защита: imperva"), down(6)]
 choice = redo.pick({"строки": rows_mix})
-check("отбор: по порядку отчёта только down/net, с номерами строк; не взятые — с причиной",
-      choice.index == [1, 3, 5] and choice.total == 3 and not choice.mass
-      and choice.skipped == {"закрыт (защита, 403/429)": 1, "страница защиты": 1}, choice)
+check("отбор: по порядку отчёта down/net и закрытые (403 — книга 118), с номерами строк; не взятые — с причиной",
+      choice.index == [1, 2, 3, 5] and choice.total == 4 and not choice.mass
+      and choice.skipped == {"страница защиты": 1}, choice)
 check("причина провала (`fail_reason.classify_rows`) считает тем же классом строки — как и раньше",
       "redo.row_class" in inspect.getsource(fail_reason.classify_rows)
       and fail_reason.classify_rows([ban(1), ban(2), down(3)]) == "fetch-ban"
@@ -578,7 +578,7 @@ rule("Д4", "пределы: один на сбор, 3 в сутки, 40 адр�
 reset([morning])
 rec = done_order(morning)
 rows45 = [down(i) if i % 2 else net(i) for i in range(1, 46)]
-server_has(morning, rows45 + [ban(99)])
+server_has(morning, rows45 + [row(99, why="HTTP 404")])
 edge = last_id()
 tick(K("11:00"))
 check("45 упавших → один дозабор первых 40 по порядку отчёта (строка «первые 40 из 45»)",
@@ -615,10 +615,10 @@ check("…ровно 80 — ещё дозабор (40 адресов)",
       and len(redo.pick({"строки": [down(i) for i in range(80)]}).rows) == 40)
 reset([morning])
 rec = done_order(morning)
-server_has(morning, [ok(1), ban(2), row(3, why="HTTP 404")])
+server_has(morning, [ok(1), row(2, why="HTTP 404"), row(3, why="HTTP 404")])
 edge = last_id()
 tick(K("11:00"))
-check("упавших down/net ноль (только 403 и 404) → ничего не делаем молча",
+check("упавших, которые стоит брать, ноль (только 404) → ничего не делаем молча",
       redo_orders() == [] and notes_after(edge) == [] and record(rec["id"]).get("redo"),
       (ORDERS, notes_after(edge)))
 reset([morning])
@@ -707,6 +707,15 @@ class FakeFetcher:
         html, error = self.answers.get(url, ("", "ConnectTimeout: timed out"))
         return fetch.Page(url, html, False, error)
 
+    def via_readers(self, url, accept=None, only=None, timeout=None):
+        """Читалки (книга 118): адрес → html из `readers`; что спросили —
+        в `asked_readers`."""
+        self.asked_readers = getattr(self, "asked_readers", []) + [url]
+        html = getattr(self, "readers", {}).get(url, "")
+        if not html or (accept is not None and not accept(html)):
+            return fetch.Page(url, "", False, "читалки не отдали страницу")
+        return fetch.Page(url, html, False, via="reader:r.test", reader=("r.test", {}))
+
 
 OUT = TMP / "raw_live"
 OUT.mkdir()
@@ -718,22 +727,45 @@ fake = FakeFetcher({down(2)["url"]: (page_html, "")})
 os.environ["GITHUB_RUN_ID"] = "777"
 code6, merged, md = cf.redo_fetch(report6, OUT, fake, "555")
 fresh2, fresh4 = merged["строки"][1], merged["строки"][3]
-check("заново спрошены ТОЛЬКО down и net (403 и 404 — нет), по порядку отчёта",
-      code6 == 0 and fake.asked == [down(2)["url"], net(4)["url"]], fake.asked)
+check("заново спрошены down, закрытая (403 — книга 118) и net; 404 — нет; по порядку отчёта",
+      code6 == 0 and fake.asked == [down(2)["url"], ban(3)["url"], net(4)["url"]], fake.asked)
 check("выправившаяся строка — свежая: «расписание есть», файл страницы лёг под именем обхода",
       fresh2["итог"] == "расписание есть" and fresh2.get("файл") == fetch.cache_name(down(2)["url"]).name
       and (OUT / fresh2["файл"]).read_text(encoding="utf-8") == page_html
       and "(дозабор)" in fresh2["почему"], fresh2)
 check("не выправившаяся — тоже свежая (новая причина); остальные строки как были",
       fresh4["итог"] == "не открылась" and fresh4["почему"].startswith("ConnectTimeout")
-      and merged["строки"][0] == report6["строки"][0] and merged["строки"][2] == report6["строки"][2]
+      and merged["строки"][0] == report6["строки"][0]
       and merged["строки"][4] == report6["строки"][4])
 check("раздел «дозабор»: из прогона, адресов, выправилось; «прогон» — этот, «режим» с пометкой, окно цело",
       {k: v for k, v in merged["дозабор"].items() if k != "строки"}
-      == {"из прогона": "555", "адресов": 2, "выправилось": 1, "отобрано": 2, "упавших": 2,
+      == {"из прогона": "555", "адресов": 3, "выправилось": 1, "отобрано": 3, "упавших": 3,
           "пропущено": []}
       and merged["прогон"] == "777" and merged["режим"].startswith("дозабор")
       and "окно 6" in merged["режим"] and report6["прогон"] == "555", merged.get("дозабор"))
+from app import reader_chain as _rc  # noqa: E402
+_rows_was = _rc.parser_rows
+_rc.parser_rows = lambda job, html, setting=None: 2      # разбор нашёл строки
+ban_again = FakeFetcher({ban(3)["url"]: ("", "HTTP 403")})
+ban_again.readers = {ban(3)["url"]: page_html}
+code_r, merged_r, md_r = cf.redo_fetch({"когда": DAY, "строки": [ok(1), down(2), ban(3)]},
+                                       OUT, ban_again, "9")
+ban_fresh = merged_r["строки"][2]
+check("книга 118: закрытую страницу GitHub в дозаборе снова не пустили — её взяла читалка",
+      code_r == 0 and ban_again.asked_readers == [ban(3)["url"]]
+      and ban_fresh["итог"] == "расписание есть"
+      and "(через читалку r.test)" in ban_fresh["почему"] and "(дозабор)" in ban_fresh["почему"]
+      and (OUT / ban_fresh["файл"]).read_text(encoding="utf-8") == page_html, ban_fresh)
+check("…лежащую страницу (таймаут) читалкой не пробуют",
+      down(2)["url"] not in ban_again.asked_readers)
+_rc.parser_rows = lambda job, html, setting=None: 0      # читалка принесла пустышку
+ban_empty = FakeFetcher({ban(3)["url"]: ("", "HTTP 403")})
+ban_empty.readers = {ban(3)["url"]: "<html>пустышка</html>"}
+_c, merged_e, _m = cf.redo_fetch({"когда": DAY, "строки": [ok(1), ban(3)]}, OUT, ban_empty, "9")
+check("…выдача читалки без строк разбора не засчитана — строка остаётся закрытой",
+      merged_e["строки"][1]["итог"] == "не открылась" and "403" in merged_e["строки"][1]["почему"],
+      merged_e["строки"][1])
+_rc.parser_rows = _rows_was
 clock_values = iter([0, 0, 1700, 2000, 9999])
 fake_slow = FakeFetcher({})
 code_b, merged_b, _ = cf.redo_fetch({"когда": DAY, "строки": [down(1), down(2), down(3)]}, OUT, fake_slow, "1",
@@ -762,7 +794,8 @@ check("…в дозаборе: у lying.test спрошены 2 адреса и�
 fake_none = FakeFetcher({})
 code_m, merged_m, why_m = cf.redo_fetch({"когда": DAY, "строки": [down(i) for i in range(81)]},
                                         OUT, fake_none, "1")
-code_z, merged_z, why_z = cf.redo_fetch({"когда": DAY, "строки": [ok(1), ban(2)]}, OUT, fake_none, "1")
+code_z, merged_z, why_z = cf.redo_fetch({"когда": DAY, "строки": [ok(1), row(2, why="HTTP 404")]},
+                                        OUT, fake_none, "1")
 check("массовый сбой или ноль упавших на GitHub — дозабирать нечего: код 0 (не сбой), отчёт не тронут, ни одного запроса",
       code_m == 0 and merged_m is None and "массовый сбой" in why_m[0]
       and code_z == 0 and merged_z is None and "нет" in why_z[0] and fake_none.asked == [],
@@ -949,7 +982,7 @@ check("parse_live.py кладёт пометку в games.json, push_partial б�
       "payload.update(redo.games_mark(report_data))" in parse_src
       and "grep -q '\"режим\": \"дозабор\"' recon/raw_live/games.json" in crawl_yml)
 check("раздел «дозабор» отчёта несёт перекачанные строки С ИМЕНАМИ ФАЙЛОВ; «открылись» — по файлу",
-      [r.get("файл") for r in merged["дозабор"]["строки"]] == [fresh2["файл"], None]
+      [r.get("файл") for r in merged["дозабор"]["строки"]] == [fresh2["файл"], None, None]
       and merged["дозабор"]["строки"][0]["url"] == down(2)["url"]
       and redo.redone_files(merged) == {fresh2["файл"]} and redo.redone_files({"строки": []}) == set()
       and redo.redone_rows({"дозабор": {"строки": ["x", {"domain": "a"}]}}) == [{"domain": "a"}])

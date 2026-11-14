@@ -39,6 +39,31 @@
   gh_probe_last      когда GitHub последний раз пробовал его вернуть
   gh_return          проба открылась, когда — утром сервер вернёт сайт
 
+ЦЕПОЧКА ВЛАДЕЛЬЦА 13.11.2026 (книга 118) — «GitHub → повтор → читалки →
+сервер», поверх правил ниже. Адрес сервера бережём: сервер — последний ход.
+  Ц1. Сайт ЛЕЖИТ (5xx, таймаут, нет связи — класс down/net) — сервер и
+      читалки не трогаем, счёт срывов не ведём, тревоги нет. Лежит
+      `DOWN_NOTE_HOURS` (трое суток) подряд — ОДНО уведомление на серию.
+  Ц2. Сайт БЛОКИРУЕТ (заглушка защиты, 403, 429 — класс ban): GitHub
+      пробовал запросом, браузером, вторым заходом и читалками
+      (`app/reader_chain.py`), через час — ещё раз дозабором. Только такой
+      срыв идёт в счёт `gh_fail_streak`.
+  Ц3. Первый такой сбор (счёт 1): через `ONEOFF_AFTER_MINUTES` после
+      заливки сбора (дозабор успел попробовать ещё раз) — РАЗОВЫЙ сбор
+      сайта с сервера, не дожидаясь утра, и уведомление «собран с сервера».
+      Сайт остаётся на GitHub.
+  Ц4. Второй сбор подряд (счёт `FAILS_TO_MOVE` = 2): сервер проверяет сайт
+      одним адресом и переводит на себя (П2) + уведомление; сразу после
+      перевода — сбор сайта с сервера, чтобы витрина не ждала утра.
+  Ц5. Сервер тоже получил блокировку (сайт жив и не пускает никого) —
+      ТРЕВОГА сразу, одна на серию. Сервер получил таймаут или 5xx —
+      считаем «лёг»: строка в журнал, тревоги нет.
+  Ц6. Ход сервера (`server_step`) зовёт сторож (`crawl_watch.py`, раз в
+      15 минут; новых заданий cron нет) под замком заливки; пределы П2 те
+      же: сайтов за заход, проверок в сутки, свободная память.
+  Ц7. Уведомление при каждом использовании сервера вместо GitHub: разовый
+      сбор (Ц3), перевод (Ц4), проба возврата не открылась, возврат (П4).
+
 ПРАВИЛА — по функции на правило (что случилось → что делаем):
   П1. Проба = СБОР GitHub. `import_kind`, `crawl_id`, `site_verdicts`,
       `apply_probe`, `after_import`.
@@ -183,7 +208,15 @@ KYIV = ZoneInfo("Europe/Kyiv")
 
 #: П1/П2: столько сборов GitHub подряд сайт не дался → кандидат на перевод
 #: (решение владельца 06.10: 3, а не 4, как предлагал проектировщик)
-FAILS_TO_MOVE = 3
+#: Слово владельца 13.11.2026 (Ц4): 2 — первый сбор сервер только добирает
+#: разово, второй подряд — перевод. Считаются только срывы «блокирует» (Ц2)
+FAILS_TO_MOVE = 2
+#: Ц3: разовый сбор с сервера — не раньше стольких минут после заливки
+#: сбора, в котором сайт не дался: дозабор (`redo.REDO_AFTER_MINUTES` = 60 +
+#: его ход) успевает попробовать GitHub и читалки ещё раз
+ONEOFF_AFTER_MINUTES = 90
+#: Ц1: сайт лежит столько часов подряд — одно уведомление
+DOWN_NOTE_HOURS = 72
 #: П1: массовый сбой — не дались больше этой доли судимых сайтов (= порог
 #: провала обхода `crawl_fetch.FAIL_DOMAINS_SHARE`; схема, «Д. Классы»:
 #: «>20 % доменов net из разных стран → сеть раннера»; сверяет тест)…
@@ -237,7 +270,12 @@ OK = "расписание есть"
 
 #: поля счёта срывов — снимаются при удаче на GitHub и при переводе
 STREAK_FIELDS = ("gh_fail_streak", "gh_fail_first", "gh_fail_why",
-                 "server_fail_alarm")
+                 "server_fail_alarm",
+                 # Ц3: когда залит сбор со срывом и за какой сбор сервер
+                 # уже сделал свой ход
+                 "gh_fail_at", "server_oneoff_slot", "server_wait_noted",
+                 # Ц1: с какого часа сайт лежит, почему, ушло ли уведомление
+                 "gh_down_first", "gh_down_why", "gh_down_noted")
 
 _4XX = re.compile(r"\bHTTP 4\d\d\b")
 
@@ -411,8 +449,13 @@ def site_verdicts(rows, parsed: dict | None = None,
             continue
         failed = [r for r in items if row_failed(r)]
         if failed:
-            why = " ".join(f"{failed[0].get('итог')}: {failed[0].get('почему') or ''}".split())
-            out[domain] = {"итог": "fail", "почему": why[:160]}
+            # Ц1/Ц2: блокирует хоть одна страница — сайт жив и закрылся
+            # (ban); иначе он лежит (down)
+            banned = [r for r in failed if redo.row_class(r) == "ban"]
+            first = (banned or failed)[0]
+            why = " ".join(f"{first.get('итог')}: {first.get('почему') or ''}".split())
+            out[domain] = {"итог": "fail", "почему": why[:160],
+                           "класс": "ban" if banned else "down"}
     return out
 
 
@@ -430,15 +473,31 @@ def is_mass(rows, verdicts: dict, never=frozenset()) -> bool:
 
 def apply_probe(config: dict, verdict: dict, crawl: str, now: datetime) -> str:
     """П1: учесть итог сайта в сборе `crawl`. Возвращает событие:
-    reset — серия обнулена; fail — срыв засчитан (+1); same — срыв этого
-    сбора уже засчитан; "" — менять нечего."""
+    reset — серия обнулена; fail — срыв «блокирует» засчитан (+1); same —
+    срыв этого сбора уже засчитан; down — сайт лёг (первый раз в серии);
+    down3 — лежит `DOWN_NOTE_HOURS` подряд, пора сказать владельцу (один раз
+    на серию); "" — менять нечего."""
     if verdict.get("итог") == "ok":
-        had = bool(config.get("gh_fail_streak"))
+        had = bool(config.get("gh_fail_streak") or config.get("gh_down_first"))
         for key in STREAK_FIELDS:
             config.pop(key, None)
         return "reset" if had else ""
     if verdict.get("итог") != "fail" or not crawl:
         return ""
+    if verdict.get("класс") == "down":                         # Ц1
+        first = parse_stamp(config.get("gh_down_first"))
+        if first is None:
+            config["gh_down_first"] = stamp(now)
+            config["gh_down_why"] = verdict.get("почему") or ""
+            return "down"
+        config["gh_down_why"] = verdict.get("почему") or ""
+        if not config.get("gh_down_noted") \
+                and now - first >= timedelta(hours=DOWN_NOTE_HOURS):
+            config["gh_down_noted"] = stamp(now)
+            return "down3"
+        return ""
+    for key in ("gh_down_first", "gh_down_why", "gh_down_noted"):
+        config.pop(key, None)              # блокирует — значит, не лежит
     if str(config.get("gh_fail_last_slot") or "") == crawl:
         return "same"
     streak = int(config.get("gh_fail_streak") or 0) + 1
@@ -447,6 +506,7 @@ def apply_probe(config: dict, verdict: dict, crawl: str, now: datetime) -> str:
         config["gh_fail_first"] = stamp(now)
     config["gh_fail_last_slot"] = crawl
     config["gh_fail_why"] = verdict.get("почему") or ""
+    config["gh_fail_at"] = stamp(now)                          # Ц3
     return "fail"
 
 
@@ -511,14 +571,25 @@ def after_import(conn, report_path, who: str = "",
         streak = int(config.get("gh_fail_streak") or 0)
         if event == "reset":
             said.append(f"{source['domain']}: дался GitHub — счёт срывов обнулён")
+        elif event == "down":
+            said.append(f"{source['domain']}: сайт лежит ({config.get('gh_down_why')}) "
+                        f"— сервер и читалки не трогаю, жду")
+        elif event == "down3":
+            text = (f"{source['domain']}: не открывается трое суток (с "
+                    f"{day_month(config.get('gh_down_first'))}) — сайт лежит или "
+                    f"до него нет связи ({config.get('gh_down_why')}). Сервер и "
+                    f"читалки не трогаю: лежащему сайту они не помогут. "
+                    f"Взгляните, жив ли сайт и не сменил ли он адрес")
+            note(conn, text)
+            said.append(text)
         else:
-            said.append(f"{source['domain']}: не дался GitHub {sites_word(streak)} "
-                        f"подряд ({config.get('gh_fail_why')})")
+            said.append(f"{source['domain']}: блокирует GitHub и читалки "
+                        f"{sites_word(streak)} подряд ({config.get('gh_fail_why')})")
         if event == "fail" and streak == FAILS_TO_MOVE:
-            note(conn, f"{source['domain']}: {sites_word(streak)} подряд не дался "
-                       f"GitHub (последний раз: {config.get('gh_fail_why')}) — утром "
-                       f"(06:40) сервер проверит его одним адресом; откроется "
-                       f"серверу — переведу сайт на сервер")
+            note(conn, f"{source['domain']}: {sites_word(streak)} подряд блокирует "
+                       f"GitHub и читалки (последний раз: {config.get('gh_fail_why')}) "
+                       f"— в ближайшие полтора часа сервер проверит его одним "
+                       f"адресом; откроется серверу — переведу сайт на сервер")
     if kind == "сбор":
         said += apply_return_probe(conn, report.get(SECTION), now)
     return said
@@ -641,8 +712,9 @@ def check_refusal(taken: int, today: int, free: int | None,
 def decide_check(domain: str, config: dict, row: dict) -> tuple[str, str]:
     """П2: итог проверки одним адресом с сервера → (действие, слова).
     move — сервер скачал страницу с расписанием: переводим;
-    alarm — не скачал, первый раз в серии: ТРЕВОГА (письмо владельцу);
-    stay — не скачал, тревога в серии уже была: строка без тревоги."""
+    down — серверу сайт не ответил (таймаут, 5xx): лёг, тревоги нет (Ц5);
+    alarm — сервер тоже получил блокировку, первый раз в серии: ТРЕВОГА;
+    stay — блокировка, тревога в серии уже была: строка без тревоги."""
     streak = int(config.get("gh_fail_streak") or 0)
     github = f"{sites_word(streak)} подряд не дался GitHub ({config.get('gh_fail_why') or '—'})"
     if row.get("итог") == OK:
@@ -652,11 +724,15 @@ def decide_check(domain: str, config: dict, row: dict) -> tuple[str, str]:
                         f"раз в неделю GitHub пробует его одним адресом — "
                         f"откроется, сайт вернётся на GitHub сам")
     server = " ".join(f"{row.get('итог') or 'не дошли'}: {row.get('почему') or ''}".split())[:160]
+    if redo.row_class(row) != "ban":
+        # Ц5: серверу сайт ответил таймаутом или 5xx — «лёг», тревоги нет
+        return "down", (f"{domain}: {github}, а для сервера сайт сейчас лежит "
+                        f"({server}) — жду, тревоги нет")
     if not config.get("server_fail_alarm"):
-        return "alarm", (f"ТРЕВОГА — {domain} не отвечает ни GitHub ({github}), "
-                         f"ни серверу ({server}): переводить некуда, расписания "
-                         f"с сайта нет. Нужен ваш взгляд — сайт лёг, сменил "
-                         f"адрес или закрылся для всех дата-центров")
+        return "alarm", (f"ТРЕВОГА — {domain} жив, но не пускает ни GitHub и "
+                         f"читалки ({github}), ни сервер ({server}): переводить "
+                         f"некуда, расписания с сайта нет. Нужен ваш взгляд — "
+                         f"сайт закрылся для всех дата-центров")
     return "stay", (f"{domain}: всё ещё не отвечает ни GitHub ({github}), ни "
                     f"серверу ({server}); письмо об этом уходило "
                     f"{day_month(config['server_fail_alarm'])}")
@@ -774,6 +850,9 @@ def server_turn(conn, now: datetime, fetch_one, plan_sources: dict,
         if action == "alarm":
             config["server_fail_alarm"] = stamp(now)
         save_config(conn, cand["id"], config)
+        if action == "down":               # Ц5: лёг — только журнал
+            said.append(text)
+            continue
         if action == "move" and len(auto_moved(conn)) >= AUTO_MOVED_MAX:
             capped.append(domain)          # потолок: ТРЕВОГА одна, после цикла
             continue
@@ -784,6 +863,133 @@ def server_turn(conn, now: datetime, fetch_one, plan_sources: dict,
     if capped:
         said.append(cap_note(conn, capped, auto_moved(conn), now))
     return said
+
+
+# ── Ц3–Ц6. ход сервера по зову сторожа (книга 118) ──────────────────────────
+
+def oneoff_due(conn, now: datetime) -> list[dict]:
+    """Ц3/Ц4: сайты, которым пора сделать ход сервера: счёт «блокирует» ≥ 1,
+    не `by_server`, не решённые владельцем; за этот сбор (`gh_fail_last_slot`)
+    сервер ещё не ходил (`server_oneoff_slot`); с заливки сбора прошло
+    `ONEOFF_AFTER_MINUTES`. Порядок — по домену."""
+    out = []
+    for source in schedule_sources(conn):
+        config = load_config(source)
+        if config.get("by_server") or owner_decided(source, config):
+            continue
+        streak = int(config.get("gh_fail_streak") or 0)
+        slot = str(config.get("gh_fail_last_slot") or "")
+        if streak < 1 or not slot or str(config.get("server_oneoff_slot") or "") == slot:
+            continue
+        at = parse_stamp(config.get("gh_fail_at")) or parse_stamp(config.get("gh_fail_first"))
+        if at is not None and now - at < timedelta(minutes=ONEOFF_AFTER_MINUTES):
+            continue
+        out.append({"id": source["id"], "domain": source["domain"],
+                    "config": config, "streak": streak, "slot": slot})
+    out.sort(key=lambda c: c["domain"])
+    return out
+
+
+def oneoff_words(domain: str, config: dict, result: dict) -> tuple[str, str]:
+    """Ц3/Ц5: итог разового сбора сайта с сервера → (действие, слова).
+    `result` — {итог: ok | ban | down, почему}.
+    note — собран: уведомление; alarm — сервер тоже заблокирован, первый
+    раз в серии: ТРЕВОГА; stay — заблокирован, тревога уже была; down —
+    серверу сайт не ответил: только журнал."""
+    why = config.get("gh_fail_why") or "—"
+    server = " ".join(str(result.get("почему") or "").split())[:160] or "—"
+    if result.get("итог") == "ok":
+        return "note", (f"{domain}: GitHub и читалки сайт не пустили ({why}) — "
+                        f"расписание собрано РАЗОВО С СЕРВЕРА. Сайт остаётся на "
+                        f"GitHub: следующий сбор снова попробует GitHub и читалки; "
+                        f"не пустят второй раз подряд — сайт перейдёт на сервер")
+    if result.get("итог") == "ban":
+        if not config.get("server_fail_alarm"):
+            return "alarm", (f"ТРЕВОГА — {domain} жив, но не пускает ни GitHub и "
+                             f"читалки ({why}), ни сервер ({server}): расписания "
+                             f"с сайта нет. Нужен ваш взгляд — сайт закрылся для "
+                             f"всех дата-центров")
+        return "stay", (f"{domain}: всё ещё не пускает ни GitHub ({why}), ни сервер "
+                        f"({server}); письмо об этом уходило "
+                        f"{day_month(config['server_fail_alarm'])}")
+    return "down", (f"{domain}: GitHub блокирует ({why}), а серверу сайт не ответил "
+                    f"({server}) — считаю, что лёг; жду, тревоги нет")
+
+
+def server_step(conn, now: datetime, crawl_site, fetch_one, plan_sources: dict,
+                set_mode, busy: str = "", free=free_mb) -> list[str]:
+    """Ц3–Ц6: ход сервера по сайтам, которые блокируют GitHub и читалки.
+    Зовёт сторож раз в 15 минут (`crawl_watch.py`) под замком заливки.
+    `crawl_site(домен, дней)` → {итог: ok | ban | down, почему} — сбор
+    ОДНОГО сайта с сервера с заливкой в базу (`server_crawl.собрать_сайт`);
+    `fetch_one`, `plan_sources`, `set_mode`, `free` — как у `server_turn`;
+    `busy` — идёт заливка: молча ждём следующего захода сторожа.
+    Порядок по сайту:
+      1. отметить, что за этот сбор сервер ходил (`server_oneoff_slot`) —
+         сбой посреди хода не зациклит его на каждые 15 минут;
+      2. счёт < `FAILS_TO_MOVE` — разовый сбор (Ц3), слова — `oneoff_words`;
+      3. счёт ≥ `FAILS_TO_MOVE` — проверка одним адресом и перевод (П2,
+         `server_turn`); перевёлся — сразу сбор сайта с сервера (Ц4).
+    Возвращает строки журнала."""
+    queue = oneoff_due(conn, now)
+    if not queue or busy:
+        return []
+    said = []
+    today = checks_today(conn, now)
+    taken = 0
+    for cand in queue:
+        domain, config = cand["domain"], cand["config"]
+        refusal = check_refusal(taken, today, free())
+        if refusal:
+            text = (f"ход сервера по {domain} откладываю — {refusal}; "
+                    f"попробую снова при следующем заходе сторожа (раз в 15 минут)")
+            # владельцу — одна строка на сбор, а не каждые 15 минут: иначе
+            # сайт остался бы без сбора молча (сервер на 1 ГБ, 14.11.2026)
+            if str(config.get("server_wait_noted") or "") != cand["slot"] and taken == 0:
+                config["server_wait_noted"] = cand["slot"]
+                save_config(conn, cand["id"], config)
+                note(conn, text)
+            said.append(text)
+            break
+        config["server_oneoff_slot"] = cand["slot"]             # шаг 1
+        save_config(conn, cand["id"], config)
+        taken += 1
+        today += 1
+        depth = server_depth({"moved_by": "auto"})
+        if cand["streak"] >= FAILS_TO_MOVE:                     # шаг 3
+            said += server_turn(conn, now, fetch_one, plan_sources, set_mode,
+                                only=domain, limit=1, free=free)
+            row = conn.execute("SELECT selector_config FROM sources WHERE id = ?",
+                               (cand["id"],)).fetchone()
+            if load_config(row).get("by_server"):
+                result = _crawl(crawl_site, domain, depth)
+                said.append(f"{domain}: после перевода сразу собран с сервера — "
+                            f"{result.get('итог')} {result.get('почему') or ''}".strip())
+            continue
+        result = _crawl(crawl_site, domain, depth)              # шаг 2
+        remember_check(conn, domain, {"итог": OK if result.get("итог") == "ok"
+                                      else "не открылась",
+                                      "почему": result.get("почему") or ""}, now)
+        action, text = oneoff_words(domain, config, result)
+        if action == "note":
+            config["server_ok_last"] = stamp(now)
+        if action == "alarm":
+            config["server_fail_alarm"] = stamp(now)
+        if action in ("note", "alarm"):
+            save_config(conn, cand["id"], config)
+        if action != "down":
+            note(conn, text)
+        said.append(text)
+    return said
+
+
+def _crawl(crawl_site, domain: str, depth: int) -> dict:
+    """Сбор сайта с сервера; сбой — как «лёг» (ход не обрываем)."""
+    try:
+        got = crawl_site(domain, depth)
+    except Exception as beda:              # noqa: BLE001 — остальные сайты идут дальше
+        return {"итог": "down", "почему": f"{type(beda).__name__}: {beda}"[:160]}
+    return got if isinstance(got, dict) else {"итог": "down", "почему": "нет итога"}
 
 
 # ── П3. глубина серверного сбора ────────────────────────────────────────────
@@ -999,8 +1205,12 @@ def mark(config: dict) -> str:
     if streak:
         text = f"не дался GitHub {sites_word(streak)} подряд"
         if streak >= FAILS_TO_MOVE:
-            text += " — кандидат на перевод, сервер проверит утром"
+            text += " — кандидат на перевод, сервер проверит в ближайшие полтора часа"
+        else:
+            text += " — сервер разово соберёт его сам"
         return text
+    if config.get("gh_down_first"):
+        return f"лежит с {day_month(config.get('gh_down_first'))} — ждём, сервер не трогаем"
     return ""
 
 
