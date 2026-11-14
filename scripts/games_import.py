@@ -34,6 +34,7 @@ from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
                  redo, silence, site_move, sport_question, store, unconfirmed,
                  watch)
 from app import fallback_read                                 # noqa: E402
+from app import moved                                         # noqa: E402
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -290,6 +291,16 @@ def main() -> int:
                     conn, _json.loads(path.read_text(encoding="utf-8")),
                     _сейчас.now(site_move.KYIV).strftime("%Y-%m-%d")):
                 print(f"запасное чтение: {строка_чтения}")
+            # книга 126: сайт перенёс расписание — одна строка на сайт в сутки
+            try:
+                отчёт_сбора = _json.loads(
+                    (path.parent / "report.json").read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                отчёт_сбора = {}
+            for строка_переезда in moved.after_import(
+                    conn, отчёт_сбора if isinstance(отчёт_сбора, dict) else {},
+                    _сейчас.now(site_move.KYIV).strftime("%Y-%m-%d")):
+                print(f"сайт переехал: {строка_переезда}")
             красных = unconfirmed.after_import(
                 conn, _json.loads(path.read_text(encoding="utf-8")))
             if красных:

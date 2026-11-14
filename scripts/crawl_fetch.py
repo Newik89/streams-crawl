@@ -61,6 +61,7 @@ from urllib.parse import urljoin, urlsplit          # noqa: E402
 from app import (crawl, daytime, fetch, protection, reader_chain, redo,   # noqa: E402
                  site_move, timemarks, urls)
 from app.parsers import flashscore_mobi                            # noqa: E402
+from app import moved                                              # noqa: E402
 
 PLAN = ROOT / "data" / "crawl_plan.json"
 
@@ -1056,6 +1057,24 @@ def main() -> int:
             if итог_читалок["сайтов"] or итог_читалок["пропуск"]:
                 читалки_отчёт.update(итог_читалок)
 
+    # Ход «сайт переехал» (книга 126, слово владельца 14.11): у сайта ВСЕ
+    # страницы ответили «такой страницы нет» (404 / 410) — ищем новый адрес
+    # расписания на его главной странице. Правила А1–А7 — в `app/moved.py`.
+    # Идёт отдельно от второго и третьего захода: когда переезжает целый
+    # сайт, упавших страниц бывает больше предела повтора, и заходы не идут
+    переезд_отчёт: dict = {}
+    if not args.urls:
+        def взять_адрес(job):
+            page = fetcher.get_with_fallback(job["url"], locale=job.get("locale") or "en-GB")
+            fresh = {**job, **verdict(page)}
+            if page.ok and fresh["итог"] not in BROKEN:
+                сохранить_страницу(out, job, page, fresh)
+            return page, fresh
+        if moved.moved_sites(report):
+            print("\n" + "=" * 70)
+            print("ход «сайт переехал» — по прежним адресам страниц нет, ищу новые\n")
+            переезд_отчёт = moved.run(report, взять_адрес, redo.job_of, source_settings(plan))
+
     # дозор: помним, когда ходили и чем кончилось; пустил — громкий сигнал
     if probing:
         from datetime import datetime as _dt
@@ -1107,6 +1126,9 @@ def main() -> int:
     # никто — по разделу сервер пишет уведомление и решает про свой ход
     if читалки_отчёт:
         payload["читалки"] = читалки_отчёт
+    # книга 126: раздел «переезд» — сервер пишет по нему уведомление владельцу
+    if переезд_отчёт.get("найдено") or переезд_отчёт.get("не_найдено"):
+        payload[moved.REPORT_KEY] = переезд_отчёт
     code, notes = assess(payload) if strict else (0, [])
     payload["оценка"] = {"код": code, "строки": notes, "строгая": strict}
     (out / "report.json").write_text(
