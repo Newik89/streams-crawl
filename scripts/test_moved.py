@@ -94,6 +94,17 @@ print("А3. Ссылки-кандидаты с главной")
           bool(moved.links('<a href="/shop">Shop</a>', "https://s.tv/", "s.tv", set()))],
          [True, True, True, True, True, True, False])
 
+MOJTV = ('<a href="/tv-program/">TV program</a><a href="/tv-program/bih">BiH</a>'
+         '<a href="/tv-program/srpski">Srpski</a><a href="/tv-program/sportski">Sportski</a>'
+         '<a href="/tv-program/filmski">Filmski</a>')
+проверка("случай mojtv.hr: без подсказки спортивный раздел в первую тройку не попадает",
+         "https://mojtv.hr/tv-program/sportski" in moved.links(MOJTV, "https://mojtv.hr/", "mojtv.hr", set()),
+         False)
+проверка("…с подсказкой прежнего адреса — он первый (в прежнем пути было слово «sportski»)",
+         moved.links(MOJTV, "https://mojtv.hr/", "mojtv.hr", set(),
+                     hint="https://mojtv.hr/tv-program/-2/sportski/2026-11-15.aspx")[0],
+         "https://mojtv.hr/tv-program/sportski")
+
 print("А4–А5. Новый адрес принят, только если свой разборщик прочитал строки")
 reader_chain.parser_rows = lambda job, html, setting=None: 12 if "сетка" in html else 0
 журнал: list = []

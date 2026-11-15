@@ -55,9 +55,113 @@ _UZIVO = re.compile(r"\(\s*UŽIVO\s*\)", re.I)
 _GRID_DATE = re.compile(r"'(\d{1,2})\.(\d{1,2})\.(\d{4})\.? 6:00")
 
 
+#: ── новая разметка (книга 127, с 15.11.2026: сайт переделали за ночь) ──
+#: адрес: /tv-program/sportski/2026-11-16 (был /tv-program/-2/sportski/<дата>.aspx)
+#:   a.channel-logo-slot#channel-logo-62 > img[alt="SK1 tv program"]   — канал
+#:   div.grid-row[data-channel-target="channel-logo-62"]               — его ряд
+#:     div.grid-card[data-time="08:10"]
+#:       span.grid-card-time   `08:10`
+#:       span.grid-card-title  `Nogomet - Liga nacija: France - Turkiye (UŽIVO)`
+#:       span.grid-card-desc   описание (у повторов — «snimka»)
+#: день — в <title>: «Tv program - Sportski - ponedjeljak, 16.11.2026. | MojTV»;
+#: у страницы «сегодня» даты в заголовке нет — берём день из адреса или запроса
+_NEW_MARK = 'class="grid-row"'
+_TITLE_DATE = re.compile(r"<title>[^<]*?(\d{1,2})\.(\d{1,2})\.(\d{4})\.", re.I)
+_URL_DATE = re.compile(r"/(\d{4})-(\d{2})-(\d{2})(?:[/?#]|$)")
+_ALT_TAIL = re.compile(r"\s*tv program\s*$", re.I)
+
+
+def _new_day(html: str, url: str, day: _date | None, tz: str) -> _date:
+    """День новой страницы: из заголовка, иначе из адреса, иначе из запроса."""
+    m = _TITLE_DATE.search(html)
+    if m:
+        return _date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+    m = _URL_DATE.search(url or "")
+    if m:
+        return _date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    return day or daytime.today(tz)
+
+
+def _split_title(title: str) -> tuple[str, str, str, str]:
+    """Заголовок карточки → (чистый заголовок, пара «A - B» или « », лига,
+    вид спорта). Правила:
+      1. «(UŽIVO)» вырезается (эфир определяет вызывающий);
+      2. пара — после ПОСЛЕДНЕГО «: » («Odbojka: Odbojka: Dubrovnik – Dinamo»);
+      3. у гостей хвост после запятой — турнир («Dinamo, SuperSport Superliga…»);
+      4. рубрика до двоеточия: «Nogomet - Liga nacija» → вид спорта «Nogomet»,
+         лига «Liga nacija»; хвост после запятой главнее."""
+    clean = " ".join(_UZIVO.sub("", title).split())
+    head, sep_, rest = clean.rpartition(": ")
+    rest = rest.strip() or clean
+    head = head.split(": ")[0].strip() if sep_ else ""
+    sport, _, rubric = head.partition(" - ")
+    pair, league = " ", rubric.strip()
+    for sep in (" - ", " – "):
+        if sep in rest:
+            home, _, away = rest.partition(sep)
+            away, _, tail = away.partition(", ")
+            if home.strip() and away.strip():
+                pair = f"{home.strip()} - {away.strip()}"
+                league = tail.strip() or league
+            break
+    return clean, pair, league, sport.strip()
+
+
+def _parse_new(html: str, day: _date | None, tz: str, url: str) -> list[Program]:
+    """Разбор новой разметки (книга 127). Каналы — только из `KEEP`."""
+    zone = ZoneInfo(tz)
+    day = _new_day(html, url, day, tz)
+    tree = HTMLParser(html)
+    names = {}
+    for slot in tree.css("a.channel-logo-slot"):
+        img = slot.css_first("img")
+        alt = _ALT_TAIL.sub("", (img.attributes.get("alt") or "") if img else "").strip()
+        names[slot.attributes.get("id") or ""] = KEEP.get(alt)
+    out: list[Program] = []
+    for row in tree.css("div.grid-row"):
+        channel = names.get(row.attributes.get("data-channel-target") or "")
+        if not channel:
+            continue
+        for card in row.css("div.grid-card"):
+            time_node = card.css_first(".grid-card-time")
+            title_node = card.css_first(".grid-card-title")
+            hm = _HHMM.match((time_node.text(strip=True) if time_node else "")
+                             or (card.attributes.get("data-time") or ""))
+            title = title_node.text(strip=True) if title_node else ""
+            if not hm or not title:
+                continue
+            desc_node = card.css_first(".grid-card-desc")
+            desc = " ".join((desc_node.text() if desc_node else "").split())
+            live = bool(_UZIVO.search(title) or _UZIVO.search(desc))
+            clean, pair, league, sport = _split_title(title)
+            out.append(Program(
+                channel_raw=channel, title=clean,
+                start=datetime(day.year, day.month, day.day,
+                               int(hm.group(1)), int(hm.group(2)), tzinfo=zone),
+                raw_time=hm.group(0),
+                description=_UZIVO.sub("", desc).strip()[:200],
+                # лига: хвост после запятой или рубрика, а нет их — описание
+                # карточки (как «хвост после <br>» в прежней разметке)
+                league_raw=(league or _UZIVO.sub("", desc).strip())[:120]
+                if pair != " " else "",
+                sport_raw=sport[:60],
+                live_raw="uživo" if live else "",
+                match_raw=pair, source_url=url,
+                extra={"day": day.isoformat()},
+            ))
+    # ряды каналов идут друг за другом, у каждого сутки 06:00 → 06:00:
+    # полночь считаем по каждому каналу отдельно
+    result: list[Program] = []
+    for name in dict.fromkeys(p.channel_raw for p in out):
+        result += daytime.walk_programs([p for p in out if p.channel_raw == name], day, tz)
+    return result
+
+
 @register(DOMAIN)
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
+    if _NEW_MARK in html:
+        return _parse_new(html, day, tz or TZ, url)
     zone = ZoneInfo(tz or TZ)
     gd = _GRID_DATE.search(html)
     if gd:
