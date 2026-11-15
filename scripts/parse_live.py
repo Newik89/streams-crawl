@@ -1203,7 +1203,10 @@ def main() -> int:
     срезы: dict[str, dict] = {}
     for domain, programs in pages:
         for r in pipeline.run(programs, markers, sports, league_sports,
-                              pair_sports, judge, domain=domain):
+                              pair_sports, judge, domain=domain,
+                              # книга 138, Т5: сайт эфир не помечает вовсе
+                              guess_site=_bare_domain(domain)
+                              in REPEAT_GUESS_DOMAINS):
             if (r.program.extra or {}).get(pipeline.TITLE_PAIR):
                 сайт = _bare_domain(domain)
                 из_заголовка[сайт] = из_заголовка.get(сайт, 0) + 1
@@ -1566,6 +1569,11 @@ def main() -> int:
         # местные написания эталона — как у футбола (07.10); и «спроси
         # эталон» (правило (в)) — тоже как у футбола
         if _in_reference_local(r, r.sport) or _confirmed(r):
+            return True
+        # книга 138: трансляция турнира одним куском — пары у неё нет по
+        # определению; эфир подтверждён, если рядом с показом в эталоне
+        # начинается матч этого турнира (`pipeline.tournament_whole`)
+        if ((r.program.extra or {}).get(pipeline.TOURNAMENT) or {}).get("эталон"):
             return True
         for h, a, t, sp in reference_bt:
             if sp != r.sport:

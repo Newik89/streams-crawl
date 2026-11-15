@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 
@@ -100,54 +101,176 @@ def _dict_cities(path: Path | None = None) -> dict[str, tuple[str, ...]]:
             if city != "_" and isinstance(words, list)}
 
 
+#: книга 138: с такого числа теннисных матчей эталон «богат» — по нему можно
+#: судить, что турнира в эти дни НЕТ (тот же порог, что у фильтра повторов
+#: без эталона в `scripts/parse_live.py`)
+RICH = 40
+
+
+def _name_parts(name: str) -> tuple[list[str], str]:
+    """Двойное имя турнира в эталоне — «событие - город»: «Finals - Turin» →
+    (["Finals"], "Turin"). Обычное имя («Beijing») → ([], "Beijing")."""
+    parts = [p.strip() for p in (name or "").split(" - ") if p.strip()]
+    if len(parts) > 1:
+        return parts[:-1], parts[-1]
+    return [], (name or "").strip()
+
+
 def tournaments(reference: list | None = None) -> dict:
-    """Что известно о городах турниров: словарь `tournament_cities` плюс
-    эталон flashscore (английское имя и написания на его языках).
-    Возвращает {"cities": {город: шаблон}, "tours": {город: {туры}}} —
-    считается один раз на разбор и передаётся в `tournament`."""
+    """Что известно о турнирах: словарь `tournament_cities` плюс эталон
+    flashscore (английское имя и написания на его языках). Считается один
+    раз на разбор и передаётся в `key` / `tournament`. Возвращает:
+
+      "cities"  {город: шаблон слов города};
+      "events"  {город: шаблон слов события} — у двойных имён эталона
+                («Finals - Turin»: событие «Finals», «Итоговый турнир»,
+                «Turnaj mistrů»); город такого имени («Turin», «Torino»,
+                «Турин») идёт в "cities" (книга 138);
+      "tours"   {город: {туры}} — только турниры эталона;
+      "starts"  {(тур, город): [начала матчей по Киеву]} — книга 138;
+      "matches" сколько теннисных матчей в эталоне всего."""
+    dict_cities = _dict_cities()
     words: dict[str, set[str]] = {c: set(w) | {c.lower()}
-                                  for c, w in _dict_cities().items()}
+                                  for c, w in dict_cities.items()}
+    events: dict[str, set[str]] = {}
     tours: dict[str, set[str]] = {}
+    starts: dict[tuple[str, str], list[datetime]] = {}
+    matches = 0
     for ref in reference or []:
         if not isinstance(ref, dict) or ref.get("sport") != "T":
             continue
+        matches += 1
         tour, city = _city_of(ref.get("league") or "")
         if not city:
             continue
         tours.setdefault(city, set()).add(tour)
+        try:
+            starts.setdefault((tour, city), []).append(
+                datetime.fromisoformat(ref.get("start_kyiv") or ""))
+        except ValueError:
+            pass
         bag = words.setdefault(city, set())
-        bag.add(city.lower())
-        for local in (ref.get("leagues") or {}).values():
-            _, local_city = _city_of(local or "")
-            if local_city:
-                bag.add(local_city.lower())
-    return {"cities": {c: _pattern(w) for c, w in words.items()}, "tours": tours}
+        event_bag = events.setdefault(city, set())
+        local = [_city_of(x or "")[1] for x in (ref.get("leagues") or {}).values()]
+        for name in [city] + [x for x in local if x]:
+            bag.add(name.lower())
+            event, place = _name_parts(name)
+            if event:
+                bag.add(place.lower())
+                bag.update(dict_cities.get(place) or ())
+                event_bag.update(x.lower() for x in event)
+    return {"cities": {c: _pattern(w) for c, w in words.items()},
+            "events": {c: _pattern(w) for c, w in events.items() if w},
+            "tours": tours, "starts": starts, "matches": matches}
+
+
+def _tour_in(text: str) -> str | None:
+    """Тур, названный в тексте: «Challenger», «WTA» или «ATP»; "" — не
+    назван; None — названы и ATP, и WTA сразу (сводить нельзя)."""
+    if _CHALLENGER.search(text):
+        return "Challenger"
+    wta, atp = bool(_WTA.search(text)), bool(_ATP.search(text))
+    if wta and atp:
+        return None
+    return "WTA" if wta else "ATP" if atp else ""
+
+
+def key(text: str, known: dict) -> tuple[str, str]:
+    """(тур, город) турнира по заголовку сайта; не узнан — ("", "").
+
+    Правила по порядку:
+      1. Названы и ATP, и WTA («ATP 500 Tokyo & WTA 1000 + ATP 500 Peking») —
+         не сводим.
+      2. Город ищется по словарю и эталону (`known["cities"]`).
+      3. Города нет, а тур назван — ищется слово события из двойного имени
+         эталона («Finals» у «Finals - Turin»), и только у турниров
+         названного тура: «ATP Finals» → Турин, «WTA Finals» → свой город,
+         а «Davis Cup Finals» без тура — ничей (книга 138).
+      4. Нашлось несколько, тур назван — остаются турниры этого тура из
+         эталона: город словаря и турнир эталона с тем же городом — одно.
+      5. Остался ровно один — он; иначе не сводим: города нет, в блоке два
+         города, либо не понять, какой из двух.
+      6. Тур — названный в тексте; не назван — единственный тур этого
+         города в эталоне (в городе играют и ATP, и WTA — не сводим)."""
+    text = greek_plain(text or "")
+    named = _tour_in(text)
+    if named is None:                                                    # 1
+        return "", ""
+    tours = known.get("tours") or {}
+    found = [city for city, pattern in known["cities"].items()          # 2
+             if pattern and pattern.search(text)]
+    if not found and named:                                              # 3
+        found = [city for city, pattern in (known.get("events") or {}).items()
+                 if pattern and pattern.search(text)
+                 and named in (tours.get(city) or ())]
+    if len(found) > 1 and named:                                         # 4
+        found = [city for city in found if named in (tours.get(city) or ())]
+    if len(found) != 1:                                                  # 5
+        return "", ""
+    city = found[0]
+    tour = named
+    if not tour:                                                         # 6
+        here = tours.get(city) or set()
+        if len(here) != 1:
+            return "", ""
+        tour = next(iter(here))
+    return tour, city
 
 
 def tournament(text: str, known: dict) -> str:
     """Имя турнира для сведения («ATP Beijing») по заголовку сайта. Пусто —
-    сводить нельзя: города нет в словаре и эталоне, в блоке два города или
-    два тура («ATP 500 Tokyo & WTA 1000 + ATP 500 Peking»), либо тур не
-    назван, а в городе в эту неделю играют и ATP, и WTA."""
+    сводить нельзя (правила — в `key`)."""
+    tour, city = key(text, known)
+    return f"{tour} {city}" if city else ""
+
+
+# ── книга 138: турнир назван одним куском, пары нет вовсе ────────────────────
+# Правило 04.10 выше берёт трансляцию турнира, когда заголовок делится по тире
+# на «пару» («ATP 500 Tokyo - 1/4 Finale»). Заголовок одним куском («ATP FINALS
+# 2026», «Tenis ATP Torino 2026», «Nitto ATP Finals: Торино») пары не даёт и
+# отсеивался как «не видно пары команд»: на сборе 15.11 — 240 прямых эфиров на
+# 20 сайтах (владелец 15.11: «теннис, если нет имён, попадает просто названием
+# турнира — это уже было решено»). Сами правила — `pipeline.tournament_whole`,
+# здесь — три вопроса, на которые они опираются.
+
+@lru_cache(maxsize=4)
+def _sport_words(path: Path | None = None) -> re.Pattern | None:
+    """Слова самого вида спорта («tenis», «теннис», «τένις») — раздел
+    `sport` → `T` → «вид спорта» того же `data/markers.json`."""
+    data = json.loads((path or MARKERS_FILE).read_text(encoding="utf-8"))
+    node = (data.get("sport") or {}).get("T") or {}
+    return _pattern(_flatten(node.get("вид спорта")))
+
+
+def names_tournament(text: str) -> bool:
+    """В тексте назван турнир, а не один лишь вид спорта: кроме слова
+    «теннис» есть слово тура или турнира («ATP», «Open», «Masters»), стадия
+    или год. «Tenis» — нет; «Tenis ATP Torino 2026» — да."""
     text = greek_plain(text or "")
-    found = [city for city, pattern in known["cities"].items()
-             if pattern and pattern.search(text)]
-    if len(found) != 1:
-        return ""
-    city = found[0]
-    if _CHALLENGER.search(text):
-        tour = "Challenger"
-    else:
-        wta, atp = bool(_WTA.search(text)), bool(_ATP.search(text))
-        if wta and atp:
-            return ""
-        tour = "WTA" if wta else "ATP" if atp else ""
-    if not tour:
-        here = known["tours"].get(city) or set()
-        if len(here) != 1:
-            return ""
-        tour = next(iter(here))
-    return f"{tour} {city}"
+    sport = _sport_words()
+    if sport:
+        text = sport.sub(" ", text)
+    return _side(text)
+
+
+def played(tournament_key: tuple[str, str], known: dict) -> bool:
+    """Турнир идёт: в эталоне есть хоть один его матч."""
+    return bool((known.get("starts") or {}).get(tournament_key))
+
+
+def starts_near(tournament_key: tuple[str, str], start: datetime | None,
+                known: dict) -> bool:
+    """Показ — эфир турнира: в эталоне есть матч этого турнира, который
+    начинается рядом с началом показа. Окно то же, что у пар
+    (`reference.LIVE_SHOW_BEFORE/AFTER`): матч начинается не раньше 15 минут
+    до показа и не позже часа после него."""
+    from .reference import LIVE_SHOW_AFTER, LIVE_SHOW_BEFORE
+    if start is None:
+        return False
+    if start.tzinfo is not None:
+        start = start.replace(tzinfo=None)
+    return any(-LIVE_SHOW_AFTER <= (begins - start) <= LIVE_SHOW_BEFORE
+               for begins in (known.get("starts") or {}).get(tournament_key) or ())
 
 
 @lru_cache(maxsize=4)

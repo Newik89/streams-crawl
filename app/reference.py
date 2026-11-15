@@ -189,6 +189,8 @@ class Reference:
         self._slots: Counter | None = None
         #: записи по времени — для окна эфира в `confirm`
         self._by_time: list[tuple[datetime, int]] | None = None
+        #: книга 138: теннисные турниры эталона (`tournaments`)
+        self._tournaments: dict | None = None
         for entry in entries or []:
             try:
                 start = datetime.fromisoformat(entry.get("start_kyiv") or "")
@@ -218,6 +220,16 @@ class Reference:
 
     def __len__(self) -> int:
         return len(self._entries)
+
+    def tournaments(self) -> dict:
+        """Книга 138: что эталон и словарь знают о теннисных турнирах —
+        города, туры, начала матчей (`broadcast.tournaments`). Считается
+        один раз на эталон."""
+        if self._tournaments is None:
+            from . import broadcast
+            self._tournaments = broadcast.tournaments(
+                [entry for entry, _start in self._entries])
+        return self._tournaments
 
     def may_know(self, home: str, away: str) -> bool:
         """Книга 133: стоит ли пробовать срезы слов у этой пары. Да, если

@@ -31,7 +31,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from . import daytime, leagues, live, names, site_lang, sport
+from . import broadcast, daytime, leagues, live, names, site_lang, sport
 from .parsers import Program
 from . import canon
 from .reference import MARKS_HOW, Confirmed, Reference, _strip_marks
@@ -95,6 +95,13 @@ def hint_fresh(day: str | None, start_kyiv: datetime | None) -> bool:
 #: сказал «эфир» или пара не прочиталась. Слово записи, студия и стоп-слово —
 #: прямые слова сайта, их не трогаем
 ASK_REFERENCE_REASONS = ("нет маркера прямого эфира", "не видно пары команд")
+#: книга 138: причины отсева строки без пары (их пишет `live.check`)
+NO_PAIR = "не видно пары команд"
+NO_LIVE = "нет маркера прямого эфира"
+#: книга 138: пометка строки «трансляция турнира одним куском» —
+#: {"тур": …, "город": … (пусто — турнир не узнан), "эталон": рядом с
+#: показом в эталоне начинается матч этого турнира}
+TOURNAMENT = "турнир"
 #: книга 095 (#9541): сторона пары совпала с именем канала — заставка канала
 CHANNEL_SIDE = "сторона пары — имя канала"
 
@@ -637,16 +644,108 @@ def ask_reference(program: Program, verdict: live.Verdict,
                          home=home, away=away), got)
 
 
+def tournament_whole(program: Program, verdict: live.Verdict,
+                     sports: sport.Sports, reference: Reference | None,
+                     start_kyiv: datetime | None,
+                     guess_site: bool = False,
+                     markers: live.Markers | None = None) -> live.Verdict | None:
+    """Книга 138: теннис, турнир назван ОДНИМ КУСКОМ — пары в строке нет.
+
+    Решение владельца 04.10: трансляцию турнира без игроков показываем
+    названием турнира (`app/broadcast.py`). Оно работало, только когда
+    заголовок делился по тире на «пару» («ATP 500 Tokyo - 1/4 Finale»).
+    «ATP FINALS 2026», «Tenis ATP Torino 2026», «Nitto ATP Finals: Торино»
+    пары не дают — строка отсеивалась как «не видно пары команд»: на сборе
+    15.11 так терялись 240 прямых эфиров на 20 сайтах (слово владельца 15.11:
+    «теннис, если нет имён, попадает просто названием турнира — это уже было
+    решено»).
+
+    Правила по порядку:
+      Т1. Только строка без пары: причина отсева — «не видно пары команд»
+          (сайт сам пометил прямой эфир) или «нет маркера прямого эфира».
+          Слово записи, студию и стоп-слово сайт сказал прямо — такие строки
+          сюда не доходят (`live.check`). Там слово записи ищется в
+          пометках и описании; здесь — ещё и в самом заголовке, рубрике и
+          лиге: «ATP Finals (herhaling)» со значком эфира — запись.
+      Т2. Строка — теннис по тому, что сайт пишет о событии сам: заголовок,
+          рубрика, лига. Описание не читаем: там свободный текст.
+      Т3. В этих же полях назван турнир, а не один лишь вид спорта
+          (`broadcast.names_tournament`): слово тура или турнира, стадия, год.
+      Т0. Игроки в строке названы — это показ матча, а не турнира: хоть одна
+          догадка о паре (`pair_guesses`: поле пары, заголовок, описание)
+          знакома эталону по словам (`Reference.may_know`). Эталон такой
+          показ эфиром не признал (иначе строка сюда бы не дошла) — значит,
+          это запись: «Nitto ATP Finals: Shelton - Fils» у movistarplus.es
+          наутро после матча, в минуту начала чужой встречи (сбор 15.11).
+      Т4. Сайт пометил эфир — берём. Исключение: тур и город узнаны, эталон
+          богат теннисом (`broadcast.RICH`), а этого турнира в нём нет вовсе
+          — турнир сейчас не идёт, это запись («ATP Shanghai» с пометкой
+          эфира в ноябре, tring.al).
+      Т5. Сайт эфир не пометил — берём, только если сайт эфир не помечает
+          вовсе (`guess_site`: `parse_live.REPEAT_GUESS_DOMAINS`), тур и
+          город узнаны и в эталоне есть матч этого турнира, который
+          начинается рядом с показом (`broadcast.starts_near`). Эфир тогда
+          угадан (`live_guess`), подтвердил его эталон. У сайта с честной
+          пометкой строка без пометки — не эфир, эталон её не спасает:
+          матчи турнира идут весь день, и повтор совпал бы с одним из них.
+      Т6. «Пара» строки — название турнира, как написал сайт, и служебная
+          вторая сторона `broadcast.SESSION`. Название — заголовок; если
+          турнир назван не в нём, а в лиге («Finale» + «ATP Finals»), —
+          лига и заголовок. Дальше строки сводит по туру и городу
+          `parse_live` («ATP Finals - Turin»), как и заголовки с тире.
+
+    Что узнано о турнире, кладётся в `program.extra[TOURNAMENT]` — по этой
+    пометке фильтр «угаданный эфир без эталона» не снимает строку (пары у
+    неё нет по определению). Возвращает новый вердикт либо None — тогда
+    строка решается, как раньше."""
+    if verdict.reason not in (NO_PAIR, NO_LIVE):                         # Т1
+        return None
+    title = (program.title or "").strip()
+    league = (program.league_raw or "").strip()
+    head = " ".join(x for x in (title, program.sport_raw, league) if x)
+    if markers is not None and markers.found(markers.not_live, head):    # Т1
+        return None
+    if sports.detect(head)[0] != "T":                                    # Т2
+        return None
+    if not broadcast.names_tournament(head):                             # Т3
+        return None
+    if reference is not None and any(reference.may_know(home, away)      # Т0
+                                     for home, away in pair_guesses(program)):
+        return None
+    known = reference.tournaments() if reference is not None else None
+    found = broadcast.key(head, known) if known else ("", "")
+    near = bool(known and found[1]
+                and broadcast.starts_near(found, start_kyiv, known))
+    if verdict.reason == NO_PAIR:                                        # Т4
+        if known and found[1] and not broadcast.played(found, known) \
+                and known.get("matches", 0) >= broadcast.RICH:
+            return None
+        marker = verdict.live_marker
+    else:                                                                # Т5
+        if not (guess_site and near):
+            return None
+        program.extra["live_guess"] = True
+        marker = REFERENCE_MARKER
+    name = next((text for text in (title, " ".join(x for x in (league, title) if x))
+                 if broadcast.names_tournament(text)), head)              # Т6
+    program.extra[TOURNAMENT] = {"тур": found[0], "город": found[1], "эталон": near}
+    return live.Verdict(True, "", live_marker=marker, home=name,
+                        away=broadcast.SESSION)
+
+
 def classify(program: Program, markers: live.Markers, sports: sport.Sports,
              league_sports: dict[str, str] | None = None,
              pair_sports: dict[str, str] | None = None,
              reference: Reference | None = None,
-             langs: frozenset | None = None) -> Row:
+             langs: frozenset | None = None,
+             guess_site: bool = False) -> Row:
     """`langs` — языки сайта строки (`site_lang.of`, слово владельца 25.10,
     книга 084): служебные слова — пол, эфир, повтор, стоп-слова — ищутся
     только на языке сайта и общие. None — все языки, как раньше. Строку
     читал одолженный разбор (`extra["borrowed"]`) — его язык тоже: он пишет
-    свои пометки по-своему (датский «direkte» у шведского сайта)."""
+    свои пометки по-своему (датский «direkte» у шведского сайта).
+    `guess_site` — сайт эфир не помечает вовсе (книга 138, правило Т5
+    `tournament_whole`)."""
     borrowed = (program.extra or {}).get("borrowed") if langs is not None else ""
     if borrowed:
         own = site_lang.of(borrowed)
@@ -685,12 +784,20 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
             program, verdict, reference, row.start_kyiv, row.league_category,
             stop=lambda words: markers.found(markers.stop_title, words))
         if rescued is None:
-            row.reason = verdict.reason
-            return row
-        verdict, confirmed = rescued
+            # книга 138: пары нет вовсе, а строка — теннисный турнир одним
+            # куском («ATP FINALS 2026») — трансляция турнира без игроков
+            whole = tournament_whole(program, verdict, sports, reference,
+                                     row.start_kyiv, guess_site, markers)
+            if whole is None:
+                row.reason = verdict.reason
+                return row
+            no_pair_reason = verdict.reason
+            verdict = whole
+        else:
+            verdict, confirmed = rescued
+            row.by_reference = confirmed.how
         row.live_marker = verdict.live_marker
         row.home, row.away = verdict.home, verdict.away
-        row.by_reference = confirmed.how
     else:
         # книга 122: пара разборщика эталону незнакома, а в заголовке стоит
         # пара, которую эталон подтверждает, — берём пару заголовка. Эфир
@@ -710,6 +817,9 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
                 verdict = cut
                 row.home, row.away = verdict.home, verdict.away
     rescued = confirmed is not None        # эфир строке дал эталон, не сайт
+    # книга 138: строка — трансляция турнира одним куском; её «пара» —
+    # название турнира и служебная сторона, меток пола и возраста не носит
+    whole_title = TOURNAMENT in (program.extra or {})
     # книга 095 (#9541): сторона пары — имя своего канала («Sport 2 - Program
     # Sportiv» у ipko) — заставка канала, а не матч: ни на витрину, ни в очередь
     if channel_side(program.channel_raw, row.home, row.away, reference):
@@ -718,7 +828,7 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
 
     # Дописываем метку турнира к именам, иначе женский матч склеится с
     # мужским (правило проекта: лишний ` W` лучше потерянного).
-    if row.league_category:
+    if row.league_category and not whole_title:
         row.home = leagues.with_category(row.home, row.league_category)
         row.away = leagues.with_category(row.away, row.league_category)
     # Пол по одной стороне (владелец 28.09, #3535): женская команда с
@@ -726,7 +836,7 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     # женская. Возраст так НЕ переносим: в EFL Trophy «Chelsea U21» честно
     # играет со взрослым Wycombe
     клуб_спорт = ""
-    if row.home and row.away:
+    if row.home and row.away and not whole_title:
         клуб_спорт = leagues.women_team(row.home) or leagues.women_team(row.away)
         женская = [("W" in names.category(x).split()) for x in (row.home, row.away)]
         if any(женская) or клуб_спорт:
@@ -791,6 +901,15 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
                              # (правило 1, раздел «сезоны» markers.json)
                              month=row.start_kyiv.month if row.start_kyiv else 0)
     letter = decision.letter
+    if whole_title and letter != "T":
+        # книга 138, Т2: турнир одним куском берём только теннисом. Полное
+        # решение о виде спорта (с описанием, жанром, месяцем турнира)
+        # сказало иное — строка решается, как раньше: пары нет
+        program.extra.pop(TOURNAMENT, None)
+        program.extra.pop("live_guess", None)
+        row.home = row.away = ""
+        row.reason = no_pair_reason
+        return row
     row.sport_word = decision.word
     row.sport_source = decision.source
     row.sport_rule = decision.rule
@@ -845,7 +964,7 @@ def run(programs, markers: live.Markers | None = None,
         league_sports: dict[str, str] | None = None,
         pair_sports: dict[str, str] | None = None,
         reference: Reference | None = None,
-        domain: str = "") -> list[Row]:
+        domain: str = "", guess_site: bool = False) -> list[Row]:
     """`reference` — эталон flashscore этого обхода (`app/reference.py`).
     Без него правило 2 (`sport.Sports.decide`) молчит, остальные работают."""
     markers = markers or live.load()
@@ -857,5 +976,5 @@ def run(programs, markers: live.Markers | None = None,
     # языки сайта — для словаря служебных слов (книга 084)
     langs = site_lang.of(domain) if domain else None
     return [classify(p, markers, sports, league_sports, pair_sports, reference,
-                     langs)
+                     langs, guess_site)
             for p in programs]
