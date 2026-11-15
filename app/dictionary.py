@@ -156,6 +156,81 @@ def note_error(conn: sqlite3.Connection, alias: str, cls: str,
     return True
 
 
+#: книга 142: ключ настройки базы с городами теннисных турниров, выученными
+#: из эталона сборов ({город: {"tours": [...], "words": [...]}}, текст JSON)
+CITIES_SETTING = "tournament_cities"
+
+
+def learned_cities(conn: sqlite3.Connection) -> dict:
+    """Книга 142: города турниров, которые база уже выучила; пусто — {}."""
+    import json
+    row = conn.execute("SELECT value FROM settings WHERE key = ?", (CITIES_SETTING,)).fetchone()
+    try:
+        data = json.loads(row[0]) if row and row[0] else {}
+    except ValueError:
+        data = {}
+    return data if isinstance(data, dict) else {}
+
+
+def remember_cities(conn: sqlite3.Connection, fresh: dict | None) -> tuple[int, int]:
+    """Книга 142: дописать в базу города турниров (`broadcast.cities_of`
+    эталона сбора или раздел файла словаря). Только добавляет. Город,
+    который эталон показал однажды, остаётся в словаре насовсем: по нему
+    разбор узнаёт турнир, когда тот уже НЕ идёт, — и запись прошлогоднего
+    матча со значком эфира не принимает за трансляцию (`pipeline.
+    tournament_whole`, Т4). → (новых городов, всего городов)."""
+    import json
+    from . import broadcast
+    merged, new = broadcast.merge_cities(learned_cities(conn), fresh)
+    if merged != learned_cities(conn):
+        conn.execute("INSERT INTO settings (key, value) VALUES (?, ?) "
+                     "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+                     (CITIES_SETTING, json.dumps(merged, ensure_ascii=False)))
+        conn.commit()
+    return new, len(merged)
+
+
+#: книга 139: сколько команд помнит одна строка книги (для правила хватает
+#: двух; остальные — чтобы владелец видел, с кем слова встречались)
+SEEN_CAP = 12
+
+
+def remember_beside(conn: sqlite3.Connection, alias: str, cls: str,
+                    lang: str | None, teams) -> int:
+    """Книга 139: дописать к строке книги (alias, lang, class) команды, рядом
+    с которыми слова срезались. Хранится списком JSON в `seen_with`, без
+    повторов, без учёта регистра, не больше `SEEN_CAP`. Строки нет или
+    команд не дали — ничего. → сколько разных команд у строки теперь."""
+    import json
+    from . import pipeline
+    row = conn.execute(
+        "SELECT id, seen_with FROM dictionary_errors WHERE alias = ? AND lang IS ? "
+        "AND class = ?", (alias, lang, cls)).fetchone()
+    if row is None:
+        return 0
+    old = pipeline.seen_teams(row["seen_with"])
+    new = sorted(set(old) | set(pipeline.seen_teams(list(teams or []))))[:SEEN_CAP]
+    if new != old:
+        conn.execute("UPDATE dictionary_errors SET seen_with = ? WHERE id = ?",
+                     (json.dumps(new, ensure_ascii=False), row["id"]))
+    return len(new)
+
+
+def trims_state(conn: sqlite3.Connection) -> tuple[int, int]:
+    """Книга 139: (строк о лишних словах, ставших правилом; строк, что ждут
+    вторую команду) — для строки в журнале заливки."""
+    from . import live, pipeline
+    rule = wait = 0
+    for row in conn.execute(
+            "SELECT answered_by, seen_with FROM dictionary_errors WHERE class IN (?, ?)",
+            (live.KNOWN_HOME, live.KNOWN_AWAY)):
+        if pipeline.book_rule(dict(row)):
+            rule += 1
+        else:
+            wait += 1
+    return rule, wait
+
+
 def note_trims(conn: sqlite3.Connection, trims) -> int:
     """Книга 136 (слово владельца 15.11.2026: «все варианты ошибок должны
     накапливать опыт и решение для всего проекта»; «сайт должен проверить
@@ -173,7 +248,11 @@ def note_trims(conn: sqlite3.Connection, trims) -> int:
       З4. одна строка на (слова, язык, класс) — правило С9 `note_error`;
           в строке сайт, пример «было → стало» и сколько раз встретилось;
       З5. слова без единой буквы («15/11/2026») в книгу не идут: дата
-          завтра будет другой, такое знание не пригодится.
+          завтра будет другой, такое знание не пригодится;
+      З6. книга 139: к строке дописываются команды, рядом с которыми слова
+          срезались («с кем» итога сбора) — `remember_beside`. По числу
+          РАЗНЫХ команд разбор решает, правило это или часть имени одной
+          команды (`pipeline.book_rule`).
     Битый вход (не словарь, запись без полей) пропускается. → новых строк."""
     from . import live, site_lang
     added = 0
@@ -194,6 +273,7 @@ def note_trims(conn: sqlite3.Connection, trims) -> int:
             else:
                 continue
             before, _, after = str(item.get("пример") or "").partition(" → ")
+            beside = item.get("с кем") if isinstance(item.get("с кем"), dict) else {}
             for cls, phrase in parts:
                 phrase = " ".join(phrase.split())
                 if not any(ch.isalpha() for ch in phrase):             # З5
@@ -203,6 +283,9 @@ def note_trims(conn: sqlite3.Connection, trims) -> int:
                         led_to=before or None, truth=after or None,
                         note=f"срезано у пары, раз за сбор: {item.get('раз') or 1}"):
                     added += 1
+                if phrase:                                             # З6
+                    remember_beside(conn, phrase, cls, lang, beside.get(
+                        "перед" if cls == live.KNOWN_HOME else "после"))
     conn.commit()
     return added
 

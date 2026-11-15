@@ -101,6 +101,85 @@ def _dict_cities(path: Path | None = None) -> dict[str, tuple[str, ...]]:
             if city != "_" and isinstance(words, list)}
 
 
+@lru_cache(maxsize=4)
+def _dict_events(path: Path | None = None) -> dict[str, tuple[str, ...]]:
+    """Книга 142: слова события двойного имени («Finals») на языках наших
+    сайтов, которых нет у эталона, — раздел `tournament_events` того же
+    `data/markers.json`. Ключ — событие по-английски, как у flashscore."""
+    data = json.loads((path or MARKERS_FILE).read_text(encoding="utf-8"))
+    return {event: tuple(words) for event, words
+            in (data.get("tournament_events") or {}).items()
+            if event != "_" and isinstance(words, list)}
+
+
+#: книга 142: раздел файла словаря (`data/dictionaries.json`) с городами
+#: турниров, которые сервер выучил из эталона прошлых сборов
+LEARNED_KEY = "tournament_cities"
+DICTIONARIES_FILE = MARKERS_FILE.parent / "dictionaries.json"
+
+
+def cities_of(reference: list | None) -> dict[str, dict]:
+    """Книга 142: города турниров из эталона — что о них стоит запомнить.
+    → {город: {"tours": [туры], "words": [написания на языках эталона]}}.
+    Город — как у flashscore («Stockholm», «Finals - Turin»), слова — в
+    нижнем регистре, без повторов, по алфавиту."""
+    out: dict[str, dict] = {}
+    for ref in reference or []:
+        if not isinstance(ref, dict) or ref.get("sport") != "T":
+            continue
+        tour, city = _city_of(ref.get("league") or "")
+        if not city:
+            continue
+        rec = out.setdefault(city, {"tours": set(), "words": set()})
+        rec["tours"].add(tour)
+        rec["words"].add(city.lower())
+        for local in (ref.get("leagues") or {}).values():
+            local_city = _city_of(local or "")[1]
+            if local_city:
+                rec["words"].add(local_city.lower())
+    return {city: {"tours": sorted(rec["tours"]), "words": sorted(rec["words"])}
+            for city, rec in sorted(out.items())}
+
+
+def merge_cities(known: dict | None, fresh: dict | None) -> tuple[dict, int]:
+    """Книга 142: дописать к выученным городам новые. Только добавляет —
+    ни город, ни написание не пропадают. → (словарь, сколько новых городов)."""
+    out = {city: {"tours": sorted(set(rec.get("tours") or [])),
+                  "words": sorted(set(rec.get("words") or []))}
+           for city, rec in (known or {}).items() if isinstance(rec, dict)}
+    new = 0
+    for city, rec in (fresh or {}).items():
+        if not isinstance(rec, dict):
+            continue
+        if city not in out:
+            new += 1
+            out[city] = {"tours": [], "words": []}
+        out[city] = {"tours": sorted(set(out[city]["tours"]) | set(rec.get("tours") or [])),
+                     "words": sorted(set(out[city]["words"]) | set(rec.get("words") or []))}
+    return dict(sorted(out.items())), new
+
+
+_LEARNED: dict | None = None
+
+
+def learned_cities(path: Path | None = None) -> dict[str, dict]:
+    """Книга 142: города, выученные из эталона прошлых сборов, — раздел
+    `LEARNED_KEY` файла словаря. Файла или раздела нет, файл битый — пусто:
+    тогда о городе знают только словарь `markers.json` и эталон этого сбора."""
+    global _LEARNED
+    if path is None and _LEARNED is not None:
+        return _LEARNED
+    try:
+        data = json.loads((path or DICTIONARIES_FILE).read_text(encoding="utf-8")).get(LEARNED_KEY)
+    except (OSError, ValueError, AttributeError):
+        data = None
+    out = {city: rec for city, rec in (data or {}).items()
+           if isinstance(rec, dict)} if isinstance(data, dict) else {}
+    if path is None:
+        _LEARNED = out
+    return out
+
+
 #: книга 138: с такого числа теннисных матчей эталон «богат» — по нему можно
 #: судить, что турнира в эти дни НЕТ (тот же порог, что у фильтра повторов
 #: без эталона в `scripts/parse_live.py`)
@@ -116,10 +195,20 @@ def _name_parts(name: str) -> tuple[list[str], str]:
     return [], (name or "").strip()
 
 
-def tournaments(reference: list | None = None) -> dict:
-    """Что известно о турнирах: словарь `tournament_cities` плюс эталон
-    flashscore (английское имя и написания на его языках). Считается один
-    раз на разбор и передаётся в `key` / `tournament`. Возвращает:
+def _spellings(word: str) -> set[str]:
+    """Книга 142: слово города или события и то же слово с дефисом вместо
+    пробела и наоборот — «индиан-уэллс» у сайта и «индиан уэллс» у эталона
+    одно и то же («hong kong» и «hong-kong», «monte carlo» и «monte-carlo»)."""
+    word = " ".join((word or "").lower().split())
+    return {word, word.replace("-", " "), word.replace(" ", "-")} - {""}
+
+
+def tournaments(reference: list | None = None, learned: dict | None = None) -> dict:
+    """Что известно о турнирах: словарь `tournament_cities`, города,
+    выученные из эталона прошлых сборов (`learned`; None — из файла словаря,
+    `learned_cities`), и эталон flashscore этого сбора (английское имя и
+    написания на его языках). Считается один раз на разбор и передаётся в
+    `key` / `tournament`. Возвращает:
 
       "cities"  {город: шаблон слов города};
       "events"  {город: шаблон слов события} — у двойных имён эталона
@@ -129,14 +218,40 @@ def tournaments(reference: list | None = None) -> dict:
       "tours"   {город: {туры}} — только турниры эталона;
       "starts"  {(тур, город): [начала матчей по Киеву]} — книга 138;
       "matches" сколько теннисных матчей в эталоне всего."""
-    dict_cities = _dict_cities()
-    words: dict[str, set[str]] = {c: set(w) | {c.lower()}
-                                  for c, w in dict_cities.items()}
+    dict_cities, dict_events = _dict_cities(), _dict_events()
+    words: dict[str, set[str]] = {}
     events: dict[str, set[str]] = {}
+
+    def add(city: str, names) -> None:
+        """Написания города: имя целиком; у двойного имени («событие - город»)
+        город — отдельным словом, событие — в `events` (книга 138); к ним —
+        слова словаря для города и для события (книга 142)."""
+        bag = words.setdefault(city, set())
+        event_bag = events.setdefault(city, set())
+        for name in names:
+            if not name:
+                continue
+            bag |= _spellings(name)
+            event, place = _name_parts(name)
+            if event:
+                bag |= _spellings(place)
+                for word in dict_cities.get(place) or ():
+                    bag |= _spellings(word)
+                for part in event:
+                    event_bag |= _spellings(part)
+                    for word in dict_events.get(part) or ():
+                        event_bag |= _spellings(word)
+
+    for city, extra in dict_cities.items():                # словарь владельца
+        add(city, [city, *extra])
+    if learned is None:
+        learned = learned_cities()
+    for city, rec in (learned or {}).items():              # выучено из эталона
+        add(city, [city, *(rec.get("words") or [])])
     tours: dict[str, set[str]] = {}
     starts: dict[tuple[str, str], list[datetime]] = {}
     matches = 0
-    for ref in reference or []:
+    for ref in reference or []:                            # эталон этого сбора
         if not isinstance(ref, dict) or ref.get("sport") != "T":
             continue
         matches += 1
@@ -149,17 +264,8 @@ def tournaments(reference: list | None = None) -> dict:
                 datetime.fromisoformat(ref.get("start_kyiv") or ""))
         except ValueError:
             pass
-        bag = words.setdefault(city, set())
-        event_bag = events.setdefault(city, set())
-        local = [_city_of(x or "")[1] for x in (ref.get("leagues") or {}).values()]
-        for name in [city] + [x for x in local if x]:
-            bag.add(name.lower())
-            event, place = _name_parts(name)
-            if event:
-                bag.add(place.lower())
-                bag.update(dict_cities.get(place) or ())
-                event_bag.update(x.lower() for x in event)
-    return {"cities": {c: _pattern(w) for c, w in words.items()},
+        add(city, [city] + [_city_of(x or "")[1] for x in (ref.get("leagues") or {}).values()])
+    return {"cities": {c: _pattern(w) for c, w in words.items() if w},
             "events": {c: _pattern(w) for c, w in events.items() if w},
             "tours": tours, "starts": starts, "matches": matches}
 

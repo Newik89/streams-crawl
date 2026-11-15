@@ -31,7 +31,16 @@
   "prize giving",
   "prize-giving",
   "trophy presentation",
-  "medal presentation"
+  "medal presentation",
+  "pre-game",
+  "post-game",
+  "pregame",
+  "postgame",
+  "pre-match",
+  "post-match",
+  "prematch",
+  "postmatch",
+  "build-up"
  ],
  "sq": [
   "drejtpërdrejt",
@@ -102,7 +111,8 @@
   "conferencia de imprensa",
   "cerimónia",
   "cerimônia",
-  "entrega de prémios"
+  "entrega de prémios",
+  "pós-jogo"
  ],
  "es": [
   "en vivo",
@@ -113,7 +123,10 @@
   "entrega de premios",
   "entrega de medallas",
   "previa",
-  "previo"
+  "previo",
+  "post",
+  "postpartido",
+  "prepartido"
  ],
  "es pt": [
   "diferido",
@@ -211,7 +224,11 @@
   "schlussfeier",
   "abschlussfeier",
   "siegerehrung",
-  "preisverleihung"
+  "preisverleihung",
+  "vorbericht",
+  "vorberichte",
+  "nachbericht",
+  "nachberichte"
  ],
  "de sv no da": [
   "dokumentation",
@@ -225,21 +242,28 @@
   "presskonferens",
   "prisutdelning",
   "invigningsceremoni",
-  "medaljceremoni"
+  "medaljceremoni",
+  "uppsnack",
+  "eftersnack",
+  "inför"
  ],
  "sv no da": [
-  "repris"
+  "repris",
+  "efter"
  ],
  "no da": [
   "studie",
   "direkte",
-  "pressekonferanse"
+  "pressekonferanse",
+  "før",
+  "studiet"
  ],
  "da": [
   "genudsendelse",
   "pressekonference",
   "prisuddeling",
-  "åbningsceremoni"
+  "åbningsceremoni",
+  "optakt"
  ],
  "fr": [
   "en direct",
@@ -248,7 +272,9 @@
   "conférence de presse",
   "cérémonie",
   "remise des prix",
-  "remise des médailles"
+  "remise des médailles",
+  "avant-match",
+  "après-match"
  ],
  "it": [
   "diretta",
@@ -298,7 +324,9 @@
   "lehdistötilaisuus",
   "seremonia",
   "avajaisseremonia",
-  "palkintojenjako"
+  "palkintojenjako",
+  "ennakko",
+  "jälkipeli"
  ],
  "et": [
   "otseülekanne",
@@ -352,6 +380,7 @@
  ],
  "no": [
   "prisutdeling",
-  "åpningsseremoni"
+  "åpningsseremoni",
+  "etter"
  ]
 }

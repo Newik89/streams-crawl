@@ -305,10 +305,13 @@ db.init_db()
 conn = db.connect()
 итог_сбора = {"webtv.sk": [
     {"где": live.TRIM_HOME, "срезано": "ligová fáze", "по": "эталон", "раз": 4,
-     "пример": "ligová fáze Finsko - San Marino → Finsko - San Marino"},
+     "пример": "ligová fáze Finsko - San Marino → Finsko - San Marino",
+     # книга 139: слова — правило, когда срезались рядом с двумя разными командами
+     "с кем": {"перед": ["Finsko", "Lotyšsko"], "после": []}},
     {"где": live.TRIM_HOME, "срезано": "Liga majstrov", "по": "книга", "раз": 1, "пример": "x → y"}],
     "tv.orf.at": [{"где": live.TRIM_BOTH, "срезано": "Bundesliga … Das Spiel", "по": "эталон", "раз": 2,
-                   "пример": "Bundesliga Rapid - Sturm Das Spiel → Rapid - Sturm"}]}
+                   "пример": "Bundesliga Rapid - Sturm Das Spiel → Rapid - Sturm",
+                   "с кем": {"перед": ["Rapid", "LASK"], "после": ["Sturm", "Salzburg"]}}]}
 новых = dictionary.note_trims(conn, итог_сбора)
 записи = {(r["alias"], r["class"]): (r["lang"], r["source_domain"], r["truth"]) for r in conn.execute(
     "SELECT * FROM dictionary_errors WHERE class IN (?, ?)", (live.KNOWN_HOME, live.KNOWN_AWAY))}
@@ -326,8 +329,10 @@ conn = db.connect()
           dictionary.note_trims(conn, {"a.tv": "x", "b.tv": [5, {"где": "?"}]})], [0, 0, 0])
 файл = TMP / "dictionaries.json"
 файл.write_text(json.dumps({"dictionary_errors": [
-    {"alias": r["alias"], "lang": r["lang"], "class": r["class"]} for r in conn.execute(
-        "SELECT alias, lang, class FROM dictionary_errors")] + [{"alias": "AEK", "class": "двусмысленно"}, 7]},
+    {"alias": r["alias"], "lang": r["lang"], "class": r["class"],
+     "answered_by": r["answered_by"], "seen_with": r["seen_with"]} for r in conn.execute(
+        "SELECT alias, lang, class, answered_by, seen_with FROM dictionary_errors")]
+    + [{"alias": "AEK", "class": "двусмысленно"}, 7]},
     ensure_ascii=False), encoding="utf-8")
 известное = pipeline.known_trims(файл)
 проверка("книга едет файлом словаря: разбор читает из него только свои классы; битая запись не роняет",
