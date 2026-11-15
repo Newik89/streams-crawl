@@ -1,0 +1,13 @@
+{
+ "номер": 140,
+ "дата": "2026-11-15",
+ "вид": "находка",
+ "суть": "Передачи ДО и ПОСЛЕ матча шли в разбор матчем: перед парой стоит слово передачи, а сравнение имён терпит его как лишнее слово в названии команды («Før FC Nordsjælland» сходилось с эталонным «Nordsjaelland»). Замер по всем сайтам сбора 15.11: из 136 таких строк 92 снимало стоп-слово, 7 проходили — «A-Liga: Før F.C. København-FC Midtjylland» (tvtid.tv2.dk, датское «перед») и «Juego de Naciones (T26/27): Post España - Inglaterra», «La pista del Tenis. … Post Alcaraz - Tiafoe» (movistarplus.es, испанское «после»). На витрину их не пускал другой фильтр («показ пары дальше от матча») — случайно: у сайта стоял и сам матч. Словарь такие «команды» уже выучил: «Efter FC Midtjylland W», «Efter HB Køge W», «Post Barcelona», «Avant-match Liverpool», лига «PreGame». Строка «Studio Chorvatsko - Česko» из списка находок дня снимается и так: стоп-слово ищется и в поле пары",
+ "владелец": "15.11: «я хочу, чтоб ты всё сделал шаг за шагом 1–6» (шаг 2 списка находок дня: студии перед матчем)",
+ "правило": "data/markers.json, раздел stop_title, группа «передачи до и после матча»: слова «перед матчем» и «после матча» на языках наших сайтов — датский и норвежский (før, efter, etter, optakt, studiet), шведский (uppsnack, eftersnack, inför), немецкий (vorbericht, nachbericht), французский (avant-match, après-match), португальский (pós-jogo), испанский (post, postpartido, prepartido), финский (ennakko, jälkipeli), английский (pre-game, post-game, pre-match, post-match, build-up и слитные написания). data/word_langs.json: язык каждого слова — слово ищется только у сайтов своего языка (книга 084). keep_names: клуб Post Wien («Post Viedeň») — настоящее имя с испанским стоп-словом. Из словаря ничего не удаляется: выученные имена передач названы признанным мусором в детекторе test_stop_names.py",
+ "коммит": "",
+ "проверка": "тест",
+ "тесты": [
+  "test_peredachi_do_i_posle.py"
+ ]
+}

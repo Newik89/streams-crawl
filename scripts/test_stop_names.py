@@ -46,7 +46,15 @@ JUNK = {
     "Pre Game Show", "Pre Game Show (Ζ)",            # передача перед игрой
     "לקראת הפועל פ\"ת", "לקראת מכבי חיפה",           # «накануне …» — студия
     "אולפן לקראת ליגת ווינר",                        # «студия перед лигой»
+    # книга 140 (15.11.2026): передача перед игрой, выученная как написание
+    # греческой Суперлиги
+    "PreGame",
 }
+#: книга 140: настоящее короткое написание клуба Post Wien («Post», немецкие и
+#: словацкие сайты), равное стоп-слову ЧУЖОГО языка: «post» — передача после
+#: матча на испанском и ищется только у испаноязычных сайтов (книга 084).
+#: Детектор смотрит словарь сразу по всем языкам, поэтому имя названо здесь
+ЧУЖОЙ_ЯЗЫК = {"Post"}
 #: начала таких имён: «Resúmenes LALIGA HyperMotion (T26/27): Valladolid» —
 #: обзор тура movistarplus.es, не команда и не лига
 JUNK_PREFIXES = ("Resúmenes ",
@@ -54,14 +62,21 @@ JUNK_PREFIXES = ("Resúmenes ",
                  # — «Previa LaLiga HyperMotion (T26/27): Almería», «La Casa del
                  # Fútbol Previa (T26/27): Getafe CF», «DAZN Previa». До стоп-слова
                  # «previa» они шли как матчи, и словарь выучил 23 таких имени
-                 "Previa ", "La Casa del Fútbol Previa", "DAZN Previa")
+                 "Previa ", "La Casa del Fútbol Previa", "DAZN Previa",
+                 # книга 140 (15.11.2026): передачи до и после матча, выученные
+                 # словарём как написания команд: «Avant-match Liverpool»
+                 # (tvpassport.com), «Efter FC Midtjylland W» (tvtid.tv2.dk),
+                 # «Post Barcelona» и «Post UEFA Champions League (T26/27): Post
+                 # Barcelona» (movistarplus.es)
+                 "Avant-match ", "Efter ", "Post Barcelona", "Post UEFA ")
 #: концы таких имён: «Irland Der Countdown», «Kosovo Der Countdown W» —
 #: передача tv.orf.at перед матчем (книга 133), не команда
 JUNK_SUFFIXES = (" Der Countdown", " Der Countdown W")
 
 
 def мусор(имя: str) -> bool:
-    return имя in JUNK or имя.startswith(JUNK_PREFIXES) or имя.endswith(JUNK_SUFFIXES)
+    return имя in JUNK or имя in ЧУЖОЙ_ЯЗЫК \
+        or имя.startswith(JUNK_PREFIXES) or имя.endswith(JUNK_SUFFIXES)
 
 
 def проверка(имя: str, ok: bool, extra="") -> None:

@@ -1860,6 +1860,37 @@
    "previo",
    "štúdio"
   ],
+  "передачи до и после матча — не матч (книга 140, замер по всем сайтам сбора 15.11.2026: из 136 строк, где перед парой стоит слово передачи, 7 шли в разбор матчем — tvtid.tv2.dk «A-Liga: Før F.C. København-FC Midtjylland», movistarplus.es «Juego de Naciones: Post España - Inglaterra»; на витрину их не пускал случайно другой фильтр — у сайта стоял и сам матч). Слово передачи стоит перед парой, и сравнение имён терпит его как лишнее слово в названии команды. Сюда — слова «перед матчем» и «после матча» на языках наших сайтов; язык каждого — в word_langs.json": [
+   "før",
+   "studiet",
+   "efter",
+   "etter",
+   "optakt",
+   "uppsnack",
+   "eftersnack",
+   "inför",
+   "vorbericht",
+   "vorberichte",
+   "nachbericht",
+   "nachberichte",
+   "avant-match",
+   "après-match",
+   "pós-jogo",
+   "post",
+   "postpartido",
+   "prepartido",
+   "ennakko",
+   "jälkipeli",
+   "pre-game",
+   "post-game",
+   "pregame",
+   "postgame",
+   "pre-match",
+   "post-match",
+   "prematch",
+   "postmatch",
+   "build-up"
+  ],
   "церемонии открытия, закрытия и награждения — не матч (книга 130, слово владельца 15.11.2026: «в церемониях есть ключевые слова, которые можно перевести на разные языки»; аудит 12.11: «Záróünnepség - Dakar», M4 Sport, стояла в списке игр)": [
    "ceremony",
    "ceremonies",
@@ -1992,7 +2023,9 @@
    "europa conference league"
   ],
   "клубы": [
-   "studio zagreb"
+   "studio zagreb",
+   "post wien",
+   "post viedeň"
   ]
  },
  "tournament": {
