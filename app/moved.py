@@ -100,8 +100,17 @@ def moved_sites(report: list) -> dict[str, list[dict]]:
     return out
 
 
-def links(page: str, home: str, site: str, skip: set[str]) -> list[str]:
-    """А3: кандидаты нового адреса с главной страницы, лучшие — первыми."""
+_WORD = re.compile(r"[^\W\d_]{4,}")
+
+
+def links(page: str, home: str, site: str, skip: set[str], hint: str = "") -> list[str]:
+    """А3: кандидаты нового адреса с главной страницы, лучшие — первыми.
+    `hint` — прежний адрес: кандидат, в пути которого есть слова прежнего
+    пути (от четырёх букв), стоит выше. Случай mojtv.hr 15.11 (книга 127):
+    был `/tv-program/-2/sportski/<дата>.aspx`, стал `/tv-program/sportski` —
+    без подсказки первыми шли `/tv-program/`, `/tv-program/bih`,
+    `/tv-program/srpski`, и до спортивного раздела очередь не дошла."""
+    old_words = set(_WORD.findall(urlsplit(hint).path.lower())) if hint else set()
     found: dict[str, tuple] = {}
     for href, inner in _LINK.findall(page or ""):
         url = urljoin(home, _html.unescape(href).strip())
@@ -113,8 +122,9 @@ def links(page: str, home: str, site: str, skip: set[str]) -> list[str]:
             continue
         text = (parts.path + "?" + parts.query + " " + _TAG.sub(" ", _html.unescape(inner))).lower()
         hits = sum(1 for word in WORDS if word in text)
+        same = len(old_words & set(_WORD.findall(parts.path.lower())))
         if hits and url not in found:
-            found[url] = (-hits, len(url))
+            found[url] = (-same, -hits, len(url))
     return [url for url, _ in sorted(found.items(), key=lambda kv: kv[1])][:CANDIDATES]
 
 
@@ -141,7 +151,7 @@ def run(report: list, take, job_of, settings: dict | None = None, say=print) -> 
         new_row = None
         if getattr(page, "ok", False):
             skip = {str(r.get("url") or "") for r in rows}
-            for url in links(page.html, home, site, skip):          # А3
+            for url in links(page.html, home, site, skip, hint=old):   # А3
                 job = {**base, "url": url}
                 candidate, fresh = take(job)
                 if not getattr(candidate, "ok", False) or fresh.get("итог") in BROKEN:
