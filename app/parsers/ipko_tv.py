@@ -77,11 +77,36 @@ _LEAGUE = re.compile(r"^\s*(?:liga\s+e\s+\S+|kupa\s+e\s+\S+"
                      r"|(?:\S+\s+){0,2}?superkupa(?:\s+e\s+\S+)?)\s+", re.I)
 
 
+#: книга 133 (15.11): после рубрики с двоеточием («Futboll: …», «Basketboll:
+#: …» — так пишут косовские Sport 1–6) турнир стоит перед хозяевами без
+#: разделителя, и не только по-албански. На сборе 15.11: «Futboll: Raiffeisen
+#: Liga e Pare Prishtina e Re - Liria» ушло на витрину командой «Raiffeisen
+#: Liga e Pare Prishtina e Re» с лигой «futbolli» и не сошлось с эталоном
+#: («Prishtina e Re — Liria», KOSOVO: Liga e Pare). Правила — по строке:
+#:   1. спонсор (одно-два слова) перед «Liga e …» и «Kupa e …»:
+#:      «Raiffeisen Liga e Pare Prishtina e Re» → «Prishtina e Re»;
+#:   2. название турнира, которое кончается словом лиги (до трёх слов перед
+#:      ним) и, если есть, номером или буквой дивизиона: «La Liga Valencia»,
+#:      «Europa League Crystal Palace», «Conference League Trabzonspor»,
+#:      «Serie A Napoli», «Ligue 1 PSG», «2. Bundesliga Hertha»;
+#:   3. турнир одним словом: «NBA Dallas», «Euroleague Partizan».
+#: Срезается ТОЛЬКО у текста после двоеточия рубрики: без рубрики слово
+#: «Liga» в начале может быть именем («Liga Deportiva»).
+_RUBRIC_LEAGUE = re.compile(
+    r"^\s*(?:(?:\S+\s+){1,2}?(?:liga|kupa)\s+e\s+\S+"
+    r"|(?:\S+\s+){0,3}?(?:league|ligue|lega|liga|bundesliga|eredivisie|serie)"
+    r"(?:\s+[a-z0-9])?(?=\s)"
+    r"|nba|euroleague|eurocup)\s+", re.I)
+
+
 def _pair(text: str) -> str:
     """Пара команд из заголовка или описания: `Futboll: Prishtina - Drita`."""
     # лига/вид спорта до двоеточия к паре не относится
-    text = text.split(":", 1)[-1] if ":" in text else text
+    rubric = ":" in text
+    text = text.split(":", 1)[-1] if rubric else text
     text = _LEAGUE.sub("", _PREFIX.sub("", text))
+    if rubric:
+        text = _RUBRIC_LEAGUE.sub("", text)                    # книга 133
     for part in text.split(","):
         part = part.strip()
         for sep in _SEPS:
