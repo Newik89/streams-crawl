@@ -50,6 +50,34 @@ for title in ("Záróünnepség - Dakar", "Opening Ceremony - Olympic Stadium", 
               "טקס הפתיחה - תל אביב", "Premiazione - Giro d'Italia"):
     проверка(f"«{title}»", берём(title), False)
 
+print("Группа покрывает ВСЕ языки наших сайтов (слово владельца 15.11: «учитывай всегда все сайты и все языки»)")
+from app import site_lang  # noqa: E402
+
+#: по одной церемонии на КАЖДЫЙ язык из `site_lang.SITE_LANGS` и на английский.
+#: Появился сайт на новом языке — тест краснеет, пока сюда и в markers.json
+#: не добавлены слова этого языка
+ПО_ЯЗЫКАМ = {
+    "en": "Closing Ceremony - Dakar", "de": "Eröffnungsfeier - Berlin", "fr": "Cérémonie de clôture - Paris",
+    "es": "Ceremonia de clausura - Madrid", "pt": "Cerimónia de encerramento - Lisboa",
+    "it": "Cerimonia di chiusura - Roma", "pl": "Ceremonia otwarcia - Warszawa",
+    "cs": "Slavnostní zakončení - Praha", "sk": "Slávnostné otvorenie - Bratislava",
+    "hu": "Záróünnepség - Dakar", "hr": "Svečano zatvaranje - Zagreb", "sr": "Свечано затварање - Београд",
+    "bs": "Svečano otvaranje - Sarajevo", "sl": "Otvoritvena slovesnost - Ljubljana",
+    "bg": "Церемония по откриване - София", "ru": "Церемония открытия - Москва",
+    "uk": "Церемонія закриття - Київ", "be": "Цырымонія адкрыцця - Мінск",
+    "kk": "Ашылу салтанаты - Астана", "el": "Τελετή λήξης - Αθήνα", "tr": "Kapanış töreni - Ankara",
+    "ro": "Ceremonia de deschidere - București", "sq": "Ceremonia e hapjes - Tiranë",
+    "nl": "Openingsceremonie - Amsterdam", "da": "Åbningsceremoni - København",
+    "no": "Åpningsseremoni - Oslo", "sv": "Invigningsceremoni - Stockholm", "fi": "Avajaisseremonia - Helsinki",
+    "lt": "Atidarymo ceremonija - Vilnius", "et": "Avamise tseremoonia - Tallinn",
+    "he": "טקס הסיום - ירושלים", "ar": "حفل الافتتاح - الدوحة",
+}
+языки_сайтов = {lang for langs in site_lang.SITE_LANGS.values() for lang in langs} | {"en"}
+проверка("у каждого языка наших сайтов есть пример церемонии в этом тесте",
+         sorted(языки_сайтов - set(ПО_ЯЗЫКАМ)), [])
+for lang in sorted(ПО_ЯЗЫКАМ):
+    проверка(f"{lang}: «{ПО_ЯЗЫКАМ[lang]}»", берём(ПО_ЯЗЫКАМ[lang]), False)
+
 print("Настоящие матчи не задеты")
 for title in ("Spain - England", "Finland - San Marino", "Dakar - Casablanca", "Paris FC - Olympique Lyon",
               "Fenerbahçe - Galatasaray", "Ceres - Monaco", "Praha - Brno", "Zeljeznicar - Sarajevo",
