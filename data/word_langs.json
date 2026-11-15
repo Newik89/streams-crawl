@@ -10,6 +10,7 @@
   "short summary",
   "replay",
   "preview",
+  "countdown",
   "match day live",
   "studio",
   "extra time",
@@ -65,7 +66,8 @@
   "v priamom prenose",
   "tlačová konferencia",
   "slávnostné otvorenie",
-  "slávnostné ukončenie"
+  "slávnostné ukončenie",
+  "štúdio"
  ],
  "pl": [
   "program na żywo",
@@ -109,7 +111,9 @@
   "resumen",
   "rueda de prensa",
   "entrega de premios",
-  "entrega de medallas"
+  "entrega de medallas",
+  "previa",
+  "previo"
  ],
  "es pt": [
   "diferido",

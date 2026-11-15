@@ -924,6 +924,11 @@ def late_show(domain: str, r, firsts: dict[tuple, datetime]) -> datetime | None:
     return first if r.start_kyiv > first else None
 
 
+def _marks(game) -> set:
+    """Пометки пола и возраста игры («», «U21», «W») — по всем её записям."""
+    return {names.pair_category(e.home, e.away) for e in game.entries}
+
+
 def _looks_repeat(earlier, later) -> bool:
     """Та же игра, показанная позже: пара совпала, а разрыв больше окна
     склейки, но меньше 30 часов."""
@@ -932,6 +937,13 @@ def _looks_repeat(earlier, later) -> bool:
         return False
     a, b = earlier.first, later.first
     if a.sport and b.sport and a.sport != b.sport:
+        return False
+    # книга 133 (сбор 15.11): пол и возраст — стена. Товарищеский «Italia U21
+    # — Belgio U21» (16.11) — не поздний повтор вчерашнего «Belgio — Italia»
+    # взрослых сборных. Раньше его спасал мусор в имени вчерашней строки
+    # («Italia - 15/11/2026»); с чистыми именами пары стали «одинаковыми».
+    # Сравниваем по всем записям игр: у части сайтов метки может не быть
+    if not (_marks(earlier) & _marks(later)):
         return False
     direct = min(names.similarity(a.home, b.home),
                  names.similarity(a.away, b.away))

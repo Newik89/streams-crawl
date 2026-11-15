@@ -49,11 +49,19 @@ JUNK = {
 }
 #: начала таких имён: «Resúmenes LALIGA HyperMotion (T26/27): Valladolid» —
 #: обзор тура movistarplus.es, не команда и не лига
-JUNK_PREFIXES = ("Resúmenes ",)
+JUNK_PREFIXES = ("Resúmenes ",
+                 # книга 133 (15.11.2026): предматчевые передачи movistarplus.es
+                 # — «Previa LaLiga HyperMotion (T26/27): Almería», «La Casa del
+                 # Fútbol Previa (T26/27): Getafe CF», «DAZN Previa». До стоп-слова
+                 # «previa» они шли как матчи, и словарь выучил 23 таких имени
+                 "Previa ", "La Casa del Fútbol Previa", "DAZN Previa")
+#: концы таких имён: «Irland Der Countdown», «Kosovo Der Countdown W» —
+#: передача tv.orf.at перед матчем (книга 133), не команда
+JUNK_SUFFIXES = (" Der Countdown", " Der Countdown W")
 
 
 def мусор(имя: str) -> bool:
-    return имя in JUNK or имя.startswith(JUNK_PREFIXES)
+    return имя in JUNK or имя.startswith(JUNK_PREFIXES) or имя.endswith(JUNK_SUFFIXES)
 
 
 def проверка(имя: str, ok: bool, extra="") -> None:

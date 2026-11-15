@@ -93,7 +93,8 @@ class Эталон:
         if got is None:
             return None
         match, how, swapped = got
-        return Confirmed(entry={"fs_id": match}, start=start, how=how, swapped=swapped)
+        entry = match if isinstance(match, dict) else {"fs_id": match}
+        return Confirmed(entry=entry, start=start, how=how, swapped=swapped)
 
 
 def срез(пары, эталон, **ещё):
@@ -130,6 +131,18 @@ print("Срез по эталону (`pipeline.trim_by_reference`), правил
          (срез([("Israel", "Österreich Die Pre-Game Show")], шоу, stop=lambda words: "Pre-Game" in words),
           срез([("Israel", "Österreich Das Spiel")], шоу, stop=lambda words: "Pre-Game" in words)),
          (None, ("Israel", "Österreich", live.TRIM_AWAY, "Das Spiel")))
+одно = Эталон({("Dallas", "Cleveland"): ("nba", "пара", False), ("Alcaraz", "Tiafoe"): ("atp", "пара", False)})
+проверка("О8: одно слово без цифр по эталону не срезается («NBA», «Previo») — так выглядит часть имени",
+         [срез([("NBA Dallas", "Cleveland")], одно), срез([("Previo Alcaraz", "Tiafoe")], одно)], [None, None])
+проверка("О8: слово с цифрами — лишнее («15/11/2026»), оно срезается и в одиночку",
+         срез([("Belgio", "Italia - 15/11/2026")], Эталон({("Belgio", "Italia"): ("bel", "пара", False)})),
+         ("Belgio", "Italia", live.TRIM_AWAY, "15/11/2026"))
+клуж = {"fs_id": "cluj", "home": "Cluj-Napoca", "away": "Maxima Roma",
+        "names": {"ro": ["U-BT Cluj-Napoca", "Maxima Roma"]}}
+проверка("О9: срезаемое слово похоже на слово имени команды в эталоне («UBT» — «U-BT») — это часть имени",
+         (срез([("Baschet UBT Cluj", "Maxima Roma")], Эталон({("Cluj", "Maxima Roma"): (клуж, "пара", False)})),
+          срез([("Cupa Europei Cluj", "Maxima Roma")], Эталон({("Cluj", "Maxima Roma"): (клуж, "пара", False)}))),
+         (None, ("Cluj", "Maxima Roma", live.TRIM_HOME, "Cupa Europei")))
 чужое = Эталон({}, aware=False)
 проверка("слова пары эталону незнакомы (передача не про спорт) — эталон срезами не спрашиваем",
          (срез([("Kuchyně plná", "Vaříme s láskou")], чужое), чужое.asked), (None, []))
@@ -186,6 +199,43 @@ def строка(сайт: str, пара: str, когда: str, эфир: str = 
 проверка("О6 на живом эталоне: повтор «Real Madrid - Barcelona» в час матча «Atl. Madrid — Barcelona» не режется",
          строка("webtv.sk", "Real Madrid - Barcelona", "2026-11-15T22:00"),
          ("Real Madrid", "Barcelona", None))
+
+print("Попутные находки сравнения на сборе 15.11")
+from datetime import timedelta  # noqa: E402
+from types import SimpleNamespace as NS  # noqa: E402
+
+
+def игра(когда, *пары):
+    записи = [NS(sport="F", home=h, away=a) for h, a in пары]
+    return NS(start=когда, first=записи[0], entries=записи)
+
+
+вчера = datetime(2026, 11, 15, 21, 30)
+проверка("«поздний повтор»: пол и возраст — стена. Товарищеский U21 — не повтор вчерашнего матча взрослых сборных",
+         [parse_live._looks_repeat(игра(вчера, ("Belgio", "Italia")),
+                                   игра(вчера + timedelta(hours=22), ("Italia U21", "Belgio U21"))),
+          parse_live._looks_repeat(игра(вчера, ("Belgio", "Italia")),
+                                   игра(вчера + timedelta(hours=22), ("Italia", "Belgio")))], [False, True])
+проверка("«поздний повтор»: у части сайтов пометки нет — повтор женского матча по-прежнему повтор",
+         parse_live._looks_repeat(игра(вчера, ("Arsenal", "Chelsea"), ("Arsenal W", "Chelsea W")),
+                                  игра(вчера + timedelta(hours=12), ("Arsenal W", "Chelsea W"))), True)
+слова = live.load()
+
+
+def стоп(сайт: str, заголовок: str) -> str:
+    своё = слова.for_langs(site_lang.of(сайт))
+    return своё.found(своё.stop_title, заголовок).lower()
+
+
+проверка("предматчевые передачи — стоп-слова на языке своего сайта: Countdown, Previa, Previo, Štúdio",
+         [стоп("tv.orf.at", "UEFA Nations League Spieltag 6 Gruppe B3: Israel - Österreich Der Countdown"),
+          стоп("movistarplus.es", "La Casa del Fútbol Previa (T26/27): Athletic Club - RCD Espanyol de Barcelona"),
+          стоп("movistarplus.es", "La pista del Tenis. Nitto ATP Finals (T2026): Previo Alcaraz - Tiafoe"),
+          стоп("webtv.sk", "Štúdio Hokej")], ["countdown", "previa", "previo", "štúdio"])
+проверка("сам матч стоп-словом не задет; испанское «previo» у немецкого сайта не ищется",
+         [стоп("tv.orf.at", "UEFA Nations League Spieltag 6 Gruppe B3: Israel - Österreich Das Spiel"),
+          стоп("movistarplus.es", "LALIGA EA SPORTS (T26/27): Athletic Club - RCD Espanyol de Barcelona"),
+          стоп("tv.orf.at", "Previo Alcaraz - Tiafoe")], ["", "", ""])
 
 print("Книга знаний (`dictionary.note_trims`), правила З1–З4")
 db.init_db()

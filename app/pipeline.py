@@ -185,6 +185,38 @@ def _entry_id(got: Confirmed) -> str:
     return str(entry.get("fs_id") or f"{entry.get('home')}|{entry.get('away')}|{got.start}")
 
 
+#: книга 133, О9: с такого сходства срезаемое слово считается частью имени
+#: команды эталона
+NAME_PART = 80
+
+
+def _junk_like(words: str) -> bool:
+    """О8: срезаемое похоже на лишнее, а не на часть имени: слов не меньше
+    двух либо в слове есть цифра («15/11/2026»)."""
+    return len(words.split()) >= 2 or any(ch.isdigit() for ch in words)
+
+
+def _name_part(where: str, cut: str, got: Confirmed) -> bool:
+    """О9: какое-то из срезаемых слов похоже на слово имени этой команды в
+    записи эталона (английское или любое местное написание)."""
+    entry = got.entry or {}
+    local = [pair for pair in (entry.get("names") or {}).values()
+             if isinstance(pair, (list, tuple)) and len(pair) == 2]
+    home_names = [entry.get("home") or ""] + [pair[0] for pair in local]
+    away_names = [entry.get("away") or ""] + [pair[1] for pair in local]
+    if got.swapped:
+        home_names, away_names = away_names, home_names
+    front, _, back = cut.partition(" … ") if where == live.TRIM_BOTH else \
+        ((cut, "", "") if where == live.TRIM_HOME else ("", "", cut))
+
+    def alike(words: str, team_names: list[str]) -> bool:
+        team_words = [w for name in team_names for w in str(name).split() if len(w) > 2]
+        return any(names.similarity(word, team_word) >= NAME_PART
+                   for word in words.split() if len(word) > 2 for team_word in team_words)
+
+    return alike(front, home_names) or alike(back, away_names)
+
+
 def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
                       start_kyiv: datetime | None, league_category: str = "",
                       agree: Confirmed | None = None, stop=None):
@@ -212,7 +244,18 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
           к идущему в тот же час «Atl. Madrid — Barcelona»;
       О7. в срезанных словах стоит стоп-слово передачи (`stop(слова)` —
           студия, обзор, «Die Pre-Game Show») — срез не берём: строка — не
-          сам матч, а передача вокруг него.
+          сам матч, а передача вокруг него;
+      О8. одно слово без цифр по эталону НЕ срезается (`_junk_like`): так
+          выглядит часть самого имени — город, спонсор, имя игрока («UBT
+          Cluj», «Sheffield Wednesday», «Kauno Žalgiris», «Daniil
+          Medvedev»; замер на сборе 15.11 — все семь срезов по одному слову
+          были частями имён либо словом передачи «Previo»). Лишнее снаружи
+          пары — это цепочка слов («ligová fáze», «Das Spiel») или слово с
+          цифрами («15/11/2026»). Одиночное лишнее слово («NBA») режется
+          только по книге знаний, куда его заносят данными;
+      О9. срезаемое слово похоже на слово имени этой команды в записи
+          эталона (любое написание, сходство не ниже `NAME_PART`) — это
+          часть имени, срез не берём.
     Возвращает (хозяева, гости, ответ эталона, пометка `TRIMMED`) или None."""
     if reference is None or start_kyiv is None:
         return None
@@ -226,10 +269,13 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
         for where, cut, new_home, new_away in live.outer_trims(home, away):   # О2
             if fixed[where] or (stop is not None and stop(cut)):              # О6, О7
                 continue
+            if not all(_junk_like(part) for part in cut.split(" … ")):        # О8
+                continue
             got = reference.confirm(leagues.with_category(new_home, league_category),
                                     leagues.with_category(new_away, league_category),
                                     start_kyiv)
-            if got is not None and got.how == "пара":                         # О3
+            if got is not None and got.how == "пара" \
+                    and not _name_part(where, cut, got):                      # О3, О9
                 hits.append((new_home, new_away, got,
                              {"где": where, "срезано": cut,
                               "было": f"{home} - {away}", "по": "эталон"}))
@@ -478,6 +524,8 @@ def ask_reference(program: Program, verdict: live.Verdict,
             agree=confirmed[0][2] if confirmed else None, stop=stop)
         if cut is not None:
             home, away, got, mark = cut
+            home = leagues.with_category(home, league_category)
+            away = leagues.with_category(away, league_category)
             program.extra[TRIMMED] = mark
             program.extra["live_guess"] = True
             return (live.Verdict(True, "", live_marker=verdict.live_marker or REFERENCE_MARKER,
