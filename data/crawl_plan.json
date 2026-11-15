@@ -5164,6 +5164,42 @@
      "pattern": "https://canpl.ca/schedule/"
     }
    ]
+  },
+  {
+   "domain": "azamtvmax.com",
+   "timezone": "UTC",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Azam Sports 1 HD",
+    "Azam Sports 3 HD"
+   ],
+   "parser": "",
+   "browser": true,
+   "days_inline": true,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://web.azamtvmax.com/",
+   "channels": [
+    {
+     "name": "Azam Sports 1 HD",
+     "pattern": "https://web.azamtvmax.com/channel/CH-3974c2cd-9ec4-4d03-82b1-9c993973e487"
+    },
+    {
+     "name": "Azam Sports 3 HD",
+     "pattern": "https://web.azamtvmax.com/channel/CH-a8f7959c-f424-4064-8b71-6c125da488ff"
+    }
+   ]
   }
  ]
 }
