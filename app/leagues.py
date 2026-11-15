@@ -236,7 +236,49 @@ def clean(raw: str) -> str:
     text = _SEASON_SHORT.sub(" ", text)
     text = _YEAR_TAIL.sub("", text)
     text = _EMPTY_BRACKETS.sub(" ", text)
-    return re.sub(r"\s{2,}", " ", text).strip(_EDGE)
+    text = re.sub(r"\s{2,}", " ", text).strip(_EDGE)
+    # книга 143: в названии только слова самого вида спорта — это жанр, а не
+    # лига («futbolli» у ipko.tv, «tenis Tenis» у digisport.ro)
+    return "" if only_sport(text) else text
+
+
+#: книга 143: слова, которые вместе с названием вида спорта лиги не дают
+_SPORT_FILLER = ("sport", "sports", "sporti", "спорт")
+_ONLY_SPORT: list = []          # шаблон слов вида спорта — строится один раз
+
+
+def only_sport(text: str) -> bool:
+    """Книга 143: в тексте нет ничего, кроме названия вида спорта.
+
+    Сайт кладёт в поле лиги жанр передачи: ipko.tv — «futbolli» и
+    «basketboll», digisport.ro — «tenis Tenis». У матча, который эталон
+    знает, лига приходит из эталона; у остальных на витрине на месте лиги
+    стояло слово «футбол» (замер по всем сайтам сбора 15.11: 7 игр из 482).
+    Правила:
+      1. слова вида спорта — одиночные слова раздела `sport` → F, B, T →
+         «вид спорта» файла `data/markers.json` (все языки наших сайтов),
+         названия вида спорта из двух слов (`_SPORT_WORDS`: «piłka nożna») и
+         слово «спорт» (`_SPORT_FILLER`);
+      2. длинные записи того же раздела («ליגת האלופות בכדורסל» — Лига
+         чемпионов по баскетболу) — названия турниров, сюда не входят;
+      3. после удаления таких слов в тексте не осталось ни одной буквы —
+         это не лига. Осталось хоть слово («כדורגל איטלקי» — итальянский
+         футбол, «Fotbal ženy») — лига как была."""
+    text = (text or "").strip()
+    if not text:
+        return False
+    if not _ONLY_SPORT:
+        import json
+        from .live import MARKERS_FILE, _flatten, _pattern
+        node = json.loads(MARKERS_FILE.read_text(encoding="utf-8")).get("sport") or {}
+        words = [w for letter in ("F", "B", "T")
+                 for w in _flatten((node.get(letter) or {}).get("вид спорта"))
+                 if len(w.split()) == 1]                                    # 1, 2
+        _ONLY_SPORT.append(_pattern(words + list(_SPORT_WORDS) + list(_SPORT_FILLER)))
+    from .live import greek_plain
+    pattern = _ONLY_SPORT[0]
+    rest = pattern.sub(" ", greek_plain(text.lower())) if pattern else text
+    return not any(ch.isalpha() for ch in rest)                             # 3
 
 
 def category(raw: str, langs=None) -> str:
