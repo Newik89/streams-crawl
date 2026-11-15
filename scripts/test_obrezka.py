@@ -106,7 +106,7 @@ def срез(пары, эталон, **ещё):
     return None if got is None else (got[0], got[1], got[3]["где"], got[3]["срезано"])
 
 
-print("Срез по эталону (`pipeline.trim_by_reference`), правила О1–О9")
+print("Срез по эталону (`pipeline.trim_by_reference`), правила О1–О10")
 приштина = матч("pri", "Prishtina e Re", "Liria")
 да = (приштина, "пара", False)
 лига = ("Raiffeisen Liga e Pare Prishtina e Re", "Liria")
@@ -166,6 +166,21 @@ print("Срез по эталону (`pipeline.trim_by_reference`), правил
           срез([("Häcken", "Manchester C UEFA Women's Champions League")],
                Эталон({("Häcken", "Manchester C"): (сити, "пара", False), ("Häcken", "Manchester"): (сити, "пара", False)}))),
          (("FC Porto", "USC Paredes", live.TRIM_HOME, "Taça de Portugal"), None))
+арминия = матч("bie", "Arminia Bielefeld", "Magdeburg", pl=["Bielefeld", "Magdeburg"])
+норшелланн = матч("nor", "FC Nordsjaelland W", "Fortuna Hjorring W", da=["Nordsjælland K", "Fortuna Hjørring K"])
+депор = матч("dep", "Alaves", "Dep. La Coruna", pl=["Alaves", "RC Deportivo"])
+проверка("О10: срезаемые слова стоят в имени команды на другом языке эталона — это часть имени, срез не берём "
+         "(«DSC Arminia», «Før FC», «La Coruna»: эталон местами пишет клуб коротко)",
+         [срез([("DSC Arminia Bielefeld", "Magdeburg")],
+               Эталон({("Bielefeld", "Magdeburg"): (арминия, "пара", False)})),
+          срез([("Før FC Nordsjælland", "Fortuna Hjørring")],
+               Эталон({("Nordsjælland", "Fortuna Hjørring"): (норшелланн, "пара", False)})),
+          срез([("CD Alaves", "RC Deportivo La Coruna")],
+               Эталон({("CD Alaves", "RC Deportivo"): (депор, "пара", False)}))],
+         [None, None, None])
+проверка("О10: слово в одну букву из имени («e» в «Prishtina e Re») срезу лишних слов не мешает",
+         срез([("Raiffeisen Liga e Pare Prishtina e Re", "Liria")], Эталон(терпимый)),
+         ("Prishtina e Re", "Liria", live.TRIM_HOME, "Raiffeisen Liga e Pare"))
 проверка("О9: название страны эталон знает на языке сайта (справочник стран) — срез до него принимается",
          срез([("Liga e Kombeve Norvegji", "Uells")],
               Эталон({("Norvegji", "Uells"): (матч("nor", "Norway", "Wales"), "пара", False)})),

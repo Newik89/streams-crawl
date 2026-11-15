@@ -223,6 +223,42 @@ def _exactly(side: str, team_names: list[str]) -> bool:
     return False
 
 
+#: книга 133, О10: с такого сходства срезаемое слово считается словом из
+#: имени команды эталона
+NAME_WORD = 80
+
+
+def _in_name(words: str, team_names: list[str]) -> bool:
+    """О10: какое-то из срезаемых слов стоит в имени команды эталона (в
+    любом её написании). Слова в одну букву («e», «-») не в счёт; короткие
+    (до трёх букв: «FC», «RC», «La») — только буква в букву; длинные —
+    по сходству `NAME_WORD` («Coruna» = «Coruña», «Brasov» = «Brașov»)."""
+    team_words = {word.strip(live._TRIM_EDGE).casefold()
+                  for name in team_names for word in name.split()}
+    for word in words.split():
+        word = word.strip(live._TRIM_EDGE)
+        if len(word) < 2:
+            continue
+        if len(word) <= 3:
+            if word.casefold() in team_words:
+                return True
+        elif any(len(other) > 3 and names.similarity(word, other) >= NAME_WORD
+                 for other in team_words):
+            return True
+    return False
+
+
+def _cuts_name(where: str, cut: str, got: Confirmed) -> bool:
+    """О10: срез задел имя команды — среди срезаемых слов есть слово из
+    имени этой стороны в записи эталона."""
+    home_names, away_names = _team_names(got)
+    if where == live.TRIM_BOTH:
+        front, _, back = cut.partition(" … ")
+    else:
+        front, back = (cut, "") if where == live.TRIM_HOME else ("", cut)
+    return _in_name(front, home_names) or _in_name(back, away_names)
+
+
 def _exact_after(where: str, new_home: str, new_away: str, got: Confirmed) -> bool:
     """О9: у каждой урезанной стороны осталось ровно имя команды эталона."""
     home_names, away_names = _team_names(got)
@@ -283,7 +319,13 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
           → «Manchester», «Enea Łaciate Astoria Bydgoszcz» → «Bydgoszcz»),
           и они ушли бы в книгу знаний как «лишние слова». Сайт пишет на
           языке, которого у эталона нет (албанский, иврит), — срезов по
-          эталону нет, остаются слова из книги знаний.
+          эталону нет, остаются слова из книги знаний;
+      О10. срезаемые слова не встречаются в имени этой команды ни на одном
+          языке эталона (`_cuts_name`). Эталон часть клубов в части языков
+          пишет коротко («Bielefeld», «Brasov», «RC Deportivo») — по
+          одному О9 срезались бы настоящие части имён: «DSC Arminia»,
+          «CSM Corona», «La Coruna» (сбор 15.11), а датское «Før FC
+          Nordsjælland» (передача перед матчем) проходило как матч.
     Возвращает (хозяева, гости, ответ эталона, пометка `TRIMMED`) или None."""
     if reference is None or start_kyiv is None:
         return None
@@ -303,7 +345,8 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
                                     leagues.with_category(new_away, league_category),
                                     start_kyiv)
             if got is not None and got.how == "пара" \
-                    and _exact_after(where, new_home, new_away, got):         # О3, О9
+                    and _exact_after(where, new_home, new_away, got) \
+                    and not _cuts_name(where, cut, got):                      # О3, О9, О10
                 clean = " … ".join(part.strip(live._TRIM_EDGE) for part in cut.split(" … "))
                 hits.append((new_home, new_away, got,
                              {"где": where, "срезано": clean,
