@@ -252,6 +252,25 @@ def absorbed(gone: dict, kept: list[dict]) -> dict | None:
     return min(hosts, key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when)) if hosts else None
 
 
+def merged_session(gone: dict, fresh: list[dict]) -> dict | None:
+    """Книга 138: показ теннисного турнира без игроков вошёл в НОВУЮ
+    сведённую строку турнира («ATP FINALS 2026 — MEIA-FINAL» 15:30 у
+    sporttv.pt → «ATP Finals Turin — tournament» 13:00, где этот канал
+    стоит рядом с каналами других сайтов). Это не пропажа: строка сессии
+    начинается с первого показа. Правила: пропавшая — теннис; новая —
+    сведённая трансляция (вторая сторона `broadcast.SESSION`); ВСЕ каналы
+    пропавшей стоят при новой; начала не дальше `СДВИГ_Ч` часов."""
+    from app import broadcast
+    chans = _chans(gone)
+    if gone.get("sport") != "T" or not chans:
+        return None
+    when = kniga.kyiv(gone["start_kyiv"])
+    hosts = [g for g in fresh
+             if g.get("away") == broadcast.SESSION and chans <= _chans(g)
+             and abs(kniga.kyiv(g["start_kyiv"]) - when) <= timedelta(hours=СДВИГ_Ч)]
+    return min(hosts, key=lambda g: abs(kniga.kyiv(g["start_kyiv"]) - when)) if hosts else None
+
+
 def compare(old: dict, new: dict) -> list[str]:
     """Печатает разницу, → потери без объяснения в книге."""
     a = {_key(g): g for g in old.get("games") or []}
@@ -281,7 +300,8 @@ def compare(old: dict, new: dict) -> list[str]:
         # та сменила имя («Czarnogóra — Latvija» и «Muntenegru — Letonia» →
         # «Czarnogóra — Letonia», книга 104: без этого вторая считалась
         # пропавшей, хотя её канал стоит при общей игре)
-        host = absorbed(a[k], kept) or absorbed(a[k], taken)
+        host = (absorbed(a[k], kept) or absorbed(a[k], taken)
+                or merged_session(a[k], fresh))       # книга 138
         if host:
             print(f"  ~ склеена: {kniga._show(a[k])} → {kniga._show(host)}")
             pairs.append((a[k], host))

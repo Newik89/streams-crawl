@@ -1334,8 +1334,11 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             if row["team_away_auto"] == broadcast.SESSION:
                 # сведённая трансляция: вместо служебной второй стороны —
                 # стадия, если её назвал хоть один сайт (первая по отметкам)
+                # книга 138: стадия, которую даёт само имя турнира («ATP
+                # Finals» → «Final»), — не стадия показа: её не пишем
+                own = broadcast.stage(home_shown)
                 away_shown = next((s for s in map(broadcast.stage, live_titles)
-                                   if s), "")
+                                   if s and s != own), "")
         else:
             home_shown = show(row["home_canon"], row["team_home_auto"])
             away_shown = show(row["away_canon"], row["team_away_auto"])
