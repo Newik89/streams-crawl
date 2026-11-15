@@ -33,7 +33,8 @@ from datetime import datetime, timedelta
 
 from . import daytime, leagues, live, names, site_lang, sport
 from .parsers import Program
-from .reference import MARKS_HOW, Confirmed, Reference
+from . import canon
+from .reference import MARKS_HOW, Confirmed, Reference, _strip_marks
 
 
 @dataclass
@@ -185,9 +186,9 @@ def _entry_id(got: Confirmed) -> str:
     return str(entry.get("fs_id") or f"{entry.get('home')}|{entry.get('away')}|{got.start}")
 
 
-#: книга 133, О9: с такого сходства срезаемое слово считается частью имени
-#: команды эталона
-NAME_PART = 80
+#: книга 133, О9: с такого сходства слово урезанной стороны считается тем же
+#: словом, что в имени команды эталона
+EXACT_WORD = 90
 
 
 def _junk_like(words: str) -> bool:
@@ -196,25 +197,40 @@ def _junk_like(words: str) -> bool:
     return len(words.split()) >= 2 or any(ch.isdigit() for ch in words)
 
 
-def _name_part(where: str, cut: str, got: Confirmed) -> bool:
-    """О9: какое-то из срезаемых слов похоже на слово имени этой команды в
-    записи эталона (английское или любое местное написание)."""
+def _team_names(got: Confirmed) -> tuple[list[str], list[str]]:
+    """О9: все написания хозяев и гостей матча эталона — английское и
+    местные (`canon.local_pairs`), без пометок пола и возраста, в порядке
+    сторон СТРОКИ (эталон мог сойтись наоборот — `swapped`)."""
     entry = got.entry or {}
-    local = [pair for pair in (entry.get("names") or {}).values()
-             if isinstance(pair, (list, tuple)) and len(pair) == 2]
-    home_names = [entry.get("home") or ""] + [pair[0] for pair in local]
-    away_names = [entry.get("away") or ""] + [pair[1] for pair in local]
-    if got.swapped:
-        home_names, away_names = away_names, home_names
-    front, _, back = cut.partition(" … ") if where == live.TRIM_BOTH else \
-        ((cut, "", "") if where == live.TRIM_HOME else ("", "", cut))
+    home, away = [entry.get("home") or ""], [entry.get("away") or ""]
+    for _lang, local_home, local_away in canon.local_pairs(entry):
+        home.append(local_home)
+        away.append(local_away)
+    home = [name for name in (_strip_marks(x) for x in home) if name]
+    away = [name for name in (_strip_marks(x) for x in away) if name]
+    return (away, home) if got.swapped else (home, away)
 
-    def alike(words: str, team_names: list[str]) -> bool:
-        team_words = [w for name in team_names for w in str(name).split() if len(w) > 2]
-        return any(names.similarity(word, team_word) >= NAME_PART
-                   for word in words.split() if len(word) > 2 for team_word in team_words)
 
-    return alike(front, home_names) or alike(back, away_names)
+def _exactly(side: str, team_names: list[str]) -> bool:
+    """О9: сторона после среза — РОВНО имя команды: слов столько же, сколько
+    в одном из написаний эталона, и каждое сходится со своим (`EXACT_WORD`)."""
+    words = _strip_marks(side).split()
+    for name in team_names:
+        other = name.split()
+        if len(other) == len(words) and all(
+                names.similarity(a, b) >= EXACT_WORD for a, b in zip(words, other)):
+            return True
+    return False
+
+
+def _exact_after(where: str, new_home: str, new_away: str, got: Confirmed) -> bool:
+    """О9: у каждой урезанной стороны осталось ровно имя команды эталона."""
+    home_names, away_names = _team_names(got)
+    if where in (live.TRIM_HOME, live.TRIM_BOTH) and not _exactly(new_home, home_names):
+        return False
+    if where in (live.TRIM_AWAY, live.TRIM_BOTH) and not _exactly(new_away, away_names):
+        return False
+    return True
 
 
 def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
@@ -239,11 +255,9 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
           же матч. Разные срезы дали разные матчи — не гадаем, None;
       О4. строку эталон уже узнал «одной стороной» (`agree`) — срез обязан
           дать ТОТ ЖЕ матч, иначе None;
-      О5. из сошедшихся берётся НАИБОЛЬШИЙ срез (больше всего срезанных
-          слов; при равенстве — первый по порядку `outer_trims`): сравнение
-          имён терпит остатки («Pare Prishtina e Re» тоже сходится), а
-          границу имени держит О9 — слово, похожее на имя команды, не
-          срежется. Стороны — в порядке эталона;
+      О5. из принятых срезов (О9) берётся НАИМЕНЬШИЙ — у команды остаётся
+          самое полное из её написаний («Bayern München», а не «Bayern»).
+          Стороны — в порядке эталона;
       О6. сторону, которую эталон знает как команду (`knows_team`: «Real
           Madrid»), не режем: такая пара не сошлась потому, что это другой
           матч, а не потому, что к имени что-то прилипло. Иначе «Real
@@ -260,9 +274,16 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
           пары — это цепочка слов («ligová fáze», «Das Spiel») или слово с
           цифрами («15/11/2026»). Одиночное лишнее слово («NBA») режется
           только по книге знаний, куда его заносят данными;
-      О9. срезаемое слово похоже на слово имени этой команды в записи
-          эталона (любое написание, сходство не ниже `NAME_PART`) — это
-          часть имени, срез не берём.
+      О9. ТОЧНАЯ ГРАНИЦА: срез принят, только если после него сторона —
+          ровно имя команды, как его пишет эталон на одном из языков
+          (`_exactly`: слов столько же, каждое сходится со своим). Сравнение
+          имён терпит и лишние слова, и недостающие — без этого правила
+          срезались куски настоящих имён (сбор 15.11: «Taça de Portugal -
+          FC Porto» → «Porto», «Manchester C UEFA Women's Champions League»
+          → «Manchester», «Enea Łaciate Astoria Bydgoszcz» → «Bydgoszcz»),
+          и они ушли бы в книгу знаний как «лишние слова». Сайт пишет на
+          языке, которого у эталона нет (албанский, иврит), — срезов по
+          эталону нет, остаются слова из книги знаний.
     Возвращает (хозяева, гости, ответ эталона, пометка `TRIMMED`) или None."""
     if reference is None or start_kyiv is None:
         return None
@@ -282,14 +303,14 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
                                     leagues.with_category(new_away, league_category),
                                     start_kyiv)
             if got is not None and got.how == "пара" \
-                    and not _name_part(where, cut, got):                      # О3, О9
+                    and _exact_after(where, new_home, new_away, got):         # О3, О9
                 clean = " … ".join(part.strip(live._TRIM_EDGE) for part in cut.split(" … "))
                 hits.append((new_home, new_away, got,
                              {"где": where, "срезано": clean,
                               "было": f"{home} - {away}", "по": "эталон"}))
     if not hits or len({_entry_id(h[2]) for h in hits}) != 1:                 # О3
         return None
-    home, away, got, mark = max(                                              # О5
+    home, away, got, mark = min(                                              # О5
         hits, key=lambda h: len(h[3]["срезано"].replace(" … ", " ").split()))
     if agree is not None and _entry_id(agree) != _entry_id(got):              # О4
         return None

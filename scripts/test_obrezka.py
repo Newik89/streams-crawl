@@ -73,8 +73,13 @@ print("Срезы слов (`live.outer_trims`), правила 1–5")
           bool(live.outer_trims("Belgio", "Italia - 15/11/2026"))), ([], True))
 
 
+def матч(ключ: str, хозяева: str, гости: str, **местные) -> dict:
+    """Запись эталона: английские имена и местные написания ({язык: [хозяева, гости]})."""
+    return {"fs_id": ключ, "home": хозяева, "away": гости, "names": местные}
+
+
 class Эталон:
-    """Вместо эталона: {(хозяева, гости): (матч, как сошлось, наоборот)};
+    """Вместо эталона: {(хозяева, гости): (запись, как сошлось, наоборот)};
     `known` — команды, которые он знает; что спросили — в `asked`."""
 
     def __init__(self, answers: dict, known=(), aware: bool = True):
@@ -92,8 +97,7 @@ class Эталон:
         got = self.answers.get((home, away))
         if got is None:
             return None
-        match, how, swapped = got
-        entry = match if isinstance(match, dict) else {"fs_id": match}
+        entry, how, swapped = got
         return Confirmed(entry=entry, start=start, how=how, swapped=swapped)
 
 
@@ -102,55 +106,74 @@ def срез(пары, эталон, **ещё):
     return None if got is None else (got[0], got[1], got[3]["где"], got[3]["срезано"])
 
 
-print("Срез по эталону (`pipeline.trim_by_reference`), правила О1–О7")
-лига = ("Raiffeisen Liga e Pare Drita", "Liria")
-проверка("О2–О3, О5: урезанная пара сошлась целиком — берём НАИБОЛЬШИЙ сошедшийся срез "
-         "(сравнение имён терпит остатки вроде «Pare Drita»)",
-         срез([лига], Эталон({("Drita", "Liria"): ("m1", "пара", False),
-                              ("Pare Drita", "Liria"): ("m1", "пара", False)})),
-         ("Drita", "Liria", live.TRIM_HOME, "Raiffeisen Liga e Pare"))
-приштина = {"fs_id": "pri", "home": "Prishtina e Re", "away": "Liria", "names": {}}
-ответ = (приштина, "пара", False)
-проверка("О5 + О9: границу наибольшего среза держит имя команды — «Prishtina» из «Prishtina e Re» не срезается",
-         срез([("Raiffeisen Liga e Pare Prishtina e Re", "Liria")],
-              Эталон({("Pare Prishtina e Re", "Liria"): ответ, ("Prishtina e Re", "Liria"): ответ,
-                      ("e Re", "Liria"): ответ, ("Re", "Liria"): ответ})),
+print("Срез по эталону (`pipeline.trim_by_reference`), правила О1–О9")
+приштина = матч("pri", "Prishtina e Re", "Liria")
+да = (приштина, "пара", False)
+лига = ("Raiffeisen Liga e Pare Prishtina e Re", "Liria")
+терпимый = {("Pare Prishtina e Re", "Liria"): да, ("Prishtina e Re", "Liria"): да,
+            ("e Re", "Liria"): да, ("Re", "Liria"): да}
+проверка("О2–О3, О9: сравнение имён терпит и лишние слова, и недостающие — берётся срез, после которого "
+         "сторона РОВНО имя команды эталона",
+         срез([лига], Эталон(терпимый)),
          ("Prishtina e Re", "Liria", live.TRIM_HOME, "Raiffeisen Liga e Pare"))
 проверка("О3: урезанная пара сошлась только «одной стороной» — не берём",
-         срез([лига], Эталон({("Drita", "Liria"): ("m1", "одна сторона", False)})), None)
+         срез([лига], Эталон({("Prishtina e Re", "Liria"): (приштина, "одна сторона", False)})), None)
+другой = матч("oth", "Prishtina e Re", "Liria")
 проверка("О3: разные срезы дали РАЗНЫЕ матчи — не гадаем",
-         срез([лига], Эталон({("Drita", "Liria"): ("m1", "пара", False),
-                              ("e Pare Drita", "Liria"): ("m2", "пара", False)})), None)
-проверка("О4: эталон уже узнал строку «одной стороной» — срез обязан дать тот же матч",
-         (срез([лига], Эталон({("Drita", "Liria"): ("m1", "пара", False)}),
-               agree=Confirmed(entry={"fs_id": "m1"}, start=T, how="одна сторона")),
-          срез([лига], Эталон({("Drita", "Liria"): ("m1", "пара", False)}),
-               agree=Confirmed(entry={"fs_id": "другой"}, start=T, how="одна сторона"))),
-         (("Drita", "Liria", live.TRIM_HOME, "Raiffeisen Liga e Pare"), None))
+         срез([("Kupa e Kosoves Alfa Beta", "Gama")],
+              Эталон({("Alfa Beta", "Gama"): (матч("m1", "Alfa Beta", "Gama"), "пара", False),
+                      ("Beta", "Gama"): (матч("m2", "Beta", "Gama"), "пара", False)})),
+         None)
+проверка("О4: эталон уже узнал строку — срез обязан дать тот же матч",
+         (срез([лига], Эталон(терпимый), agree=Confirmed(entry=приштина, start=T, how="пара")),
+          срез([лига], Эталон(терпимый), agree=Confirmed(entry=другой, start=T, how="одна сторона"))),
+         (("Prishtina e Re", "Liria", live.TRIM_HOME, "Raiffeisen Liga e Pare"), None))
+бавария = матч("aus", "Austria Vienna W", "Bayern Munich W", de=["Austria Wien F", "Bayern München F"],
+               cs=["Austria Vídeň Ž", "Bayern Ž"])
+проверка("О5: из принятых срезов — наименьший: у команды остаётся самое полное написание "
+         "(«Bayern München», а не «Bayern»)",
+         срез([("Austria Wien", "Bayern München Das Spiel")],
+              Эталон({("Austria Wien", "Bayern München"): (бавария, "пара", False),
+                      ("Austria Wien", "Bayern"): (бавария, "пара", False)})),
+         ("Austria Wien", "Bayern München", live.TRIM_AWAY, "Das Spiel"))
+израиль = матч("isr", "Israel", "Austria", de=["Israel", "Österreich"])
 проверка("О5: эталон держит пару в обратном порядке — стороны в порядке эталона",
-         срез([("Israel", "Österreich Das Spiel")],
-              Эталон({("Israel", "Österreich"): ("m3", "пара", True)})),
-         ("Österreich", "Israel", live.TRIM_AWAY, "Das Spiel"))
-классика = Эталон({("Madrid", "Barcelona"): ("atletico", "пара", False)}, known={"Real Madrid"})
+         срез([("Österreich", "Israel Das Spiel")],
+              Эталон({("Österreich", "Israel"): (израиль, "пара", True)})),
+         ("Israel", "Österreich", live.TRIM_AWAY, "Das Spiel"))
+классика = Эталон({("Madrid", "Barcelona"): (матч("atl", "Atl. Madrid", "Barcelona"), "пара", False)},
+                  known={"Real Madrid"})
 проверка("О6: сторону, которую эталон знает как команду, не режем («Real Madrid» не становится «Madrid»)",
          (срез([("Real Madrid", "Barcelona")], классика), классика.asked), (None, []))
-шоу = Эталон({("Israel", "Österreich"): ("m3", "пара", False)})
+шоу = Эталон({("Israel", "Österreich"): (израиль, "пара", False)})
 проверка("О7: в срезанных словах стоп-слово передачи — срез не берём",
          (срез([("Israel", "Österreich Die Pre-Game Show")], шоу, stop=lambda words: "Pre-Game" in words),
           срез([("Israel", "Österreich Das Spiel")], шоу, stop=lambda words: "Pre-Game" in words)),
          (None, ("Israel", "Österreich", live.TRIM_AWAY, "Das Spiel")))
-одно = Эталон({("Dallas", "Cleveland"): ("nba", "пара", False), ("Alcaraz", "Tiafoe"): ("atp", "пара", False)})
+одно = Эталон({("Dallas", "Cleveland"): (матч("nba", "Dallas", "Cleveland"), "пара", False),
+               ("Alcaraz", "Tiafoe"): (матч("atp", "Alcaraz", "Tiafoe"), "пара", False)})
 проверка("О8: одно слово без цифр по эталону не срезается («NBA», «Previo») — так выглядит часть имени",
          [срез([("NBA Dallas", "Cleveland")], одно), срез([("Previo Alcaraz", "Tiafoe")], одно)], [None, None])
 проверка("О8: слово с цифрами — лишнее («15/11/2026»), оно срезается и в одиночку",
-         срез([("Belgio", "Italia - 15/11/2026")], Эталон({("Belgio", "Italia"): ("bel", "пара", False)})),
+         срез([("Belgio", "Italia - 15/11/2026")],
+              Эталон({("Belgio", "Italia"): (матч("bel", "Belgium", "Italy", it=["Belgio", "Italia"]), "пара", False)})),
          ("Belgio", "Italia", live.TRIM_AWAY, "15/11/2026"))
-клуж = {"fs_id": "cluj", "home": "Cluj-Napoca", "away": "Maxima Roma",
-        "names": {"ro": ["U-BT Cluj-Napoca", "Maxima Roma"]}}
-проверка("О9: срезаемое слово похоже на слово имени команды в эталоне («UBT» — «U-BT») — это часть имени",
-         (срез([("Baschet UBT Cluj", "Maxima Roma")], Эталон({("Cluj", "Maxima Roma"): (клуж, "пара", False)})),
-          срез([("Cupa Europei Cluj", "Maxima Roma")], Эталон({("Cluj", "Maxima Roma"): (клуж, "пара", False)}))),
-         (None, ("Cluj", "Maxima Roma", live.TRIM_HOME, "Cupa Europei")))
+порту = матч("por", "FC Porto", "USC Paredes")
+сити = матч("hac", "Hacken W", "Manchester City W", sv=["Häcken D", "Manchester City D"])
+проверка("О9: куски настоящего имени не срезаются — «FC» у «FC Porto» остаётся, «Manchester C» не становится «Manchester»",
+         (срез([("Taça de Portugal - FC Porto", "USC Paredes")],
+               Эталон({("FC Porto", "USC Paredes"): (порту, "пара", False), ("Porto", "USC Paredes"): (порту, "пара", False)})),
+          срез([("Häcken", "Manchester C UEFA Women's Champions League")],
+               Эталон({("Häcken", "Manchester C"): (сити, "пара", False), ("Häcken", "Manchester"): (сити, "пара", False)}))),
+         (("FC Porto", "USC Paredes", live.TRIM_HOME, "Taça de Portugal"), None))
+проверка("О9: название страны эталон знает на языке сайта (справочник стран) — срез до него принимается",
+         срез([("Liga e Kombeve Norvegji", "Uells")],
+              Эталон({("Norvegji", "Uells"): (матч("nor", "Norway", "Wales"), "пара", False)})),
+         ("Norvegji", "Uells", live.TRIM_HOME, "Liga e Kombeve"))
+проверка("О9: после среза у стороны остаётся слово сверх имени команды — это не ровно имя, срез не берём",
+         срез([("Liga e Pare Dukagjini Rahovec", "Vushtrria")],
+              Эталон({("Dukagjini Rahovec", "Vushtrria"): (матч("duk", "Dukagjini", "Vushtrria"), "пара", False)})),
+         None)
 чужое = Эталон({}, aware=False)
 проверка("слова пары эталону незнакомы (передача не про спорт) — эталон срезами не спрашиваем",
          (срез([("Kuchyně plná", "Vaříme s láskou")], чужое), чужое.asked), (None, []))
