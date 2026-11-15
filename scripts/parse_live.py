@@ -924,6 +924,11 @@ def late_show(domain: str, r, firsts: dict[tuple, datetime]) -> datetime | None:
     return first if r.start_kyiv > first else None
 
 
+def _marks(game) -> set:
+    """Пометки пола и возраста игры («», «U21», «W») — по всем её записям."""
+    return {names.pair_category(e.home, e.away) for e in game.entries}
+
+
 def _looks_repeat(earlier, later) -> bool:
     """Та же игра, показанная позже: пара совпала, а разрыв больше окна
     склейки, но меньше 30 часов."""
@@ -932,6 +937,13 @@ def _looks_repeat(earlier, later) -> bool:
         return False
     a, b = earlier.first, later.first
     if a.sport and b.sport and a.sport != b.sport:
+        return False
+    # книга 133 (сбор 15.11): пол и возраст — стена. Товарищеский «Italia U21
+    # — Belgio U21» (16.11) — не поздний повтор вчерашнего «Belgio — Italia»
+    # взрослых сборных. Раньше его спасал мусор в имени вчерашней строки
+    # («Italia - 15/11/2026»); с чистыми именами пары стали «одинаковыми».
+    # Сравниваем по всем записям игр: у части сайтов метки может не быть
+    if not (_marks(earlier) & _marks(later)):
         return False
     direct = min(names.similarity(a.home, b.home),
                  names.similarity(a.away, b.away))
@@ -1185,12 +1197,22 @@ def main() -> int:
     # книга 122: сколько строк какого сайта взяли пару из заголовка вместо
     # пары разборщика — сигнал «сайт сменил запись, разборщик пора поправить»
     из_заголовка: dict[str, int] = {}
+    # книги 133 и 136: у пары срезаны лишние слова снаружи — {сайт: {(где,
+    # слова, по чему): [раз, пример]}}; едет в итог сбора, сервер кладёт
+    # подтверждённое эталоном в книгу знаний
+    срезы: dict[str, dict] = {}
     for domain, programs in pages:
         for r in pipeline.run(programs, markers, sports, league_sports,
                               pair_sports, judge, domain=domain):
             if (r.program.extra or {}).get(pipeline.TITLE_PAIR):
                 сайт = _bare_domain(domain)
                 из_заголовка[сайт] = из_заголовка.get(сайт, 0) + 1
+            срез = (r.program.extra or {}).get(pipeline.TRIMMED)
+            if срез:
+                ключ = (срез["где"], срез["срезано"], срез["по"])
+                запись = срезы.setdefault(_bare_domain(domain), {}).setdefault(
+                    ключ, [0, f"{срез['было']} → {r.home} - {r.away}"])
+                запись[0] += 1
             if r.sport_rule:
                 by_rule[r.sport_rule] = by_rule.get(r.sport_rule, 0) + 1
             if r.team_word:
@@ -1941,6 +1963,13 @@ def main() -> int:
                # книга 122: {сайт: строк} — пара взята из заголовка, а не у
                # разборщика (его пару эталон не знает)
                "пара_из_заголовка": из_заголовка,
+               # книги 133 и 136: {сайт: [{где, срезано, по, раз, пример}]} —
+               # у пары срезаны лишние слова (по эталону или по книге знаний)
+               pipeline.TRIMMED: {
+                   сайт: [{"где": где, "срезано": слова, "по": по,
+                           "раз": раз, "пример": пример}
+                          for (где, слова, по), (раз, пример) in sorted(записи.items())]
+                   for сайт, записи in sorted(срезы.items())},
                # книга 123: счёт игр по каналам сайтов и молчащие каналы —
                # заполняются ниже (`silence_keys`)
                # книга 114: просадки «сайт, дата» против прошлого сбора —

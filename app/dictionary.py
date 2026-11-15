@@ -100,7 +100,9 @@ def _clubs(canonicals: list[str]) -> int:
 
 #: классы книги ошибок; первые два — карантин: словарь запись не отдаёт
 ERROR_CLASSES = ("пара", "коллизия", "двусмысленно", "слито", "возможный дубль",
-                 "не пара", "снято")
+                 "не пара", "снято",
+                 # книга 136: лишние слова, срезанные у пары (`note_trims`)
+                 "лишнее перед хозяевами", "лишнее после гостей")
 QUARANTINE = ("пара", "коллизия")
 #: С10 (ревизия 09.11): решение «имя с тире — ОДНА команда» (`Banik Most - Sous`).
 #: Пишет классификатор (flashscore или поиск с источником) и слово владельца
@@ -152,6 +154,57 @@ def note_error(conn: sqlite3.Connection, alias: str, cls: str,
         "led_to, truth, note, answered_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
         (alias, lang, team_id, cls, source_domain, led_to, truth, note, answered_by))
     return True
+
+
+def note_trims(conn: sqlite3.Connection, trims) -> int:
+    """Книга 136 (слово владельца 15.11.2026: «все варианты ошибок должны
+    накапливать опыт и решение для всего проекта»; «сайт должен проверить
+    через базу ошибок и решений»). Срезы лишних слов у пар — в книгу знаний.
+
+    `trims` — ключ «обрезка» итога сбора: {сайт: [{где, срезано, по, раз,
+    пример}]}. Правила:
+      З1. в книгу идёт только срез, подтверждённый ЭТАЛОНОМ («по»: «эталон»).
+          Срез, сделанный по самой книге, знанием не считается — иначе книга
+          подтверждала бы сама себя;
+      З2. класс — где стояли слова: «лишнее перед хозяевами» или «лишнее
+          после гостей»; срез с обоих краёв («A … B») — две строки;
+      З3. язык записи — языки сайта (`site_lang.of`, без английского; сайт
+          без языков — «en»): по нему разбор решает, годятся ли слова сайту;
+      З4. одна строка на (слова, язык, класс) — правило С9 `note_error`;
+          в строке сайт, пример «было → стало» и сколько раз встретилось;
+      З5. слова без единой буквы («15/11/2026») в книгу не идут: дата
+          завтра будет другой, такое знание не пригодится.
+    Битый вход (не словарь, запись без полей) пропускается. → новых строк."""
+    from . import live, site_lang
+    added = 0
+    for site, items in (trims.items() if isinstance(trims, dict) else []):
+        langs = site_lang.of(site) or frozenset()
+        lang = " ".join(sorted(langs - {"en"})) or "en"                # З3
+        for item in items if isinstance(items, list) else []:
+            if not isinstance(item, dict) or item.get("по") != "эталон":      # З1
+                continue
+            where, words = item.get("где"), str(item.get("срезано") or "")
+            if where == live.TRIM_BOTH:                                # З2
+                front, _, back = words.partition(" … ")
+                parts = [(live.KNOWN_HOME, front), (live.KNOWN_AWAY, back)]
+            elif where == live.TRIM_HOME:
+                parts = [(live.KNOWN_HOME, words)]
+            elif where == live.TRIM_AWAY:
+                parts = [(live.KNOWN_AWAY, words)]
+            else:
+                continue
+            before, _, after = str(item.get("пример") or "").partition(" → ")
+            for cls, phrase in parts:
+                phrase = " ".join(phrase.split())
+                if not any(ch.isalpha() for ch in phrase):             # З5
+                    continue
+                if phrase and note_error(                              # З4
+                        conn, phrase, cls, lang=lang, source_domain=site,
+                        led_to=before or None, truth=after or None,
+                        note=f"срезано у пары, раз за сбор: {item.get('раз') or 1}"):
+                    added += 1
+    conn.commit()
+    return added
 
 
 def quarantined(conn: sqlite3.Connection) -> set[tuple[str, str | None, int | None]]:

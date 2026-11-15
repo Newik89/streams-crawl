@@ -616,8 +616,15 @@ def create_app() -> Flask:
         verify_csrf()
         conn = db.connect()
         try:
+            from . import plan_push
             new = sources.toggle_enabled(conn, source_id)
-            flash("Источник включён." if new else "Источник выключен.", "ok")
+            # книга 135 (владелец 15.11): кнопка доходит до плана обхода —
+            # выключенный сайт уходит из плана, и GitHub к нему не ходит
+            # (`plan_push.set_enabled`, правила К1–К4)
+            row = sources.get_source(conn, source_id)
+            said = plan_push.set_enabled(conn, row["domain"], bool(new)) if row else ""
+            flash(("Источник включён" if new else "Источник выключен")
+                  + (f": {said}." if said else "."), "ok")
         finally:
             conn.close()
         return redirect(request.form.get("back") or url_for("sources_list"))

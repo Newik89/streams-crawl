@@ -158,3 +158,129 @@ def set_mode(conn, domain: str, by_server: bool, by: str = "owner",
     sent = _push_plan(f"{domain}: {'качает сервер' if by_server else 'вернулся в GitHub-обход'} "
                       f"({why or 'кнопка владельца'})")
     return f"{domain} → {kuda}; {sent}"
+
+
+# ── Кнопка «включить / выключить» источник доходит до плана обхода ──────────
+#
+# Книга 135 (слово владельца 15.11.2026: «если я её нажал, значит сайт не
+# должен ходить к выключенному»). Случай: sporting.pt был выключен кнопкой в
+# админке, а GitHub продолжал к нему ходить. Кнопка меняла только базу
+# (`sources.enabled`), а обход на GitHub идёт по файлу плана
+# `data/crawl_plan.json` — в нём сайт остался.
+#
+# ПРАВИЛА (что случилось → что делаем):
+#   К1. Источник ВЫКЛЮЧИЛИ → его запись убирается из файла плана (точечно,
+#       без пересборки остального) и план отправляется на GitHub. В плане
+#       его не было — ничего не делаем, так и говорим.
+#   К2. Источник ВКЛЮЧИЛИ → его запись собирается из базы тем же кодом, что
+#       у полной пересборки (`crawl.templates`), встаёт в конец плана, план
+#       отправляется. В план НЕ встаёт, и слова говорят почему: сайт уже в
+#       плане; сайта нет в списке ежедневного обхода (`PILOTS` в
+#       `scripts/crawl_plan.py` — справочники и необкатанные туда не входят);
+#       сайт не проходит отбор плана (не расписание, закрыт, отложен, новый).
+#   К3. Отправка — `_push_plan`, как у перевода «GitHub ↔ сервер»: на
+#       сервере — коммит и push, локально — только файл.
+#   К4. Владелец видит итог словами рядом с «Источник выключен / включён».
+#   К5. СТОРОЖ (`heal_plan`, зовёт заливка сбора): сайт стоит в плане, а в
+#       базе выключен — как бы так ни вышло (кнопка до этой починки, скрипт,
+#       правка базы) — он убирается из плана, план отправляется, владельцу
+#       одна строка в «Прогоны». Сайт, которого в базе нет вовсе, сторож не
+#       трогает: судить не по чему.
+
+def _pilots() -> list[str]:
+    """К2: сайты ежедневного обхода — тот же список `PILOTS`, по которому
+    план собирает полная пересборка (`scripts/crawl_plan.py`)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "crawl_plan_pilots", ROOT / "scripts" / "crawl_plan.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return list(module.PILOTS)
+
+
+def _read_plan() -> tuple[dict, str]:
+    raw = PLAN.read_text(encoding="utf-8")
+    return json.loads(raw), raw
+
+
+def _write_plan(plan: dict, raw: str) -> None:
+    PLAN.write_text(json.dumps(plan, ensure_ascii=False, indent=1)
+                    + ("\n" if raw.endswith("\n") else ""), encoding="utf-8")
+
+
+def plan_domains() -> list[str]:
+    """Сайты, что стоят в файле плана обхода; файла нет или он битый — пусто."""
+    try:
+        plan, _ = _read_plan()
+    except (OSError, ValueError):
+        return []
+    return [s.get("domain") for s in plan.get("sources") or [] if s.get("domain")]
+
+
+def _drop_from_plan(domains) -> list[str]:
+    """К1, К5: убрать записи сайтов из файла плана. → кого убрали."""
+    domains = set(domains)
+    plan, raw = _read_plan()
+    kept = [s for s in plan.get("sources") or [] if s.get("domain") not in domains]
+    dropped = [s.get("domain") for s in plan.get("sources") or []
+               if s.get("domain") in domains]
+    if dropped:
+        plan["sources"] = kept
+        _write_plan(plan, raw)
+    return dropped
+
+
+def set_enabled(conn, domain: str, enabled: bool, why: str = "кнопка владельца") -> str:
+    """К1–К4: довести включение или выключение источника до плана обхода.
+    Саму пометку `enabled` в базе ставит `sources.toggle_enabled` — здесь
+    только план. Возвращает слова для владельца."""
+    from . import crawl
+    in_plan = domain in plan_domains()
+    if not enabled:                                                    # К1
+        if not in_plan:
+            return "в плане обхода его и не было"
+        _drop_from_plan([domain])
+        return ("из плана обхода убран — GitHub к нему больше не ходит; "
+                + _push_plan(f"План обхода: {domain} выключен ({why})"))
+    if in_plan:                                                        # К2
+        return "в плане обхода уже стоит"
+    if domain not in _pilots():
+        return ("в ежедневный обход не входит (его нет в списке сайтов обхода) — "
+                "план не менялся")
+    entries = crawl.templates(conn, [domain])
+    if not entries:
+        return ("в план обхода не встал: сайт не проходит отбор (не расписание, "
+                "закрыт, отложен или ещё не обкатан)")
+    plan, raw = _read_plan()
+    plan.setdefault("sources", []).append(entries[0])
+    _write_plan(plan, raw)
+    return ("в план обхода возвращён; "
+            + _push_plan(f"План обхода: {domain} включён ({why})"))
+
+
+def disabled_in_plan(conn) -> list[str]:
+    """К5: сайты, что стоят в плане обхода, а в базе выключены."""
+    off = {r["domain"] for r in conn.execute(
+        "SELECT domain FROM sources WHERE enabled = 0")}
+    return [d for d in plan_domains() if d in off]
+
+
+def heal_plan(conn, apply: bool | None = None) -> list[str]:
+    """К5: сторож после заливки сбора. Выключенные в базе сайты убираются из
+    плана, план отправляется, владельцу — одна строка в «Прогоны».
+    `apply` — править ли файл (по умолчанию — только на сервере: локальная
+    база — черновик, по ней настоящий план не чистим). → строки журнала."""
+    from . import watch
+    found = disabled_in_plan(conn)
+    if not found:
+        return []
+    names = ", ".join(found)
+    if not (_on_server() if apply is None else apply):
+        return [f"в плане обхода стоят выключенные в базе сайты: {names} "
+                f"(локальная копия — план не трогаю)"]
+    _drop_from_plan(found)
+    sent = _push_plan(f"План обхода: убраны выключенные в базе сайты — {names}")
+    line = (f"в плане обхода стояли сайты, выключенные в базе: {names} — убраны из "
+            f"плана, GitHub к ним больше не ходит ({sent})")
+    watch.note(conn, line, who="план обхода")
+    return [line]
