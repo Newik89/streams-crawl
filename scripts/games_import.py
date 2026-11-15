@@ -35,6 +35,7 @@ from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
                  watch)
 from app import fallback_read                                 # noqa: E402
 from app import moved                                         # noqa: E402
+from app import plan_push                                     # noqa: E402
 
 DEFAULT = ROOT / "results" / "games.json"
 
@@ -333,6 +334,15 @@ def main() -> int:
         except Exception as beda:             # noqa: BLE001 — см. выше
             print(f"перевод сайтов: ошибка {type(beda).__name__}: {beda} — "
                   "счёт срывов сайтов в эту заливку не обновлён")
+        # книга 135 (К5): сайт стоит в плане обхода, а в базе выключен —
+        # сторож убирает его из плана и пишет владельцу. Ошибка заливку не
+        # роняет — игры уже в базе
+        try:
+            for line in plan_push.heal_plan(conn):
+                print(f"план обхода: {line}")
+        except Exception as beda:             # noqa: BLE001 — см. выше
+            print(f"план обхода: ошибка {type(beda).__name__}: {beda} — "
+                  "сверка плана с выключенными сайтами не прошла")
         if stats.times_fixed:
             print(f"время игр с «T» в базе приведено к общему виду: {stats.times_fixed} "
                   "(кто-то записал его в обход store.db_time — найти и поправить)")
