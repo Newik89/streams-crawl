@@ -126,6 +126,8 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # OneSoccer и TVA Sports — tvpassport, матчи CPL с каналами —
           # календарь лиги canpl.ca (браузером, сетка)
           "news.by", "canpl.ca",
+          # AzamTV Max (книга 129): страницы каналов Azam Sports, браузером
+          "azamtvmax.com",
           # Fox Soccer Plus (США) — официального EPG у FOX нет, расписание
           # берём с телегида tvpassport.com (канал попросил владелец 02.09)
           "tvpassport.com",

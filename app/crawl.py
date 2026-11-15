@@ -103,6 +103,9 @@ CHANNEL_GRID_DOMAINS = {"programetv.ro", "poverkhnost.tv",
                         "rts.rs",
                         # страницы каналов SuperSport (этап 6в)
                         "livesoccertv.com",
+                        # azamtvmax.com (книга 129): страница канала, программа
+                        # только на текущие сутки — один запрос на канал
+                        "azamtvmax.com",
                         # Sport Klub: ручка United Cloud на канал, окно на
                         # неделю одним запросом ({UNIXMSDAY}–{UNIXMSWEEK})
                         "sportklub.hr",
