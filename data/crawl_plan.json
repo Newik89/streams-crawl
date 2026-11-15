@@ -703,6 +703,9 @@
     "ART Sport 6",
     "Abu Dhabi Sports 1",
     "Abu Dhabi Sports 2",
+    "Azam Sports 2 HD",
+    "Azam Sports 3 HD",
+    "Azam Sports HD",
     "ESPN 2 Netherlands",
     "ESPN 3 Netherlands",
     "ESPN 4 Netherlands",
@@ -770,6 +773,18 @@
     {
      "name": "Abu Dhabi Sports 2",
      "pattern": "https://www.livesoccertv.com/channels/abu-dhabi-sports-2/"
+    },
+    {
+     "name": "Azam Sports 2 HD",
+     "pattern": "https://www.livesoccertv.com/channels/azam-sports-2-hd/"
+    },
+    {
+     "name": "Azam Sports 3 HD",
+     "pattern": "https://www.livesoccertv.com/channels/azam-sports-3-hd/"
+    },
+    {
+     "name": "Azam Sports HD",
+     "pattern": "https://www.livesoccertv.com/channels/azam-sports-hd-tanzania/"
     },
     {
      "name": "ESPN 2 Netherlands",
