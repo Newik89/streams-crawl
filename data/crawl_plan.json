@@ -937,11 +937,11 @@
    "warmup_url": "",
    "post_json": null,
    "headers": null,
-   "base_url": "https://mojtv.hr/tv-program/-2/sportski/sutra.aspx#google_vignette",
+   "base_url": "https://mojtv.hr/tv-program/sportski",
    "channels": [
     {
      "name": "сетка спортканалов",
-     "pattern": "https://mojtv.hr/tv-program/-2/sportski/{YYYY-MM-DD}.aspx"
+     "pattern": "https://mojtv.hr/tv-program/sportski/{YYYY-MM-DD}"
     }
    ]
   },
