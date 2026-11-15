@@ -216,9 +216,9 @@ def load(conn, path: Path) -> dict[str, int]:
         if item.get("seen_with"):             # книга 139
             dictionary.remember_beside(conn, item["alias"], item["class"],
                                        item.get("lang"), item["seen_with"])
+        added["ошибок в книге"] += 1
     if isinstance(data.get(broadcast.LEARNED_KEY), dict):     # книга 142
         dictionary.remember_cities(conn, data[broadcast.LEARNED_KEY])
-        added["ошибок в книге"] += 1
     conn.commit()
     for item in data.get("leagues", []):
         for alias in item.get("aliases") or [item["name"]]:

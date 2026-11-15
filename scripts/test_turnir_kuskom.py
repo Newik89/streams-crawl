@@ -190,7 +190,8 @@ print("Подключение")
           "get(pipeline.TOURNAMENT) or {}).get(\"эталон\")" in inspect.getsource(parse_live)), (True, True))
 проверка("сессии турнира у сайта без пометки эфира — не «поздний показ»: строку с подтверждённым турниром "
          "фильтр позднего показа не снимает",
-         inspect.getsource(parse_live).count("get(pipeline.TOURNAMENT) or {}).get(\"эталон\")"), 2)
+         # три места: «эфир без эталона», «поздний показ» и (книга 146) «грязные минуты»
+         inspect.getsource(parse_live).count("get(pipeline.TOURNAMENT) or {}).get(\"эталон\")"), 3)
 
 
 def игра(start, home, away, каналы, sport="T"):

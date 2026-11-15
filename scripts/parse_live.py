@@ -1690,8 +1690,12 @@ def main() -> int:
     # `Crystal Palace - Man City` в 03:47 у movistarplus — поймано
     # владельцем на витрине 02.09). Честно помеченных сайтов не касается.
     # Кроме заставки — `odd_minute_record` (книга случаев 050)
+    # книга 146: трансляция турнира, эфир которой подтвердил эталон, — не
+    # запись и на неровной минуте (у неё нет пары, а значит и «начала матча»)
     found = sift(found, lambda domain, r: (
-        not guessed(domain, r) or not odd_minute_record(r.start_kyiv, _kickoff(r))),
+        not guessed(domain, r)
+        or bool(((r.program.extra or {}).get(pipeline.TOURNAMENT) or {}).get("эталон"))
+        or not odd_minute_record(r.start_kyiv, _kickoff(r))),
         снято, СНЯТО_ГРЯЗНЫЕ_МИНУТЫ,
         "эфир угадан, начало не на :00/:05/…/:55 и не заставка перед матчем — запись")
 
@@ -1770,6 +1774,9 @@ def main() -> int:
         имя = broadcast.tournament(заголовок, known_tournaments)
         if имя:
             r.home, r.away = имя, broadcast.SESSION
+            # книга 146: у сведённой строки название турнира — само имя; лига
+            # первого по времени сайта («tenis Tenis Ziua 6») ей не подпись
+            r.league = ""
             сведено += 1
         else:
             не_узнаны.add((domain, (r.program.title or "")[:70]))

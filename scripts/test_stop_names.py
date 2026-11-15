@@ -71,7 +71,9 @@ JUNK_PREFIXES = ("Resúmenes ",
                  "Avant-match ", "Efter ", "Post Barcelona", "Post UEFA ")
 #: концы таких имён: «Irland Der Countdown», «Kosovo Der Countdown W» —
 #: передача tv.orf.at перед матчем (книга 133), не команда
-JUNK_SUFFIXES = (" Der Countdown", " Der Countdown W")
+JUNK_SUFFIXES = (" Der Countdown", " Der Countdown W",
+                 # книга 146: передача tv.orf.at после матча
+                 " Die Analyse", " Die Analyse W", " Die Analyse aus Wien")
 
 
 def мусор(имя: str) -> bool:

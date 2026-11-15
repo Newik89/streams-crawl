@@ -47,7 +47,8 @@ def проверка(имя: str, вышло, ждём=True) -> None:
 
 def стоп(сайт: str, заголовок: str) -> str:
     """Стоп-слово заголовка, как его видит разбор строк этого сайта."""
-    return M.for_langs(site_lang.of(сайт)).found(M.for_langs(site_lang.of(сайт)).stop_title, заголовок) or ""
+    свои = M.for_langs(site_lang.of(сайт))
+    return свои.found(свои.stop_title, заголовок) or live.lead_show(свои, заголовок)
 
 
 print("Передача до и после матча — стоп-слово на языке сайта")
@@ -55,9 +56,9 @@ print("Передача до и после матча — стоп-слово н
          [стоп("tvtid.tv2.dk", "A-Liga: Før F.C. København-FC Midtjylland").casefold(),
           стоп("tvtid.tv2.dk", "UEFA Nations League: Efter Danmark-Norge").casefold(),
           стоп("tvsporten.dk", "Optakt: Danmark - Norge").casefold()], ["før", "efter", "optakt"])
-проверка("испанский: «Post …» (movistarplus.es) — и после названия рубрики, и перед парой",
+проверка("испанский: «Post …» (movistarplus.es) перед парой — и в заголовке, и в поле пары",
          [стоп("movistarplus.es", "Juego de Naciones (T26/27): Post España - Inglaterra").casefold(),
-          стоп("movistarplus.es", "La Casa del Fútbol Post (T26/27): Athletic Club - RCD Espanyol").casefold(),
+          стоп("movistarplus.es", "Post España - Inglaterra").casefold(),
           стоп("movistarplus.es", "La pista del Tenis. Nitto ATP Finals (T2026): Post Alcaraz - Tiafoe").casefold()],
          ["post", "post", "post"])
 проверка("французский, немецкий, шведский, финский, португальский, английский",
@@ -67,6 +68,16 @@ print("Передача до и после матча — стоп-слово н
              ("tvmatsit.com", "Ennakko: Suomi - Ruotsi"), ("sporttv.pt", "PÓS-JOGO BENFICA X PORTO"),
              ("tv24.co.uk", "Pre-Match: Arsenal v Chelsea"), ("tv24.co.uk", "Post-Match: Arsenal v Chelsea"))],
          [True] * 8)
+проверка("книга 146: то же слово в середине фразы — предлог или пометка, матч остаётся матчем",
+         [стоп(сайт, заголовок) for сайт, заголовок in (
+             ("tvtid.tv2.dk", "Fodbold: Danmark - Norge (direkte efter TV Avisen)"),
+             ("tvtid.tv2.dk", "Fodbold: Danmark - Norge, direkte fra studiet i Herning"),
+             ("tv2.no", "Fotball: Norge - Italia, etter pause"), ("tvmatchen.nu", "Sverige - Danmark inför 50 000"),
+             ("tv.orf.at", "Fußball: Österreich - Serbien; Vorberichte, das Spiel, Analysen"),
+             ("tv24.co.uk", "Live: Arsenal v Chelsea (Build-Up 4.30pm, KO 5.30pm)"),
+             ("movistarplus.es", "Euroliga: Bayern - Post SV Nürnberg"),
+             ("tvtid.tv2.dk", "Optakt"))],
+         [""] * 8)
 проверка("сам матч теми же сайтами — не передача",
          [стоп("tvtid.tv2.dk", "A-Liga: F.C. København-FC Midtjylland"),
           стоп("movistarplus.es", "UEFA Nations League (T26/27): Inglaterra - España"),
