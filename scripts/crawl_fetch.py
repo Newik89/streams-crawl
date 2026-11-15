@@ -19,7 +19,10 @@ r"""Живой обход по плану: скачать страницы и с
     --redo    дозабор (схема сбоев, шаг 5; правила — `app/redo.py`): по
               report.json дошедшего сбора заново качаются ТОЛЬКО его упавшие
               адреса класса down/net (не больше 40), report.json
-              переписывается — упавшие строки свежими, раздел «дозабор»
+              переписывается — упавшие строки свежими, раздел «дозабор».
+              С книги 132 — и пустые страницы сайта, что «опустел» (пришёл
+              пустым целиком, хотя в прошлом сборе давал расписание;
+              раздел «опустели» отчёта, правило Д10 в `app/redo.py`)
 
 Полный обход без фильтров на самом GitHub раз в 7 дней пробует каждый сайт
 «качает сервер» ОДНИМ адресом (схема сбоев, шаг 11, `app/site_move.py`,
@@ -719,8 +722,8 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
         return 0, None, [f"упавших адресов класса down/net, которые можно взять сейчас, "
                          f"нет (не берём: {skipped})"]
     skipped = ", ".join(f"{k} — {v}" for k, v in choice.skipped.items()) or "—"
-    print(f"дозабор из прогона {from_run}: упало (сайт лёг / нет ответа) "
-          f"{choice.total}, качаю заново {len(choice.rows)}; не берём: {skipped}\n")
+    print(f"дозабор из прогона {from_run}: {redo.count_words(choice)}; "
+          f"качаю заново {len(choice.rows)}; не берём: {skipped}\n")
     fresh: dict[int, dict] = {}
     #: сайт → сколько его адресов подряд снова не открылось; дошло до
     #: `redo.REDO_SITE_FAILS` — остальные его адреса не трогаем (`passed`)
@@ -736,12 +739,14 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
         job = redo.job_of(row)
         if redo.site_down(fails, job["domain"]):
             # строка остаётся как была; причина — в разделе «дозабор»
+            # (Д10: у опустевшего сайта — «всё ещё пуст», у упавшего — «лежит»)
+            почему = redo.still_words(row)
             passed.append({"domain": job["domain"], "url": job["url"],
-                           "почему": redo.SITE_STILL_DOWN})
+                           "почему": почему})
             print(f"{str(n).rjust(3)}/{len(choice.rows)}  {job['domain'].ljust(12)} "
-                  f"не трогаю — {redo.SITE_STILL_DOWN} ({redo.REDO_SITE_FAILS} адреса подряд)")
+                  f"не трогаю — {почему} ({redo.REDO_SITE_FAILS} адреса подряд)")
             lines.append(f"| {job['domain']} | {(job.get('channel') or 'сетка').replace('|', '/')} "
-                         f"| — | не трогали: {redo.SITE_STILL_DOWN} | {job['url']} |")
+                         f"| — | не трогали: {почему} | {job['url']} |")
             continue
         # сайт с пометкой `browser` — сразу браузером, как в обходе
         fetcher.browser_only = bool(job.get("browser"))
@@ -763,7 +768,9 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
             (out / name).write_text(page.body, encoding="utf-8")
             new["файл отказа"] = name
         fresh[index] = new
-        redo.count_fail(fails, job["domain"], new["итог"] in BROKEN)
+        # Д10: пустая страница опустевшего сайта, что снова пуста, — тоже
+        # «не выправилась»: после `REDO_SITE_FAILS` таких сайт не трогаем
+        redo.count_fail(fails, job["domain"], not redo.healed(row, new))
         was = str(row.get("почему") or row.get("итог") or "").replace("|", "/")[:60]
         got = (new["итог"] if new["итог"] not in BROKEN
                else f"{new['итог']}: {new['почему']}").replace("|", "/")[:80]
@@ -808,6 +815,48 @@ def redo_fetch(report: dict, out: Path, fetcher, from_run: str,
             f"Упало (сайт лёг / нет ответа): {section['упавших']}, скачано заново: "
             f"{section['адресов']}, выправилось: {section['выправилось']}.", ""]
     return 0, merged, head + lines
+
+
+#: Д10 (книга 132): отчёт ПРОШЛОГО полного сбора — он лежит в репозитории
+#: (его кладёт туда каждый полный сбор), новый сбор пишет свой в `--out`
+PREVIOUS_REPORT = ROOT / "results" / "report.json"
+
+
+def прошлый_сбор(path: Path) -> list:
+    """Д10: строки отчёта прошлого ПОЛНОГО сбора (`оценка.строгая` — так
+    помечен полный обход без фильтров). Файла нет, он битый или это не
+    полный сбор — пустой список: сравнивать не с чем, раздел «опустели»
+    не пишется."""
+    try:
+        before = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    if not isinstance(before, dict):
+        return []
+    mark = before.get("оценка")
+    if not (isinstance(mark, dict) and mark.get("строгая")):
+        return []
+    rows = before.get("строки")
+    return rows if isinstance(rows, list) else []
+
+
+def строк_разбора(out: Path, settings: dict):
+    """Д10, условие (в): функция «сколько строк читает свой разборщик сайта
+    на странице строки отчёта». Страница берётся из папки сбора `out` по
+    полю «файл» строки, разборщик и пояс — из настроек плана (`settings`,
+    `source_settings`). None — судить нечем: у строки нет файла, файл не
+    читается или у сайта нет своего разборщика."""
+    def count(row: dict):
+        name = row.get("файл")
+        if not name:
+            return None
+        try:
+            html = (out / str(name)).read_text(encoding="utf-8")
+        except OSError:
+            return None
+        domain = str(row.get("domain") or "").removeprefix("www.")
+        return reader_chain.parser_rows(redo.job_of(row), html, settings.get(domain, {}))
+    return count
 
 
 def step_output(name: str, value: str) -> None:
@@ -1133,6 +1182,16 @@ def main() -> int:
     # книга 126: раздел «переезд» — сервер пишет по нему уведомление владельцу
     if переезд_отчёт.get("найдено") or переезд_отчёт.get("не_найдено"):
         payload[moved.REPORT_KEY] = переезд_отчёт
+    # книга 132 (Д10, слово владельца 15.11): сайты, что пришли пустыми
+    # целиком, хотя в прошлом полном сборе давали расписание, — через час
+    # дозабор сходит к ним ещё раз. Только полному обходу без фильтров
+    if strict:
+        опустели = redo.emptied_sites(report, прошлый_сбор(PREVIOUS_REPORT),
+                                      строк_разбора(out, source_settings(plan)))
+        if опустели:
+            payload[redo.EMPTIED_KEY] = опустели
+            print("пришли пустыми, хотя в прошлом сборе давали расписание "
+                  f"(через час — дозабор): {', '.join(sorted(опустели))}")
     code, notes = assess(payload) if strict else (0, [])
     payload["оценка"] = {"код": code, "строки": notes, "строгая": strict}
     (out / "report.json").write_text(
