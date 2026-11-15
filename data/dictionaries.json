@@ -12975,7 +12975,8 @@
         "Mirra Andriejewa",
         "Αντρέεβα Μ. (Κοσ)",
         "Андреева М. (Мир)",
-        "Андрєєва М."
+        "Андрєєва М.",
+        "אנדרייבה"
       ]
     },
     {
@@ -55894,6 +55895,7 @@
       "name": "Coastal Union",
       "country": null,
       "aliases": [
+        "Coastal Union",
         "Κόασταλ Γιούνιον",
         "Коастал Юнион",
         "Коустал Юніон",
@@ -55939,7 +55941,8 @@
         "Flavio Cobolli",
         "Κομπόλι Φ. (Ιτα)",
         "Коболли Ф. (Ита)",
-        "Коболлі Ф."
+        "Коболлі Ф.",
+        "פלאביו קובולי"
       ]
     },
     {
@@ -68857,6 +68860,7 @@
       "name": "Dodoma Jiji",
       "country": null,
       "aliases": [
+        "Dodoma Jiji",
         "Ντοντόμα Γίγι",
         "Додома Джиджи",
         "Додома Джиджи",
@@ -71158,6 +71162,7 @@
         "FC Dundee",
         "Νταντί",
         "Νταντί",
+        "Данди",
         "Данди",
         "Дънди ФК",
         "ФК Данді",
@@ -76274,6 +76279,7 @@
         "Ekvator Ginesi",
         "Ekvatorska Gvineja",
         "Equatoriaal-Guinea",
+        "Equatorial Guinea",
         "Guinea Ecuatorial",
         "Guinea Equatoriale",
         "Guineea Ecuatorială",
@@ -76510,6 +76516,7 @@
       "country": null,
       "aliases": [
         "Eritre",
+        "Eritrea",
         "Eritreia",
         "Eritreja",
         "Eritria",
@@ -77728,6 +77735,14 @@
         "Естраденсе",
         "Естраденсе",
         "Эстраденсе"
+      ]
+    },
+    {
+      "name": "Estramil T.",
+      "country": null,
+      "aliases": [
+        "Estramil T. (Ουρ)",
+        "Estramil T. (Уру)"
       ]
     },
     {
@@ -83984,7 +83999,8 @@
         "Αρτούρ Φις (Ζ)",
         "Φιλς Α. (Γαλ)",
         "Филс А. (Фра)",
-        "Філь А."
+        "Філь А.",
+        "ארתור פיס"
       ]
     },
     {
@@ -86605,6 +86621,8 @@
       "name": "Fountain Gate",
       "country": null,
       "aliases": [
+        "Fountain Gate",
+        "Singida Big Stars",
         "Φάουντεν Γκέιτ",
         "Фаунтен Гейт",
         "Фаунтийн Гейт",
@@ -115513,6 +115531,7 @@
       "name": "JKT Tanzania",
       "country": null,
       "aliases": [
+        "JKT Tanzania",
         "JKT Τανζανία",
         "ДЖКТ Танзания",
         "ДжКТ Танзания",
@@ -125097,9 +125116,12 @@
       "name": "Kicker N.",
       "country": null,
       "aliases": [
+        "Kicker N. (Arg) WO",
+        "Kicker N. (Arg) WO",
         "Κίκερ Ν. (Αργ)",
         "Кикер Н. (Арг)",
-        "Кікер Н."
+        "Кікер Н.",
+        "Кікер Н. (Arg) WO"
       ]
     },
     {
@@ -145753,6 +145775,21 @@
       ]
     },
     {
+      "name": "Madaras N. (Swe) RETIRED",
+      "country": null,
+      "aliases": [
+        "Madaras N. (Swe) FELADTA",
+        "Madaras N. (Swe) GERI ÇEKILDI",
+        "Madaras N. (Swe) KRECZ",
+        "Madaras N. (Swe) RETRAS",
+        "Madaras N. (Swe) SKREČ",
+        "Madaras N. (Swe) SKREČ",
+        "Μάνταρας Ν. (Σου) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Мадарас Д. (Шве) ОТКАЗ",
+        "Мадараш Н. (Swe) ВІДМОВА"
+      ]
+    },
+    {
       "name": "Madla IL",
       "country": null,
       "aliases": [
@@ -151623,6 +151660,7 @@
       "name": "Mbeya City",
       "country": null,
       "aliases": [
+        "Mbeya City",
         "Μπεγιά Σίτι",
         "Мбейа Сити",
         "Мбея Сити",
@@ -152331,7 +152369,8 @@
         "Miedwiediew D.",
         "Μεντβέντεφ Ν. (Κοσ)",
         "Медведев Д. (Мир)",
-        "Медвєдєв Д."
+        "Медвєдєв Д.",
+        "דניל מדבדב"
       ]
     },
     {
@@ -162669,6 +162708,7 @@
       "name": "Namungo",
       "country": null,
       "aliases": [
+        "Namungo",
         "Ναμούνγκο",
         "Намунго",
         "Намунго",
@@ -166385,6 +166425,7 @@
       "country": null,
       "aliases": [
         "NIGÉRIA",
+        "Nigeria",
         "Nigerija",
         "Nigéria",
         "Nigéria",
@@ -177576,6 +177617,7 @@
       "name": "Pamba",
       "country": null,
       "aliases": [
+        "Pamba",
         "Πάμπα",
         "Памба",
         "Памба",
@@ -179020,6 +179062,21 @@
         "Parisca I. (Βεν)",
         "Parisca I. (Вен)",
         "Паріска І."
+      ]
+    },
+    {
+      "name": "Parisca I. (Ven) RETIRED",
+      "country": null,
+      "aliases": [
+        "Parisca I. (Ven) FELADTA",
+        "Parisca I. (Ven) GERI ÇEKILDI",
+        "Parisca I. (Ven) KRECZ",
+        "Parisca I. (Ven) RETRAS",
+        "Parisca I. (Ven) SKREČ",
+        "Parisca I. (Ven) SKREČ",
+        "Parisca I. (Βεν) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Parisca I. (Вен) ОТКАЗ",
+        "Паріска І. (Ven) ВІДМОВА"
       ]
     },
     {
@@ -185243,6 +185300,7 @@
       "name": "Polisi Tanzania",
       "country": null,
       "aliases": [
+        "Polisi Tanzania",
         "Πολίσι Τανζανία",
         "Полиси М.",
         "Полиси Танзания",
@@ -185339,6 +185397,15 @@
         "Политехника УТМ",
         "Политехника УТМ",
         "Політехніка УТМ"
+      ]
+    },
+    {
+      "name": "Poljak D.",
+      "country": null,
+      "aliases": [
+        "Πόλιακ Ν. (Τσε)",
+        "Давид Поляк (Чех)",
+        "Поляк Д."
       ]
     },
     {
@@ -208275,6 +208342,7 @@
       "country": null,
       "aliases": [
         "SENEGAL",
+        "Senegal",
         "Szenegál",
         "Sénégal",
         "Σενεγάλη",
@@ -210922,7 +210990,8 @@
         "Μπεν Σέλτον (Ζ)",
         "Σέλτον Μ. (Ηπα)",
         "Шелтон Б.",
-        "Шелтон Б. (Сша)"
+        "Шелтон Б. (Сша)",
+        "בן שלטון"
       ]
     },
     {
@@ -212331,6 +212400,7 @@
       "name": "Simba",
       "country": null,
       "aliases": [
+        "Simba",
         "Simba (Tan)",
         "Σίμπα",
         "Σίμπα (Τνζ)",
@@ -212709,6 +212779,7 @@
       "name": "Singida Black Stars",
       "country": null,
       "aliases": [
+        "Singida Black Stars",
         "Σινγκίντα Μπλακ Σταρς",
         "Σινγκίντα Μπλακ Σταρς (Τνζ)",
         "Сингида Блек Старс",
@@ -215962,6 +216033,7 @@
       "country": null,
       "aliases": [
         "Somali",
+        "Somalia",
         "Somalie",
         "Somalija",
         "Somália",
@@ -222859,6 +222931,7 @@
         "SUDÃO",
         "Soedan",
         "Soudan",
+        "Sudan",
         "Sudán",
         "Sudán",
         "Sudão",
@@ -224136,7 +224209,8 @@
         "Σβιτολίνα Ε. (Ουκ)",
         "Свитолина Э. (Укр)",
         "Світоліна Е.",
-        "Теннис. WTA. Итоговый турнир. Индиан-Уэллс. Э. Свитолина"
+        "Теннис. WTA. Итоговый турнир. Индиан-Уэллс. Э. Свитолина",
+        "סביטולינה"
       ]
     },
     {
@@ -227620,6 +227694,7 @@
       "aliases": [
         "TANZÂNIA",
         "Tansania",
+        "Tanzania",
         "Tanzanie",
         "Tanzanija",
         "Tanzanya",
@@ -237000,6 +237075,23 @@
         "САЩ U21",
         "США U21",
         "США U21"
+      ]
+    },
+    {
+      "name": "USA U23",
+      "country": null,
+      "aliases": [
+        "ABD U23",
+        "EE. UU. Sub-23",
+        "EUA U23",
+        "SAD U23",
+        "SUA U23",
+        "USA -23",
+        "USA -23",
+        "ΗΠΑ U23",
+        "САЩ U23",
+        "США U23",
+        "США U23"
       ]
     },
     {
@@ -253730,6 +253822,7 @@
       "name": "Young Africans",
       "country": null,
       "aliases": [
+        "Young Africans",
         "Young Africans (Tan)",
         "Γιάνγκ Άφρικανς",
         "Γιάνγκ Άφρικανς (Τνζ)",
@@ -256571,6 +256664,7 @@
         "Zimbabue",
         "Zimbabve",
         "Zimbabve",
+        "Zimbabwe",
         "Ζιμπάμπουε",
         "Зимбабве",
         "Зимбабве",
@@ -257529,6 +257623,7 @@
         "AFRIQUE: CAN - Qualification",
         "AFRYKA: Puchar Narodów Afryki - Kwalifikacje",
         "AFRİKA: Afrika Uluslar Kupası - Elemeler",
+        "Africa Cup of Nations Qualification",
         "TAÇA NAÇÕES AFRICANAS - QUALIFICAÇÃO",
         "ÁFRICA: Copa de África de Naciones - Clasificación",
         "ÁFRICA: Taça das Nações Africanas - Qualificação",
@@ -259623,6 +259718,7 @@
         "ATP - ΔΙΠΛΑ: Finals - Τορίνο (Κόσμος), σκληρή (κλειστό)",
         "ATP - ПАРНИЙ РОЗРЯД: Підсумковий турнір - Турин (Світ), хард (indoor)",
         "ATP - ПАРНЫЙ РАЗРЯД: Итоговый турнир - Турин (Мир), хард (в помещении)",
+        "ATP Finale (Torino)",
         "Turniej ATP Finals w Turynie"
       ]
     },
@@ -263414,6 +263510,7 @@
       "aliases": [
         "BRASIL: Copa Paraiba",
         "BRASIL: Copa Paraiba",
+        "BRASIL: Taça Paraiba",
         "BRASILE: Copa Paraiba",
         "BRASILIEN: Copa Paraiba",
         "BRASILIEN: Copa Paraiba",
@@ -263653,6 +263750,7 @@
       "aliases": [
         "BRASIL: Copa do Brasil Femenina",
         "BRASIL: Copa do Brasil Women",
+        "BRASIL: Taça do Brasil Feminina",
         "BRASILE: Copa do Brasil Women",
         "BRASILIEN: Copa do Brasil - Frauen",
         "BRASILIEN: Copa do Brasil Kvinder",
@@ -264009,6 +264107,7 @@
         "BRÉSIL: Kings Cup - Brazil - Challenger",
         "ΒΡΑΖΙΛΙΑ: Kings Cup - Brazil - Challenger",
         "ΒΡΑΖΙΛΙΑ: Κινγκς Καπ - Βραζιλία - Challenger",
+        "ΒΡΑΖΙΛΙΑ: Κινγκς Καπ - Βραζιλία - Τσάλεντζερ",
         "БРАЗИЛІЯ: Kings Cup - Brazil - Challenger",
         "БРАЗИЛИЯ: Kings Cup - Brazil - Challenger",
         "БРАЗИЛИЯ: Купа на кралете - Бразилия - Challenger"
@@ -265190,6 +265289,18 @@
         "БРАЗИЛІЯ: Серія Б",
         "БРАЗИЛИЯ: Серия B",
         "БРАЗИЛИЯ: Чемпионат Бразилии В"
+      ]
+    },
+    {
+      "name": "BRAZIL: Serie B - Promotion - Play Offs",
+      "slug": "brazil-serie-b-promotion-play-offs",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "BRAZIL: Serie B - Promocija - Playoff",
+        "BRAZÍLIA: Campeonato Brasileiro B - Osztályozó - Play Offs",
+        "ΒΡΑΖΙΛΙΑ: Σέριε Β - Πλέι Οφς Προβιβασμού",
+        "БРАЗИЛИЯ: Серия B - Промоция - Плейофи"
       ]
     },
     {
@@ -266381,6 +266492,7 @@
         "CHALLENGER MUŽI - ŠTVORHRY: Metz (Francúzsko), tvrdý povrch (hala)",
         "CHALLENGER MĘŻCZYŹNI - DEBEL: Metz (Francja), twarda (w hali)",
         "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΔΙΠΛΑ: Metz (Γαλλία), σκληρή (κλειστό)",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΔΙΠΛΑ: Μετζ (Γαλλία), σκληρή (κλειστό)",
         "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: Metz (Франция), хард (в помещении)",
         "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: Metz (Франція), хард (indoor)"
       ]
@@ -267602,6 +267714,7 @@
         "CHALLENGER MUŽI - DVOUHRY: Metz (Francie) - Kvalifikace, tvrdý povrch (hala)",
         "CHALLENGER MĘŻCZYŹNI - SINGIEL: Metz (Francja) - Kwalifikacje, twarda (w hali)",
         "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Metz (Γαλλία) - Προκριματικά, σκληρή (κλειστό)",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Μετζ (Γαλλία) - Προκριματικά, σκληρή (κλειστό)",
         "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Metz (Франция) - квалификация, хард (в помещении)",
         "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Metz (Франція) - Qualification, хард (indoor)"
       ]
@@ -267619,6 +267732,7 @@
         "CHALLENGER MUŽI - DVOUHRY: Metz (Francie), tvrdý povrch (hala)",
         "CHALLENGER MĘŻCZYŹNI - SINGIEL: Metz (Francja), twarda (w hali)",
         "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Metz (Γαλλία), σκληρή (κλειστό)",
+        "ΤΣΑΛΕΝΤΖΕΡ ΑΝΔΡΕΣ - ΜΟΝΑ: Μετζ (Γαλλία), σκληρή (κλειστό)",
         "ЧЕЛЛЕНДЖЕР МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: Metz (Франция), хард (в помещении)",
         "ЧЕЛЛЕНДЖЕР ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: Metz (Франція), хард (indoor)"
       ]
@@ -269561,6 +269675,18 @@
         "Колумбия Примера А Клаусура 2026 Перенесённый матч 5 тура Прямая трансляция",
         "Колумбия Примера А Клаусура 2026 Перенесённый матч 7 тура Прямая трансляция",
         "Колумбия Примера А Клаусура 2026 Перенесённый матч 9 тура Прямая трансляция"
+      ]
+    },
+    {
+      "name": "COLOMBIA: Primera A - Clausura - Quadrangular",
+      "slug": "colombia-primera-a-clausura-quadrangular",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "KOLUMBIA: Primera A - Clausura - Quadrangular",
+        "KOLUMBIJA: Primera A - Clausura - Quadrangular",
+        "ΚΟΛΟΜΒΙΑ: Πριμέρα Α - Κλαουζούρα - Κουαντρανγκουλάρ",
+        "КОЛУМБИЯ: Примера А - Класура - четиристранен"
       ]
     },
     {
@@ -277507,6 +277633,7 @@
         "INDONÉZIA: Liga Nusantara - Első szakasz",
         "INDONÉZIA: Liga Nusantara - Prvá fáza",
         "ΙΝΔΟΝΗΣΙΑ: Liga Nusantara - Πρώτη φάση",
+        "ΙΝΔΟΝΗΣΙΑ: Λίγκα Νουσαντάρα - Πρώτη φάση",
         "ІНДОНЕЗІЯ: Liga Nusantara - Перший етап",
         "ИНДОНЕЗИЯ: Liga Nusantara - Первый этап",
         "ИНДОНЕЗИЯ: Liga Nusantara - Първи етап"
@@ -280886,6 +281013,7 @@
         "ITF MUŽI - ŠTVORHRY: M25 Vale do Lobo 2 (Portugalsko), tvrdý povrch",
         "ITF MĘŻCZYŹNI - DEBEL: M25 Vale do Lobo 2 (Portugalia), twarda",
         "ITF ΑΝΔΡΕΣ - ΔΙΠΛΑ: M25 Vale do Lobo 2 (Πορτογαλία), σκληρή",
+        "ITF ΑΝΔΡΕΣ - ΔΙΠΛΑ: Μ25 Βάλε Ντο Λόμπο 2 (Πορτογαλία), σκληρή",
         "ITF МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: M25 Vale do Lobo 2 (Португалия), хард",
         "ITF ЧОЛОВІКИ - ПАРНИЙ РОЗРЯД: M25 Vale do Lobo 2 (Португалія), хард"
       ]
@@ -280971,6 +281099,7 @@
         "ITF MUŽI - DVOUHRY: M15 Antalya 7 (Turecko), antuka",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Antalya 7 (Turcja), ziemna",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Antalya 7 (Τουρκία), χώμα",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Αττάλεια 7 (Τουρκία), χώμα",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Antalya 7 (Турция), грунт",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Antalya 7 (Туреччина), грунт"
       ]
@@ -281127,6 +281256,7 @@
         "ITF MUŽI - DVOUHRY: M15 Heraklion 11 (Řecko), tvrdý povrch",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Heraklion 11 (Grecja), twarda",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Heraklion 11 (Ελλάδα), σκληρή",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Ηράκλειο 11 (Ελλάδα), σκληρή",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Heraklion 11 (Греция), хард",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Heraklion 11 (Греція), хард"
       ]
@@ -281212,6 +281342,7 @@
         "ITF MUŽI - DVOUHRY: M15 Hua Hin (Thajsko), tvrdý povrch",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Hua Hin (Tajlandia), twarda",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Hua Hin (Ταϊλάνδη), σκληρή",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Χουάν Χιν (Ταϊλάνδη), σκληρή",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Hua Hin (Таиланд), хард",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Hua Hin (Таїланд), хард"
       ]
@@ -281281,6 +281412,7 @@
         "ITF MUŽI - DVOUHRY: M15 Kuala Lumpur (Malajsie), tvrdý povrch",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Kuala Lumpur (Malezja), twarda",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Kuala Lumpur (Μαλαισία), σκληρή",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Κουάλα Λουμπούρ (Μαλαισία), σκληρή",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Kuala Lumpur (Малайзия), хард",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Kuala Lumpur (Малайзія), хард"
       ]
@@ -281298,6 +281430,7 @@
         "ITF MUŽI - DVOUHRY: M15 Las Palmas de Gran Canaria (Španělsko), antuka",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Las Palmas de Gran Canaria (Hiszpania), ziemna",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Las Palmas de Gran Canaria (Ισπανία), χώμα",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Λας Πάλμας ντε Γκραν Κανάρια (Ισπανία), χώμα",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Las Palmas de Gran Canaria (Испания), грунт",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Las Palmas de Gran Canaria (Іспанія), грунт"
       ]
@@ -281366,6 +281499,7 @@
         "ITF MUŽI - DVOUHRY: M15 Maanshan 10 (Čína), tvrdý povrch (hala)",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Maanshan 10 (Chiny), twarda (w hali)",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Maanshan 10 (Κίνα), σκληρή (κλειστό)",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Μαανσάν 10 (Κίνα), σκληρή (κλειστό)",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Maanshan 10 (Китай), хард (в помещении)",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Maanshan 10 (Китай), хард (indoor)"
       ]
@@ -281590,6 +281724,7 @@
         "ITF MUŽI - DVOUHRY: M15 Monastir 39 (Tunisko), tvrdý povrch",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Monastir 39 (Tunezja), twarda",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Monastir 39 (Τυνησία), σκληρή",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Μόναστιρ 39 (Τυνησία), σκληρή",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Monastir 39 (Тунис), хард",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Monastir 39 (Туніс), хард"
       ]
@@ -281607,6 +281742,7 @@
         "ITF MUŽI - DVOUHRY: M15 Naples, FL 4 (USA), antuka",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Naples, FL 4 (USA), ziemna",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Naples, FL 4 (ΗΠΑ), χώμα",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Νέιπλς, ΦΛ 4 (ΗΠΑ), χώμα",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Naples, FL 4 (США), грунт",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Naples, FL 4 (США), грунт"
       ]
@@ -281747,6 +281883,7 @@
         "ITF MUŽI - DVOUHRY: M15 Roldan (Argentina), antuka",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Roldan (Argentyna), ziemna",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Roldan (Αργεντινή), χώμα",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Ρολντάν (Αργεντινή), χώμα",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Roldan (Аргентина), грунт",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Roldan (Аргентина), грунт"
       ]
@@ -281942,6 +282079,7 @@
         "ITF MUŽI - DVOUHRY: M15 Sharm ElSheikh 17 (Egypt), tvrdý povrch",
         "ITF MĘŻCZYŹNI - SINGIEL: M15 Sharm ElSheikh 17 (Egipt), twarda",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Sharm ElSheikh 17 (Αίγυπτος), σκληρή",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ15 Σαρμ Ελ Σεΐκ 17 (Αίγυπτος), σκληρή",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Sharm ElSheikh 17 (Египет), хард",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Sharm ElSheikh 17 (Єгипет), хард"
       ]
@@ -282269,6 +282407,7 @@
         "ITF MUŽI - DVOUHRY: M25 Columbus, OH (USA), tvrdý povrch (hala)",
         "ITF MĘŻCZYŹNI - SINGIEL: M25 Columbus, OH (USA), twarda (w hali)",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M25 Columbus, OH (ΗΠΑ), σκληρή (κλειστό)",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ25 Κολούμπους, ΟΧ (ΗΠΑ), σκληρή (κλειστό)",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M25 Columbus, OH (США), хард (в помещении)",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M25 Columbus, OH (США), хард (indoor)"
       ]
@@ -282546,6 +282685,7 @@
         "ITF MUŽI - DVOUHRY: M25 Montreal (Kanada), tvrdý povrch (hala)",
         "ITF MĘŻCZYŹNI - SINGIEL: M25 Montreal (Kanada), twarda (w hali)",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M25 Montreal (Καναδάς), σκληρή (κλειστό)",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ25 Μόντρεαλ (Καναδάς), σκληρή (κλειστό)",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M25 Montreal (Канада), хард (в помещении)",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M25 Montreal (Канада), хард (indoor)"
       ]
@@ -282650,6 +282790,7 @@
         "ITF MUŽI - DVOUHRY: M25 San Gregorio di Catania (Itálie), antuka",
         "ITF MĘŻCZYŹNI - SINGIEL: M25 San Gregorio di Catania (Włochy), ziemna",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M25 San Gregorio di Catania (Ιταλία), χώμα",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: Μ25 Σαν Γκρεγκόριο ντι Κατάνια (Ιταλία), χώμα",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M25 San Gregorio di Catania (Италия), грунт",
         "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M25 San Gregorio di Catania (Італія), грунт"
       ]
@@ -285143,6 +285284,7 @@
         "ITF ŽENY - DVOJHRY: W15 Antalya 7 (Turecko), antuka",
         "ITF ŽENY - DVOUHRY: W15 Antalya 7 (Turecko), antuka",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Antalya 7 (Τουρκία), χώμα",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Αττάλεια 7 (Τουρκία), χώμα",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 Antalya 7 (Туреччина), грунт",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 Antalya 7 (Турция), грунт"
       ]
@@ -285506,6 +285648,7 @@
         "ITF ŽENY - DVOJHRY: W15 Maanshan 9 (Čína), tvrdý povrch (hala)",
         "ITF ŽENY - DVOUHRY: W15 Maanshan 9 (Čína), tvrdý povrch (hala)",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Maanshan 9 (Κίνα), σκληρή (κλειστό)",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Μαανσάν 9 (Κίνα), σκληρή (κλειστό)",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 Maanshan 9 (Китай), хард (indoor)",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 Maanshan 9 (Китай), хард (в помещении)"
       ]
@@ -285609,6 +285752,7 @@
         "ITF ŽENY - DVOJHRY: W15 Monastir 31 (Tunisko), tvrdý povrch",
         "ITF ŽENY - DVOUHRY: W15 Monastir 31 (Tunisko), tvrdý povrch",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Monastir 31 (Τυνησία), σκληρή",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Μόναστιρ 31 (Τυνησία), σκληρή",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 Monastir 31 (Туніс), хард",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 Monastir 31 (Тунис), хард"
       ]
@@ -285678,6 +285822,7 @@
         "ITF ŽENY - DVOJHRY: W15 Nules (Španielsko), antuka",
         "ITF ŽENY - DVOUHRY: W15 Nules (Španělsko), antuka",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Nules (Ισπανία), χώμα",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Νουλ (Ισπανία), χώμα",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 Nules (Іспанія), грунт",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 Nules (Испания), грунт"
       ]
@@ -285712,6 +285857,7 @@
         "ITF ŽENY - DVOJHRY: W15 Paris (Francúzsko), tvrdý povrch (hala)",
         "ITF ŽENY - DVOUHRY: W15 Paris (Francie), tvrdý povrch (hala)",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Paris (Γαλλία), σκληρή (κλειστό)",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Παρί (Γαλλία), σκληρή (κλειστό)",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 Paris (Франція), хард (indoor)",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 Paris (Франция), хард (в помещении)"
       ]
@@ -285838,6 +285984,7 @@
         "ITF ŽENY - DVOJHRY: W15 Sharm ElSheikh 19 (Egypt), tvrdý povrch",
         "ITF ŽENY - DVOUHRY: W15 Sharm ElSheikh 19 (Egypt), tvrdý povrch",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Sharm ElSheikh 19 (Αίγυπτος), σκληρή",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Σαρμ Ελ Σεΐκ 19 (Αίγυπτος), σκληρή",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 Sharm ElSheikh 19 (Єгипет), хард",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 Sharm ElSheikh 19 (Египет), хард"
       ]
@@ -286012,6 +286159,7 @@
         "ITF ŽENY - DVOJHRY: W15 São Carlos (Brazília), antuka",
         "ITF ŽENY - DVOUHRY: W15 São Carlos (Brazílie), antuka",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 São Carlos (Βραζιλία), χώμα",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Σάο Κάρλος (Βραζιλία), χώμα",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 São Carlos (Бразилія), грунт",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 São Carlos (Бразилия), грунт"
       ]
@@ -286218,6 +286366,7 @@
         "ITF ŽENY - DVOJHRY: W35 Heraklion 3 (Grécko), antuka",
         "ITF ŽENY - DVOUHRY: W35 Heraklion 3 (Řecko), antuka",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W35 Heraklion 3 (Ελλάδα), χώμα",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W35 Ηράκλειο 3 (Ελλάδα), χώμα",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W35 Heraklion 3 (Греція), грунт",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W35 Heraklion 3 (Греция), грунт"
       ]
@@ -286687,6 +286836,7 @@
         "ITF ŽENY - DVOJHRY: W35 Weston, FL 2 (USA), antuka",
         "ITF ŽENY - DVOUHRY: W35 Weston, FL 2 (USA), antuka",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W35 Weston, FL 2 (ΗΠΑ), χώμα",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W35 Ουέστον, ΦΛ 2 (ΗΠΑ), χώμα",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W35 Weston, FL 2 (США), грунт",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W35 Weston, FL 2 (США), грунт"
       ]
@@ -286967,6 +287117,7 @@
         "ITF ŽENY - DVOJHRY: W50 Yokohama (Japonsko), tvrdý povrch",
         "ITF ŽENY - DVOUHRY: W50 Yokohama (Japonsko), tvrdý povrch",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W50 Yokohama (Ιαπωνία), σκληρή",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W50 Γιοκοχάμα (Ιαπωνία), σκληρή",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W50 Yokohama (Японія), хард",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W50 Yokohama (Япония), хард"
       ]
@@ -286984,6 +287135,7 @@
         "ITF ŽENY - DVOJHRY: W75 Brisbane 3 (Austrália), tvrdý povrch",
         "ITF ŽENY - DVOUHRY: W75 Brisbane 3 (Austrálie), tvrdý povrch",
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W75 Brisbane 3 (Αυστραλία), σκληρή",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W75 Μπρισμπέιν 3 (Αυστραλία), σκληρή",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W75 Brisbane 3 (Австралія), хард",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W75 Brisbane 3 (Австралия), хард"
       ]
@@ -287346,6 +287498,7 @@
         "JAPONYA: J.League Cup - İkinci etap",
         "JAPÁN: J.League Cup - Második szakasz",
         "JAPÃO: J.League Cup - Segundo nível",
+        "JAPÃO: Taça da Liga - Segundo nível",
         "JAPÓN: J.League Cup - Segunda fase",
         "ΙΑΠΩΝΙΑ: Τζ. Λιγκ Καπ - Δεύτερη φάση",
         "ЯПОНІЯ: J.League Cup - Другий етап",
@@ -290978,6 +291131,18 @@
       ]
     },
     {
+      "name": "PANAMA: LPF - Apertura - Play Offs",
+      "slug": "panama-lpf-apertura-play-offs",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "PANAMA: LPF - Apertura - Play Off",
+        "PANAMA: LPF - Apertura - Playoff",
+        "ΠΑΝΑΜΑΣ: LPF - Απερτούρα - Πλέι Οφς",
+        "ПАНАМА: ЛПФ - Апертура - Плейофи"
+      ]
+    },
+    {
       "name": "PARAGUAY: Copa Paraguay",
       "slug": "paraguay-copa-paraguay",
       "sport": "F",
@@ -293677,6 +293842,7 @@
         "SKOTSKO: Premiership",
         "SKOTTLAND: Premiership",
         "SKÓCIA: Premiership",
+        "SPFL",
         "SZKOCJA: Premiership",
         "Scottish Premiership",
         "Scottish Premiership (11. Spieltag)",
@@ -297584,6 +297750,7 @@
         "TANZÁNIA: Ligi Kuu Bara",
         "TANZÁNIA: Ligi Kuu Bara",
         "TANZÁNIE: Ligi Kuu Bara",
+        "Tanzania Premier League",
         "TÂNZANIA: Liga Kuu Bara",
         "ΤΑΝΖΑΝΙΑ: Λίγκι Κούου Μπάρα",
         "ТАНЗАНІЯ: Прем'єр-ліга",
@@ -299653,6 +299820,7 @@
         "GALLES: FAW Welsh Cup",
         "PAYS DE GALLES: FAW Welsh Cup",
         "PAÍS DE GALES: FAW Welsh Cup",
+        "PAÍS DE GALES: Taça de Gales",
         "WALES: Pohár",
         "WALIA: FAW Welsh Cup",
         "ŢARA GALILOR: FAW Welsh Cup",
@@ -300518,6 +300686,7 @@
         "DÜNYA: World Tour Zaisan 3x3 - Playofflar",
         "SVIJET: World Tour Zaisan 3x3 - Playoff",
         "ΚΟΣΜΟΣ: World Tour Zaisan 3x3 - Πλέι Οφς",
+        "ΚΟΣΜΟΣ: Ουόρλντ Τουρ Ζαϊσάν 3x3 - Πλέι Οφς",
         "МИР: World Tour Zaisan 3x3 - Плей-офф"
       ]
     },
@@ -300566,6 +300735,7 @@
       "sport": "T",
       "country": null,
       "aliases": [
+        "(parovi) finale",
         "WTA - DEBEL: Finals - Indian Wells (Świat) - Play Offy, twarda",
         "WTA - DUBLU: Finals - Indian Wells (Lume) - Play off-uri, suprafață dură",
         "WTA - PÁROS: Finals - Indian Wells (Világ) - Play Offs, kemény",
@@ -300825,6 +300995,7 @@
       "country": null,
       "aliases": [
         "1/2 Finale",
+        "Finale",
         "WTA - DVOJHRY: Finals - Indian Wells (Svet) - Play Off, tvrdý povrch",
         "WTA - DVOUHRY: Turnaj mistryň - Indian Wells (Svět) - Play Off, tvrdý povrch",
         "WTA - EGYÉNI: Finals - Indian Wells (Világ) - Play Offs, kemény",
@@ -310109,6 +310280,7 @@
     "Club Brugge KV": "F",
     "Cluj-Napoca": "B",
     "Coastal Carolina": "B",
+    "Coastal Union": "F",
     "Cobolli F.": "T",
     "Colchester": "F",
     "Collignon R.": "T",
@@ -310247,6 +310419,7 @@
     "Djurgarden W": "F",
     "Dnepr Mogilev": "F",
     "Dobromerice": "F",
+    "Dodoma Jiji": "F",
     "Dominica": "F",
     "Doncaster": "F",
     "Dordrecht": "F",
@@ -310324,6 +310497,7 @@
     "Enppi": "F",
     "Ensino W": "B",
     "Entella": "F",
+    "Equatorial Guinea": "F",
     "Erbil": "F",
     "Erciyes 38": "F",
     "Eritrea": "F",
@@ -310450,6 +310624,7 @@
     "Fortuna Koln": "F",
     "Fossa Huergo N./Plipuech P.": "T",
     "Fossa Huergo N./Pridankina E.": "T",
+    "Fountain Gate": "F",
     "France 3x3": "B",
     "France 3x3 W": "B",
     "France U17": "F",
@@ -310776,6 +310951,7 @@
     "Ittihad Kalba": "F",
     "Ivory Coast": "F",
     "Ivory Coast U17": "F",
+    "JKT Tanzania": "F",
     "JL Bourg": "B",
     "Jablonec": "F",
     "Jacquemot E.": "T",
@@ -311181,6 +311357,7 @@
     "Maxima Roma": "B",
     "Mazeikiai": "B",
     "Mazidagi": "F",
+    "Mbeya City": "F",
     "McAdoo R./Osborne A.": "T",
     "McNally C.": "T",
     "McNally C./Tjen J.": "T",
@@ -311302,6 +311479,7 @@
     "Naftan": "F",
     "Nakashima B.": "T",
     "Namibia": "F",
+    "Namungo": "F",
     "Nancy": "B",
     "Nanterre": "B",
     "Nantes": "F",
@@ -311489,6 +311667,7 @@
     "Palencia": "B",
     "Palermo": "F",
     "Palmeiras": "F",
+    "Pamba": "F",
     "Panama": "F",
     "Panama U17": "F",
     "Panathinaikos": "B",
@@ -311585,6 +311764,7 @@
     "Poland W": "B",
     "Polemidion": "F",
     "Polet Dorcol": "F",
+    "Polisi Tanzania": "F",
     "Politehnica Timisoara": "F",
     "Polmans M./Zielinski J.": "T",
     "Polonia Bytom": "F",
@@ -311894,6 +312074,8 @@
     "Sigma Olomouc": "F",
     "Silkeborg": "F",
     "Simakin I.": "T",
+    "Simba": "F",
+    "Singida Black Stars": "F",
     "Siniakova K.": "T",
     "Siniakova K./Townsend T.": "T",
     "Siniakova K./Zhang S.": "T",
@@ -312096,6 +312278,7 @@
     "Telstar": "F",
     "Temp Sumz Revda": "B",
     "Temple": "B",
+    "Tenerife": "B",
     "Teplice": "F",
     "Termalica B-B.": "F",
     "Ternana W": "F",
@@ -312361,6 +312544,7 @@
     "Yeni Mersin Idmanyurdu": "F",
     "Yenisey": "F",
     "York City": "F",
+    "Young Africans": "F",
     "Young Angels Kosice W": "B",
     "Young Boys": "F",
     "ZED": "F",
@@ -313041,6 +313225,17 @@
     },
     {
       "alias": "Orlando",
+      "lang": "bg bs fr hr hu pt sr",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "diemaxtra.nova.bg, nova.bg, port.hu",
+      "led_to": "Orlando Pirates | Orlando Magic",
+      "truth": "Orlando Magic",
+      "note": "вид спорта B",
+      "answered_by": "программа"
+    },
+    {
+      "alias": "Orlando",
       "lang": "bg bs hr pt sr",
       "class": "двусмысленно",
       "team": null,
@@ -313356,6 +313551,17 @@
       "led_to": "Real Sociedad | Villarreal",
       "truth": "Villarreal",
       "note": "вид спорта F",
+      "answered_by": "программа"
+    },
+    {
+      "alias": "Żalgiris Kowno",
+      "lang": "bg bs el hr pl sr",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "epg.cyta.com.cy, maxsport.live, teleman.pl",
+      "led_to": "Kauno Zalgiris | Zalgiris Kaunas",
+      "truth": "Zalgiris Kaunas",
+      "note": "вид спорта B",
       "answered_by": "программа"
     },
     {
@@ -313753,6 +313959,127 @@
       "truth": "Philadelphia 76ers",
       "note": "вид спорта B",
       "answered_by": "программа"
+    },
+    {
+      "alias": "ALBI Mall Superliga",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "суперлига Косова со спонсором; сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "Conference League",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "Europa League",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "La Liga",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "Liga e Kampioneve",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "Лига чемпионов; сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "Liga e Kombeve",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "Лига наций; сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "Liga e Pare",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "первая лига Косова; сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "NBA",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "Procredit Superliga",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "суперлига Косова, прежний спонсор; #9470, книга 094",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "Raiffeisen Liga e Pare",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "первая лига Косова со спонсором; сбор 15.11",
+      "answered_by": "владелец 15.11"
+    },
+    {
+      "alias": "Superliga",
+      "lang": "sq",
+      "class": "лишнее перед хозяевами",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": null,
+      "truth": null,
+      "note": "суперлига Косова; книга 094",
+      "answered_by": "владелец 15.11"
     },
     {
       "alias": "La Duchere - Feurs",
