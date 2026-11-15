@@ -30,6 +30,7 @@ from app.live import _pattern  # noqa: E402
 from app.parsers import Program  # noqa: E402
 from app.reference import Reference  # noqa: E402
 import parse_live  # noqa: E402
+import proverka  # noqa: E402
 
 KYIV = ZoneInfo("Europe/Kyiv")
 зелёных = красных = 0
@@ -187,6 +188,28 @@ print("Подключение")
          "от фильтра «угаданный эфир без эталона»",
          ("guess_site=_bare_domain(domain)" in inspect.getsource(parse_live),
           "get(pipeline.TOURNAMENT) or {}).get(\"эталон\")" in inspect.getsource(parse_live)), (True, True))
+проверка("сессии турнира у сайта без пометки эфира — не «поздний показ»: строку с подтверждённым турниром "
+         "фильтр позднего показа не снимает",
+         inspect.getsource(parse_live).count("get(pipeline.TOURNAMENT) or {}).get(\"эталон\")"), 2)
+
+
+def игра(start, home, away, каналы, sport="T"):
+    return {"start_kyiv": start, "home": home, "away": away, "sport": sport,
+            "entries": [{"channel": ch, "source": site} for ch, site in каналы]}
+
+
+старая = игра("2026-11-21T15:30", "ATP FINALS 2026", "MEIA-FINAL", [("SPORT.TV6", "sporttv.pt")])
+общая = игра("2026-11-21T13:00", "ATP Finals Turin", broadcast.SESSION,
+             [("Digi Sport 2", "digisport.ro"), ("SPORT.TV6", "sporttv.pt")])
+проверка("сравнение сборов: показ турнира вошёл в новую сведённую строку с тем же каналом — не пропажа; "
+         "канала при ней нет, строка дальше трёх часов, не теннис или новая строка не турнир — пропажа",
+         [proverka.merged_session(старая, [общая]) is общая,
+          proverka.merged_session(старая, [игра("2026-11-21T13:00", "ATP Finals Turin", broadcast.SESSION,
+                                               [("Digi Sport 2", "digisport.ro")])]),
+          proverka.merged_session(старая, [dict(общая, start_kyiv="2026-11-21T09:00")]),
+          proverka.merged_session(dict(старая, sport="F"), [общая]),
+          proverka.merged_session(старая, [dict(общая, away="Sinner J.")])],
+         [True, None, None, None, None])
 своё = broadcast.stage("ATP Finals Turin")
 проверка("витрина: стадию, которую даёт само имя турнира («ATP Finals» → Final), стадией показа не пишем; "
          "настоящую стадию — пишем",

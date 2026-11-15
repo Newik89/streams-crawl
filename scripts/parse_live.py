@@ -1661,6 +1661,12 @@ def main() -> int:
     firsts = first_shows(found)
 
     def _late_show(domain: str, r) -> bool:
+        # книга 138: трансляция турнира одним куском, эфир которой
+        # подтвердил эталон (рядом с показом начинается матч турнира), —
+        # не повтор первой сессии: сессии у турнира каждый день, а зовёт
+        # их сайт одинаково («Tenis ATP Torino 2026», ipko.tv)
+        if ((r.program.extra or {}).get(pipeline.TOURNAMENT) or {}).get("эталон"):
+            return False
         first = late_show(domain, r, firsts)
         if first is None:
             return False
