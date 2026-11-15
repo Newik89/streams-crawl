@@ -78,8 +78,8 @@ kniga_slova.apply(conn, write=True)
 print("Весь путь: книга → файл словаря → общий разбор")
 файл = TMP / "dictionaries.json"
 файл.write_text(json.dumps({"dictionary_errors": [
-    {"alias": r["alias"], "lang": r["lang"], "class": r["class"]}
-    for r in conn.execute("SELECT alias, lang, class FROM dictionary_errors")]}, ensure_ascii=False),
+    {"alias": r["alias"], "lang": r["lang"], "class": r["class"], "answered_by": r["answered_by"]}
+    for r in conn.execute("SELECT alias, lang, class, answered_by FROM dictionary_errors")]}, ensure_ascii=False),
     encoding="utf-8")
 известное = pipeline.known_trims(файл)
 

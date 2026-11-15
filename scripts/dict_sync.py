@@ -26,7 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import db, dictionary                              # noqa: E402
+from app import db, dictionary, pipeline                    # noqa: E402
 
 TARGET = ROOT / "data" / "dictionaries.json"
 
@@ -149,12 +149,20 @@ def export(conn, path: Path) -> dict[str, int]:
     # Базы старше миграции таблицы не имеют
     data["dictionary_errors"] = []
     try:
+        # книга 139: поле `seen_with` есть только в базе после миграции —
+        # в старой базе выгружаем без него, а не теряем всю книгу
+        has_seen = any(c["name"] == "seen_with" for c in
+                       conn.execute("PRAGMA table_info(dictionary_errors)"))
         for r in conn.execute(
                 "SELECT e.alias, e.lang, e.class, t.canonical_name AS team, "
-                "e.source_domain, e.led_to, e.truth, e.note, e.answered_by "
-                "FROM dictionary_errors e LEFT JOIN teams t ON t.id = e.team_id "
+                "e.source_domain, e.led_to, e.truth, e.note, e.answered_by"
+                + (", e.seen_with" if has_seen else "") +
+                " FROM dictionary_errors e LEFT JOIN teams t ON t.id = e.team_id "
                 "ORDER BY e.class, e.alias, e.lang"):
-            data["dictionary_errors"].append({k: r[k] for k in r.keys()})
+            item = {k: r[k] for k in r.keys()}
+            if has_seen:                      # в файле — списком, не текстом
+                item["seen_with"] = pipeline.seen_teams(item.get("seen_with"))
+            data["dictionary_errors"].append(item)
     except Exception:
         pass
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n",
@@ -198,6 +206,9 @@ def load(conn, path: Path) -> dict[str, int]:
                               led_to=item.get("led_to"), truth=item.get("truth"),
                               note=item.get("note"),
                               answered_by=item.get("answered_by") or "программа")
+        if item.get("seen_with"):             # книга 139
+            dictionary.remember_beside(conn, item["alias"], item["class"],
+                                       item.get("lang"), item["seen_with"])
         added["ошибок в книге"] += 1
     conn.commit()
     for item in data.get("leagues", []):

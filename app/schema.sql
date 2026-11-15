@@ -309,6 +309,7 @@ CREATE TABLE IF NOT EXISTS dictionary_errors (
     truth         TEXT,                     -- верный смысл, если известен
     note          TEXT,
     answered_by   TEXT NOT NULL DEFAULT 'программа',
-    created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+    created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+    seen_with     TEXT                      -- книга 139: команды, рядом с которыми срезались лишние слова (список JSON)
 );
 CREATE INDEX IF NOT EXISTS dictionary_errors_alias ON dictionary_errors (alias, class);

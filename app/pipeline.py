@@ -181,6 +181,15 @@ TITLE_PAIR = "пара_из_заголовка"
 #: книга 133: пометка строки «у пары срезаны лишние слова» — словарь
 #: {"где": край, "срезано": слова, "было": пара до среза, "по": "эталон" | "книга"}
 TRIMMED = "обрезка"
+#: книга 139: поле пометки среза — [сторона после слов «перед хозяевами»,
+#: сторона перед словами «после гостей»] в порядке сайта; пусто — с этого
+#: края не резали
+BESIDE = "у"
+#: книга 139: слова книги знаний, записанные программой, становятся правилом,
+#: когда срезались рядом с таким числом РАЗНЫХ команд
+BOOK_TEAMS = 2
+#: кто записал строку книги сам, без слова владельца (`note_error`)
+BY_PROGRAM = "программа"
 #: книга 136: классы книги знаний (`dictionary_errors.class`) — лишние слова,
 #: которые уже срезались у пар и подтвердились эталоном
 KNOWN_HOME = live.KNOWN_HOME
@@ -355,9 +364,16 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
                     and _exact_after(where, new_home, new_away, got) \
                     and not _cuts_name(where, cut, got):                      # О3, О9, О10
                 clean = " … ".join(part.strip(live._TRIM_EDGE) for part in cut.split(" … "))
+                # книга 139: рядом с какой стороной стояли срезанные слова —
+                # по числу РАЗНЫХ таких команд книга знаний отличает лишнее
+                # слово («ligová fáze» перед шестью сборными) от части имени
+                # («of Midlothian» всегда после одного «Heart»)
+                beside = {live.TRIM_HOME: [new_home, ""], live.TRIM_AWAY: ["", new_away],
+                          live.TRIM_BOTH: [new_home, new_away]}[where]
                 hits.append((new_home, new_away, got,
                              {"где": where, "срезано": clean,
-                              "было": f"{home} - {away}", "по": "эталон"}))
+                              "было": f"{home} - {away}", "по": "эталон",
+                              BESIDE: beside}))
     if not hits or len({_entry_id(h[2]) for h in hits}) != 1:                 # О3
         return None
     home, away, got, mark = min(                                              # О5
@@ -417,6 +433,27 @@ def trim_by_book(home: str, away: str, known: dict | None,
                                 "было": f"{home} - {away}", "по": "книга"}
 
 
+def seen_teams(value) -> list[str]:
+    """Книга 139: команды из поля `seen_with` строки книги — список либо тот
+    же список текстом JSON (так он лежит в базе); битое — пусто."""
+    import json
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except ValueError:
+            return []
+    if not isinstance(value, list):
+        return []
+    return sorted({" ".join(str(x).casefold().split()) for x in value if str(x).strip()})
+
+
+def book_rule(row: dict) -> bool:
+    """Книга 139: строка книги знаний — уже правило (Д1, Д2 в `known_trims`)."""
+    if (row.get("answered_by") or BY_PROGRAM) != BY_PROGRAM:               # Д1
+        return True
+    return len(seen_teams(row.get("seen_with"))) >= BOOK_TEAMS            # Д2
+
+
 _KNOWN_TRIMS: dict | None = None
 
 
@@ -424,7 +461,17 @@ def known_trims(path=None) -> dict:
     """Книга 136: лишние слова из книги знаний — раздел `dictionary_errors`
     файла `data/dictionaries.json` (его возит `scripts/dict_sync.py`), классы
     `KNOWN_HOME` и `KNOWN_AWAY`. → {класс: {слова в нижнем регистре: языки}}.
-    Файла или раздела нет, файл битый — пусто: правило просто молчит."""
+    Файла или раздела нет, файл битый — пусто: правило просто молчит.
+
+    Книга 139 — какая строка книги становится правилом (`book_rule`):
+      Д1. строку записал владелец (`answered_by` — не «программа») — правило
+          сразу: он знает, что слова лишние («Liga e Kombeve», книга 137);
+      Д2. строку записала программа — правило, только когда слова срезались
+          рядом с `BOOK_TEAMS` РАЗНЫМИ командами (поле `seen_with`). Слова
+          рядом с одной и той же командой — скорее часть её имени, которую
+          эталон пишет короче («Heart of Midlothian» → «Heart», «Enea
+          Łaciate Astoria Bydgoszcz» → «Bydgoszcz», сбор 15.11): такая
+          строка ждёт в книге и срезом по книге не становится."""
     global _KNOWN_TRIMS
     if path is None and _KNOWN_TRIMS is not None:
         return _KNOWN_TRIMS
@@ -437,7 +484,8 @@ def known_trims(path=None) -> dict:
     except (OSError, ValueError, AttributeError):
         rows = []
     for row in rows:
-        if not isinstance(row, dict) or row.get("class") not in out:
+        if not isinstance(row, dict) or row.get("class") not in out \
+                or not book_rule(row):                                   # Д1, Д2
             continue
         words = " ".join(str(row.get("alias") or "").casefold().split())
         if words:
