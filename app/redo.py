@@ -117,6 +117,34 @@
       «полный сбор»: его прогон не отвечает за слот, не накрывает дни и не
       вытесняет ждущих (`watch.FULL_KINDS` и окна дней его не знают).
   Д9. Проверки — `scripts/test_redo.py`: сценарий на каждое правило.
+  Д10. САЙТ ОПУСТЕЛ (книга 132, слово владельца 15.11.2026: «в таких
+      случаях должен быть точечный отложенный сбор, через час хотя бы») —
+      `emptied_sites`, `page_key`, `healed`, раздел отчёта `EMPTIED_KEY`.
+      Случай: 15.11 в 08:15 ntvplus.tv на все шесть дней ответил пустой
+      страницей (34 байта вместо 150 тысяч). Страницы «открылись», поэтому
+      дозабор их не брал, и матчи сайта пропали с витрины до вечера.
+      Сайт «опустел», когда сошлись ДВА условия:
+        (а) в этом полном сборе у сайта нет НИ ОДНОЙ страницы с итогом
+            «расписание есть»;
+        (б) хоть одна его страница с итогом «пусто» в ПРОШЛОМ полном сборе
+            по тому же адресу (`page_key`: адрес + тело POST) была
+            «расписание есть».
+      Тогда дозабор берёт ВСЕ страницы «пусто» этого сайта — и новый
+      дальний день тоже: он пуст по той же причине. Пределы те же, что у
+      упавших: через час (Д3), ночью только адреса с датой (Д2), сайты
+      дозора не трогаем, не больше `REDO_MAX_URLS`, массовый сбой — не
+      дозабор (Д4). Перекачанная страница снова пуста — она не
+      «выправилась» (`healed`), и после `REDO_SITE_FAILS` таких подряд
+      остальные адреса сайта не трогаем (Д6).
+      НЕ срабатывает (и не должно): сайт пуст всегда (tv8.com.tr); сайт,
+      чьи страницы и в прошлом сборе были пусты (unian.tv на сегодня и
+      завтра); пустой пришла только ЧАСТЬ страниц сайта — у канала может
+      не быть спорта в этот день, по одной странице не судим.
+      Раздел пишет полный обход (`crawl_fetch.py`): он сравнивает свои
+      строки с отчётом прошлого полного сбора из репозитория
+      (`results/report.json`). Отбор по-прежнему считает ОДНА функция
+      `pick` по одному отчёту — и сторож, и GitHub.
+      Проверки — `scripts/test_redo_empty.py`.
 
 ОТКАТ (git revert этой выкладки). Старый `games_import.py` пометки
 «режим»: «дозабор» не знает и вольёт results/partial/ дозабора как
@@ -202,6 +230,14 @@ BROKEN = ("не открылась", "заглушка защиты")
 #: день, POST-поля…), по нему страницу можно скачать заново
 VERDICT_FIELDS = ("итог", "почему", "байт", "меток времени", "чем", "файл",
                   "файл отказа", "переадресация")
+#: Д10: итоги строки отчёта «страница открылась, расписания на ней нет» и
+#: «расписание есть» (как пишет `crawl_fetch.verdict`)
+EMPTY = "пусто"
+FILLED = "расписание есть"
+#: Д10: раздел report.json полного сбора — сайты, что «опустели»:
+#: {сайт без www: {"пустых": страниц «пусто» в этом сборе,
+#:                 "было": сколько из них в прошлом сборе были с расписанием}}
+EMPTIED_KEY = "опустели"
 
 _5XX = re.compile(r"\b5\d\d\b")
 _BAN = re.compile(r"\b(403|429)\b")
@@ -312,13 +348,71 @@ def night_strict(report: dict, row: dict, now: datetime) -> bool:
     return site_night(tz, now)
 
 
-def skip_reason(row: dict, never=frozenset(), strict: bool = False) -> str:
+def page_key(row: dict) -> str:
+    """Д10: «тот же адрес» в двух сборах — адрес страницы вместе с телом
+    POST-запроса (у POST-сайтов адрес общий на все дни и каналы)."""
+    return json.dumps([row.get("url") or "", row.get("post") or "",
+                       row.get("post_json") or ""],
+                      ensure_ascii=False, sort_keys=True)
+
+
+def emptied_sites(rows, before) -> dict:
+    """Д10: какие сайты «опустели» в этом сборе. `rows` — строки отчёта
+    этого полного сбора, `before` — строки отчёта ПРОШЛОГО полного сбора.
+    Условия (оба): (а) у сайта сейчас нет ни одной страницы «расписание
+    есть»; (б) хоть одна его страница «пусто» в прошлом сборе по тому же
+    адресу (`page_key`) была «расписание есть».
+    → {сайт без www: {"пустых": страниц «пусто» сейчас, "было": сколько из
+    них раньше были с расписанием}}. Битые входы (не список, строка не
+    словарь) — пропускаются, не роняют."""
+    was_filled = {page_key(r) for r in (before if isinstance(before, list) else [])
+                  if isinstance(r, dict) and r.get("итог") == FILLED}
+    sites: dict[str, dict] = {}
+    for row in rows if isinstance(rows, list) else []:
+        if not isinstance(row, dict):
+            continue
+        site = sites.setdefault(_bare(row.get("domain")),
+                                {"filled": 0, "empty": 0, "was": 0})
+        if row.get("итог") == FILLED:
+            site["filled"] += 1
+        elif row.get("итог") == EMPTY:
+            site["empty"] += 1
+            site["was"] += page_key(row) in was_filled
+    return {domain: {"пустых": site["empty"], "было": site["was"]}
+            for domain, site in sorted(sites.items())
+            if domain and not site["filled"] and site["was"]}
+
+
+def emptied_of(report) -> set:
+    """Д10: сайты раздела `EMPTIED_KEY` отчёта (без www); раздела нет или
+    он битый — пусто."""
+    section = report.get(EMPTIED_KEY) if isinstance(report, dict) else None
+    return {_bare(d) for d in section} if isinstance(section, dict) else set()
+
+
+def healed(old: dict, new: dict) -> bool:
+    """Д6 + Д10: выправилась ли перекачанная страница. Упавшая (`old` —
+    «не открылась», заглушка) — да, если теперь открылась. Пустая страница
+    опустевшего сайта (`old` — «пусто») — да, только если теперь на ней
+    расписание: снова «пусто» — не выправилась."""
+    verdict = new.get("итог")
+    if verdict in BROKEN:
+        return False
+    return verdict == FILLED if old.get("итог") == EMPTY else True
+
+
+def skip_reason(row: dict, never=frozenset(), strict: bool = False,
+                emptied=frozenset()) -> str:
     """Д2: почему строку НЕ дозабираем; пусто — берём (класс down или net).
     `never` — сайты дозора (без www): их пробуют раз в сутки, не чаще;
-    `strict` — ночь (`night_strict`): брать только адрес с датой."""
+    `strict` — ночь (`night_strict`): брать только адрес с датой;
+    `emptied` — опустевшие сайты (Д10, `emptied_of`): их страницы «пусто»
+    берём наравне с упавшими."""
     if not isinstance(row, dict):
         return "строка отчёта битая"
     kind = row_class(row)
+    if not kind and row.get("итог") == EMPTY and _bare(row.get("domain")) in emptied:
+        kind = "empty"
     if not kind:
         return "открылась"
     if not isinstance(row.get("url"), str) or not row.get("url"):
@@ -331,7 +425,9 @@ def skip_reason(row: dict, never=frozenset(), strict: bool = False) -> str:
     # пустили — читалки (`crawl_fetch.redo_fetch`). До 13.11 к закрывшим не
     # ходили вовсе. Сайт, не открывший `REDO_SITE_FAILS` адреса подряд,
     # дальше не трогаем — частить к закрытому сайту дозабор не будет
-    if kind == "ban":
+    # Д10: пустая страница опустевшего сайта — берём; ночью, как и все,
+    # только с датой в адресе
+    if kind in ("ban", "empty"):
         return NIGHT_UNDATED if strict and not dated(row) else ""
     why = str(row.get("почему") or "")
     if "защит" in why.lower():
@@ -359,6 +455,9 @@ class Pick:
     failed: int = 0
     #: не взятые упавшие — почему: {причина: сколько}
     skipped: dict = field(default_factory=dict)
+    #: Д10: сколько из `total` — пустые страницы опустевших сайтов (остальные
+    #: `total - empty` — упавшие)
+    empty: int = 0
 
 
 def pick(report: dict, now: datetime | None = None) -> Pick:
@@ -375,12 +474,15 @@ def pick(report: dict, now: datetime | None = None) -> Pick:
     rows = rows if isinstance(rows, list) else []
     dozor = report.get("дозор")
     never = {_bare(d) for d in (dozor if isinstance(dozor, dict) else {})}
+    # Д10: сайты, что пришли пустыми целиком, хотя в прошлом сборе давали
+    # расписание, — их страницы «пусто» берём наравне с упавшими
+    emptied = emptied_of(report)
     take: list[int] = []
     skipped: dict[str, int] = {}
     for i, row in enumerate(rows):
         strict = (now is not None and isinstance(row, dict)
                   and night_strict(report, row, now))
-        why = skip_reason(row, never, strict)
+        why = skip_reason(row, never, strict, emptied)
         if why == "открылась":
             continue
         if why:
@@ -394,7 +496,8 @@ def pick(report: dict, now: datetime | None = None) -> Pick:
     mass = failed > REDO_MASS
     chosen = [] if mass else take[:REDO_MAX_URLS]
     return Pick(rows=[rows[i] for i in chosen], index=chosen, total=len(take),
-                mass=mass, skipped=skipped, failed=failed)
+                mass=mass, skipped=skipped, failed=failed,
+                empty=sum(1 for i in take if rows[i].get("итог") == EMPTY))
 
 
 def same_run(report, games, run_id, lo: datetime, hi: datetime) -> str:
@@ -433,6 +536,19 @@ def redo_today(records: list[dict], now: datetime, at_of) -> int:
         if at is not None and at.astimezone(KYIV).date() == day:
             count += 1
     return count
+
+
+def count_words(choice: Pick) -> str:
+    """Слова сторожа «что дозабираем»: упавшие адреса и (Д10) пустые
+    страницы опустевших сайтов. Пустых нет — слова прежние, слово в слово."""
+    broken = choice.total - choice.empty
+    parts = []
+    if broken or not choice.empty:
+        parts.append(f"не открылись {broken} адр. (сайт лёг или не ответил)")
+    if choice.empty:
+        parts.append(f"пришли пустыми {choice.empty} адр. сайтов, что в прошлом "
+                     f"сборе давали расписание")
+    return "; ".join(parts)
 
 
 def plan(*, end: datetime, now: datetime, choice: Pick, same: str, night: bool,
@@ -479,7 +595,7 @@ def plan(*, end: datetime, now: datetime, choice: Pick, same: str, night: bool,
                         f"{hm(next_slot)} соберёт всё")
     if choice.total == 0:
         return "quiet", "упавших адресов, которые стоит повторить (сайт лёг, нет ответа), нет"
-    count = f"не открылись {choice.total} адр. (сайт лёг или не ответил)"
+    count = count_words(choice)
     if choice.skipped.get(NIGHT_UNDATED):
         count += (f" с датой в адресе; ещё {choice.skipped[NIGHT_UNDATED]} без даты "
                   f"сейчас не трогаю — их возьмёт утренний сбор")
@@ -518,6 +634,14 @@ def plan(*, end: datetime, now: datetime, choice: Pick, same: str, night: bool,
 REDO_SITE_FAILS = 2
 #: Д6: причина в разделе «дозабор» у адресов, которые не трогали
 SITE_STILL_DOWN = "сайт всё ещё лежит"
+#: Д10: то же для опустевшего сайта — его страницы снова пришли пустыми
+SITE_STILL_EMPTY = "сайт всё ещё пуст"
+
+
+def still_words(row: dict) -> str:
+    """Д6 + Д10: почему остальные адреса сайта не трогаем — по строке, что
+    ждала дозабора: пустая страница — «всё ещё пуст», упавшая — «лежит»."""
+    return SITE_STILL_EMPTY if row.get("итог") == EMPTY else SITE_STILL_DOWN
 
 
 def site_down(fails: dict, domain: str) -> bool:
@@ -549,15 +673,17 @@ def merge(report: dict, fresh: dict, choice: Pick, from_run, run_id="",
     лежит). «режим» — с пометкой «дозабор» (окно дней в нём остаётся — по
     нему заливка пишет глубину)."""
     rows = list((report or {}).get("строки") or [])
+    # выправилась ли — судим по строке ДО замены (`healed`, Д10: пустая
+    # страница, что снова пуста, не выправилась)
+    fixed = sum(1 for i, row in fresh.items() if healed(rows[i], row))
     for i, row in fresh.items():
         rows[i] = row
-    healed = sum(1 for row in fresh.values() if row.get("итог") not in BROKEN)
     out = dict(report or {})
     out["строки"] = rows
     out["режим"] = f"{MODE}: {(report or {}).get('режим') or 'сбор'}"
     out["прогон"] = str(run_id or "")
     out[SECTION] = {"из прогона": str(from_run), "адресов": len(fresh),
-                    "выправилось": healed, "отобрано": len(choice.rows),
+                    "выправилось": fixed, "отобрано": len(choice.rows),
                     "упавших": choice.total, "пропущено": list(passed),
                     # перекачанные строки С ИМЕНАМИ ФАЙЛОВ (у открывшихся):
                     # по файлу разбор узнаёт докачанное — адреса мало, у
