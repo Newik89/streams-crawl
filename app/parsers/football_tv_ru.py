@@ -20,6 +20,11 @@ from . import Program, register
 
 DOMAIN = "football-tv.ru"
 TZ = "Europe/Moscow"
+#: единственный канал сайта. Книга 125, З7: когда карточек анонсов на главной
+#: нет (разбор ниже даёт ноль строк), страницу читает запасное чтение
+#: (`app/fallback_read.py`) — суточную сетку с повторами, эфир в ней
+#: подтверждает эталон
+CHANNEL = "Футбол"
 
 _CARD = re.compile(
     r't-card__uptitle[^>]*>\s*(\d{2})\.(\d{2})\.(\d{4})\s+в\s+'
@@ -31,7 +36,7 @@ _CARD = re.compile(
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
     zone = ZoneInfo(tz or TZ)
-    channel = "Футбол"
+    channel = CHANNEL
     if channels and channel not in channels:
         return []
     out: list[Program] = []

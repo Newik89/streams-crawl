@@ -1085,11 +1085,16 @@ def main() -> int:
             # её «глазами»; на витрину строки идут, только если канал страницы
             # известен из памяти и пару подтвердит эталон
             канал = память_страниц.get(fallback_read.page_key(row["domain"], row["url"])) or ""
+            # З7: сайт с одним каналом называет его сам (`CHANNEL` в модуле
+            # разборщика) — для него это штатный второй способ, без счёта
+            свой_канал, свой_пояс = fallback_read.declared(parse)
             прочитано = fallback_read.read(
                 (folder / name).read_text(encoding="utf-8", errors="replace"),
-                day or сегодня_киев, setting.get("tz"), канал, row["url"])
-            fallback_read.count(запасное, bare, len(прочитано), канал)
-            if канал:
+                day or сегодня_киев, setting.get("tz") or свой_пояс,
+                канал or свой_канал, row["url"])
+            if not свой_канал:
+                fallback_read.count(запасное, bare, len(прочитано), канал)
+            if канал or свой_канал:
                 programs = прочитано
         if row["domain"] in FS_LOCALES:
             # языковая версия эталона (6е, A2): на витрину не идёт и live не

@@ -30,10 +30,18 @@
       Сообщаем, когда верно одно из двух: свой разборщик не дал ни одной
       строки по ВСЕМУ сайту (`свой_разборщик` = 0) либо замолчала страница,
       которая раньше читалась (канал известен из памяти). Иначе — только счёт.
+  З7. Сайт с ОДНИМ каналом может назвать его сам: константа `CHANNEL` в
+      модуле своего разборщика (и `TZ` — пояс), `declared`. Тогда запасное
+      чтение для него — штатный второй способ, а не признак поломки: канал
+      известен сразу, в счёт и в уведомления такие страницы не идут.
+      Случай: football-tv.ru — разборщик читает только карточки анонсов
+      прямых эфиров; когда анонсов нет, на странице остаётся суточная сетка
+      с повторами (66 строк в сборе 14.11) — эфир в ней отличит эталон.
 """
 from __future__ import annotations
 
 import html as _html
+import sys
 import json
 import re
 from datetime import date, datetime, timedelta
@@ -74,6 +82,16 @@ def remember(memory: dict, domain: str, url: str, programs: list) -> None:
     channels.discard("")
     if len(channels) == 1:
         memory[page_key(domain, url)] = channels.pop()
+
+
+def declared(parse) -> tuple[str, str]:
+    """З7: (канал, пояс), которые назвал модуль своего разборщика сайта —
+    константы `CHANNEL` и `TZ`; не назвал — пустые строки."""
+    module = sys.modules.get(getattr(parse, "__module__", "") or "")
+    channel = getattr(module, "CHANNEL", "") if module else ""
+    zone = getattr(module, "TZ", "") if module else ""
+    return (channel if isinstance(channel, str) else "",
+            zone if isinstance(zone, str) else "")
 
 
 def lines_of(page: str) -> list[str]:
