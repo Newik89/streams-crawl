@@ -122,6 +122,34 @@ ntv_was = [filled("ntvplus.tv", d) for d in days(14, 6)]            # 14–19.11
          [redo.emptied_sites(None, None), redo.emptied_sites("x", 5),
           redo.emptied_sites([None, 7, empty("f.tv", "2026-11-15")], [None, "y"])], [{}, {}, {}])
 
+print("Д10 (в). Свой разборщик сайта не прочитал с пустых страниц ни одной строки")
+спросили: list[str] = []
+
+
+def разборщик(строк: dict):
+    """Заглушка `parsed`: адрес страницы → сколько строк читает разборщик
+    (адреса нет в словаре — None, «судить нечем»); что спросили — в списке."""
+    def parsed(row: dict):
+        спросили.append(row["url"])
+        return строк.get(row["url"])
+    return parsed
+
+
+беларусь = "https://news.by/programma-tv/belarus-5"
+проверка("случай news.by 15.11: оценка страницы «пусто», а разборщик читает 192 строки (программа "
+         "лежит внутри страницы данными) — не опустел",
+         redo.emptied_sites([empty("news.by", DAY, url=беларусь)], [filled("news.by", DAY, url=беларусь)],
+                            разборщик({беларусь: 192})), {})
+проверка("разборщик не прочитал ни строки (0) или судить нечем (None) — опустел",
+         [redo.emptied_sites(ntv_now, ntv_was, lambda row: 0),
+          redo.emptied_sites(ntv_now, ntv_was, разборщик({}))],
+         [{"ntvplus.tv": {"пустых": 6, "было": 5}}] * 2)
+спросили.clear()
+redo.emptied_sites([empty("tv8.com.tr", DAY), empty("a.tv", DAY), filled("a.tv", "2026-11-16")] + ntv_now,
+                   [filled("a.tv", DAY)] + ntv_was, разборщик({}))
+проверка("разборщик спрашивается только у сайтов, прошедших (а) и (б), — у остальных страницы не читаем",
+         спросили, [r["url"] for r in ntv_now])
+
 print("Д10. Отбор дозабора (`pick`): пустые страницы опустевшего сайта — наравне с упавшими")
 rows = ([filled("ok.tv", "2026-11-15")] + ntv_now
         + [empty("tv8.com.tr", "2026-11-15"), down("lay.tv", "2026-11-15")])
@@ -242,10 +270,33 @@ print("Д10. Раздел «опустели» пишет полный обхо�
          [cf.прошлый_сбор(прошлый) == ntv_was, cf.прошлый_сбор(не_полный), cf.прошлый_сбор(битый),
           cf.прошлый_сбор(список), cf.прошлый_сбор(TMP / "нет.json")], [True, [], [], [], []])
 главное = inspect.getsource(cf.main)
-проверка("полный обход сравнивает себя с отчётом из репозитория и пишет раздел только строгому сбору",
-         ("redo.emptied_sites(report, прошлый_сбор(PREVIOUS_REPORT))" in главное,
+проверка("полный обход сравнивает себя с отчётом из репозитория, спрашивает разборщик и пишет раздел",
+         ("redo.emptied_sites(report, прошлый_сбор(PREVIOUS_REPORT)," in главное,
+          "строк_разбора(out, source_settings(plan))" in главное,
           "payload[redo.EMPTIED_KEY]" in главное,
-          cf.PREVIOUS_REPORT == cf.ROOT / "results" / "report.json"), (True, True, True))
+          cf.PREVIOUS_REPORT == cf.ROOT / "results" / "report.json"), (True, True, True, True))
+СБОР = TMP / "sbor"
+СБОР.mkdir()
+(СБОР / "a.html").write_text("строка строка строка", encoding="utf-8")
+настоящий = cf.reader_chain.parser_rows
+видел: list = []
+
+
+def считалка(job, html, setting):
+    """Вместо разборщика сайта: строк столько, сколько слов «строка»."""
+    видел.append((job.get("domain"), "итог" in job, setting))
+    return html.count("строка")
+
+
+cf.reader_chain.parser_rows = считалка
+сколько = cf.строк_разбора(СБОР, {"a.tv": {"parser": "", "tz": "UTC"}})
+проверка("(в) в сборе: страница берётся из папки сбора по полю «файл», разборщик — по настройкам сайта",
+         (сколько({"domain": "www.a.tv", "url": "https://a.tv/x", "итог": "пусто", "файл": "a.html"}),
+          видел), (3, [("www.a.tv", False, {"parser": "", "tz": "UTC"})]))
+проверка("у строки нет файла или файл не читается — «судить нечем» (None)",
+         [сколько({"domain": "a.tv", "url": "https://a.tv/x"}),
+          сколько({"domain": "a.tv", "url": "https://a.tv/x", "файл": "нет.html"})], [None, None])
+cf.reader_chain.parser_rows = настоящий
 
 print(f"\nпроверок: {зелёных + красных}, зелёных: {зелёных}, красных: {красных}")
 sys.exit(1 if красных else 0)

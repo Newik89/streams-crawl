@@ -840,6 +840,25 @@ def прошлый_сбор(path: Path) -> list:
     return rows if isinstance(rows, list) else []
 
 
+def строк_разбора(out: Path, settings: dict):
+    """Д10, условие (в): функция «сколько строк читает свой разборщик сайта
+    на странице строки отчёта». Страница берётся из папки сбора `out` по
+    полю «файл» строки, разборщик и пояс — из настроек плана (`settings`,
+    `source_settings`). None — судить нечем: у строки нет файла, файл не
+    читается или у сайта нет своего разборщика."""
+    def count(row: dict):
+        name = row.get("файл")
+        if not name:
+            return None
+        try:
+            html = (out / str(name)).read_text(encoding="utf-8")
+        except OSError:
+            return None
+        domain = str(row.get("domain") or "").removeprefix("www.")
+        return reader_chain.parser_rows(redo.job_of(row), html, settings.get(domain, {}))
+    return count
+
+
 def step_output(name: str, value: str) -> None:
     """Выход шага GitHub Actions (`$GITHUB_OUTPUT`); вне GitHub — ничего."""
     path = os.environ.get("GITHUB_OUTPUT")
@@ -1167,7 +1186,8 @@ def main() -> int:
     # целиком, хотя в прошлом полном сборе давали расписание, — через час
     # дозабор сходит к ним ещё раз. Только полному обходу без фильтров
     if strict:
-        опустели = redo.emptied_sites(report, прошлый_сбор(PREVIOUS_REPORT))
+        опустели = redo.emptied_sites(report, прошлый_сбор(PREVIOUS_REPORT),
+                                      строк_разбора(out, source_settings(plan)))
         if опустели:
             payload[redo.EMPTIED_KEY] = опустели
             print("пришли пустыми, хотя в прошлом сборе давали расписание "
