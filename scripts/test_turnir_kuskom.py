@@ -115,7 +115,7 @@ print("Турнир по заголовку (`broadcast.key`), правила 1�
                        {**известно, "tours": {**известно["tours"], "Finals - Indian Wells": {"ATP"}}}), ("", ""))
 проверка("правило 6: тур не назван — единственный тур города в эталоне; имя для сведения — «тур город»",
          (broadcast.key("Sydney 2026", известно), broadcast.tournament("Tenis ATP Torino 2026", известно)),
-         (("Challenger", "Sydney"), "ATP Finals - Turin"))
+         (("Challenger", "Sydney"), "ATP Finals Turin"))
 
 print("Назван ли турнир (`broadcast.names_tournament`)")
 проверка("одно слово вида спорта — не турнир; тур, слово турнира, стадия, год — турнир",
@@ -187,7 +187,7 @@ print("Подключение")
          "от фильтра «угаданный эфир без эталона»",
          ("guess_site=_bare_domain(domain)" in inspect.getsource(parse_live),
           "get(pipeline.TOURNAMENT) or {}).get(\"эталон\")" in inspect.getsource(parse_live)), (True, True))
-своё = broadcast.stage("ATP Finals - Turin")
+своё = broadcast.stage("ATP Finals Turin")
 проверка("витрина: стадию, которую даёт само имя турнира («ATP Finals» → Final), стадией показа не пишем; "
          "настоящую стадию — пишем",
          (своё,

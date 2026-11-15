@@ -219,9 +219,11 @@ def key(text: str, known: dict) -> tuple[str, str]:
 
 def tournament(text: str, known: dict) -> str:
     """Имя турнира для сведения («ATP Beijing») по заголовку сайта. Пусто —
-    сводить нельзя (правила — в `key`)."""
+    сводить нельзя (правила — в `key`). У двойного имени эталона тире
+    убирается («Finals - Turin» → «ATP Finals Turin»): тире в имени стороны
+    дальше читалось бы как граница пары (книга 138)."""
     tour, city = key(text, known)
-    return f"{tour} {city}" if city else ""
+    return f"{tour} {city}".replace(" - ", " ") if city else ""
 
 
 # ── книга 138: турнир назван одним куском, пары нет вовсе ────────────────────
