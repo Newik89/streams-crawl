@@ -304,6 +304,87 @@ HOW_LEADER = "программа: явный лидер"
 HOW_AGED = "программа: одинокий возрастной кандидат"
 HOW_FIRM = "программа: вторая сторона твёрдо, лига и время сошлись"
 HOW_LETTERS = "программа: буквы против подписи лиги"
+#: книга 141: теннис — одна сторона узнана твёрдо, матч в окне эфира у неё один
+HOW_TENNIS = "программа: теннис — игрок узнан, матч в это время у него один"
+#: с такого сходства сторона теннисной пары узнана твёрдо. Ниже `FIRM_SIDE`
+#: (95): греческая запись фамилии расходится с эталоном на букву («Τιαφό» и
+#: «Τιαφόε» — 90), а от чужого игрока защищают правила Т5 и Т6, не буквы
+TENNIS_SIDE = 90
+#: окно эфира тенниса: матч начинается не раньше 15 минут до показа и не позже
+#: часа после него — те же числа, что `reference.LIVE_SHOW_BEFORE/AFTER`
+TENNIS_BEFORE = timedelta(minutes=60)
+TENNIS_AFTER = timedelta(minutes=15)
+
+
+def _spellings(ref: dict, game: dict) -> tuple[list[str], list[str]]:
+    """Все написания хозяев и гостей записи эталона для сравнения с игрой:
+    английское и местные той же письменности, что у игры (`_sides`)."""
+    local = _sides(ref, _script(f"{game.get('home') or ''} {game.get('away') or ''}"))
+    return ([ref.get("home") or ""] + [h for h, _a in local],
+            [ref.get("away") or ""] + [a for _h, a in local])
+
+
+def _like(name: str, spellings: list[str]) -> int:
+    return max((names.similarity(name, x) for x in spellings if x), default=0)
+
+
+def tennis_one_side(game: dict, near: list, start: datetime) -> tuple[dict, bool] | None:
+    """Книга 141: теннисный матч с игроками, который буквы не узнали.
+
+    Сайт пишет игроков по-своему (cosmotetv.gr, греческий: «Κάρλος Αλκαράθ -
+    Φράνσις Τιαφό»), эталон — по-своему («Αλκαράζ Γκαρφία Κ.», «Τιαφόε Φ.»):
+    переводов одной фамилии несколько, и пара целиком буквами не сходится
+    (замер по всем сайтам сбора 15.11: 6 из 20 теннисных матчей с игроками).
+    На витрине такой матч стоял второй строкой рядом со своим же матчем
+    эталона. В теннисе есть то, чего нет у команд: игрок не играет два матча
+    сразу. Правила — берём запись эталона, только если ВСЁ сразу:
+
+      Т1. игра — теннис, названы обе стороны, и это не трансляция турнира
+          без игроков;
+      Т2. форма та же: одиночка с одиночкой, пара с парой — у обеих сторон
+          (регресс 01.10: «Etcheverry» на 100 совпал с «Darderi/Etcheverry»);
+      Т3. матч эталона начинается в окне эфира показа (`TENNIS_AFTER` до —
+          `TENNIS_BEFORE` после);
+      Т4. одна сторона игры узнана твёрдо (`TENNIS_SIDE`) — своя со своей, в
+          любом порядке сторон, по всем написаниям эталона;
+      Т5. вторая сторона не спорит: она НЕ узнаётся твёрдо как сторона
+          другого теннисного матча эталона рядом (`near`, ±`WINDOW`). Иначе
+          это показ другого матча — запись вчерашнего — в час, когда играет
+          тот же игрок;
+      Т6. такой кандидат в окне ОДИН: два — значит, не знаем.
+
+    Возвращает (запись эталона, стороны игры записаны наоборот) или None."""
+    home, away = (game.get("home") or "").strip(), (game.get("away") or "").strip()
+    if (game.get("sport") or "") != "T" or not home or not away \
+            or names.is_placeholder(home) or names.is_placeholder(away):          # Т1
+        return None
+    duo = "/" in home
+    if duo != ("/" in away):
+        return None
+    found = []
+    for ref, kick in near:
+        if not -TENNIS_AFTER <= kick - start <= TENNIS_BEFORE:                  # Т3
+            continue
+        if ("/" in (ref.get("home") or "")) != duo \
+                or ("/" in (ref.get("away") or "")) != duo:                     # Т2
+            continue
+        homes, aways = _spellings(ref, game)
+        # (сходство твёрдой стороны, слабая сторона игры, наоборот)
+        straight = max((_like(home, homes), away, False), (_like(away, aways), home, False))
+        turned = max((_like(home, aways), away, True), (_like(away, homes), home, True))
+        firm, weak, flipped = max(straight, turned, key=lambda x: x[0])
+        if firm >= TENNIS_SIDE:                                                 # Т4
+            found.append((ref, weak, flipped))
+    if len(found) != 1:                                                         # Т6
+        return None
+    pick, weak, flipped = found[0]
+    for ref, _kick in near:                                                     # Т5
+        if ref is pick:
+            continue
+        homes, aways = _spellings(ref, game)
+        if max(_like(weak, homes), _like(weak, aways)) >= TENNIS_SIDE:
+            return None
+    return pick, flipped
 
 
 def _firm_side_bridge(game: dict, near: list,
@@ -794,7 +875,11 @@ def align(games: list[dict], reference: list[dict],
       3. явный лидер без лиги (`_clear_leader`) — `HOW_LEADER`;
       4. вторая сторона твёрдо, лига и время сошлись
          (`_firm_side_bridge`; и там, где мост дал бы «с сомнением» или
-         «мимо») — `HOW_FIRM`.
+         «мимо») — `HOW_FIRM`;
+      5. теннис: один игрок узнан твёрдо, матч в окне эфира у него один,
+         второй игрок не спорит (`tennis_one_side`, книга 141) —
+         `HOW_TENNIS`. Стороны, записанные наоборот, переставляются по
+         эталону, как в правиле Н1.
 
     Пары ≥ `SURE` — решение букв, пометки нет."""
     by_sport: dict[str, list] = {}
@@ -833,6 +918,18 @@ def align(games: list[dict], reference: list[dict],
             turned = _flip_reversed(game, near)
             if turned is not None:
                 best, best_score = turned, _pair_score(game, turned)
+        # книга 141: теннис — буквы пару не узнали, а один из игроков узнан
+        # твёрдо и матч в это время у него один. Раньше прочих решений
+        # программы: условия строже, чем у моста по лиге и «явного лидера»
+        if best_score < SURE and (game.get("sport") or "") == "T":
+            tennis = tennis_one_side(game, near, start)
+            if tennis is not None:
+                pick, flipped = tennis
+                if flipped:
+                    game["home"], game["away"] = game["away"], game["home"]
+                    game[REVERSED] = True
+                _sure(out, game, pick, SURE, HOW_TENNIS)
+                continue
         lone = LONE
         if (best_score < SURE
                 and _script(f"{game['home']} {game['away']}") == "he"):

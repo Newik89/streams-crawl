@@ -594,6 +594,11 @@ def to_english(name: str | None) -> str | None:
     """
     if not name:
         return name
+    # книга 141: сайты пишут в греческих словах знак «микро» (µ, U+00B5)
+    # вместо буквы «мю» (μ, U+03BC) — на глаз они одинаковы. Знак буквой не
+    # считался, слово рвалось надвое («Τιµ Πιουτς» → «TI PIUTS», «Αριµπάτζε»
+    # → «ARI PATZE»), и имя с эталоном не сходилось (cosmotetv.gr, сбор 15.11)
+    name = name.replace("\u00b5", "\u03bc")
     result = "".join(
         _transliterate_token(piece) if _needs_transliteration(piece) else piece
         for piece in _WORD_RE.findall(name)

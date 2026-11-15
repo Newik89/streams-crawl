@@ -253,6 +253,12 @@ _LOCAL_WOMEN_TAIL = re.compile(r"^(?P<country>.+?)\s+[NDKFV]$")
 _HU_SOUTH = re.compile(r"^\s*D[ée]l[-\s]+(?=\w)", re.I)
 
 
+#: книга 141: одиночная греческая заглавная с точкой — инициал, который у
+#: полного имени может быть первой буквой двухбуквенного звука
+_GREEK_INITIAL = re.compile(r"(?<![^\W\d_])([\u039d\u039c])\.")
+_GREEK_INITIAL_AS = {"\u039d": "\u039d\u03c4", "\u039c": "\u039c\u03c0"}   # Ν → Ντ, Μ → Μπ
+
+
 @lru_cache(maxsize=4096)
 def _letter_readings(name: str) -> tuple[str, ...]:
     """Чтения имени по одним буквам, ещё до `_tidy`: транслит, у иврита —
@@ -263,6 +269,15 @@ def _letter_readings(name: str) -> tuple[str, ...]:
     # узнаёт, и «Австралия (Ж)» не сходилась с «Australia W» (06.09)
     cmp_name = re.sub(r"\s{2,}", " ", _WOMEN_RE.sub(" ", name)).strip() or name
     out = [to_english(cmp_name) or cmp_name]
+    # книга 141: греческий инициал. Звуки «д» и «б» по-гречески пишутся двумя
+    # буквами («Ντανιίλ» — Даниил, «Μπεν» — Бен), а эталон сокращает имя до
+    # ПЕРВОЙ буквы: «Μεντβέντεφ Ν.», «Σέλτον Μ.». Латиницей это «N» и «M»
+    # против «Daniil» и «Ben» — инициал не сходился, и игрок считался другим
+    # человеком с той же фамилией. Даём второе чтение, где такой инициал
+    # прочитан как звук: «Ν.» → «D», «Μ.» → «B»
+    digraphs = _GREEK_INITIAL.sub(lambda m: _GREEK_INITIAL_AS[m.group(1)] + ".", cmp_name)
+    if digraphs != cmp_name:
+        out.append(to_english(digraphs) or digraphs)
     if _HEBREW_RE.search(cmp_name):
         # у иврита нет огласовок: одна буква читается двояко («פ» — и P, и
         # F). Даём сравнению все разумные чтения, иначе «סנטה פה» остаётся
