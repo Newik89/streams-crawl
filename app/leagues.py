@@ -128,6 +128,33 @@ def _women_re(langs) -> re.Pattern:
 _WOMEN = _women_re(None)
 _WOMEN_CACHE: dict = {}
 
+#: книга 144 (#10202): слова «после / по окончании» ПО ЯЗЫКАМ. Сайт дописывает
+#: к строке примечание о ДРУГОЙ передаче — sport5: «השידור יחל מיד בסיום כדורסל
+#: נשים» («трансляция начнётся сразу по окончании женского баскетбола») — и
+#: слово «женский» оттуда становилось пометкой пола: мужская BBL «Oldenburg —
+#: Alba Berlin» шла на витрину с буквой W. От такого слова до конца предложения
+#: пол не читаем. Язык добавляется, когда такая приписка встретится у сайта
+#: этого языка: одиночное «после» бывает и в честном описании женского матча
+_AFTER_BY_LANG: tuple = (
+    (("he",), r"(?:מיד\s+)?(?:בסיום|לאחר|אחרי)\s"),
+)
+_AFTER_CACHE: dict = {}
+
+
+def without_notes(raw: str, langs=None) -> str:
+    """Книга 144: текст без примечаний о другой передаче — от слова «после»
+    на языке сайта (`_AFTER_BY_LANG`; `langs` None — все языки) до конца
+    предложения (точка, «!», «?», «|», перевод строки). Нужен только для
+    пометки пола (`category`): возраст и турнир читаются по всему тексту."""
+    key = frozenset(langs) if langs is not None else None
+    cut = _AFTER_CACHE.get(key)
+    if cut is None:
+        parts = [pattern for own, pattern in _AFTER_BY_LANG
+                 if langs is None or set(own) & set(langs)]
+        cut = _AFTER_CACHE[key] = re.compile(
+            rf"(?:{'|'.join(parts)})[^.!?|\n]*", re.I) if parts else False
+    return cut.sub(" ", raw or "") if cut else (raw or "")
+
 
 #: турниры, которые бывают ТОЛЬКО женскими: пол в названии не пишут вовсе,
 #: а мужской турнир страны называется иначе (`Toppserien` — женская высшая
@@ -219,6 +246,54 @@ _U21_NATIONAL = re.compile(
     re.I)
 
 
+#: книга 144: слово тура на языках наших сайтов. Рядом с числом («11η
+#: Αγωνιστική», «7a giornata», «Spieltag 5», «10. Spieltag») — тур, а не
+#: часть названия лиги. Список пополняется вместе с источниками
+_ROUND_WORDS = (
+    "αγωνιστική", "αγωνιστικη", "matchday", "round", "jornada", "giornata", "journée",
+    "journee", "spieltag", "kolo", "kolejka", "тур", "кръг", "forduló", "fordulo",
+    "omgång", "omgang", "runde", "speelronde", "hafta", "kierros", "rodada", "ronda",
+    "מחזור",
+)
+_ROUND_WORD = "|".join(re.escape(w) for w in _ROUND_WORDS)
+#: тур с числом вместе с разделителем перед ним: число — до слова (с точкой,
+#: буквой порядкового «η», «a», «ª», «º») или после него
+_ROUND_MARK = re.compile(
+    rf"\s*[-–—,(|:]?\s*(?:\b\d{{1,2}}\s?[.ηaªº°]?\s*(?:{_ROUND_WORD})(?!\w)"
+    rf"|(?<!\w)(?:{_ROUND_WORD})\s*\d{{1,2}}\b)", re.I)
+
+
+def _tail_off(text: str) -> str:
+    """Книга 144: у названия лиги снимается хвост — тур, стадия, место.
+
+    Сайт кладёт в поле лиги всё, что стоит рядом с парой: ert.gr —
+    «Superbet League 2 | 11η Αγωνιστική | Τρίπολη» (лига, тур, город),
+    raiplay.it — «Serie A Women Athora - 7a giornata», start.sportdigital.de
+    — «Women's Super League (10. Spieltag): Aston Villa - Birmingham City».
+    С таким хвостом лигу не узнаёт словарь, а на витрине у матча без эталона
+    стоит вся строка (замер по всем сайтам сбора 15.11: 12 игр из 482).
+    Правила по порядку:
+      1. части через «|»: передние, где только вид спорта («Ποδόσφαιρο |
+         …»), пропускаются; лига — первая оставшаяся часть, дальше хвост;
+      2. тур с числом (`_ROUND_MARK`) и всё после него — хвост, если ПЕРЕД
+         туром есть название (хоть одна буква). Тур в начале («etapa 6
+         Nations League») не трогаем: резать было бы нечего оставить;
+      3. от названия ничего не осталось — возвращаем как было: решит
+         остальная чистка."""
+    out = text
+    if "|" in out:                                                            # 1
+        parts = [p.strip() for p in out.split("|") if p.strip()]
+        while len(parts) > 1 and only_sport(parts[0]):
+            parts.pop(0)
+        if parts:
+            out = parts[0]
+    found = _ROUND_MARK.search(out)                                           # 2
+    if found and any(ch.isalpha() for ch in out[:found.start()]):
+        out = out[:found.start()]
+    out = out.strip(_EDGE + "(")
+    return out if any(ch.isalpha() for ch in out) else text                   # 3
+
+
 def clean(raw: str) -> str:
     """Сырое название лиги без вида спорта, сезона и пометок сайта.
 
@@ -228,6 +303,7 @@ def clean(raw: str) -> str:
     text = (raw or "").strip()
     if not text:
         return ""
+    text = _tail_off(text)                 # книга 144: тур, стадия, место
     text = _SPORT_PREFIX.sub("", text)
     text = _SPORT_SUFFIX.sub("", text)
     text = _SITE_TAILS.sub(" ", text)
@@ -304,7 +380,8 @@ def category(raw: str, langs=None) -> str:
     women = _WOMEN_CACHE.get(key)
     if women is None:
         women = _WOMEN_CACHE[key] = _women_re(langs)
-    if women.search(raw or "") or _WOMEN_LEAGUES.search(raw or ""):
+    # книга 144: слово пола из примечания о другой передаче не в счёт
+    if women.search(without_notes(raw, langs)) or _WOMEN_LEAGUES.search(raw or ""):
         parts.append("W")
     return " ".join(parts)
 

@@ -78,8 +78,8 @@ def main() -> int:
                     "away": r["team_away_auto"] or "",
                     "league": r["league_auto"] or "",
                     "start_kyiv": r["start_kyiv"], "entries": []}
-            if canon._pair_score(game, ref) >= canon.BRIDGE_FLOOR \
-                    or canon._best_side(game, ref) >= canon.BRIDGE_BEST:
+            # книга 144: пара, записанная сайтом наоборот, — тот же матч
+            if not canon.flag_disputed(game, ref):
                 continue
             sport = game["sport"]
             for other in sports:

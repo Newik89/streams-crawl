@@ -670,6 +670,20 @@ def _after_common(words: list[str], other: set[str]) -> list[str]:
             if not ok and len(w) >= ODD_WORD_MIN and not w.isdigit()]
 
 
+def flag_disputed(game: dict, ref: dict) -> bool:
+    """Книга 144: с меткой эталона у игры спорят буквы — пара игры не похожа
+    на запись эталона ни целиком (`BRIDGE_FLOOR`), ни лучшей стороной
+    (`BRIDGE_BEST`). Смотрим В ОБОИХ порядках сторон: сайт, который пишет
+    пару наоборот («Baylor - Texas» при эталонном «Texas - Baylor» —
+    американская запись «гости — хозяева»), показывает тот же матч (правило
+    Н1 книги 120). До правки сравнение шло только по местам, и у #10267
+    метка снималась и ставилась заново при каждой заливке — 18 раз за два
+    дня (журнал сервера 15.11)."""
+    turned = dict(game, home=game.get("away") or "", away=game.get("home") or "")
+    return not any(_pair_score(g, ref) >= BRIDGE_FLOOR or _best_side(g, ref) >= BRIDGE_BEST
+                   for g in (game, turned))
+
+
 def _flip_reversed(game: dict, near: list) -> dict | None:
     """Книга 120, правило Н1: сайт записал пару НАОБОРОТ.
 
