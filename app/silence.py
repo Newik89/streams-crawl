@@ -25,6 +25,12 @@
   М5. Сравниваются только полные сборы: дозабор и скан одной даты счёт не
       трогают (решает `parse_live`).
 
+  М6. (книга 128) Тот же сторож сообщает и про «сайт просел на дату»
+      (`app/etalon_guard.site_drops`, ключ games.json «просадки»: сайт дал
+      на день вдвое меньше игр, чем в прошлом сборе). Раньше это только
+      копилось. Строка — одна, когда просадка держится `DROP_RUNS` сбора
+      подряд; по одному сбору не судим — сайты часто дозаполняют день позже.
+
 Сторож ничего не чинит и ничего не снимает с витрины — только сообщает.
 Пороги — в константах ниже; менять их — слово владельца.
 """
@@ -38,6 +44,10 @@ SILENT_KEY = "молчат"
 SILENT_BASE = 3
 #: М3: уведомление — на таком сборе тишины подряд (три сбора ≈ сутки)
 SILENT_RUNS = 3
+#: М6: ключ games.json с записями `etalon_guard.site_drops` и на каком сборе
+#: просадки подряд сообщаем
+DROPS_KEY = "просадки"
+DROP_RUNS = 2
 
 
 def bare(domain: str) -> str:
@@ -117,6 +127,23 @@ def words(silent: list, counts: dict) -> list[str]:
     return out
 
 
+def drop_words(drops: list) -> list[str]:
+    """М6: строки про «сайт просел на дату» — по одной на сайт, только для
+    записей, у которых `подряд` РОВНО `DROP_RUNS`."""
+    by_site: dict[str, list] = {}
+    for r in drops or []:
+        if isinstance(r, dict) and int(r.get("подряд") or 0) == DROP_RUNS and r.get("сайт"):
+            by_site.setdefault(r["сайт"], []).append(r)
+    out = []
+    for site in sorted(by_site):
+        days = "; ".join(f"на {r.get('дата')} было игр {r.get('было')}, стало {r.get('стало')}"
+                         for r in sorted(by_site[site], key=lambda r: str(r.get("дата"))))
+        out.append(f"{site}: сайт дал заметно меньше игр, чем раньше, — {days}; так уже "
+                   f"{DROP_RUNS} сбора подряд. Возможно, сайт сменил запись расписания или "
+                   f"убрал трансляции — стоит посмотреть")
+    return out
+
+
 #: настройка базы: метка сбора («собрано»), о котором уже сообщили, — чтобы
 #: повторная заливка того же файла не писала вторую строку
 NOTED_KEY = "silence_noted"
@@ -129,6 +156,7 @@ def after_import(conn, data: dict) -> list[str]:
     (перезаливка) — молчим. Возвращает написанные строки."""
     from . import db, watch
     lines = words(data.get(SILENT_KEY) or [], data.get(COUNTS_KEY) or {})
+    lines += drop_words(data.get(DROPS_KEY) or [])                     # М6
     stamp = str(data.get("собрано") or "")
     if not lines or not stamp or db.get_setting(conn, NOTED_KEY) == stamp:
         return []

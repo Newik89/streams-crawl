@@ -491,15 +491,19 @@ def verdict(page: fetch.Page) -> dict:
                 "байт": len(page.html), "меток времени": 0, "чем": page.via}
     text = timemarks.clean(page.html)
     marks = timemarks.count(text)
+    # книга 128 (А8): запрос перекинуло на главную страницу сайта — пометка
+    # для хода «сайт переехал» (`app/moved.py`)
+    home = ({"переадресация": moved.HOME_MARK}
+            if moved.redirected_home(page.url, getattr(page, "final_url", "")) else {})
     if protection.is_blocked(text, page.html):
         return {"итог": "заглушка защиты",
                 "почему": protection.guess_name(page.html) or "не опознана",
                 "байт": len(page.html), "меток времени": marks, "чем": page.via}
     if marks == 0:
         return {"итог": "пусто", "почему": "времени на странице нет",
-                "байт": len(page.html), "меток времени": 0, "чем": page.via}
+                "байт": len(page.html), "меток времени": 0, "чем": page.via, **home}
     return {"итог": "расписание есть", "почему": "",
-            "байт": len(page.html), "меток времени": marks, "чем": page.via}
+            "байт": len(page.html), "меток времени": marks, "чем": page.via, **home}
 
 
 #: проба вернуть на GitHub сайт «качает сервер» (схема сбоев, шаг 11,

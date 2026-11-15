@@ -1069,7 +1069,9 @@ def main() -> int:
             # источников стало полсотни).
             problems.append(f"{row['domain']}: парсер упал — "
                             f"{type(e).__name__}: {e}")
-            continue
+            # книга 128 (З9): упавший разборщик — тот же случай, что «ноль
+            # строк»: страницу ниже прочитает запасное чтение
+            programs = []
         if redo_mode and name in redone:
             redo.tag_programs(programs)          # Д7: страница перекачана дозабором
         bare = _bare_domain(row["domain"])

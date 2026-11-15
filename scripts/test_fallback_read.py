@@ -100,11 +100,63 @@ from app.parsers import football_tv_ru, ipko_tv  # noqa: E402
          "<strong>1:55</strong> Абердин – Хайберниан. Шотландская Премьер-Лига. Сезон 2026/27 (12+)</p>")
 проверка("у football-tv.ru свой разборщик на суточной сетке даёт ноль строк (читает только анонсы)",
          football_tv_ru.parse(СЕТКА), [])
+ЛЕНТА = ('<div class="t1003__item-txt"> Live | Данди – Хартс | SPFL | Суббота 21.11.2026 в 20:45 '
+         'Live | Рейнджерс – Абердин | Вторник 24.11.2026 в 23:00 '
+         'Live | Данди – Хартс | SPFL | Суббота 21.11.2026 в 20:45 </div>')
+анонсы = football_tv_ru.parse(ЛЕНТА)
+проверка("анонсы прямых эфиров из бегущей строки: пара, лига (если есть), эфир; повтор записи — один раз",
+         [(p.match_raw, p.league_raw, p.start.strftime("%d.%m %H:%M"), bool(p.live_raw), p.channel_raw)
+          for p in анонсы],
+         [("Данди - Хартс", "SPFL", "21.11 20:45", True, "Футбол"),
+          ("Рейнджерс - Абердин", "", "24.11 23:00", True, "Футбол")])
+проверка("дата анонса «21.11.2026 в 20:45» и время с секундами — не строки расписания",
+         fallback_read.read("<p>21.11.2026 в 20:45 Данди – Хартс</p><p>21:45:00 Сигнал</p>",
+                            ДЕНЬ, "Europe/Moscow", "Футбол"), [])
 сетка = fallback_read.read(СЕТКА, ДЕНЬ, "Europe/Moscow", "Футбол")
 проверка("…а запасное чтение берёт её строки с каналом «Футбол» и турниром отдельно",
          [(p.raw_time, p.title, p.league_raw[:19], p.channel_raw) for p in сетка],
          [("00:00", "Асколи – Палермо", "Итальянская серия Б", "Футбол"),
           ("01:55", "Абердин – Хайберниан", "Шотландская Премьер", "Футбол")])
+
+print("З8. Страница без разметки: список записей с полями")
+import json as _json  # noqa: E402
+ОТВЕТ = _json.dumps({"data": {"meta": {"channelDay": [
+    {"eventStartUtc": 1794771900000, "title": "Spain v England. UEFA Nations League",
+     "description": "Live from Madrid", "eventType": "Forward"},
+    {"eventStartUtc": 1794780000000, "title": "Sports News", "duration": 1800000},
+    {"eventStartUtc": "нет", "title": "Без времени"},
+    {"eventStartUtc": 1794790000000, "title": "ab"}]}},
+    "paging": {"start": 0, "title": "служебное"}})
+записи = fallback_read.read(ОТВЕТ, None, "Africa/Dar_es_Salaam", "Azam Sports 1 HD", "https://x/api")
+проверка("записи с полем начала и полем названия — передачи; без времени и с пустым названием — мимо",
+         [(p.title, p.league_raw, p.raw_time, p.channel_raw) for p in записи],
+         [("Spain v England", "UEFA Nations League", "22:45", "Azam Sports 1 HD"),
+          ("Sports News", "", "01:00", "Azam Sports 1 HD")])
+проверка("время — полное (миллисекунды эпохи), день не нужен; описание записи сохранено",
+         (записи[0].start.isoformat(), записи[0].description, записи[0].extra.get(fallback_read.MARK)),
+         ("2026-11-15T19:45:00+00:00", "Live from Madrid", True))
+проверка("секунды эпохи, запись ISO с поясом и без пояса (пояс сайта)",
+         [fallback_read.moment(v, __import__("zoneinfo").ZoneInfo("Europe/Kyiv")).isoformat()
+          for v in (1794771900, "1794771900", "2026-11-15T19:45:00Z", "2026-11-15 21:45")],
+         ["2026-11-15T19:45:00+00:00", "2026-11-15T19:45:00+00:00", "2026-11-15T19:45:00+00:00",
+          "2026-11-15T21:45:00+02:00"])
+проверка("не время: малое число, слово, истина, дата без времени",
+         [fallback_read.moment(v, None) for v in (0, 2026, "завтра", True, "2026-11-15")],
+         [None, None, None, None, None])
+СПИСОК = _json.dumps([{"start": "2026-11-15T21:45:00+02:00", "name": "France - Turkey",
+                       "channel": {"name": "вложенное имя канала — не передача"}}])
+проверка("ответ-список и другие имена полей (`start`, `name`)",
+         [(p.title, p.raw_time) for p in fallback_read.read(СПИСОК, None, "Europe/Kyiv", "K")],
+         [("France - Turkey", "21:45")])
+проверка("битый ответ и пустые ответы — пусто, без падения",
+         [fallback_read.read(x, None, "Europe/Kyiv", "K") for x in ('{"a": ', "{}", "[]", "[1, 2, null]")],
+         [[], [], [], []])
+из_ответа = [pipeline.classify(p, live.load(), sport.load(teams=()), {}, {},
+                               Reference([{"sport": "F", "home": "Spain", "away": "England",
+                                           "league": "EUROPE: UEFA Nations League", "fs_id": "a1",
+                                           "start_kyiv": "2026-11-15T21:45"}]), None) for p in записи]
+проверка("в ленту из служебного ответа идёт только матч, который подтвердил эталон",
+         [(r.home, r.away) for r in из_ответа if r.home], [("Spain", "England")])
 
 print("З4. В ленту — только то, что подтвердил эталон")
 MARKERS, SPORTS = live.load(), sport.load(teams=())

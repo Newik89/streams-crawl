@@ -30,6 +30,11 @@
       Сообщаем, когда верно одно из двух: свой разборщик не дал ни одной
       строки по ВСЕМУ сайту (`свой_разборщик` = 0) либо замолчала страница,
       которая раньше читалась (канал известен из памяти). Иначе — только счёт.
+  З8. Страница без разметки (служебный ответ — список записей с полями):
+      в каждой записи ищем поле начала и поле названия (`read_json`).
+  З9. Свой разборщик УПАЛ на странице (сайт сменил устройство ответа) —
+      это тот же случай, что «ноль строк»: причина идёт в «Не разобрано»,
+      а страницу читает запасное чтение (`parse_live`).
   З7. Сайт с ОДНИМ каналом может назвать его сам: константа `CHANNEL` в
       модуле своего разборщика (и `TZ` — пояс), `declared`. Тогда запасное
       чтение для него — штатный второй способ, а не признак поломки: канал
@@ -64,7 +69,10 @@ WHO = "запасное чтение"
 _SCRIPT = re.compile(r"(?is)<(script|style|noscript)\b.*?</\1>")
 _TAG = re.compile(r"<[^>]+>")
 #: время в начале строки: «21:45», «9.30»; дальше — подпись или конец строки
-_TIME = re.compile(r"^(?P<h>[01]?\d|2[0-3])[:.](?P<m>[0-5]\d)(?!\d)\s*[-–—|]?\s*(?P<rest>.*)$")
+#: после минут не идёт «.цифра» или «:цифра»: «14.11.2026 в 22:30» — дата, а
+#: «21:45:00» — время с секундами, строкой расписания их не считаем (проверка
+#: на странице football-tv.ru 15.11: даты анонсов читались как время «14:11»)
+_TIME = re.compile(r"^(?P<h>[01]?\d|2[0-3])[:.](?P<m>[0-5]\d)(?![\d]|[.:]\d)\s*[-–—|]?\s*(?P<rest>.*)$")
 #: даты и длинные числа в адресе — день и метки времени: у одной и той же
 #: страницы канала они меняются каждый сбор
 _VARIABLE = re.compile(r"\d{4}[-/.]\d{2}[-/.]\d{2}|\d{8,}")
@@ -101,12 +109,107 @@ def lines_of(page: str) -> list[str]:
             if line]
 
 
+#: З8 (книга 128): поля записи служебного ответа, в которых лежит НАЧАЛО
+#: передачи и её НАЗВАНИЕ. Имя поля сравнивается без регистра, «_» и «-».
+#: Списки собраны по ответам наших же сайтов (ipko.tv `show_start`, azam
+#: `eventStartUtc`, tvtid `start`, cyta `startTime` …); новое имя — сюда
+START_KEYS = frozenset((
+    "start", "starttime", "startdate", "startdatetime", "starttimeutc", "startutc", "utcstart",
+    "starts", "startsat", "begin", "begintime", "from", "fromtime", "showstart", "eventstartutc",
+    "eventstart", "broadcaststart", "airtime", "airdate", "datetime", "timestamp", "time",
+    "datestart", "starttimestamp", "pocetak", "anfang", "inicio", "debut"))
+TITLE_KEYS = frozenset((
+    "title", "name", "programname", "programtitle", "programme", "showname", "showtitle",
+    "eventname", "eventtitle", "headline", "label", "originaltitle", "naziv", "titel", "titulo"))
+ABOUT_KEYS = frozenset(("description", "summary", "subtitle", "synopsis", "shortdescription",
+                        "episodetitle", "opis", "info"))
+#: предел записей из одного ответа и глубины обхода — защита от огромных ответов
+JSON_ROWS = 5000
+JSON_DEPTH = 12
+
+
+def _plain_key(key) -> str:
+    return re.sub(r"[_\-\s]", "", str(key)).lower()
+
+
+def moment(value, zone) -> datetime | None:
+    """З8: начало передачи из значения поля. Число (или строка из цифр):
+    секунды эпохи (10 знаков) либо миллисекунды (13 знаков). Строка — дата
+    и время в записи ISO («2026-11-15T21:45:00Z»); без пояса — пояс сайта.
+    Не похоже на время — None."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, str) and value.strip().isdigit():
+        value = int(value.strip())
+    if isinstance(value, (int, float)):
+        if 1_000_000_000 <= value < 5_000_000_000:
+            return datetime.fromtimestamp(value, tz=ZoneInfo("UTC"))
+        if 1_000_000_000_000 <= value < 5_000_000_000_000:
+            return datetime.fromtimestamp(value / 1000, tz=ZoneInfo("UTC"))
+        return None
+    if not isinstance(value, str) or len(value) < 16 or not re.match(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}", value):
+        return None
+    try:
+        got = datetime.fromisoformat(value.strip().replace("Z", "+00:00").replace(" ", "T", 1))
+    except ValueError:
+        return None
+    return got if got.tzinfo else got.replace(tzinfo=zone)
+
+
+def read_json(page: str, tz: str | None, channel: str, url: str = "") -> list[Program]:
+    """З8: служебный ответ без разметки — список записей с полями. В каждой
+    записи (на любой глубине) ищем поле начала (`START_KEYS`) и поле
+    названия (`TITLE_KEYS`); есть оба — это передача. Описание
+    (`ABOUT_KEYS`) идёт следом: в нём бывает пара команд. Дальше — как у
+    обычной страницы (З4): без пометки эфира, в ленту — только через эталон."""
+    try:
+        data = json.loads(page)
+        zone = ZoneInfo(tz or "UTC")
+    except Exception:                                  # noqa: BLE001 — не JSON или кривой пояс
+        return []
+    out: list[Program] = []
+
+    def walk(node, depth: int) -> None:
+        if depth > JSON_DEPTH or len(out) >= JSON_ROWS:
+            return
+        if isinstance(node, list):
+            for item in node:
+                walk(item, depth + 1)
+            return
+        if not isinstance(node, dict):
+            return
+        keys = {_plain_key(k): k for k in node}
+        start = next((moment(node[keys[k]], zone) for k in keys
+                      if k in START_KEYS and moment(node[keys[k]], zone)), None)
+        title = next((node[keys[k]] for k in keys if k in TITLE_KEYS
+                      and isinstance(node[keys[k]], str) and len(node[keys[k]].strip()) >= 3), "")
+        if start and title:
+            about = next((node[keys[k]] for k in keys if k in ABOUT_KEYS
+                          and isinstance(node[keys[k]], str)), "")
+            title, league = cut_tail(" ".join(title.split()))
+            local = start.astimezone(zone)
+            out.append(Program(channel_raw=channel, title=title[:300], start=start,
+                               raw_time=local.strftime("%H:%M"), match_raw=" ", live_raw="",
+                               league_raw=league[:120], description=" ".join(about.split())[:300],
+                               source_url=url, extra={MARK: True, "day": local.date().isoformat()}))
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                walk(value, depth + 1)
+
+    walk(data, 0)
+    return out
+
+
 def read(page: str, day: date | None, tz: str | None, channel: str,
          url: str = "") -> list[Program]:
     """З2, З4: строки «время — подпись» со страницы. Подпись — остаток строки
     после времени, а если его нет — следующая строка (не время). Время,
     ушедшее назад больше чем на 6 часов, — уже следующие сутки (ночная часть
-    сетки). Без дня или пояса читать не из чего — пусто."""
+    сетки). Без дня или пояса читать не из чего — пусто.
+    З8: страница — служебный ответ без разметки (начинается с «{» или «[»)
+    — её читает `read_json`: время там полное, день не нужен."""
+    if (page or "").lstrip("﻿ \t\r\n")[:1] in ("{", "["):
+        return read_json(page, tz, channel, url)
     if day is None or not tz:
         return []
     try:
