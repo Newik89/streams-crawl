@@ -327,6 +327,35 @@ def compare(old: dict, new: dict) -> list[str]:
     return losses
 
 
+#: книга 128: сайт давал не меньше стольких сырых строк…
+RAW_BASE = 5
+#: …а новым кодом дал меньше этой доли — потеря разборщика
+RAW_SHARE = 0.5
+
+
+def raw_losses(old: dict, new: dict) -> list[str]:
+    """Книга 128 — сторож ВСЕХ разборщиков на настоящих страницах сбора
+    (тест для разборщиков, у которых своего теста нет): счёт сырых строк по
+    сайтам («разобрано» в games.json) старым кодом и новым.
+    Правило 1: сайт давал старым кодом не меньше `RAW_BASE` строк, а новым —
+    меньше `RAW_SHARE` от прежнего (или ноль) — потеря: правка сломала
+    разборщик сайта.
+    Правило 2: сайта не было в старом разборе или строк было мало — не судим.
+    → строки потерь (как у `compare`)."""
+    was = old.get("разобрано") if isinstance(old.get("разобрано"), dict) else {}
+    now = new.get("разобрано") if isinstance(new.get("разобрано"), dict) else {}
+    out = []
+    for site in sorted(was):
+        before, after = int(was.get(site) or 0), int(now.get(site) or 0)
+        if before >= RAW_BASE and after < before * RAW_SHARE:
+            out.append(f"разборщик {site}: строк со страниц было {before}, стало {after}")
+    if out:
+        print("разборщики сайтов дали заметно меньше строк, чем старым кодом:")
+        for line in out:
+            print("   " + line)
+    return out
+
+
 def compare_run(folder: Path, base: str, keep: Path | None = None) -> list[str]:
     """Правило 4. → потери без объяснения. `keep` — сохранить оба разбора
     (`old.json`, `new.json`), чтобы сравнить ещё раз без 10 минут разбора:
@@ -350,7 +379,7 @@ def compare_run(folder: Path, base: str, keep: Path | None = None) -> list[str]:
             keep.mkdir(parents=True, exist_ok=True)
             shutil.copy(tmp / "out-old" / "games.json", keep / "old.json")
             shutil.copy(tmp / "out-new" / "games.json", keep / "new.json")
-        return compare(old, new)
+        return compare(old, new) + raw_losses(old, new)
     finally:
         _git("worktree", "remove", "--force", str(old_tree))
         shutil.rmtree(tmp, ignore_errors=True)
@@ -368,7 +397,7 @@ def main() -> int:
 
     if args.compare:
         old, new = (json.loads(Path(p).read_text(encoding="utf-8")) for p in args.compare)
-        losses = compare(old, new)
+        losses = compare(old, new) + raw_losses(old, new)
         print(f"\nпотерь без случая в книге: {len(losses)}")
         return 1 if losses else 0
 

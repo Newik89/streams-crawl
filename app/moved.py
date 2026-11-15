@@ -26,6 +26,10 @@
   А6. Пределы: не больше `MAX_SITES` сайтов за сбор — у каждого главная
       страница и до `CANDIDATES` кандидатов; лишние сайты ждут следующего
       сбора. К сайту ходим как можно меньше.
+  А8. «Переехал» — и когда старый адрес ПЕРЕКИДЫВАЕТ НА ГЛАВНУЮ (сайт
+      отвечает «всё в порядке», но это не страница расписания): запрос
+      закончился на главной (`redirected_home`), и расписания на ней не
+      нашлось. Пометку строке ставит сбор (`crawl_fetch.verdict`).
   А7. Итог — раздел `REPORT_KEY` отчёта сбора; сервер пишет владельцу ОДНУ
       строку на сайт в сутки (`after_import`): «сайт переехал: был такой
       адрес, стал такой» либо «по старому адресу страниц нет, новый не
@@ -75,10 +79,32 @@ def bare(domain: str) -> str:
     return domain[4:] if domain.startswith("www.") else domain
 
 
+#: А8: пометка строки отчёта «запрос перекинуло на главную страницу сайта»
+HOME_MARK = "на главную"
+
+
+def redirected_home(requested: str, final: str) -> bool:
+    """А8: запрос страницы расписания закончился на ГЛАВНОЙ странице того же
+    сайта — старого адреса больше нет, сайт перекидывает с него на главную.
+    Просили саму главную, конечный адрес неизвестен или это другой сайт —
+    нет."""
+    if not requested or not final:
+        return False
+    was, now = urlsplit(requested), urlsplit(final)
+    if bare(was.netloc) != bare(now.netloc):
+        return False
+    return was.path.strip("/") != "" and now.path.strip("/") == ""
+
+
 def gone(row: dict) -> bool:
-    """А1: строка отчёта — «страницы нет» (не открылась, HTTP 404 / 410)."""
-    return (isinstance(row, dict) and row.get("итог") in BROKEN
-            and bool(_GONE.search(str(row.get("почему") or ""))))
+    """А1: строка отчёта — «страницы нет»: не открылась с HTTP 404 / 410.
+    А8: либо запрос перекинуло на главную, и расписания на ней не нашлось
+    (сайт отвечает «всё в порядке», но это уже не страница расписания)."""
+    if not isinstance(row, dict):
+        return False
+    if row.get("переадресация") == HOME_MARK and row.get("итог") != "расписание есть":
+        return True
+    return row.get("итог") in BROKEN and bool(_GONE.search(str(row.get("почему") or "")))
 
 
 def moved_sites(report: list) -> dict[str, list[dict]]:

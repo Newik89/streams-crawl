@@ -63,6 +63,9 @@ SITE_LANGS: dict[str, tuple[str, ...]] = {
     "flashscore.mobi": (),
     # Канада: TVA Sports — по-французски
     "tvpassport.com": ("fr",), "canpl.ca": ("fr",),
+    # Танзания: названия передач по-английски, местами суахили (его слов в
+    # словаре служебных слов нет) — английский добавляется сам
+    "azamtvmax.com": (),
     # Болгария
     "bnt.bg": ("bg",), "nova.bg": ("bg",), "diemaxtra.nova.bg": ("bg",),
     "tv.dir.bg": ("bg",), "maxsport.live": ("bg",), "m.flashscore.bg": ("bg",),

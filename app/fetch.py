@@ -102,6 +102,10 @@ class Page:
     #: читалка, отдавшая страницу (шаблон, заголовки) — чтобы остальные
     #: страницы сайта брать ею же (`app/reader_chain.py`, Ч7)
     reader: tuple | None = None
+    #: адрес, на котором запрос закончился после переадресаций (обычный
+    #: запрос; у браузера и читалок — пусто). Книга 128, А8: старый адрес
+    #: расписания перекинул на главную — `app/moved.py`
+    final_url: str = ""
 
     @property
     def ok(self) -> bool:
@@ -574,7 +578,7 @@ class Fetcher:
         html = answer.text
         cached.parent.mkdir(parents=True, exist_ok=True)
         cached.write_text(html, encoding="utf-8")
-        return Page(url, html, False)
+        return Page(url, html, False, final_url=str(getattr(answer, "url", "") or ""))
 
 
     def via_readers(self, url: str, accept=None, only: tuple | None = None,

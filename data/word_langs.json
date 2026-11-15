@@ -1,33 +1,353 @@
 {
  "_": "Языки латинских служебных слов (data/markers.json: live, not_live, stop_title, stop_genre) — слово владельца 25.10.2026, книга 084: слово ищется только у сайтов своего языка (app/site_lang.py). Ключ — языки через пробел, значение — слова как в markers.json. Слова на иврите, греческом, кириллице, арабском размечать не нужно — язык видно по буквам. Латинского слова здесь нет — оно общее и ищется везде; так помечены английские и одинаковые во многих языках слова: они перечислены в «_общие». Новое латинское слово в markers.json — дописать сюда (в язык или в «_общие»), иначе краснеет тест test_yazyk_sayta.py.",
- "_общие": ["live", "live broadcast", "highlights", "recorded", "magazine", "long summary", "short summary", "replay", "preview", "match day live", "studio", "extra time", "conference", "show", "documentary", "reportage", "magazin", "nba specials", "dokument", "direkt", "ep.", "episode", "press conference", "media day"],
- "sq": ["drejtpërdrejt", "drejtperdrejt", "drejtpërdrejtë", "konferenca për shtyp", "konferencë për shtyp"],
- "cs": ["přímý přenos", "v přímém přenosu", "živě", "sestřih", "konferenční přenos", "konference", "česká ulička", "tisková konference", "tiskovka"],
- "cs sk": ["záznam", "reportáž", "magazín", "naživo"],
- "sk": ["priamy prenos", "v priamom prenose", "tlačová konferencia"],
- "pl": ["program na żywo", "na żywo", "bezpośrednia transmisja", "magazyn", "film dokumentalny", "cykl reportaży", "powtórka", "skróty", "retransmisja", "konferencja", "mistrzostwa świata - niemcy", "odcinek", "konferencja prasowa"],
- "pt": ["direto", "notícias", "resumo", "repetição", "em diferido", "antevisão", "rescaldo", "pré-jogo", "multi ao vivo", "episódio", "conferência de imprensa", "conferencia de imprensa"],
- "es": ["en vivo", "resúmenes", "resumenes", "resumen", "rueda de prensa"],
- "es pt": ["diferido", "estudio", "directo"],
- "hr sr bs": ["uživo", "uzivo", "direktno", "izravno", "prijenos", "snimak", "snimka", "odloženi prenos", "odlozeni prenos", "odgođeni prijenos", "najava programa", "prije utakmice", "nakon utakmice", "gala večer", "gala vecer", "godina lige", "godina prve lige", "godina superlige", "prvi deo", "drugi deo", "treći deo", "treci deo", "deo 1", "deo 2", "deo 3", "prvi dio", "drugi dio", "treći dio", "treci dio", "dio 1", "dio 2", "dio 3", "konferencija za medije", "konferencija za novinare"],
- "hr sr bs sl": ["emisija", "dokumentarni film"],
- "hr sr bs sl sk": ["prenos"],
- "sl": ["v živo", "posnetek", "ponovitev", "novinarska konferenca", "tiskovna konferenca"],
- "ro": ["vezi live", "transmisiune directă", "transmisie directă", "în direct", "înregistrare", "inregistrare", "program sportiv", "episodul", "conferință de presă", "conferinta de presa"],
- "de": ["sport-bild", "liveübertragung", "live-übertragung", "direktübertragung", "wiederholung", "aufzeichnung", "doku", "folge", "pressekonferenz", "pressekonferenzen", "medientag"],
- "de sv no da": ["dokumentation", "dokumentarfilm"],
- "sv": ["direktsänt", "direktsändning", "direktsänds", "avsnitt", "presskonferens"],
- "sv no da": ["repris"],
- "no da": ["studie", "direkte", "pressekonferanse"],
- "da": ["genudsendelse", "pressekonference"],
- "fr": ["en direct", "rediffusion", "épisode", "conférence de presse"],
- "it": ["diretta", "in differita", "differita", "conferenza stampa"],
- "tr": ["canlı", "canli", "naklen", "özet", "banttan", "basın toplantısı", "basin toplantisi"],
- "hu": ["élő", "élőben", "egyenes adás", "összefoglaló", "ismétlés", "felvételről", "m4 pillanatok", "pillanatok", "epizód", "sajtótájékoztató"],
- "lt": ["tiesiogiai", "tiesioginė", "kartojimas"],
- "fi": ["suora", "uusinta", "lehdistötilaisuus"],
- "et": ["otseülekanne", "otse", "kordus", "salvestus"],
- "nl": ["rechtstreeks", "herhaling", "samenvatting", "voorbeschouwing", "nabeschouwing", "wedstrijdanalyse", "1e helft", "2e helft", "aflevering", "persconferentie"],
- "hr sr bs sl cs sk": ["epizoda"],
- "es it": ["episodio"]
+ "_общие": [
+  "live",
+  "live broadcast",
+  "highlights",
+  "recorded",
+  "magazine",
+  "long summary",
+  "short summary",
+  "replay",
+  "preview",
+  "match day live",
+  "studio",
+  "extra time",
+  "conference",
+  "show",
+  "documentary",
+  "reportage",
+  "magazin",
+  "nba specials",
+  "dokument",
+  "direkt",
+  "ep.",
+  "episode",
+  "press conference",
+  "media day",
+  "ceremony",
+  "ceremonies",
+  "prize giving",
+  "prize-giving",
+  "trophy presentation",
+  "medal presentation"
+ ],
+ "sq": [
+  "drejtpërdrejt",
+  "drejtperdrejt",
+  "drejtpërdrejtë",
+  "konferenca për shtyp",
+  "konferencë për shtyp"
+ ],
+ "cs": [
+  "přímý přenos",
+  "v přímém přenosu",
+  "živě",
+  "sestřih",
+  "konferenční přenos",
+  "konference",
+  "česká ulička",
+  "tisková konference",
+  "tiskovka",
+  "slavnostní zahájení",
+  "slavnostní zakončení"
+ ],
+ "cs sk": [
+  "záznam",
+  "reportáž",
+  "magazín",
+  "naživo",
+  "ceremoniál",
+  "ceremoniálu"
+ ],
+ "sk": [
+  "priamy prenos",
+  "v priamom prenose",
+  "tlačová konferencia",
+  "slávnostné otvorenie",
+  "slávnostné ukončenie"
+ ],
+ "pl": [
+  "program na żywo",
+  "na żywo",
+  "bezpośrednia transmisja",
+  "magazyn",
+  "film dokumentalny",
+  "cykl reportaży",
+  "powtórka",
+  "skróty",
+  "retransmisja",
+  "konferencja",
+  "mistrzostwa świata - niemcy",
+  "odcinek",
+  "konferencja prasowa",
+  "ceremonii",
+  "uroczystość otwarcia",
+  "uroczystość zamknięcia"
+ ],
+ "pt": [
+  "direto",
+  "notícias",
+  "resumo",
+  "repetição",
+  "em diferido",
+  "antevisão",
+  "rescaldo",
+  "pré-jogo",
+  "multi ao vivo",
+  "episódio",
+  "conferência de imprensa",
+  "conferencia de imprensa",
+  "cerimónia",
+  "cerimônia",
+  "entrega de prémios"
+ ],
+ "es": [
+  "en vivo",
+  "resúmenes",
+  "resumenes",
+  "resumen",
+  "rueda de prensa",
+  "entrega de premios",
+  "entrega de medallas"
+ ],
+ "es pt": [
+  "diferido",
+  "estudio",
+  "directo"
+ ],
+ "hr sr bs": [
+  "uživo",
+  "uzivo",
+  "direktno",
+  "izravno",
+  "prijenos",
+  "snimak",
+  "snimka",
+  "odloženi prenos",
+  "odlozeni prenos",
+  "odgođeni prijenos",
+  "najava programa",
+  "prije utakmice",
+  "nakon utakmice",
+  "gala večer",
+  "gala vecer",
+  "godina lige",
+  "godina prve lige",
+  "godina superlige",
+  "prvi deo",
+  "drugi deo",
+  "treći deo",
+  "treci deo",
+  "deo 1",
+  "deo 2",
+  "deo 3",
+  "prvi dio",
+  "drugi dio",
+  "treći dio",
+  "treci dio",
+  "dio 1",
+  "dio 2",
+  "dio 3",
+  "konferencija za medije",
+  "konferencija za novinare",
+  "ceremonije",
+  "svečano otvaranje",
+  "svečano zatvaranje",
+  "svečano otvorenje",
+  "dodjela nagrada",
+  "dodela nagrada",
+  "dodjela medalja",
+  "dodela medalja"
+ ],
+ "hr sr bs sl": [
+  "emisija",
+  "dokumentarni film"
+ ],
+ "hr sr bs sl sk": [
+  "prenos"
+ ],
+ "sl": [
+  "v živo",
+  "posnetek",
+  "ponovitev",
+  "novinarska konferenca",
+  "tiskovna konferenca",
+  "slovesnost",
+  "otvoritvena slovesnost"
+ ],
+ "ro": [
+  "vezi live",
+  "transmisiune directă",
+  "transmisie directă",
+  "în direct",
+  "înregistrare",
+  "inregistrare",
+  "program sportiv",
+  "episodul",
+  "conferință de presă",
+  "conferinta de presa",
+  "festivitate",
+  "ceremonie de"
+ ],
+ "de": [
+  "sport-bild",
+  "liveübertragung",
+  "live-übertragung",
+  "direktübertragung",
+  "wiederholung",
+  "aufzeichnung",
+  "doku",
+  "folge",
+  "pressekonferenz",
+  "pressekonferenzen",
+  "medientag",
+  "zeremonie",
+  "eröffnungsfeier",
+  "schlussfeier",
+  "abschlussfeier",
+  "siegerehrung",
+  "preisverleihung"
+ ],
+ "de sv no da": [
+  "dokumentation",
+  "dokumentarfilm"
+ ],
+ "sv": [
+  "direktsänt",
+  "direktsändning",
+  "direktsänds",
+  "avsnitt",
+  "presskonferens",
+  "prisutdelning",
+  "invigningsceremoni",
+  "medaljceremoni"
+ ],
+ "sv no da": [
+  "repris"
+ ],
+ "no da": [
+  "studie",
+  "direkte",
+  "pressekonferanse"
+ ],
+ "da": [
+  "genudsendelse",
+  "pressekonference",
+  "prisuddeling",
+  "åbningsceremoni"
+ ],
+ "fr": [
+  "en direct",
+  "rediffusion",
+  "épisode",
+  "conférence de presse",
+  "cérémonie",
+  "remise des prix",
+  "remise des médailles"
+ ],
+ "it": [
+  "diretta",
+  "in differita",
+  "differita",
+  "conferenza stampa",
+  "premiazione"
+ ],
+ "tr": [
+  "canlı",
+  "canli",
+  "naklen",
+  "özet",
+  "banttan",
+  "basın toplantısı",
+  "basin toplantisi",
+  "töreni",
+  "törenleri",
+  "seremonisi"
+ ],
+ "hu": [
+  "élő",
+  "élőben",
+  "egyenes adás",
+  "összefoglaló",
+  "ismétlés",
+  "felvételről",
+  "m4 pillanatok",
+  "pillanatok",
+  "epizód",
+  "sajtótájékoztató",
+  "ünnepség",
+  "megnyitóünnepség",
+  "záróünnepség",
+  "díjátadó",
+  "eredményhirdetés"
+ ],
+ "lt": [
+  "tiesiogiai",
+  "tiesioginė",
+  "kartojimas",
+  "ceremonijos"
+ ],
+ "fi": [
+  "suora",
+  "uusinta",
+  "lehdistötilaisuus",
+  "seremonia",
+  "avajaisseremonia",
+  "palkintojenjako"
+ ],
+ "et": [
+  "otseülekanne",
+  "otse",
+  "kordus",
+  "salvestus",
+  "tseremoonia",
+  "autasustamine"
+ ],
+ "nl": [
+  "rechtstreeks",
+  "herhaling",
+  "samenvatting",
+  "voorbeschouwing",
+  "nabeschouwing",
+  "wedstrijdanalyse",
+  "1e helft",
+  "2e helft",
+  "aflevering",
+  "persconferentie",
+  "huldiging",
+  "prijsuitreiking",
+  "openingsceremonie",
+  "slotceremonie"
+ ],
+ "hr sr bs sl cs sk": [
+  "epizoda"
+ ],
+ "es it": [
+  "episodio"
+ ],
+ "fr nl ro": [
+  "ceremonie"
+ ],
+ "es pl ro sq": [
+  "ceremonia",
+  "ceremonia de",
+  "ceremonia e"
+ ],
+ "pt it": [
+  "cerimonia"
+ ],
+ "hr sr bs sl lt": [
+  "ceremonija"
+ ],
+ "tr no": [
+  "seremoni"
+ ],
+ "sq da sv no": [
+  "ceremoni"
+ ],
+ "no": [
+  "prisutdeling",
+  "åpningsseremoni"
+ ]
 }
