@@ -104,10 +104,18 @@ def срез(пары, эталон, **ещё):
 
 print("Срез по эталону (`pipeline.trim_by_reference`), правила О1–О7")
 лига = ("Raiffeisen Liga e Pare Drita", "Liria")
-проверка("О2–О3, О5: урезанная пара сошлась целиком — берём наименьший сошедшийся срез",
+проверка("О2–О3, О5: урезанная пара сошлась целиком — берём НАИБОЛЬШИЙ сошедшийся срез "
+         "(сравнение имён терпит остатки вроде «Pare Drita»)",
          срез([лига], Эталон({("Drita", "Liria"): ("m1", "пара", False),
                               ("Pare Drita", "Liria"): ("m1", "пара", False)})),
-         ("Pare Drita", "Liria", live.TRIM_HOME, "Raiffeisen Liga e"))
+         ("Drita", "Liria", live.TRIM_HOME, "Raiffeisen Liga e Pare"))
+приштина = {"fs_id": "pri", "home": "Prishtina e Re", "away": "Liria", "names": {}}
+ответ = (приштина, "пара", False)
+проверка("О5 + О9: границу наибольшего среза держит имя команды — «Prishtina» из «Prishtina e Re» не срезается",
+         срез([("Raiffeisen Liga e Pare Prishtina e Re", "Liria")],
+              Эталон({("Pare Prishtina e Re", "Liria"): ответ, ("Prishtina e Re", "Liria"): ответ,
+                      ("e Re", "Liria"): ответ, ("Re", "Liria"): ответ})),
+         ("Prishtina e Re", "Liria", live.TRIM_HOME, "Raiffeisen Liga e Pare"))
 проверка("О3: урезанная пара сошлась только «одной стороной» — не берём",
          срез([лига], Эталон({("Drita", "Liria"): ("m1", "одна сторона", False)})), None)
 проверка("О3: разные срезы дали РАЗНЫЕ матчи — не гадаем",
@@ -177,12 +185,17 @@ print("Весь путь: строка сайта → общий конвейе�
      "fs_id": "atl", "start_kyiv": "2026-11-15T22:00"},
     {"sport": "F", "home": "Real Madrid", "away": "Sevilla", "league": "SPAIN: LaLiga",
      "fs_id": "rma", "start_kyiv": "2026-11-16T22:00"},
+    {"sport": "F", "home": "Austria Vienna W", "away": "Bayern Munich W",
+     "league": "EUROPE: UEFA Champions League Women", "fs_id": "aus", "start_kyiv": "2026-11-19T19:45",
+     "names": {"de": ["Austria Wien F", "Bayern München F"]}},
+    {"sport": "F", "home": "Prishtina e Re", "away": "Liria", "league": "KOSOVO: Liga e Pare",
+     "fs_id": "pri", "start_kyiv": "2026-11-15T14:00"},
 ])
 
 
-def строка(сайт: str, пара: str, когда: str, эфир: str = "live"):
+def строка(сайт: str, пара: str, когда: str, эфир: str = "live", лига: str = ""):
     p = Program(channel_raw="Канал 1", title=пара, start=datetime.fromisoformat(когда).replace(tzinfo=KYIV),
-                raw_time="", match_raw=пара, live_raw=эфир, league_raw="", sport_raw="", source_url="",
+                raw_time="", match_raw=пара, live_raw=эфир, league_raw=лига, sport_raw="", source_url="",
                 extra={})
     row = pipeline.run([p], reference=эталон, domain=сайт)[0]
     return row.home, row.away, (p.extra.get(pipeline.TRIMMED) or {}).get("по")
@@ -194,6 +207,18 @@ def строка(сайт: str, пара: str, когда: str, эфир: str = 
 проверка("raiplay.it: «Belgio - Italia - 15/11/2026» (дата после гостей) → пара без даты",
          строка("raiplay.it", "Belgio - Italia - 15/11/2026", "2026-11-15T21:30"),
          ("Belgio", "Italia", "эталон"))
+проверка("О1б: пара сходится целиком только потому, что сравнение имён терпит хвост, — хвост срезается, "
+         "пометка женского турнира остаётся (tv.orf.at, «… Bayern München Das Spiel»)",
+         строка("tv.orf.at", "Austria Wien - Bayern München Das Spiel", "2026-11-19T19:40",
+                лига="UEFA Frauen Champions League"),
+         ("Austria Wien W", "Bayern München W", "эталон"))
+проверка("О1б: то же с турниром перед хозяевами (ipko.tv) — срез ровно до имени команды",
+         строка("ipko.tv", "Raiffeisen Liga e Pare Prishtina e Re - Liria", "2026-11-15T14:00"),
+         ("Prishtina e Re", "Liria", "эталон"))
+проверка("та же строка без пометки эфира идёт через вопрос эталону — срез тот же",
+         строка("tv.orf.at", "Austria Wien - Bayern München Das Spiel", "2026-11-19T19:40", эфир="",
+                лига="UEFA Frauen Champions League"),
+         ("Austria Wien W", "Bayern München W", "эталон"))
 проверка("О1: пара и так сходится целиком — правило её не трогает",
          строка("webtv.sk", "Finsko - San Marino", "2026-11-15T18:45"), ("Finsko", "San Marino", None))
 проверка("О6 на живом эталоне: повтор «Real Madrid - Barcelona» в час матча «Atl. Madrid — Barcelona» не режется",
@@ -255,6 +280,9 @@ conn = db.connect()
          (3, {("ligová fáze", live.KNOWN_HOME): (словацкий, "webtv.sk", "Finsko - San Marino"),
               ("Bundesliga", live.KNOWN_HOME): ("de", "tv.orf.at", "Rapid - Sturm"),
               ("Das Spiel", live.KNOWN_AWAY): ("de", "tv.orf.at", "Rapid - Sturm")}))
+проверка("З5: слова без единой буквы (дата) в книгу не идут",
+         dictionary.note_trims(conn, {"raiplay.it": [{"где": live.TRIM_AWAY, "срезано": "15/11/2026",
+                                                     "по": "эталон", "раз": 1, "пример": "a → b"}]}), 0)
 проверка("З4: повторная встреча строк не плодит; битый вход не роняет",
          [dictionary.note_trims(conn, итог_сбора), dictionary.note_trims(conn, None),
           dictionary.note_trims(conn, {"a.tv": "x", "b.tv": [5, {"где": "?"}]})], [0, 0, 0])

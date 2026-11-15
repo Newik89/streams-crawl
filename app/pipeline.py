@@ -227,16 +227,23 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
     К паре снаружи прилипли лишние слова без разделителя (турнир, рубрика,
     стадия, дата, слова передачи) — эталон такую пару не узнаёт. Пробуем
     срезы (`live.outer_trims`) и спрашиваем эталон. Правила:
-      О1. зовут, только когда ни одна догадка строки не сошлась с эталоном
-          ЦЕЛИКОМ — то, что уже читается, правило не трогает;
+      О1. зовут в двух случаях: (а) ни одна догадка строки не сошлась с
+          эталоном целиком; (б) пара сошлась целиком, но, возможно, лишь
+          потому, что сравнение имён терпит лишние слова («Bayern München
+          Das Spiel» = «Bayern München») — тогда срез обязан дать ТОТ ЖЕ
+          матч (О4). Без (б) мусор оставался в имени и учился словарём как
+          написание команды («Irland Der Countdown»);
       О2. срезы — только снаружи пары: начало хозяев, конец гостей;
       О3. срез принят, только если урезанную пару эталон подтвердил на это
           время ЦЕЛИКОМ («пара»), и ВСЕ сошедшиеся срезы строки — один и тот
           же матч. Разные срезы дали разные матчи — не гадаем, None;
       О4. строку эталон уже узнал «одной стороной» (`agree`) — срез обязан
           дать ТОТ ЖЕ матч, иначе None;
-      О5. из сошедшихся берётся наименьший срез (первый по порядку
-          `outer_trims`), стороны — в порядке эталона;
+      О5. из сошедшихся берётся НАИБОЛЬШИЙ срез (больше всего срезанных
+          слов; при равенстве — первый по порядку `outer_trims`): сравнение
+          имён терпит остатки («Pare Prishtina e Re» тоже сходится), а
+          границу имени держит О9 — слово, похожее на имя команды, не
+          срежется. Стороны — в порядке эталона;
       О6. сторону, которую эталон знает как команду (`knows_team`: «Real
           Madrid»), не режем: такая пара не сошлась потому, что это другой
           матч, а не потому, что к имени что-то прилипло. Иначе «Real
@@ -276,12 +283,14 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
                                     start_kyiv)
             if got is not None and got.how == "пара" \
                     and not _name_part(where, cut, got):                      # О3, О9
+                clean = " … ".join(part.strip(live._TRIM_EDGE) for part in cut.split(" … "))
                 hits.append((new_home, new_away, got,
-                             {"где": where, "срезано": cut,
+                             {"где": where, "срезано": clean,
                               "было": f"{home} - {away}", "по": "эталон"}))
     if not hits or len({_entry_id(h[2]) for h in hits}) != 1:                 # О3
         return None
-    home, away, got, mark = hits[0]                                           # О5
+    home, away, got, mark = max(                                              # О5
+        hits, key=lambda h: len(h[3]["срезано"].replace(" … ", " ").split()))
     if agree is not None and _entry_id(agree) != _entry_id(got):              # О4
         return None
     if got.swapped:
@@ -374,8 +383,11 @@ def trim_over_pair(program: Program, verdict: live.Verdict,
                    known: dict | None = None, stop=None):
     """Книги 133 и 136 для строки, пару которой отсев ПРИНЯЛ (эфир пометил
     сайт, `verdict.ok`). Порядок:
-      1. пару эталон подтверждает ЦЕЛИКОМ — не трогаем (О1);
-      2. срез по эталону (`trim_by_reference`) — берём его;
+      1. пара сошлась «метками из эталона» (пол и возраст дописал эталон) —
+         не трогаем;
+      2. срез по эталону (`trim_by_reference`) — берём его; если пара уже
+         сходилась (целиком или одной стороной), срез обязан дать тот же
+         матч (О1б, О4);
       3. эталон пару не узнал вовсе — срез по книге знаний (`trim_by_book`):
          строка пойдёт дальше с чистыми именами, а урезанную пару ещё раз
          спросят у эталона обычным порядком. Строку, которую эталон узнал
@@ -388,7 +400,7 @@ def trim_over_pair(program: Program, verdict: live.Verdict,
         got = reference.confirm(leagues.with_category(verdict.home, league_category),
                                 leagues.with_category(verdict.away, league_category),
                                 start_kyiv)
-        if got is not None and got.how in ("пара", MARKS_HOW):                # 1
+        if got is not None and got.how == MARKS_HOW:                          # 1
             return None
         cut = trim_by_reference([(verdict.home, verdict.away)], reference,   # 2
                                 start_kyiv, league_category, agree=got, stop=stop)
@@ -500,10 +512,12 @@ def ask_reference(program: Program, verdict: live.Verdict,
                 match_raw=program.match_raw, description=""))
     only_described = [pair for pair in candidates if pair not in without_description]
     confirmed: list[tuple[str, str, Confirmed]] = []
+    raw_of: dict[tuple[str, str], tuple[str, str]] = {}   # догадка с пометкой → без неё
     for home, away in candidates:
         # пол и возраст турнира — к догадке сразу: «Polska - Belgia» в женском
         # отборе должна сойтись с «Poland W — Belgium W», а не с мужской парой
         described = (home, away) in only_described
+        raw = (home, away)
         home = leagues.with_category(home, league_category)
         away = leagues.with_category(away, league_category)
         got = reference.confirm(home, away, start_kyiv)
@@ -511,6 +525,8 @@ def ask_reference(program: Program, verdict: live.Verdict,
             continue                       # из описания — только целая пара
         if got is not None:
             confirmed.append((home, away, got))
+            if not described:
+                raw_of[(home, away)] = raw
             if got.how == "пара":
                 break                      # лучше не бывает
     # книга 133: целиком не сошлась ни одна догадка — пробуем срезать лишние
@@ -535,6 +551,19 @@ def ask_reference(program: Program, verdict: live.Verdict,
     # целая пара главнее половины; среди равных — первая догадка (сорт устойчив)
     ЦЕЛИКОМ = {"пара": 0, MARKS_HOW: 1}
     home, away, got = min(confirmed, key=lambda x: ЦЕЛИКОМ.get(x[2].how, 2))
+    # книга 133, О1б: пара сошлась целиком, но, возможно, с лишними словами
+    # («… Das Spiel») — срез обязан дать тот же матч
+    if got.how == "пара" and (home, away) in raw_of:
+        cut = trim_by_reference([raw_of[(home, away)]], reference, start_kyiv,
+                                league_category, agree=got, stop=stop)
+        if cut is not None:
+            home, away, got, mark = cut
+            home = leagues.with_category(home, league_category)
+            away = leagues.with_category(away, league_category)
+            program.extra[TRIMMED] = mark
+            program.extra["live_guess"] = True
+            return (live.Verdict(True, "", live_marker=verdict.live_marker or REFERENCE_MARKER,
+                                 home=home, away=away), got)
     if got.swapped:
         home, away = away, home
     # эфир угадан (эталоном, не словом сайта): дальше его проверяют те же

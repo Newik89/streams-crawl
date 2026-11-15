@@ -171,7 +171,9 @@ def note_trims(conn: sqlite3.Connection, trims) -> int:
       З3. язык записи — языки сайта (`site_lang.of`, без английского; сайт
           без языков — «en»): по нему разбор решает, годятся ли слова сайту;
       З4. одна строка на (слова, язык, класс) — правило С9 `note_error`;
-          в строке сайт, пример «было → стало» и сколько раз встретилось.
+          в строке сайт, пример «было → стало» и сколько раз встретилось;
+      З5. слова без единой буквы («15/11/2026») в книгу не идут: дата
+          завтра будет другой, такое знание не пригодится.
     Битый вход (не словарь, запись без полей) пропускается. → новых строк."""
     from . import live, site_lang
     added = 0
@@ -194,6 +196,8 @@ def note_trims(conn: sqlite3.Connection, trims) -> int:
             before, _, after = str(item.get("пример") or "").partition(" → ")
             for cls, phrase in parts:
                 phrase = " ".join(phrase.split())
+                if not any(ch.isalpha() for ch in phrase):             # З5
+                    continue
                 if phrase and note_error(                              # З4
                         conn, phrase, cls, lang=lang, source_domain=site,
                         led_to=before or None, truth=after or None,
