@@ -364,6 +364,79 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
     return out
 
 
+#: книга 133: где у пары срезаны лишние слова (эти слова — классы книги знаний)
+TRIM_HOME = "начало хозяев"
+TRIM_AWAY = "конец гостей"
+TRIM_BOTH = "оба края"
+#: книга 136: классы книги знаний (`dictionary_errors.class`) — лишние слова,
+#: которые срезались у пар и подтвердились эталоном
+KNOWN_HOME = "лишнее перед хозяевами"
+KNOWN_AWAY = "лишнее после гостей"
+#: книга 133: сколько слов самое большее срезается с одного края пары
+TRIM_WORDS = 6
+#: книга 133: что счищается с края стороны после среза («ženy: Slovensko»,
+#: «Italia -», «Österreich,»)
+_TRIM_EDGE = " \t,.:;-–—|/«»\"'„“”"
+
+
+#: книга 133, правило 5: теннисный дуэт — косая черта между буквами
+_DUO = re.compile(r"[^\W\d_]\.?\s*/\s*[^\W\d_]")
+
+
+def _still_name(side: str) -> bool:
+    """После среза от стороны остаётся имя: не меньше двух букв."""
+    return sum(ch.isalpha() for ch in side) >= 2
+
+
+def outer_trims(home: str, away: str) -> list[tuple[str, str, str, str]]:
+    """Книга 133 (общее правило для ВСЕХ сайтов и языков): догадки «к паре
+    СНАРУЖИ прилипли лишние слова без разделителя».
+
+    Случаи сбора 15.11: «Raiffeisen Liga e Pare Prishtina e Re - Liria»
+    (ipko.tv: турнир перед хозяевами), «ligová fáze Finsko - San Marino»
+    (webtv.sk: стадия турнира), «Israel - Österreich Das Spiel» (tv.orf.at:
+    слова передачи после гостей), «Belgio - Italia - 15/11/2026» (raiplay.it:
+    дата). Раньше такое срезал только разборщик своего сайта своим списком
+    слов — у остальных сайтов строка шла на витрину с мусором в имени или
+    терялась. Здесь списков слов нет: срезается что угодно, а верный срез
+    выбирает эталон (`pipeline.trim_by_reference`). Правила:
+      1. слова срезаются только с НАЧАЛА хозяев и с КОНЦА гостей — там, где
+         к паре прилипает чужой текст. Конец хозяев и начало гостей не
+         трогаем: там живут части самих имён («Sheffield Wednesday»,
+         «ASVEL Villeurbanne») — это дело словаря имён, не этого правила;
+      2. порядок — от меньшего среза к большему: одно слово с начала
+         хозяев, два, …; затем слова с конца гостей; затем оба края сразу;
+      3. с одного края — не больше `TRIM_WORDS` слов, и от стороны должно
+         остаться имя (хотя бы одно слово, не меньше двух букв);
+      4. с края урезанной стороны счищаются знаки (`_TRIM_EDGE`);
+      5. теннисные дуэты («Granollers/Zeballos» — косая черта между
+         буквами) не режем: игрок в один день стоит и в одиночке, и в паре.
+         Косая черта в дате («15/11/2026») — не дуэт.
+    Возвращает [(где, что срезано, хозяева, гости)]; сами по себе догадки в
+    ленту не идут."""
+    if _DUO.search(home) or _DUO.search(away):                   # правило 5
+        return []
+    hw, aw = home.split(), away.split()
+    out: list[tuple[str, str, str, str]] = []
+
+    def add(where: str, cut: str, new_home: str, new_away: str) -> None:
+        new_home, new_away = new_home.strip(_TRIM_EDGE), new_away.strip(_TRIM_EDGE)
+        if _still_name(new_home) and _still_name(new_away):      # правила 3–4
+            out.append((where, cut, new_home, new_away))
+
+    front = range(1, min(len(hw), TRIM_WORDS + 1))               # правило 3
+    back = range(1, min(len(aw), TRIM_WORDS + 1))
+    for k in front:                                              # правило 2
+        add(TRIM_HOME, " ".join(hw[:k]), " ".join(hw[k:]), away)
+    for m in back:
+        add(TRIM_AWAY, " ".join(aw[-m:]), home, " ".join(aw[:-m]))
+    for k in front:
+        for m in back:
+            add(TRIM_BOTH, f"{' '.join(hw[:k])} … {' '.join(aw[-m:])}",
+                " ".join(hw[k:]), " ".join(aw[:-m]))
+    return out
+
+
 #: код выпуска сериала «S5E0», «S02 E14» (сезон и серия) — так ipko.tv
 #: подписывает передачи: «S5E0 - Skoci-Maqedoni» вставало вопросом владельцу
 #: «Вид спорта» (книга 108). Матчи так не подписывают

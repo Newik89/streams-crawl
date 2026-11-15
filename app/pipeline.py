@@ -170,6 +170,198 @@ def pair_guesses(program: Program, with_field: bool = True) -> list[tuple[str, s
 TITLE_PAIR = "пара_из_заголовка"
 
 
+#: книга 133: пометка строки «у пары срезаны лишние слова» — словарь
+#: {"где": край, "срезано": слова, "было": пара до среза, "по": "эталон" | "книга"}
+TRIMMED = "обрезка"
+#: книга 136: классы книги знаний (`dictionary_errors.class`) — лишние слова,
+#: которые уже срезались у пар и подтвердились эталоном
+KNOWN_HOME = live.KNOWN_HOME
+KNOWN_AWAY = live.KNOWN_AWAY
+
+
+def _entry_id(got: Confirmed) -> str:
+    """Матч эталона одним ключом — чтобы понять, один ли матч дали срезы."""
+    entry = got.entry or {}
+    return str(entry.get("fs_id") or f"{entry.get('home')}|{entry.get('away')}|{got.start}")
+
+
+def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
+                      start_kyiv: datetime | None, league_category: str = "",
+                      agree: Confirmed | None = None, stop=None):
+    """Книга 133 (общее правило для ВСЕХ сайтов и языков, слово владельца
+    15.11: «все ошибки разбора, которые происходят на конкретных сайтах,
+    должны быть предусмотрены для всех сайтов»).
+
+    К паре снаружи прилипли лишние слова без разделителя (турнир, рубрика,
+    стадия, дата, слова передачи) — эталон такую пару не узнаёт. Пробуем
+    срезы (`live.outer_trims`) и спрашиваем эталон. Правила:
+      О1. зовут, только когда ни одна догадка строки не сошлась с эталоном
+          ЦЕЛИКОМ — то, что уже читается, правило не трогает;
+      О2. срезы — только снаружи пары: начало хозяев, конец гостей;
+      О3. срез принят, только если урезанную пару эталон подтвердил на это
+          время ЦЕЛИКОМ («пара»), и ВСЕ сошедшиеся срезы строки — один и тот
+          же матч. Разные срезы дали разные матчи — не гадаем, None;
+      О4. строку эталон уже узнал «одной стороной» (`agree`) — срез обязан
+          дать ТОТ ЖЕ матч, иначе None;
+      О5. из сошедшихся берётся наименьший срез (первый по порядку
+          `outer_trims`), стороны — в порядке эталона;
+      О6. сторону, которую эталон знает как команду (`knows_team`: «Real
+          Madrid»), не режем: такая пара не сошлась потому, что это другой
+          матч, а не потому, что к имени что-то прилипло. Иначе «Real
+          Madrid - Barcelona» (повтор классики) срезом до «Madrid» ушло бы
+          к идущему в тот же час «Atl. Madrid — Barcelona»;
+      О7. в срезанных словах стоит стоп-слово передачи (`stop(слова)` —
+          студия, обзор, «Die Pre-Game Show») — срез не берём: строка — не
+          сам матч, а передача вокруг него.
+    Возвращает (хозяева, гости, ответ эталона, пометка `TRIMMED`) или None."""
+    if reference is None or start_kyiv is None:
+        return None
+    hits = []
+    for home, away in pairs:
+        if not home or not away or not reference.may_know(home, away):
+            continue
+        fixed = {live.TRIM_HOME: reference.knows_team(home),                  # О6
+                 live.TRIM_AWAY: reference.knows_team(away)}
+        fixed[live.TRIM_BOTH] = fixed[live.TRIM_HOME] or fixed[live.TRIM_AWAY]
+        for where, cut, new_home, new_away in live.outer_trims(home, away):   # О2
+            if fixed[where] or (stop is not None and stop(cut)):              # О6, О7
+                continue
+            got = reference.confirm(leagues.with_category(new_home, league_category),
+                                    leagues.with_category(new_away, league_category),
+                                    start_kyiv)
+            if got is not None and got.how == "пара":                         # О3
+                hits.append((new_home, new_away, got,
+                             {"где": where, "срезано": cut,
+                              "было": f"{home} - {away}", "по": "эталон"}))
+    if not hits or len({_entry_id(h[2]) for h in hits}) != 1:                 # О3
+        return None
+    home, away, got, mark = hits[0]                                           # О5
+    if agree is not None and _entry_id(agree) != _entry_id(got):              # О4
+        return None
+    if got.swapped:
+        home, away = away, home
+    return home, away, got, mark
+
+
+def _starts_with(words: list[str], phrase: list[str]) -> bool:
+    return len(words) > len(phrase) and \
+        [w.casefold() for w in words[:len(phrase)]] == phrase
+
+
+def trim_by_book(home: str, away: str, known: dict | None,
+                 langs: frozenset | None):
+    """Книга 136: срез по КНИГЕ ЗНАНИЙ — без эталона. `known` — лишние слова,
+    которые уже срезались у пар и подтвердились эталоном (`known_trims`):
+    {класс: {слова: языки}}. Правила:
+      Б1. слова книги годятся строке, если язык записи — один из языков
+          сайта строки (`langs`); языки сайта неизвестны — годятся любые;
+      Б2. перед хозяевами срезается самая длинная известная цепочка слов с
+          начала, после гостей — самая длинная с конца; сравнение без учёта
+          регистра, целыми словами;
+      Б3. от стороны должно остаться имя (`live._still_name`).
+    Возвращает (хозяева, гости, пометка `TRIMMED`) или None — резать нечего."""
+    if not known:
+        return None
+
+    def fits(phrase_langs: frozenset) -> bool:                                # Б1
+        return langs is None or not phrase_langs or bool(phrase_langs & langs)
+
+    def longest(words: list[str], table: dict, from_end: bool) -> int:
+        """Сколько слов срезать с края: длина самой длинной известной цепочки."""
+        best = 0
+        for size in range(1, min(len(words), live.TRIM_WORDS + 1)):
+            piece = words[-size:] if from_end else words[:size]
+            phrase_langs = table.get(" ".join(w.casefold() for w in piece))
+            if phrase_langs is not None and fits(phrase_langs):
+                best = size
+        return best
+
+    hw, aw = home.split(), away.split()
+    k = longest(hw, known.get(KNOWN_HOME) or {}, from_end=False)              # Б2
+    m = longest(aw, known.get(KNOWN_AWAY) or {}, from_end=True)
+    if not k and not m:
+        return None
+    new_home = " ".join(hw[k:]).strip(live._TRIM_EDGE)
+    new_away = " ".join(aw[:len(aw) - m] if m else aw).strip(live._TRIM_EDGE)
+    if not live._still_name(new_home) or not live._still_name(new_away):      # Б3
+        return None
+    where = live.TRIM_BOTH if k and m else live.TRIM_HOME if k else live.TRIM_AWAY
+    cut = " … ".join(x for x in (" ".join(hw[:k]), " ".join(aw[len(aw) - m:]) if m else "") if x)
+    return new_home, new_away, {"где": where, "срезано": cut,
+                                "было": f"{home} - {away}", "по": "книга"}
+
+
+_KNOWN_TRIMS: dict | None = None
+
+
+def known_trims(path=None) -> dict:
+    """Книга 136: лишние слова из книги знаний — раздел `dictionary_errors`
+    файла `data/dictionaries.json` (его возит `scripts/dict_sync.py`), классы
+    `KNOWN_HOME` и `KNOWN_AWAY`. → {класс: {слова в нижнем регистре: языки}}.
+    Файла или раздела нет, файл битый — пусто: правило просто молчит."""
+    global _KNOWN_TRIMS
+    if path is None and _KNOWN_TRIMS is not None:
+        return _KNOWN_TRIMS
+    import json
+    from pathlib import Path
+    out: dict = {KNOWN_HOME: {}, KNOWN_AWAY: {}}
+    file = Path(path) if path else Path(__file__).resolve().parent.parent / "data" / "dictionaries.json"
+    try:
+        rows = json.loads(file.read_text(encoding="utf-8")).get("dictionary_errors") or []
+    except (OSError, ValueError, AttributeError):
+        rows = []
+    for row in rows:
+        if not isinstance(row, dict) or row.get("class") not in out:
+            continue
+        words = " ".join(str(row.get("alias") or "").casefold().split())
+        if words:
+            langs = frozenset(str(row.get("lang") or "").split())
+            out[row["class"]][words] = out[row["class"]].get(words, frozenset()) | langs
+    if path is None:
+        _KNOWN_TRIMS = out
+    return out
+
+
+def trim_over_pair(program: Program, verdict: live.Verdict,
+                   reference: Reference | None, start_kyiv: datetime | None,
+                   league_category: str = "", langs: frozenset | None = None,
+                   known: dict | None = None, stop=None):
+    """Книги 133 и 136 для строки, пару которой отсев ПРИНЯЛ (эфир пометил
+    сайт, `verdict.ok`). Порядок:
+      1. пару эталон подтверждает ЦЕЛИКОМ — не трогаем (О1);
+      2. срез по эталону (`trim_by_reference`) — берём его;
+      3. эталон пару не узнал вовсе — срез по книге знаний (`trim_by_book`):
+         строка пойдёт дальше с чистыми именами, а урезанную пару ещё раз
+         спросят у эталона обычным порядком. Строку, которую эталон узнал
+         «одной стороной», книга не режет: эталон главнее.
+    Возвращает новый вердикт или None."""
+    if not verdict.ok or not verdict.home or not verdict.away:
+        return None
+    got = None
+    if reference is not None and start_kyiv is not None:
+        got = reference.confirm(leagues.with_category(verdict.home, league_category),
+                                leagues.with_category(verdict.away, league_category),
+                                start_kyiv)
+        if got is not None and got.how in ("пара", MARKS_HOW):                # 1
+            return None
+        cut = trim_by_reference([(verdict.home, verdict.away)], reference,   # 2
+                                start_kyiv, league_category, agree=got, stop=stop)
+        if cut is not None:
+            home, away, _got, mark = cut
+            program.extra[TRIMMED] = mark
+            return live.Verdict(True, "", live_marker=verdict.live_marker,
+                                home=home, away=away)
+    if got is None:                                                           # 3
+        by_book = trim_by_book(verdict.home, verdict.away,
+                               known_trims() if known is None else known, langs)
+        if by_book is not None:
+            home, away, mark = by_book
+            program.extra[TRIMMED] = mark
+            return live.Verdict(True, "", live_marker=verdict.live_marker,
+                                home=home, away=away)
+    return None
+
+
 def title_over_pair(program: Program, verdict: live.Verdict,
                     reference: Reference | None, start_kyiv: datetime | None,
                     league_category: str = ""):
@@ -231,7 +423,7 @@ def title_over_pair(program: Program, verdict: live.Verdict,
 
 def ask_reference(program: Program, verdict: live.Verdict,
                   reference: Reference | None, start_kyiv: datetime | None,
-                  league_category: str = ""):
+                  league_category: str = "", stop=None):
     """Правило (в): строку, которую отсев не взял (`verdict`), спрашиваем у
     эталона. Пару дают все читатели (`live.split_candidates`), и пара
     строки — догадка, которую эталон подтвердил как эфир
@@ -275,6 +467,21 @@ def ask_reference(program: Program, verdict: live.Verdict,
             confirmed.append((home, away, got))
             if got.how == "пара":
                 break                      # лучше не бывает
+    # книга 133: целиком не сошлась ни одна догадка — пробуем срезать лишние
+    # слова снаружи пары (догадки из одного описания не режем: там свободный
+    # текст). Строка, которую эталон узнал «одной стороной», обязана дать
+    # срезом тот же матч (О4)
+    if not any(got.how in ("пара", MARKS_HOW) for _h, _a, got in confirmed):
+        cut = trim_by_reference(
+            [pair for pair in candidates if pair not in only_described],
+            reference, start_kyiv, league_category,
+            agree=confirmed[0][2] if confirmed else None, stop=stop)
+        if cut is not None:
+            home, away, got, mark = cut
+            program.extra[TRIMMED] = mark
+            program.extra["live_guess"] = True
+            return (live.Verdict(True, "", live_marker=verdict.live_marker or REFERENCE_MARKER,
+                                 home=home, away=away), got)
     if not confirmed:
         return None
     # целая пара главнее половины; среди равных — первая догадка (сорт устойчив)
@@ -333,8 +540,9 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         # угаданный (`live_guess`) — его проверят те же фильтры повторов,
         # что и прочие угадайки. Слово записи, студию и стоп-слово эталон
         # не оспаривает: это сайт сказал прямо
-        rescued = ask_reference(program, verdict, reference, row.start_kyiv,
-                                row.league_category)
+        rescued = ask_reference(
+            program, verdict, reference, row.start_kyiv, row.league_category,
+            stop=lambda words: markers.found(markers.stop_title, words))
         if rescued is None:
             row.reason = verdict.reason
             return row
@@ -351,6 +559,15 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         if better is not None:
             verdict = better[0]
             row.home, row.away = verdict.home, verdict.away
+        else:
+            # книги 133 и 136: к паре снаружи прилипли лишние слова — срез
+            # по эталону, а если эталон пару не знает вовсе — по книге знаний
+            cut = trim_over_pair(
+                program, verdict, reference, row.start_kyiv, row.league_category,
+                langs, stop=lambda words: markers.found(markers.stop_title, words))
+            if cut is not None:
+                verdict = cut
+                row.home, row.away = verdict.home, verdict.away
     rescued = confirmed is not None        # эфир строке дал эталон, не сайт
     # книга 095 (#9541): сторона пары — имя своего канала («Sport 2 - Program
     # Sportiv» у ipko) — заставка канала, а не матч: ни на витрину, ни в очередь

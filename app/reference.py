@@ -219,6 +219,30 @@ class Reference:
     def __len__(self) -> int:
         return len(self._entries)
 
+    def may_know(self, home: str, away: str) -> bool:
+        """Книга 133: стоит ли пробовать срезы слов у этой пары. Да, если
+        хоть одно слово хозяев и хоть одно слово гостей есть среди слов
+        матчей эталона (в любом порядке сторон). Передача не про спорт
+        («Kuchyně - Vaříme s láskou») отсеивается одним поиском по словам, а
+        не десятками вопросов `confirm`."""
+        # и слова по одному: «ligová fáze Finsko» целиком страной не
+        # читается, а слово «Finsko» само — Финляндия (чтения имён стран)
+        def words_of(side: str) -> frozenset:
+            out = set(_words(side, self._cache))
+            for word in side.split():
+                out |= _words(word, self._cache)
+            return frozenset(out)
+
+        hw, aw = words_of(home), words_of(away)
+        if not hw or not aw:
+            return False
+
+        def hit(words, index) -> bool:
+            return any(word in index for word in words)
+
+        return (hit(hw, self._home) and hit(aw, self._away)) \
+            or (hit(hw, self._away) and hit(aw, self._home))
+
     def knows_team(self, name: str) -> bool:
         """Эталон знает такую команду (в любой день окна): одно из чтений
         имени совпало с чтением команды эталона — английским или местным.
