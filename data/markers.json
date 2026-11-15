@@ -2149,6 +2149,47 @@
   "Porto": [
    "porto",
    "oporto"
+  ],
+  "French Open": [
+   "roland garros",
+   "roland-garros",
+   "ролан гаррос",
+   "ролан-гаррос",
+   "ρολάν γκαρός"
+  ],
+  "Wimbledon": [
+   "wimbledon",
+   "уимблдон",
+   "уімблдон",
+   "вимблдон",
+   "γουίμπλεντον"
+  ],
+  "Australian Open": [
+   "australian open",
+   "open d'australie",
+   "abierto de australia",
+   "открытый чемпионат австралии"
+  ],
+  "US Open": [
+   "us open",
+   "u.s. open",
+   "открытый чемпионат сша"
+  ]
+ },
+ "tournament_events": {
+  "_": "Теннис: слова СОБЫТИЯ у турнира с двойным именем в эталоне («Finals - Turin»: событие «Finals», город «Turin») на языках наших сайтов, которых у эталона нет (книга 142, сбор 15.11.2026: sport1.maariv.co.il «גמר טורניר גמר סבב ה-WTA», programetv.ro «Tenis Atp: Turneul Campionilor», news.by «Теннис. WTA. Итоговый турнир»). Ключ — событие по-английски, как у flashscore. Слово события узнаёт турнир только вместе с названным туром (ATP или WTA): «Finals» без тура — ничей (`broadcast.key`, правило 3).",
+  "Finals": [
+   "טורניר גמר סבב",
+   "טורניר גמר הסבב",
+   "turneul campionilor",
+   "turneul campioanelor",
+   "итоговый турнир",
+   "підсумковий турнір",
+   "финалния турнир",
+   "finale de la wta",
+   "finale de l'atp",
+   "atp finale",
+   "wta finale"
   ]
  }
 }

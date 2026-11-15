@@ -156,6 +156,40 @@ def note_error(conn: sqlite3.Connection, alias: str, cls: str,
     return True
 
 
+#: книга 142: ключ настройки базы с городами теннисных турниров, выученными
+#: из эталона сборов ({город: {"tours": [...], "words": [...]}}, текст JSON)
+CITIES_SETTING = "tournament_cities"
+
+
+def learned_cities(conn: sqlite3.Connection) -> dict:
+    """Книга 142: города турниров, которые база уже выучила; пусто — {}."""
+    import json
+    row = conn.execute("SELECT value FROM settings WHERE key = ?", (CITIES_SETTING,)).fetchone()
+    try:
+        data = json.loads(row[0]) if row and row[0] else {}
+    except ValueError:
+        data = {}
+    return data if isinstance(data, dict) else {}
+
+
+def remember_cities(conn: sqlite3.Connection, fresh: dict | None) -> tuple[int, int]:
+    """Книга 142: дописать в базу города турниров (`broadcast.cities_of`
+    эталона сбора или раздел файла словаря). Только добавляет. Город,
+    который эталон показал однажды, остаётся в словаре насовсем: по нему
+    разбор узнаёт турнир, когда тот уже НЕ идёт, — и запись прошлогоднего
+    матча со значком эфира не принимает за трансляцию (`pipeline.
+    tournament_whole`, Т4). → (новых городов, всего городов)."""
+    import json
+    from . import broadcast
+    merged, new = broadcast.merge_cities(learned_cities(conn), fresh)
+    if merged != learned_cities(conn):
+        conn.execute("INSERT INTO settings (key, value) VALUES (?, ?) "
+                     "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+                     (CITIES_SETTING, json.dumps(merged, ensure_ascii=False)))
+        conn.commit()
+    return new, len(merged)
+
+
 #: книга 139: сколько команд помнит одна строка книги (для правила хватает
 #: двух; остальные — чтобы владелец видел, с кем слова встречались)
 SEEN_CAP = 12

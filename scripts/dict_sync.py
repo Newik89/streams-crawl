@@ -26,7 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app import db, dictionary, pipeline                    # noqa: E402
+from app import broadcast, db, dictionary, pipeline         # noqa: E402
 
 TARGET = ROOT / "data" / "dictionaries.json"
 
@@ -165,6 +165,13 @@ def export(conn, path: Path) -> dict[str, int]:
             data["dictionary_errors"].append(item)
     except Exception:
         pass
+    # книга 142: города теннисных турниров, выученные из эталона сборов
+    try:
+        cities = dictionary.learned_cities(conn)
+    except Exception:
+        cities = {}
+    if cities:
+        data[broadcast.LEARNED_KEY] = cities
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n",
                     encoding="utf-8")
     return {"команд": len(data["teams"]), "лиг": len(data["leagues"]),
@@ -209,6 +216,8 @@ def load(conn, path: Path) -> dict[str, int]:
         if item.get("seen_with"):             # книга 139
             dictionary.remember_beside(conn, item["alias"], item["class"],
                                        item.get("lang"), item["seen_with"])
+    if isinstance(data.get(broadcast.LEARNED_KEY), dict):     # книга 142
+        dictionary.remember_cities(conn, data[broadcast.LEARNED_KEY])
         added["ошибок в книге"] += 1
     conn.commit()
     for item in data.get("leagues", []):

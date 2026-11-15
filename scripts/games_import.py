@@ -349,6 +349,16 @@ def main() -> int:
         except Exception as beda:             # noqa: BLE001 — см. выше
             print(f"книга знаний: ошибка {type(beda).__name__}: {beda} — "
                   "срезы этого сбора в книгу не записаны")
+        # книга 142: города теннисных турниров из эталона сбора — в словарь
+        # насовсем; на GitHub их возит выгрузка словаря. Ошибка заливку не роняет
+        try:
+            from app import broadcast
+            новых, всего = dictionary.remember_cities(conn, broadcast.cities_of(
+                _json.loads(path.read_text(encoding="utf-8")).get("эталон")))
+            if новых:
+                print(f"города теннисных турниров: новых {новых}, всего в словаре {всего}")
+        except Exception as beda:             # noqa: BLE001 — см. выше
+            print(f"города теннисных турниров: ошибка {type(beda).__name__}: {beda}")
         # книга 135 (К5): сайт стоит в плане обхода, а в базе выключен —
         # сторож убирает его из плана и пишет владельцу. Ошибка заливку не
         # роняет — игры уже в базе

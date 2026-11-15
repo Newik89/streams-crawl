@@ -146,9 +146,9 @@ p = строка("ATP FINALS 2026", (2026, 11, 18, 15, 0), эфир="live")
 проверка("Т4: эталон беден теннисом — о турнире судить нечем, слову сайта верим",
          разбор(строка("ATP Shanghai", (2026, 11, 16, 15, 0), эфир="live broadcast"), эталон=бедный)[:3],
          (True, "ATP Shanghai", broadcast.SESSION))
-проверка("Т4: турнир не узнан (город неизвестен) — слову сайта верим",
-         разбор(строка("TENIS ATP: STOCKHOLM OPEN", (2026, 11, 16, 15, 0), эфир="live"))[:3],
-         (True, "TENIS ATP: STOCKHOLM OPEN", broadcast.SESSION))
+проверка("Т4: турнир не узнан (города нет ни в словаре, ни в эталоне) — слову сайта верим",
+         разбор(строка("TENIS ATP: ZELENOGORSK OPEN", (2026, 11, 16, 15, 0), эфир="live"))[:3],
+         (True, "TENIS ATP: ZELENOGORSK OPEN", broadcast.SESSION))
 p = строка("Tenis ATP Torino 2026", (2026, 11, 16, 15, 0), канал="SuperSport 4")
 проверка("Т5: сайт эфир не помечает, а в эталоне матч турнира начинается рядом — эфир угадан, подтвердил эталон",
          (разбор(p, угадайка=True), p.extra.get(pipeline.TOURNAMENT), p.extra.get("live_guess")),
