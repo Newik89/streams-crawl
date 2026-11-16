@@ -161,6 +161,27 @@
    "ro": ["golf"], "sh": ["golf", "golfa"], "sr": ["голф", "голфа"], "sl": ["golf", "golfa"], "bg": ["голф"],
    "mk": ["голф"], "ru": ["гольф", "гольфа", "гольфу", "гольфе"], "uk": ["гольф", "гольфу"], "be": ["гольф"],
    "kk": ["гольф"], "el": ["γκολφ"], "tr": ["golf"], "sq": ["golf"], "he": ["גולף"], "ar": ["الجولف", "الغولف", "جولف"]
+  },
+  "Wheelchair sports": {
+   "_": ["Книга 150 (слово владельца 16.11.2026: теннис на колясках — в Other Sport, назвать по-английски). Слово коляски на языке сайта; вид для вкладки программа называет сама: «Wheelchair tennis», «Wheelchair basketball» (app/sport.py, правило 1б). У языков со слитными словами (немецкий, нидерландский, скандинавские, финский) слитные формы перечислены отдельно: слово ищется целиком."],
+   "en": ["wheelchair"], "de": ["rollstuhl", "rollstuhltennis", "rollstuhlbasketball", "rollstuhlrugby"],
+   "fr": ["en fauteuil", "fauteuil roulant", "tennis-fauteuil", "tennis fauteuil", "basket fauteuil", "handibasket"],
+   "it": ["in carrozzina", "carrozzina"], "es": ["silla de ruedas", "en silla de ruedas"],
+   "pt": ["cadeira de rodas", "cadeiras de rodas"], "nl": ["rolstoel", "rolstoeltennis", "rolstoelbasketbal", "rolstoelrugby"],
+   "da": ["kørestol", "kørestolstennis", "kørestolsbasket", "kørestolsrugby"],
+   "no": ["rullestol", "rullestoltennis", "rullestolbasket", "rullestolrugby"],
+   "sv": ["rullstol", "rullstolstennis", "rullstolsbasket", "rullstolsrugby"],
+   "fi": ["pyörätuoli", "pyörätuolitennis", "pyörätuolikoripallo", "pyörätuolirugby"],
+   "et": ["ratastool", "ratastooli", "ratastoolitennis", "ratastoolikorvpall"], "lv": ["ratiņkrēslu", "ratiņkrēslos"],
+   "lt": ["vežimėlių", "vežimėliuose"], "pl": ["na wózkach", "na wózku"], "cs": ["na vozíku", "na vozíčku", "vozíčkářů"],
+   "sk": ["na vozíku", "na vozíčku", "vozičkárov"], "hu": ["kerekesszékes", "kerekesszékes tenisz", "kerekesszékes kosárlabda"],
+   "ro": ["scaun rulant", "scaune rulante", "în scaun rulant", "in scaun rulant"], "sh": ["u kolicima", "u invalidskim kolicima"],
+   "sr": ["у колицима", "у инвалидским колицима"], "sl": ["na vozičkih", "na invalidskih vozičkih"],
+   "bg": ["на колички", "в инвалидни колички", "инвалидни колички"], "mk": ["во количка", "во инвалидска количка"],
+   "ru": ["на колясках", "на коляске", "колясочников"], "uk": ["на візках", "на візку"], "be": ["на калясках"],
+   "kk": ["арбадағы", "мүгедектер арбасы"], "el": ["με αμαξίδιο", "με αμαξιδιο", "αμαξίδιο", "αμαξιδιο"],
+   "tr": ["tekerlekli sandalye"], "sq": ["me karrocë", "me karroce", "karrige me rrota"],
+   "he": ["כיסאות גלגלים", "בכיסאות גלגלים", "כיסא גלגלים"], "ar": ["الكراسي المتحركة", "كراسي متحركة"]
   }
  }
 }

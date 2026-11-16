@@ -54,6 +54,11 @@ def is_title(sport: str, home: str, away: str) -> bool:
     там трансляция турнира без пары — обычная строка телепрограммы."""
     if (sport or "") != "T":
         return False
+    # книга 149: строка со служебной второй стороной — трансляция турнира по
+    # определению, какие бы слова ни стояли в названии («Billie Jean King
+    # Cup» слов тура не несёт)
+    if (away or "") == SESSION and (home or "").strip():
+        return True
     return _side(home) or _side(away)
 
 
@@ -217,6 +222,9 @@ def tournaments(reference: list | None = None, learned: dict | None = None) -> d
                 «Турин») идёт в "cities" (книга 138);
       "tours"   {город: {туры}} — только турниры эталона;
       "starts"  {(тур, город): [начала матчей по Киеву]} — книга 138;
+      "leagues" {(тур, город): название турнира у эталона целиком} — книга
+                148: подпись лиги сведённой строки; одиночный разряд
+                («SINGLES») главнее парного;
       "matches" сколько теннисных матчей в эталоне всего."""
     dict_cities, dict_events = _dict_cities(), _dict_events()
     words: dict[str, set[str]] = {}
@@ -250,6 +258,7 @@ def tournaments(reference: list | None = None, learned: dict | None = None) -> d
         add(city, [city, *(rec.get("words") or [])])
     tours: dict[str, set[str]] = {}
     starts: dict[tuple[str, str], list[datetime]] = {}
+    ref_leagues: dict[tuple[str, str], str] = {}
     matches = 0
     for ref in reference or []:                            # эталон этого сбора
         if not isinstance(ref, dict) or ref.get("sport") != "T":
@@ -259,6 +268,11 @@ def tournaments(reference: list | None = None, learned: dict | None = None) -> d
         if not city:
             continue
         tours.setdefault(city, set()).add(tour)
+        league = (ref.get("league") or "").strip()
+        if (tour, city) not in ref_leagues or (
+                "SINGLES" in league.upper()
+                and "SINGLES" not in ref_leagues[(tour, city)].upper()):
+            ref_leagues[(tour, city)] = league
         try:
             starts.setdefault((tour, city), []).append(
                 datetime.fromisoformat(ref.get("start_kyiv") or ""))
@@ -267,7 +281,8 @@ def tournaments(reference: list | None = None, learned: dict | None = None) -> d
         add(city, [city] + [_city_of(x or "")[1] for x in (ref.get("leagues") or {}).values()])
     return {"cities": {c: _pattern(w) for c, w in words.items() if w},
             "events": {c: _pattern(w) for c, w in events.items() if w},
-            "tours": tours, "starts": starts, "matches": matches}
+            "tours": tours, "starts": starts, "leagues": ref_leagues,
+            "matches": matches}
 
 
 def city(text: str, known: dict) -> str:
@@ -461,3 +476,59 @@ def stage(text: str) -> str:
         if pattern and pattern.search(text):
             return name
     return ""
+
+
+def show_stage(name: str, title: str, known: dict | None) -> str:
+    """Книга 160: стадия ПОКАЗА сведённой трансляции `name` («ATP Finals
+    Turin») по заголовку сайта `title`.
+
+    Имя турнира само бывает словом стадии: «ATP Finals» читается как
+    «Final». Раньше такую стадию не показывали никогда — и в день настоящего
+    финала тоже («ATP FINALS 2026 - FINAL»). Правила:
+      1. турнир с двойным именем эталона («Finals - Turin») — из заголовка
+         вынимается ОДНО слово события этого турнира («Finals», «ATP
+         Finale», «Turneul Campionilor», «итоговый турнир» — `known["events"]`),
+         стадия ищется в остатке: «ATP FINALS 2026 - FINAL» → «Final»,
+         «Nitto ATP Finals» → пусто;
+      2. слова события в заголовке не нашлось, а стадия заголовка та же,
+         что даёт само имя турнира, — это имя турнира в незнакомом
+         написании, стадии нет;
+      3. иначе — стадия заголовка как есть (`stage`)."""
+    plain = greek_plain(title or "")
+    events = None
+    for city, pattern in ((known or {}).get("events") or {}).items():
+        if pattern and any(f"{tour} {city}".replace(" - ", " ") == name
+                           for tour in ("ATP", "WTA", "Challenger")):
+            events = pattern
+            break
+    if events is not None:
+        rest, cut = events.subn(" ", plain, count=1)                      # 1
+        if cut:
+            return stage(rest)
+    found = stage(plain)
+    if found and found == stage(name):                                    # 2
+        return ""
+    return found                                                          # 3
+
+
+# ── книга 149: следующая игра командной встречи ──────────────────────────────
+# Командный турнир (Кубок Билли Джин Кинг, Кубок Дэвиса) — встреча сборных из
+# нескольких игр, часто на два дня. Сайт ставит в сетку каждую игру отдельной
+# передачей с той же парой стран и пометкой прямого эфира. Эталон знает
+# встречу одной записью — началом первого дня, и следующие передачи снимались
+# как «матч уже сыгран» либо вставали второй строкой той же пары. Слово
+# владельца 16.11: «если там тоже написана пометка Live — они показывают
+# следующую игру: просто строкой с названием турнира на то время, которое
+# указано на сайте». Сами правила — `scripts/parse_live.py`, `next_tie_games`.
+
+#: «TEAMS - WOMEN: Billie Jean King Cup - World Group (World) - Play Offs»:
+#: турнир — между двоеточием и первым « - »
+_TEAM_LEAGUE = re.compile(r"^\s*TEAMS\b[^:]*:\s*(.+?)\s*(?:\s-\s.*)?$")
+
+
+def team_tournament(league: str) -> str:
+    """Книга 149: название командного теннисного турнира из названия лиги
+    эталона («TEAMS - WOMEN: Billie Jean King Cup - World Group…» → «Billie
+    Jean King Cup»). Не командный турнир — пусто."""
+    m = _TEAM_LEAGUE.match(league or "")
+    return m.group(1).strip() if m else ""

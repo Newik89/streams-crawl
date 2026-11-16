@@ -890,6 +890,161 @@ def guessed(domain: str, result) -> bool:
         or _bare_domain(domain) in REPEAT_GUESS_DOMAINS
 
 
+#: книга 147: с такого числа строк судим, что пометка сайта значит «сейчас в
+#: эфире», а не «прямая трансляция» (`now_flag_sites`)
+NOW_FLAG_MIN = 3
+#: книга 147: под этим ключом в `program.extra` остаётся снятая пометка сайта
+NOW_FLAG = "сейчас_в_эфире"
+
+
+def now_flag_sites(classified: list, crawl_day) -> set[str]:
+    """Книга 147: сайты, у которых пометка эфира значит «идёт сейчас».
+
+    primaplay.ro пишет «Vezi LIVE» у передачи, которая идёт в минуту обхода
+    (ссылка «смотреть канал»), а не у прямых трансляций: 16.11 в 07:30 так
+    помечен утренний повтор «TENIS ATP: TURNEUL CAMPIONILOR», и он прошёл на
+    витрину трансляцией турнира, а настоящие сессии 12:30 и 21:30 стояли без
+    пометки. Список таких сайтов руками не ведём — сайт выдаёт себя сам.
+    `classified` — [(домен, [строки `pipeline.Row` всех его страниц])],
+    `crawl_day` — день обхода (дата). Правила:
+      1. сайты из `REPEAT_GUESS_DOMAINS` не смотрим: им и так не верят;
+      2. помечено эфиром словом САЙТА (не эталона) не меньше `NOW_FLAG_MIN`
+         строк;
+      3. ни одна помеченная строка не начинается позже дня обхода: честный
+         сайт помечает и завтрашние трансляции;
+      4. при этом на дни после дня обхода у сайта есть не меньше
+         `NOW_FLAG_MIN` матчей БЕЗ пометки, которые эталон подтвердил эфиром
+         (`by_reference`): будущие прямые эфиры у сайта есть, а пометки на
+         них нет.
+    Все четыре — пометка сайта значит «сейчас в эфире»."""
+    marked: dict[str, int] = {}
+    marked_later: dict[str, int] = {}
+    unmarked_later: dict[str, int] = {}
+    for domain, rows in classified:
+        bare = _bare_domain(domain)
+        if bare in REPEAT_GUESS_DOMAINS:                                  # 1
+            continue
+        for r in rows:
+            if r.start_kyiv is None:
+                continue
+            later = r.start_kyiv.date() > crawl_day
+            marker = getattr(r, "live_marker", "") or ""
+            if marker and marker != pipeline.REFERENCE_MARKER:
+                marked[bare] = marked.get(bare, 0) + 1                    # 2
+                if later:
+                    marked_later[bare] = marked_later.get(bare, 0) + 1    # 3
+            elif later and r.ok and r.by_reference:
+                unmarked_later[bare] = unmarked_later.get(bare, 0) + 1    # 4
+    return {bare for bare, n in marked.items()
+            if n >= NOW_FLAG_MIN and not marked_later.get(bare)
+            and unmarked_later.get(bare, 0) >= NOW_FLAG_MIN}
+
+
+def unmark_now_flag(programs: list, extras: list[dict]) -> None:
+    """Книга 147: снять пометку «сейчас в эфире» со строк сайта перед
+    повторным разбором. `extras` — `program.extra` каждой строки, как он был
+    ДО первого разбора (разбор дописывает туда своё: «турнир», «live_guess»).
+    Снятая пометка остаётся под ключом `NOW_FLAG` — видно, что она была."""
+    from app.parsers import SITE_FLAG, SITE_LIVE
+    for program, extra in zip(programs, extras):
+        program.extra = dict(extra)
+        if program.extra.get(SITE_FLAG) == SITE_LIVE:
+            program.extra.pop(SITE_FLAG)
+        if program.live_raw:
+            program.extra[NOW_FLAG] = program.live_raw
+            program.live_raw = ""
+
+
+#: книга 149: насколько показ встречи сборных может отстоять от её начала в
+#: эталоне (встреча идёт два дня, а день в эталоне бывает сдвинут на сутки)
+TIE_SPAN = timedelta(days=3)
+#: книга 149: ключ пометки «следующая игра встречи» в `extra[TOURNAMENT]`
+TIE_KEY = "встреча"
+
+
+def _tie_of(r, ties: list) -> dict | None:
+    """Книга 149: командная встреча эталона, которую показывает строка.
+    Страны строки (те стороны, что нашлись в справочнике стран) должны быть
+    среди двух стран встречи, начало встречи — не дальше `TIE_SPAN` от
+    показа. Подошла ровно одна встреча — она; иначе None."""
+    mine = {c for c in (names.country_of(r.home), names.country_of(r.away)) if c}
+    if not mine or r.start_kyiv is None:
+        return None
+    start = r.start_kyiv.replace(tzinfo=None)
+    fit = [tie for tie in ties
+           if mine <= tie["страны"] and abs(start - tie["начало"]) <= TIE_SPAN]
+    return fit[0] if len(fit) == 1 else None
+
+
+def next_tie_games(found: list, reference_full: list) -> int:
+    """Книга 149: следующая игра командной встречи — строкой турнира.
+
+    Командный теннисный турнир (Кубок Билли Джин Кинг, Кубок Дэвиса) —
+    встреча сборных из нескольких игр, часто на два дня. Сайт ставит каждую
+    игру отдельной передачей с той же парой стран и пометкой эфира; эталон
+    знает встречу одной записью — началом первого дня. Следующие передачи
+    снимались как «матч уже сыгран» (teleman.pl 21.11: три прямых эфира
+    Польша — Швеция) или вставали второй строкой той же пары (srf.ch:
+    Thailand — Schweiz 07:00 и 11:05). Слово владельца 16.11: «если там тоже
+    написана пометка Live — они показывают следующую игру: просто строкой с
+    названием турнира на то время, которое указано на сайте». Правила:
+      1. только теннис, строка с парой, хоть одна сторона — страна из
+         справочника (`names.country_of`): в теннисе страны играют только
+         командные турниры;
+      2. встреча узнаётся по эталону (`_tie_of`): запись командного турнира
+         (`broadcast.team_tournament`) с теми же странами. Не узнана —
+         строка не трогается;
+      3. начало встречи — самый ранний показ этой встречи у всех сайтов;
+      4. показ не позже окна склейки (`merge.WINDOW_MINUTES`) от начала —
+         сама встреча: строка с парой остаётся как была;
+      5. показ позже, и сайт САМ пометил его прямым эфиром (`honest_live`) —
+         следующая игра встречи: строка становится трансляцией турнира
+         (название турнира из эталона и служебная сторона
+         `broadcast.SESSION`), лига — лига эталона, время — как у сайта;
+      6. показ позже без честной пометки сайта не трогаем: его судят
+         фильтры повторов, как раньше.
+    Меняет строки `found` на месте, возвращает число строк по правилу 5."""
+    ties = []
+    for ref in reference_full or []:
+        name = broadcast.team_tournament(ref.get("league") or "") \
+            if ref.get("sport") == "T" else ""
+        countries = {c for c in (names.country_of(ref.get("home") or ""),
+                                 names.country_of(ref.get("away") or "")) if c}
+        if not name or len(countries) != 2:
+            continue
+        try:
+            start = datetime.fromisoformat(ref.get("start_kyiv") or "")
+        except ValueError:
+            continue
+        ties.append({"турнир": name, "лига": ref.get("league") or "",
+                     "страны": countries, "начало": start,
+                     "ключ": ref.get("fs_id") or f"{sorted(countries)}"})
+    if not ties:
+        return 0
+    shows: dict[str, list] = {}
+    for domain, r in found:
+        if r.sport != "T" or not r.home or not r.away \
+                or r.away == broadcast.SESSION:                           # 1
+            continue
+        tie = _tie_of(r, ties)                                            # 2
+        if tie is not None:
+            shows.setdefault(tie["ключ"], []).append((domain, r, tie))
+    turned = 0
+    for rows in shows.values():
+        first = min(r.start_kyiv for _d, r, _t in rows)                   # 3
+        for domain, r, tie in rows:
+            if r.start_kyiv - first <= timedelta(minutes=merge.WINDOW_MINUTES):
+                continue                                                  # 4
+            if not honest_live(domain, r):
+                continue                                                  # 6
+            r.home, r.away = tie["турнир"], broadcast.SESSION             # 5
+            r.league = tie["лига"]
+            r.program.extra[pipeline.TOURNAMENT] = {TIE_KEY: tie["ключ"],
+                                                    "эталон": True}
+            turned += 1
+    return turned
+
+
 def show_key(domain: str, r) -> tuple:
     """Пара у сайта для поиска позднего показа: сайт, вид спорта и команды
     в любом порядке. Вид спорта — чтобы футбольное дерби не сделало
@@ -1204,12 +1359,37 @@ def main() -> int:
     # слова, по чему): [раз, пример]}}; едет в итог сбора, сервер кладёт
     # подтверждённое эталоном в книгу знаний
     срезы: dict[str, dict] = {}
-    for domain, programs in pages:
-        for r in pipeline.run(programs, markers, sports, league_sports,
-                              pair_sports, judge, domain=domain,
-                              # книга 138, Т5: сайт эфир не помечает вовсе
-                              guess_site=_bare_domain(domain)
-                              in REPEAT_GUESS_DOMAINS):
+    def _classify(domain: str, programs: list, guess_site: bool) -> list:
+        return pipeline.run(programs, markers, sports, league_sports,
+                            pair_sports, judge, domain=domain,
+                            # книга 138, Т5: сайт эфир не помечает вовсе
+                            guess_site=guess_site)
+
+    # книга 147: `program.extra` до разбора — разбор дописывает туда своё, а
+    # страницы сайта с пометкой «сейчас в эфире» разбираются второй раз
+    до_разбора = [[dict(p.extra or {}) for p in programs] for _d, programs in pages]
+    разбор = [(domain, programs,
+               _classify(domain, programs,
+                         _bare_domain(domain) in REPEAT_GUESS_DOMAINS))
+              for domain, programs in pages]
+    try:
+        день_обхода = _date.fromisoformat(str(report_data.get("начат_киев") or "")[:10])
+    except ValueError:
+        день_обхода = сегодня_киев
+    сейчас_в_эфире = now_flag_sites([(d, rs) for d, _p, rs in разбор], день_обхода)
+    if сейчас_в_эфире:
+        снято_пометок = 0
+        for i, (domain, programs, _old) in enumerate(разбор):
+            if _bare_domain(domain) not in сейчас_в_эфире:
+                continue
+            unmark_now_flag(programs, до_разбора[i])
+            снято_пометок += sum(1 for p in programs if (p.extra or {}).get(NOW_FLAG))
+            разбор[i] = (domain, programs, _classify(domain, programs, True))
+        print("пометка эфира только у передач дня обхода — это «сейчас в эфире», "
+              f"а не прямая трансляция: {', '.join(sorted(сейчас_в_эфире))} "
+              f"(пометок снято {снято_пометок}; эфир этих сайтов подтверждает эталон)")
+    for domain, _programs, строки_сайта in разбор:
+        for r in строки_сайта:
             if (r.program.extra or {}).get(pipeline.TITLE_PAIR):
                 сайт = _bare_domain(domain)
                 из_заголовка[сайт] = из_заголовка.get(сайт, 0) + 1
@@ -1472,6 +1652,13 @@ def main() -> int:
     if unsolved:
         print(f"не разобрано — уйдёт в модерацию: {len(unsolved)} строк(и)")
 
+
+    # книга 149: следующая игра командной встречи (Кубок Билли Джин Кинг,
+    # Кубок Дэвиса) с честной пометкой эфира — строкой турнира на своё время
+    следующих = next_tie_games(found, reference_full)
+    if следующих:
+        print(f"командные встречи в теннисе: следующих игр встречи строкой "
+              f"турнира — {следующих}")
 
     # Топовая лига от «угадаек» без подтверждения эталоном — запись.
     # Повторы АПЛ/ЛаЛиги/ЛЧ крутят днём все европейские пакеты (Spurs -
@@ -1769,14 +1956,20 @@ def main() -> int:
     for domain, r in found:
         if r.sport != "T" or not broadcast.is_title("T", r.home, r.away):
             continue
+        if TIE_KEY in ((r.program.extra or {}).get(pipeline.TOURNAMENT) or {}):
+            continue        # книга 149: следующая игра встречи уже названа
         заголовок = " ".join(x for x in (r.program.title, r.program.league_raw,
                                          r.program.sport_raw) if x)
+        ключ = broadcast.key(заголовок, known_tournaments)
         имя = broadcast.tournament(заголовок, known_tournaments)
         if имя:
             r.home, r.away = имя, broadcast.SESSION
             # книга 146: у сведённой строки название турнира — само имя; лига
-            # первого по времени сайта («tenis Tenis Ziua 6») ей не подпись
-            r.league = ""
+            # первого по времени сайта («tenis Tenis Ziua 6») ей не подпись.
+            # Книга 148: подпись — название турнира у эталона, одно на все
+            # дни турнира (и на те, на которые сетки в эталоне ещё нет);
+            # турнира в эталоне нет — пусто
+            r.league = (known_tournaments.get("leagues") or {}).get(ключ, "")
             сведено += 1
         else:
             не_узнаны.add((domain, (r.program.title or "")[:70]))

@@ -157,6 +157,8 @@ class SaveStats:
     repeats: int = 0    # guess-игры, чья пара уже лежала в базе раньше
     time_off: int = 0   # строки, прилипшие к игре flashscore вопреки времени сайта
     titles_gone: int = 0  # отметки заголовков турниров, которых сайт больше не показывает
+    #: книга 148: двойники сведённой трансляции турнира, влитые в неё
+    titles_folded: int = 0
     gone: int = 0       # отметки каналов, погашенные этим сбором (`app/miss.py`)
     #: отметки игр-сирот — игр, которых в файле нет вовсе (сайт перенёс матч
     #: на другой день, #5104); те же правила `app/miss.py`
@@ -698,6 +700,85 @@ def _retract_multicast(conn: sqlite3.Connection, rows: set[tuple[str, str, str]]
     return gone
 
 
+def _title_rows(conn: sqlite3.Connection, start: datetime, skip: set[int]) -> list:
+    """Книга 148: трансляции турнира без игроков рядом с моментом `start`
+    (±CHANNELS_WINDOW_MINUTES): теннис, без метки эталона, `broadcast.is_title`.
+    `skip` — игры, которые не предлагать."""
+    lo = _iso(start - timedelta(minutes=CHANNELS_WINDOW_MINUTES))
+    hi = _iso(start + timedelta(minutes=CHANNELS_WINDOW_MINUTES))
+    return [r for r in conn.execute(
+        "SELECT id, sport, team_home_auto, team_away_auto, start_kyiv, flags "
+        "FROM events WHERE sport = 'T' AND (flags IS NULL OR flags NOT LIKE 'fs:%') "
+        "AND replace(start_kyiv, 'T', ' ') BETWEEN ? AND ?", (lo, hi)).fetchall()
+        if r["id"] not in skip and broadcast.is_title(
+            "T", r["team_home_auto"] or "", r["team_away_auto"] or "")]
+
+
+def _title_event(conn: sqlite3.Connection, game: dict,
+                 srcs: dict[str, sqlite3.Row]) -> sqlite3.Row | None:
+    """Книга 148: прежняя строка турнира для сведённой трансляции файла.
+
+    Точечный обход одного сайта приносит сведённую трансляцию («ATP Finals
+    Turin») с ОДНОЙ отметкой. По имени прежняя строка не находится (она ещё
+    «ATP — Nitto ATP Finals»), по каналам — тоже (`_pick_by_marks` ждёт двух
+    общих отметок), и заливка заводила вторую строку; следующий полный сбор
+    по имени садился уже в неё, а большая прежняя оставалась двойником (сбор
+    16.11 утром: #10874 рядом с #10473). Правила:
+      1. игра файла — сведённая трансляция (вторая сторона `broadcast.SESSION`);
+      2. кандидат — трансляция турнира без игроков в ту же минуту (`_title_rows`);
+      3. ВСЕ отметки (сайт, канал) игры файла у кандидата уже есть: тот же
+         сайт на том же канале в ту же минуту показывает один турнир;
+      4. из нескольких — у кого отметок больше."""
+    if game.get("away") != broadcast.SESSION:                                # 1
+        return None
+    pairs = _entry_pairs(conn, game, srcs)
+    if not pairs:
+        return None
+    best, best_marks = None, 0
+    for row in _title_rows(conn, _parse_dt(game["start_kyiv"]), set()):      # 2
+        marks = {(r[0], r[1]) for r in conn.execute(
+            "SELECT source_id, channel_id FROM event_channels WHERE event_id = ?",
+            (row["id"],))}
+        if pairs <= marks and len(marks) > best_marks:                       # 3, 4
+            best, best_marks = row, len(marks)
+    return best
+
+
+def _fold_title_twins(conn: sqlite3.Connection, sessions: dict[int, str],
+                      event_seen: dict[int, set[int]]) -> int:
+    """Книга 148: двойники сведённой трансляции турнира вливаются в неё.
+
+    `sessions` — {игра базы: начало} сведённых трансляций этого файла,
+    `event_seen` — каналы, которые файл подтвердил у каждой игры. Правила:
+      1. двойник — ДРУГАЯ трансляция турнира без игроков в ту же минуту
+         (`_title_rows`), которой в этом файле нет;
+      2. у двойника есть живые отметки, и каждый их канал файл подтвердил у
+         сведённой трансляции: один канал в одну минуту показывает один
+         турнир, значит, это та же трансляция под старым заголовком
+         («ATP Finals — parovi», «ATP — Nitto ATP Finals»);
+      3. отметки двойника переводятся в сведённую трансляцию (у неё такая
+         уже есть — лишняя копия стирается), пустой двойник убирается —
+         как тень перенесённой игры (`_fold_ghost`).
+    Возвращает число влитых двойников."""
+    folded = 0
+    for main_id, start in sessions.items():
+        seen = event_seen.get(main_id) or set()
+        if not seen:
+            continue
+        for twin in _title_rows(conn, _parse_dt(start), set(event_seen)):   # 1
+            live = {r[0] for r in conn.execute(
+                "SELECT channel_id FROM event_channels WHERE event_id = ? "
+                "AND miss_count < ?", (twin["id"], MISS_LIMIT))}
+            if not live or not live <= seen:                                 # 2
+                continue
+            conn.execute("UPDATE OR IGNORE event_channels SET event_id = ? "
+                         "WHERE event_id = ?", (main_id, twin["id"]))        # 3
+            conn.execute("DELETE FROM event_channels WHERE event_id = ?", (twin["id"],))
+            conn.execute("DELETE FROM events WHERE id = ?", (twin["id"],))
+            folded += 1
+    return folded
+
+
 def tournament_renamed(game: dict, found) -> bool:
     """Книга 145: сведённое имя трансляции турнира вытесняет сырой заголовок.
 
@@ -769,6 +850,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     # витрины (владелец 12.09: «затирает каналы, которые раньше были»)
     event_seen: dict[int, set[int]] = {}
     event_start: dict[int, str] = {}
+    #: книга 148: сведённые трансляции турниров этого файла {игра базы: начало}
+    сведённые: dict[int, str] = {}
     srcs = _sources_by_domain(conn)
     team_ids, league_ids = _team_ids(conn), _league_ids(conn)
 
@@ -798,6 +881,10 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                 # имя игры сменилось (словарь, большинство строк — 094), а
                 # отметки каналов те же — это она, не двойня
                 found = _channels_event(conn, game, srcs)
+            if found is None:
+                # книга 148: сведённая трансляция турнира с одной отметкой
+                # (точечный обход) — в прежнюю строку турнира, а не второй
+                found = _title_event(conn, game, srcs)
             if found is None and add_only:
                 # дозабор (`app/redo.py`, Д7): запись склеили со старыми через
                 # «мост» — игру базы ищем и по их именам и времени («связи»)
@@ -888,7 +975,14 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             if tournament_renamed(game, found):                    # книга 145
                 sets["team_home_auto"] = game["home"]
                 sets["team_away_auto"] = game["away"]
-            if league and not league.upper().endswith(": FOOTBALL"):
+            if game.get("away") == broadcast.SESSION:
+                # книга 148: подпись сведённой трансляции — та, что в файле
+                # (название турнира у эталона либо пусто), а не лига сайта,
+                # с которой строка когда-то попала в базу («tenis Tenis Ziua
+                # 6» → чужой «ATP - SINGLES: Stockholm»)
+                sets["league_auto"] = league
+                sets["league_id"] = league_ids.get(league)
+            elif league and not league.upper().endswith(": FOOTBALL"):
                 sets["league_auto"] = league
                 if league_ids.get(league):
                     sets["league_id"] = league_ids[league]
@@ -975,6 +1069,8 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
         # подтверждённых у события полон
         event_start[event_id] = start_kyiv
         event_seen.setdefault(event_id, set()).update(seen_channel_ids)
+        if game.get("away") == broadcast.SESSION:
+            сведённые[event_id] = start_kyiv
         if ghost_id and ghost_id != event_id:
             stats.ghosts += int(_fold_ghost(conn, ghost_id, event_id, moved_pairs))
 
@@ -995,6 +1091,11 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
     # Дозабор (`add_only`) ничего не снимает — хвосты дочистил сам сбор
     if not add_only:
         stats.not_own_dropped += хозяева.дочистить(conn)
+
+    # книга 148: двойники сведённых трансляций — в них, ДО гашения: их
+    # отметки подтверждены этим же файлом. Дозабор только дописывает
+    if not add_only:
+        stats.titles_folded = _fold_title_twins(conn, сведённые, event_seen)
 
     # Канал, подтверждённый у игры хоть одним сайтом, не гаснет ни от
     # какого сайта; остальные отметки игры — по правилам `app/miss.py`
@@ -1200,6 +1301,9 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
             return None
 
     games: list[dict] = []
+    #: книга 160: что известно о турнирах без эталона (словарь и выученные
+    #: города) — для стадии показа; считается при первой сведённой строке
+    known_titles = None
     for row in conn.execute(
             "SELECT e.id, e.sport, e.league_auto, e.team_home_auto, "
             "e.team_away_auto, e.start_kyiv, e.grace_minutes, e.first_seen, "
@@ -1362,10 +1466,14 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                 # сведённая трансляция: вместо служебной второй стороны —
                 # стадия, если её назвал хоть один сайт (первая по отметкам)
                 # книга 138: стадия, которую даёт само имя турнира («ATP
-                # Finals» → «Final»), — не стадия показа: её не пишем
-                own = broadcast.stage(home_shown)
-                away_shown = next((s for s in map(broadcast.stage, live_titles)
-                                   if s and s != own), "")
+                # Finals» → «Final»), — не стадия показа: её не пишем.
+                # Книга 160: в день финала сайт пишет слово дважды («ATP
+                # FINALS 2026 - FINAL») — правила в `broadcast.show_stage`
+                if known_titles is None:
+                    known_titles = broadcast.tournaments(None)
+                away_shown = next(
+                    (s for s in (broadcast.show_stage(home_shown, t, known_titles)
+                                 for t in live_titles) if s), "")
         else:
             home_shown = show(row["home_canon"], row["team_home_auto"])
             away_shown = show(row["away_canon"], row["team_away_auto"])

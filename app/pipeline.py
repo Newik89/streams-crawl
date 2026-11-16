@@ -977,8 +977,11 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         program.extra.pop(TOURNAMENT, None)
         program.extra.pop("live_guess", None)
         row.home = row.away = ""
-        row.reason = no_pair_reason
-        return row
+        if letter != "-":
+            row.reason = no_pair_reason
+            return row
+        # книга 150: вид спорта — чужой («Wheelchair tennis»): строка с
+        # пометкой эфира идёт во вкладку «Other Sport», как и чужой вид с парой
     row.sport_word = decision.word
     row.sport_source = decision.source
     row.sport_rule = decision.rule
