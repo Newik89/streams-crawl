@@ -28,6 +28,7 @@ import re
 from datetime import date as _date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
+from .. import daytime
 from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "raspored.hrt.hr"
@@ -114,4 +115,5 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         elif SAYS_LIVE.search(title):
             site_says(program, True, "prijenos")
         out.append(program)
-    return mark_first_show(out, "uživo")
+    # книга 151: страница начата хвостом вчерашнего вечера — день назад
+    return mark_first_show(daytime.pull_evening_tail(out), "uživo")

@@ -40,6 +40,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "programme-tv.net"
@@ -154,7 +155,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             site_says(program, True, "en direct")
         out.append(program)
     # без значка сайт промолчал — такие строки угадывает первый показ пары
-    return mark_first_show(out, "en direct")
+    # книга 151: страница начата хвостом вчерашнего вечера — день назад
+    return mark_first_show(daytime.pull_evening_tail(out), "en direct")
 
 
 def list_channels(html: str) -> list[str]:

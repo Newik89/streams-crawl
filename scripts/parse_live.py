@@ -643,6 +643,59 @@ def drop_multicast(games: list, keep: set | None = None) -> tuple[list, list]:
     return kept, removed
 
 
+#: книга 152: имя фильтра в журнале снятого (ключ «снято» в games.json)
+СНЯТО_ВТОРАЯ_ЧАСТЬ = "вторая строка того же канала у той же игры"
+
+
+def one_row_per_channel(games: list) -> tuple[list, list]:
+    """Книга 152: канал одного сайта стоит у игры ОДИН раз.
+
+    Находка 16.11: digisport.ro пишет матч двумя строками — первый тайм
+    `14:30 LIVE Liga a 2-a: Bihor Oradea-Gloria Bistrita`, вставка новостей
+    `15:15 Stirile Digi Sport`, второй тайм `15:30 LIVE` с тем же заголовком.
+    Обе строки сайт пометил эфиром, обе в окне склейки — и Digi Sport 1
+    стоял у игры дважды, второй раз со сдвигом +60 минут. Замер по витрине
+    сбора #491 (игры с парой), лишних строк 31: digisport.ro 12 (таймы
+    через 60–65 мин), tvmatsit.com 8 (блоки по два часа), sporttv.pt 3
+    (блоки по два часа), dr.dk 2 (таймы через 55–60 мин), novasports.gr 2
+    (30 и 120 мин), sport5.co.il 2 (две строки в одну минуту с разными
+    подписями), teleman.pl 1, tv24.co.uk 1; в сборе #475 ещё rtcg.me.
+
+    Правила по порядку:
+      1. Судим внутри одной игры по одному сайту и одному каналу. Разные
+         сайты про один канал не сравниваем.
+      2. Трансляции турниров без пары (`broadcast.SESSION`) не трогаем: у
+         турнира в день несколько сессий, это разные показы (как в
+         `drop_late_repeats` и `drop_multicast`).
+      3. Строк такого канала у игры две и больше — остаётся самая ранняя:
+         начало трансляции, как его пишет сайт. Самая ранняя строка игры
+         поэтому остаётся всегда, и время начала игры не меняется.
+      4. Остальные строки канала — продолжение той же трансляции (второй
+         тайм, вторая часть после вставки) либо её повтор: они снимаются и
+         идут в журнал. Игра и канал у игры остаются.
+
+    Возвращает (игры, [(игра, снятая строка, оставленная строка)])."""
+    removed: list = []
+    for game in games:
+        if game.first.away == broadcast.SESSION:                 # правило 2
+            continue
+        groups: dict = {}
+        for e in game.entries:                                   # правило 1
+            groups.setdefault((_bare_domain(e.source), e.channel), []).append(e)
+        drop: set[int] = set()
+        for rows in groups.values():
+            if len(rows) < 2:
+                continue
+            keep = min(rows, key=lambda e: e.start)              # правило 3
+            for e in rows:                                       # правило 4
+                if e is not keep:
+                    drop.add(id(e))
+                    removed.append((game, e, keep))
+        if drop:
+            game.entries = [e for e in game.entries if id(e) not in drop]
+    return games, removed
+
+
 def unique_rows(found: list) -> tuple[list, int]:
     """Строки без копий: одна передача сайта — (домен, канал, начало,
     заголовок) — одна строка, сколько бы его страниц её ни показали.
@@ -2051,6 +2104,22 @@ def main() -> int:
         print(f"мультикаст снят: строк {len(мульти)} (канал сайта показывает "
               f"несколько игр разом)"
               + "".join(f"\n   • {s}: {c} {t} — игр {n}" for s, c, t, n in разом))
+
+    # Книга 152: канал одного сайта стоит у игры один раз — сайт пишет матч
+    # двумя строками (первый тайм, вставка, второй тайм), и канал стоял у
+    # игры дважды со сдвигом на час (digisport.ro, dr.dk)
+    games, части = one_row_per_channel(games)
+    for g, e, keep in части:
+        снято.append(removed_row(
+            СНЯТО_ВТОРАЯ_ЧАСТЬ, e.source, e.payload,
+            f"«{e.channel}» у {e.source} уже стоит у этой игры: строка "
+            f"{keep.start.strftime('%d.%m %H:%M')}"))
+    if части:
+        print(f"вторые строки того же канала у той же игры сняты: {len(части)}"
+              + "".join(f"\n   • {g.home} — {g.away}: «{e.channel}» ({e.source}) "
+                        f"{e.start.strftime('%d.%m %H:%M')} ← осталась "
+                        f"{keep.start.strftime('%d.%m %H:%M')}"
+                        for g, e, keep in части))
 
     # Журнал снятого (владелец: «ничто не теряется молча»): каждая строка,
     # снятая фильтром повторов, — поимённо, тем же окном дней, что витрина

@@ -113,4 +113,5 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=pair,
             source_url=url, extra={"day": d.isoformat()},
         ))
-    return mark_first_show(out, "live")
+    # книга 151: страница начата хвостом вчерашнего вечера — день назад
+    return mark_first_show(daytime.pull_evening_tail(out), "live")

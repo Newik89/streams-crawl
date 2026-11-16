@@ -28,6 +28,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
+from ..live import rubric_parts
 from . import Program, mark_first_show, register, site_says
 
 DOMAIN = "sports.kz"
@@ -92,7 +93,9 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                 if not hm or not title:
                     continue
                 # `Футбол. Лига. Этап. «А» — «Б»` — вид спорта первым куском
-                parts = [x.strip() for x in title.split(".") if x.strip()]
+                # (книга 153: делит общий делитель рубрик — инициал игрока
+                # частью не считается)
+                parts = rubric_parts(title)
                 pair = " "
                 for chunk in reversed(parts):
                     got_pair = _pair(chunk)
