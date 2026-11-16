@@ -239,9 +239,10 @@ def строка(сайт: str, пара: str, когда: str, эфир: str = 
     return row.home, row.away, (p.extra.get(pipeline.TRIMMED) or {}).get("по")
 
 
-проверка("webtv.sk: «ligová fáze Finsko - San Marino» (стадия турнира перед хозяевами) → пара без неё, по эталону",
+проверка("webtv.sk: «ligová fáze Finsko - San Marino» (стадия турнира перед хозяевами) → пара без неё; с книги 157 "
+         "слова стадии срезает словарь стадий — раньше эталона и там, где эталон матча не знает",
          строка("webtv.sk", "ligová fáze Finsko - San Marino", "2026-11-15T18:45"),
-         ("Finsko", "San Marino", "эталон"))
+         ("Finsko", "San Marino", pipeline.BY_STAGE))
 проверка("raiplay.it: «Belgio - Italia - 15/11/2026» (дата после гостей) → пара без даты",
          строка("raiplay.it", "Belgio - Italia - 15/11/2026", "2026-11-15T21:30"),
          ("Belgio", "Italia", "эталон"))

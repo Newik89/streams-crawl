@@ -143,6 +143,9 @@ print("Л1–Л6 вместе (`leagues.settle`)")
     (("Philadelphia 76ers – Boston Celtics", "Basket : Philadelphia 76ers – Boston Celtics", "Philadelphia 76ers", "Boston Celtics"), ""),
     (("Τελικός", "Copa Sudamericana | Τελικός| Ατλ. Μινέϊρο – Μπόκα Τζ.", "Ατλ. Μινέϊρο", "Μπόκα Τζ"), "Copa Sudamericana"),
     (("alapszakasz", "Phoenix Suns - Los Angeles Lakers", "Phoenix Suns", "Los Angeles Lakers"), ""),
+    (("Los Angeles Lakers – Charlotte Hornets – Los Angeles Lakers – Charlotte Hornets",
+      "Basket : Los Angeles Lakers – Charlotte Hornets – Los Angeles Lakers – Charlotte Hornets",
+      "Los Angeles Lakers", "Charlotte Hornets"), ""),                                  # пара в поле лиги повторена
     (("Live UEFA Nations League", "Live UEFA Nations League", "Republic of Ireland", "Kosovo"), "UEFA Nations League"),
     (("ABA,  direktno", "Košarka: SC Derby - Viena, ABA, direktno", "SC Derby", "Viena"), "ABA"),
     (("УЕФА Ұлттар Лигасы Испания — Англия", "Футбол. УЕФА Ұлттар Лигасы. Испания — Англия. Прямая трансляция", "Испания", "Англия"),
@@ -156,7 +159,7 @@ print("Л1–Л6 вместе (`leagues.settle`)")
     (("futbolli", "Liga e Pare: Prishtina - Drita", "Prishtina", "Drita"), ""),        # Л6: один вид спорта — заголовок не читаем
     (("", "Bundesliga: Bayern - Köln", "Bayern", "Köln"), ""),                          # поля лиги нет — заголовок не читаем
 )
-проверка("двенадцать случаев сбора 16.11 и четыре прежних",
+проверка("тринадцать случаев сбора 16.11 и четыре прежних",
          [leagues.settle(*args) for args, _ in СЛУЧАИ], [ждём for _, ждём in СЛУЧАИ])
 
 print("Разбор строки (`pipeline.classify`)")

@@ -75,8 +75,10 @@ _WOMEN_BY_LANG: tuple = (
     (None, r"\bwomen'?s?\b|\(w\)|\(f\)|\(fem\)"),
     (("pl",), r"\bkobiet\w*\b"),
     # испанский, португальский, румынский, французский, итальянский:
-    # femenino/feminino/feminin
-    (("es", "pt", "ro", "fr", "it"), r"\bfem[ei]nin[ao]?\b|\bfeminin\w*\b"),
+    # femenino/feminino/feminin; французское пишется со значком — «féminin»,
+    # «féminine» (книга 157: «Qualifications à l'EuroBasket féminin» у
+    # programme-tv.net читалось женским только по полю лиги без значков)
+    (("es", "pt", "ro", "fr", "it"), r"\bfem[ei]nin[ao]?\b|\bfeminin\w*\b|\bféminin\w*\b"),
     # португальское «Seniores F» — sporting.pt (женское дерби Бенфика —
     # Спортинг узнавал только эталон, книга 086)
     (("pt",), r"\bseniores f\b"),
@@ -439,14 +441,14 @@ def _air_off(text: str) -> str:
 
 def _stage_rest(text: str) -> str:
     """Текст без слов стадии, тура, пометок эфира и чисел (с порядковыми
-    знаками: «11η», «7a», «1ª», «15-й», «2nd») — на их месте пробелы."""
+    знаками: «11η», «7a», «1ª», «15-й», «2nd», «3e») — на их месте пробелы."""
     from .live import greek_plain
     stage, air = _stage_air()
     rest = greek_plain(text or "")
     for pattern in (stage, air):
         if pattern is not None:
             rest = pattern.sub(" ", rest)
-    return re.sub(r"\d+\s?(?:[ηaªº°]|-?[йяе]|st|nd|rd|th)?(?!\w)", " ", rest, flags=re.I)
+    return re.sub(r"\d+\s?(?:[ηaªº°]|-?[йяе]|st|nd|rd|th|e|er|ère|ème|eme)?(?!\w)", " ", rest, flags=re.I)
 
 
 def stage_only(text: str) -> bool:
@@ -529,6 +531,11 @@ def from_title(title: str, home: str, away: str, before_air: bool = False) -> st
         spots = [span[0] for side in (home, away) for span in _side_spans(head, side)]
         at = min(spots) if spots else len(head)
     head = head[:at]
+    for _ in range(4):                       # пара в заголовке повторена — до первой
+        at = _pair_start(head, home, away)
+        if at < 0:
+            break
+        head = head[:at]
     if before_air:                                                            # 2
         air = _stage_air()[1]
         found = air.search(greek_plain(head)) if air is not None else None
@@ -548,8 +555,12 @@ def settle(league_raw: str, title: str, home: str, away: str) -> str:
     name = clean(raw)                                                         # Л1–Л3
     if not raw or not home or not away:
         return name
-    cut = without_pair(name, home, away)                                      # Л4
-    if cut != name:
+    for _ in range(4):                                                        # Л4
+        # пара в названии бывает повторена («A – B – A – B», dagenstv.com) —
+        # режем, пока она там есть
+        cut = without_pair(name, home, away)
+        if cut == name:
+            break
         name = clean(cut)
     if not name:
         # Л6: сайт написал в поле один вид спорта — лиги не было и нет
