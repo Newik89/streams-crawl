@@ -263,6 +263,71 @@ _GREEK_INITIAL = re.compile(r"(?<=[^\W\d_]\s)([\u039d\u039c])\.(?=\s*(?:$|/|\())
 _GREEK_INITIAL_AS = {"\u039d": "\u039d\u03c4", "\u039c": "\u039c\u03c0"}   # Ν → Ντ, Μ → Μπ
 
 
+# ── греческие сокращения сторон света (книга 154) ────────────────────────────
+# Находка 16.11: «Ν. Κορέα» (Южная Корея, так пишут греческие сетки) читалась
+# буквами «N KOREA», и инициал «N» закрывался словом «North»: Южная Корея
+# сходилась с «North Korea» на 100, с «South Korea» — на 0. Правила:
+#   Г1. Одна греческая заглавная с точкой В НАЧАЛЕ имени, за которой идёт
+#       слово греческими буквами (не другой инициал), — сокращение слова из
+#       `_GREEK_COMPASS`: «Ν.» — «Νότια» (Южная) или «Νέα» (Новая), «Β.» —
+#       «Βόρεια» (Северная), «Α.» — «Ανατολική» (Восточная), «Δ.» — «Δυτική»
+#       (Западная); у каждого слова три рода («Νότια Κορέα», «Νότιο Σουδάν»).
+#   Г2. Каждое раскрытие проверяется ТОЧНЫМ знанием: справочник стран
+#       (`_country_plain`) и подтверждённые имена (`_OVERRIDES`). Буквы тут
+#       не гадают.
+#   Г3. Раскрытие узнано — у имени остаются ТОЛЬКО узнанные чтения («Ν.
+#       Κορέα» → `SOUTH KOREA`); голого «N KOREA», которое сошлось бы с
+#       «North Korea», больше нет. Страна названа однозначно — её отдаёт и
+#       `country_of` (а с ней `known_team` и показ на витрине).
+#   Г4. Ни одно раскрытие не узнано (клуб «Ν. Ιωνία», игрок «Ν. Τζόκοβιτς»,
+#       «Ν. Καρλάινα» эталона) — имя читается как раньше, буквами.
+#   Г5. Буква ПОСЛЕ фамилии — инициал человека (`_GREEK_INITIAL`, книги 141
+#       и 146), это правило его не трогает.
+_GREEK_COMPASS = {
+    "\u039d": ("Νότια", "Νότιο", "Νότιος", "Νέα", "Νέο", "Νέος"),
+    "\u0392": ("Βόρεια", "Βόρειο", "Βόρειος"),
+    "\u0391": ("Ανατολική", "Ανατολικό", "Ανατολικός"),
+    "\u0394": ("Δυτική", "Δυτικό", "Δυτικός"),
+}
+#: Г1: буква с точкой в начале имени, дальше — не меньше двух греческих букв
+_GREEK_COMPASS_RE = re.compile(r"^\s*([\u039d\u0392\u0391\u0394])\.\s*(?=[\u0386-\u03ce]{2})")
+
+
+def _compass_spellings(name: str) -> tuple[str, ...]:
+    """Г1: раскрытия греческого сокращения в начале имени («Ν. Κορέα» →
+    «Νότια Κορέα», «Νότιο Κορέα», …, «Νέος Κορέα»). Сокращения нет — пусто."""
+    m = _GREEK_COMPASS_RE.match(name or "")
+    if not m:
+        return ()
+    rest = name[m.end():]
+    return tuple(f"{word} {rest}" for word in _GREEK_COMPASS[m.group(1)])
+
+
+def _compass_countries(name: str) -> tuple[str, ...]:
+    """Г2: страны справочника среди раскрытий сокращения, без повторов."""
+    out: list[str] = []
+    for spelling in _compass_spellings(name):
+        country = _country_plain(spelling)
+        if country and country not in out:
+            out.append(country)
+    return tuple(out)
+
+
+def _compass_known(name: str) -> tuple[str, ...]:
+    """Г2–Г3: чтения имени с греческим сокращением, которые словарь знает
+    твёрдо, — страны справочника и подтверждённые имена (по-английски).
+    Ничего не узнано или сокращения нет — пусто (тогда имя читают буквы)."""
+    out = list(_compass_countries(name))
+    for spelling in _compass_spellings(name):
+        bare = " ".join(_AGE_RE.sub(" ", _WOMEN_RE.sub(" ", spelling)).split())
+        confirmed = _OVERRIDES.get(spelling.strip()) or _OVERRIDES.get(bare)
+        if confirmed:
+            english = to_english(confirmed) or confirmed
+            if english not in out:
+                out.append(english)
+    return tuple(out)
+
+
 @lru_cache(maxsize=4096)
 def _letter_readings(name: str) -> tuple[str, ...]:
     """Чтения имени по одним буквам, ещё до `_tidy`: транслит, у иврита —
@@ -509,6 +574,11 @@ def country_of(name: str) -> str:
     `category`. Книга 102, правило Э1; справочник — правила Т1–Т7 выше."""
     name = name or ""
     found = _country_plain(name)
+    if not found:
+        # Г3 (книга 154): «Ν. Κορέα» — страна, если раскрытие сокращения
+        # называет её однозначно
+        compass = _compass_countries(name)
+        found = compass[0] if len(compass) == 1 else ""
     if found or "W" not in category(name).split():
         return found
     # Т7: «Suomi N W» — страна с местной буквой пола, пол уже назван
@@ -703,9 +773,16 @@ def readings(name: str) -> tuple[str, ...]:
         variants.append(to_english(confirmed) or confirmed)
     # чтения по буквам — общие со справочником стран (`_letter_readings`)
     cmp_name = re.sub(r"\s{2,}", " ", _WOMEN_RE.sub(" ", name)).strip() or name
-    variants.extend(_letter_readings(name))
-    if not _CYRILLIC_RE.search(cmp_name) and not _HEBREW_RE.search(cmp_name):
-        variants.extend(polish_readings(cmp_name))
+    # Г3 (книга 154): греческое сокращение стороны света, раскрытие которого
+    # словарь знает («Ν. Κορέα» — South Korea), читается ТОЛЬКО так: голое
+    # «N KOREA» инициалом сошлось бы с «North Korea»
+    compass = _compass_known(name)
+    if compass:
+        variants.extend(compass)
+    else:
+        variants.extend(_letter_readings(name))
+        if not _CYRILLIC_RE.search(cmp_name) and not _HEBREW_RE.search(cmp_name):
+            variants.extend(polish_readings(cmp_name))
     out: list[str] = []
     raws: list[str] = []
     whole, fresh = _whole_exonyms(), _fresh_country_keys()
@@ -1053,7 +1130,12 @@ def known_team(name: str) -> str:
     if not confirmed:
         bare = " ".join(_AGE_RE.sub(" ", _WOMEN_RE.sub(" ", name)).split())
         confirmed = _OVERRIDES.get(bare) if bare != name else None
-    return (to_english(confirmed) or confirmed) if confirmed else ""
+    if confirmed:
+        return to_english(confirmed) or confirmed
+    # Г3 (книга 154): греческое сокращение, раскрытие которого подтверждено
+    # («Ν. Ιωνία» при подтверждённой «Νέα Ιωνία»), — если оно одно
+    compass = _compass_known(name)
+    return compass[0] if len(compass) == 1 else ""
 
 
 def same_team(one: str, two: str, threshold: int = SIMILAR_ENOUGH) -> bool:

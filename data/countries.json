@@ -2070,6 +2070,7 @@
    "Непал"
   ],
   "North Korea": [
+   "Βόρεια Κορέα",
    "Korea DPR",
    "DPR Korea",
    "Nordkorea",
@@ -2298,6 +2299,7 @@
    "Thailandia"
   ],
   "Timor-Leste": [
+   "Ανατολικό Τιμόρ",
    "East Timor"
   ],
   "Turkmenistan": [
@@ -3118,6 +3120,7 @@
    "Fidzsi"
   ],
   "New Caledonia": [
+   "Νέα Καληδονία",
    "Nouvelle-Calédonie",
    "Neukaledonien",
    "Nueva Caledonia"
@@ -3129,7 +3132,9 @@
    "Tahití"
   ],
   "Solomon Islands": [],
-  "Papua New Guinea": [],
+  "Papua New Guinea": [
+   "Παπούα Νέα Γουινέα"
+  ],
   "Vanuatu": [],
   "Samoa": [],
   "American Samoa": [],
