@@ -19873,6 +19873,7 @@
       "name": "Australia",
       "country": null,
       "aliases": [
+        "AUSTRÁLIA",
         "Australia",
         "Australie",
         "Australien",
@@ -33080,6 +33081,7 @@
         "Boca Juniors (ARG)",
         "Boca Juniors / 2. tekma",
         "Boca Juniors, polufinale",
+        "CA Boca Juniors",
         "Club Atletico Boca Juniors",
         "Copa Sudamericana (T2026): Boca Juniors",
         "Μπόκα Τζούνιορς",
@@ -273541,6 +273543,7 @@
         "kvalifikacije za EP, direktno",
         "kvalifikacije za košarkaško EP ženskih reprezentacija",
         "ΕΥΡΩΠΗ: Ευρωμπάσκετ Γυναικών - Πρόκριση - Δεύτερη Φάση",
+        "Προκριματικά Eurobasket Γυναικών",
         "Προκριματικά Eurobasket Γυναικών 2027 ",
         "Προκριματικά Eurobasket Γυναικών 2027 ",
         "ЕВРОПА: Евробаскет - женщины - Квалификация - второй этап",
@@ -273939,6 +273942,7 @@
         "Ligue des Champions Feminine",
         "Live UEFA Women's Champions League",
         "Mesterligaen fotball kvinner",
+        "UEFA Frauen Champions League",
         "UEFA Frauen Champions League Spieltag 5: Austria Wien - Bayern München",
         "UEFA KADINLAR ŞAMPİYONLAR LİGİ FUTBOL KARŞILAŞMASI",
         "UEFA Liga dos Campeões Feminina",
@@ -300758,6 +300762,7 @@
         "WERELD: WK -17",
         "ŚWIAT: Mistrzostwa Świata U17",
         "ΚΟΣΜΟΣ: Μουντιάλ U17",
+        "Παγκόσμιο Κύπελλο Κ17",
         "Παγκόσμιο Κύπελλο Κ17 ",
         "МИР: Чемпионат мира до 17 лет",
         "СВІТ: Чемпіонат світу U17",
@@ -301110,7 +301115,8 @@
         "WTA - ŠTVORHRY: Finals - Indian Wells (Svet) - Play Off, tvrdý povrch",
         "WTA - ΔΙΠΛΑ: Finals - Ίντιαν Ουέλς (Κόσμος) - Πλέι Οφς, σκληρή",
         "WTA - ПАРНИЙ РОЗРЯД: Finals - Indian Wells (Світ) - Play Offs, хард",
-        "WTA - ПАРНЫЙ РАЗРЯД: Finals - Indian Wells (Мир) - Плей офф, хард"
+        "WTA - ПАРНЫЙ РАЗРЯД: Finals - Indian Wells (Мир) - Плей офф, хард",
+        "parovi) FINALE"
       ]
     },
     {
@@ -307140,6 +307146,13 @@
       "source": "tvarenasport.com"
     },
     {
+      "name": "Arena Tenis",
+      "country": "RS",
+      "language": null,
+      "alias": "Arena Tenis",
+      "source": "tvarenasport.com"
+    },
+    {
       "name": "РТС 1",
       "country": "RS",
       "language": null,
@@ -310008,6 +310021,7 @@
     "AC Oulu": "F",
     "AD Fafe": "F",
     "AD Marco 09": "F",
+    "ADO Den Haag": "F",
     "AEK Athens": "B",
     "AEK Athens FC W": "F",
     "AEK Larnaca": "B",
@@ -310171,6 +310185,7 @@
     "Andreeva M./Kalinskaya A.": "T",
     "Andreozzi G./Guinard M.": "T",
     "Angel City W": "F",
+    "Angers": "F",
     "Angola": "F",
     "Annecy": "F",
     "Antalyaspor": "F",
@@ -310195,7 +310210,7 @@
     "Argentina U17": "F",
     "Argentina U17 W": "F",
     "Argentinos Jrs": "F",
-    "Arges Pitesti": "B",
+    "Arges Pitesti": "F",
     "Aris": "B",
     "Arit Kayadibi": "F",
     "Arka Gdynia": "F",
@@ -310888,6 +310903,7 @@
     "Estoril U23": "F",
     "Estrela": "F",
     "Estrela U23": "F",
+    "Estrela da Amadora": "F",
     "Estudiantes L.P.": "F",
     "Estudiantes Rio Cuarto": "F",
     "Estudiantes W": "B",
@@ -311361,7 +311377,6 @@
     "Junior": "F",
     "Jurbarkas": "B",
     "Juve Stabia": "F",
-    "Juventus": "B",
     "Juventus W": "F",
     "KF Llapi": "F",
     "KF Tirana": "F",
@@ -311538,11 +311553,11 @@
     "Lazio W": "F",
     "Le Havre": "F",
     "Le Havre W": "F",
-    "Le Mans": "B",
     "Lebrijana": "F",
     "Leca": "F",
     "Lecce": "F",
     "Lech Poznan": "F",
+    "Lech Poznań": "F",
     "Lechia Gdansk": "F",
     "Leczna": "F",
     "Leczna W": "F",
@@ -311553,7 +311568,6 @@
     "Leeds": "F",
     "Leeds U21": "F",
     "Leganes": "F",
-    "Legia": "B",
     "Legia W": "F",
     "Legnica": "F",
     "Lehecka J.": "T",
@@ -311680,6 +311694,7 @@
     "Mainz": "F",
     "Mainz W": "F",
     "Majchrzak K.": "T",
+    "Malaga": "F",
     "Malawi": "F",
     "Maleckova J./Skoch M.": "T",
     "Mali": "F",
@@ -312214,6 +312229,7 @@
     "Raith": "F",
     "Rakhimova K.": "T",
     "Rakow": "F",
+    "Raków Częstochowa": "F",
     "Ramnicu Valcea": "F",
     "Randers": "B",
     "Randers FC": "F",
@@ -312235,6 +312251,7 @@
     "Reggiana": "B",
     "Reims": "F",
     "Remo": "F",
+    "Rennes": "F",
     "Reus FCR": "F",
     "Reymond A./Sanchez L.": "T",
     "Ribadesella CF": "F",
@@ -312381,6 +312398,7 @@
     "Scotland": "F",
     "Scotland U21": "F",
     "Scotland W": "F",
+    "Scu Torreense": "F",
     "Sebastiani Rieti": "B",
     "Segesta": "F",
     "Seggerman R./Tien L.": "T",
@@ -312808,7 +312826,7 @@
     "Velez Sarsfield": "F",
     "Vellaznimi": "B",
     "Veneza": "F",
-    "Venezia": "B",
+    "Venezia": "F",
     "Venezia W": "B",
     "Venezuela U17 W": "F",
     "Venlo": "F",
@@ -312886,6 +312904,7 @@
     "West Ham": "F",
     "West Ham W": "F",
     "Widzew Lodz": "F",
+    "Widzew Łódź": "F",
     "Wieczysta Krakow": "F",
     "Wigan": "F",
     "Willem II": "F",
@@ -312997,6 +313016,30 @@
       "led_to": "Atletico Atlanta | Atlanta Hawks",
       "truth": "Atlanta Hawks",
       "note": "вид спорта B",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "Atletico Madryt",
+      "lang": null,
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": null,
+      "led_to": "Atletico Madrid | Atl. Madrid",
+      "truth": null,
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "Atletico Madryt",
+      "lang": "pl",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "teleman.pl",
+      "led_to": "Atletico Madrid | Atl. Madrid",
+      "truth": null,
+      "note": "вид спорта F",
       "answered_by": "программа",
       "seen_with": []
     },
@@ -314177,6 +314220,18 @@
       "seen_with": []
     },
     {
+      "alias": "Атлетико",
+      "lang": "be ru",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "news.by",
+      "led_to": "Atletico F.C. | Atletico CP | Atl. Madrid",
+      "truth": null,
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
       "alias": "Бургос",
       "lang": "bg",
       "class": "двусмысленно",
@@ -314510,7 +314565,9 @@
       "truth": "Bydgoszcz - Energa Czarni Słupsk",
       "note": "срезано у пары, раз за сбор: 2",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "bydgoszcz"
+      ]
     },
     {
       "alias": "Europa League",
@@ -314606,7 +314663,9 @@
       "truth": "Israele U19 - ITALIA U19",
       "note": "срезано у пары, раз за сбор: 1",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "israele"
+      ]
     },
     {
       "alias": "Raiffeisen Liga e Pare",
@@ -314618,7 +314677,9 @@
       "truth": "Prishtina e Re - Liria",
       "note": "первая лига Косова со спонсором; сбор 15.11",
       "answered_by": "владелец 15.11",
-      "seen_with": []
+      "seen_with": [
+        "prishtina e re"
+      ]
     },
     {
       "alias": "STOIXIMAN GBL 2026-27",
@@ -314630,7 +314691,9 @@
       "truth": "ΑΡΗΣ - ΟΛΥΜΠΙΑΚΟΣ",
       "note": "срезано у пары, раз за сбор: 1",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "αρησ"
+      ]
     },
     {
       "alias": "Superliga",
@@ -314654,7 +314717,9 @@
       "truth": "Ostrów Wielkopolski - Dziki Warszawa",
       "note": "срезано у пары, раз за сбор: 1",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "ostrów wielkopolski"
+      ]
     },
     {
       "alias": "Taça de Portugal",
@@ -314666,7 +314731,9 @@
       "truth": "FC Porto - USC Paredes",
       "note": "срезано у пары, раз за сбор: 3",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "fc porto"
+      ]
     },
     {
       "alias": "ligová fáze",
@@ -314678,7 +314745,14 @@
       "truth": "Lotyšsko - Arménie",
       "note": "срезано у пары, раз за сбор: 6",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "belgie",
+        "estonsko",
+        "finsko",
+        "lotyšsko",
+        "wales",
+        "řecko"
+      ]
     },
     {
       "alias": "Canlı",
@@ -314690,7 +314764,10 @@
       "truth": "Zenit - Trabzonspor",
       "note": "срезано у пары, раз за сбор: 2",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "i̇talya",
+        "trabzonspor"
+      ]
     },
     {
       "alias": "Das Spiel",
@@ -314702,7 +314779,10 @@
       "truth": "Israel - Österreich",
       "note": "срезано у пары, раз за сбор: 2",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "bayern münchen",
+        "österreich"
+      ]
     },
     {
       "alias": "OF MIDLOTHIAN",
@@ -314714,7 +314794,9 @@
       "truth": "DUNDEE - HEART",
       "note": "срезано у пары, раз за сбор: 1",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "heart"
+      ]
     },
     {
       "alias": "of Midlothian",
@@ -314726,7 +314808,9 @@
       "truth": "FC Dundee - Heart",
       "note": "срезано у пары, раз за сбор: 1",
       "answered_by": "программа",
-      "seen_with": []
+      "seen_with": [
+        "heart"
+      ]
     },
     {
       "alias": "La Duchere - Feurs",
