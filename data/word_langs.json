@@ -40,7 +40,13 @@
   "post-match",
   "prematch",
   "postmatch",
-  "build-up"
+  "build-up",
+  "pre game show",
+  "post game show",
+  "pregame show",
+  "postgame show",
+  "pre-game show",
+  "post-game show"
  ],
  "sq": [
   "drejtpërdrejt",
@@ -313,7 +319,8 @@
   "megnyitóünnepség",
   "záróünnepség",
   "díjátadó",
-  "eredményhirdetés"
+  "eredményhirdetés",
+  "előzetes"
  ],
  "lt": [
   "tiesiogiai",

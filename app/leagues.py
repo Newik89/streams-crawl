@@ -271,6 +271,16 @@ _ROUND_BEFORE = re.compile(
     rf"(?:\b\d{{1,2}}\s?[.ηaªº°]\s{{0,3}}|(?<=[-–—,(|:.]\s)\d{{1,2}}\s{{1,3}})(?:{_ROUND_WORD})(?!\w)", re.I)
 
 
+#: книга 158: тур — это слово тура ВМЕСТЕ с числом, с любой стороны и с любым
+#: порядковым знаком («Тур 15», «8-й тур», «3e journée», «12. Spieltag», «7a
+#: giornata»). Голое слово тура туром не считается: оно бывает частью имени
+#: («Round Rock», «Tur Abdin», «Kolo Kolo», «Тур де Франс»)
+_ROUND_NUM = re.compile(
+    rf"(?<!\w)(?:{_ROUND_WORD})\s{{0,3}}\d{{1,2}}\b"
+    rf"|(?<!\w)\d{{1,2}}(?:\s?(?:[.ηaªº°]|-?[йяе]|st|nd|rd|th|e|er|ère|ème|eme))?\s{{0,3}}(?:{_ROUND_WORD})(?!\w)",
+    re.I)
+
+
 def _round_at(text: str) -> int:
     """Где в тексте начинается тур с числом; −1 — тура нет."""
     for pattern in (_ROUND_AFTER, _ROUND_BEFORE):
@@ -373,8 +383,8 @@ def clean(raw: str) -> str:
 #   Л3. В названии остались только слова стадии, тура, пометки эфира и числа
 #       («Тур 15», «alapszakasz», «(parovi) FINALE», «Τελικός») — лиги нет
 #       (`stage_only`). Слова стадии — раздел `league_stage` файла
-#       `data/markers.json` и раздел `tournament` → «стадия»; слова тура —
-#       `_ROUND_WORDS`.
+#       `data/markers.json` и раздел `tournament` → «стадия»; тур — слово
+#       тура (`_ROUND_WORDS`) вместе с числом (`_ROUND_NUM`).
 #   Л4. В названии стоит сама пара строки (обе стороны, между ними только
 #       разделитель) — всё с начала пары срезается; остаток — лига, если от
 #       него что-то осталось (`without_pair`).
@@ -402,14 +412,14 @@ TITLE_LEAGUE_MAX = 70
 
 
 def _stage_air() -> tuple:
-    """(шаблон слов стадии и тура, шаблон пометок эфира) — из `data/markers.json`."""
+    """(шаблон слов стадии, шаблон пометок эфира) — из `data/markers.json`.
+    Слова тура сюда не входят: тур — слово с числом (`_ROUND_NUM`)."""
     if not _NOT_LEAGUE:
         import json
         from .live import MARKERS_FILE, _flatten, _pattern
         data = json.loads(MARKERS_FILE.read_text(encoding="utf-8"))
         stage = (_flatten(data.get("league_stage"))
-                 + _flatten((data.get("tournament") or {}).get("стадия"))
-                 + list(_ROUND_WORDS))
+                 + _flatten((data.get("tournament") or {}).get("стадия")))
         _NOT_LEAGUE.extend((_pattern(stage), _pattern(_flatten(data.get("live")))))
     return _NOT_LEAGUE[0], _NOT_LEAGUE[1]
 
@@ -444,7 +454,7 @@ def _stage_rest(text: str) -> str:
     знаками: «11η», «7a», «1ª», «15-й», «2nd», «3e») — на их месте пробелы."""
     from .live import greek_plain
     stage, air = _stage_air()
-    rest = greek_plain(text or "")
+    rest = _ROUND_NUM.sub(" ", greek_plain(text or ""))       # тур — слово с числом
     for pattern in (stage, air):
         if pattern is not None:
             rest = pattern.sub(" ", rest)

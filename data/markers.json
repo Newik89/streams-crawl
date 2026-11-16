@@ -1715,6 +1715,9 @@
   ]
  },
  "stop_title": {
+  "анонс тура на венгерском — не матч (книга 158, сбор 16.11.2026: port.hu «Labdarúgás: Premier League - Előzetes: 11. forduló» шла игрой «Premier League — Előzetes»)": [
+   "előzetes"
+  ],
   "пресс-конференция и медиа-день перед матчем — не матч (книга 096, #10075 08.11.2026: ORF «LIVE Pressekonferenz Fußball — ÖFB MD-1 vor Österreich - Irland», получасовой прямой эфир пресс-конференции за день до Австрия — Ирландия; «LIVE» честный, пара в названии передачи — не матч)": [
    "pressekonferenz",
    "pressekonferenzen",
@@ -2010,6 +2013,14 @@
   ]
  },
  "stop_genre": {
+  "передача до и после матча, названная в поле рубрики (книга 158, сбор 16.11.2026: novasports.gr — рубрика «Pre Game Show» / «Post Game Show», заголовок «Άρης - Λε Μαν»: студия шла на витрину двумя лишними играми)": [
+   "pre game show",
+   "post game show",
+   "pregame show",
+   "postgame show",
+   "pre-game show",
+   "post-game show"
+  ],
   "_": "Жанр в поле рубрики/лиги (не в заголовке): у ZDF «DOKUMENTATION» стоит рубрикой, и док-фильм о баскетболе висел матчем (#448, 04.09). Слова, встречающиеся в названиях лиг («conference»), сюда класть нельзя.",
   "проверено": [
    "dokumentation",
