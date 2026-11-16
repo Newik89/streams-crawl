@@ -209,6 +209,11 @@ print("160. Стадия показа, слова стадий, спонсорс
              "Tenis: Turniej ATP Finals w Turynie", "TENIS ATP: TURNEUL CAMPIONILOR", "Tenis ATP: Turneul Campionilor - finala",
              "ATP Finals: Semifinale", "Теннис. ATP. Итоговый турнир. Турин. Финал", "Nitto ATP Finals: Halve Finale")],
          ["Final", "", "Final", "", "", "", "Final", "Semifinals", "Final", "Semifinals"])
+проверка("правило 1 (витрина 16.11): турнир назван в заголовке дважды на разных языках — это имя, не финал; "
+         "повтор того же написания — стадия",
+         [broadcast.show_stage(имя, "Turneul Campionilor Tenis: ATP Finals Torino", знаем),
+          broadcast.show_stage(имя, "Turneul Campionilor Tenis: ATP Finals Torino - finala", знаем),
+          broadcast.show_stage(имя, "ATP Finals: Finals", знаем)], ["", "Final", "Final"])
 проверка("правило 2: имя турнира в незнакомом написании — стадии нет", broadcast.show_stage(имя, "Finali ATP", знаем), "")
 проверка("правило 3: обычный турнир — стадия заголовка как есть",
          [broadcast.show_stage("ATP Beijing", "ATP 500 Beijing - Final", знаем),

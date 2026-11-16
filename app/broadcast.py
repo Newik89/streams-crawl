@@ -486,10 +486,13 @@ def show_stage(name: str, title: str, known: dict | None) -> str:
     «Final». Раньше такую стадию не показывали никогда — и в день настоящего
     финала тоже («ATP FINALS 2026 - FINAL»). Правила:
       1. турнир с двойным именем эталона («Finals - Turin») — из заголовка
-         вынимается ОДНО слово события этого турнира («Finals», «ATP
-         Finale», «Turneul Campionilor», «итоговый турнир» — `known["events"]`),
+         вынимается слово события этого турнира («Finals», «ATP Finale»,
+         «Turneul Campionilor», «итоговый турнир» — `known["events"]`),
          стадия ищется в остатке: «ATP FINALS 2026 - FINAL» → «Final»,
-         «Nitto ATP Finals» → пусто;
+         «Nitto ATP Finals» → пусто. Каждое НАПИСАНИЕ вынимается один раз:
+         сайт зовёт турнир и на двух языках сразу («Turneul Campionilor
+         Tenis: ATP Finals Torino» — оба слова имя турнира, не финал), а
+         повтор того же написания («ATP Finals: Finals») — уже стадия;
       2. слова события в заголовке не нашлось, а стадия заголовка та же,
          что даёт само имя турнира, — это имя турнира в незнакомом
          написании, стадии нет;
@@ -502,8 +505,18 @@ def show_stage(name: str, title: str, known: dict | None) -> str:
             events = pattern
             break
     if events is not None:
-        rest, cut = events.subn(" ", plain, count=1)                      # 1
-        if cut:
+        seen: set[str] = set()
+
+        def once(match) -> str:
+            """Первое вхождение каждого написания — пробел, повтор — как был."""
+            word = " ".join(match.group(0).lower().split())
+            if word in seen:
+                return match.group(0)
+            seen.add(word)
+            return " "
+
+        rest = events.sub(once, plain)                                    # 1
+        if seen:
             return stage(rest)
     found = stage(plain)
     if found and found == stage(name):                                    # 2
