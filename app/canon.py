@@ -312,6 +312,12 @@ HOW_TENNIS = "программа: теннис — игрок узнан, мат
 TENNIS_SIDE = 90
 #: окно эфира тенниса: матч начинается не раньше 15 минут до показа и не позже
 #: часа после него — те же числа, что `reference.LIVE_SHOW_BEFORE/AFTER`
+#: книга 146: вторая сторона, записанная ЛАТИНИЦЕЙ, обязана быть похожа на
+#: сторону эталона хотя бы так: латинские написания игроков устойчивы, и
+#: непохожее имя — другой человек («Carlos Alcaraz — Novak Djokovic» при
+#: эталонном «Alcaraz C. — Tiafoe F.» — запись старого матча). У греческой,
+#: кириллической и ивритской записи порога нет: там переводы расходятся
+TENNIS_WEAK_LATIN = 60
 TENNIS_BEFORE = timedelta(minutes=60)
 TENNIS_AFTER = timedelta(minutes=15)
 
@@ -340,7 +346,9 @@ def tennis_one_side(game: dict, near: list, start: datetime) -> tuple[dict, bool
     сразу. Правила — берём запись эталона, только если ВСЁ сразу:
 
       Т1. игра — теннис, названы обе стороны, и это не трансляция турнира
-          без игроков;
+          без игроков: ни одна сторона не служебная (`broadcast.SESSION`) и
+          «пара» — не название турнира (`broadcast.is_title`). Иначе словарь
+          выучил бы слово «tournament» именем игрока (книга 146);
       Т2. форма та же: одиночка с одиночкой, пара с парой — у обеих сторон
           (регресс 01.10: «Etcheverry» на 100 совпал с «Darderi/Etcheverry»);
       Т3. матч эталона начинается в окне эфира показа (`TENNIS_AFTER` до —
@@ -351,33 +359,45 @@ def tennis_one_side(game: dict, near: list, start: datetime) -> tuple[dict, bool
           другого теннисного матча эталона рядом (`near`, ±`WINDOW`). Иначе
           это показ другого матча — запись вчерашнего — в час, когда играет
           тот же игрок;
-      Т6. такой кандидат в окне ОДИН: два — значит, не знаем.
+      Т6. твёрдая сторона узнаётся ТОЛЬКО в одном матче рядом (`near`,
+          ±`WINDOW`, не только в окне эфира): фамилия без инициала подходит
+          и брату, и однофамильцу («Cerundolo» — Франсиско в 17:10 и Хуан
+          Мануэль в 15:00) — два кандидата значит «не знаем», решают
+          остальные правила сверки (книга 146);
+      Т7. вторая сторона, записанная латиницей, похожа на сторону эталона
+          не меньше `TENNIS_WEAK_LATIN` (книга 146).
 
     Возвращает (запись эталона, стороны игры записаны наоборот) или None."""
+    from . import broadcast
     home, away = (game.get("home") or "").strip(), (game.get("away") or "").strip()
     if (game.get("sport") or "") != "T" or not home or not away \
-            or names.is_placeholder(home) or names.is_placeholder(away):          # Т1
+            or names.is_placeholder(home) or names.is_placeholder(away) \
+            or broadcast.SESSION in (home, away) or broadcast.is_title("T", home, away):   # Т1
         return None
     duo = "/" in home
     if duo != ("/" in away):
         return None
     found = []
     for ref, kick in near:
-        if not -TENNIS_AFTER <= kick - start <= TENNIS_BEFORE:                  # Т3
-            continue
         if ("/" in (ref.get("home") or "")) != duo \
                 or ("/" in (ref.get("away") or "")) != duo:                     # Т2
             continue
         homes, aways = _spellings(ref, game)
-        # (сходство твёрдой стороны, слабая сторона игры, наоборот)
-        straight = max((_like(home, homes), away, False), (_like(away, aways), home, False))
-        turned = max((_like(home, aways), away, True), (_like(away, homes), home, True))
-        firm, weak, flipped = max(straight, turned, key=lambda x: x[0])
+        # (сходство твёрдой стороны, слабая сторона игры, её пара в эталоне, наоборот)
+        straight = max((_like(home, homes), away, aways, False), (_like(away, aways), home, homes, False),
+                       key=lambda x: x[0])
+        turned = max((_like(home, aways), away, homes, True), (_like(away, homes), home, aways, True),
+                     key=lambda x: x[0])
+        firm, weak, theirs, flipped = max(straight, turned, key=lambda x: x[0])
         if firm >= TENNIS_SIDE:                                                 # Т4
-            found.append((ref, weak, flipped))
+            found.append((ref, kick, weak, theirs, flipped))
     if len(found) != 1:                                                         # Т6
         return None
-    pick, weak, flipped = found[0]
+    pick, kick, weak, theirs, flipped = found[0]
+    if not -TENNIS_AFTER <= kick - start <= TENNIS_BEFORE:                      # Т3
+        return None
+    if _script(weak) == "lat" and _like(weak, theirs) < TENNIS_WEAK_LATIN:      # Т7
+        return None
     for ref, _kick in near:                                                     # Т5
         if ref is pick:
             continue

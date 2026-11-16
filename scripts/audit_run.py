@@ -524,7 +524,9 @@ def collect(folder: Path, markers, sports) -> dict[str, Site]:
             continue
         site.shows += [p for p in programs if p.start is not None]
         for r in pipeline.run(programs, markers, sports, league_sports,
-                              pair_sports, domain=domain):
+                              pair_sports, domain=domain,
+                              guess_site=parse_live._bare_domain(domain)
+                              in parse_live.REPEAT_GUESS_DOMAINS):
             if r.ok and r.sport in ("F", "B", "T") and r.start_kyiv:
                 site.rows.append((r, name))
             elif r.reason.startswith(STOP_REASONS) and r.program.live_raw \
@@ -1299,7 +1301,8 @@ def loss_step(domain: str, p: Program, journal, markers, sports,
     прогоняется тем же `pipeline.classify`, что и в разборе (с эталоном
     `judge`), а дальше смотрится журнал разбора."""
     row = pipeline.classify(p, markers, sports, league_sports, pair_sports, judge,
-                            site_lang.of(domain))
+                            site_lang.of(domain),
+                            parse_live._bare_domain(domain) in parse_live.REPEAT_GUESS_DOMAINS)
     key = (domain, p.channel_raw or "", (p.title or "")[:200])
     if not row.ok:
         if row.reason == "вид спорта не определён":

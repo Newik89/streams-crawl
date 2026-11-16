@@ -203,9 +203,14 @@ def remember_beside(conn: sqlite3.Connection, alias: str, cls: str,
     команд не дали — ничего. → сколько разных команд у строки теперь."""
     import json
     from . import pipeline
-    row = conn.execute(
-        "SELECT id, seen_with FROM dictionary_errors WHERE alias = ? AND lang IS ? "
-        "AND class = ?", (alias, lang, cls)).fetchone()
+    if isinstance(teams, str):             # книга 146: одна команда строкой — не буквы
+        teams = [teams]
+    try:
+        row = conn.execute(
+            "SELECT id, seen_with FROM dictionary_errors WHERE alias = ? AND lang IS ? "
+            "AND class = ?", (alias, lang, cls)).fetchone()
+    except sqlite3.OperationalError:       # база до миграции: колонки ещё нет
+        return 0
     if row is None:
         return 0
     old = pipeline.seen_teams(row["seen_with"])

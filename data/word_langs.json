@@ -228,7 +228,8 @@
   "vorbericht",
   "vorberichte",
   "nachbericht",
-  "nachberichte"
+  "nachberichte",
+  "die analyse"
  ],
  "de sv no da": [
   "dokumentation",
@@ -274,7 +275,9 @@
   "remise des prix",
   "remise des médailles",
   "avant-match",
-  "après-match"
+  "après-match",
+  "l'avant-match",
+  "l'après-match"
  ],
  "it": [
   "diretta",

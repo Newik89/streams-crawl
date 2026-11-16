@@ -122,6 +122,9 @@ class Markers:
     not_live: re.Pattern | None
     stop_title: re.Pattern | None
     stop_genre: re.Pattern | None = None
+    #: книга 146: слова передач до и после матча — стоп-слово, только когда
+    #: стоят в НАЧАЛЕ части заголовка (`lead_show`)
+    stop_lead: re.Pattern | None = None
     #: имена со стоп-словом внутри (`keep_names`): вырезаются перед поиском
     keep: re.Pattern | None = None
     #: сами слова по разделам — для словаря языка сайта (`for_langs`)
@@ -144,7 +147,8 @@ class Markers:
                                  if site_lang.allowed(w, key)])
             got = Markers(live=pick("live"), not_live=pick("not_live"),
                           stop_title=pick("stop_title"),
-                          stop_genre=pick("stop_genre"), keep=self.keep)
+                          stop_genre=pick("stop_genre"),
+                          stop_lead=pick("stop_lead"), keep=self.keep)
             self._by_langs[key] = got
         return got
 
@@ -169,13 +173,52 @@ def load(path: Path | None = None, override: dict | None = None) -> Markers:
     if override:
         data = {**data, **override}
     words = {section: _flatten(data.get(section))
-             for section in ("live", "not_live", "stop_title", "stop_genre")}
+             for section in ("live", "not_live", "stop_title", "stop_genre", "stop_lead")}
     return Markers(live=_pattern(words["live"]),
                    not_live=_pattern(words["not_live"]),
                    stop_title=_pattern(words["stop_title"]),
                    stop_genre=_pattern(words["stop_genre"]),
+                   stop_lead=_pattern(words["stop_lead"]),
                    keep=_pattern(_flatten(data.get("keep_names"))),
                    words=words)
+
+
+#: книга 146: границы частей заголовка — «Рубрика: …», «Передача. …», «(сезон) …», «… | …»
+_PART_EDGE = re.compile(r"[:|]|[.)](?=\s)")
+
+
+def lead_show(markers: Markers, text: str) -> str:
+    """Книги 140 и 146: заголовок — передача до или после матча, а не матч.
+
+    Слово передачи («Før», «Efter», «Post», «Optakt», «Vorbericht», «Avant-
+    match», «Pre-Match»…, раздел `stop_lead` файла `data/markers.json`, на
+    языке сайта) считается, только когда стоит В НАЧАЛЕ части заголовка —
+    в самом начале или сразу после «:», «|», точки, закрывающей скобки — и
+    за ним что-то есть: «A-Liga: Før F.C. København-FC Midtjylland», «Juego
+    de Naciones (T26/27): Post España - Inglaterra», «Pre-Match: Arsenal v
+    Chelsea». То же слово в середине фразы — обычный предлог или пометка, и
+    матч остаётся матчем: «Danmark - Norge (direkte efter TV Avisen)»,
+    «Fußball: Österreich - Serbien; Vorberichte, das Spiel, Analysen»,
+    «Arsenal v Chelsea (Build-Up 4.30pm)» (независимая проверка 16.11).
+    Имена из `keep_names` («Post Wien») вырезаются, как у прочих стоп-слов.
+    Возвращает найденное слово или пустую строку."""
+    pattern = markers.stop_lead
+    if not pattern or not text:
+        return ""
+    text = greek_plain(text)
+    if markers.keep is not None:
+        text = markers.keep.sub(" ", text)
+    at = 0
+    for part in _PART_EDGE.split(text) + [""]:
+        lead = part.lstrip(" -–—\"'«(")
+        found = pattern.match(lead)
+        # за словом что-то есть — в этой же части («Før FCK-FCM») или дальше
+        # («Optakt: Danmark - Norge»)
+        rest = text[at + (len(part) - len(lead)) + (found.end() if found else 0):]
+        if found and rest.strip(" .,:;|)-–—"):
+            return found.group(0)
+        at += len(part) + 1
+    return ""
 
 
 #: «Dinamo B.», «Nottingham F.», «Borussia M.» — tvarenasport сокращает второе
@@ -463,6 +506,11 @@ def check(program, markers: Markers) -> Verdict:
     title = program.title or ""
     stop = (markers.found(markers.stop_title, title)
             or episode_code(title) or episode_code(program.match_raw or ""))
+    if stop:
+        return Verdict(False, f"стоп-слово в заголовке: {stop}")
+    # книги 140 и 146: передача до или после матча — слово в начале части
+    # заголовка или в начале поля пары
+    stop = lead_show(markers, title) or lead_show(markers, program.match_raw or "")
     if stop:
         return Verdict(False, f"стоп-слово в заголовке: {stop}")
 

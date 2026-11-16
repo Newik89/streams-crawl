@@ -270,6 +270,66 @@ def tournaments(reference: list | None = None, learned: dict | None = None) -> d
             "tours": tours, "starts": starts, "matches": matches}
 
 
+def city(text: str, known: dict) -> str:
+    """Книга 146: город турнира по заголовку БЕЗ оглядки на тур — для
+    вопросов «идёт ли турнир» и «начинается ли матч рядом» (`city_played`,
+    `city_starts_near`). Тур сайт и эталон зовут по-разному: «WTA 125
+    Colina» у эталона — CHALLENGER WOMEN, а турниры Большого шлема идут
+    сразу в двух турах и по `key` не узнаются вовсе. Правила:
+      1. город ищется по словарю и эталону; города нет, а тур назван —
+         слово события двойного имени у турниров этого тура (как в `key`);
+      2. нашлось несколько — остаются турниры, которые идут сейчас (есть в
+         эталоне): «Roland Garros … Paris» — это French Open из эталона, а
+         не парижский турнир осени из словаря;
+      3. остался ровно один — он; иначе пусто."""
+    text = greek_plain(text or "")
+    named = _tour_in(text)
+    tours = known.get("tours") or {}
+    found = [c for c, pattern in known["cities"].items() if pattern and pattern.search(text)]
+    if not found and named:                                                   # 1
+        found = [c for c, pattern in (known.get("events") or {}).items()
+                 if pattern and pattern.search(text) and named in (tours.get(c) or ())]
+    if len(found) > 1:                                                        # 2
+        found = [c for c in found if tours.get(c)]
+    return found[0] if len(found) == 1 else ""                                # 3
+
+
+def _city_starts(city_name: str, known: dict) -> list:
+    return [begins for (_tour, c), starts in (known.get("starts") or {}).items()
+            if c == city_name for begins in starts]
+
+
+def city_played(city_name: str, known: dict) -> bool:
+    """Книга 146: турнир этого города идёт — в эталоне есть хоть один его
+    матч, в любом туре."""
+    return bool(city_name and _city_starts(city_name, known))
+
+
+def city_starts_near(city_name: str, start: datetime | None, known: dict) -> bool:
+    """Книга 146: рядом с показом начинается матч турнира этого города (в
+    любом туре). Окно — как у `starts_near`."""
+    from .reference import LIVE_SHOW_AFTER, LIVE_SHOW_BEFORE
+    if start is None or not city_name:
+        return False
+    if start.tzinfo is not None:
+        start = start.replace(tzinfo=None)
+    return any(-LIVE_SHOW_AFTER <= (begins - start) <= LIVE_SHOW_BEFORE
+               for begins in _city_starts(city_name, known))
+
+
+def covered(start: datetime | None, known: dict) -> bool:
+    """Книга 146: показ лежит в днях, на которые у эталона уже есть теннисная
+    сетка (не позже последнего начала матча в эталоне). Дальше эталон о
+    турнире судить не может: сетку следующих дней ещё не опубликовали."""
+    if start is None:
+        return False
+    if start.tzinfo is not None:
+        start = start.replace(tzinfo=None)
+    last = max((begins for starts in (known.get("starts") or {}).values() for begins in starts),
+               default=None)
+    return last is not None and start <= last
+
+
 def _tour_in(text: str) -> str | None:
     """Тур, названный в тексте: «Challenger», «WTA» или «ATP»; "" — не
     назван; None — названы и ATP, и WTA сразу (сводить нельзя)."""

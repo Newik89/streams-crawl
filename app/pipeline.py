@@ -448,10 +448,18 @@ def seen_teams(value) -> list[str]:
 
 
 def book_rule(row: dict) -> bool:
-    """Книга 139: строка книги знаний — уже правило (Д1, Д2 в `known_trims`)."""
+    """Книга 139: строка книги знаний — уже правило (Д1, Д2 в `known_trims`).
+    Книга 146: «разные команды» — разные по сходству имён, а не по буквам:
+    «Bydgoszcz» и «Bydgoszcz W», «Heart» и «Hearts», «Finsko» и «Finland» —
+    одна команда, записанная по-разному, и правилом слова не делают."""
     if (row.get("answered_by") or BY_PROGRAM) != BY_PROGRAM:               # Д1
         return True
-    return len(seen_teams(row.get("seen_with"))) >= BOOK_TEAMS            # Д2
+    different: list[str] = []
+    for team in seen_teams(row.get("seen_with")):
+        bare = _strip_marks(team)
+        if all(names.similarity(bare, other) < names.SIMILAR_ENOUGH for other in different):
+            different.append(bare)
+    return len(different) >= BOOK_TEAMS                                    # Д2
 
 
 _KNOWN_TRIMS: dict | None = None
@@ -725,6 +733,9 @@ def tournament_whole(program: Program, verdict: live.Verdict,
           показ эфиром не признал (иначе строка сюда бы не дошла) — значит,
           это запись: «Nitto ATP Finals: Shelton - Fils» у movistarplus.es
           наутро после матча, в минуту начала чужой встречи (сбор 15.11).
+      (книга 146: в Т4 и Т5 турнир узнаётся по ГОРОДУ, в любом туре —
+      `broadcast.city`; исключение Т4 действует только в днях, на которые у
+      эталона уже есть теннисная сетка — `broadcast.covered`.)
       Т4. Сайт пометил эфир — берём. Исключение: тур и город узнаны, эталон
           богат теннисом (`broadcast.RICH`), а этого турнира в нём нет вовсе
           — турнир сейчас не идёт, это запись («ATP Shanghai» с пометкой
@@ -757,16 +768,24 @@ def tournament_whole(program: Program, verdict: live.Verdict,
         return None
     if not broadcast.names_tournament(head):                             # Т3
         return None
-    if reference is not None and any(reference.may_know(home, away)      # Т0
-                                     for home, away in pair_guesses(program)):
+    # Т0. Книга 146: догадка о паре — игроки, только если ни одна её сторона
+    # сама не название турнира: «Теннис. WTA. Итоговый турнир. Индиан» —
+    # «Уэллс. Финал» (news.by, город с дефисом) эталон «знал» по словам
+    # «Индиан» и «Уэльс», и прямой эфир финала терялся
+    if reference is not None and any(
+            reference.may_know(home, away) for home, away in pair_guesses(program)
+            if not broadcast.names_tournament(home) and not broadcast.names_tournament(away)):
         return None
     known = reference.tournaments() if reference is not None else None
     found = broadcast.key(head, known) if known else ("", "")
-    near = bool(known and found[1]
-                and broadcast.starts_near(found, start_kyiv, known))
+    # книга 146: «идёт ли турнир» спрашиваем по ГОРОДУ, в любом туре — сайт и
+    # эталон зовут тур по-разному («WTA 125 Colina» у эталона — Challenger)
+    where = (found[1] or broadcast.city(head, known)) if known else ""
+    near = bool(where and broadcast.city_starts_near(where, start_kyiv, known))
     if verdict.reason == NO_PAIR:                                        # Т4
-        if known and found[1] and not broadcast.played(found, known) \
-                and known.get("matches", 0) >= broadcast.RICH:
+        if where and not broadcast.city_played(where, known) \
+                and known.get("matches", 0) >= broadcast.RICH \
+                and broadcast.covered(start_kyiv, known):
             return None
         marker = verdict.live_marker
     else:                                                                # Т5
@@ -776,7 +795,7 @@ def tournament_whole(program: Program, verdict: live.Verdict,
         marker = REFERENCE_MARKER
     name = next((text for text in (title, " ".join(x for x in (league, title) if x))
                  if broadcast.names_tournament(text)), head)              # Т6
-    program.extra[TOURNAMENT] = {"тур": found[0], "город": found[1], "эталон": near}
+    program.extra[TOURNAMENT] = {"тур": found[0], "город": where, "эталон": near}
     return live.Verdict(True, "", live_marker=marker, home=name,
                         away=broadcast.SESSION)
 
@@ -811,9 +830,11 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     # сайте подписаны как обычно — считаем метку раньше отсева: она нужна и
     # вопросу эталону ниже (женскую пару с мужским матчем он не сведёт)
     row.league = leagues.clean(program.league_raw)
+    # поля — через «|» (книга 146): примечание в конце заголовка («начнётся
+    # после женского баскетбола») не должно съесть начало описания
     row.league_category = leagues.category(
-        " ".join(x for x in (program.league_raw, program.title,
-                             program.description) if x), langs)
+        " | ".join(x for x in (program.league_raw, program.title,
+                               program.description) if x), langs)
 
     verdict = live.check(program, markers)
     row.live_marker = verdict.live_marker

@@ -698,6 +698,30 @@ def _retract_multicast(conn: sqlite3.Connection, rows: set[tuple[str, str, str]]
     return gone
 
 
+def tournament_renamed(game: dict, found) -> bool:
+    """Книга 145: сведённое имя трансляции турнира вытесняет сырой заголовок.
+
+    Игра попала в базу, когда трансляция турнира звалась заголовком сайта,
+    разрезанным по тире («ATP» — «Nitto ATP Finals»). Теперь разбор сводит её
+    по туру и городу («ATP Finals Turin» + служебная сторона
+    `broadcast.SESSION`), заливка находит прежнюю игру по каналам — и имена
+    должны стать сведёнными: иначе на витрине остаётся старая подпись, а
+    стадию витрина ищет только у сведённой строки (ночь 16.11: после первого
+    разбора новым кодом строки стояли как «ATP — Nitto ATP Finals»). Правила:
+      1. пришедшая игра — сведённая трансляция (вторая сторона — SESSION);
+      2. игра базы — тоже трансляция турнира без игроков (`broadcast.is_title`),
+         но ещё не сведённая, и метки эталона у неё нет (матч с игроками
+         трансляцией не становится);
+      3. тогда обе стороны игры базы берутся из пришедшей."""
+    if game.get("away") != broadcast.SESSION or not game.get("home"):          # 1
+        return False
+    if (found["team_away_auto"] or "") == broadcast.SESSION \
+            or str(found["flags"] or "").startswith("fs:"):                    # 2
+        return False
+    return broadcast.is_title("T", found["team_home_auto"] or "", found["team_away_auto"] or "") \
+        and (game.get("sport") or "") == "T"
+
+
 def save_games(conn: sqlite3.Connection, games: list[dict],
                now: datetime | None = None, punish: bool = True,
                coverage: miss.Покрытие | None = None,
@@ -861,6 +885,9 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                                  ("team_away_auto", game["away"])):
                 if _is_latin(value) and not _is_latin(found[field] or ""):
                     sets[field] = value
+            if tournament_renamed(game, found):                    # книга 145
+                sets["team_home_auto"] = game["home"]
+                sets["team_away_auto"] = game["away"]
             if league and not league.upper().endswith(": FOOTBALL"):
                 sets["league_auto"] = league
                 if league_ids.get(league):

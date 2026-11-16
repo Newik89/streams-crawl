@@ -151,8 +151,10 @@ def without_notes(raw: str, langs=None) -> str:
     if cut is None:
         parts = [pattern for own, pattern in _AFTER_BY_LANG
                  if langs is None or set(own) & set(langs)]
+        # книга 146: примечание кончается и на скобке, запятой, двоеточии —
+        # иначе оно съедало название женской лиги, стоящее следом
         cut = _AFTER_CACHE[key] = re.compile(
-            rf"(?:{'|'.join(parts)})[^.!?|\n]*", re.I) if parts else False
+            rf"(?:{'|'.join(parts)})[^.!?|\n(),:;]*", re.I) if parts else False
     return cut.sub(" ", raw or "") if cut else (raw or "")
 
 
@@ -256,11 +258,24 @@ _ROUND_WORDS = (
     "מחזור",
 )
 _ROUND_WORD = "|".join(re.escape(w) for w in _ROUND_WORDS)
-#: тур с числом вместе с разделителем перед ним: число — до слова (с точкой,
-#: буквой порядкового «η», «a», «ª», «º») или после него
-_ROUND_MARK = re.compile(
-    rf"\s*[-–—,(|:]?\s*(?:\b\d{{1,2}}\s?[.ηaªº°]?\s*(?:{_ROUND_WORD})(?!\w)"
-    rf"|(?<!\w)(?:{_ROUND_WORD})\s*\d{{1,2}}\b)", re.I)
+#: тур с числом ПОСЛЕ слова: «Journée 5», «Spieltag 5», «מחזור 6». Ищется
+#: первым: в «Ligue 1 Journée 5» единица — номер лиги, а не тура (книга 146)
+_ROUND_AFTER = re.compile(rf"(?<!\w)(?:{_ROUND_WORD})\s{{0,3}}\d{{1,2}}\b", re.I)
+#: тур с числом ПЕРЕД словом — только когда число помечено порядковым знаком
+#: («10. Spieltag», «11η Αγωνιστική», «7a giornata») или перед ним стоит
+#: разделитель («Премьер-лига. 15 тур», «Cup - 3 kolo»). Голое число после
+#: слова названия («Liga Portugal 2 Jornada») — номер лиги (книга 146)
+_ROUND_BEFORE = re.compile(
+    rf"(?:\b\d{{1,2}}\s?[.ηaªº°]\s{{0,3}}|(?<=[-–—,(|:.]\s)\d{{1,2}}\s{{1,3}})(?:{_ROUND_WORD})(?!\w)", re.I)
+
+
+def _round_at(text: str) -> int:
+    """Где в тексте начинается тур с числом; −1 — тура нет."""
+    for pattern in (_ROUND_AFTER, _ROUND_BEFORE):
+        found = pattern.search(text)
+        if found:
+            return found.start()
+    return -1
 
 
 def _tail_off(text: str) -> str:
@@ -272,26 +287,39 @@ def _tail_off(text: str) -> str:
     — «Women's Super League (10. Spieltag): Aston Villa - Birmingham City».
     С таким хвостом лигу не узнаёт словарь, а на витрине у матча без эталона
     стоит вся строка (замер по всем сайтам сбора 15.11: 12 игр из 482).
-    Правила по порядку:
+    Правила по порядку (уточнены книгой 146 по независимой проверке):
       1. части через «|»: передние, где только вид спорта («Ποδόσφαιρο |
-         …»), пропускаются; лига — первая оставшаяся часть, дальше хвост;
-      2. тур с числом (`_ROUND_MARK`) и всё после него — хвост, если ПЕРЕД
-         туром есть название (хоть одна буква). Тур в начале («etapa 6
-         Nations League») не трогаем: резать было бы нечего оставить;
-      3. от названия ничего не осталось — возвращаем как было: решит
-         остальная чистка."""
+         …»), пропускаются; хвост — часть с туром и всё после неё. Частей
+         без тура не трогаем: «England | Premier League» — страна и лига,
+         а не лига и хвост;
+      2. тур с числом (`_round_at`) и всё после него — хвост, если ПЕРЕД
+         туром есть название (хоть одна буква). Число перед словом тура без
+         порядкового знака — номер лиги («Liga Portugal 2 Jornada 10» →
+         «Liga Portugal 2»). Тур в начале («etapa 6 Nations League») не
+         трогаем: резать было бы нечего оставить;
+      3. ничего не срезано — название возвращается буква в букву; от
+         названия ничего не осталось — тоже как было."""
     out = text
     if "|" in out:                                                            # 1
         parts = [p.strip() for p in out.split("|") if p.strip()]
         while len(parts) > 1 and only_sport(parts[0]):
             parts.pop(0)
+        for n, part in enumerate(parts):
+            if n and _round_at(part) == 0:
+                parts = parts[:n]
+                break
         if parts:
-            out = parts[0]
-    found = _ROUND_MARK.search(out)                                           # 2
-    if found and any(ch.isalpha() for ch in out[:found.start()]):
-        out = out[:found.start()]
-    out = out.strip(_EDGE + "(")
-    return out if any(ch.isalpha() for ch in out) else text                   # 3
+            out = " | ".join(parts)
+    at = _round_at(out)                                                       # 2
+    if at > 0 and any(ch.isalpha() for ch in out[:at]):
+        out = out[:at].rstrip(_EDGE + "(")
+        # тур стоял внутри скобки («(Nachholspiel, 12. Spieltag)») — скобка
+        # уходит целиком, незакрытой не оставляем (проверка на данных 16.11)
+        if out.count("(") > out.count(")"):
+            out = out[:out.rindex("(")].rstrip(_EDGE + "(")
+    if out == text or not any(ch.isalpha() for ch in out):                    # 3
+        return text
+    return out
 
 
 def clean(raw: str) -> str:
@@ -300,7 +328,9 @@ def clean(raw: str) -> str:
     Возвращает пустую строку, если после чистки ничего не осталось — значит
     сайт положил в поле лиги только вид спорта, и опираться на него нельзя.
     """
-    text = (raw or "").strip()
+    # книга 146: пробелы — по одному. Шаблоны сезона и хвостов на длинной
+    # серии пробелов (отступы, переводы строк в поле лиги) считали минутами
+    text = " ".join((raw or "").split())
     if not text:
         return ""
     text = _tail_off(text)                 # книга 144: тур, стадия, место

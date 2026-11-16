@@ -75,7 +75,7 @@ print("2. У каждого латинского служебного слова
 общие = {" ".join(w.lower().split()) for w in разметка.get("_общие", [])}
 markers = json.loads(live.MARKERS_FILE.read_text(encoding="utf-8"))
 слова = {" ".join(w.lower().split())
-         for section in ("live", "not_live", "stop_title", "stop_genre")
+         for section in ("live", "not_live", "stop_title", "stop_genre", "stop_lead")
          for w in live._flatten(markers.get(section))}
 латинские = {w for w in слова if re.search(r"[a-z]", w)
              and not re.search(r"[Ͱ-ϿЀ-ӿ֐-׿؀-ۿ]", w)}
