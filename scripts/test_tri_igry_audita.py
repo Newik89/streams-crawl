@@ -62,15 +62,19 @@ print("Хвост у названия лиги: тур, стадия, место
           "Liga Portugal 2", "Премьер-лига", "ליגת העל"])
 проверка("правило 2: тур в начале не трогаем — резать было бы нечего оставить",
          leagues.clean("etapa 6 Nations League: Spania-Anglia Grupe"), "etapa 6 Nations League: Spania-Anglia Grupe")
-проверка("слово тура без числа и число в самом названии лиги — не хвост",
-         [leagues.clean(x) for x in ("Round Robin", "Round of 16", "Тур де Франс", "2. Bundesliga", "1. HNL",
-                                     "Liga Portugal 2", "ATP 500 Tokyo", "Serie A")],
+проверка("слово тура без числа и число в самом названии лиги — не хвост (срез хвоста их не трогает)",
+         [leagues._tail_off(x) for x in ("Round Robin", "Round of 16", "Тур де Франс", "2. Bundesliga", "1. HNL",
+                                         "Liga Portugal 2", "ATP 500 Tokyo", "Serie A")],
          ["Round Robin", "Round of 16", "Тур де Франс", "2. Bundesliga", "1. HNL", "Liga Portugal 2",
           "ATP 500 Tokyo", "Serie A"])
-проверка("правило 3: от названия ничего не осталось — как было; прежняя чистка цела",
-         [leagues.clean(x) for x in ("| 11η Αγωνιστική", "Scottish Premiership (15. Spieltag)",
-                                     "Piłka nożna: Liga angielska", "LaLiga EA Sports (T26/27)")],
+проверка("правило 3: от названия ничего не осталось — срез хвоста отдаёт как было; прежняя чистка цела",
+         [leagues._tail_off("| 11η Αγωνιστική")]
+         + [leagues.clean(x) for x in ("Scottish Premiership (15. Spieltag)", "Piłka nożna: Liga angielska",
+                                       "LaLiga EA Sports (T26/27)")],
          ["11η Αγωνιστική", "Scottish Premiership", "Liga angielska", "LaLiga EA Sports"])
+проверка("книга 156: название из одних слов стадии и тура — уже не лига (раньше оставалось как было)",
+         [leagues.clean(x) for x in ("Round Robin", "Round of 16", "| 11η Αγωνιστική", "Тур де Франс", "ATP 500 Tokyo")],
+         ["", "", "", "Тур де Франс", "ATP 500 Tokyo"])
 проверка("пол и возраст читаются по сырой строке, до снятия хвоста",
          (leagues.category("Προκριματικά Eurobasket Γυναικών 2027 | Β’ Προκριματική Φάση", site_lang.of("ert.gr")),
           leagues.category("Elite League U19 | 8η Αγωνιστική")), ("W", "U19"))

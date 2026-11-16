@@ -889,6 +889,11 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     # книга 138: строка — трансляция турнира одним куском; её «пара» —
     # название турнира и служебная сторона, меток пола и возраста не носит
     whole_title = TOURNAMENT in (program.extra or {})
+    # книга 156: в поле лиги — не лига (хвост заголовка, стадия, сама пара):
+    # пара уже известна — лигу решают правила Л1–Л6 (`leagues.settle`)
+    if not whole_title:
+        row.league = leagues.settle(program.league_raw, program.title,
+                                    verdict.home, verdict.away)
     # книга 095 (#9541): сторона пары — имя своего канала («Sport 2 - Program
     # Sportiv» у ipko) — заставка канала, а не матч: ни на витрину, ни в очередь
     if channel_side(program.channel_raw, row.home, row.away, reference):

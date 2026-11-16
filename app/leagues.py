@@ -343,9 +343,223 @@ def clean(raw: str) -> str:
     text = _YEAR_TAIL.sub("", text)
     text = _EMPTY_BRACKETS.sub(" ", text)
     text = re.sub(r"\s{2,}", " ", text).strip(_EDGE)
+    # книга 156: пометка эфира на краю и стадия в скобках — не название (Л1,
+    # Л2); остались одни слова стадии и тура — лиги нет (Л3)
+    text = _stage_tail_off(_air_off(text)).strip(_EDGE)
+    if stage_only(text):
+        return ""
     # книга 143: в названии только слова самого вида спорта — это жанр, а не
-    # лига («futbolli» у ipko.tv, «tenis Tenis» у digisport.ro)
-    return "" if only_sport(text) else text
+    # лига («futbolli» у ipko.tv, «tenis Tenis» у digisport.ro); книга 156 —
+    # то же, когда к виду спорта дописана стадия («tenis Tenis Ziua 6»)
+    return "" if only_sport(text) or only_sport(_stage_rest(text)) else text
+
+
+# ── книга 156: в поле лиги — не лига ─────────────────────────────────────────
+# Находки 16.11: на витрине на месте лиги стояли «Тур 15 Прямая трансляция»
+# (ntvplus.tv: хвост заголовка вместо названия), «alapszakasz» (венгерское
+# «регулярный сезон»), «Τελικός» («финал», ert.gr), сама пара игры («Philadelphia
+# 76ers – Boston Celtics», dagenstv.com; «Ferencvárosi TC - ETO FC mérkőzés»,
+# mediaklikk.hu), лига с парой и пометкой эфира (vsetv.com, sports.kz). Такая
+# «лига» первой по времени строки становилась лигой всей игры и не давала
+# взять настоящую — с другого сайта или из эталона. Правила (для ВСЕХ сайтов):
+#   Л1. Пометка эфира на краю названия — не название (`_air_off`): в конце
+#       срезается вместе с тем, что после неё («Кубок Португалии Прямая
+#       трансляция», «ABA, direktno»), в начале — само слово («Live UEFA
+#       Nations League»). Слова — раздел `live` файла `data/markers.json`.
+#   Л2. Стадия в скобках в конце — не название: «CONMEBOL Sudamericana
+#       (Finale)» (`_stage_tail_off`).
+#   Л3. В названии остались только слова стадии, тура, пометки эфира и числа
+#       («Тур 15», «alapszakasz», «(parovi) FINALE», «Τελικός») — лиги нет
+#       (`stage_only`). Слова стадии — раздел `league_stage` файла
+#       `data/markers.json` и раздел `tournament` → «стадия»; слова тура —
+#       `_ROUND_WORDS`.
+#   Л4. В названии стоит сама пара строки (обе стороны, между ними только
+#       разделитель) — всё с начала пары срезается; остаток — лига, если от
+#       него что-то осталось (`without_pair`).
+#   Л5. Поле лиги сайт заполнил, а лиги в нём не оказалось (Л1–Л4), — лигу
+#       читает общий читатель из рубрик заголовка (`from_title`): части
+#       заголовка ДО пары по порядку; первая, которая после чистки осталась
+#       названием, — лига. То же, когда поле лиги начинается с пометки эфира,
+#       а в заголовке перед этой пометкой есть рубрика («Чемпионат мира среди
+#       юношей (U-17). Прямая трансляция из Катара. Катар - Панама»).
+#   Л6. Ничего не нашлось — лига пустая: игра возьмёт лигу другого сайта или
+#       эталона. Поле лиги, где сайт написал только вид спорта (книга 143),
+#       читателя заголовка не зовёт — там лиги и не было.
+# Всё решение для строки — `settle`; его зовёт `pipeline.classify`, когда пара
+# уже известна. Правила Л1–Л3 делает и сама `clean`.
+_NOT_LEAGUE: list = []          # (слова стадии и тура, пометки эфира) — строятся один раз
+#: края названия: знаки и кавычки; скобки — только там, где сказано
+_EDGE_Q = _EDGE + "\"'«»„“”"
+#: Л4: что может стоять между сторонами пары — разделитель и скобки («(BRA) -»)
+_PAIR_GAP = re.compile(r"^[\s\-–—:|/,.@&\"'«»„“”xXvVsS]{1,8}$")
+_BRACKETED = re.compile(r"[(\[][^()\[\]]*[)\]]")
+#: Л5: границы рубрик заголовка: «:», «|», точка после буквы, запятая
+_TITLE_PARTS = re.compile(r"\s*[:|]\s*|(?:(?<=[^\W\d_])|(?<=[)\]\"»“]))\.\s+|,\s+")
+#: Л5: рубрика длиннее — уже рассказ, а не название
+TITLE_LEAGUE_MAX = 70
+
+
+def _stage_air() -> tuple:
+    """(шаблон слов стадии и тура, шаблон пометок эфира) — из `data/markers.json`."""
+    if not _NOT_LEAGUE:
+        import json
+        from .live import MARKERS_FILE, _flatten, _pattern
+        data = json.loads(MARKERS_FILE.read_text(encoding="utf-8"))
+        stage = (_flatten(data.get("league_stage"))
+                 + _flatten((data.get("tournament") or {}).get("стадия"))
+                 + list(_ROUND_WORDS))
+        _NOT_LEAGUE.extend((_pattern(stage), _pattern(_flatten(data.get("live")))))
+    return _NOT_LEAGUE[0], _NOT_LEAGUE[1]
+
+
+def _air_off(text: str) -> str:
+    """Л1: пометка эфира на краю названия срезается. Середину не трогаем:
+    «MOTD Live: Women's Super League» остаётся как есть."""
+    from .live import greek_plain
+    air = _stage_air()[1]
+    if air is None:
+        return text
+    for _ in range(4):                       # пометок на краях бывает две
+        plain = greek_plain(text)            # те же позиции: замена буква в букву
+        cut = text
+        for m in air.finditer(plain):
+            if plain[m.start() - 1:m.start()] == "-" and plain[m.start() - 2:m.start() - 1].isalnum():
+                continue                     # «Re-Live» — часть слова, не пометка
+            if not plain[:m.start()].strip(_EDGE_Q + "(["):                # в начале
+                cut = text[m.end():].lstrip(_EDGE_Q + ")]")
+                break
+            if not plain[m.end():].strip(_EDGE_Q + ")]"):                  # в конце
+                cut = text[:m.start()].rstrip(_EDGE_Q + "([")
+                break
+        if cut == text:
+            break
+        text = cut
+    return text
+
+
+def _stage_rest(text: str) -> str:
+    """Текст без слов стадии, тура, пометок эфира и чисел (с порядковыми
+    знаками: «11η», «7a», «1ª», «15-й», «2nd») — на их месте пробелы."""
+    from .live import greek_plain
+    stage, air = _stage_air()
+    rest = greek_plain(text or "")
+    for pattern in (stage, air):
+        if pattern is not None:
+            rest = pattern.sub(" ", rest)
+    return re.sub(r"\d+\s?(?:[ηaªº°]|-?[йяе]|st|nd|rd|th)?(?!\w)", " ", rest, flags=re.I)
+
+
+def stage_only(text: str) -> bool:
+    """Л3: в тексте есть слова, но все они — стадия, тур или пометка эфира
+    (числа и знаки не в счёт): «Тур 15», «alapszakasz», «1/8 финала»,
+    «(parovi) FINALE». Пустой текст — не стадия."""
+    text = (text or "").strip()
+    if not any(ch.isalpha() for ch in text):
+        return False
+    return not any(ch.isalpha() for ch in _stage_rest(text))
+
+
+def _stage_tail_off(text: str) -> str:
+    """Л2: скобка в конце, где только стадия, снимается: «CONMEBOL
+    Sudamericana (Finale)» → «CONMEBOL Sudamericana». Сама по себе скобка
+    («(parovi) FINALE») — дело правила Л3."""
+    while True:
+        m = re.search(r"\s*[(\[]([^()\[\]]*)[)\]]\s*$", text)
+        if not m or not m.start() or not stage_only(m.group(1)):
+            return text
+        text = text[:m.start()].rstrip(_EDGE)
+
+
+#: пометки пола и возраста, дописанные к стороне разбором («Poland W», «Катар U17»)
+_SIDE_MARKS = re.compile(r"(?:\s+(?:W|U-?\d{2}))+$")
+
+
+def _side_spans(text: str, side: str) -> list[tuple[int, int]]:
+    """Где в тексте стоит сторона пары — целыми словами, без учёта регистра.
+    Не нашлась — ищется без дописанных пометок пола и возраста."""
+    side = " ".join((side or "").split())
+    for name in (side, _SIDE_MARKS.sub("", side)):
+        if sum(ch.isalnum() for ch in name) < 2:
+            continue
+        body = r"\s+".join(re.escape(word) for word in name.split())
+        spans = [m.span() for m in re.finditer(rf"(?<!\w){body}(?!\w)", text, re.I)]
+        if spans:
+            return spans
+    return []
+
+
+def _pair_start(text: str, home: str, away: str) -> int:
+    """Л4: где в тексте начинается пара строки — обе стороны рядом, между
+    ними только разделитель и скобки; порядок сторон любой (эталон мог их
+    переставить). Пары нет — −1. Из нескольких мест берётся последнее:
+    «Serbia Cup: Serbia - Montenegro» — пара после двоеточия."""
+    best = -1
+    for first, second in ((home, away), (away, home)):
+        for start, end in _side_spans(text, first):
+            for other, _ in _side_spans(text, second):
+                gap = _BRACKETED.sub("", text[end:other])
+                if other >= end and _PAIR_GAP.match(gap) and gap.strip():
+                    best = max(best, start)
+    return best
+
+
+def without_pair(league: str, home: str, away: str) -> str:
+    """Л4: название лиги без пары строки и всего, что после неё. Пары в
+    названии нет — оно возвращается как было."""
+    at = _pair_start(league or "", home, away)
+    return league if at < 0 else league[:at].rstrip(_EDGE_Q + "([")
+
+
+def from_title(title: str, home: str, away: str, before_air: bool = False) -> str:
+    """Л5: лига из рубрик заголовка — общий читатель для всех сайтов.
+
+      1. берётся часть заголовка ДО пары строки (`_pair_start`); пары в
+         заголовке нет — до первого упоминания любой из сторон; нет и сторон
+         — весь заголовок («OTP Bank Liga, műsor, élő adásban»);
+      2. `before_air` — только то, что стоит до первой пометки эфира;
+      3. рубрики делятся по «:», «|», точке после буквы и запятой
+         (`_TITLE_PARTS`); точка после цифры — не граница («2. Liga»);
+      4. каждая рубрика чистится (`clean`: вид спорта, тур, стадия, пометка
+         эфира); первая, от которой осталось название не длиннее
+         `TITLE_LEAGUE_MAX`, — лига. Не осталось ни одной — пусто."""
+    from .live import greek_plain
+    head = " ".join((title or "").split())
+    at = _pair_start(head, home, away)
+    if at < 0:
+        spots = [span[0] for side in (home, away) for span in _side_spans(head, side)]
+        at = min(spots) if spots else len(head)
+    head = head[:at]
+    if before_air:                                                            # 2
+        air = _stage_air()[1]
+        found = air.search(greek_plain(head)) if air is not None else None
+        head = head[:found.start()] if found else ""
+    for part in _TITLE_PARTS.split(head):                                     # 3
+        name = clean(part.strip(_EDGE_Q))                                     # 4
+        if name and len(name) <= TITLE_LEAGUE_MAX:
+            return name
+    return ""
+
+
+def settle(league_raw: str, title: str, home: str, away: str) -> str:
+    """Книга 156: лига строки, когда пара уже известна (правила Л1–Л6 выше).
+    `home`, `away` — стороны как на сайте; дописанные пометки пола и возраста
+    («Poland W») поиску не мешают (`_side_spans`)."""
+    raw = " ".join((league_raw or "").split())
+    name = clean(raw)                                                         # Л1–Л3
+    if not raw or not home or not away:
+        return name
+    cut = without_pair(name, home, away)                                      # Л4
+    if cut != name:
+        name = clean(cut)
+    if not name:
+        # Л6: сайт написал в поле один вид спорта — лиги не было и нет
+        return "" if only_sport(raw) else from_title(title, home, away)       # Л5
+    from .live import greek_plain
+    air = _stage_air()[1]
+    led = air.match(greek_plain(raw.lstrip(_EDGE_Q + "(["))) if air is not None else None
+    if led:                                                                   # Л5: хвост заголовка
+        return from_title(title, home, away, before_air=True) or name
+    return name
 
 
 #: книга 143: слова, которые вместе с названием вида спорта лиги не дают
