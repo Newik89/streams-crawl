@@ -241,6 +241,11 @@ def _whole_exonyms() -> dict[str, str]:
 #       итальянцы, поляки, немцы, голландцы) — читается как страна, только
 #       когда пол уже назван («W» дала лига или само имя). «Suomi N» без
 #       «W» — не страна: буква в конце может быть частью имени.
+#   Т9 (книга 155). Имя ГРЕЧЕСКИМИ буквами — страна, только если совпало с
+#       её греческим написанием из справочника (`_greek_stranger`): совпадение
+#       транслита с написанием другого языка («Κολούμπια» = польское
+#       «Kolumbia») знанием не считается. У страны без греческого написания
+#       в справочнике правило молчит.
 
 #: короче — только само английское имя или список «короткие» (Т3)
 _COUNTRY_KEY_MIN = 4
@@ -473,6 +478,38 @@ def _fresh_country_keys() -> frozenset[str]:
                      if k not in old and k != country)
 
 
+_GREEK_RE = re.compile(r"[\u0370-\u03ff\u1f00-\u1fff]")
+
+
+@lru_cache(maxsize=1)
+def _greek_country_keys() -> dict[str, frozenset[str]]:
+    """Т9: страна → ключи её написаний ГРЕЧЕСКИМИ буквами из
+    `data/countries.json` (страны без греческого написания тут нет)."""
+    if not COUNTRIES_FILE.exists():
+        return {}
+    known = _country_exonyms()
+    raw = json.loads(COUNTRIES_FILE.read_text(encoding="utf-8"))
+    out: dict[str, set[str]] = {}
+    for spellings in (raw.get("страны") or {}).values():
+        for spelling in spellings:
+            if _GREEK_RE.search(spelling):
+                for key in _country_keys(spelling):
+                    if key in known:
+                        out.setdefault(known[key], set()).add(key)
+    return {country: frozenset(keys) for country, keys in out.items()}
+
+
+def _greek_stranger(name: str, key: str, country: str) -> bool:
+    """Т9 (книга 155): имя греческими буквами совпало с написанием страны
+    только в транслите, а по-гречески страну пишут иначе — это не она.
+    Греческой письменностью пишет один язык, и греческие написания стран в
+    справочнике есть (взяты у эталона): «Κολούμπια» (университет Columbia)
+    читается «KOLUMBIA» — так Колумбию пишут поляки и венгры, а по-гречески
+    она «Κολομβία». У страны без греческого написания правило молчит."""
+    own = _greek_country_keys().get(country)
+    return bool(own) and key not in own and bool(_GREEK_RE.search(name or ""))
+
+
 def _light(name: str) -> str:
     """Имя для ТОЧНОГО сравнения: без пометок пола и возраста, без значков и
     знаков, заглавными. В отличие от `_tidy`, слова «FC», «SC», «Club» не
@@ -558,10 +595,9 @@ def _country_plain(name: str) -> str:
                 return ""
     known = _country_exonyms()
     for key in _country_keys(name):
-        if key in known:
-            return known[key]
-        if key in _country_names():
-            return key
+        country = known.get(key) or (key if key in _country_names() else "")
+        if country and not _greek_stranger(name, key, country):       # Т9
+            return country
     return ""
 
 
@@ -649,6 +685,7 @@ def reload() -> None:
     _fresh_country_keys.cache_clear()
     _country_english.cache_clear()
     _country_display.cache_clear()
+    _greek_country_keys.cache_clear()
     _letter_readings.cache_clear()
     country_of.cache_clear()
     _country_exact.cache_clear()
@@ -786,9 +823,12 @@ def readings(name: str) -> tuple[str, ...]:
     out: list[str] = []
     raws: list[str] = []
     whole, fresh = _whole_exonyms(), _fresh_country_keys()
+    countries = _country_names()
     for v in variants:
         raw = _tidy(v, exonyms=False)
         t = whole.get(raw, raw)                     # то же, что `_tidy(v)`
+        if t != raw and t in countries and _greek_stranger(name, raw, t):
+            t = raw                                 # Т9: «Κολούμπια» — не Колумбия
         if t and t not in out:
             out.append(t)
         # Т8 (книга 104): написание страны из нового справочника сводится к
@@ -1036,12 +1076,50 @@ def _exo(word: str) -> str:
 def _initial_pair(x: str, y: str) -> bool:
     """Инициал равен слову на ту же букву: flashscore сокращает «Maccabi
     Herzliya» до «M. Herzliya», у тенниса пишет «Djokovic N.» (точку к
-    этому месту уже съела нормализация чтений)."""
-    if len(x) == 1 and x.isalpha() and len(y) > 1:
-        return y.startswith(x)
+    этому месту уже съела нормализация чтений).
+
+    Книга 155: инициалы «C» и «K» — одна буква. Имя, записанное другой
+    письменностью, транслит читает по звуку: «Κρίστιαν» — «KRISTIAN»,
+    «Карлос» — «KARLOS», а эталон сокращает английское «Christian», «Carlos»
+    до «C.». Слово сравнивается огрублённым (`_rough`: C, Q → K, а «CH» —
+    отдельный звук): «K.» не закрывает «CHARISON», иначе один инициал закрыл
+    бы и имя, и фамилию. Прочие буквы — только точно: «Q.» не равно «CONNAH»
+    («Connahs Q.» — это «Connah's Quay», замер по эталону 16.11)."""
     if len(y) == 1 and y.isalpha() and len(x) > 1:
-        return x.startswith(y)
+        x, y = y, x
+    if len(x) == 1 and x.isalpha() and len(y) > 1:
+        return y.startswith(x) or (x in "CK" and _rough(y).startswith("K"))
     return False
+
+
+def _own_initial_each(xs: list[str], ys: list[str]) -> bool:
+    """Книга 155: один инициал закрывает ОДНО слово.
+
+    Слово имени `xs`, у которого во втором имени нет своего целого слова
+    (сходство ниже `SIMILAR_ENOUGH`, в том числе огрублённое), держится только
+    на инициале — и каждому такому слову нужен СВОЙ инициал из `ys`. Иначе
+    одна буква закрывала и имя, и фамилию чужого игрока: «Carlos Cabal/Andrey
+    Rublev» сходилась с «Cerundolo C./Rublev A.» на 100 (буква «C» — и
+    «Carlos», и «Cabal»), а с инициалом «C = K» так сошлась бы и пара «Karen
+    Khachanov/Andrey Rublev». Слово со своим целым словом инициала не тратит:
+    в «Kevin Krawietz» против «Krawietz K.» буква «K» достаётся «Kevin»."""
+    initials = [y for y in ys if len(y) == 1 and y.isalpha()]
+    if not initials:
+        return True
+    whole = [y for y in ys if not (len(y) == 1 and y.isalpha())]
+    needy = [x for x in xs if not (len(x) == 1 and x.isalpha())
+             and any(_initial_pair(x, i) for i in initials)
+             and max((max(fuzz.ratio(x, y), fuzz.ratio(_rough(x), _rough(y)))
+                      for y in whole), default=0) < SIMILAR_ENOUGH]
+
+    def placed(n: int, free: tuple[int, ...]) -> bool:
+        """Перебор: слову `needy[n]` — любой ещё свободный подходящий инициал."""
+        if n == len(needy):
+            return True
+        return any(_initial_pair(needy[n], initials[i])
+                   and placed(n + 1, tuple(j for j in free if j != i)) for i in free)
+
+    return len(needy) <= len(initials) and placed(0, tuple(range(len(initials))))
 
 
 def _pairwise(xs: list[str], ys: list[str], initials: bool) -> int:
@@ -1061,7 +1139,8 @@ def _words_score(a: str, b: str) -> int:
     «Maccabi Herzliya», «Djokovic N.» = «Novak Djokovic»), но только когда
     ОСТАЛЬНЫЕ слова пары и без него сошлись почти точно — иначе
     «F.C. Kopenhagen» примазался бы к «Fenerbahce» одной буквой F
-    (#2239, 12.09)."""
+    (#2239, 12.09). И один инициал закрывает одно слово (`_own_initial_each`,
+    книга 155)."""
     xs = [_exo(w) for w in a.split()]
     ys = [_exo(w) for w in b.split()]
     if not xs or not ys:
@@ -1088,7 +1167,8 @@ def _words_score(a: str, b: str) -> int:
         rest_x = [x for i, x in enumerate(xs) if i not in used_x]
         rest_y = [y for j, y in enumerate(ys) if j not in used_y]
         if rest_x and rest_y \
-                and _pairwise(rest_x, rest_y, False) >= SIMILAR_ENOUGH:
+                and _pairwise(rest_x, rest_y, False) >= SIMILAR_ENOUGH \
+                and _own_initial_each(xs, ys):      # книга 155: инициал — на одно слово
             direct = boosted
     rough = int(min(max(fuzz.ratio(_rough(x), _rough(y)) for y in ys)
                     for x in xs))
