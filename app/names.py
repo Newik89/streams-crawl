@@ -601,7 +601,6 @@ def _country_plain(name: str) -> str:
     return ""
 
 
-@lru_cache(maxsize=16384)
 def only_marks_added(old: str, new: str) -> bool:
     """Книга 165: новое имя — это старое имя плюс пометка пола или возраста
     («Thailand» → «Thailand W», «Serbia» → «Serbia U19»). Имена без пометок
@@ -615,6 +614,7 @@ def only_marks_added(old: str, new: str) -> bool:
     return bare.casefold() == old.casefold()
 
 
+@lru_cache(maxsize=16384)
 def country_of(name: str) -> str:
     """Имя ЦЕЛИКОМ — страна из справочника сборных: её английское имя
     заглавными («Scotia» → `SCOTLAND`, «Liettua W» → `LITHUANIA`, «Scotland
