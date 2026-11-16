@@ -216,7 +216,13 @@ def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, 
     «имя» — пара та же (словарь перевёл, сверка поправила) или все каналы
     старой игры при ней (большинство — `_most_channels`), начало ±10 мин;
     «время» — пара та же, начало сдвинулось не дальше СДВИГ_Ч И стало ближе
-    к эталону. Уехала дальше от эталона или эталона нет — не переезд."""
+    к эталону. Уехала дальше от эталона или эталона нет — не переезд;
+    «строка» (книга 158) — ВСЕ каналы старой игры при новой, а новое начало
+    — это время строки, которая у старой игры уже была (тот же канал того
+    же сайта, сдвиг не дальше СДВИГ_Ч): игра не переезжала — у неё ушла
+    ранняя строка (студия перед матчем, novasports.gr «Pre Game Show»
+    19:30 у игры Арис — Ле-Ман; оставшаяся строка 19:55 стоит, где стояла).
+    Ошибку пояса так не спутать: при ней строки сайта меняют время."""
     when = kniga.kyiv(gone["start_kyiv"])
     # та же пара — или те же каналы: имя игры могло взяться у нового сайта
     # («Olympique de Marsella» у movistarplus вместо «Olympique Marseille»,
@@ -235,6 +241,11 @@ def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, 
         if (shift <= timedelta(hours=СДВИГ_Ч) and kick is not None
                 and abs(new_when - kick) < abs(when - kick)):
             return g, "время"
+        if shift <= timedelta(hours=СДВИГ_Ч) and chans and chans <= _chans(g) and any(
+                e.get("start_kyiv") and kniga.kyiv(e["start_kyiv"]) == new_when
+                and (e.get("channel") or "", kniga.bare(e.get("source") or "")) in _chans(g)
+                for e in gone.get("entries") or []):
+            return g, "строка"
     return None, ""
 
 
