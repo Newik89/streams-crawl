@@ -128,6 +128,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             continue
         previous = None
         shift = 0
+        tab: list[Program] = []      # строки одной вкладки дня
         for item in pane.css("ul.tv_content li"):
             clock = item.css_first("p.time")
             title_node = item.css_first("p.title")
@@ -150,10 +151,12 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             start = datetime(first.year, first.month, first.day,
                              int(stamp.group(1)), int(stamp.group(2)),
                              tzinfo=zone) + timedelta(days=shift)
-            out.append(Program(
+            tab.append(Program(
                 channel_raw=channel, title=title, start=start,
                 raw_time=clock.text(strip=True), description=description,
                 league_raw=league, sport_raw=sport, match_raw=_pair(title),
                 source_url=url, extra={"day": start.date().isoformat()},
             ))
+        # книга 151: вкладка начата хвостом вчерашнего вечера — день назад
+        out.extend(daytime.pull_evening_tail(tab))
     return out

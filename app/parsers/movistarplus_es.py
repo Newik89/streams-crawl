@@ -33,6 +33,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, mark_first_show, register
 
 DOMAIN = "movistarplus.es"
@@ -112,7 +113,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=pair, source_url=url,
             extra={"day": start.date().isoformat() if start else ""},
         ))
-    return mark_first_show(out, "directo")
+    # книга 151: страница начата хвостом вчерашнего вечера — день назад
+    return mark_first_show(daytime.pull_evening_tail(out), "directo")
 
 
 def list_channels(html: str) -> list[str]:

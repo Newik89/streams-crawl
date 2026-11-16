@@ -132,4 +132,5 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     # карточек, всё прочее — записи и студийные передачи
     for i in honest:
         out[i].live_raw = "ζωντανά"
-    return out
+    # книга 151: список канала начат хвостом вчерашнего вечера — день назад
+    return daytime.pull_evening_tail(out)

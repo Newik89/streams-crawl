@@ -28,6 +28,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
+from ..live import rubric_parts
 from . import Program, mark_first_show, register
 
 DOMAIN = "tv3.lt"
@@ -106,7 +107,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         desc_node = block.css_first(".description-item .description")
         desc = " ".join(desc_node.text().split()) if desc_node else ""
 
-        chunks = [c.strip() for c in title.split(". ") if c.strip()]
+        # книга 153: делит общий делитель рубрик — инициал игрока частью не считается
+        chunks = rubric_parts(title)
         at = _pair_chunk(chunks)
         pair, league = " ", ""
         if at >= 0:

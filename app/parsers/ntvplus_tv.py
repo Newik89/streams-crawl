@@ -36,6 +36,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
+from ..live import rubric_parts
 from . import Program, register
 
 DOMAIN = "ntvplus.tv"
@@ -50,7 +51,9 @@ _TS = re.compile(r"[?&]ts=(\d{9,11})\b")     # `/channel/…?ts=1791244200&…`
 def _split(title: str) -> tuple[str, str, str]:
     """Заголовок → (вид спорта, лига, пара). Пара — последний кусок с дефисом."""
     clean = _AGE.sub("", title).strip()
-    parts = [p.strip() for p in clean.split(".") if p.strip()]
+    # книга 153: делит общий делитель рубрик — инициал игрока («Р. Абильтаров
+    # - А. Г. де Кастро») частью не считается
+    parts = rubric_parts(clean)
     pair = " "
     tail = ""
     for i in range(len(parts) - 1, -1, -1):

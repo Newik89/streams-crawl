@@ -26,6 +26,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
+from .. import daytime
 from . import Program, register
 
 DOMAIN = "unian.tv"
@@ -83,4 +84,5 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             match_raw=_pair(title), source_url=url,
             extra={"day": start.date().isoformat() if start else ""},
         ))
-    return out
+    # книга 151: страница начата хвостом вчерашнего вечера — день назад
+    return daytime.pull_evening_tail(out)

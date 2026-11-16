@@ -25,6 +25,7 @@ import re
 from datetime import date as _date, datetime
 from zoneinfo import ZoneInfo
 
+from ..live import rubric_parts
 from . import Program, register
 from .tvarenaprogram_com import _year_for
 
@@ -74,7 +75,8 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         if not row or cur is None:
             continue
         body = row.group(3).strip()
-        parts = [p.strip() for p in body.split(". ") if p.strip()]
+        # книга 153: делит общий делитель рубрик — инициал игрока частью не считается
+        parts = rubric_parts(body)
         sport_word = parts[0] if len(parts) > 1 else ""
         pair, league_parts = " ", []
         for part in (parts[1:] if len(parts) > 1 else parts):
