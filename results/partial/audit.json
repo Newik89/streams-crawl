@@ -1,30 +1,20 @@
 {
  "прогон": "raw_live",
- "собрано": "2026-11-16 12:12",
- "подозрений": 15,
+ "собрано": "2026-11-16 21:33",
+ "подозрений": 17,
  "разделы": [
-  {
-   "название": "3. Расписание есть, а игр нет (или резко меньше)",
-   "строки": [
-    "sport1tv.hu: расписание есть (1 стр.), игр 0 — строк разбор не дал вовсе — разметка или настройка источника?"
-   ]
-  },
-  {
-   "название": "6. Помеченный эфир прошёл отсев и пропал",
-   "строки": [
-    "primaplay.ro: 1 строк(и) с пометкой эфира прошли отсев и пропали — 16.11 07:30 Prima Sport 4 «TENIS ATP: TURNEUL CAMPIONILOR — tournament»"
-   ]
-  },
   {
    "название": "7. Кличка: вторая команда сошлась, эта — нет",
    "строки": [
     "allente.no: «Lyon W» ≠ «OL Lyonnes W»? — 19.11 21:45 «Arsenal W — Lyon W» ↔ эталон «Arsenal W — OL Lyonnes W» (EUROPE: UEFA Champions League Women - League phase; у сайта лига «UEFA Women's Champions League») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "bbc.co.uk: «Lyon W» ≠ «OL Lyonnes W»? — 19.11 21:35 «Arsenal W — Lyon W» ↔ эталон «Arsenal W — OL Lyonnes W» (EUROPE: UEFA Champions League Women - League phase; у сайта лига «UEFA Women's Champions League») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
+    "canal11.pt: «RP W» ≠ «Racing Power W»? — 22.11 17:00 «RP W — MARÍTIMO W» ↔ эталон «Racing Power W — Maritimo W» (PORTUGAL: Liga BPI Women; у сайта лига «Liga BPI»)",
     "digisport.ro: «Lokomotiv Plovdiv» ≠ «Lok. Plovdiv»? — 18.11 19:00 «CSM CSU Oradea — Lokomotiv Plovdiv» ↔ эталон «CSM Oradea — Lok. Plovdiv» (EUROPE: FIBA Europe Cup; у сайта лига «baschet Baschet FIBA Europe Cup Grupe») — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "digisport.ro: «Universitatea Craiova» ≠ «Univ. Craiova»? — 22.11 17:30 «UTA Arad — Universitatea Craiova» ↔ эталон «UTA Arad — Univ. Craiova» (ROMANIA: Superliga; у сайта лига «superliga Superliga»)",
-    "ert.gr: «Kronos BC Plasis» ≠ «Kronos Agiou Dimitriou»? — 16.11 21:15 «ΑΕΟ Πρωτέας Βούλας — Kronos BC Plasis» ↔ эталон «Proteas Voulas — Kronos Agiou Dimitriou» (GREECE: Elite League; у сайта лига «Elite League») — эфир угадан: сверка с эталоном СНИМЕТ строку",
-    "movistarplus.es: «Atlético Mineriro» ≠ «Atletico-MG»? — 22.11 00:20 «Boca Juniors — Atlético Mineriro» ↔ эталон «Atletico-MG — Boca Juniors» (SOUTH AMERICA: Copa Sudamericana - Play Offs; у сайта лига «Copa Sudamericana») — эфир угадан: сверка с эталоном СНИМЕТ строку (и ещё 1)",
+    "ipko.tv: «Lyon W» ≠ «OL Lyonnes W»? — 19.11 22:00 «Arsenal W — Lyon W» ↔ эталон «Arsenal W — OL Lyonnes W» (EUROPE: UEFA Champions League Women - League phase; у сайта лига «futbolli») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
+    "movistarplus.es: «Atlético Mineriro» ≠ «Atletico-MG»? — 22.11 00:20 «Boca Juniors — Atlético Mineriro» ↔ эталон «Atletico-MG — Boca Juniors» (SOUTH AMERICA: Copa Sudamericana - Play Offs; у сайта лига «Copa Sudamericana») — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "programetv.ro: «Novegia» ≠ «Norway»? — 17.11 21:45 «Danemarca — Novegia» ↔ эталон «Denmark — Norway» (EUROPE: UEFA Nations League - League A; у сайта лига «UEFA NATIONS LEAGUE»)",
+    "trtspor.com.tr: «LYON W» ≠ «OL Lyonnes W»? — 19.11 22:00 «ARSENAL W — LYON W» ↔ эталон «Arsenal W — OL Lyonnes W» (EUROPE: UEFA Champions League Women - League phase; у сайта лига «UEFA KADINLAR ŞAMPİYONLAR LİGİ FUTBOL») — канон узнаёт пару через местное имя flashscore, а сверка разбора (английские имена) — нет — эфир угадан: сверка с эталоном СНИМЕТ строку",
     "tv3.lt: «Mažeikių „M Basket“» ≠ «Mazeikiai»? — 21.11 14:00 «Kretingos „Kretinga-FlexBlow“ — Mažeikių „M Basket“» ↔ эталон «Kretinga — Mazeikiai» (LITHUANIA: NKL; у сайта лига «URBO-NKL rungtynės») — эфир угадан: сверка с эталоном СНИМЕТ строку"
    ]
   },
@@ -36,45 +26,52 @@
    ]
   },
   {
+   "название": "12. Женская лига без слова «женская»: команды шли мужскими",
+   "строки": [
+    "tvsporten.dk: 1 строк(и) лиги «a-liga» шли мужскими, а эталон знает их женскими (DENMARK: A-Liga Women) — турнир в _WOMEN_LEAGUES (app/leagues.py) — 20.11 19:00 «FC Nordsjælland — Fortuna Hjørring»"
+   ]
+  },
+  {
    "название": "13. Сайт показал матч эталона в эфир, а канала у игры на витрине нет",
    "строки": [
     "cosmotetv.gr: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: нет маркера прямого эфира ×1 — 16.11 14:00 Magenta Sport 1 «Ποδόσφαιρο: Χάποελ Μπερ Σεβά - ΟΦΗ» = эталон Marko — Zakynthos 14:00 (CpGv7woI) [отсев: нет маркера прямого эфира]",
-    "npo.nl: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: стоп-слово в заголовке ×1 — 16.11 21:15 NPO3 «NOS Voetbal Nations League Duitsland - Nederland voorbeschou» = эталон Germany — Netherlands 21:45 (2RA7BZ1C) [отсев: стоп-слово в заголовке: voorbeschouwing]",
-    "raiplay.it: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «угаданный эфир без эталона» ×1 — 16.11 21:30 Rai Sport «Calcio. Serie C Sky Wifi: Perugia-Torres - 14a g.ta» = эталон Perugia — Torres 21:45 (r1Q54Ezp) [снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись]"
+    "ert.gr: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: снято фильтром «угаданный эфир без эталона» ×1 — 21.11 14:45 ΕΡΤ2 ΣΠΟΡ «Ποδόσφαιρο | Superbet League 2 | ΑΕ Λάρισα – Αστέρας Τρίπολη» = эталон AEL Larissa — Asteras Tripolis B 14:45 (t25BLx0B) [снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись]",
+    "movistarplus.es: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: не видно пары команд ×1 — 17.11 18:55 Teledeporte «Croacia - España - Clasificación EuroBasket F T26/27» = эталон Croatia W — Spain W 19:00 (6JDkbfhC) [отсев: не видно пары команд]",
+    "npo.nl: 1 матч(а/ей) эталона сайт показал в эфир, а канала у игры на витрине нет — шаги: отсев: стоп-слово в заголовке ×1 — 16.11 21:15 NPO3 «NOS Voetbal Nations League Duitsland - Nederland voorbeschou» = эталон Germany — Netherlands 21:45 (2RA7BZ1C) [отсев: стоп-слово в заголовке: voorbeschouwing]"
    ]
   }
  ],
  "справка": [
   "kanal1sport.sk class:live ×70 — проверено: «Vysielame» у всех строк подряд (kanal1sport_sk.py, 01.09)",
-  "mediaklikk.hu class:elo ×258 — проверено: «Élő» спрятана (`display:none`) у всех, кроме идущей сейчас (06.10)",
+  "mediaklikk.hu class:elo ×257 — проверено: «Élő» спрятана (`display:none`) у всех, кроме идущей сейчас (06.10)",
   "mediaklikk.hu class:live ×3 — проверено: плеер прямого эфира канала, не передача (06.10)",
   "skai.gr class:live-img ×94 — проверено: LIVE — эфир канала в этот час, не матч (skai_gr.py)",
   "skai.gr class:live ×6 — проверено: пункт меню «Live» сайта (06.10)",
   "unian.tv class:tv-item__now ×1 — проверено: «Зараз в ефірі» — идёт сейчас (unian_tv.py)",
-  "alkass.net: угаданных эфиров снято 11 (повтор / нет в эталоне)",
+  "alkass.net: угаданных эфиров снято 21 (повтор / нет в эталоне)",
   "allente.no: угаданных эфиров снято 48 (повтор / нет в эталоне)",
   "dagenstv.com: угаданных эфиров снято 8 (повтор / нет в эталоне)",
   "diemaxtra.nova.bg: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
   "digisport.ro: угаданных эфиров снято 1 (повтор / нет в эталоне)",
-  "ert.gr: угаданных эфиров снято 9 (повтор / нет в эталоне)",
-  "ipko.tv: угаданных эфиров снято 57 (повтор / нет в эталоне)",
+  "ert.gr: угаданных эфиров снято 12 (повтор / нет в эталоне)",
+  "ipko.tv: угаданных эфиров снято 156 (повтор / нет в эталоне)",
   "mediaklikk.hu: угаданных эфиров снято 2 (повтор / нет в эталоне)",
-  "movistarplus.es: угаданных эфиров снято 107 (повтор / нет в эталоне)",
+  "movistarplus.es: угаданных эфиров снято 112 (повтор / нет в эталоне)",
   "nova.bg: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
   "oneplaysport.cz: угаданных эфиров снято 9 (повтор / нет в эталоне)",
   "port.hu: угаданных эфиров снято 7 (повтор / нет в эталоне)",
   "programetv.ro: угаданных эфиров снято 2 (повтор / нет в эталоне)",
   "programme-tv.net: угаданных эфиров снято 4 (повтор / нет в эталоне)",
-  "raiplay.it: угаданных эфиров снято 4 (повтор / нет в эталоне)",
+  "raiplay.it: угаданных эфиров снято 3 (повтор / нет в эталоне)",
   "rts.rs: угаданных эфиров снято 2 (повтор / нет в эталоне)",
   "sport5.co.il: помеченных эфиром снято фильтром «вторая строка того же канала у той же игры» — 2",
-  "sports.kz: угаданных эфиров снято 22 (повтор / нет в эталоне)",
+  "sports.kz: угаданных эфиров снято 20 (повтор / нет в эталоне)",
+  "ssport.tv: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
   "trt.net.tr: угаданных эфиров снято 2 (повтор / нет в эталоне)",
   "tv.orf.at: угаданных эфиров снято 2 (повтор / нет в эталоне)",
   "tv2.no: угаданных эфиров снято 4 (повтор / нет в эталоне)",
-  "tv3.lt: угаданных эфиров снято 85 (повтор / нет в эталоне)",
+  "tv3.lt: угаданных эфиров снято 83 (повтор / нет в эталоне)",
   "tvarenasport.ba: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
-  "tvarenasport.com: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
   "tvarenasport.hr: помеченных эфиром снято фильтром «повтор по flashscore: матч уже сыгран» — 1",
   "tvpassport.com: угаданных эфиров снято 13 (повтор / нет в эталоне)",
   "vsetv.com: угаданных эфиров снято 5 (повтор / нет в эталоне)",
@@ -99,6 +96,26 @@
    "шаг": "отсев: нет маркера прямого эфира"
   },
   {
+   "сайт": "ert.gr",
+   "канал": "ΕΡΤ2 ΣΠΟΡ",
+   "показ": "2026-11-21T14:45",
+   "подпись": "Ποδόσφαιρο | Superbet League 2 | ΑΕ Λάρισα – Αστέρας Τρίπολης Β’ | 12η Αγωνιστική",
+   "fs_id": "t25BLx0B",
+   "эталон": "AEL Larissa — Asteras Tripolis B",
+   "начало": "2026-11-21T14:45",
+   "шаг": "снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись"
+  },
+  {
+   "сайт": "movistarplus.es",
+   "канал": "Teledeporte",
+   "показ": "2026-11-17T18:55",
+   "подпись": "Croacia - España - Clasificación EuroBasket F T26/27",
+   "fs_id": "6JDkbfhC",
+   "эталон": "Croatia W — Spain W",
+   "начало": "2026-11-17T19:00",
+   "шаг": "отсев: не видно пары команд"
+  },
+  {
    "сайт": "npo.nl",
    "канал": "NPO3",
    "показ": "2026-11-16T21:15",
@@ -107,16 +124,6 @@
    "эталон": "Germany — Netherlands",
    "начало": "2026-11-16T21:45",
    "шаг": "отсев: стоп-слово в заголовке: voorbeschouwing"
-  },
-  {
-   "сайт": "raiplay.it",
-   "канал": "Rai Sport",
-   "показ": "2026-11-16T21:30",
-   "подпись": "Calcio. Serie C Sky Wifi: Perugia-Torres - 14a g.ta",
-   "fs_id": "r1Q54Ezp",
-   "эталон": "Perugia — Torres",
-   "начало": "2026-11-16T21:45",
-   "шаг": "снято фильтром «угаданный эфир без эталона»: эфир угадан, а пары нет в эталоне в ±3 ч — запись"
   }
  ]
 }
