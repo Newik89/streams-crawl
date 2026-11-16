@@ -1049,7 +1049,9 @@ def next_tie_games(found: list, reference_full: list) -> int:
          строка не трогается;
       3. начало встречи — самый ранний показ этой встречи у всех сайтов;
       4. показ не позже окна склейки (`merge.WINDOW_MINUTES`) от начала —
-         сама встреча: строка с парой остаётся как была;
+         сама встреча: строка с парой остаётся; лига и пометки сборных («W»)
+         — из эталона (книга 165: Japan — Argentina у sport5.co.il 21.11, а
+         у эталона встреча стоит на 22.11 — сверка по времени её не узнаёт);
       5. показ позже, и сайт САМ пометил его прямым эфиром (`honest_live`) —
          следующая игра встречи: строка становится трансляцией турнира
          (название турнира из эталона и служебная сторона
@@ -1070,6 +1072,8 @@ def next_tie_games(found: list, reference_full: list) -> int:
         except ValueError:
             continue
         ties.append({"турнир": name, "лига": ref.get("league") or "",
+                     # книга 165: пометки пола и возраста сборных у эталона («W»)
+                     "метки": names.category(ref.get("home") or ""),
                      "страны": countries, "начало": start,
                      "ключ": ref.get("fs_id") or f"{sorted(countries)}"})
     if not ties:
@@ -1087,7 +1091,14 @@ def next_tie_games(found: list, reference_full: list) -> int:
         first = min(r.start_kyiv for _d, r, _t in rows)                   # 3
         for domain, r, tie in rows:
             if r.start_kyiv - first <= timedelta(minutes=merge.WINDOW_MINUTES):
-                continue                                                  # 4
+                # 4. Сама встреча. Книга 165: эталон её знает (хоть и ставит,
+                # бывает, на соседний день — тогда сверка по времени молчит):
+                # лига и пометки сборных («W») берутся из эталона уже здесь
+                r.league = tie["лига"]
+                if tie["метки"]:
+                    r.home = leagues.with_category(r.home, tie["метки"])
+                    r.away = leagues.with_category(r.away, tie["метки"])
+                continue
             if not honest_live(domain, r):
                 continue                                                  # 6
             r.home, r.away = tie["турнир"], broadcast.SESSION             # 5

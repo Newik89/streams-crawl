@@ -425,6 +425,25 @@ def _sport_words(path: Path | None = None) -> re.Pattern | None:
     return _pattern(_flatten(node.get("вид спорта")))
 
 
+@lru_cache(maxsize=4)
+def _not_live_words(path: Path | None = None) -> re.Pattern | None:
+    """Книга 163: слова повтора, обзора, жеребьёвки и студии в заголовке
+    трансляции турнира — раздел `tournament_not_live` того же
+    `data/markers.json`."""
+    data = json.loads((path or MARKERS_FILE).read_text(encoding="utf-8"))
+    return _pattern(_flatten(data.get("tournament_not_live")))
+
+
+def not_live_title(text: str) -> str:
+    """Книга 163: слово, по которому заголовок трансляции турнира — не эфир
+    («ATP Finals: Redifusión», «Sorteo ATP Finals», «Sintesi», студия «La
+    pista del Tenis»); пусто — такого слова нет. Только заголовок, рубрика и
+    лига: описание сюда не давать."""
+    words = _not_live_words()
+    found = words.search(greek_plain(text or "")) if words else None
+    return found.group(0) if found else ""
+
+
 def names_tournament(text: str) -> bool:
     """В тексте назван турнир, а не один лишь вид спорта: кроме слова
     «теннис» есть слово тура или турнира («ATP», «Open», «Masters»), стадия

@@ -683,6 +683,58 @@ def tidy_sides(home: str, away: str, markers: live.Markers | None = None,
             cut(away, from_end=True) if touched[1] else away)
 
 
+#: книга 164: длиннее такого числа слов прилипшую лигу не ищем
+LEAGUE_SIDE_WORDS = 7
+
+
+def _league_key(text: str) -> str:
+    """Название лиги для сравнения: строчными, пробелы по одному, апостроф один."""
+    return " ".join((text or "").lower().replace("’", "'").split())
+
+
+def league_off_sides(home: str, away: str, known_leagues, own_league: str = "",
+                     reference: Reference | None = None) -> tuple[str, str]:
+    """Книга 164: к стороне пары прилипла ЛИГА без разделителя.
+
+    dagenstv.com пишет строку одним куском: «Häcken - Manchester C UEFA
+    Women's Champions League», «NBA herrar Philadelphia 76ers - Milwaukee
+    Bucks». Эталон такой матч не всегда знает (срез по эталону молчит), а
+    срез слов стадии лигу не видит. Правила по порядку:
+      Л1. Смотрим только внешние края пары — начало хозяев и конец гостей:
+          внутри пары рубрик не бывает.
+      Л2. Прилипшая лига — цепочка от двух до `LEAGUE_SIDE_WORDS` слов на
+          краю, которая буква в букву (без регистра) — название лиги из
+          словаря лиг (`known_leagues`, ключи `leagues.sports_map`) или лига
+          самой строки (`own_league`). Одно слово не режем: в словаре лиг
+          есть лиги-города («Salzburg»), а у клубов — такие же имена.
+      Л3. Цепочка, которая сама страна (`names.country_of`: «Costa Rica»,
+          «South Africa»), — не лига.
+      Л4. От стороны должно остаться имя (`live._still_name`); сторону,
+          которую эталон знает командой целиком, не режем.
+      Л5. Из подходящих цепочек берётся самая длинная.
+    Возвращает (хозяева, гости) — те же, если резать нечего."""
+    own = _league_key(own_league)
+
+    def is_league(words: list[str]) -> bool:
+        phrase = _league_key(" ".join(words))
+        if len(words) < 2 or names.country_of(phrase):                    # Л2, Л3
+            return False
+        return phrase == own or bool(known_leagues and known_leagues.get(phrase))
+
+    def cut(side: str, from_end: bool) -> str:
+        if reference is not None and reference.knows_team(side):          # Л4
+            return side
+        words = side.split()
+        for size in range(min(len(words) - 1, LEAGUE_SIDE_WORDS), 1, -1):  # Л5
+            piece = words[-size:] if from_end else words[:size]
+            rest = " ".join(words[:-size] if from_end else words[size:]).strip(live._TRIM_EDGE)
+            if is_league(piece) and live._still_name(rest):
+                return rest
+        return side
+
+    return cut(home, from_end=False), cut(away, from_end=True)             # Л1
+
+
 def title_over_pair(program: Program, verdict: live.Verdict,
                     reference: Reference | None, start_kyiv: datetime | None,
                     league_category: str = ""):
@@ -911,6 +963,11 @@ def tournament_whole(program: Program, verdict: live.Verdict,
     head = " ".join(x for x in (title, program.sport_raw, league) if x)
     if markers is not None and markers.found(markers.not_live, head):    # Т1
         return None
+    # книга 163: слово повтора, обзора, жеребьёвки или студии в заголовке
+    # трансляции турнира на любом языке — не эфир (у сайта без пометки эфира
+    # такой показ в минуту матча прошёл бы трансляцией)
+    if broadcast.not_live_title(head):                                   # Т1
+        return None
     if sports.detect(head)[0] != "T":                                    # Т2
         return None
     if not broadcast.names_tournament(head):                             # Т3
@@ -1073,6 +1130,24 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     if not whole_title:
         row.league = leagues.settle(program.league_raw, program.title,
                                     verdict.home, verdict.away)
+        # книга 164: к стороне прилипла лига («Manchester C UEFA Women's
+        # Champions League», «NBA herrar Philadelphia 76ers») — срезаем и
+        # решаем лигу заново, уже с чистой парой
+        if verdict.home and verdict.away:
+            чистые = league_off_sides(verdict.home, verdict.away, league_sports,
+                                      row.league, reference)
+            if чистые != (verdict.home, verdict.away):
+                # что срезано: у гостей — хвост стороны, у хозяев — её начало
+                срезано = (verdict.away[len(чистые[1]):] if чистые[1] != verdict.away
+                           else verdict.home[:len(verdict.home) - len(чистые[0])])
+                verdict = live.Verdict(True, "", live_marker=verdict.live_marker,
+                                       home=чистые[0], away=чистые[1])
+                row.home, row.away = verdict.home, verdict.away
+                # поле лиги её не дало (в нём стояла вся строка целиком) —
+                # лига строки и есть то, что срезано со стороны
+                row.league = leagues.settle(program.league_raw, program.title,
+                                            verdict.home, verdict.away) \
+                    or leagues.clean(срезано.strip(live._TRIM_EDGE))
     # книга 095 (#9541): сторона пары — имя своего канала («Sport 2 - Program
     # Sportiv» у ipko) — заставка канала, а не матч: ни на витрину, ни в очередь
     if channel_side(program.channel_raw, row.home, row.away, reference):

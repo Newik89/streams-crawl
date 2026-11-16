@@ -979,6 +979,15 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                                  ("team_away_auto", game["away"])):
                 if _is_latin(value) and not _is_latin(found[field] or ""):
                     sets[field] = value
+            # книга 165: сбор дописал имени пометку пола или возраста из
+            # эталона («Thailand» → «Thailand W») — игра та же, имя и команда
+            # берутся с пометкой: W у женских команд не теряем
+            for field, team_field, value in (
+                    ("team_home_auto", "team_home_id", game["home"]),
+                    ("team_away_auto", "team_away_id", game["away"])):
+                if names.only_marks_added(found[field] or "", value):
+                    sets[field] = value
+                    sets[team_field] = _team_id(team_ids, value)
             if tournament_renamed(game, found):                    # книга 145
                 sets["team_home_auto"] = game["home"]
                 sets["team_away_auto"] = game["away"]
