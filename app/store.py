@@ -793,14 +793,21 @@ def tournament_renamed(game: dict, found) -> bool:
       2. игра базы — тоже трансляция турнира без игроков (`broadcast.is_title`),
          но ещё не сведённая, и метки эталона у неё нет (матч с игроками
          трансляцией не становится);
+      2б. (книга 149) либо игра базы — пара СТРАН без метки эталона
+         (`names.country_of`): так в базе лежала следующая игра командной
+         встречи («Thailand — Schweiz» 11:05), пока разбор не стал отдавать
+         её строкой турнира («Billie Jean King Cup»);
       3. тогда обе стороны игры базы берутся из пришедшей."""
     if game.get("away") != broadcast.SESSION or not game.get("home"):          # 1
         return False
     if (found["team_away_auto"] or "") == broadcast.SESSION \
             or str(found["flags"] or "").startswith("fs:"):                    # 2
         return False
-    return broadcast.is_title("T", found["team_home_auto"] or "", found["team_away_auto"] or "") \
-        and (game.get("sport") or "") == "T"
+    if (game.get("sport") or "") != "T":
+        return False
+    home, away = found["team_home_auto"] or "", found["team_away_auto"] or ""
+    return broadcast.is_title("T", home, away) \
+        or bool(names.country_of(home) or names.country_of(away))             # 2б
 
 
 def save_games(conn: sqlite3.Connection, games: list[dict],

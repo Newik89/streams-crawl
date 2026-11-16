@@ -130,5 +130,29 @@ stats = store.save_games(conn, [игра("ATP Finals Turin", broadcast.SESSION, 
          (sorted([("ATP Finals Turin", broadcast.SESSION, 4), ("WTA", "WTA Finals", 1), ("Alcaraz C.", "Tiafoe F.", 1)]), 0))
 conn.close()
 
+print("Следующая игра командной встречи в базе (`store.tournament_renamed`, правило 2б, книга 149)")
+conn = новая_база()
+БДК = "TEAMS - WOMEN: Billie Jean King Cup - World Group (World) - Relegation - Play Offs"
+store.save_games(conn, [игра("Thailand", "Schweiz", [("teleman.pl", "SRF info", "Tennis – Billie Jean King Cup, Thailand – Schweiz")],
+                             час="11:05")], now=ЧАСЫ)
+store.save_games(conn, [игра("Billie Jean King Cup", broadcast.SESSION,
+                             [("teleman.pl", "SRF info", "Tennis – Billie Jean King Cup, Thailand – Schweiz")],
+                             час="11:05", league=БДК)], now=ЧАСЫ, punish=False)
+проверка("строка пары стран без метки эталона, найденная по каналу, становится строкой турнира — второй строки нет",
+         события(conn), [("Billie Jean King Cup", broadcast.SESSION, 1)])
+
+
+class Строка(dict):
+    """Игра базы для проверки правила без заливки."""
+
+
+сведённая = игра("Billie Jean King Cup", broadcast.SESSION, [])
+проверка("матч игроков и встреча с меткой эталона строкой турнира не становятся",
+         [store.tournament_renamed(сведённая, Строка(team_home_auto="Alcaraz C.", team_away_auto="Tiafoe F.", flags=None)),
+          store.tournament_renamed(сведённая, Строка(team_home_auto="Polska", team_away_auto="Szwecja", flags="fs:abc")),
+          store.tournament_renamed(сведённая, Строка(team_home_auto="Polska", team_away_auto="Szwecja", flags=None))],
+         [False, False, True])
+conn.close()
+
 print(f"\nпроверок: {зелёных + красных}, зелёных: {зелёных}, красных: {красных}")
 sys.exit(1 if красных else 0)
