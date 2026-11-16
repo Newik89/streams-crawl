@@ -33,6 +33,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
+from ..live import rubric_parts
 from . import Program, mark_first_show, register
 
 DOMAIN = "vsetv.com"
@@ -175,13 +176,15 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             league_raw=_league(title)[:120],
             extra={"day": d.isoformat()},
         ))
-    return mark_first_show(out, "прямой эфир")
+    # книга 151: страница начата хвостом вчерашнего вечера — день назад
+    return mark_first_show(daytime.pull_evening_tail(out), "прямой эфир")
 
 
 def _parts(title: str) -> list[str]:
     """Заголовок у сайта — предложения через точку: `Футбол. Чемпионат Англии.
     Премьер-лига. Борнмут - Эвертон.`"""
-    return [p.strip() for p in title.split(".") if p.strip()]
+    # книга 153: делит общий делитель рубрик — инициал игрока частью не считается
+    return rubric_parts(title)
 
 
 def _pair(title: str) -> str:

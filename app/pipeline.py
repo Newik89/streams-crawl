@@ -179,7 +179,8 @@ TITLE_PAIR = "пара_из_заголовка"
 
 
 #: книга 133: пометка строки «у пары срезаны лишние слова» — словарь
-#: {"где": край, "срезано": слова, "было": пара до среза, "по": "эталон" | "книга"}
+#: {"где": край, "срезано": слова, "было": пара до среза, "по": "эталон" | "книга"
+#: | "стадия" (книга 157, `BY_STAGE`)}
 TRIMMED = "обрезка"
 #: книга 139: поле пометки среза — [сторона после слов «перед хозяевами»,
 #: сторона перед словами «после гостей»] в порядке сайта; пусто — с этого
@@ -314,7 +315,9 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
           Madrid»), не режем: такая пара не сошлась потому, что это другой
           матч, а не потому, что к имени что-то прилипло. Иначе «Real
           Madrid - Barcelona» (повтор классики) срезом до «Madrid» ушло бы
-          к идущему в тот же час «Atl. Madrid — Barcelona»;
+          к идущему в тот же час «Atl. Madrid — Barcelona». Срез по концу
+          предложения (`live.sentence_trims`, книга 157) это правило не
+          держит: за точкой стоит другая фраза, не часть имени;
       О7. в срезанных словах стоит стоп-слово передачи (`stop(слова)` —
           студия, обзор, «Die Pre-Game Show») — срез не берём: строка — не
           сам матч, а передача вокруг него;
@@ -352,8 +355,13 @@ def trim_by_reference(pairs: list[tuple[str, str]], reference: Reference | None,
         fixed = {live.TRIM_HOME: reference.knows_team(home),                  # О6
                  live.TRIM_AWAY: reference.knows_team(away)}
         fixed[live.TRIM_BOTH] = fixed[live.TRIM_HOME] or fixed[live.TRIM_AWAY]
+        # книга 157: срез по концу предложения О6 не держит — за точкой стоит
+        # другая фраза, а не часть имени («France. Qualifications à…»: такую
+        # сторону эталон «знает» лишь потому, что сравнение терпит лишние слова)
+        by_dot = {(w, h, a) for w, _c, h, a in live.sentence_trims(home, away)}
         for where, cut, new_home, new_away in live.outer_trims(home, away):   # О2
-            if fixed[where] or (stop is not None and stop(cut)):              # О6, О7
+            if (fixed[where] and (where, new_home, new_away) not in by_dot) \
+                    or (stop is not None and stop(cut)):                      # О6, О7
                 continue
             if not all(_junk_like(part) for part in cut.split(" … ")):        # О8
                 continue
@@ -547,6 +555,134 @@ def trim_over_pair(program: Program, verdict: live.Verdict,
     return None
 
 
+# ── книга 157: в стороне пары — не имя ───────────────────────────────────────
+#: М2, М3: одиночное слово стадии короче — не срезается и стороной-стадией не
+#: считается: так выглядят и сокращения команд («LEG», «DAY», «IDA»)
+STAGE_WORD_MIN = 5
+_TOUR_WORDS: list = []          # слова тура и турнира (теннис) — читаются один раз
+
+
+def _tour_words():
+    """Слова тура и турнира («ATP», «WTA», «Open», «турнир») — раздел
+    `tournament` → «тур и турнир» файла `data/markers.json`. «Пара» с таким
+    словом — название теннисного турнира, у неё своя дорога (`app/broadcast.py`)."""
+    if not _TOUR_WORDS:
+        import json
+        data = json.loads(live.MARKERS_FILE.read_text(encoding="utf-8"))
+        _TOUR_WORDS.append(live._pattern(live._flatten(
+            (data.get("tournament") or {}).get("тур и турнир"))))
+    return _TOUR_WORDS[0]
+
+
+#: книга 157: пометка среза `TRIMMED` — «по»: слова срезаны словарём стадий и
+#: пометок эфира (`tidy_sides`), а не эталоном и не книгой знаний. В книгу
+#: знаний такой срез не учится (`dictionary.note_trims` берёт только «эталон»)
+BY_STAGE = "стадия"
+
+
+def _tidy_mark(home: str, away: str, new_home: str, new_away: str) -> dict:
+    """Пометка `TRIMMED` для среза `tidy_sides` — тот же вид, что у срезов по
+    эталону и по книге: где, что срезано, какой была пара."""
+    def gone(old: str, new: str) -> str:
+        if old.endswith(new):
+            old = old[:len(old) - len(new)]
+        elif old.startswith(new):
+            old = old[len(new):]
+        return old.strip(live._TRIM_EDGE)
+    parts = [(live.TRIM_HOME, gone(home, new_home)) if new_home != home else None,
+             (live.TRIM_AWAY, gone(away, new_away)) if new_away != away else None]
+    parts = [p for p in parts if p]
+    where = live.TRIM_BOTH if len(parts) == 2 else parts[0][0]
+    return {"где": where, "срезано": " … ".join(cut for _where, cut in parts),
+            "было": f"{home} - {away}", "по": BY_STAGE}
+
+
+def _strong_stage(words: str) -> bool:
+    """Слова — стадия или тур без сомнений: только слова стадии, тура, пометки
+    эфира и числа (`leagues.stage_only`), и это не одиночное короткое слово
+    (`STAGE_WORD_MIN`): два слова и больше, слово с числом («Game 7», «8ª
+    jornada», «FINAL 8») либо одно слово от пяти букв («csoportkör»)."""
+    if not leagues.stage_only(words):
+        return False
+    tokens = [t for t in words.split() if any(ch.isalnum() for ch in t)]
+    return len(tokens) >= 2 or sum(ch.isalpha() for ch in words) >= STAGE_WORD_MIN
+
+
+def tidy_sides(home: str, away: str, markers: live.Markers | None = None,
+               reference: Reference | None = None):
+    """Книга 157: к стороне пары прилипло не имя — общие правила для всех
+    сайтов, без эталона (то, что эталон срезать не может: матча в нём нет).
+
+    Находки 16.11: «ligová fáze Faroe Island — Moldavsko» (tv-program.
+    aktuality.sk), «Magyarország — Dánia csoportkör» (mediaklikk.hu), «8ª
+    jornada Bulgaria — España» (movistarplus.es), «FINAL 8 - CHÉQUIA — CANADÁ»
+    (sporttv.pt), «Unicaja — BK KVIS Pardubice Přímý přenos utkání…»
+    (webtv.sk), «Eurobasket Feminino 2027 — 2ª Fase de Qualificação» (rtp.pt:
+    это не пара вовсе, а турнир и стадия). Правила по порядку:
+      М0. «Пара» со словом тура или турнира («ATP — Nitto ATP Finals», «ATP
+          FINALS 2026 — MEIA-FINAL») — название теннисного турнира: её ведут
+          правила `app/broadcast.py`, здесь не трогаем.
+      М1. Пометка эфира внутри стороны (слова `live` на языке сайта): с неё и
+          до конца стороны — приписка об эфире, срезается. Пометка в начале
+          стороны срезается сама.
+      М2. Слова стадии и тура на ВНЕШНИХ краях пары — в начале хозяев и в
+          конце гостей — срезаются (`_strong_stage`; самая длинная цепочка,
+          не больше `live.TRIM_WORDS` слов). Сторону, которую эталон знает
+          как команду, не режем. От стороны должно остаться имя.
+          То же по предложениям: за точкой предложения у гостей (перед ней у
+          хозяев) стоит тур или стадия — всё за точкой не имя: «France.
+          Qualifications à l'EuroBasket féminin. 3e journée. Groupe M.» →
+          «France». Точка сокращения («Eintr. Frankfurt») так не режется:
+          тура за ней нет.
+      М3. Сторона целиком — стадия, тур или пометка эфира (`_strong_stage`):
+          это не команда, и строка — не пара.
+    Возвращает (хозяева, гости) либо None — пары нет (М3)."""
+    tour = _tour_words()
+    if tour is not None and (tour.search(live.greek_plain(home))
+                             or tour.search(live.greek_plain(away))):         # М0
+        return home, away
+
+    def air_off(side: str) -> str:                                            # М1
+        air = markers.live if markers is not None else None
+        found = air.search(live.greek_plain(side)) if air is not None else None
+        if not found:
+            return side
+        before = side[:found.start()].strip(live._TRIM_EDGE + "()[]")
+        return before if live._still_name(before) else side[found.end():].strip(live._TRIM_EDGE + "()[]")
+
+    home, away = air_off(home), air_off(away)
+    if not live._still_name(home) or not live._still_name(away):              # М3
+        return None
+    # слов стадии, тура и чисел в сторонах нет вовсе — дальше смотреть нечего
+    touched = [leagues._stage_rest(side) != live.greek_plain(side) for side in (home, away)]
+    if not any(touched):
+        return home, away
+    if _strong_stage(home) or _strong_stage(away):                            # М3
+        return None
+
+    def cut(side: str, from_end: bool) -> str:                                # М2
+        # по предложениям: среди фраз за точкой (перед ней) есть тур или стадия
+        phrases = live._SENTENCE_END.split(side)
+        if len(phrases) > 1:
+            name, rest = (phrases[0], phrases[1:]) if from_end else (phrases[-1], phrases[:-1])
+            name = name.strip(live._TRIM_EDGE)
+            if live._still_name(name) and any(
+                    _strong_stage(part.strip(live._TRIM_EDGE)) for part in rest):
+                return name
+        if reference is not None and reference.knows_team(side):
+            return side
+        words = side.split()
+        for size in range(min(len(words) - 1, live.TRIM_WORDS), 0, -1):
+            piece = words[-size:] if from_end else words[:size]
+            rest = (" ".join(words[:-size] if from_end else words[size:])).strip(live._TRIM_EDGE)
+            if _strong_stage(" ".join(piece)) and live._still_name(rest):
+                return rest
+        return side
+
+    return (cut(home, from_end=False) if touched[0] else home,
+            cut(away, from_end=True) if touched[1] else away)
+
+
 def title_over_pair(program: Program, verdict: live.Verdict,
                     reference: Reference | None, start_kyiv: datetime | None,
                     league_category: str = ""):
@@ -608,7 +744,7 @@ def title_over_pair(program: Program, verdict: live.Verdict,
 
 def ask_reference(program: Program, verdict: live.Verdict,
                   reference: Reference | None, start_kyiv: datetime | None,
-                  league_category: str = "", stop=None):
+                  league_category: str = "", stop=None, tidy=None):
     """Правило (в): строку, которую отсев не взял (`verdict`), спрашиваем у
     эталона. Пару дают все читатели (`live.split_candidates`), и пара
     строки — догадка, которую эталон подтвердил как эфир
@@ -619,7 +755,9 @@ def ask_reference(program: Program, verdict: live.Verdict,
     Kaiserslautern» первая догадка («2. Bundesliga Live» — «Topspiel: …»)
     сходилась «одной стороной», и игра уезжала на витрину с мусорным именем
     (проверка книги 064, 20.10). Возвращает (новый вердикт, ответ эталона)
-    либо None — тогда строка решается, как раньше."""
+    либо None — тогда строка решается, как раньше.
+    `tidy` (книга 157) — чистка сторон догадки (`tidy_sides`): догадка, где
+    сторона — стадия турнира, а не команда, эталону не предлагается."""
     if reference is None or start_kyiv is None \
             or verdict.reason not in ASK_REFERENCE_REASONS:
         return None
@@ -633,10 +771,19 @@ def ask_reference(program: Program, verdict: live.Verdict,
     # Догадке, которая взялась ТОЛЬКО из описания, нужна пара целиком: описание
     # — свободный текст, и «одной стороной» там сходится что угодно (на сборе
     # 14.11 «Fotbal - Liga národů» у oneplay.cz стало «игрой»)
-    candidates = pair_guesses(program)
-    without_description = pair_guesses(
+    def tidied(pairs: list) -> list:
+        if tidy is None:
+            return pairs
+        out = []
+        for pair in (tidy(*pair) for pair in pairs):
+            if pair is not None and pair not in out:
+                out.append(pair)
+        return out
+
+    candidates = tidied(pair_guesses(program))
+    without_description = tidied(pair_guesses(
         Program(channel_raw=program.channel_raw, title=program.title, start=program.start,
-                match_raw=program.match_raw, description=""))
+                match_raw=program.match_raw, description="")))
     only_described = [pair for pair in candidates if pair not in without_description]
     confirmed: list[tuple[str, str, Confirmed]] = []
     raw_of: dict[tuple[str, str], tuple[str, str]] = {}   # догадка с пометкой → без неё
@@ -837,10 +984,42 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
                                program.description) if x), langs)
 
     verdict = live.check(program, markers)
+    # книга 157: к стороне прилипла стадия или приписка об эфире — чистим
+    # (`tidy_sides`, М1–М2). «Пара» из турнира и стадии (М3) — не пара:
+    #   а) настоящую пару ищем в заголовке и описании, её подтверждает эталон
+    #      (rtp.pt: «Eurobasket Feminino 2027 - 2ª Fase de Qualificação», а
+    #      в описании «Portugal x Alemanha»). Эфир при этом — слово сайта;
+    #   б) не нашлась — строка идёт дальше, как шла, и если вид спорта наш
+    #      (футбол, баскетбол), то пары в ней нет. Чужой вид спорта и теннис
+    #      решаются по-прежнему: там «турнир — стадия» — обычная строка
+    def tidy(home: str, away: str):
+        return tidy_sides(home, away, markers, reference)
+    stage_side = False
+    if verdict.ok:
+        sides = tidy(verdict.home, verdict.away)
+        if sides is None:
+            stage_side = True
+        elif sides != (verdict.home, verdict.away):
+            program.extra[TRIMMED] = _tidy_mark(verdict.home, verdict.away, *sides)
+            verdict = live.Verdict(True, "", live_marker=verdict.live_marker,
+                                   home=sides[0], away=sides[1])
     row.live_marker = verdict.live_marker
     row.home, row.away = verdict.home, verdict.away
     confirmed = None
-    if not verdict.ok:
+    if stage_side:
+        guessed = "live_guess" in program.extra
+        rescued = ask_reference(
+            program, live.Verdict(False, NO_PAIR, live_marker=verdict.live_marker),
+            reference, row.start_kyiv, row.league_category,
+            stop=lambda words: markers.found(markers.stop_title, words), tidy=tidy)
+        if rescued is not None:                                             # а
+            verdict, confirmed = rescued
+            stage_side = False
+            row.by_reference = confirmed.how
+            row.home, row.away = verdict.home, verdict.away
+            if not guessed:
+                program.extra.pop("live_guess", None)       # эфир пометил сайт
+    elif not verdict.ok:
         # Правило (в) починки самопроверки №13 (владелец 20.10): «не уверен —
         # спроси эталон» вместо списков по сайтам. Нет пометки эфира или
         # пара не прочиталась — пару ищут все читатели (`live.split_candidates`,
@@ -851,7 +1030,7 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         # не оспаривает: это сайт сказал прямо
         rescued = ask_reference(
             program, verdict, reference, row.start_kyiv, row.league_category,
-            stop=lambda words: markers.found(markers.stop_title, words))
+            stop=lambda words: markers.found(markers.stop_title, words), tidy=tidy)
         if rescued is None:
             # книга 138: пары нет вовсе, а строка — теннисный турнир одним
             # куском («ATP FINALS 2026») — трансляция турнира без игроков
@@ -889,6 +1068,11 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
     # книга 138: строка — трансляция турнира одним куском; её «пара» —
     # название турнира и служебная сторона, меток пола и возраста не носит
     whole_title = TOURNAMENT in (program.extra or {})
+    # книга 156: в поле лиги — не лига (хвост заголовка, стадия, сама пара):
+    # пара уже известна — лигу решают правила Л1–Л6 (`leagues.settle`)
+    if not whole_title:
+        row.league = leagues.settle(program.league_raw, program.title,
+                                    verdict.home, verdict.away)
     # книга 095 (#9541): сторона пары — имя своего канала («Sport 2 - Program
     # Sportiv» у ipko) — заставка канала, а не матч: ни на витрину, ни в очередь
     if channel_side(program.channel_raw, row.home, row.away, reference):
@@ -977,8 +1161,11 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         program.extra.pop(TOURNAMENT, None)
         program.extra.pop("live_guess", None)
         row.home = row.away = ""
-        row.reason = no_pair_reason
-        return row
+        if letter != "-":
+            row.reason = no_pair_reason
+            return row
+        # книга 150: вид спорта — чужой («Wheelchair tennis»): строка с
+        # пометкой эфира идёт во вкладку «Other Sport», как и чужой вид с парой
     row.sport_word = decision.word
     row.sport_source = decision.source
     row.sport_rule = decision.rule
@@ -991,6 +1178,11 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         # ТЗ разд. 6: не определился — не в мусор, а владельцу на проверку
         row.reason = "вид спорта не определён"
         row.needs_review = True
+        return row
+    if stage_side and letter in ("F", "B"):
+        # книга 157, М3 (б): «пара» — турнир и стадия, команд в строке нет
+        row.home = row.away = ""
+        row.reason = NO_PAIR
         return row
     row.sport = letter
     # Показ вне окна эфира (25.10, sport5: матч WNBA 02:00 стоит в сетке на

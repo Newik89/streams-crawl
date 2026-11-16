@@ -172,8 +172,9 @@ de = M.for_langs(site_lang.of("tv.orf.at"))
 проверка("проверка на данных (tv.orf.at): «… Israel - Österreich Die Analyse» — передача после матча, стоп-слово",
          de.found(de.stop_title, "UEFA Nations League Spieltag 6 Gruppe B3: Israel - Österreich Die Analyse").casefold(),
          "die analyse")
-проверка("у сведённой трансляции турнира лига пустая, а не лига первого сайта",
-         "r.league = \"\"" in inspect.getsource(parse_live))
+проверка("у сведённой трансляции турнира лига — название турнира у эталона либо пусто, а не лига первого сайта "
+         "(книга 148)",
+         "r.league = (known_tournaments.get(\"leagues\") or {}).get(ключ, \"\")" in inspect.getsource(parse_live))
 
 print("7, 14. Фильтры сбора и аудит")
 проверка("фильтр «грязные минуты» не снимает трансляцию турнира, подтверждённую эталоном; аудит передаёт разбору "
@@ -189,8 +190,10 @@ print("8. Книга знаний: «две разные команды» — р
          [False, False, False, False, True, True])
 
 print("9. Греческий инициал — только после фамилии (`names._letter_readings`)")
-проверка("буква в начале названия — не инициал человека: у «Ν. Κορέα» второго чтения «D KOREA» нет; игроки — сводятся",
-         (names.readings("Ν. Κορέα") == ("N KOREA",), names.similarity("Ν. Ιωνία", "Dafni Ionia") < canon.SURE,
+проверка("буква в начале названия — не инициал человека: у «Ν. Κορέα» чтения «D KOREA» нет (с книги 154 она — "
+         "South Korea, а не голое «N KOREA»), у клуба «Ν. Ιωνία» — тоже; игроки — сводятся",
+         (names.readings("Ν. Κορέα") == ("SOUTH KOREA",) and names.readings("Ν. Ιωνία") == ("N IONIA",),
+          names.similarity("Ν. Ιωνία", "Dafni Ionia") < canon.SURE,
           names.similarity("Ντανιίλ Μεντβέντεφ", "Μεντβέντεφ Ν. (Κοσ)"), names.similarity("Μπεν Σέλτον", "Σέλτον Μ. (Ηπα)"),
           names.similarity("Μαρσέλο Αρέβαλο/Μέιτ Πάβιτς", "Αρεβάλο Μ./Πάβιτς Μ.")), (True, True, 100, 100, 100))
 

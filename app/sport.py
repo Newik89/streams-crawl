@@ -70,6 +70,18 @@ SPORT_NAME_KEY = "вид спорта"
 #: знает матч, но не знает, что канал показывает вместо него разговор о матче
 SHOW_GROUP = "передачи и повторы"
 
+#: книга 150 (слово владельца 16.11): спорт на колясках — отдельный вид, во
+#: вкладку «Other Sport». Группа слов коляски — в сетке `GRID_FILE`; вид для
+#: вкладки называем по-английски и по базовому виду спорта строки
+WHEELCHAIR_GROUP = "Wheelchair sports"
+WHEELCHAIR_NAMES = {"T": "Wheelchair tennis", "B": "Wheelchair basketball",
+                    "F": "Wheelchair football"}
+#: корень базового вида спорта внутри слитного слова коляски («Rollstuhltennis»,
+#: «pyörätuolikoripallo», «kerekesszékes kosárlabda»): слово вида спорта там
+#: отдельно не стоит, и поиск целым словом его не видит
+WHEELCHAIR_STEMS = {"T": ("tennis", "tenis"),
+                    "B": ("basket", "koripallo", "korvpall", "kosárlabda")}
+
 #: раздел `markers.json` → `sport`: теннисные турниры и их месяцы
 #: (Australian Open — январь). Строка с турниром не в его месяц — запись
 SEASONS_KEY = "сезоны"
@@ -153,6 +165,15 @@ class Sports:
              Сюда же — теннисный турнир не в свой месяц (раздел
              `SEASONS_KEY`, когда других чужих слов в строке нет): финал
              Australian Open на Eurosport в октябре — запись (#2075, #2095).
+          1б. (книга 150) Слово коляски («wheelchair», «in carrozzina»,
+             «כיסאות גלגלים» — группа `WHEELCHAIR_GROUP`) в том, что сайт
+             пишет о событии сам (`head`: заголовок, категория, лига) →
+             Other Sport. Вид называется по базовому виду спорта строки:
+             «Wheelchair tennis», «Wheelchair basketball»
+             (`WHEELCHAIR_NAMES`); базовый вид не назван — «Wheelchair
+             sports». Эталон тут не судья: матчей на колясках в нём нет.
+             Слово коляски только в описании — не улика (свободный текст),
+             дальше оно не считается чужим словом вовсе.
           2. Эталон flashscore знает эту пару в это время → вид спорта
              эталона. Слова на странице его не оспаривают: «PSG - Le Mans» —
              футбол, хотя «Le Mans» ещё и гонка.
@@ -208,6 +229,20 @@ class Sports:
         late = "" if alien else self._out_of_season(text, month)
         if late:
             return Verdict("-", late, rule=1, group=SHOW_GROUP)
+
+        # 1б. спорт на колясках (книга 150): слово коляски в заголовке,
+        # категории или лиге — свой вид во вкладке «Other Sport»
+        for hit in self._alien_hits(head):
+            if self.group_of(hit) == WHEELCHAIR_GROUP:
+                base = next((letter for letter, stems in WHEELCHAIR_STEMS.items()
+                             if any(stem in hit.lower() for stem in stems)), "")
+                if not base:
+                    base, _word = self._own_word(head, self.sport_names or {})
+                if not base:
+                    base, _word = self._own_word(head, self.kinds)
+                return Verdict("-", hit, rule=1,
+                               group=WHEELCHAIR_NAMES.get(base or "", WHEELCHAIR_GROUP))
+        alien = [h for h in alien if self.group_of(h) != WHEELCHAIR_GROUP]
 
         # 2. эталон flashscore знает эту пару в это время
         if ref:

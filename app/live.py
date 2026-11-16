@@ -228,16 +228,45 @@ def lead_show(markers: Markers, text: str) -> str:
 #: CFR Cluj — Dinamo 25.10 у Arena Premium 5 легла отдельно от Digi Sport 1
 #: (#7400/#7192, 21.10). Буква W — пометка пола, её не трогаем
 _INITIAL_END = re.compile(r"(?<=\w)\s+(?![Ww]\.)[^\W\d_]\.$")
-_EDGE = " .-–—:\"'"
+#: книга 157: к обвязке края добавлены знаки, которых в имени на краю не
+#: бывает: «PHOENIX !», «Lakers?», «, Ayr United», «* Arsenal»
+_EDGE = " .-–—:\"'!?;,*•·…"
+#: книга 157: сезон на краю стороны — «2026/27,Inverness Caledonian Thistle»
+#: (bbc.co.uk: сезон прилип к имени без пробела). Год основания в имени
+#: («1860 München», «Schalke 04») сезоном не считается: нужна вторая половина
+_SEASON_LEAD = re.compile(r"^\s*(?:19|20)\d{2}\s?[/–-]\s?(?:(?:19|20)\d{2}|\d{2})(?!\d)[\s,.:;–—-]*")
+_SEASON_TAIL = re.compile(r"[\s,.:;–—-]*(?<!\d)(?:19|20)\d{2}\s?[/–-]\s?(?:(?:19|20)\d{2}|\d{2})\s*$")
 
 
 def _trim(side: str) -> str:
-    """Счистить обвязку с края имени, сохранив точку сокращения («Dinamo B.»)."""
+    """Счистить обвязку с края имени, сохранив точку сокращения («Dinamo B.»).
+    Книга 157: с краёв снимаются и знаки (`_EDGE`), и сезон «ГГГГ/ГГ»."""
+    bare = _SEASON_TAIL.sub("", _SEASON_LEAD.sub("", side))
+    if any(ch.isalpha() for ch in bare):         # от стороны что-то осталось
+        side = bare
     text = side.strip(_EDGE)
-    kept = side.rstrip(" -–—:\"'")
+    kept = side.rstrip(" -–—:\"'!?;,*•·…")
     if _INITIAL_END.search(kept) and kept[-2].isupper():
         text += "."
     return text
+
+
+def _unrepeated(parts: list[str]) -> list[str]:
+    """Книга 157: подпись, где пара повторена («Los Angeles Lakers – Charlotte
+    Hornets – Los Angeles Lakers – Charlotte Hornets», dagenstv.com), — одна
+    пара: куски между разделителями идут одной и той же серией два раза и
+    больше — остаётся одна серия."""
+    keys = [" ".join(p.casefold().split()).strip(_EDGE) for p in parts]
+    if keys:
+        # рубрика перед первым куском («Basket : Los Angeles Lakers») и хвост
+        # после последнего («Charlotte Hornets, direkt») повтору не мешают
+        keys[0] = _LEFT_JUNK.sub("", keys[0])
+        keys[-1] = _RIGHT_JUNK.sub("", keys[-1])
+    for size in range(2, len(parts) // 2 + 1):
+        if len(parts) % size == 0 and all(keys[i] == keys[i % size] for i in range(len(parts))) \
+                and all(keys[:size]):
+            return parts[:size]
+    return parts
 
 
 def split_teams(raw: str) -> tuple[str, str] | None:
@@ -251,7 +280,7 @@ def split_teams(raw: str) -> tuple[str, str] | None:
     if not raw:
         return None
     cleaned = _BRACKETS.sub(" ", raw).strip()
-    parts = _SPLIT.split(cleaned)
+    parts = _unrepeated(_SPLIT.split(cleaned))  # пара повторена — одна пара (157)
     if several_matches(parts):                 # две пары в одной подписи (094)
         return None
     if len(parts) != 2:
@@ -345,6 +374,91 @@ def _sides(left: str, right: str) -> tuple[str, str] | None:
     return home, away
 
 
+# ── книга 153: рубрики через точку ──────────────────────────────────────────
+#: точка, за которой пробел или конец текста, — возможная граница рубрики
+_RUBRIC_DOT = re.compile(r"\.(?:\s+|$)")
+#: знаки, сразу после которых начинается сторона пары или игрок дуэта
+_SIDE_OPENERS = "-–—/:|,"
+#: кавычки вокруг названий команд («Салават Юлаев» — «Барыс», sports.kz):
+#: частью имени они не бывают
+_QUOTES = re.compile(r"[«»„“”]")
+#: тире пары сразу за точкой («Соболенко А. - Рыбакина Е.»)
+_DASH_NEXT = re.compile(r"\s*[-–—]\s")
+#: правило 7 `split_candidates`: столько частей-рубрик (вид спорта, турнир)
+#: должно стоять перед частью с парой. Одна точка перед парой бывает и в
+#: самом имени («St. Pauli - Bochum», «At. Madrid - Bayern»), поэтому одной мало
+RUBRICS_BEFORE_PAIR = 2
+
+
+def rubric_parts(text: str) -> list[str]:
+    """Книга 153: заголовок «рубрики через точку» → его части по порядку.
+
+    «Теннис. WTA. Итоговый турнир. Индиан-Уэллс. А. Соболенко - Э. Свитолина.
+    Прямая трансляция» → «Теннис», «WTA», «Итоговый турнир», «Индиан-Уэллс»,
+    «А. Соболенко - Э. Свитолина», «Прямая трансляция». Так пишут news.by,
+    ntvplus.tv, sports.kz, vsetv.com, poverkhnost.tv, tv3.lt. Раньше каждый
+    из этих разборщиков резал заголовок по КАЖДОЙ точке, и пара игроков с
+    инициалами разваливалась: «Соболенко - Э» (находка 16.11).
+
+    Граница части — точка, за которой пробел или конец текста. Точка НЕ
+    граница, когда:
+      Р1. перед ней инициал в НАЧАЛЕ стороны — одна буква или заглавная со
+          строчной: «А. Соболенко», «Р. Абильтаров - А. Г. де Кастро»,
+          «М. Гранольерс/О. Себальос», «С. Ган - Дж. Хокит», «St. Pauli»;
+      Р2. перед ней число из одной-двух цифр в НАЧАЛЕ стороны — номер в
+          названии: «1. FC Köln - 2. …», «2. Bundesliga»;
+      Р3. перед ней сокращение из букв через точку с коротким последним
+          куском (одна-две буквы): «А.О.», «Γ.Σ.Σ.», «g.ta». «О.Караваева.»
+          — инициал с фамилией, там граница есть; многоточие — тоже граница;
+      Р4. сразу за ней стоит тире пары: «Соболенко А. - Рыбакина Е.» —
+          рубрика с тире не начинается.
+    «Начало стороны» — начало текста или части, место сразу после тире
+    пары, косой черты, двоеточия, запятой или после другого инициала.
+    Номер считается только целым словом: в «ACB league 2023/24. Baskonia»
+    «24» — хвост сезона, там граница есть.
+    Одна буква ПОСЛЕ слова («Серия А. Милан - Интер», «Рыбакина Е. Прямая
+    трансляция») — граница. В части с парой точка остаётся при букве
+    («Соболенко А. - Рыбакина Е.»): «Dinamo B» без точки читался бы вторым
+    составом (см. `_INITIAL_END`).
+    Пустые части выброшены, пробелы по краям сняты."""
+    text = text or ""
+    parts: list[str] = []
+    start = 0             # где началась текущая часть
+    initial_end = -1      # где кончился последний инициал (для Р1)
+    for dot in _RUBRIC_DOT.finditer(text):
+        before = text[start:dot.start()]
+        word = re.split(r"\s", before)[-1]                # слово перед точкой
+        token = word.rsplit("/", 1)[-1]                   # в дуэте — после «/»
+        letter = len(token) == 1 and token.isalpha()
+        # «Дж», «St»: заглавная со строчной — тоже инициал
+        short = letter or (len(token) == 2 and token.isalpha()
+                           and token[0].isupper() and token[1].islower())
+        number = word.isdigit() and len(word) <= 2
+        if not short:
+            token = word
+        head = before[:len(before) - len(token)].rstrip()  # что стоит до слова
+        side_start = (not head or head[-1] in _SIDE_OPENERS
+                      or start + len(head) == initial_end)
+        if (short or number) and side_start:                         # Р1, Р2
+            initial_end = dot.start() + 1
+            continue
+        pieces = word.split(".")
+        if len(pieces) > 1 and 1 <= len(pieces[-1]) <= 2:            # Р3
+            continue
+        if _DASH_NEXT.match(text, dot.start() + 1):                  # Р4
+            continue
+        part = before.strip()
+        if letter and _SPLIT.search(part):   # буква в конце имени: точка при ней
+            part += "."
+        if part:
+            parts.append(part)
+        start = dot.end()
+    tail = text[start:].strip()
+    if tail:
+        parts.append(tail)
+    return parts
+
+
 def split_candidates(raw: str) -> list[tuple[str, str]]:
     """Один читатель пары (правило (г) починки самопроверки №13, владелец
     20.10): все ДОГАДКИ о паре в подписи, по порядку надёжности. Сами по себе
@@ -366,7 +480,18 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
       6. (книга 124, выжимка из 89 разборщиков) разделители и слова
          «против», которые знали только отдельные разборщики (`_MORE_SPLIT`:
          « v », «vs.», « / », « | », «gegen», «ndaj», «mot», «kontra»,
-         «против», «срещу», «karşı»): ровно один такой разделитель — пара.
+         «против», «срещу», «karşı»): ровно один такой разделитель — пара;
+      7. (книга 153) рубрики через точку, пара — в одной из частей: «Футбол.
+         Чемпионат Беларуси. 27-й тур. Динамо-Минск - Неман. Прямая
+         трансляция» (news.by, ntvplus.tv, sports.kz, vsetv.com). Подпись
+         делится на части (`rubric_parts`: инициал «А. Соболенко» и номер
+         «1. FC» частью не считаются); пара — часть с разделителем пары,
+         перед которой стоит не меньше `RUBRICS_BEFORE_PAIR` частей-рубрик.
+         Части после пары («Прямая трансляция», «В перерыве Спорт-центр»)
+         отпадают сами, кавычки-ёлочки вокруг названий снимаются
+         («Салават Юлаев» — «Барыс»). Такая догадка идёт ПЕРВОЙ: она точнее
+         чтения всей подписи, где к хозяевам прилипают рубрики, а к гостям —
+         хвост.
 
     Повторы убраны, порядок сохранён. Скобки с хвостом («(BRA)», «(se
     speciálním studiem)») вырезаны у всех догадок, как в `split_teams`."""
@@ -382,9 +507,13 @@ def split_candidates(raw: str) -> list[tuple[str, str]]:
         if pair and pair not in out:
             out.append(pair)
 
+    for part in rubric_parts(cleaned)[RUBRICS_BEFORE_PAIR:]:     # правило 7
+        if _SPLIT.search(part):
+            add(split_teams(_QUOTES.sub("", part)))
+
     for text in texts:
         add(split_teams(text))                                   # правило 1
-        parts = _SPLIT.split(text)
+        parts = _unrepeated(_SPLIT.split(text))                  # книга 157
         if several_matches(parts):                               # книга 094
             continue
         if len(parts) >= 3:                                      # правило 3
@@ -424,6 +553,9 @@ _TRIM_EDGE = " \t,.:;-–—|/«»\"'„“”"
 
 #: книга 133, правило 5: теннисный дуэт — косая черта между буквами
 _DUO = re.compile(r"[^\W\d_]\.?\s*/\s*[^\W\d_]")
+#: книга 157, правило 6: конец предложения внутри стороны — точка после слова
+#: от трёх букв, дальше пробел
+_SENTENCE_END = re.compile(r"(?<=[^\W\d_]{3})\.\s+(?=\S)")
 
 
 def _still_name(side: str) -> bool:
@@ -454,7 +586,9 @@ def outer_trims(home: str, away: str) -> list[tuple[str, str, str, str]]:
       4. с края урезанной стороны счищаются знаки (`_TRIM_EDGE`);
       5. теннисные дуэты («Granollers/Zeballos» — косая черта между
          буквами) не режем: игрок в один день стоит и в одиночке, и в паре.
-         Косая черта в дате («15/11/2026») — не дуэт.
+         Косая черта в дате («15/11/2026») — не дуэт;
+      6. (книга 157) ещё срезы — по концу предложения внутри стороны
+         (`_SENTENCE_END`), без ограничения числа слов.
     Возвращает [(где, что срезано, хозяева, гости)]; сами по себе догадки в
     ленту не идут."""
     if _DUO.search(home) or _DUO.search(away):                   # правило 5
@@ -477,6 +611,31 @@ def outer_trims(home: str, away: str) -> list[tuple[str, str, str, str]]:
         for m in back:
             add(TRIM_BOTH, f"{' '.join(hw[:k])} … {' '.join(aw[-m:])}",
                 " ".join(hw[k:]), " ".join(aw[:-m]))
+    # 6 (книга 157): срез по концу предложения — сколько бы слов за точкой ни
+    # стояло: «France. Qualifications à l'EuroBasket féminin. 3e journée.
+    # Groupe M.» (programme-tv.net: восемь слов после гостей, больше
+    # `TRIM_WORDS`). Точка после слова от трёх букв и пробел; точка
+    # сокращения («St. Pauli», «Eintr. Frankfurt») — такая же догадка, и
+    # верную, как и прежде, выбирает эталон
+    seen = {(where, new_home, new_away) for where, _cut, new_home, new_away in out}
+    out.extend(trim for trim in sentence_trims(home, away)
+               if (trim[0], trim[2], trim[3]) not in seen)
+    return out
+
+
+def sentence_trims(home: str, away: str) -> list[tuple[str, str, str, str]]:
+    """Правило 6 `outer_trims` (книга 157): срезы по концу предложения — всё
+    после точки у гостей, всё до точки у хозяев. Тот же вид, что у
+    `outer_trims`: [(где, что срезано, хозяева, гости)]."""
+    out: list[tuple[str, str, str, str]] = []
+    for dot in _SENTENCE_END.finditer(away):
+        new_home, new_away = home.strip(_TRIM_EDGE), away[:dot.start()].strip(_TRIM_EDGE)
+        if _still_name(new_home) and _still_name(new_away):
+            out.append((TRIM_AWAY, away[dot.end():], new_home, new_away))
+    for dot in _SENTENCE_END.finditer(home):
+        new_home, new_away = home[dot.end():].strip(_TRIM_EDGE), away.strip(_TRIM_EDGE)
+        if _still_name(new_home) and _still_name(new_away):
+            out.append((TRIM_HOME, home[:dot.start()], new_home, new_away))
     return out
 
 

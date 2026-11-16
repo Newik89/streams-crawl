@@ -77,6 +77,23 @@ def main() -> int:
           (found is new, how))
     far = game("Golden State Valkyries", "Atlanta Dream", "2026-10-27T02:30")
     found, how = proverka.twin(far, [new], refs)
+    # книга 158: начало сдвинулось, потому что ушла ранняя строка-студия
+    студия = {"sport": "B", "home": "אריס סלוניקי", "away": "Λε Μαν", "start_kyiv": "2026-11-18T19:30", "entries": [
+        {"source": "novasports.gr", "channel": "Novasports Prime", "start_kyiv": "2026-11-18T19:30"},
+        {"source": "sport1.maariv.co.il", "channel": "Sport1 1", "start_kyiv": "2026-11-18T19:55"},
+        {"source": "novasports.gr", "channel": "Novasports Prime", "start_kyiv": "2026-11-18T20:00"}]}
+    без_студии = {"sport": "B", "home": "אריס סלוניקי", "away": "לה מאן", "start_kyiv": "2026-11-18T19:55", "entries": [
+        {"source": "sport1.maariv.co.il", "channel": "Sport1 1", "start_kyiv": "2026-11-18T19:55"},
+        {"source": "novasports.gr", "channel": "Novasports Prime", "start_kyiv": "2026-11-18T20:00"}]}
+    check("книга 158: ушла ранняя строка-студия, оставшаяся стоит на месте — та же игра («строка»)",
+          proverka.twin(студия, [без_студии], [])[1] == "строка")
+    без_канала = dict(без_студии, entries=без_студии["entries"][:1])
+    check("книга 158: канал при этом пропал — это потеря",
+          proverka.twin(студия, [без_канала], [])[1] == "")
+    сдвиг = dict(без_студии, start_kyiv="2026-11-18T20:30", entries=[
+        dict(e, start_kyiv="2026-11-18T20:30") for e in без_студии["entries"]])
+    check("книга 158: строки сменили время — это не уход ранней строки",
+          proverka.twin(студия, [сдвиг], [])[1] == "")
     check("сдвиг 02:30 → 01:55 ближе к эталону — «время»", found is new and how == "время",
           (found is new, how))
     found, how = proverka.twin(game("Ζρίνσκι", "ΠΑΟΚ", "2026-10-28T17:00"),

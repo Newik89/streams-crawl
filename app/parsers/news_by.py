@@ -21,6 +21,8 @@ import re
 from datetime import date as _date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
+from .. import daytime
+from ..live import rubric_parts
 from . import Program, register
 
 DOMAIN = "news.by"
@@ -34,6 +36,8 @@ _TIME = re.compile(r"^([01]?\d|2[0-3]):([0-5]\d)$")
 #: пара в скобочной записи: `Неман (Гродно) - Динамо (Молодечно)`
 _PAIR = re.compile(r"([А-ЯЁA-Z][\w'’-]*(?:[ -][\w'’()-]+){0,4})\s+-\s+"
                    r"([А-ЯЁA-Z][\w'’-]*(?:[ -][\w'’()-]+){0,4})")
+#: инициалы перед фамилией хозяев: `А. Соболенко - Э. Свитолина` (книга 153)
+_INITIALS = re.compile(r"(?:[А-ЯЁA-Z]\.\s*)+$")
 
 
 def _unwrap(v):
@@ -76,6 +80,7 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
             d = monday + timedelta(days=shift)
             prev = None
             offset = 0
+            block_rows: list[Program] = []     # строки одного дня недели
             for row in (block or {}).get("programs") or []:
                 hm = _TIME.match((row.get("time") or "").strip())
                 title = " ".join((row.get("program") or "").split())
@@ -89,19 +94,25 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     r"(?i)прямая трансляция", title) else ""
                 # части через точку: `Хоккей. Кубок Беларуси. Групповой
                 # этап. Неман (Гродно) - Динамо (Молодечно). Прямая…`
-                parts = [p.strip() for p in title.split(".") if p.strip()]
+                # книга 153: делит общий делитель рубрик — инициал игрока
+                # («А. Соболенко») частью не считается
+                parts = rubric_parts(title)
                 sport = parts[0] if parts else ""
                 pair = " "
                 for p in parts:
                     found = _PAIR.search(p)
                     if found:
-                        pair = f"{found.group(1).strip()} - {found.group(2).strip()}"
+                        # хозяева — вместе с инициалами перед фамилией,
+                        # гости — до конца части (книга 153)
+                        lead = _INITIALS.search(p[:found.start(1)])
+                        home = p[lead.start() if lead else found.start(1):found.end(1)]
+                        pair = f"{home.strip()} - {p[found.start(2):].strip()}"
                         break
                 league = next((p for p in parts[1:]
                                if "трансляция" not in p.lower()
                                and not _PAIR.search(p)), "")
                 dd = d + timedelta(days=offset)
-                out.append(Program(
+                block_rows.append(Program(
                     channel_raw=CHANNEL, title=title,
                     start=datetime(dd.year, dd.month, dd.day, start_t[0],
                                    start_t[1], tzinfo=zone),
@@ -112,4 +123,6 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
                     match_raw=pair,
                     source_url=url, extra={"day": dd.isoformat()},
                 ))
+            # книга 151: день начат хвостом вчерашнего вечера — день назад
+            out.extend(daytime.pull_evening_tail(block_rows))
     return out

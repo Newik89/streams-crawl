@@ -186,7 +186,10 @@ p = строка("Nitto ATP Finals 2026 (T2026): Alcaraz - Tiafoe", (2026, 11, 1
 print("Подключение")
 проверка("разбор сбора говорит разбору строк, что сайт эфир не помечает; пометка турнира спасает строку "
          "от фильтра «угаданный эфир без эталона»",
-         ("guess_site=_bare_domain(domain)" in inspect.getsource(parse_live),
+         # книга 147: признак едет через `_classify`, сайт с пометкой «сейчас в
+         # эфире» разбирается вторым заходом как не помечающий
+         ("_bare_domain(domain) in REPEAT_GUESS_DOMAINS))" in inspect.getsource(parse_live)
+          and "_classify(domain, programs, True)" in inspect.getsource(parse_live),
           "get(pipeline.TOURNAMENT) or {}).get(\"эталон\")" in inspect.getsource(parse_live)), (True, True))
 проверка("сессии турнира у сайта без пометки эфира — не «поздний показ»: строку с подтверждённым турниром "
          "фильтр позднего показа не снимает",
@@ -217,8 +220,11 @@ def игра(start, home, away, каналы, sport="T"):
          (своё,
           next((s for s in map(broadcast.stage, ["Nitto ATP Finals: Groepsfase"]) if s and s != своё), ""),
           next((s for s in map(broadcast.stage, ["ATP Finals: Polufinale 1"]) if s and s != своё), ""),
-          "if s and s != own" in inspect.getsource(store.schedule)),
-         ("Final", "", "Semifinals", True))
+          # книга 160: правило переехало в `broadcast.show_stage`
+          "broadcast.show_stage(home_shown, t, known_titles)" in inspect.getsource(store.schedule),
+          broadcast.show_stage("ATP Finals Turin", "Nitto ATP Finals: Groepsfase", broadcast.tournaments(None)),
+          broadcast.show_stage("ATP Finals Turin", "ATP Finals: Polufinale 1", broadcast.tournaments(None))),
+         ("Final", "", "Semifinals", True, "", "Semifinals"))
 
 print(f"\nпроверок: {зелёных + красных}, зелёных: {зелёных}, красных: {красных}")
 sys.exit(1 if красных else 0)

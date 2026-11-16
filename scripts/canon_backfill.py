@@ -32,6 +32,25 @@ from parse_live import REPEAT_GUESS_DOMAINS   # noqa: E402
 DEFAULT = ROOT / "results" / "games.json"
 
 
+def only_marks_differ(current: str, canon_name: str) -> bool:
+    """Книга 161: имя команды у эталона (`canon_name`) отличается от нынешней
+    команды игры (`current`) ТОЛЬКО пометкой возраста или пола: «Serbia» →
+    «Serbia U19» (#3037), «Poland» → «Poland W». Тогда игре с меткой эталона
+    ставится команда эталона, хотя написание сайта закреплено за командой
+    без пометки. Правила:
+      1. у имени эталона есть пометка возраста или пола;
+      2. без пометок оно буква в букву (без регистра) равно нынешней команде;
+      3. нынешняя команда сама пометок не несёт (иначе это другая команда:
+         «Poland U19» ≠ «Poland W»)."""
+    canon_name = (canon_name or "").strip()
+    current = (current or "").strip()
+    if not current or not canon_name:
+        return False
+    marked = bool(names._AGE_RE.search(canon_name) or names._WOMEN_RE.search(canon_name))     # 1
+    bare = " ".join(names._WOMEN_RE.sub(" ", names._AGE_RE.sub(" ", canon_name)).split())
+    return marked and bare.lower() == current.lower()                                        # 2, 3
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
@@ -186,12 +205,14 @@ def main() -> int:
                     # ВОЗРАСТОМ (Serbia → Serbia U19, #3037 22.09), событию
                     # ставим возрастную команду: словарь и закреплённое
                     # написание не трогаются, меняется только эта игра
+                    # Книга 161: то же — если канон эталона отличается лишь
+                    # ПОЛОМ («France — Australia W» у встречи Кубка Билли Джин
+                    # Кинг: «Polska» твёрдо за Poland, «AUSTRÁLIA» ни за кем —
+                    # и на витрине стояла пара с W у одной стороны)
                     cur = conn.execute("SELECT canonical_name FROM teams "
                                        "WHERE id = ?", (r[field],)).fetchone()
-                    bare = " ".join(names._AGE_RE.sub(" ", canon_name).split())
-                    same_bare = (cur and bare.lower() ==
-                                 (cur["canonical_name"] or "").strip().lower())
-                    if not (same_bare and names._AGE_RE.search(canon_name)):
+                    if not only_marks_differ(cur["canonical_name"] if cur else "",
+                                             canon_name):
                         continue
                 sets[field] = (known_id, canon_name)
             if not sets:

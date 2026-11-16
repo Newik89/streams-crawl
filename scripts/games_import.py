@@ -379,6 +379,8 @@ def main() -> int:
               + (f", заголовков турниров сайты больше не показывают "
                  f"(отметок погашено): {stats.titles_gone}"
                  if stats.titles_gone else "")
+              + (f", двойников строки турнира влито в неё: {stats.titles_folded}"
+                 if stats.titles_folded else "")
               + (f", игр-сирот (сайт перенёс на другой день) — отметок "
                  f"погашено: {stats.orphans_gone}"
                  if stats.orphans_gone else "")
