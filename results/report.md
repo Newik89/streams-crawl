@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1602. Заняло 4843 с.
+Режим: полный обход, окно 6 суток. Запросов: 1602. Заняло 5638 с.
 
 | Сайт | Результат |
 |---|---|
@@ -15,36 +15,36 @@
 | canpl.ca | расписание есть — 1 |
 | ceskatelevize.cz | расписание есть — 6 |
 | cosmotetv.gr | расписание есть — 6 |
-| dagenstv.com | расписание есть — 6 |
+| dagenstv.com | не открылась — 6 |
 | diemaxtra.nova.bg | расписание есть — 3 |
 | digisport.ro | расписание есть — 4 |
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 20, пусто — 1 |
+| flashscore.mobi | расписание есть — 21 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
 | kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 29 |
-| m.eredmenyek.com | расписание есть — 13, пусто — 1 |
+| m.eredmenyek.com | расписание есть — 14 |
 | m.flashscore.bg | расписание есть — 7 |
-| m.flashscore.com.tr | расписание есть — 17, пусто — 1 |
+| m.flashscore.com.tr | расписание есть — 18 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 20, пусто — 1 |
+| m.flashscore.gr | расписание есть — 21 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
-| m.flashscore.pl | расписание есть — 11, пусто — 1 |
+| m.flashscore.pl | расписание есть — 12 |
 | m.flashscore.pt | расписание есть — 6 |
-| m.flashscore.ro | расписание есть — 11, пусто — 1 |
-| m.flashscore.ru | расписание есть — 17, пусто — 1 |
+| m.flashscore.ro | расписание есть — 12 |
+| m.flashscore.ru | расписание есть — 18 |
 | m.flashscore.se | расписание есть — 6 |
-| m.flashscore.sk | расписание есть — 11, пусто — 1 |
-| m.flashscore.ua | расписание есть — 11, пусто — 1 |
-| m.livesport.cz | расписание есть — 11, пусто — 1 |
+| m.flashscore.sk | расписание есть — 12 |
+| m.flashscore.ua | расписание есть — 12 |
+| m.livesport.cz | расписание есть — 12 |
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 6 |
@@ -63,7 +63,7 @@
 | programme-tv.net | расписание есть — 48 |
 | raiplay.it | расписание есть — 24 |
 | raspored.hrt.hr | расписание есть — 18 |
-| rtcg.me | расписание есть — 20, пусто — 4 |
+| rtcg.me | расписание есть — 16, пусто — 8 |
 | rte.ie | расписание есть — 17 |
 | rtl.de | расписание есть — 48 |
 | rtp.pt | расписание есть — 33 |
@@ -71,7 +71,7 @@
 | rts.rs | расписание есть — 3 |
 | skai.gr | расписание есть — 6 |
 | skysports.com | расписание есть — 1 |
-| sport1.maariv.co.il | пусто — 2, расписание есть — 4 |
+| sport1.maariv.co.il | расписание есть — 5, пусто — 1 |
 | sport1tv.cz | расписание есть — 1 |
 | sport1tv.hu | расписание есть — 1 |
 | sport5.co.il | расписание есть — 6 |
@@ -94,7 +94,7 @@
 | tv2.no | расписание есть — 6 |
 | tv24.co.uk | расписание есть — 24 |
 | tv3.lt | расписание есть — 90, пусто — 6 |
-| tv8.com.tr | пусто — 6 |
+| tv8.com.tr | расписание есть — 6 |
 | tvarenasport.ba | расписание есть — 1 |
 | tvarenasport.com | расписание есть — 1 |
 | tvarenasport.hr | расписание есть — 1 |
@@ -111,6 +111,17 @@
 | webtv.sk | расписание есть — 42 |
 | ziggosport.nl | расписание есть — 6 |
 
+## Не открылись — 6
+
+| Сайт | Канал | Что ответил | Ссылка |
+|---|---|---|---|
+| dagenstv.com | сетка | ConnectTimeout: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?day=0 (Caused by ConnectTim | https://www.kolla.tv/api/es/channels/listWithPrograms?day=0 |
+| dagenstv.com | сетка | ConnectTimeout: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?day=1 (Caused by ConnectTim | https://www.kolla.tv/api/es/channels/listWithPrograms?day=1 |
+| dagenstv.com | сетка | ConnectTimeout: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?day=2 (Caused by ConnectTim | https://www.kolla.tv/api/es/channels/listWithPrograms?day=2 |
+| dagenstv.com | сетка | ConnectTimeout: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?day=3 (Caused by ConnectTim | https://www.kolla.tv/api/es/channels/listWithPrograms?day=3 |
+| dagenstv.com | сетка | ConnectTimeout: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?day=4 (Caused by ConnectTim | https://www.kolla.tv/api/es/channels/listWithPrograms?day=4 |
+| dagenstv.com | сетка | ConnectTimeout: HTTPSConnectionPool(host='www.kolla.tv', port=443): Max retries exceeded with url: /api/es/channels/listWithPrograms?day=5 (Caused by ConnectTim | https://www.kolla.tv/api/es/channels/listWithPrograms?day=5 |
+
 ## Оценка
 
-- ✅ обход в норме: не открылись 0 из 1602 страниц (0%), сайтов без удачи 0 из 106 (0%)
+- ✅ обход в норме: не открылись 6 из 1602 страниц (0%), сайтов без удачи 1 из 106 (1%)
