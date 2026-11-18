@@ -46,7 +46,7 @@ CYRILLIC = ("ru", "uk", "be", "bg", "sr", "mk", "kk")
 #: Новый сайт — дописать сюда; домен без строки читается всеми языками.
 SITE_LANGS: dict[str, tuple[str, ...]] = {
     # арабский и английский
-    "alkass.net": ("ar",),
+    "alkass.net": ("ar",), "yallakora.com": ("ar",),
     # Скандинавия
     "allente.no": ("no", "sv", "da", "fi"), "tv2.no": ("no",),
     "dagenstv.com": ("sv",), "tvmatchen.nu": ("sv",), "m.flashscore.se": ("sv",),

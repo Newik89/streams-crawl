@@ -128,6 +128,9 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           "news.by", "canpl.ca",
           # AzamTV Max (книга 129): страницы каналов Azam Sports, браузером
           "azamtvmax.com",
+          # Yallakora (книга 167, слово владельца 19.11): матчи дня с каналом
+          # показа — ON Sport, ON Sport Max, ON Sport Plus (Египет)
+          "yallakora.com",
           # Fox Soccer Plus (США) — официального EPG у FOX нет, расписание
           # берём с телегида tvpassport.com (канал попросил владелец 02.09)
           "tvpassport.com",

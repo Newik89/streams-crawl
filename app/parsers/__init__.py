@@ -247,4 +247,5 @@ def _load_all():
                    vsetv_com,
                    webtv_sk, ziggosport_nl, tvarenaprogram_com,
                    tvarenasport_com, tvheute_at, tvpassport_com,
-                   tvsporten_dk, tvtid_tv2_dk)
+                   tvsporten_dk, tvtid_tv2_dk,
+                   yallakora_com)

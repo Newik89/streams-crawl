@@ -137,6 +137,9 @@ DAY_GRID_DOMAINS = {"polsatsport.pl", "allente.no", "ceskatelevize.cz",
                     "atv.com.tr",
                     # Sport5: один запрос на день, в ответе все пять каналов
                     "sport5.co.il",
+                    # Yallakora (книга 167): «матчи дня» с каналом показа —
+                    # адрес на день, все турниры одной страницей
+                    "yallakora.com",
                     # dagenstv/kolla.tv: сутки по 16 шведским каналам разом;
                     # день — номером `?day={DAYNUM}` (дату ручка не знает)
                     "dagenstv.com",
