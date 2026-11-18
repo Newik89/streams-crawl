@@ -31,7 +31,7 @@
 from __future__ import annotations
 
 import re
-from datetime import date as _date, datetime
+from datetime import date as _date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
@@ -71,8 +71,32 @@ _URL_DATE = re.compile(r"/(\d{4})-(\d{2})-(\d{2})(?:[/?#]|$)")
 _ALT_TAIL = re.compile(r"\s*tv program\s*$", re.I)
 
 
-def _new_day(html: str, url: str, day: _date | None, tz: str) -> _date:
-    """День новой страницы: из заголовка, иначе из адреса, иначе из запроса."""
+#: ── часы сайта и «телевизионный день» (книга 166, 18.11.2026) ──
+#: Сутки у сайта идут 06:00 → 06:00 (сетка начинается с 06:00). Пока на
+#: часах сайта нет шести утра, он считает, что ещё идёт вчерашний день, и
+#: страница с датой Д показывает программу дня Д−1 — хотя в заголовке и в
+#: навигации стоит Д. Замер 17–18.11.2026: страницы, скачанные сервером в
+#: 05:40 по Загребу, все сдвинуты на сутки (27 эфирных пар из 27 стояли у
+#: sportklub.hr на день раньше); те же адреса в 10:00 и в 22:22 — верные.
+#: Часы сайта стоят на самой странице, в полоске дней:
+#:   <span class="day-name">sada</span> <span class="day-number">05:40</span>
+#: Точный час переключения не замерен: 06:00 — по началу сетки.
+ТЕЛЕДЕНЬ_С = 6
+_SITE_CLOCK = re.compile(
+    r'class="day-name">\s*sada\s*</span>\s*<span[^>]*class="day-number">\s*(\d{1,2}):(\d{2})',
+    re.I)
+
+
+def _site_clock(html: str) -> tuple[int, int] | None:
+    """Который час на сайте в момент, когда он отдал страницу («sada 05:40»);
+    None — часов на странице нет."""
+    m = _SITE_CLOCK.search(html)
+    return (int(m.group(1)), int(m.group(2))) if m else None
+
+
+def _named_day(html: str, url: str, day: _date | None, tz: str) -> _date:
+    """День, которым страница НАЗВАНА: из заголовка, иначе из адреса, иначе
+    из запроса."""
     m = _TITLE_DATE.search(html)
     if m:
         return _date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
@@ -80,6 +104,20 @@ def _new_day(html: str, url: str, day: _date | None, tz: str) -> _date:
     if m:
         return _date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
     return day or daytime.today(tz)
+
+
+def _new_day(html: str, url: str, day: _date | None, tz: str) -> _date:
+    """День ПРОГРАММЫ новой страницы. Правила по порядку:
+      1. страница названа днём Д (`_named_day`: заголовок → адрес → запрос);
+      2. на часах сайта раньше `ТЕЛЕДЕНЬ_С` — программа на ней дня Д−1
+         (книга 166); страница «сегодня» без даты до шести утра вживую не
+         проверялась — считается так же, по тому же телевизионному дню;
+      3. часов на странице нет или на них шесть утра и позже — день Д."""
+    named = _named_day(html, url, day, tz)
+    clock = _site_clock(html)
+    if clock is not None and clock[0] < ТЕЛЕДЕНЬ_С:
+        return named - timedelta(days=1)
+    return named
 
 
 def _split_title(title: str) -> tuple[str, str, str, str]:
