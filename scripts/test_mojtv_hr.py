@@ -5,6 +5,11 @@
 Новый адрес — `/tv-program/sportski/<дата>`, разметка — сетка `grid-row` /
 `grid-card`. Разборщик понимает обе разметки.
 
+Книга 166 (18.11): до шести утра по часам сайта страница, названная днём Д,
+показывает программу дня Д−1 (сутки сайта идут 06:00 → 06:00). Настоящая
+утренняя страница проверяется случаем книги (срез `server-1811-mojtv-utro`),
+здесь — само правило по часам сайта.
+
 Запуск: python scripts/test_mojtv_hr.py
 """
 from __future__ import annotations
@@ -39,8 +44,20 @@ def карточка(время: str, заголовок: str, описание:
             f'<span class="grid-card-desc">{описание}</span></div>')
 
 
-def страница(title: str = "Tv program - Sportski - ponedjeljak, 16.11.2026. | MojTV") -> str:
+def полоска(часы: str) -> str:
+    """Полоска дней, как на сайте: в ней стоят часы самого сайта («sada 05:40»)."""
+    if not часы:
+        return ""
+    return ('<div class="dates-list">'
+            '<a draggable="false" href="/tv-program/sportski/2026-11-16" class="date-item" data-date="2026-11-16"> '
+            '<span class="day-name">Danas</span> <span class="day-number">16.11.</span> </a> '
+            '<a draggable="false" href="/tv-program/sportski" class="date-item" data-date="2026-11-16"> '
+            f'<span class="day-name">sada</span> <span class="day-number">{часы}</span> </a></div>')
+
+
+def страница(title: str = "Tv program - Sportski - ponedjeljak, 16.11.2026. | MojTV", часы: str = "") -> str:
     return f"""<html><head><title>{title}</title></head><body>
+{полоска(часы)}
 <div class="sticky-channels-column">
  <a class="channel-logo-slot" id="channel-logo-722"><img alt="MaxSport1 tv program"></a>
  <a class="channel-logo-slot" id="channel-logo-179"><img alt="Arena Sport 1 tv program"></a>
@@ -93,6 +110,36 @@ p = сеть["23:301"]
 сегодня = mojtv_hr.parse(страница("Tv program - Sportski - Danas | MojTV"), day=date(2026, 11, 20),
                          url="https://mojtv.hr/tv-program/sportski")
 проверка("нет даты ни в заголовке, ни в адресе — день из запроса", сегодня[0].start.strftime("%d.%m"), "20.11")
+
+print("Книга 166: до шести утра по часам сайта страница показывает программу предыдущего дня")
+
+
+def дни(часы: str, **как) -> list[str]:
+    разбор = mojtv_hr.parse(страница(часы=часы, **как.pop("страница", {})),
+                            url=как.pop("url", "https://mojtv.hr/tv-program/sportski/2026-11-16"), **как)
+    return [p.start.strftime("%d.%m %H:%M") for p in разбор if p.channel_raw == "Sport Klub 1"]
+
+
+проверка("часы сайта 05:40 — программа дня Д−1: вечер 15.11, ночь после полуночи — 16.11",
+         дни("05:40"), ["15.11 08:10", "15.11 20:45", "15.11 23:30", "16.11 01:00"])
+проверка("часы сайта 00:05 — тоже Д−1", дни("00:05")[0], "15.11 08:10")
+проверка("часы сайта 05:59 — ещё Д−1", дни("05:59")[0], "15.11 08:10")
+проверка("часы сайта 06:00 — день как назван", дни("06:00")[0], "16.11 08:10")
+проверка("часы сайта 10:00 и 22:22 — день как назван",
+         (дни("10:00")[0], дни("22:22")[0]), ("16.11 08:10", "16.11 08:10"))
+проверка("часов на странице нет — день как назван (прежнее поведение)", дни("")[0], "16.11 08:10")
+проверка("день назван адресом («Danas» в заголовке), часы 05:40 — Д−1 от адреса",
+         дни("05:40", страница={"title": "Tv program - Sportski - Danas | MojTV"},
+             url="https://mojtv.hr/tv-program/sportski/2026-11-15")[0], "14.11 08:10")
+проверка("день назван запросом, часы 05:40 — Д−1 от запроса",
+         дни("05:40", страница={"title": "Tv program - Sportski - Danas | MojTV"},
+             url="https://mojtv.hr/tv-program/sportski", day=date(2026, 11, 20))[0], "19.11 08:10")
+проверка("часы читаются с настоящей разметкой полоски", mojtv_hr._site_clock(полоска("05:40")), (5, 40))
+проверка("слово «sada» в другом месте страницы часами не считается",
+         mojtv_hr._site_clock('<span class="grid-card-title">Sada 05:40 uzivo</span>'), None)
+проверка("день программы пишется и в строку (поле day)",
+         mojtv_hr.parse(страница(часы="05:40"), url="https://mojtv.hr/tv-program/sportski/2026-11-16")[0].extra["day"],
+         "2026-11-15")
 
 print("Прежняя разметка читается как раньше")
 СТАРАЯ = """<html><body><script>init('16.11.2026. 6:00:00')</script>
