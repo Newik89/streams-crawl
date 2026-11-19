@@ -2104,6 +2104,17 @@ def main() -> int:
                         f"{g.away}: «{e.channel}» ({e.source}) ← программа {b}"
                         for g, e, b in чужие))
 
+    # Книга 167: один канал в одну минуту показывает одну игру — запись с
+    # именами на непрочитанной письменности (арабский yallakora.com) вливается
+    # в игру, которую тот же канал показывает по другому сайту
+    games, влитые = channel_grid.fold_same_channel(games, channel_grid.load_map())
+    if влитые:
+        print(f"влито по каналу и минуте: {len(влитые)} (имена на непрочитанной "
+              f"письменности, тот же канал в ту же минуту у другого сайта)"
+              + "".join(f"\n   • {имена} → {g.start.strftime('%d.%m %H:%M')} "
+                        f"{g.home} — {g.away} [{', '.join(g.channels)}]"
+                        for имена, g in влитые))
+
     games, мульти = drop_multicast(games)
     for g, e, n in мульти:
         снято.append(removed_row(СНЯТО_МУЛЬТИКАСТ, e.source, e.payload,

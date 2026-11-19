@@ -243,3 +243,78 @@ def drop_contradicted(games: list, grids: Grids,
         if game.entries:                                                # 4
             kept.append(game)
     return kept, removed
+
+
+# ── один канал в одну минуту показывает одну игру (книга 167) ───────────────
+
+#: насколько могут расходиться начала двух строк одного показа
+SAME_MINUTE = timedelta(minutes=15)
+#: письменности, имена на которых сверка умеет сравнивать между собой
+#: (словарь, эталон на этих языках, транслитерация — `app/names.py`)
+_READABLE_SCRIPTS = ("LATIN", "CYRILLIC", "GREEK")
+
+
+def unreadable(name: str) -> bool:
+    """Имя написано письменностью, которую сверка имён не читает (арабская,
+    иврит…): больше половины букв — не латиница, не кириллица и не греческий."""
+    letters = [ch for ch in (name or "") if ch.isalpha()]
+    if not letters:
+        return False
+    foreign = sum(1 for ch in letters
+                  if not unicodedata.name(ch, "").startswith(_READABLE_SCRIPTS))
+    return foreign * 2 > len(letters)
+
+
+def fold_same_channel(games: list, cmap: dict) -> tuple[list, list]:
+    """Запись с именами на непрочитанной письменности вливается в игру, которую
+    ТОТ ЖЕ КАНАЛ показывает в ту же минуту по другому сайту.
+
+    Повод (книга 167, 19.11.2026): yallakora.com пишет команды по-арабски
+    («المصري — بترول أسيوط», ON Sport, 17:00), livesoccertv — по-английски
+    («Al Masry — Asyut Petrol», ON Sport 1, 17:00). Имена буквами не сравнить,
+    арабского эталона нет — на витрину легли бы две игры на одном канале в одну
+    минуту. Канал не показывает два матча разом — это одна игра.
+
+    Правила по порядку:
+      1. Кандидат — игра, у которой ОБА имени на непрочитанной письменности
+         (`unreadable`): с прочитанными именами склейка уже отработала.
+      2. Пара ей — игра с прочитанными именами, у которой есть строка ДРУГОГО
+         сайта на ТОМ ЖЕ канале (канал — по словарю каналов, `channel_key`;
+         не узнали канал — не судим), начало не дальше `SAME_MINUTE`, вид
+         спорта не спорит.
+      3. Пара ровно одна — иначе не гадаем.
+      4. Строки кандидата переходят в пару; имена игры остаются прочитанные
+         (`merge.Game._readable`: латиница первой).
+    Возвращает (игры, [(имена кандидата, игра-пара)])."""
+    limit = SAME_MINUTE.total_seconds()
+    slots: dict = {}                       # канал → [(время, сайт, игра)]
+    foreign: list = []
+    for game in games:
+        if unreadable(game.home) and unreadable(game.away):          # правило 1
+            foreign.append(game)
+            continue
+        for e in game.entries:
+            key, ts = channel_key(cmap, e.source, e.channel), _ts(e.start)
+            if key is not None and ts is not None:
+                slots.setdefault(key, []).append((ts, _bare(e.source), game))
+    folded: list = []
+    gone: set = set()
+    for game in foreign:
+        pairs: dict = {}
+        for e in game.entries:
+            key, ts = channel_key(cmap, e.source, e.channel), _ts(e.start)
+            if key is None or ts is None:
+                continue
+            for ts2, site, other in slots.get(key, ()):              # правило 2
+                if site == _bare(e.source) or abs(ts2 - ts) > limit:
+                    continue
+                if game.sport and other.sport and game.sport != other.sport:
+                    continue
+                pairs[id(other)] = other
+        if len(pairs) != 1:                                          # правило 3
+            continue
+        other = next(iter(pairs.values()))
+        folded.append((f"{game.home} — {game.away}", other))
+        other.entries.extend(game.entries)                           # правило 4
+        gone.add(id(game))
+    return [g for g in games if id(g) not in gone], folded
