@@ -1,6 +1,6 @@
 {
  "days": 2,
- "built": "2026-11-15",
+ "built": "2026-11-19",
  "note": "дата в адресах — метка, подставляется в день обхода",
  "sources": [
   {
@@ -711,12 +711,12 @@
     "ESPN 4 Netherlands",
     "ESPN Netherlands",
     "ON Sport 1",
-    "ON Sport 2",
     "ON Sport Max",
     "ON Sport Plus",
     "RTSH 1",
     "RTSH 2",
     "RTSH Sport",
+    "STC TV",
     "SuperSport 1 Digitalb",
     "SuperSport 2 Digitalb",
     "SuperSport 3 Digitalb",
@@ -807,10 +807,6 @@
      "pattern": "https://www.livesoccertv.com/channels/on-sport-egypt/"
     },
     {
-     "name": "ON Sport 2",
-     "pattern": "https://www.livesoccertv.com/channels/on-sport-2-egypt/"
-    },
-    {
      "name": "ON Sport Max",
      "pattern": "https://www.livesoccertv.com/channels/on-sport-max/"
     },
@@ -829,6 +825,10 @@
     {
      "name": "RTSH Sport",
      "pattern": "https://www.livesoccertv.com/channels/rtsh-sport-albania/"
+    },
+    {
+     "name": "STC TV",
+     "pattern": "https://www.livesoccertv.com/channels/stc-tv/"
     },
     {
      "name": "SuperSport 1 Digitalb",
@@ -5166,6 +5166,39 @@
     {
      "name": "Azam Sports 3 HD",
      "pattern": "https://web.azamtvmax.com/channel/CH-a8f7959c-f424-4064-8b71-6c125da488ff"
+    }
+   ]
+  },
+  {
+   "domain": "yallakora.com",
+   "timezone": "Africa/Cairo",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "ON Sport",
+    "ON Sport Max",
+    "ON Sport Plus"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": false,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 2,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": null,
+   "headers": null,
+   "base_url": "https://www.yallakora.com/match-center",
+   "channels": [
+    {
+     "name": "",
+     "pattern": "https://www.yallakora.com/match-center?date={MM/DD/YYYY}"
     }
    ]
   }
