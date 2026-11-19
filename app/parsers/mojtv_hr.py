@@ -37,7 +37,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, register
+from . import Program, label, register
 
 DOMAIN = "mojtv.hr"
 TZ = "Europe/Zagreb"
@@ -58,6 +58,7 @@ _GRID_DATE = re.compile(r"'(\d{1,2})\.(\d{1,2})\.(\d{4})\.? 6:00")
 #: ── новая разметка (книга 127, с 15.11.2026: сайт переделали за ночь) ──
 #: адрес: /tv-program/sportski/2026-11-16 (был /tv-program/-2/sportski/<дата>.aspx)
 #:   a.channel-logo-slot#channel-logo-62 > img[alt="SK1 tv program"]   — канал
+#:     (с 19.11 картинки нет, имя текстом — см. `_channel_of`, книга 168)
 #:   div.grid-row[data-channel-target="channel-logo-62"]               — его ряд
 #:     div.grid-card[data-time="08:10"]
 #:       span.grid-card-time   `08:10`
@@ -69,6 +70,40 @@ _NEW_MARK = 'class="grid-row"'
 _TITLE_DATE = re.compile(r"<title>[^<]*?(\d{1,2})\.(\d{1,2})\.(\d{4})\.", re.I)
 _URL_DATE = re.compile(r"/(\d{4})-(\d{2})-(\d{2})(?:[/?#]|$)")
 _ALT_TAIL = re.compile(r"\s*tv program\s*$", re.I)
+
+
+#: ── имя канала в ячейке (книга 168, 19.11.2026) ──
+#: 19.11 сайт убрал из ячейки картинку с `alt` и пишет имя текстом:
+#:   <a href="/tv-program/kanal/62/sk1" class="channel-logo-slot" id="channel-logo-62"> SK1 </a>
+#: Разборщик читал только `alt` — ноль строк со всех страниц. Теперь имя
+#: ищем везде, где оно может лежать (`label.labels`), а не найдя — берём
+#: номер канала из адреса ячейки: он у сайта не менялся ни при переделке
+#: 15.11, ни 19.11.
+#: имя для сверки (`label.key`) → каноничное имя: подписи сайта и сами имена
+_KEEP_KEY = {label.key(k): v for k, v in KEEP.items()} | {label.key(v): v for v in KEEP.values()}
+#: номер канала в адресе ячейки (`/tv-program/kanal/62/sk1`) → каноничное имя
+KEEP_NUM = {
+    "62": "Sport Klub 1", "63": "Sport Klub 2", "296": "Sport Klub 3",
+    "240": "Sport Klub 4", "241": "Sport Klub 5", "242": "Sport Klub 6",
+    "722": "MAXSport 1", "723": "MAXSport 2", "244": "SPTV",
+}
+_KANAL_NUM = re.compile(r"/kanal/(\d+)(?:/|$)")
+
+
+def _channel_of(slot) -> str | None:
+    """Канал ячейки `a.channel-logo-slot`; None — канал не из `KEEP`.
+    Правила по порядку:
+      1. подписи ячейки (`label.labels`: картинка → сама ячейка → текст →
+         хвост адреса) без хвоста «tv program»; сверка без регистра, пробелов
+         и дефисов — первая знакомая подпись и есть канал;
+      2. ни одна подпись не знакома — номер канала из адреса ячейки
+         (`KEEP_NUM`): сайт переименовал канал или убрал имя совсем."""
+    for text in label.labels(slot):
+        name = _KEEP_KEY.get(label.key(_ALT_TAIL.sub("", text)))
+        if name:
+            return name
+    m = _KANAL_NUM.search(slot.attributes.get("href") or "")
+    return KEEP_NUM.get(m.group(1)) if m else None
 
 
 #: ── часы сайта и «телевизионный день» (книга 166, 18.11.2026) ──
@@ -152,9 +187,7 @@ def _parse_new(html: str, day: _date | None, tz: str, url: str) -> list[Program]
     tree = HTMLParser(html)
     names = {}
     for slot in tree.css("a.channel-logo-slot"):
-        img = slot.css_first("img")
-        alt = _ALT_TAIL.sub("", (img.attributes.get("alt") or "") if img else "").strip()
-        names[slot.attributes.get("id") or ""] = KEEP.get(alt)
+        names[slot.attributes.get("id") or ""] = _channel_of(slot)
     out: list[Program] = []
     for row in tree.css("div.grid-row"):
         channel = names.get(row.attributes.get("data-channel-target") or "")

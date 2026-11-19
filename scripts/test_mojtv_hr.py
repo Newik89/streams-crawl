@@ -10,6 +10,11 @@
 утренняя страница проверяется случаем книги (срез `server-1811-mojtv-utro`),
 здесь — само правило по часам сайта.
 
+Книга 168 (19.11): сайт убрал из ячейки канала картинку с `alt` и пишет имя
+текстом — разборщик не прочитал ни одной строки. Имя канала ищется во всех
+местах ячейки (`app/parsers/label.py`), последним ходом — номер из адреса.
+Настоящие страницы 19.11 — случай книги (срез `server-1911-mojtv-imya`).
+
 Запуск: python scripts/test_mojtv_hr.py
 """
 from __future__ import annotations
@@ -55,13 +60,18 @@ def полоска(часы: str) -> str:
             f'<span class="day-name">sada</span> <span class="day-number">{часы}</span> </a></div>')
 
 
-def страница(title: str = "Tv program - Sportski - ponedjeljak, 16.11.2026. | MojTV", часы: str = "") -> str:
+#: ячейки каналов, как были до 19.11: имя — в подписи к картинке
+ЯЧЕЙКИ = """ <a class="channel-logo-slot" id="channel-logo-722"><img alt="MaxSport1 tv program"></a>
+ <a class="channel-logo-slot" id="channel-logo-179"><img alt="Arena Sport 1 tv program"></a>
+ <a class="channel-logo-slot" id="channel-logo-62"><img alt="SK1 tv program"></a>"""
+
+
+def страница(title: str = "Tv program - Sportski - ponedjeljak, 16.11.2026. | MojTV", часы: str = "",
+             ячейки: str = ЯЧЕЙКИ) -> str:
     return f"""<html><head><title>{title}</title></head><body>
 {полоска(часы)}
 <div class="sticky-channels-column">
- <a class="channel-logo-slot" id="channel-logo-722"><img alt="MaxSport1 tv program"></a>
- <a class="channel-logo-slot" id="channel-logo-179"><img alt="Arena Sport 1 tv program"></a>
- <a class="channel-logo-slot" id="channel-logo-62"><img alt="SK1 tv program"></a>
+{ячейки}
 </div>
 <div class="grid-row" data-channel-target="channel-logo-722">
  {карточка("08:00", "Odbojka: Odbojka: Dubrovnik &#x2013; Dinamo, SuperSport Superliga za seniorke 2026./2027.")}
@@ -140,6 +150,59 @@ def дни(часы: str, **как) -> list[str]:
 проверка("день программы пишется и в строку (поле day)",
          mojtv_hr.parse(страница(часы="05:40"), url="https://mojtv.hr/tv-program/sportski/2026-11-16")[0].extra["day"],
          "2026-11-15")
+
+print("Книга 168: имя канала ищется во всех местах ячейки, последним ходом — номер из адреса")
+
+
+def ячейка(номер: int, хвост: str | None = "", внутри: str = "", **поля) -> str:
+    """Ячейка канала, как на сайте: `<a href="/tv-program/kanal/62/sk1" id="channel-logo-62">…</a>`."""
+    href = f' href="/tv-program/kanal/{номер}/{хвост}"' if хвост is not None else ""
+    прочее = "".join(f' {имя.replace("_", "-")}="{значение}"' for имя, значение in поля.items())
+    return (f' <a{href} class="channel-logo-slot" id="channel-logo-{номер}" data-group="national"{прочее}>'
+            f'\n   {внутри}\n </a>')
+
+
+def разбор(*ячейки: str) -> list:
+    return mojtv_hr.parse(страница(ячейки="\n".join(ячейки)), url="https://mojtv.hr/tv-program/sportski/2026-11-16")
+
+
+def каналы(*ячейки: str) -> list[str]:
+    """Какие каналы прочитаны со страницы с такими ячейками (ряды на странице — 722, 179, 62)."""
+    return list(dict.fromkeys(p.channel_raw for p in разбор(*ячейки)))
+
+
+ТЕКСТОМ = (ячейка(722, "maxsport1", "MaxSport1"), ячейка(179, "arena-sport-1", "Arena Sport 1"),
+           ячейка(62, "sk1", "SK1"))
+проверка("имя текстом, картинки нет (как сайт пишет с 19.11) — каналы читаются, чужой (Arena) — мимо",
+         каналы(*ТЕКСТОМ), ["MAXSport 1", "Sport Klub 1"])
+проверка("со страницы «имя текстом» строк столько же, сколько со страницы «имя в картинке»",
+         len(разбор(*ТЕКСТОМ)), len(строки))
+проверка("имя в картинке — по-прежнему читается (и с адресом в ячейке)",
+         каналы(ячейка(722, "maxsport1", '<img alt="MaxSport1 tv program">'),
+                ячейка(62, "sk1", '<img alt="SK1 tv program">')), ["MAXSport 1", "Sport Klub 1"])
+проверка("имя в `title` картинки или самой ячейки",
+         каналы(ячейка(722, "x", '<img title="MaxSport1">'), ячейка(62, "y", "", title="SK1 tv program")),
+         ["MAXSport 1", "Sport Klub 1"])
+проверка("имя в `aria-label` ячейки", каналы(ячейка(62, "y", "", aria_label="SK1")), ["Sport Klub 1"])
+проверка("ни картинки, ни текста — имя из хвоста адреса",
+         каналы(ячейка(722, "maxsport1"), ячейка(62, "sk1")), ["MAXSport 1", "Sport Klub 1"])
+проверка("имя написано иначе (регистр, пробел, дефис, полное имя) — тот же канал",
+         (каналы(ячейка(62, "x", "sk 1")), каналы(ячейка(62, "x", "Sk-1")), каналы(ячейка(62, "x", "Sport Klub 1")),
+          каналы(ячейка(722, "x", "MAXSport 1"))),
+         (["Sport Klub 1"], ["Sport Klub 1"], ["Sport Klub 1"], ["MAXSport 1"]))
+проверка("имени нет нигде, хвост адреса чужой — канал по номеру из адреса",
+         каналы(ячейка(722, "kanal-a"), ячейка(62, "kanal-b")), ["MAXSport 1", "Sport Klub 1"])
+проверка("сайт переименовал канал («Sport Klub Jedan») — канал по номеру из адреса",
+         каналы(ячейка(62, "sport-klub-jedan", "Sport Klub Jedan")), ["Sport Klub 1"])
+проверка("знакомое имя важнее номера: в ячейке с номером 62 написано «SK2» — это Sport Klub 2",
+         каналы(ячейка(62, "sk2", "SK2")), ["Sport Klub 2"])
+проверка("чужой канал с чужим номером (Arena, 179) — мимо, как бы ни был подписан",
+         (каналы(ячейка(179, "arena-sport-1", "Arena Sport 1")), каналы(ячейка(179, "arena-sport-1"))), ([], []))
+проверка("ячейка без адреса и без имени — мимо, без падения", каналы(ячейка(62, None)), [])
+from selectolax.parser import HTMLParser  # noqa: E402
+проверка("номер берётся только из адреса вида /kanal/<номер>/, а не из любого числа в адресе",
+         mojtv_hr._channel_of(HTMLParser('<a class="channel-logo-slot" href="/vijesti/62/nesto"></a>').css_first("a")),
+         None)
 
 print("Прежняя разметка читается как раньше")
 СТАРАЯ = """<html><body><script>init('16.11.2026. 6:00:00')</script>
