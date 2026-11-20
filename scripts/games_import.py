@@ -395,6 +395,12 @@ def main() -> int:
                  if stats.moved_kept else ""))
         if stats.not_own_note:
             print(f"   {stats.not_own_note}")
+        if stats.same_show:
+            # книга 169: `store._same_show`
+            print(f"   тот же показ, что у своего сайта канала (тот же канал, та же "
+                  f"минута), — второй игрой не заведено: {stats.same_show}"
+                  + (f", прежних двойников убрано: {stats.same_show_folded}"
+                     if stats.same_show_folded else ""))
         total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
         print(f"игр в базе теперь: {total}")
         return 0
