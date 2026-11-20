@@ -53,6 +53,50 @@ print("Где лежит имя канала: порядок П1–П4")
 проверка("пустая ячейка — пусто", подписи("<a></a>"), [])
 проверка("узла нет — пусто, без падения", label.labels(None), [])
 
+проверка("П2: подпись ссылки внутри ячейки (sports.kz: ячейка — пункт списка)",
+         подписи('<li><i></i><a href="/tv/telekanal-kazsport" title="Телеканал «Qazsport»">Qazsport</a></li>', "li"),
+         ["Телеканал «Qazsport»", "Qazsport", "telekanal-kazsport"])
+проверка("ячейка из двух узлов (vsetv.com: логотип и подпись рядом) — узлы по очереди, пустое место пропущено",
+         label.labels([HTMLParser('<div class="chlogo"><img class="pic" alt="2+2"></div>').css_first("div"), None,
+                       HTMLParser('<table><tr><td class="channeltitle">Канал 2+2</td></tr></table>').css_first("td")]),
+         ["2+2", "Канал 2+2"])
+
+print("Какая из подписей — имя канала (книга 170)")
+
+
+def имя(разметка: str, что: str = "a", **как) -> str:
+    return label.pick(HTMLParser(разметка).css_first(что), **как)
+
+
+СПИСОК = {"Sport Klub 1", "Nova Sport", "M+ Liga de Campeones 3", "DAZN LaLiga"}
+проверка("В1: сайт ничего не менял — имя то же, что брал разборщик (`first`)",
+         имя('<a title="Другое"><img alt="Nova Sport"></a>', first="Nova Sport"), "Nova Sport")
+проверка("В1: в прежнем месте пусто — имя из другого места ячейки",
+         имя('<a href="/kanal/5"> Nova Sport </a>', first=""), "Nova Sport")
+проверка("В2: украшение сайта снято с каждой подписи",
+         имя('<div><a href="/canal/x"> Ver canal  M+ Liga de Campeones  3 </a></div>', "div", known=СПИСОК,
+             clean=lambda t: t.removeprefix("Ver canal")), "M+ Liga de Campeones 3")
+проверка("В3: первая ЗНАКОМАЯ подпись, а не первая попавшаяся",
+         имя('<a title="Sport Klub 1"><img alt="logo"></a>', known=СПИСОК), "Sport Klub 1")
+проверка("В3: сверка без регистра, пробелов и знаков — имя отдаём как в списке",
+         имя('<a> sport-klub 1 </a>', known=СПИСОК), "Sport Klub 1")
+проверка("В3: `keep_case` — отличие только в регистре остаётся как на сайте",
+         (имя('<a>DAZN LALIGA</a>', known=СПИСОК, keep_case=True), имя('<a>dazn-laliga</a>', known=СПИСОК, keep_case=True)),
+         ("DAZN LALIGA", "DAZN LaLiga"))
+проверка("В3: два имени списка с одним ключом — только буква в букву",
+         (имя('<a>SK1</a>', known={"SK 1", "SK1"}), имя('<a>sk 1</a>', known={"SK 1", "SK-1"})), ("SK1", "sk 1"))
+проверка("В3: знакомый хвост адреса годится (сайт убрал имя совсем)",
+         имя('<a href="/kanal/Nova-Sport"></a>', known=СПИСОК), "Nova Sport")
+проверка("В4: списка нет — первая подпись, но не хвост адреса",
+         (имя('<a href="/schedule/index/7/2026/11/18/"><img alt="nova news"></a>'),
+          имя('<a href="/schedule/index/7/2026/11/18/"></a>')), ("nova news", ""))
+проверка("В4: знакомой подписи нет — первая подпись (чужой канал отсеет разборщик)",
+         имя('<a><img alt="Кино 1"></a>', known=СПИСОК), "Кино 1")
+проверка("В4: длинный текст — не имя канала",
+         имя('<a>' + "Очень длинный текст ячейки, в котором расписание, а не имя канала " * 2 + '</a>'), "")
+проверка("В5: ячейки нет или она пустая — пусто", (label.pick(None), имя("<a></a>"), label.pick(None, СПИСОК, first=None)),
+         ("", "", ""))
+
 print("Хвост адреса")
 проверка("запрос, якорь и косая в конце не мешают",
          (label.tail_of("/tv-program/kanal/62/sk1/?x=1#y"), label.tail_of("https://site.tv/kanal/sk-golf")),

@@ -34,7 +34,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, mark_first_show, register
+from . import Program, label, mark_first_show, register
 
 DOMAIN = "movistarplus.es"
 TZ = "Europe/Madrid"
@@ -68,14 +68,28 @@ def _day_from_url(url: str, day: _date | None) -> _date | None:
     return day
 
 
+_VER_CANAL = re.compile(r"^\s*ver canal\s*", re.I)
+
+
+def _no_ver_canal(text: str) -> str:
+    """«Ver canal DAZN 1» → «DAZN 1»: украшение сайта перед именем канала."""
+    return _VER_CANAL.sub("", text)
+
+
 @register(DOMAIN)
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
           url: str = "", channels: set[str] | None = None) -> list[Program]:
     zone = ZoneInfo(tz or TZ)
     tree = HTMLParser(html)
 
-    head = tree.css_first("div.info-canal .titulo a")
-    channel = (head.text(strip=True) if head else "").removeprefix("Ver canal").strip()
+    # имя канала — в блоке `div.info-canal`: сегодня текстом ссылки «Ver canal
+    # DAZN 1», ищем во всех местах блока (`label.pick`, книга 170)
+    box = tree.css_first("div.info-canal")
+    head = box.css_first(".titulo a") if box is not None else None
+    # (сайт пишет «DAZN LALIGA», в списке владельца «DAZN LaLiga» — регистр
+    # оставляем как на сайте, `keep_case`: под этим написанием канал знает база)
+    channel = label.pick(box, channels, clean=_no_ver_canal, keep_case=True,
+                         first=head.text() if head is not None else None)
     if not channel:
         return []
     if channels and channel.casefold() not in {c.casefold() for c in channels}:
@@ -121,7 +135,7 @@ def list_channels(html: str) -> list[str]:
     """Все каналы площадки — из полосы логотипов сверху (`title` картинки)."""
     names: list[str] = []
     for node in HTMLParser(html).css("div.canalnumber img"):
-        name = (node.attributes.get("title") or "").strip()
+        name = label.pick(node, first=node.attributes.get("title"))
         if name and name not in names:
             names.append(name)
     return names

@@ -76,7 +76,7 @@ from datetime import date as _date, timedelta
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, register, site_says
+from . import Program, label, register, site_says
 
 DOMAIN = "tv.dir.bg"
 TZ = "Europe/Sofia"
@@ -158,9 +158,11 @@ def list_channels(html: str) -> dict[str, str]:
         link = block.css_first("a.channel_link")
         img = block.css_first("img")
         got = _LINK_ID.search(link.attributes.get("href") or "") if link else None
-        alt = " ".join((img.attributes.get("alt") or "").split()) if img else ""
-        if got and alt:
-            out.setdefault(got.group(1), alt)
+        # имя сегодня в `alt` логотипа; ищем во всех местах ссылки канала
+        # (`label.pick`, книга 170)
+        name = label.pick(link, first=img.attributes.get("alt") if img is not None else None)
+        if got and name:
+            out.setdefault(got.group(1), name)
     return out
 
 
