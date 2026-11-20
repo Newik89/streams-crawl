@@ -99,6 +99,238 @@ def игра(день: str, строки: list[tuple[str, str]]) -> dict:
                         for сайт, канал in строки]}
 
 
+# ── правило 5 (книга 169): тот же показ, что у своего сайта канала ───────────
+
+def свой_показ(conn, время: str, дом: str, гости: str, канал: int = 51,
+               вид: str = "F") -> int:
+    """Игра сегодня в `время`, которую свой сайт (sportklub.hr) показывает на
+    канале `канал`; отметка свежая — день в глубине своего сайта."""
+    conn.execute("INSERT OR IGNORE INTO channels (id, canonical_name, slug, country) "
+                 "VALUES (53, 'Sport Klub 2', 'sport-klub-2-hr', 'HR')")
+    for номер, имя in ((51, "Sport Klub 1"), (53, "Sport Klub 2")):
+        conn.execute("INSERT OR IGNORE INTO channel_aliases (channel_id, alias, "
+                     "source_id) VALUES (?, ?, 1)", (номер, имя))
+    когда = ЧАСЫ.strftime("%Y-%m-%d %H:%M")
+    cur = conn.execute(
+        "INSERT INTO events (sport, league_auto, team_home_auto, "
+        "team_away_auto, start_utc, start_kyiv, last_seen) "
+        "VALUES (?, 'Turska liga', ?, ?, ?, ?, ?)",
+        (вид, дом, гости, f"{день(0)} 17:00", f"{день(0)} {время}", когда))
+    conn.execute("INSERT INTO event_channels (event_id, channel_id, "
+                 "source_id, source_url, raw_title, last_seen, miss_count) "
+                 "VALUES (?, ?, 1, '', 'Trabzon - Eyup', ?, 0)",
+                 (cur.lastrowid, канал, когда))
+    conn.commit()
+    return cur.lastrowid
+
+
+def агрегатор(время: str = "20:00", каналы=("Sport Klub 1",), вид: str = "F") -> dict:
+    """Та же игра у mojtv.hr под другим написанием команд."""
+    return {"sport": вид, "league": "", "home": "Trabzon", "away": "Eyup",
+            "start_kyiv": f"{день(0)}T{время}", "start_utc": f"{день(0)}T17:00",
+            "entries": [{"source": "mojtv.hr", "channel": канал, "url": "",
+                         "raw_title": "Turska liga: Trabzon - Eyup"}
+                        for канал in каналы]}
+
+
+def игры_дня(conn) -> list:
+    """Игры сегодня с живыми каналами: (время, дом, гости, [сайт/канал])."""
+    out = []
+    for e in conn.execute("SELECT id, start_kyiv, team_home_auto, team_away_auto "
+                          "FROM events WHERE start_kyiv LIKE ? ORDER BY start_kyiv, id",
+                          (день(0) + "%",)).fetchall():
+        каналы = sorted(f"{r['domain']}/{r['canonical_name']}" for r in conn.execute(
+            "SELECT s.domain, c.canonical_name FROM event_channels ec "
+            "JOIN sources s ON s.id = ec.source_id JOIN channels c "
+            "ON c.id = ec.channel_id WHERE ec.event_id = ? AND ec.miss_count = 0",
+            (e["id"],)))
+        out.append((e["start_kyiv"][11:16], e["team_home_auto"], e["team_away_auto"], каналы))
+    return out
+
+
+СВОЯ = ("20:00", "TRABZONSPOR", "EYUPSPOR", ["sportklub.hr/Sport Klub 1"])
+ДВОЙНИК = ("20:00", "Trabzon", "Eyup", ["mojtv.hr/Sport Klub 1"])
+
+
+def правило_пять() -> None:
+    print("Правило 5 (книга 169): тот же показ, что у своего сайта канала")
+
+    # тот же канал, та же минута, имена не сошлись — вторую игру не заводим
+    conn = база()
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    проверка("тот же канал и минута — второй игры нет", игры_дня(conn), [СВОЯ])
+    проверка("счётчики: не заведена одна, строка агрегатора не взята",
+             (stats.new, stats.same_show, stats.not_own), (0, 1, 1))
+
+    # время у агрегатора на 10 минут позже — тот же показ; время и имена игры
+    # остаются от своего сайта
+    conn = база()
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    store.save_games(conn, [агрегатор("20:10")], now=ЧАСЫ)
+    проверка("десять минут разницы — тот же показ, время и имена — своего сайта",
+             игры_дня(conn), [СВОЯ])
+
+    # дальше четверти часа — другая передача: игру заводим, как раньше
+    conn = база()
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    stats = store.save_games(conn, [агрегатор("20:20")], now=ЧАСЫ)
+    проверка("двадцать минут разницы — игра заводится, как раньше",
+             (игры_дня(conn), stats.same_show),
+             ([СВОЯ, ("20:20", "Trabzon", "Eyup", ["mojtv.hr/Sport Klub 1"])], 0))
+
+    # свой сайт показывает игру на ДРУГОМ своём канале — не тот же показ
+    conn = база()
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR", канал=53)
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    проверка("другой канал своего сайта — игра заводится",
+             (len(игры_дня(conn)), stats.same_show), (2, 0))
+
+    # вид спорта спорит — не тот же показ
+    conn = база()
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR", вид="B")
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    проверка("вид спорта другой — игра заводится",
+             (len(игры_дня(conn)), stats.same_show), (2, 0))
+
+    # у своего сайта на канале две игры рядом — не гадаем
+    conn = база()
+    свой_показ(conn, "19:50", "TRABZONSPOR", "EYUPSPOR")
+    свой_показ(conn, "20:05", "Konyaspor", "Besiktas")
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    проверка("пар две — не гадаем, игра заводится",
+             (len(игры_дня(conn)), stats.same_show), (3, 0))
+
+    # у игры агрегатора есть и канал без своего сайта — у неё свой канал
+    conn = база()
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    stats = store.save_games(conn, [агрегатор(каналы=("Sport Klub 1", "MAX Sport 1"))],
+                             now=ЧАСЫ)
+    проверка("есть канал без своего сайта — игра заводится с ним",
+             (игры_дня(conn), stats.same_show),
+             ([СВОЯ, ("20:00", "Trabzon", "Eyup", ["mojtv.hr/MAX Sport 1"])], 0))
+
+    # своего показа рядом нет — единственную строку бережём, как раньше
+    conn = база()
+    свой_показ(conn, "15:00", "Galatasaray", "Samsun")
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    проверка("свой сайт в эту минуту ничего не показывает — строку бережём",
+             (игры_дня(conn)[-1], stats.same_show), (ДВОЙНИК, 0))
+
+    # прежний двойник (завёлся до правила): следующая заливка его убирает
+    conn = база()
+    store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    проверка("до правила: двойник стоит рядом", игры_дня(conn), [ДВОЙНИК, СВОЯ])
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    проверка("прежний двойник убран", игры_дня(conn), [СВОЯ])
+    проверка("счётчики: показ один, двойник убран, отметка снята",
+             (stats.same_show, stats.same_show_folded, stats.not_own_dropped), (1, 1, 1))
+
+    # у «двойника» есть живой канал другого сайта — это отдельная игра, не трогаем
+    conn = база()
+    store.save_games(conn, [агрегатор(каналы=("Sport Klub 1", "MAX Sport 1"))], now=ЧАСЫ)
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    stats = store.save_games(conn, [агрегатор(каналы=("Sport Klub 1", "MAX Sport 1"))],
+                             now=ЧАСЫ)
+    проверка("игра с живым чужим каналом остаётся",
+             (игры_дня(conn), stats.same_show_folded),
+             ([("20:00", "Trabzon", "Eyup", ["mojtv.hr/MAX Sport 1"]), СВОЯ], 0))
+
+    # дозабор только дописывает: новую игру не заводит, прежний двойник не трогает
+    conn = база()
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ, add_only=True)
+    проверка("дозабор: второй игры нет", (игры_дня(conn), stats.same_show), ([СВОЯ], 1))
+    conn = база()
+    store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ, add_only=True)
+    проверка("дозабор: прежний двойник не трогает",
+             (игры_дня(conn), stats.same_show), ([ДВОЙНИК, СВОЯ], 0))
+
+    # без официальных сайтов правило молчит
+    conn = база()
+    свой_показ(conn, "20:00", "TRABZONSPOR", "EYUPSPOR")
+    conn.execute("UPDATE sources SET selector_config = NULL WHERE id = 1")
+    conn.commit()
+    stats = store.save_games(conn, [агрегатор()], now=ЧАСЫ)
+    проверка("сайт не помечен официальным — правило молчит",
+             (len(игры_дня(conn)), stats.same_show), (2, 0))
+
+    живые_строки()
+
+
+#: живые строки 20.11.2026: что sportklub.hr вёл в базе сервера и что принёс
+#: файл серверного сбора mojtv.hr (замер перед правкой: 9 игр файла заливка
+#: по именам не нашла). Сутки: 1 — 20.11, 2 — 21.11, 3 — 22.11
+СВОЙ_САЙТ = [
+    (1, "15:00", "Sport Klub 2", "T", "Alcaraz", "Cobolli"),
+    (2, "15:00", "Sport Klub 4", "F", "GALATASARAY", "SAMSUNSPOR"),
+    (2, "18:00", "Sport Klub 3", "F", "KOCAELISPOR", "FENERBAHÇE"),
+    (2, "22:30", "Sport Klub 3", "F", "VITÓRIA SC", "SC BRAGA"),
+    (3, "12:00", "Sport Klub 1", "B", "Cayirova", "Erokspor"),
+    (3, "14:30", "Sport Klub 5", "F", "FC Kaiserslautern", "Dynamo Drezno"),
+    (3, "15:00", "Sport Klub 4", "F", "Konyaspor", "Beşiktaş"),
+    (3, "18:00", "Sport Klub 4", "F", "TRABZONSPOR", "EYUPSPOR"),
+]
+MOJTV = [
+    (1, "02:00", "Sport Klub 1", "B", "San Antonio", "LA Clippers"),          # своего показа нет
+    (1, "12:30", "Sport Klub 2", "T", "Harrison/Skupski", "Granollers/Zeballos"),  # свой — через 150 мин
+    (2, "15:00", "Sport Klub 4", "F", "Galatasaray", "Samsun"),
+    (2, "18:00", "Sport Klub 3", "F", "Kocaeli", "Fenerbahce"),
+    (2, "22:30", "Sport Klub 3", "F", "Guimaraes", "Braga"),
+    (3, "12:00", "Sport Klub 1", "B", "Cayirova", "Erok"),
+    (3, "14:30", "Sport Klub 5", "F", "Kaiserslautern", "Dynamo Dresden"),
+    (3, "15:00", "Sport Klub 4", "F", "Konya", "Besiktas"),
+    (3, "18:00", "Sport Klub 4", "F", "Trabzon", "Eyup"),
+]
+
+
+def живые_строки() -> None:
+    print("Правило 5 на живых строках 20.11.2026 (sportklub.hr и mojtv.hr)")
+    conn = база()
+    когда = ЧАСЫ.strftime("%Y-%m-%d %H:%M")
+    номера = {"Sport Klub 1": 51}
+    for i, имя in enumerate(("Sport Klub 2", "Sport Klub 3", "Sport Klub 4", "Sport Klub 5")):
+        номера[имя] = 60 + i
+        conn.execute("INSERT INTO channels (id, canonical_name, slug, country) "
+                     "VALUES (?, ?, ?, 'HR')", (60 + i, имя, f"sk-{i}-hr"))
+    for имя, номер in номера.items():
+        conn.execute("INSERT INTO channel_aliases (channel_id, alias, source_id) "
+                     "VALUES (?, ?, 1)", (номер, имя))
+    for сутки, время, канал, вид, дом, гости in СВОЙ_САЙТ:
+        cur = conn.execute(
+            "INSERT INTO events (sport, league_auto, team_home_auto, team_away_auto, "
+            "start_utc, start_kyiv, last_seen) VALUES (?, '', ?, ?, ?, ?, ?)",
+            (вид, дом, гости, f"{день(сутки)} {время}", f"{день(сутки)} {время}", когда))
+        conn.execute("INSERT INTO event_channels (event_id, channel_id, source_id, "
+                     "source_url, raw_title, last_seen, miss_count) "
+                     "VALUES (?, ?, 1, '', '', ?, 0)", (cur.lastrowid, номера[канал], когда))
+    conn.commit()
+    файл = [{"sport": вид, "league": "", "home": дом, "away": гости,
+             "start_kyiv": f"{день(сутки)}T{время}", "start_utc": f"{день(сутки)}T{время}",
+             "entries": [{"source": "mojtv.hr", "channel": канал, "url": "",
+                          "raw_title": f"{дом} - {гости}"}]}
+            for сутки, время, канал, вид, дом, гости in MOJTV]
+    store.save_games(conn, файл, now=ЧАСЫ)
+    от_агрегатора = sorted(
+        (r["team_home_auto"], r["team_away_auto"]) for r in conn.execute(
+            "SELECT DISTINCT e.team_home_auto, e.team_away_auto FROM events e "
+            "JOIN event_channels ec ON ec.event_id = e.id WHERE ec.source_id = 2"))
+    проверка("семь игр, которые свой сайт ведёт на том же канале в ту же минуту, "
+             "вторыми не заведены; две без своего показа рядом — заведены",
+             от_агрегатора, [("Harrison/Skupski", "Granollers/Zeballos"),
+                             ("San Antonio", "LA Clippers")])
+    проверка("игр в базе: восемь своего сайта и две от агрегатора",
+             conn.execute("SELECT COUNT(*) FROM events").fetchone()[0], 10)
+    проверка("имена своего сайта не тронуты",
+             conn.execute("SELECT team_home_auto || ' — ' || team_away_auto FROM events e "
+                          "JOIN event_channels ec ON ec.event_id = e.id WHERE ec.channel_id = ? "
+                          "AND e.start_kyiv = ?", (номера["Sport Klub 4"], f"{день(3)} 18:00")
+                          ).fetchone()[0], "TRABZONSPOR — EYUPSPOR")
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     print("Правило «свой сайт канала важнее агрегатора»")
@@ -258,6 +490,8 @@ def main() -> int:
     проверка("снятый хвост посчитан", хвосты.not_own_dropped, 1)
     проверка("заливка: строка для журнала есть",
              "mojtv.hr: 1" in stats.not_own_note, True)
+
+    правило_пять()
 
     print(f"\nпроверок: {зелёных + красных}, зелёных: {зелёных}, "
           f"красных: {красных}")

@@ -169,6 +169,11 @@ class SaveStats:
     not_own_note: str = ""
     #: снятые прежние отметки тех же агрегаторов по тем же каналам
     not_own_dropped: int = 0
+    #: книга 169: игры файла, которые не заведены второй игрой, — свой сайт
+    #: канала показывает их на том же канале в ту же минуту
+    #: (`channel_owner.Хозяева.тот_же_показ`), и убранные прежние двойники
+    same_show: int = 0
+    same_show_folded: int = 0
     #: время игр, записанное в базу с «T», приведено к общему виду (`db_time`)
     times_fixed: int = 0
     #: отметки, отозванные мультикастом (`multicast_rows`): канал сайта
@@ -470,6 +475,60 @@ def _moved_event(conn: sqlite3.Connection, game: dict,
         if same:
             found.append(r)
     return found[0] if len(found) == 1 else None        # правило 4
+
+
+def _same_show(conn: sqlite3.Connection, game: dict, found,
+               хозяева: channel_owner.Хозяева, srcs: dict[str, sqlite3.Row],
+               start_kyiv: str, по_эталону: bool, add_only: bool,
+               stats: "SaveStats") -> sqlite3.Row | None:
+    """Книга 169: игра файла — тот же показ, что свой сайт канала уже ведёт
+    на этом канале в эту минуту под другим написанием команд.
+
+    Повод (20.11.2026): mojtv.hr «Trabzon — Eyup», Sport Klub 4, 22.11 18:00
+    завёл игру #11500 рядом с #10852 «TRABZONSPOR — EYUPSPOR» от sportklub.hr
+    на том же канале в ту же минуту. Имена не сошлись, а правило «свой сайт
+    важнее» единственную строку игры бережёт — вышла вторая строка витрины.
+    Правила по порядку:
+      1. Игру, найденную по метке или канону эталона (`по_эталону`), не
+         судим: она своя и так.
+      2. Игра не нашлась — спрашиваем `Хозяева.тот_же_показ` (правила там):
+         нашлась пара — строки идут к ней, и правило 3 «свой сайт важнее» их
+         не берёт (у пары живой канал своего сайта); новой игры нет.
+      3. Игра нашлась, но это прежний двойник — у неё нет живых отметок,
+         кроме тех, что правило 3 и не пустило бы: спрашиваем так же; пара
+         есть — эти отметки снимаем, двойник без живых отметок убираем (как
+         тень в `_fold_ghost`). Дозабор (`add_only`) ничего не снимает —
+         двойника не трогает.
+    Вернёт игру-пару (её и считать найденной) или None."""
+    if not хозяева.официальные:
+        return None
+    if по_эталону or (found is not None and add_only):                # правила 1, 3
+        return None
+    строки = sorted(_entry_pairs(conn, game, srcs))
+    if found is not None:                                              # правило 3
+        наши = set(строки)
+        if any((r["source_id"], r["channel_id"]) not in наши for r in conn.execute(
+                "SELECT source_id, channel_id FROM event_channels "
+                "WHERE event_id = ? AND miss_count = 0", (found["id"],))):
+            return None
+    пара = хозяева.тот_же_показ(conn, строки, _parse_dt(start_kyiv),
+                               game.get("sport") or "",
+                               found["id"] if found is not None else None)
+    if пара is None:
+        return None
+    stats.same_show += 1
+    if found is not None:
+        for source_id, channel_id in строки:
+            stats.not_own_dropped += conn.execute(
+                "DELETE FROM event_channels WHERE event_id = ? "
+                "AND source_id = ? AND channel_id = ?",
+                (found["id"], source_id, channel_id)).rowcount
+        if not conn.execute("SELECT 1 FROM event_channels WHERE event_id = ? "
+                            "AND miss_count = 0 LIMIT 1", (found["id"],)).fetchone():
+            conn.execute("DELETE FROM events WHERE id = ?", (found["id"],))
+            stats.same_show_folded += 1
+    return conn.execute("SELECT id, sport, team_home_auto, team_away_auto, start_kyiv, flags "
+                        "FROM events WHERE id = ?", (пара,)).fetchone()
 
 
 def _fold_ghost(conn: sqlite3.Connection, ghost_id: int, main_id: int,
@@ -937,6 +996,12 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
             start_utc = _iso(_parse_dt(start_kyiv).replace(
                 tzinfo=ZoneInfo("Europe/Kyiv")).astimezone(timezone.utc))
         league = game.get("league") or ""
+        # книга 169: тот же показ, что у своего сайта канала, — вторую игру
+        # не заводим, а прежний двойник убираем (`_same_show`)
+        показ = _same_show(conn, game, found, хозяева, srcs, start_kyiv,
+                           bool(fs_start or via_twin), add_only, stats)
+        if показ is not None:
+            found = показ
         if found is None:
             cur = conn.execute(
                 "INSERT INTO events (sport, league_id, team_home_id, "
@@ -949,11 +1014,12 @@ def save_games(conn: sqlite3.Connection, games: list[dict],
                  start_utc, start_kyiv, _iso(now)))
             event_id = cur.lastrowid
             stats.new += 1
-        elif add_only:
+        elif add_only or показ is not None:
             # дозабор (`app/redo.py`, Д7): игра уже в базе — её не трогаем
             # вовсе (ни время, ни лигу, ни last_seen): более новый сбор мог
             # перенести матч, а дозабор старого сбора откатил бы это. Ниже —
-            # только новые отметки каналов
+            # только новые отметки каналов. Тот же показ (книга 169): игру
+            # ведёт свой сайт канала — имя, время и лигу агрегатор не правит
             event_id = found["id"]
             start_kyiv = db_time(found["start_kyiv"])
         else:
