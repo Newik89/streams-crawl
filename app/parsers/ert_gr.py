@@ -10,7 +10,8 @@
 
     div.slide-items
       div.column                       колонка одного канала
-        a[title]                       `ΕΡΤ2 ΣΠΟΡ` — имя канала
+        a[title]                       `ΕΡΤ2 ΣΠΟΡ` — имя канала (и в `alt`
+                                       логотипа внутри ссылки)
         div.broadcast[data-start-time]  `2026-08-31 21:00:00+0300`
           span.fs-xs > span            `21:00`
           strong.fs-ms                 заголовок передачи
@@ -30,7 +31,7 @@ from zoneinfo import ZoneInfo
 
 from selectolax.parser import HTMLParser
 
-from . import Program, mark_first_show, register
+from . import Program, label, mark_first_show, register
 
 DOMAIN = "ert.gr"
 TZ = "Europe/Athens"
@@ -109,8 +110,12 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
 
     out: list[Program] = []
     for column in tree.css("div.slide-items div.column"):
-        head = column.css_first("a[title]")
-        channel = (head.attributes.get("title") or "").strip() if head else ""
+        # шапка колонки канала — её первая ссылка; имя сегодня стоит в `title`
+        # ссылки, ищем во всех местах шапки (`label.pick`, книга 170). Блок
+        # передачи — тоже `column`, но ссылок в нём нет: он пропускается
+        head = column.css_first("a")
+        channel = label.pick(head, channels,
+                             first=head.attributes.get("title") if head is not None else None)
         if not channel or (channels and channel not in channels):
             continue
         for item in column.css("div.broadcast"):

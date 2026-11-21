@@ -27,7 +27,7 @@ from datetime import date as _date
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, register
+from . import Program, label, register
 
 DOMAIN = "nova.bg"
 TZ = "Europe/Sofia"
@@ -48,26 +48,36 @@ def page_channel_and_day(html: str) -> tuple[str | None, _date | None]:
     return m.group(1), _date(int(m.group(2)), int(m.group(3)), int(m.group(4)))
 
 
-def list_channels(html: str) -> dict[str, str]:
+def list_channels(html: str, known=None) -> dict[str, str]:
     """Переключатель каналов: номер → название. Нужен, чтобы обходить все
     спортивные каналы, а не тот один, что стоял в закладке владельца
-    (`recon/channels_map.md`). Название лежит в `alt` у логотипа."""
+    (`recon/channels_map.md`). Правила:
+      1. ячейка канала — ссылка на расписание с логотипом внутри либо с
+         классом переключателя («…Channels…»); такие же ссылки без картинки
+         с классом дней («Сряда 18 ноември») — не каналы;
+      2. название сегодня лежит в `alt` логотипа; ищем во всех местах
+         ячейки (`label.pick`, книга 170), `known` — каналы владельца."""
     out: dict[str, str] = {}
     for a in HTMLParser(html).css('a[href*="schedule/index"]'):
         m = _CANON.search(a.attributes.get("href") or "")
         img = a.css_first("img")
-        if m and img and img.attributes.get("alt"):
-            out.setdefault(m.group(1), img.attributes["alt"].strip())
+        if not m or (img is None and "Channels" not in (a.attributes.get("class") or "")):
+            continue
+        name = label.pick(a, known, first=img.attributes.get("alt") if img is not None else None)
+        if name:
+            out.setdefault(m.group(1), name)
     return out
 
 
 @register(DOMAIN)
 def parse(html: str, *, day: _date | None = None, tz: str | None = None,
-          url: str = "") -> list[Program]:
+          url: str = "", channels: set[str] | None = None) -> list[Program]:
+    """`channels` — каналы владельца: только чтобы узнать своё имя среди
+    подписей ячейки; строки по ним не отсеиваются (страница — один канал)."""
     tree = HTMLParser(html)
     channel_id, page_day = page_channel_and_day(html)
     day = page_day or day
-    channel = list_channels(html).get(channel_id or "", "") or f"канал {channel_id}"
+    channel = list_channels(html, channels).get(channel_id or "", "") or f"канал {channel_id}"
 
     blocks = tree.css('li[id^="production"]')
     rows = []

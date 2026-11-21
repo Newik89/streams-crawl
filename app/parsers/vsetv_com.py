@@ -34,7 +34,7 @@ from selectolax.parser import HTMLParser
 
 from .. import daytime
 from ..live import rubric_parts
-from . import Program, mark_first_show, register
+from . import Program, label, mark_first_show, register
 
 DOMAIN = "vsetv.com"
 TZ = "Europe/Kyiv"
@@ -131,8 +131,13 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     base = _date(int(got.group(1)), int(got.group(2)), int(got.group(3))) \
         if got else (day or daytime.today(tz or TZ))
 
+    # имя канала — в шапке страницы: сегодня в `alt` логотипа (`div.chlogo`),
+    # рядом оно же текстом (`td.channeltitle`); ищем во всех этих местах
+    # (`label.pick`, книга 170)
     logo = tree.css_first("img.pic")
-    channel = (logo.attributes.get("alt") or "").strip() if logo else ""
+    head = tree.css_first("div.chlogo")
+    channel = label.pick([head if head is not None else logo, tree.css_first("td.channeltitle")],
+                         channels, first=logo.attributes.get("alt") if logo is not None else None)
     if not channel:
         num = _CHANNEL.search(url or "")
         channel = f"vsetv {num.group(1)}" if num else "vsetv"

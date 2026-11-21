@@ -33,7 +33,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, register
+from . import Program, label, register
 
 DOMAIN = "sport5.co.il"
 TZ = "Asia/Jerusalem"
@@ -78,8 +78,16 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
     channel = ""
     for row in tree.css("tr"):
         if "tr-header" in (row.attributes.get("class") or ""):
+            # имя канала — в строке-шапке: сегодня в `alt` логотипа, ищем во
+            # всех местах строки (`label.pick`, книга 170).
+            # Шапки БЕЗ логотипа — чужие каналы, сайт подписывает их текстом
+            # (`span.channel-text`: ספורט 1–4, ערוץ One; 10 строк в сборе
+            # 18.11.2026). До книги 170 они не читались и пока не читаются:
+            # имён этих каналов в базе нет, брать ли их и как назвать —
+            # решает владелец (`ОТЛОЖЕНО.md`). Решит — условие про логотип снять
             logo = row.css_first("img")
-            channel = (logo.attributes.get("alt") or "").strip() if logo else ""
+            channel = label.pick(row, channels, first=logo.attributes.get("alt")) \
+                if logo is not None else ""
             continue
         if not channel or (channels and channel not in channels):
             continue

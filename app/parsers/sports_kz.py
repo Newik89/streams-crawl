@@ -29,7 +29,7 @@ from selectolax.parser import HTMLParser
 
 from .. import daytime
 from ..live import rubric_parts
-from . import Program, mark_first_show, register, site_says
+from . import Program, label, mark_first_show, register, site_says
 
 DOMAIN = "sports.kz"
 TZ = "Asia/Almaty"
@@ -79,8 +79,11 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
         year = today.year + (1 if month < today.month else 0)
         current = _date(year, month, int(got.group(1)))
         for group in block.css("ul"):
-            link = group.css_first("a[title]")
-            channel = (link.attributes.get("title") or "").strip() if link else ""
+            # имя канала — в пункте списка со ссылкой на канал: сегодня в
+            # `title` ссылки, ищем во всех местах пункта (`label.pick`, книга 170)
+            link = group.css_first("a[title]") or group.css_first("a")
+            channel = label.pick(link.parent if link is not None else None, channels,
+                                 first=link.attributes.get("title") if link is not None else None)
             if not channel or (channels and channel not in channels):
                 continue
             for item in group.css("li"):

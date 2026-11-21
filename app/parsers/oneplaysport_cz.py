@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 from selectolax.parser import HTMLParser
 
 from .. import daytime
-from . import Program, mark_first_show, register
+from . import Program, label, mark_first_show, register
 
 DOMAIN = "oneplaysport.cz"
 TZ = "Europe/Prague"
@@ -79,10 +79,12 @@ def parse(html: str, *, day: _date | None = None, tz: str | None = None,
 
     out: list[Program] = []
     for block in tree.css("div.channel"):
+        # имя канала — в шапке блока (`div.mobile-channel`): сегодня в `alt`
+        # логотипа, ищем во всех местах шапки (`label.pick`, книга 170)
         logo = block.css_first("img[alt]")
-        if not logo:
-            continue
-        channel = (logo.attributes.get("alt") or "").strip()
+        head = block.css_first("div.mobile-channel")
+        channel = label.pick(head if head is not None else logo, channels,
+                             first=logo.attributes.get("alt") if logo is not None else None)
         if not channel or (channels and channel not in channels):
             continue
         for item in block.css("a.program-item"):
