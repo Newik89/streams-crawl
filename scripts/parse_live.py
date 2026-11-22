@@ -31,6 +31,8 @@ from app import (broadcast, canon, channel_grid, daytime, db, dictionary,  # noq
                  etalon_guard, leagues, live, merge, names, pipeline, redo,
                  silence, sport, store)
 from app import fallback_read                               # noqa: E402
+from app import fallback_many                               # noqa: E402
+from app import channel_spelling                            # noqa: E402
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers import flashscore_mobi                     # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
@@ -150,7 +152,9 @@ def source_settings(plan_path: Path) -> dict[str, dict]:
         return {}
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     return {s["domain"]: {"tz": s.get("timezone"),
-                          "include": set(s.get("include") or []),
+                          # книга 174 (Н6): множество, у которого `in` знает
+                          # другое написание того же имени
+                          "include": channel_spelling.Listed(s.get("include") or []),
                           # разбор, одолженный у другого сайта (23.09)
                           "parser": s.get("parser") or ""}
             for s in plan.get("sources", [])}
@@ -1267,6 +1271,15 @@ def main() -> int:
     # разборщик не прочитал
     память_страниц: dict = dict(previous_payload().get(fallback_read.PAGES_KEY) or {})
     запасное: dict = {}
+    # книга 171 (`app/fallback_many.py`): страницы с НЕСКОЛЬКИМИ каналами,
+    # которые общий способ в тени читает так же, как свой разборщик (память
+    # из прошлого сбора), и вердикты тени по страницам этого сбора
+    память_многих: dict = dict(previous_payload().get(fallback_many.MANY_KEY) or {})
+    тень_многих: dict = {}
+    # книга 174 (`app/channel_spelling.py`, Н4): {сайт: {написание канала на
+    # сайте: имя из списка владельца}} — детектор; канал такой строке находит
+    # сервер при заливке (Н5)
+    написания: dict = {}
     сегодня_киев = daytime.today("Europe/Kyiv")
     for row in rows:
         name = row.get("файл")
@@ -1309,12 +1322,23 @@ def main() -> int:
         if redo_mode and name in redone:
             redo.tag_programs(programs)          # Д7: страница перекачана дозабором
         bare = _bare_domain(row["domain"])
+        # книга 174, Н4: канал написан на сайте иначе, чем в списке владельца,
+        # — запоминаем написание (строки не меняются)
+        channel_spelling.note(programs, setting.get("include"), написания.setdefault(bare, {}))
         parsed_counts[bare] = parsed_counts.get(bare, 0) + len(programs)
         # книга 125. «разобрано» выше считает только строки СВОЕГО разборщика:
         # по нему судят здоровье сайта, запасное чтение этот счёт не трогает
         if programs:
             # З3: разборщик работает — запоминаем канал страницы
             fallback_read.remember(память_страниц, row["domain"], row["url"], programs)
+            # книга 171, М1–М2: каналов на странице несколько — сверяем в тени
+            # общий способ со своим разборщиком и запоминаем, сошлось ли
+            if (len({p.channel_raw for p in programs}) > 1 and row["domain"] not in FS_LOCALES
+                    and bare not in ("sporteventz.com", "flashscore.mobi")):
+                fallback_many.shadow(
+                    память_многих, тень_многих, row["domain"], row["url"],
+                    (folder / name).read_text(encoding="utf-8", errors="replace"),
+                    day or сегодня_киев, setting.get("tz"), programs, setting.get("include"))
         elif (row.get("итог") == "расписание есть" and row["domain"] not in FS_LOCALES
               and bare not in ("sporteventz.com", "flashscore.mobi")):
             # З1–З4: страница открылась, свой разборщик дал ноль строк — читаем
@@ -1328,10 +1352,22 @@ def main() -> int:
                 (folder / name).read_text(encoding="utf-8", errors="replace"),
                 day or сегодня_киев, setting.get("tz") or свой_пояс,
                 канал or свой_канал, row["url"])
-            if not свой_канал:
-                fallback_read.count(запасное, bare, len(прочитано), канал)
-            if канал or свой_канал:
+            # книга 171, М5: канал страницы неизвестен, но страница в памяти
+            # «несколько каналов, общий способ в тени сходился» — читаем им
+            многие = (None if канал or свой_канал else
+                      память_многих.get(fallback_read.page_key(row["domain"], row["url"])))
+            if многие:
+                прочитано = fallback_many.read(
+                    (folder / name).read_text(encoding="utf-8", errors="replace"),
+                    day or сегодня_киев, setting.get("tz"), многие, row["url"],
+                    setting.get("include"), row["domain"])
+                fallback_read.count(запасное, bare, len(прочитано), "несколько каналов")
                 programs = прочитано
+            else:
+                if not свой_канал:
+                    fallback_read.count(запасное, bare, len(прочитано), канал)
+                if канал or свой_канал:
+                    programs = прочитано
         if row["domain"] in FS_LOCALES:
             # языковая версия эталона (6е, A2): на витрину не идёт и live не
             # подтверждает — отдаёт только имена по fs_id, ниже они лягут в
@@ -1434,7 +1470,9 @@ def main() -> int:
     до_разбора = [[dict(p.extra or {}) for p in programs] for _d, programs in pages]
     разбор = [(domain, programs,
                _classify(domain, programs,
-                         _bare_domain(domain) in REPEAT_GUESS_DOMAINS))
+                         # книга 173, З10: страницу прочитало запасное чтение
+                         fallback_read.blind(programs)
+                         or _bare_domain(domain) in REPEAT_GUESS_DOMAINS))
               for domain, programs in pages]
     try:
         день_обхода = _date.fromisoformat(str(report_data.get("начат_киев") or "")[:10])
@@ -2336,6 +2374,20 @@ def main() -> int:
     # прочитанных своим разборщиком, — серверу для уведомления
     fallback_read.own_rows(запасное, parsed_counts)       # З6: сайт целиком без строк?
     payload[fallback_read.PAGES_KEY] = память_страниц
+    payload[fallback_many.MANY_KEY] = память_многих             # книга 171, М2
+    payload[channel_spelling.KEY] = {сайт: пары for сайт, пары in написания.items() if пары}
+    for строка_написания in channel_spelling.words(payload[channel_spelling.KEY]):
+        print(f"написание канала отличается от списка: {строка_написания}")
+    if тень_многих:
+        сошлось = sorted({k.split("|", 1)[0] for k, ok in тень_многих.items() if ok})
+        print(f"запасное чтение, страницы с несколькими каналами: в тени сверено "
+              f"{len(тень_многих)}, общий способ сошёлся со своим разборщиком у "
+              f"{len(сошлось)}: {', '.join(сошлось) or '—'}")
+        # книга 175, К2: у кого общий способ читает и пометку эфира
+        с_пометкой = sorted({k.split("|", 1)[0] for k, v in память_многих.items()
+                             if тень_многих.get(k) and fallback_many.live_way(v)})
+        print(f"запасное чтение, пометка эфира общим способом сошлась у "
+              f"{len(с_пометкой)}: {', '.join(с_пометкой) or '—'}")
     payload[fallback_read.COUNT_KEY] = запасное
     for сайт, счёт in sorted(запасное.items()):
         print(f"запасное чтение: {сайт} — страниц без строк своего разборщика "

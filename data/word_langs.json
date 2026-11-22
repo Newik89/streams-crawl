@@ -66,7 +66,8 @@
   "tisková konference",
   "tiskovka",
   "slavnostní zahájení",
-  "slavnostní zakončení"
+  "slavnostní zakončení",
+  "souhrn kola"
  ],
  "cs sk": [
   "záznam",
@@ -82,7 +83,8 @@
   "tlačová konferencia",
   "slávnostné otvorenie",
   "slávnostné ukončenie",
-  "štúdio"
+  "štúdio",
+  "zhrnutie kola"
  ],
  "pl": [
   "program na żywo",
@@ -100,7 +102,8 @@
   "konferencja prasowa",
   "ceremonii",
   "uroczystość otwarcia",
-  "uroczystość zamknięcia"
+  "uroczystość zamknięcia",
+  "podsumowanie kolejki"
  ],
  "pt": [
   "direto",
@@ -118,7 +121,8 @@
   "cerimónia",
   "cerimônia",
   "entrega de prémios",
-  "pós-jogo"
+  "pós-jogo",
+  "resumo da jornada"
  ],
  "es": [
   "en vivo",
@@ -132,7 +136,8 @@
   "previo",
   "post",
   "postpartido",
-  "prepartido"
+  "prepartido",
+  "resumen de la jornada"
  ],
  "es pt": [
   "diferido",
@@ -181,7 +186,8 @@
   "dodjela nagrada",
   "dodela nagrada",
   "dodjela medalja",
-  "dodela medalja"
+  "dodela medalja",
+  "pregled kola"
  ],
  "hr sr bs sl": [
   "emisija",
@@ -197,7 +203,8 @@
   "novinarska konferenca",
   "tiskovna konferenca",
   "slovesnost",
-  "otvoritvena slovesnost"
+  "otvoritvena slovesnost",
+  "pregled kroga"
  ],
  "ro": [
   "vezi live",
@@ -211,7 +218,8 @@
   "conferință de presă",
   "conferinta de presa",
   "festivitate",
-  "ceremonie de"
+  "ceremonie de",
+  "rezumatul etapei"
  ],
  "de": [
   "sport-bild",
@@ -235,7 +243,8 @@
   "vorberichte",
   "nachbericht",
   "nachberichte",
-  "die analyse"
+  "die analyse",
+  "zusammenfassung des spieltags"
  ],
  "de sv no da": [
   "dokumentation",
@@ -283,14 +292,16 @@
   "avant-match",
   "après-match",
   "l'avant-match",
-  "l'après-match"
+  "l'après-match",
+  "résumé de la journée"
  ],
  "it": [
   "diretta",
   "in differita",
   "differita",
   "conferenza stampa",
-  "premiazione"
+  "premiazione",
+  "sintesi della giornata"
  ],
  "tr": [
   "canlı",
@@ -302,7 +313,8 @@
   "basin toplantisi",
   "töreni",
   "törenleri",
-  "seremonisi"
+  "seremonisi",
+  "haftanın özeti"
  ],
  "hu": [
   "élő",
@@ -320,7 +332,8 @@
   "záróünnepség",
   "díjátadó",
   "eredményhirdetés",
-  "előzetes"
+  "előzetes",
+  "forduló összefoglalója"
  ],
  "lt": [
   "tiesiogiai",
@@ -360,7 +373,8 @@
   "huldiging",
   "prijsuitreiking",
   "openingsceremonie",
-  "slotceremonie"
+  "slotceremonie",
+  "samenvatting speelronde"
  ],
  "hr sr bs sl cs sk": [
   "epizoda"
