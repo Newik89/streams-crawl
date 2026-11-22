@@ -1276,8 +1276,9 @@ def main() -> int:
     # из прошлого сбора), и вердикты тени по страницам этого сбора
     память_многих: dict = dict(previous_payload().get(fallback_many.MANY_KEY) or {})
     тень_многих: dict = {}
-    # книга 174 (`app/channel_spelling.py`): {сайт: {написание канала на сайте:
-    # имя из списка владельца}} — серверу, он запишет написание синонимом
+    # книга 174 (`app/channel_spelling.py`, Н4): {сайт: {написание канала на
+    # сайте: имя из списка владельца}} — детектор; канал такой строке находит
+    # сервер при заливке (Н5)
     написания: dict = {}
     сегодня_киев = daytime.today("Europe/Kyiv")
     for row in rows:
@@ -1322,8 +1323,8 @@ def main() -> int:
             redo.tag_programs(programs)          # Д7: страница перекачана дозабором
         bare = _bare_domain(row["domain"])
         # книга 174, Н4: канал написан на сайте иначе, чем в списке владельца,
-        # — строке ставим имя из списка, написание сайта помним
-        channel_spelling.apply(programs, setting.get("include"), написания.setdefault(bare, {}))
+        # — запоминаем написание (строки не меняются)
+        channel_spelling.note(programs, setting.get("include"), написания.setdefault(bare, {}))
         parsed_counts[bare] = parsed_counts.get(bare, 0) + len(programs)
         # книга 125. «разобрано» выше считает только строки СВОЕГО разборщика:
         # по нему судят здоровье сайта, запасное чтение этот счёт не трогает

@@ -152,10 +152,13 @@ _TITLE_REACH = 5
 _MAX_SHIFT = 1
 
 _PARENS = re.compile(r"\s*\([^()]*\)\s*$")
+#: К4: двоеточие после рубрики — с пробелом и без («…בכדורגל:פאריס FC - אנז'ה»), но не в «21:45»
+_COLON = re.compile(r"(?<!\d):(?!\d)\s*|(?<=\d):\s+")
 
 
 def _after_colon(title: str) -> str:
-    return title.split(": ", 1)[1] if ": " in title else title
+    parts = _COLON.split(title, 1)
+    return parts[1] if len(parts) == 2 and parts[1].strip() else title
 
 
 def _to_comma(title: str) -> str:
@@ -437,11 +440,13 @@ def _live_ways(own: list, got: list[tuple], word, ways) -> tuple[list[str], int]
     for p in own:
         live = bool(word(p.live_raw or ""))
         live_rows += live
-        marks = next((m for t, m in index.get(((p.channel_raw or "").strip(), p.start.astimezone(timezone.utc)), [])
-                      if same_title(p.title or "", t)), None)
-        if marks is None:
+        # на странице бывает две строки одного канала и времени (сетка для
+        # телефона и для компьютера) — сверяем с любой из них
+        same = [m for t, m in index.get(((p.channel_raw or "").strip(), p.start.astimezone(timezone.utc)), [])
+                if same_title(p.title or "", t)]
+        if not same:
             return [], live_rows
-        good = {way for way in good if bool(marks.get(way)) == live}
+        good = {way for way in good if any(bool(marks.get(way)) == live for marks in same)}
         if not good:
             break
     return [way for way in ways if way in good], live_rows
@@ -472,12 +477,12 @@ def _pair_ways(own: list, got: list[tuple], word) -> tuple[list[str], int]:
         target = _pair_key((p.match_raw or "").strip() or p.title or "")
         if target is None:
             continue
-        title = next((t for t in index.get(((p.channel_raw or "").strip(), p.start.astimezone(timezone.utc)), [])
-                      if same_title(p.title or "", t)), None)
-        if title is None:
+        titles = [t for t in index.get(((p.channel_raw or "").strip(), p.start.astimezone(timezone.utc)), [])
+                  if same_title(p.title or "", t)]
+        if not titles:
             return [], pair_rows
         pair_rows += 1
-        good = [way for way in good if _pair_key(PAIR_WAYS[way](title)) == target]
+        good = [way for way in good if any(_pair_key(PAIR_WAYS[way](title)) == target for title in titles)]
         if not good:
             break
     return good, pair_rows
@@ -593,8 +598,8 @@ def read(page: str, day: date | None, tz: str | None, remembered, url: str = "",
             found = PAIR_WAYS[by_pair](whole).strip()
             if _pair_key(found) is not None:
                 pair = found
-                if "двоеточия" in by_pair and ": " in whole:
-                    league = whole.split(": ", 1)[0]
+                if "двоеточия" in by_pair and _after_colon(whole) != whole:
+                    league = _COLON.split(whole, 1)[0].strip()
         extra = {fallback_read.MARK: True, "day": start.date().isoformat()}
         if way:
             extra[fallback_read.LIVE_SEEN] = way

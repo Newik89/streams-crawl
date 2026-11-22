@@ -11,6 +11,8 @@
 дней не доходили до базы. programetv.ro: имя из адреса «Tvr Sport HD», в
 списке «TVR Sport HD» — 58 строк, канал ни разу не был прочитан. Синонимы
 канала в базе есть (`channel_aliases`), но сверка со списком стоит раньше.
+А где разборщик регистр не различал (movistarplus.es: «DAZN LALIGA» на
+сайте, «DAZN LaLiga» в списке), новое написание рождало в базе ВТОРОЙ канал.
 
 ПРАВИЛА (что случилось → что делаем):
   Н1. Имя с сайта стоит в списке буква в букву — это оно, как раньше.
@@ -18,17 +20,22 @@
       пробелов и знаков препинания («МАТЧ! АРЕНА  (HD)» = «матч арена hd»,
       «Tvr» = «TVR»). Знаки, которыми каналы РАЗЛИЧАЮТСЯ, остаются: «+»,
       «&», «/», «#», «*», «@» — «ספורט 5+» и «ספורט 5» разные каналы.
-  Н3. Одно написание у двух имён списка сайта («DAZN LALIGA» и «DAZN
-      LaLiga») — не угадываем: строка решается, как раньше.
-  Н4. Сошлось — строка идёт дальше с именем ИЗ СПИСКА (на витрине канал
-      называется, как у владельца), написание сайта остаётся в строке
-      (`SPELLED`) и едет в games.json (`KEY`: сайт → написание → имя списка).
-  Н5. Сервер после заливки (`after_import`) записывает написание сайта
-      синонимом того же канала (`channel_aliases`) и один раз пишет строку
-      в «Прогоны»: владелец видит, что сайт сменил написание.
-  Н6. Сверка стоит в ОДНОМ месте: список, который получают все разборщики
-      (`Listed` — множество, у которого `in` знает Н1–Н3), и проход по
-      строкам после разборщика (`apply`). Разборщики не правятся.
+  Н3. Одно написание у двух имён списка сайта — не угадываем: строка
+      решается, как раньше.
+  Н4. Разбор сбора: список, который получают все разборщики, — `Listed`
+      (множество, у которого `in` знает Н1–Н3), поэтому строка с другим
+      написанием проходит сверку `channel not in channels` у любого
+      разборщика; сами разборщики не правятся. Строка идёт дальше С
+      НАПИСАНИЕМ САЙТА; что сошлось по написанию, пишется в лог разбора и в
+      games.json (`note`, ключ `KEY`) — это детектор «сайт пишет канал иначе».
+  Н5. Сервер при заливке (`resolve`, зовёт `store._channel_id`): у написания
+      сайта УЖЕ есть свой синоним — канал тот, на который он указывает, как
+      раньше (сложившиеся привязки не трогаем). Синонима нет — прежде чем
+      заводить новый канал, ищем по написанию канал списка этого сайта:
+      нашёлся один — строка идёт на ЕГО канал (на витрине он называется,
+      как у владельца), написание сайта записывается синонимом этого канала,
+      в «Прогоны» — одна строка. Канала у имени списка ещё нет (ни разу не
+      был прочитан) — он заводится с именем ИЗ СПИСКА.
 """
 from __future__ import annotations
 
@@ -36,8 +43,6 @@ import unicodedata
 
 #: ключ games.json: {сайт: {написание с сайта: имя из списка владельца}}
 KEY = "написания_каналов"
-#: пометка строки: как канал написан на сайте (имя строки — из списка)
-SPELLED = "написание_сайта"
 WHO = "написание канала"
 #: Н2: знаки, которыми различаются каналы, — в написании остаются
 _KEEP = frozenset("+&/#*@")
@@ -50,7 +55,7 @@ def key(name: str | None) -> str:
 
 
 class Listed(set):
-    """Н6: список каналов сайта из списка владельца. Обычное множество имён,
+    """Н4: список каналов сайта из списка владельца. Обычное множество имён,
     но `имя in список` верно и для другого написания того же имени (Н1–Н3)."""
 
     def __init__(self, names=()):
@@ -73,23 +78,20 @@ class Listed(set):
         return bool(self.listed(name))
 
 
-def apply(programs: list, listed, found: dict) -> int:
-    """Н4: строкам, чей канал написан иначе, чем в списке, ставит имя из
-    списка. `found` — {написание с сайта: имя из списка} по этому сайту
-    (копится за сбор). Возвращает, сколько строк поправлено."""
+def note(programs: list, listed, found: dict) -> int:
+    """Н4: детектор — у каких строк канал написан иначе, чем в списке.
+    Строки НЕ меняются. `found` — {написание с сайта: имя из списка} по
+    этому сайту (копится за сбор). Возвращает число таких строк."""
     if not isinstance(listed, Listed):
         return 0
-    fixed = 0
+    seen = 0
     for program in programs or []:
         name = program.channel_raw or ""
         same = listed.listed(name)
-        if not same or same == name:
-            continue
-        found[name] = same
-        program.extra = {**(program.extra or {}), SPELLED: name}
-        program.channel_raw = same
-        fixed += 1
-    return fixed
+        if same and same != name:
+            found[name] = same
+            seen += 1
+    return seen
 
 
 def words(found: dict) -> list[str]:
@@ -99,35 +101,38 @@ def words(found: dict) -> list[str]:
             for spelled, name in sorted((pairs or {}).items())]
 
 
-def after_import(conn, data: dict) -> list[str]:
-    """Н5 на сервере (зовёт `games_import.py`): написание сайта — синонимом
-    канала. Канал ищется по имени из списка у этого же сайта (сначала в
-    синонимах, потом в списке каналов сайта). Синоним уже записан либо канал
-    не найден — молчим. Возвращает строки, написанные в «Прогоны»."""
+def resolve(conn, raw: str, source) -> int | None:
+    """Н5 на сервере: канал для написания сайта, у которого своего синонима
+    нет. `source` — строка таблицы `sources` (нужны `id` и `country`).
+    Возвращает id канала из списка этого сайта либо None — тогда канал
+    решается, как раньше (заводится новый)."""
+    if source is None or not raw:
+        return None
+    source_id = source["id"]
+    spelled = key(raw)
+    if not spelled:
+        return None
+    same = {r[0]: r[1] for r in conn.execute(
+        "SELECT raw_name, channel_id FROM source_channels WHERE source_id = ?", (source_id,))
+        if r[0] != raw and key(r[0]) == spelled}
+    if len(same) != 1:                                                     # Н3
+        return None
+    name, channel_id = next(iter(same.items()))
+    alias = conn.execute("SELECT channel_id FROM channel_aliases WHERE alias = ? AND source_id = ?",
+                         (name, source_id)).fetchone()
+    if alias is not None:
+        channel_id = alias[0]
+    if channel_id is None:
+        # канал списка ни разу не был прочитан — заводим его с именем из списка
+        from . import channel_rules, dictionary
+        country = (source["country"] or "") or "??"
+        channel_id = dictionary.remember_channel(conn, name, channel_rules.apply(name, country),
+                                                 country, source_id)
+    conn.execute("INSERT OR IGNORE INTO channel_aliases (channel_id, alias, source_id) VALUES (?, ?, ?)",
+                 (channel_id, raw, source_id))
+    conn.commit()
     from . import watch
-    said: list[str] = []
-    for site, pairs in sorted((data.get(KEY) or {}).items()):
-        source = conn.execute(
-            "SELECT id FROM sources WHERE domain IN (?, ?)",
-            (site, "www." + site)).fetchone()
-        if source is None or not isinstance(pairs, dict):
-            continue
-        source_id = source[0]
-        for spelled, name in sorted(pairs.items()):
-            row = conn.execute(
-                "SELECT channel_id FROM channel_aliases WHERE alias = ? AND source_id = ?",
-                (name, source_id)).fetchone() or conn.execute(
-                "SELECT channel_id FROM source_channels WHERE raw_name = ? AND source_id = ? "
-                "AND channel_id IS NOT NULL", (name, source_id)).fetchone()
-            if row is None:
-                continue
-            if conn.execute("SELECT 1 FROM channel_aliases WHERE alias = ? AND source_id = ?",
-                            (spelled, source_id)).fetchone():
-                continue
-            conn.execute("INSERT INTO channel_aliases (channel_id, alias, source_id) VALUES (?, ?, ?)",
-                         (row[0], spelled, source_id))
-            conn.commit()
-            line = f"{site} пишет канал «{spelled}», в списке он «{name}» — написание записано синонимом"
-            watch.note(conn, line, who=WHO)
-            said.append(line)
-    return said
+    site = source["domain"] if "domain" in source.keys() else "сайт"
+    watch.note(conn, f"{site} пишет канал «{raw}», в списке он «{name}» — написание записано синонимом",
+               who=WHO)
+    return channel_id

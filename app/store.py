@@ -593,6 +593,13 @@ def _channel_id(conn: sqlite3.Connection, raw: str,
         (raw, source_id, source_id)).fetchone()
     if row:
         return row["channel_id"]
+    # книга 174, Н5: своего синонима у написания нет — прежде чем заводить
+    # новый канал, ищем по написанию канал списка этого сайта («МАТЧ! АРЕНА
+    # (HD)» с двумя пробелами — тот же канал, что с одним)
+    from . import channel_spelling
+    same = channel_spelling.resolve(conn, raw, source)
+    if same is not None:
+        return same
     country = (source["country"] if source else "") or "??"
     from . import channel_rules, dictionary
     # каноническое имя — сразу по правилам владельца (`app/channel_rules.py`):

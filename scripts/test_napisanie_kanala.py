@@ -14,11 +14,14 @@ programetv.ro: «Tvr Sport HD» против «TVR Sport HD» — 58 строк.
    каналы различаются («+», «&», «/»), остаются;
 2. Н1–Н3: `Listed` — `имя in список` верно для другого написания; двусмысленное
    написание не угадывается; обычные действия с множеством работают;
-3. Н4: `apply` ставит строке имя из списка и помнит написание сайта;
-4. Н6: любой разборщик со сверкой `channel not in channels` берёт такой канал,
-   не меняясь сам; `parse_live` даёт разборщикам `Listed` и зовёт `apply`;
-5. Н5: сервер записывает написание синонимом канала — один раз, с одной
-   строкой в «Прогоны»; канал не найден — молчит.
+3. Н4: `note` — детектор: написание сайта замечено, строки не меняются;
+4. Н4: любой разборщик со сверкой `channel not in channels` берёт такой канал,
+   не меняясь сам; `parse_live` даёт разборщикам `Listed` и зовёт `note`;
+5. Н5: сервер (`store._channel_id` → `resolve`): написание без своего синонима
+   идёт на канал списка сайта и записывается его синонимом — один раз, с одной
+   строкой в «Прогоны»; канал списка ни разу не читался — заводится с именем
+   из списка; у написания свой синоним уже есть — привязка не трогается;
+   написание общее для двух имён списка — не угадывается.
 
 В сеть не ходит, база — временная:
 
@@ -43,10 +46,9 @@ sys.stdout.reconfigure(encoding="utf-8")
 TMP = Path(tempfile.mkdtemp(prefix="napisanie-"))
 os.environ["STREAMS_DB"] = str(TMP / "t.db")
 
-from app import channel_spelling, db  # noqa: E402
+from app import channel_spelling, db, store  # noqa: E402
 from app.channel_spelling import Listed, key  # noqa: E402
 from app.parsers import Program  # noqa: E402
-import games_import  # noqa: E402
 import parse_live  # noqa: E402
 
 KYIV = ZoneInfo("Europe/Kyiv")
@@ -90,7 +92,7 @@ print("2. Список сайта (Н1–Н3)")
          [len(список), sorted(список)[0], len(список | {"X"}), bool(Listed()), bool(Listed(None))],
          [4, "TVR Sport HD", 5, False, False])
 
-print("3. Строке — имя из списка (Н4)")
+print("3. Детектор написаний (Н4)")
 
 
 def строка(канал: str) -> Program:
@@ -99,19 +101,17 @@ def строка(канал: str) -> Program:
 
 строки = [строка("МАТЧ! АРЕНА  (HD)"), строка("МАТЧ! АРЕНА (HD)"), строка("Чужой канал"), строка("Tvr Sport HD")]
 найдено: dict = {}
-проверка("поправлено две строки из четырёх", channel_spelling.apply(строки, список, найдено), 2)
-проверка("имена строк — из списка, чужой канал не тронут", [p.channel_raw for p in строки],
-         ["МАТЧ! АРЕНА (HD)", "МАТЧ! АРЕНА (HD)", "Чужой канал", "TVR Sport HD"])
-проверка("написание сайта осталось в строке",
-         [(p.extra or {}).get(channel_spelling.SPELLED) for p in строки], ["МАТЧ! АРЕНА  (HD)", None, None, "Tvr Sport HD"])
-проверка("что найдено — для games.json", найдено,
+проверка("замечено две строки из четырёх", channel_spelling.note(строки, список, найдено), 2)
+проверка("строки не меняются — идут с написанием сайта", [p.channel_raw for p in строки],
+         ["МАТЧ! АРЕНА  (HD)", "МАТЧ! АРЕНА (HD)", "Чужой канал", "Tvr Sport HD"])
+проверка("что найдено — для лога и games.json", найдено,
          {"МАТЧ! АРЕНА  (HD)": "МАТЧ! АРЕНА (HD)", "Tvr Sport HD": "TVR Sport HD"})
 проверка("обычное множество вместо списка — ничего не делаем",
-         channel_spelling.apply([строка("Tvr Sport HD")], {"TVR Sport HD"}, {}), 0)
+         channel_spelling.note([строка("Tvr Sport HD")], {"TVR Sport HD"}, {}), 0)
 проверка("слова для лога", channel_spelling.words({"programetv.ro": {"Tvr Sport HD": "TVR Sport HD"}}),
          ["programetv.ro: «Tvr Sport HD» = «TVR Sport HD»"])
 
-print("4. Одно место для всех разборщиков (Н6)")
+print("4. Одно место для всех разборщиков (Н4)")
 
 
 def разборщик(text, day=None, tz=None, url="", channels=None):
@@ -135,39 +135,63 @@ def разборщик(text, day=None, tz=None, url="", channels=None):
          [isinstance(настройки["programetv.ro"]["include"], Listed), "Tvr Sport HD" in настройки["programetv.ro"]["include"]],
          [True, True])
 код = inspect.getsource(parse_live)
-проверка("детектор: `parse_live` зовёт `channel_spelling.apply` и кладёт находки в итог сбора",
-         ["channel_spelling.apply(" in код, "payload[channel_spelling.KEY]" in код], [True, True])
-проверка("детектор: заливка на сервере зовёт `channel_spelling.after_import`",
-         "channel_spelling.after_import(" in inspect.getsource(games_import))
+проверка("детектор: `parse_live` зовёт `channel_spelling.note` и кладёт находки в итог сбора",
+         ["channel_spelling.note(" in код, "payload[channel_spelling.KEY]" in код], [True, True])
+проверка("детектор: сервер зовёт `channel_spelling.resolve` там, где опознаёт канал строки",
+         "channel_spelling.resolve(conn, raw, source)" in inspect.getsource(store._channel_id))
 
-print("5. Сервер: написание — синонимом канала (Н5)")
+print("5. Сервер: канал для написания сайта (Н5)")
 db.init_db()
 conn = db.connect()
-conn.execute("INSERT INTO sources (domain, name, base_url, country, timezone, enabled, role, access, status) "
-             "VALUES ('ntvplus.tv', 'ntv', 'https://ntvplus.tv/', 'RU', 'Europe/Moscow', 1, 'schedule', 'open', 'ok')")
-conn.execute("INSERT INTO sources (domain, name, base_url, country, timezone, enabled, role, access, status) "
-             "VALUES ('programetv.ro', 'p', 'https://www.programetv.ro/', 'RO', 'Europe/Bucharest', 1, 'schedule', 'open', 'ok')")
-ntv = conn.execute("SELECT id FROM sources WHERE domain = 'ntvplus.tv'").fetchone()[0]
-ro = conn.execute("SELECT id FROM sources WHERE domain = 'programetv.ro'").fetchone()[0]
+
+
+def сайт(domain: str, country: str):
+    conn.execute("INSERT INTO sources (domain, name, base_url, country, timezone, enabled, role, access, status) "
+                 "VALUES (?, ?, ?, ?, 'UTC', 1, 'schedule', 'open', 'ok')", (domain, domain, f"https://{domain}/", country))
+    return conn.execute("SELECT * FROM sources WHERE domain = ?", (domain,)).fetchone()
+
+
+def каналов() -> int:
+    return conn.execute("SELECT count(*) FROM channels").fetchone()[0]
+
+
+ntv, ro, es = сайт("ntvplus.tv", "RU"), сайт("programetv.ro", "RO"), сайт("movistarplus.es", "ES")
 conn.execute("INSERT INTO channels (id, canonical_name, slug, country) VALUES (73, 'МАТЧ! АРЕНА (HD)', 'match-arena-hd', 'RU')")
-conn.execute("INSERT INTO channel_aliases (channel_id, alias, source_id) VALUES (73, 'МАТЧ! АРЕНА (HD)', ?)", (ntv,))
-conn.execute("INSERT INTO source_channels (source_id, raw_name, channel_id, include) VALUES (?, 'МАТЧ! АРЕНА (HD)', 73, 1)", (ntv,))
-conn.execute("INSERT INTO source_channels (source_id, raw_name, channel_id, include) VALUES (?, 'TVR Sport HD', NULL, 1)", (ro,))
+conn.execute("INSERT INTO channel_aliases (channel_id, alias, source_id) VALUES (73, 'МАТЧ! АРЕНА (HD)', ?)", (ntv["id"],))
+conn.execute("INSERT INTO source_channels (source_id, raw_name, channel_id, include) VALUES (?, 'МАТЧ! АРЕНА (HD)', 73, 1)", (ntv["id"],))
+conn.execute("INSERT INTO source_channels (source_id, raw_name, channel_id, include) VALUES (?, 'TVR Sport HD', NULL, 1)", (ro["id"],))
+conn.execute("INSERT INTO channels (id, canonical_name, slug, country) VALUES (203, 'DAZN LaLiga', 'dazn-laliga', 'ES')")
+conn.execute("INSERT INTO channels (id, canonical_name, slug, country) VALUES (323, 'DAZN LALIGA', 'dazn-laliga-2', 'ES')")
+conn.execute("INSERT INTO channel_aliases (channel_id, alias, source_id) VALUES (203, 'DAZN LaLiga', ?)", (es["id"],))
+conn.execute("INSERT INTO channel_aliases (channel_id, alias, source_id) VALUES (323, 'DAZN LALIGA', ?)", (es["id"],))
+conn.execute("INSERT INTO source_channels (source_id, raw_name, channel_id, include) VALUES (?, 'DAZN LaLiga', 203, 1)", (es["id"],))
+conn.execute("INSERT INTO source_channels (source_id, raw_name, channel_id, include) VALUES (?, 'M+ Deportes', NULL, 1)", (es["id"],))
+conn.execute("INSERT INTO source_channels (source_id, raw_name, channel_id, include) VALUES (?, 'M+ DEPORTES', NULL, 1)", (es["id"],))
 conn.commit()
-итог = {channel_spelling.KEY: {"ntvplus.tv": {"МАТЧ! АРЕНА  (HD)": "МАТЧ! АРЕНА (HD)"},
-                               "programetv.ro": {"Tvr Sport HD": "TVR Sport HD"},
-                               "neizvestnyy.sayt": {"A": "B"}}}
-сказано = channel_spelling.after_import(conn, итог)
-проверка("записан один синоним — у канала, который в базе есть", len(сказано), 1)
-проверка("синоним — у того же канала и сайта",
+было = каналов()
+проверка("два пробела вместо одного — тот же канал, новый не заводится",
+         [store._channel_id(conn, "МАТЧ! АРЕНА  (HD)", ntv), каналов()], [73, было])
+проверка("написание записано синонимом этого канала",
          conn.execute("SELECT channel_id FROM channel_aliases WHERE alias = 'МАТЧ! АРЕНА  (HD)' AND source_id = ?",
-                      (ntv,)).fetchone()[0], 73)
-проверка("канал, которого в базе ещё нет, и неизвестный сайт — молчим",
-         conn.execute("SELECT count(*) FROM channel_aliases").fetchone()[0], 2)
-проверка("строка в «Прогоны» — одна",
-         conn.execute("SELECT count(*) FROM runs WHERE log LIKE '%написание канала%'").fetchone()[0], 1)
-проверка("вторая заливка — молчим", channel_spelling.after_import(conn, итог), [])
-проверка("итог сбора без находок — без падения", channel_spelling.after_import(conn, {}), [])
+                      (ntv["id"],)).fetchone()[0], 73)
+проверка("строка в «Прогоны» — одна, второй раз молчим",
+         [store._channel_id(conn, "МАТЧ! АРЕНА  (HD)", ntv),
+          conn.execute("SELECT count(*) FROM runs WHERE log LIKE '%написание канала%'").fetchone()[0]], [73, 1])
+новый = store._channel_id(conn, "Tvr Sport HD", ro)
+проверка("канал списка ни разу не читался — заводится один канал, с именем из списка",
+         [каналов(), conn.execute("SELECT canonical_name FROM channels WHERE id = ?", (новый,)).fetchone()[0].endswith("TVR Sport HD"),
+          sorted(r[0] for r in conn.execute("SELECT alias FROM channel_aliases WHERE channel_id = ?", (новый,)))],
+         [было + 1, True, ["TVR Sport HD", "Tvr Sport HD"]])
+проверка("у написания сайта уже есть свой синоним — канал прежний, привязка не трогается",
+         [store._channel_id(conn, "DAZN LALIGA", es), store._channel_id(conn, "DAZN LaLiga", es)], [323, 203])
+до = каналов()
+двойной_канал = store._channel_id(conn, "m+ deportes", es)
+проверка("написание общее для двух имён списка сайта — не угадываем: канал заводится, как раньше",
+         [каналов(), conn.execute("SELECT count(*) FROM runs WHERE log LIKE '%написание канала%'").fetchone()[0]], [до + 1, 2])
+проверка("канал вне списка сайта — как раньше", каналов() + 1,
+         (store._channel_id(conn, "Совсем другой", ntv), каналов())[1])
+проверка("без сайта и пустое имя — без падения",
+         [channel_spelling.resolve(conn, "X", None), channel_spelling.resolve(conn, "", ntv)], [None, None])
 conn.close()
 
 print(f"\nИТОГ: зелёных {зелёных}, красных {красных}")
