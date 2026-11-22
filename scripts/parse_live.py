@@ -1460,7 +1460,9 @@ def main() -> int:
     до_разбора = [[dict(p.extra or {}) for p in programs] for _d, programs in pages]
     разбор = [(domain, programs,
                _classify(domain, programs,
-                         _bare_domain(domain) in REPEAT_GUESS_DOMAINS))
+                         # книга 173, З10: страницу прочитало запасное чтение
+                         fallback_read.blind(programs)
+                         or _bare_domain(domain) in REPEAT_GUESS_DOMAINS))
               for domain, programs in pages]
     try:
         день_обхода = _date.fromisoformat(str(report_data.get("начат_киев") or "")[:10])
