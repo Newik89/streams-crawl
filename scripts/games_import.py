@@ -34,6 +34,7 @@ from app import (canon, db, dictionary, health, miss, names,  # noqa: E402
                  redo, silence, site_move, sport_question, store, unconfirmed,
                  watch)
 from app import fallback_read                                 # noqa: E402
+from app import channel_spelling                              # noqa: E402
 from app import moved                                         # noqa: E402
 from app import plan_push                                     # noqa: E402
 
@@ -292,6 +293,11 @@ def main() -> int:
                     conn, _json.loads(path.read_text(encoding="utf-8")),
                     _сейчас.now(site_move.KYIV).strftime("%Y-%m-%d")):
                 print(f"запасное чтение: {строка_чтения}")
+            # книга 174: сайт пишет канал иначе, чем в списке владельца, —
+            # написание записывается синонимом канала (одна строка на написание)
+            for строка_написания in channel_spelling.after_import(
+                    conn, _json.loads(path.read_text(encoding="utf-8"))):
+                print(f"написание канала: {строка_написания}")
             # книга 126: сайт перенёс расписание — одна строка на сайт в сутки
             try:
                 отчёт_сбора = _json.loads(
