@@ -564,3 +564,121 @@ def team_tournament(league: str) -> str:
     Jean King Cup»). Не командный турнир — пусто."""
     m = _TEAM_LEAGUE.match(league or "")
     return m.group(1).strip() if m else ""
+
+
+# ── книга 176: командный турнир без пары — одной строкой ─────────────────────
+# Жалоба владельца 22.11: полуфинал Кубка Дэвиса 27.11 стоял на витрине семью
+# строками — «Polufinale 1», «Davis Cup Finals 2026:», «Tennis: Coupe Davis
+# 2026: Demi-finale: équipes à communiquer», «גביע דיוויס - גמר: חצי גמר»… Пары
+# у полуфинала ещё нет, в эталоне его нет, а сведение по туру и городу (`key`)
+# командный турнир не берёт: тура у него нет («Davis Cup Finals» без тура —
+# ничей). Названия командных турниров на языках сайтов уже лежат в словаре
+# лиг (`data/league_words.json`, книга 159) — по ним строка и получает одно
+# имя: «Davis Cup» + `SESSION`, как следующая игра встречи (книга 149).
+
+#: метка игры в `results/games.json`: имя игры — сведённое название турнира
+#: (а не заголовок сайта); по ней заливка переименовывает прежнюю строку базы
+MERGED = "сведена"
+TEAM_FILE = MARKERS_FILE.parent / "league_words.json"
+#: раздел словаря лиг: командные турниры, которые эталон зовёт без «TEAMS»
+TEAM_KEY = "командный_теннис"
+
+
+@lru_cache(maxsize=2)
+def _team_words(path: Path | None = None) -> tuple:
+    """((название турнира, лига словаря, шаблон написаний), …) из словаря лиг:
+    фразы, чей перевод — командный теннисный турнир. Командный — перевод вида
+    «TEAMS - MEN: Davis Cup» (`team_tournament`) либо название из раздела
+    `TEAM_KEY` (United Cup, Laver Cup, Hopman Cup). Написания ищутся целыми
+    словами, без регистра и греческих ударений; само английское название —
+    тоже написание."""
+    try:
+        data = json.loads((path or TEAM_FILE).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return ()
+    plain = {str(x).strip() for x in data.get(TEAM_KEY) or [] if str(x).strip()}
+    spelled: dict[tuple[str, str], set[str]] = {(name, name): set() for name in plain}
+    for phrase, english in (data.get("фразы") or {}).items():
+        if not isinstance(phrase, str) or not isinstance(english, str):
+            continue
+        name = team_tournament(english) or (english if english in plain else "")
+        if name and phrase.strip():
+            spelled.setdefault((name, english), set()).add(phrase)
+    out = []
+    for (name, english), phrases in sorted(spelled.items()):
+        words = {" ".join(greek_plain(p).lower().split()) for p in phrases | {name}}
+        body = "|".join(re.escape(w).replace(r"\ ", r"\s+")
+                        for w in sorted(words, key=len, reverse=True))
+        out.append((name, english, re.compile(rf"(?<!\w)(?:{body})(?!\w)", re.I | re.U)))
+    return tuple(out)
+
+
+def no_pair(home: str, away: str) -> bool:
+    """Книга 176, К0: пары в строке нет вовсе — вторая сторона служебная
+    (`SESSION`) либо ОБЕ стороны — слова турнира или стадии («FINAL 8» —
+    «MEIA-FINAL»). Одна сторона — страна или игрок («Ausztria» —
+    «Spanyolország negyeddöntő», port.hu) — это показ матча: его сводит с
+    матчем эталон, названием турнира такая строка не становится."""
+    if (away or "") == SESSION:
+        return bool((home or "").strip())
+    return _side(home or "") and _side(away or "")
+
+
+def team_show(text: str, reference: list | None = None) -> tuple[str, str]:
+    """Книга 176: (название, лига) командного теннисного турнира, названного
+    в заголовке сайта; не назван — ("", ""). Правила (К0 — `no_pair` —
+    проверяет вызывающий: `parse_live`):
+      К1. название ищется написаниями словаря лиг (`_team_words`): «Cupa
+          Davis», «TAÇA DAVIS», «Coupe Davis», «גביע דיוויס» → «Davis Cup»;
+          и английским названием из лиг эталона («TEAMS - …: X»), которого в
+          словаре ещё нет;
+      К2. названы два разных турнира — не сводим;
+      К3. лига строки — лига этого турнира у эталона, если она у него одна
+          («TEAMS - MEN: Davis Cup - World Group (World)»); эталон турнир не
+          ведёт или зовёт двумя лигами — перевод словаря («TEAMS - MEN: Davis
+          Cup»)."""
+    text = greek_plain(text or "")
+    ref_leagues: dict[str, set[str]] = {}
+    for ref in reference or []:
+        name = team_tournament(ref.get("league") or "") if ref.get("sport") == "T" else ""
+        if name:
+            ref_leagues.setdefault(name, set()).add(ref.get("league") or "")
+    found = {name: english for name, english, pattern in _team_words()        # К1
+             if pattern.search(text)}
+    for name in ref_leagues:
+        if name not in found and len(name) >= 6 \
+                and re.search(rf"(?<!\w){re.escape(name)}(?!\w)", text, re.I):
+            found[name] = ""
+    if len(found) != 1:                                                       # К2
+        return "", ""
+    name, english = next(iter(found.items()))
+    leagues = ref_leagues.get(name) or set()
+    return name, (next(iter(leagues)) if len(leagues) == 1 else english)      # К3
+
+
+#: порядок стадий: ранняя первой
+_STAGE_ORDER = ("Quarterfinals", "Semifinals", "Final")
+
+
+def shows_stage(name: str, titles: list, known: dict | None) -> str:
+    """Книга 176: стадия сведённой трансляции `name` по заголовкам ВСЕХ её
+    живых отметок. Раньше бралась стадия первой отметки, её назвавшей; у
+    строки с десятью сайтами первым мог оказаться «Davis Cup Finals 2026:» —
+    и полуфинал вышел бы «финалом». Правила:
+      1. стадию каждого заголовка даёт `show_stage`;
+      2. у командного турнира «Finals» сразу после его названия («Davis Cup
+         Finals», «Billie Jean King Cup Finals») — имя финального турнира, а
+         не стадия: из заголовка вынимается;
+      3. сайты назвали разные стадии — берём самую раннюю (четвертьфинал
+         раньше полуфинала, полуфинал раньше финала): слово «финал» входит в
+         имена турниров («Final 8», «Finals»), слово ранней стадии — нет;
+      4. никто не назвал — пусто."""
+    own = next((pattern for team, _english, pattern in _team_words() if team == name), None)
+    finals = re.compile(rf"(?:{own.pattern})\s+finals(?!\w)", re.I | re.U) if own else None
+    found = set()
+    for title in titles or []:
+        title = greek_plain(title or "")
+        if finals is not None:
+            title = finals.sub(" ", title)                                   # 2
+        found.add(show_stage(name, title, known))                            # 1
+    return next((s for s in _STAGE_ORDER if s in found), "")                 # 3, 4

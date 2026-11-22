@@ -1,0 +1,21 @@
+{
+ "срез": "sbor-529-davis-polufinal",
+ "откуда": "сбор #529, 22.11: полуфинал Кубка Дэвиса семью строками",
+ "часы_utc": "2026-11-22 07:41",
+ "окно": 6,
+ "сайты": [
+  "digisport.ro",
+  "epg.cyta.com.cy",
+  "nova.bg",
+  "novasports.gr",
+  "sport5.co.il",
+  "sporttv.pt",
+  "tvarenasport.com",
+  "tvpassport.com",
+  "ziggosport.nl"
+ ],
+ "дни": [
+  "2026-11-27"
+ ],
+ "строк": 72
+}

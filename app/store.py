@@ -863,14 +863,21 @@ def tournament_renamed(game: dict, found) -> bool:
          (`names.country_of`): так в базе лежала следующая игра командной
          встречи («Thailand — Schweiz» 11:05), пока разбор не стал отдавать
          её строкой турнира («Billie Jean King Cup»);
+      2в. (книга 176) либо игра базы — трансляция турнира под заголовком
+         сайта («Polufinale 1» + SESSION), а пришедшая несёт сведённое
+         название (метка файла `broadcast.MERGED`: «Davis Cup»). Без метки
+         имя не трогаем: точечный обход одного сайта с неузнанным заголовком
+         не должен переименовать сведённую строку обратно;
       3. тогда обе стороны игры базы берутся из пришедшей."""
     if game.get("away") != broadcast.SESSION or not game.get("home"):          # 1
         return False
-    if (found["team_away_auto"] or "") == broadcast.SESSION \
-            or str(found["flags"] or "").startswith("fs:"):                    # 2
+    if str(found["flags"] or "").startswith("fs:"):                            # 2
         return False
     if (game.get("sport") or "") != "T":
         return False
+    if (found["team_away_auto"] or "") == broadcast.SESSION:                   # 2в
+        return bool(game.get(broadcast.MERGED)) \
+            and (found["team_home_auto"] or "") != game["home"]
     home, away = found["team_home_auto"] or "", found["team_away_auto"] or ""
     return broadcast.is_title("T", home, away) \
         or bool(names.country_of(home) or names.country_of(away))             # 2б
@@ -1560,9 +1567,9 @@ def schedule(conn: sqlite3.Connection, now: datetime | None = None) -> list[dict
                 # FINALS 2026 - FINAL») — правила в `broadcast.show_stage`
                 if known_titles is None:
                     known_titles = broadcast.tournaments(None)
-                away_shown = next(
-                    (s for s in (broadcast.show_stage(home_shown, t, known_titles)
-                                 for t in live_titles) if s), "")
+                # книга 176: стадию называют все живые отметки вместе —
+                # самая ранняя из названных (`broadcast.shows_stage`)
+                away_shown = broadcast.shows_stage(home_shown, live_titles, known_titles)
         else:
             home_shown = show(row["home_canon"], row["team_home_auto"])
             away_shown = show(row["away_canon"], row["team_away_auto"])

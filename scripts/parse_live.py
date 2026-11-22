@@ -2055,10 +2055,14 @@ def main() -> int:
     # `app/broadcast.py`). Не узнали — остаётся как написал сайт
     known_tournaments = broadcast.tournaments(reference_full)
     сведено, не_узнаны = 0, set()
+    # книга 176: строки, чьё имя — сведённое название турнира (id строки);
+    # игра из таких строк уходит в итог с меткой `broadcast.MERGED`
+    командных, сведённые_строки = 0, set()
     for domain, r in found:
         if r.sport != "T" or not broadcast.is_title("T", r.home, r.away):
             continue
         if TIE_KEY in ((r.program.extra or {}).get(pipeline.TOURNAMENT) or {}):
+            сведённые_строки.add(id(r))
             continue        # книга 149: следующая игра встречи уже названа
         заголовок = " ".join(x for x in (r.program.title, r.program.league_raw,
                                          r.program.sport_raw) if x)
@@ -2073,10 +2077,24 @@ def main() -> int:
             # турнира в эталоне нет — пусто
             r.league = (known_tournaments.get("leagues") or {}).get(ключ, "")
             сведено += 1
+            сведённые_строки.add(id(r))
+            continue
+        # книга 176: командный турнир (Кубок Дэвиса) тура и города не несёт —
+        # его название на языке сайта знает словарь лиг (`broadcast.team_show`)
+        # К0: только строка без пары — показ матча («страна — страна и слово
+        # стадии») сводит с матчем эталон
+        командный, лига = (broadcast.team_show(заголовок, reference_full)
+                           if broadcast.no_pair(r.home, r.away) else ("", ""))
+        if командный:
+            r.home, r.away = командный, broadcast.SESSION
+            r.league = лига
+            командных += 1
+            сведённые_строки.add(id(r))
         else:
             не_узнаны.add((domain, (r.program.title or "")[:70]))
-    if сведено or не_узнаны:
+    if сведено or командных or не_узнаны:
         print(f"трансляции турниров без пары: сведено по туру и городу {сведено}; "
+              f"по названию командного турнира {командных}; "
               f"город не узнан у {len(не_узнаны)} заголовков"
               + ("".join(f"\n   • {d}: {t}" for d, t in sorted(не_узнаны)[:12])
                  if не_узнаны else ""))
@@ -2345,6 +2363,12 @@ def main() -> int:
                    "start_utc": (g.first.payload.start_utc.strftime("%Y-%m-%dT%H:%M")
                                  if getattr(g.first.payload, "start_utc", None)
                                  else ""),
+                   # книга 176: имя игры — сведённое название турнира, а не
+                   # заголовок сайта: заливка переименует прежнюю строку базы
+                   **({broadcast.MERGED: 1}
+                      if g.away == broadcast.SESSION
+                      and any(id(e.payload) in сведённые_строки for e in g.entries)
+                      else {}),
                    # дозабор (Д7): пары имён и время выброшенных старых
                    # записей — заливка узнаёт по ним уже влитую игру
                    **redo.links_field(g),

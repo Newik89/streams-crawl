@@ -220,8 +220,10 @@ def игра(start, home, away, каналы, sport="T"):
          (своё,
           next((s for s in map(broadcast.stage, ["Nitto ATP Finals: Groepsfase"]) if s and s != своё), ""),
           next((s for s in map(broadcast.stage, ["ATP Finals: Polufinale 1"]) if s and s != своё), ""),
-          # книга 160: правило переехало в `broadcast.show_stage`
-          "broadcast.show_stage(home_shown, t, known_titles)" in inspect.getsource(store.schedule),
+          # книга 160: правило переехало в `broadcast.show_stage`; книга 176:
+          # витрина зовёт его для всех живых заголовков через `shows_stage`
+          "broadcast.shows_stage(home_shown, live_titles, known_titles)" in inspect.getsource(store.schedule)
+          and "show_stage(name, title, known)" in inspect.getsource(broadcast.shows_stage),
           broadcast.show_stage("ATP Finals Turin", "Nitto ATP Finals: Groepsfase", broadcast.tournaments(None)),
           broadcast.show_stage("ATP Finals Turin", "ATP Finals: Polufinale 1", broadcast.tournaments(None))),
          ("Final", "", "Semifinals", True, "", "Semifinals"))
