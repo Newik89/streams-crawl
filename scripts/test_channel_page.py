@@ -243,6 +243,14 @@ print("7. имя канала — как на сайте; ночь телеги�
 проверка("канал в адресе кодируется",
          cp.from_template({"page": "https://x.pl/s/{CH}", "ch": "name"}, "", "Canal Sport", день, None),
          "https://x.pl/s/Canal%20Sport")
+# книга 177: каналы teleman.pl, которых не было в словаре (сбор 23.11: НБА на «Eurosport 3»); адреса станций — со
+# страниц teleman.pl сбора #529
+проверка("teleman.pl: «Eurosport 3», «Eurosport 4», «CANAL+ Extra 4» ведут на страницы своих станций",
+         [cp.link("https://www.teleman.pl/sport?live=1&stations=all&page=16", domain="teleman.pl",
+                  start_kyiv="2026-11-29 12:00", tz="Europe/Warsaw", channel=канал)
+          for канал in ("Eurosport 3", "Eurosport 4", "CANAL+ Extra 4")],
+         [f"https://www.teleman.pl/program-tv/stacje/{адрес}?date=2026-11-29"
+          for адрес in ("Eurosport-3", "Eurosport-4", "CanalPlus-Extra-4")])
 проверка("ночь телегида: 02:00 по Варшаве 16.10 — страница 15.10",
          cp.site_day("2026-10-16 03:00", "Europe/Warsaw", 6), date(2026, 10, 15))
 проверка("ночь телегида: 07:00 по Варшаве — свой день",
