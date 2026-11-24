@@ -1,6 +1,6 @@
 # Итог обхода
 
-Режим: полный обход, окно 6 суток. Запросов: 1604. Заняло 4989 с.
+Режим: полный обход, окно 6 суток. Запросов: 1604. Заняло 4878 с.
 
 | Сайт | Результат |
 |---|---|
@@ -21,30 +21,30 @@
 | dr.dk | расписание есть — 6 |
 | epg.cyta.com.cy | расписание есть — 1 |
 | ert.gr | расписание есть — 6 |
-| flashscore.mobi | расписание есть — 18, пусто — 3 |
+| flashscore.mobi | расписание есть — 17, пусто — 4 |
 | football-tv.ru | расписание есть — 1 |
 | ipko.tv | расписание есть — 174 |
 | jupiter.err.ee | расписание есть — 18 |
-| kanal1sport.sk | не открылась — 1 |
+| kanal1sport.sk | расписание есть — 1 |
 | livesoccertv.com | расписание есть — 29 |
-| m.eredmenyek.com | расписание есть — 11, пусто — 3 |
+| m.eredmenyek.com | расписание есть — 10, пусто — 4 |
 | m.flashscore.bg | расписание есть — 7 |
-| m.flashscore.com.tr | расписание есть — 16, пусто — 2 |
+| m.flashscore.com.tr | расписание есть — 15, пусто — 3 |
 | m.flashscore.de | расписание есть — 6 |
 | m.flashscore.dk | расписание есть — 6 |
 | m.flashscore.es | расписание есть — 6 |
 | m.flashscore.fr | расписание есть — 6 |
-| m.flashscore.gr | расписание есть — 18, пусто — 3 |
+| m.flashscore.gr | расписание есть — 17, пусто — 4 |
 | m.flashscore.it | расписание есть — 6 |
 | m.flashscore.nl | расписание есть — 6 |
-| m.flashscore.pl | расписание есть — 10, пусто — 2 |
+| m.flashscore.pl | расписание есть — 9, пусто — 3 |
 | m.flashscore.pt | расписание есть — 6 |
-| m.flashscore.ro | расписание есть — 10, пусто — 2 |
+| m.flashscore.ro | расписание есть — 9, пусто — 3 |
 | m.flashscore.ru | расписание есть — 15, пусто — 3 |
 | m.flashscore.se | расписание есть — 6 |
-| m.flashscore.sk | расписание есть — 10, пусто — 2 |
-| m.flashscore.ua | расписание есть — 10, пусто — 2 |
-| m.livesport.cz | расписание есть — 10, пусто — 2 |
+| m.flashscore.sk | расписание есть — 9, пусто — 3 |
+| m.flashscore.ua | расписание есть — 9, пусто — 3 |
+| m.livesport.cz | расписание есть — 9, пусто — 3 |
 | m.rezultati.com | расписание есть — 14 |
 | maxsport.live | расписание есть — 1 |
 | mediaklikk.hu | расписание есть — 6 |
@@ -61,9 +61,9 @@
 | primaplay.ro | расписание есть — 1 |
 | programetv.ro | пусто — 11 |
 | programme-tv.net | расписание есть — 48 |
-| raiplay.it | расписание есть — 24 |
+| raiplay.it | расписание есть — 23, не открылась — 1 |
 | raspored.hrt.hr | расписание есть — 18 |
-| rtcg.me | расписание есть — 20, пусто — 4 |
+| rtcg.me | расписание есть — 16, пусто — 8 |
 | rte.ie | расписание есть — 17 |
 | rtl.de | расписание есть — 48 |
 | rtp.pt | расписание есть — 33 |
@@ -116,14 +116,13 @@
 
 | Сайт | Канал | Что ответил | Ссылка |
 |---|---|---|---|
-| kanal1sport.sk | сетка | браузер: TimeoutError: Page.goto: Timeout 60000ms exceeded.
-Call log:
-  - navigating to "https://www.kanal1sport.sk/tv-program/", waiting until "domcontentloade | https://www.kanal1sport.sk/tv-program/ |
+| raiplay.it | Rai Sport | HTTP 404; браузер: HTTP 403 (браузер), защита: не опознана | https://www.raiplay.it/palinsesto/app/rai-sport/29-11-2026.json |
 
 ## Третий заход — читалки
 
-- raiplay.it: GitHub не пустили, взято через читалку www-raiplay-it.translate.goog — 1 из 1 страниц
+- football-tv.ru: GitHub не пустили, взято через читалку r.jina.ai — 1 из 1 страниц
+- raiplay.it: ни одна читалка не отдала страницу с расписанием
 
 ## Оценка
 
-- ✅ обход в норме: не открылись 1 из 1604 страниц (0%), сайтов без удачи 1 из 107 (1%)
+- ✅ обход в норме: не открылись 1 из 1604 страниц (0%), сайтов без удачи 0 из 107 (0%)
