@@ -1097,6 +1097,7 @@
         "AE Larisa",
         "AEL Larissa",
         "AEL Larissza",
+        "ΑΕ Λάρισας",
         "ΑΕΛ",
         "ΑΕΛ",
         "ΑΕΛ Novibet",
@@ -3234,7 +3235,8 @@
         "Αμπού Κιρ Σεμάντ",
         "Абу Каир Семад",
         "Абу Кир Семад",
-        "Абу Кір Семад"
+        "Абу Кір Семад",
+        "أبو قير للاسمدة"
       ]
     },
     {
@@ -4172,6 +4174,15 @@
       ]
     },
     {
+      "name": "Afanasjevs A.",
+      "country": null,
+      "aliases": [
+        "Afanasjevs A. (Λετ)",
+        "Afanasjevs A. (Лат)",
+        "Афанасьєвс А."
+      ]
+    },
+    {
       "name": "Afantou",
       "country": null,
       "aliases": [
@@ -4998,6 +5009,15 @@
       ]
     },
     {
+      "name": "Ahlawat S.",
+      "country": null,
+      "aliases": [
+        "Ahlawat S. (Iνδ)",
+        "Ahlawat S. (Инд)",
+        "Ахлават Ш."
+      ]
+    },
+    {
       "name": "Ahouda W.",
       "country": null,
       "aliases": [
@@ -5493,6 +5513,14 @@
       ]
     },
     {
+      "name": "Akli A./Rencheli A.",
+      "country": null,
+      "aliases": [
+        "Ακλί Α./Ρέντσελι Α.",
+        "Аклі А./Ренкель А."
+      ]
+    },
+    {
       "name": "Akli A./Sieg M.",
       "country": null,
       "aliases": [
@@ -5622,6 +5650,13 @@
         "Aksu S. (Tου)",
         "Aksu S. (Тур)",
         "Аксу С."
+      ]
+    },
+    {
+      "name": "Aksu S./Kartseva A.",
+      "country": null,
+      "aliases": [
+        "Аксу С./Карцева А."
       ]
     },
     {
@@ -12614,6 +12649,20 @@
       ]
     },
     {
+      "name": "Amiraghyan A./Turkmen D. RETIRED",
+      "country": null,
+      "aliases": [
+        "Amiraghyan A./Turkmen D. FELADTA",
+        "Amiraghyan A./Turkmen D. GERI ÇEKILDI",
+        "Amiraghyan A./Turkmen D. KRECZ",
+        "Amiraghyan A./Turkmen D. RETRAS",
+        "Amiraghyan A./Turkmen D. SKREČ",
+        "Amiraghyan A./Turkmen D. SKREČ",
+        "Αμιραγκιάν Α./Τουρκμέν Ν. ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Амірагян А./Туркмен Д. ВІДМОВА"
+      ]
+    },
+    {
       "name": "Amkar",
       "country": null,
       "aliases": [
@@ -13708,6 +13757,13 @@
         "Andronicou N. (Κυπ)",
         "Andronicou N. (Кип)",
         "Андроніку Н."
+      ]
+    },
+    {
+      "name": "Andronicou N./Nemcsek G.",
+      "country": null,
+      "aliases": [
+        "Андроніку Н./Немчек Г."
       ]
     },
     {
@@ -16358,8 +16414,10 @@
       "country": null,
       "aliases": [
         "Αρλάντα",
+        "Αρλάντα (Σου)",
         "Арланда",
         "Арланда",
+        "Арланда (Шве)",
         "ФК Арланда"
       ]
     },
@@ -20471,7 +20529,10 @@
       "name": "Auger-Aliassime F./Chan D.",
       "country": null,
       "aliases": [
-        "Auger Aliassime/Chan"
+        "Auger Aliassime/Chan",
+        "Όγκερ Αλιασίμ Φ./Τσαν Ν.",
+        "Оже Альяссім Ф./Чан Дж.",
+        "Оже-Альяссим Ф./Чан Д."
       ]
     },
     {
@@ -21695,6 +21756,14 @@
       ]
     },
     {
+      "name": "Ayala L./Larraya Guidi S. A.",
+      "country": null,
+      "aliases": [
+        "Αγιάλα Λ./Λαράγια Γκούιντι Σ. Α.",
+        "Аяла Л./Ларрая Гвіді С. А."
+      ]
+    },
+    {
       "name": "Ayala L./Lollia M.",
       "country": null,
       "aliases": [
@@ -21875,6 +21944,15 @@
         "Ейр",
         "Еър",
         "Эйр"
+      ]
+    },
+    {
+      "name": "Aytekin M.",
+      "country": null,
+      "aliases": [
+        "Aytekin M. (Tου)",
+        "Aytekin M. (Тур)",
+        "Айтекін М."
       ]
     },
     {
@@ -24230,6 +24308,14 @@
       "country": null,
       "aliases": [
         "Бахира ФК"
+      ]
+    },
+    {
+      "name": "Bakhshaliev I./Celik C.",
+      "country": null,
+      "aliases": [
+        "Bakhshaliev I./Челик Дж.",
+        "Бахшалієв І./Челік Ч."
       ]
     },
     {
@@ -29019,6 +29105,13 @@
       "country": null,
       "aliases": [
         "Берманн Т./Вайсман Т."
+      ]
+    },
+    {
+      "name": "Behrmann T./Vaisman T. WO",
+      "country": null,
+      "aliases": [
+        "Берманн Т./Вайсман Т. WO"
       ]
     },
     {
@@ -37503,6 +37596,20 @@
       ]
     },
     {
+      "name": "Botran Neutze R. (Gtm) RETIRED",
+      "country": null,
+      "aliases": [
+        "Botran Neutze R. (Gtm) FELADTA",
+        "Botran Neutze R. (Gtm) GERI ÇEKILDI",
+        "Botran Neutze R. (Gtm) KRECZ",
+        "Botran Neutze R. (Gtm) RETRAS",
+        "Botran Neutze R. (Gtm) SKREČ",
+        "Botran Neutze R. (Gtm) SKREČ",
+        "Botran Neutze R. (Γου) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Ботран Неуце Р. (Gtm) ВІДМОВА"
+      ]
+    },
+    {
       "name": "Botswana",
       "country": null,
       "aliases": [
@@ -38250,6 +38357,13 @@
       ]
     },
     {
+      "name": "Bracci V./Recchioni J.",
+      "country": null,
+      "aliases": [
+        "Браччі В./Recchioni J."
+      ]
+    },
+    {
       "name": "Brace B./Brace C.",
       "country": null,
       "aliases": [
@@ -38745,6 +38859,15 @@
         "Μπρανκάτσιο Ν./Μαριστάνι Ζουλέτα Ντε Ρεάλες Γ.",
         "Бранкаччио/Маристани Сулета Де Реалес Г.",
         "Бранкаччо Н./Марістані Сулета Де Реалес Г."
+      ]
+    },
+    {
+      "name": "Brancaccio N./Oz I.",
+      "country": null,
+      "aliases": [
+        "Μπρανκάτσιο Ν./Οζ Ι.",
+        "Бранкаччио/Оз И.",
+        "Бранкаччо Н./Оз І."
       ]
     },
     {
@@ -39650,6 +39773,15 @@
         "Breazu V. C. (Рум)",
         "Μπρεάζου Β. Κ. (Ρου)",
         "Бразу В. К."
+      ]
+    },
+    {
+      "name": "Breazu V. C./Ciric A.",
+      "country": null,
+      "aliases": [
+        "Breazu V. C./Čirič A.",
+        "Μπρεάζου Β. Κ./Τσίριτς Α.",
+        "Бразу В. К./Чирич А."
       ]
     },
     {
@@ -49919,6 +50051,15 @@
       ]
     },
     {
+      "name": "Castagnola L./Fondriest M.",
+      "country": null,
+      "aliases": [
+        "Καστανιόλα Λ./Φοντριέστ Μ.",
+        "Кастаньйола Л./Фондріст М.",
+        "Кастаньола Л./Fondriest M."
+      ]
+    },
+    {
       "name": "Castanhal U20",
       "country": null,
       "aliases": [
@@ -50436,6 +50577,15 @@
       ]
     },
     {
+      "name": "Cavelli C.",
+      "country": null,
+      "aliases": [
+        "Cavelli C. (Ита)",
+        "Καβέλι Κ. (Ιτα)",
+        "Кавеллі К."
+      ]
+    },
+    {
       "name": "Cavelli C./Ortenzi B.",
       "country": null,
       "aliases": [
@@ -50451,6 +50601,15 @@
         "Кавезе",
         "Кавезе",
         "Кавезе 1919"
+      ]
+    },
+    {
+      "name": "Cavus D.",
+      "country": null,
+      "aliases": [
+        "Cavus D. (Tου)",
+        "Cavus D. (Тур)",
+        "Чавуш Д."
       ]
     },
     {
@@ -51575,6 +51734,15 @@
       ]
     },
     {
+      "name": "Ceramilac L.",
+      "country": null,
+      "aliases": [
+        "Ceramilac L. (Сер)",
+        "Τσεραμίλατς Λ. (Σερ)",
+        "Черамілац Л."
+      ]
+    },
+    {
       "name": "Cercle Brugge KSV",
       "country": null,
       "aliases": [
@@ -51642,6 +51810,15 @@
         "Серданьола",
         "Серданьола",
         "Серданьола-дель-Вальес"
+      ]
+    },
+    {
+      "name": "Cerelli G./Perfetti N.",
+      "country": null,
+      "aliases": [
+        "Cerelli G./Περφέτι Ν.",
+        "Cerelli G./Перфетти Н.",
+        "Череллі Дж./Перфетті Н."
       ]
     },
     {
@@ -52487,6 +52664,14 @@
       ]
     },
     {
+      "name": "Chaloupka A./Praus L.",
+      "country": null,
+      "aliases": [
+        "Chaloupka A./Πράους Λ.",
+        "Chaloupka A./Праус Л."
+      ]
+    },
+    {
       "name": "Cham",
       "country": null,
       "aliases": [
@@ -53314,6 +53499,15 @@
       ]
     },
     {
+      "name": "Charrier A.",
+      "country": null,
+      "aliases": [
+        "Charrier A. (Γαλ)",
+        "Charrier A. (Фра)",
+        "Шарр'є О."
+      ]
+    },
+    {
       "name": "Charrier A./Delaunay C.",
       "country": null,
       "aliases": [
@@ -53325,6 +53519,13 @@
       "country": null,
       "aliases": [
         "Шарр'є О./Кольвінтер М."
+      ]
+    },
+    {
+      "name": "Charrier A./Melki L.",
+      "country": null,
+      "aliases": [
+        "Шарр'є О./Мелькі Л."
       ]
     },
     {
@@ -55577,6 +55778,7 @@
         "Čile U17",
         "Čile U17",
         "Čile U17",
+        "Čile, SP U17, I poluvrijeme, direktno",
         "Čile, SP U17, direktno",
         "Şili U17",
         "Χιλή U17",
@@ -56321,6 +56523,32 @@
         "Хоцен",
         "Хоцень",
         "Хоцень"
+      ]
+    },
+    {
+      "name": "Choi O.",
+      "country": null,
+      "aliases": [
+        "Choi O. (Кор)",
+        "Τσόι Ο. Γ. (Kορ)",
+        "Чхой О."
+      ]
+    },
+    {
+      "name": "Choi O./Pankratova M.",
+      "country": null,
+      "aliases": [
+        "Τσόι Ο. Γ./Pankratova M.",
+        "Чхой О./Pankratova M."
+      ]
+    },
+    {
+      "name": "Choi S. Y.",
+      "country": null,
+      "aliases": [
+        "Choi S. Y. (Kορ)",
+        "Choi S. Y. (Кор)",
+        "Чой С. Ю."
       ]
     },
     {
@@ -58834,6 +59062,15 @@
         "Cocola S. (Ита)",
         "Κόκολα Σ. (Ιτα)",
         "Кокола С."
+      ]
+    },
+    {
+      "name": "Cocola S./Marino P.",
+      "country": null,
+      "aliases": [
+        "Cocola S./Марино П.",
+        "Κόκολα Σ./Μαρίνο Π.",
+        "Кокола С./Маріно П."
       ]
     },
     {
@@ -65544,6 +65781,13 @@
       ]
     },
     {
+      "name": "Da Silva L. L./Held E.",
+      "country": null,
+      "aliases": [
+        "Да Сілва Л. Л./Held E."
+      ]
+    },
+    {
       "name": "Dab Zabierzow W",
       "country": null,
       "aliases": [
@@ -67624,6 +67868,15 @@
       ]
     },
     {
+      "name": "De Sanctis E.",
+      "country": null,
+      "aliases": [
+        "De Sanctis E. (Ита)",
+        "Ντε Σάνκτις E. (Ιτα)",
+        "Де Санктіс Е."
+      ]
+    },
+    {
       "name": "De Santis G.",
       "country": null,
       "aliases": [
@@ -68158,12 +68411,28 @@
       ]
     },
     {
+      "name": "Deflandre L.",
+      "country": null,
+      "aliases": [
+        "Deflandre L. (Γαλ)",
+        "Deflandre L. (Фра)",
+        "Лео Д."
+      ]
+    },
+    {
       "name": "Deflandre L./Hamza Reguig S.",
       "country": null,
       "aliases": [
         "Deflandre L./Χαμζά Ρεγκουίγκ Σ.",
         "Deflandre L./Хамза Регуиг С.",
         "Лео Д./Хамза Регіг С."
+      ]
+    },
+    {
+      "name": "Deflandre L./Kostka T.",
+      "country": null,
+      "aliases": [
+        "Лео Д./Костка Т."
       ]
     },
     {
@@ -69070,6 +69339,7 @@
         "Denemarken -17",
         "Denmark U17",
         "Dinamarca Sub-17",
+        "Dinamarca U17",
         "Dinamarca U17",
         "Dánia U17",
         "Dánsko U17",
@@ -70068,6 +70338,14 @@
         "Dermenjyan J./Σχοινάς Σ.",
         "Dermenjyan J./Схинас С.",
         "Дерменджян Дж./Схінас С."
+      ]
+    },
+    {
+      "name": "Dermenjyan J./Tsatsakis E.",
+      "country": null,
+      "aliases": [
+        "Dermenjyan J./Τσατσάκης Ε.",
+        "Дерменджян Дж./Цацакіс Е."
       ]
     },
     {
@@ -71313,6 +71591,16 @@
         "Dillard Ž",
         "Ντιλάρντ Γ",
         "Диллард (Ж)"
+      ]
+    },
+    {
+      "name": "Dimic M.",
+      "country": null,
+      "aliases": [
+        "Dimič M.",
+        "Ντίμιτς Μ. (Σλο)",
+        "Димич М. (Слн)",
+        "Діміц М."
       ]
     },
     {
@@ -73227,6 +73515,15 @@
       "country": null,
       "aliases": [
         "Ντόνιι Βακούφ Πρόμο"
+      ]
+    },
+    {
+      "name": "Donnell A.",
+      "country": null,
+      "aliases": [
+        "Donnell A. (Iρλ)",
+        "Donnell A. (Ирл)",
+        "Доннелл А."
       ]
     },
     {
@@ -78224,6 +78521,13 @@
       ]
     },
     {
+      "name": "Einig F./Hartig R.",
+      "country": null,
+      "aliases": [
+        "Айніг Ф./Гартіг Р."
+      ]
+    },
+    {
       "name": "Eintracht Frankfurt",
       "country": null,
       "aliases": [
@@ -78575,6 +78879,15 @@
       "country": null,
       "aliases": [
         "Ель-Фекі Г./Ель-Фекі К."
+      ]
+    },
+    {
+      "name": "El Feky K.",
+      "country": null,
+      "aliases": [
+        "El Feky K. (Αιγ)",
+        "El Feky K. (Еги)",
+        "Ель-Фекі К."
       ]
     },
     {
@@ -79263,11 +79576,14 @@
       "aliases": [
         " 10η Αγωνιστική",
         " 5η Αγωνιστική",
+        " Superbet League 2 ",
+        " Ελλάς Σύρου",
         "Ellas Syrou",
         "Ελλάς Σύρου",
         "Ελλάς Σύρου",
         "Ελλάς Σύρου ",
         "Ελλάς Σύρου ",
+        "Ποδόσφαιρο ",
         "Елас Сиру",
         "Еліас Сіру"
       ]
@@ -80624,6 +80940,13 @@
       "country": null,
       "aliases": [
         "Ергардт М. А./Гартіг Р."
+      ]
+    },
+    {
+      "name": "Erhardt M. A./Haupt H.",
+      "country": null,
+      "aliases": [
+        "Ергардт М. А./Гаупт Г."
       ]
     },
     {
@@ -87582,6 +87905,15 @@
       "aliases": [
         "Φερνάντεζ Σάντσεθ Α./Gudelj V.",
         "Фернандес Санчес А./Гудель В."
+      ]
+    },
+    {
+      "name": "Fernando D.",
+      "country": null,
+      "aliases": [
+        "Fernando D. (Iνδ)",
+        "Fernando D. (Инд)",
+        "Фернандо Д."
       ]
     },
     {
@@ -95293,6 +95625,16 @@
       ]
     },
     {
+      "name": "Garcia A./Plans J.",
+      "country": null,
+      "aliases": [
+        "Antoni G./Plans J.",
+        "Γκαρσία Α./Πλανς Χ.",
+        "Гарсия А./Plans J.",
+        "Гарсія А./Планс Х."
+      ]
+    },
+    {
       "name": "Garcia Cid Ma.",
       "country": null,
       "aliases": [
@@ -95370,6 +95712,15 @@
       ]
     },
     {
+      "name": "Garcia Hernandez S.",
+      "country": null,
+      "aliases": [
+        "Garcia Hernandez S. (Исп)",
+        "Γκαρσία Χερνάντες Σ. (Ισπ)",
+        "Гарсія Ернандес С."
+      ]
+    },
+    {
       "name": "Garcia J.",
       "country": null,
       "aliases": [
@@ -95411,6 +95762,24 @@
       "aliases": [
         "Γκαρσία Λόνγκο Ν./Μίλετιτς Γ.",
         "Гарсія Лонго Н./Мілетич Я."
+      ]
+    },
+    {
+      "name": "Garcia Paez L.",
+      "country": null,
+      "aliases": [
+        "Garcia Paez L. (Исп)",
+        "Γκαρσία Παέθ Λ. (Ισπ)",
+        "Гарсія Паес Л."
+      ]
+    },
+    {
+      "name": "Garcia Paez L./Manuel J.",
+      "country": null,
+      "aliases": [
+        "Garcia Paez L./Мануэль Ж.",
+        "Γκαρσία Παέθ Λ./Μανουέλ Τ.",
+        "Гарсія Паес Л./Мануел Ж."
       ]
     },
     {
@@ -98054,6 +98423,15 @@
       ]
     },
     {
+      "name": "Ghosh A.",
+      "country": null,
+      "aliases": [
+        "Ghosh A. (Iνδ)",
+        "Ghosh A. (Инд)",
+        "Гхош А."
+      ]
+    },
+    {
       "name": "Ghosh A./Mundhe P. A.",
       "country": null,
       "aliases": [
@@ -100540,6 +100918,15 @@
       ]
     },
     {
+      "name": "Gonzalez E.",
+      "country": null,
+      "aliases": [
+        "Γκονζάλες Ε. (Ισπ)",
+        "Гонсалес Е.",
+        "Гонсалес Э. (Исп)"
+      ]
+    },
+    {
       "name": "Gonzalez Fernandez M.",
       "country": null,
       "aliases": [
@@ -100615,6 +101002,14 @@
       "aliases": [
         "Γκονζάλες-Γκαλίνο Β./Σέζαρ Πόρας Γ.",
         "Гонсалес-Галіно В./Сезар Поррас Х."
+      ]
+    },
+    {
+      "name": "Gonzalez-Galino V./Meneses Perny A.",
+      "country": null,
+      "aliases": [
+        "Γκονζάλες-Γκαλίνο Β./Μενέσες Πέρνι Α.",
+        "Гонсалес-Галіно В./Менесес Перні А."
       ]
     },
     {
@@ -104434,6 +104829,21 @@
       ]
     },
     {
+      "name": "Guth M. (Ger) RETIRED",
+      "country": null,
+      "aliases": [
+        "Guth M. (Ger) FELADTA",
+        "Guth M. (Ger) GERI ÇEKILDI",
+        "Guth M. (Ger) KRECZ",
+        "Guth M. (Ger) RETRAS",
+        "Guth M. (Ger) SKREČ",
+        "Guth M. (Ger) SKREČ",
+        "Γκουτ Μ. (Γερ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Гут М. (Ger) ВІДМОВА",
+        "Гут М. (Гер) ОТКАЗ"
+      ]
+    },
+    {
       "name": "Gutierrez Imaz C./Montes Khaghani A.",
       "country": null,
       "aliases": [
@@ -104772,6 +105182,7 @@
         "Хапоэль Беэр-Шева",
         "באיירן מינכן בגמר טורניר סרדיניה",
         "הפועל ב\"ש",
+        "הפועל באר שבע",
         "מקסימה רומא",
         "מקסימה רומא, סדריניה"
       ]
@@ -107352,6 +107763,7 @@
         "Хапоель Петах-Тіква",
         "Хапоэль Петах-Тиква",
         "הפועל פ\"ת",
+        "הפועל פתח תקווה",
         "לקראת הפועל פ\"ת"
       ]
     },
@@ -110075,6 +110487,14 @@
         "Χερνάντες Κ. (Ισπ)",
         "Ернандес К.",
         "Эрнандес К. (Исп)"
+      ]
+    },
+    {
+      "name": "Hernandez D./Martin Mangas P.",
+      "country": null,
+      "aliases": [
+        "Hernandez D./Μάρτιν Μάνγκας Π.",
+        "Hernandez D./Мартін Мангас П."
       ]
     },
     {
@@ -114115,6 +114535,14 @@
       "aliases": [
         "Χάγκινς Σ./Martinovic F.",
         "Хаггінс С./Martinovic F."
+      ]
+    },
+    {
+      "name": "Huggins S./Pimenta J.",
+      "country": null,
+      "aliases": [
+        "Χάγκινς Σ./Πιμέντα Τζ.",
+        "Хаггінс С./Пімента Дж."
       ]
     },
     {
@@ -121770,6 +122198,15 @@
       ]
     },
     {
+      "name": "Jadhav A.",
+      "country": null,
+      "aliases": [
+        "Jadhav A. (Iνδ)",
+        "Jadhav A. (Инд)",
+        "Джадхав А."
+      ]
+    },
+    {
       "name": "Jadhav A./Thakkar S. P.",
       "country": null,
       "aliases": [
@@ -122309,6 +122746,13 @@
         "Γιάνκοβιτς Μ. (Σερ)",
         "Янкович М. (Сер)",
         "Янковіч М."
+      ]
+    },
+    {
+      "name": "Jankowska H./Kosaka R.",
+      "country": null,
+      "aliases": [
+        "Янковська Г./Косака Р."
       ]
     },
     {
@@ -124225,6 +124669,15 @@
       ]
     },
     {
+      "name": "Johri I.",
+      "country": null,
+      "aliases": [
+        "Johri I. (Ιτα)",
+        "Johri I. (Ита)",
+        "Йорі І."
+      ]
+    },
+    {
       "name": "Johvi Phoenix",
       "country": null,
       "aliases": [
@@ -124309,8 +124762,10 @@
       "country": null,
       "aliases": [
         "Τζόουνς Α.",
+        "Τζόουνς Α. (Ηπα)",
         "Джонс А.",
-        "Джонс А."
+        "Джонс А.",
+        "Джонс А. (Сша)"
       ]
     },
     {
@@ -127283,6 +127738,15 @@
         "Кальмар",
         "Кальмар",
         "Кальмар (Шве)"
+      ]
+    },
+    {
+      "name": "Kalovelonis M./Kypriotis E.",
+      "country": null,
+      "aliases": [
+        "Καλοβελώνης Μ./Κυπριώτης Ε.",
+        "Каловелонис М./Kypriotis E.",
+        "Каловелоніс М./Кіпріотіс Е."
       ]
     },
     {
@@ -130599,6 +131063,15 @@
       ]
     },
     {
+      "name": "Kenzhibayeva S.",
+      "country": null,
+      "aliases": [
+        "Kenzhibayeva S. (Kαζ)",
+        "Кенжибаева С. (Каз)",
+        "Кенжибаєва С."
+      ]
+    },
+    {
       "name": "Kenzhibayeva S./Yoruk I.",
       "country": null,
       "aliases": [
@@ -131143,6 +131616,15 @@
       ]
     },
     {
+      "name": "Khomitskaya A.",
+      "country": null,
+      "aliases": [
+        "Khomitskaya A. (Κοσ)",
+        "Khomitskaya A. (Мир)",
+        "Хоміцкая А."
+      ]
+    },
+    {
       "name": "Khomitskaya A./Khramtsova J.",
       "country": null,
       "aliases": [
@@ -131175,6 +131657,14 @@
         "Кхонкен Юнайтед",
         "Хонкаен Юн.",
         "Хонкаен Юнайтед"
+      ]
+    },
+    {
+      "name": "Khorakiwala A./Paes A.",
+      "country": null,
+      "aliases": [
+        "Khorakiwala A./Πάες Α.",
+        "Хораківала А./Паес А."
       ]
     },
     {
@@ -132043,6 +132533,7 @@
       "name": "Kiminini Combined",
       "country": null,
       "aliases": [
+        "Киминини Комбайнд",
         "Кімініні Комбайнд"
       ]
     },
@@ -132416,6 +132907,7 @@
       "aliases": [
         "Kisimov D. (Bου)",
         "Kisimov D. (Бол)",
+        "Κίζιμοφ Ν. (Bου)",
         "Кісімов Д."
       ]
     },
@@ -132425,6 +132917,15 @@
       "aliases": [
         "Kisimov D./Λάγκερμπομ Λ.",
         "Кісімов Д./Лагербом Л."
+      ]
+    },
+    {
+      "name": "Kispotta N. S.",
+      "country": null,
+      "aliases": [
+        "Kispotta N. S. (Iνδ)",
+        "Kispotta N. S. (Инд)",
+        "Кіспотта Н. С."
       ]
     },
     {
@@ -134418,6 +134919,15 @@
       ]
     },
     {
+      "name": "Kontopoulos T.",
+      "country": null,
+      "aliases": [
+        "Kontopoulos T. (Грц)",
+        "Κοντόπουλος Θ. (Ελλ)",
+        "Контопулос Т."
+      ]
+    },
+    {
       "name": "Kontopoulos T./Mitalas G.",
       "country": null,
       "aliases": [
@@ -134942,6 +135452,15 @@
         "Kortrijk Ž",
         "Κορτράικ Γ",
         "Кортрейк (Ж)"
+      ]
+    },
+    {
+      "name": "Kos D.",
+      "country": null,
+      "aliases": [
+        "Kos D. (Iρλ)",
+        "Кос Д.",
+        "Кос Д. (Ирл)"
       ]
     },
     {
@@ -135696,6 +136215,15 @@
         "Κόβινιτς Ν./Perelygina E.",
         "Ковинич Д./Perelygina E.",
         "Ковініч Д./Перелигіна Є."
+      ]
+    },
+    {
+      "name": "Kovkin D.",
+      "country": null,
+      "aliases": [
+        "Kovkin D. (Ουκ)",
+        "Kovkin D. (Укр)",
+        "Ковкін Д."
       ]
     },
     {
@@ -137528,6 +138056,15 @@
       ]
     },
     {
+      "name": "Kulambayeva Z./Monnet C.",
+      "country": null,
+      "aliases": [
+        "Κουλαμπάγιεβα Ζ./Μονέ Κ.",
+        "Куламбаева Ж./Монне К.",
+        "Куламбаєва Ж./Монне К."
+      ]
+    },
+    {
       "name": "Kulambayeva Z./Semenistaja D.",
       "country": null,
       "aliases": [
@@ -138237,6 +138774,21 @@
         "Κουζμάνοφ Ν. (Bου)",
         "Кузманов Д.",
         "Кузманов Д. (Бол)"
+      ]
+    },
+    {
+      "name": "Kuzmanov D. (Bul) RETIRED",
+      "country": null,
+      "aliases": [
+        "Kuzmanov D. (Bul) FELADTA",
+        "Kuzmanov D. (Bul) GERI ÇEKILDI",
+        "Kuzmanov D. (Bul) KRECZ",
+        "Kuzmanov D. (Bul) RETRAS",
+        "Kuzmanov D. (Bul) SKREČ",
+        "Kuzmanov D. (Bul) SKREČ",
+        "Κουζμάνοφ Ν. (Bου) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Кузманов Д. (Bul) ВІДМОВА",
+        "Кузманов Д. (Бол) ОТКАЗ"
       ]
     },
     {
@@ -140097,6 +140649,15 @@
       ]
     },
     {
+      "name": "Lakshmi Prabha A.",
+      "country": null,
+      "aliases": [
+        "Lakshmi Prabha A. (Iνδ)",
+        "Lakshmi Prabha A. (Инд)",
+        "Лакшмі Прабха А."
+      ]
+    },
+    {
       "name": "Laktasi",
       "country": null,
       "aliases": [
@@ -140760,6 +141321,15 @@
         "Депортиво Лара",
         "Лара",
         "Лара"
+      ]
+    },
+    {
+      "name": "Lara Salmeron D.",
+      "country": null,
+      "aliases": [
+        "Lara Salmeron D. (Исп)",
+        "Λάρα Σαλμερόν Ν. (Ισπ)",
+        "Лара Сальмерон Д."
       ]
     },
     {
@@ -144131,6 +144701,15 @@
         "Λεπτσένκο Β./Liutova K. WO",
         "Лепченко В./Liutova K. WO",
         "Лепченко В./Лютова К. WO"
+      ]
+    },
+    {
+      "name": "Lepchenko V./Zolotareva A.",
+      "country": null,
+      "aliases": [
+        "Λεπτσένκο Β./Ζολοτάρεβα Α.",
+        "Лепченко В./Золотарева А.",
+        "Лепченко В./Золотарьова А."
       ]
     },
     {
@@ -150385,6 +150964,15 @@
       ]
     },
     {
+      "name": "Luikham J.",
+      "country": null,
+      "aliases": [
+        "Λούικαμ Τ. (Iνδ)",
+        "Луйхам Дж. (Инд)",
+        "Лукхам Дж."
+      ]
+    },
+    {
       "name": "Luis Angel Firpo",
       "country": null,
       "aliases": [
@@ -152540,7 +153128,8 @@
         "Маккаби Петах-Тиква",
         "Маккаби Петах-Тиква (Изр)",
         "Маккабі Петах-Тіква",
-        "מכבי פ\"ת"
+        "מכבי פ\"ת",
+        "מכבי פתח תקוה"
       ]
     },
     {
@@ -155648,6 +156237,16 @@
       ]
     },
     {
+      "name": "Mandelikova K.",
+      "country": null,
+      "aliases": [
+        "Mandelíková K.",
+        "Μαντελίκοβα Κ. (Τσε)",
+        "Манделикова К. (Чех)",
+        "Манделікова К."
+      ]
+    },
+    {
       "name": "Mandelikova K./Popa G. S.",
       "country": null,
       "aliases": [
@@ -155932,6 +156531,14 @@
       "aliases": [
         "Μανρίκε Μ. Π./Sigrist I.",
         "Манріке М. П./Сігріст І."
+      ]
+    },
+    {
+      "name": "Manrique-Velazquez D./Palacios Plaza H.",
+      "country": null,
+      "aliases": [
+        "Μανρίκε-Βελάσκεζ Ν./Παλάσιος Πλάζα Χ.",
+        "Манріке-Веласкес Д./Паласіос П. У."
       ]
     },
     {
@@ -157186,6 +157793,14 @@
       ]
     },
     {
+      "name": "Marques D./Morais D.",
+      "country": null,
+      "aliases": [
+        "Μαρκές Ν./Μοράις Ν.",
+        "Маркеш Д./Мораїш Д."
+      ]
+    },
+    {
       "name": "Marques G.",
       "country": null,
       "aliases": [
@@ -157228,6 +157843,15 @@
         "Μαρέρο Κουρμπέλο Ι. (Ισπ)",
         "Марреро Курбело І.",
         "Марреро Курбело И. (Исп)"
+      ]
+    },
+    {
+      "name": "Marrero Curbelo I./Perez Socas R.",
+      "country": null,
+      "aliases": [
+        "Μαρέρο Κουρμπέλο Ι./Πέρεθ Σόκας Ρ.",
+        "Марреро Курбело І./Перес Сокас Р.",
+        "Марреро Курбело И./Perez Socas R."
       ]
     },
     {
@@ -161531,7 +162155,8 @@
         "México",
         "Мексика",
         "Мексика",
-        "Мексико"
+        "Мексико",
+        "מקסיקו"
       ]
     },
     {
@@ -163664,6 +164289,14 @@
         "Misasi G. (Ита)",
         "Μισάσι Τ. (Ιτα)",
         "Місасі Дж."
+      ]
+    },
+    {
+      "name": "Misasi G./Pinter P. L.",
+      "country": null,
+      "aliases": [
+        "Μισάσι Τ./Pinter P. L.",
+        "Місасі Дж./Пінтер П. Л."
       ]
     },
     {
@@ -168176,12 +168809,30 @@
       ]
     },
     {
+      "name": "Mujakic A.",
+      "country": null,
+      "aliases": [
+        "Mujakic A. (Γερ)",
+        "Mujakic A. (Гер)",
+        "Муякич А."
+      ]
+    },
+    {
       "name": "Mujakic A./Wagner A.",
       "country": null,
       "aliases": [
         "Mujakic A./Χούσαριτς Α.",
         "Mujakic A./Хусарич А.",
         "Муякич А./Хусаріч А."
+      ]
+    },
+    {
+      "name": "Mujakic A./Wagner A. WO",
+      "country": null,
+      "aliases": [
+        "Mujakic A./Χούσαριτς Α. WO",
+        "Mujakic A./Хусарич А. WO",
+        "Муякич А./Хусаріч А. WO"
       ]
     },
     {
@@ -168708,6 +169359,15 @@
         "Murray State Ž",
         "Μάρεϊ Στέιτ Γ",
         "Мюррей Стэйт (Ж)"
+      ]
+    },
+    {
+      "name": "Mursa Osijek W",
+      "country": null,
+      "aliases": [
+        "Mursa Osijek K",
+        "Mursa Osijek Ž",
+        "Μούρσα Όσιγιεκ Γ"
       ]
     },
     {
@@ -187576,6 +188236,7 @@
       "name": "Park Pirates W",
       "country": null,
       "aliases": [
+        "Park Pirates (Ж)",
         "Park Pirates K",
         "Park Pirates Ž",
         "Παρκ Πάιρατς Γ"
@@ -188051,6 +188712,14 @@
       ]
     },
     {
+      "name": "Pascual Montalvo I./Rojas S. C.",
+      "country": null,
+      "aliases": [
+        "Πασκουάλ Μοντάλβο Ι./Ρόχας Σ. Κ.",
+        "Паскуаль Монтальво І./Рохас С. К."
+      ]
+    },
+    {
       "name": "Pascual Montalvo I./Sarganella V. N.",
       "country": null,
       "aliases": [
@@ -188366,6 +189035,15 @@
       ]
     },
     {
+      "name": "Paul K.",
+      "country": null,
+      "aliases": [
+        "Πολ Κ. (Ελβ)",
+        "Пол К.",
+        "Пол К. (Шва)"
+      ]
+    },
+    {
       "name": "Paul K./Zaremba M.",
       "country": null,
       "aliases": [
@@ -188612,6 +189290,15 @@
       "country": null,
       "aliases": [
         "Павелська М./Рабль Л."
+      ]
+    },
+    {
+      "name": "Pawlak L.",
+      "country": null,
+      "aliases": [
+        "Pawlak L. (Γαλ)",
+        "Pawlak L. (Фра)",
+        "Павлак Л."
       ]
     },
     {
@@ -189991,6 +190678,15 @@
       ]
     },
     {
+      "name": "Perfetti N.",
+      "country": null,
+      "aliases": [
+        "Περφέτι Ν. (Ιτα)",
+        "Перфетти Н. (Ита)",
+        "Перфетті Н."
+      ]
+    },
+    {
       "name": "Perfumerias Avenida W",
       "country": null,
       "aliases": [
@@ -190804,6 +191500,14 @@
         "Петерборо Юнайтед (Ж)",
         "Питърбро W",
         "Пітерборо Ж"
+      ]
+    },
+    {
+      "name": "Peterhans Y.",
+      "country": null,
+      "aliases": [
+        "Peterhans Y. (Ελβ)",
+        "Peterhans Y. (Шва)"
       ]
     },
     {
@@ -192093,6 +192797,21 @@
       ]
     },
     {
+      "name": "Pikkaart C. (Ned) RETIRED",
+      "country": null,
+      "aliases": [
+        "Pikkaart C. (Ned) FELADTA",
+        "Pikkaart C. (Ned) GERI ÇEKILDI",
+        "Pikkaart C. (Ned) KRECZ",
+        "Pikkaart C. (Ned) RETRAS",
+        "Pikkaart C. (Ned) SKREČ",
+        "Pikkaart C. (Ned) SKREČ",
+        "Pikkaart C. (Ολλ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Pikkaart C. (Нид) ОТКАЗ",
+        "Піккарт Ш. (Ned) ВІДМОВА"
+      ]
+    },
+    {
       "name": "Pikkaart J./Uehling Z. D.",
       "country": null,
       "aliases": [
@@ -192545,6 +193264,15 @@
       ]
     },
     {
+      "name": "Pizzigoni M.",
+      "country": null,
+      "aliases": [
+        "Pizzigoni M. (Ита)",
+        "Πιτζιγκόνι Μ. (Ιτα)",
+        "Піццігоні М."
+      ]
+    },
+    {
       "name": "Plabennec",
       "country": null,
       "aliases": [
@@ -192913,6 +193641,15 @@
       "country": null,
       "aliases": [
         "Плєшивцев Є./Томіда Ю."
+      ]
+    },
+    {
+      "name": "Pleshivtseva K.",
+      "country": null,
+      "aliases": [
+        "Pleshivtseva K. (Κοσ)",
+        "Pleshivtseva K. (Мир)",
+        "Плєшивцева К."
       ]
     },
     {
@@ -194780,6 +195517,21 @@
         "Πόποβιτς Σ. (Σερ)",
         "Попович С.",
         "Попович С. (Сер)"
+      ]
+    },
+    {
+      "name": "Popovic S. (Srb) RETIRED",
+      "country": null,
+      "aliases": [
+        "Popovic S. (Srb) FELADTA",
+        "Popovic S. (Srb) GERI ÇEKILDI",
+        "Popovic S. (Srb) KRECZ",
+        "Popovic S. (Srb) RETRAS",
+        "Popovic S. (Srb) SKREČ",
+        "Popovič S. (Srb) SKREČ",
+        "Πόποβιτς Σ. (Σερ) ΠΑΡΑΙΤΉΘΗΚΕ",
+        "Попович С. (Srb) ВІДМОВА",
+        "Попович С. (Сер) ОТКАЗ"
       ]
     },
     {
@@ -197897,6 +198649,15 @@
       ]
     },
     {
+      "name": "Pula Moviter W",
+      "country": null,
+      "aliases": [
+        "Pula Moviter K",
+        "Pula Moviter Ž",
+        "Πούλα Μοβιτέρ Γ"
+      ]
+    },
+    {
       "name": "Pulchartova L.",
       "country": null,
       "aliases": [
@@ -200588,6 +201349,15 @@
       ]
     },
     {
+      "name": "Radjenovic V./Wazny A.",
+      "country": null,
+      "aliases": [
+        "Radjenovic V./Ważny A.",
+        "Ραντιένοβιτς Β./Wazny A.",
+        "Радженович В./Важний А."
+      ]
+    },
+    {
       "name": "Radnicki",
       "country": null,
       "aliases": [
@@ -201595,6 +202365,15 @@
       ]
     },
     {
+      "name": "Rao S. S.",
+      "country": null,
+      "aliases": [
+        "Rao S. S. (Инд)",
+        "Ράο Σ. Σ. (Iνδ)",
+        "Рао С. С."
+      ]
+    },
+    {
       "name": "Rapagnetta D.",
       "country": null,
       "aliases": [
@@ -202197,7 +202976,8 @@
       "country": null,
       "aliases": [
         "Razanau S. (Κοσ)",
-        "Razanau S. (Мир)"
+        "Razanau S. (Мир)",
+        "Рязанов С."
       ]
     },
     {
@@ -206965,6 +207745,14 @@
       ]
     },
     {
+      "name": "Rosellini C.",
+      "country": null,
+      "aliases": [
+        "Rosellini C. (Ιτα)",
+        "Rosellini C. (Ита)"
+      ]
+    },
+    {
       "name": "Rosenborg",
       "country": null,
       "aliases": [
@@ -210679,6 +211467,15 @@
       ]
     },
     {
+      "name": "Sachdeva R.",
+      "country": null,
+      "aliases": [
+        "Sachdeva R. (Iνδ)",
+        "Sachdeva R. (Инд)",
+        "Сачдева Р."
+      ]
+    },
+    {
       "name": "Sachko V.",
       "country": null,
       "aliases": [
@@ -213914,6 +214711,15 @@
       ]
     },
     {
+      "name": "Sanjay Mohanty S.",
+      "country": null,
+      "aliases": [
+        "Sanjay Mohanty S. (Iνδ)",
+        "Sanjay Mohanty S. (Инд)",
+        "Санджай Моханті С."
+      ]
+    },
+    {
       "name": "Sanjoanense",
       "country": null,
       "aliases": [
@@ -216598,6 +217404,15 @@
       "aliases": [
         "Schneider V. (Τσε)",
         "Schneider V. (Чех)"
+      ]
+    },
+    {
+      "name": "Schneider Y.",
+      "country": null,
+      "aliases": [
+        "Schneider Y. (Αυτ)",
+        "Schneider Y. (Авт)",
+        "Шнейдер Я."
       ]
     },
     {
@@ -219603,6 +220418,15 @@
         "Shah K. S. (Κεν) ΠΑΡΑΙΤΉΘΗΚΕ",
         "Shah K. S. (Кен) ОТКАЗ",
         "Шах К. Ш. (Ken) ВІДМОВА"
+      ]
+    },
+    {
+      "name": "Shah M.",
+      "country": null,
+      "aliases": [
+        "Shah M. (Iνδ)",
+        "Shah M. (Инд)",
+        "Шах М."
       ]
     },
     {
@@ -225742,9 +226566,11 @@
       "aliases": [
         "Sollentuna FK",
         "Σολεντούνα",
+        "Σολεντούνα (Σου)",
         "Солентюна",
         "Соллентуна",
-        "Соллентуна"
+        "Соллентуна",
+        "Соллентуна (Шве)"
       ]
     },
     {
@@ -226958,6 +227784,7 @@
         "Саутгемптон",
         "Саутхямптън",
         "Саутхямптън",
+        "סאות'המפטון",
         "סאותהמפטון",
         "סאותהמפטון (פרץ)"
       ]
@@ -229375,6 +230202,13 @@
       ]
     },
     {
+      "name": "Srejic L./Yilmaz E. A.",
+      "country": null,
+      "aliases": [
+        "Srejic L./Їлмаз Е. А."
+      ]
+    },
+    {
       "name": "Sri Lanka",
       "country": null,
       "aliases": [
@@ -231765,8 +232599,10 @@
       "country": null,
       "aliases": [
         "Στόκχολμ Ιντερνασιονάλε",
+        "Στόκχολμ Ιντερνασιονάλε (Σου)",
         "Стокгольм Інтернаціонале",
         "Стокгольм Интер",
+        "Стокгольм Интер (Шве)",
         "Стокхолм Инт."
       ]
     },
@@ -238107,6 +238943,15 @@
       ]
     },
     {
+      "name": "Taranova V.",
+      "country": null,
+      "aliases": [
+        "Taranova V. (Κοσ)",
+        "Taranova V. (Мир)",
+        "Таранова В."
+      ]
+    },
+    {
       "name": "Tarantola A.",
       "country": null,
       "aliases": [
@@ -239351,6 +240196,7 @@
       "name": "Terrassa",
       "country": null,
       "aliases": [
+        "Terrassa",
         "Terrassa FC",
         "Τεράσα",
         "Тераса",
@@ -247526,7 +248372,8 @@
         "SAD U23 Ž",
         "USA U23 N",
         "ΗΠΑ U23 Γ",
-        "САЩ U23 W"
+        "САЩ U23 W",
+        "США U23 (Ж)"
       ]
     },
     {
@@ -250763,6 +251610,31 @@
       ]
     },
     {
+      "name": "Uruguay W",
+      "country": null,
+      "aliases": [
+        "Uruguai F",
+        "Uruguaj Ž",
+        "Uruguay D",
+        "Uruguay D",
+        "Uruguay F",
+        "Uruguay F",
+        "Uruguay F",
+        "Uruguay F",
+        "Uruguay K",
+        "Uruguay K",
+        "Uruguay N",
+        "Uruguay V",
+        "Uruguay Ž",
+        "Urugvaj Ž",
+        "Urugwaj K",
+        "Ουρουγουάη Γ",
+        "Уругвай (Ж)",
+        "Уругвай W",
+        "Уругвай Ж"
+      ]
+    },
+    {
       "name": "Urunday",
       "country": null,
       "aliases": [
@@ -252406,6 +253278,15 @@
       ]
     },
     {
+      "name": "Van Der Merwe M.",
+      "country": null,
+      "aliases": [
+        "Van Der Merwe M. (Ναφ)",
+        "Van Der Merwe M. (Юар)",
+        "Ван Дер Мерве М."
+      ]
+    },
+    {
       "name": "Van Der Merwe W.",
       "country": null,
       "aliases": [
@@ -253206,8 +254087,10 @@
         "Vasalunds IF",
         "Vasalunds IF",
         "Βάσαλουντ",
+        "Βάσαλουντ (Σου)",
         "Васалунд",
         "Васалунд",
+        "Васалунд (Шве)",
         "Васалундс"
       ]
     },
@@ -253867,6 +254750,15 @@
         "Velez Sarsfield Ž",
         "Βελέζ Σάρσφιλντ Γ",
         "Велес Сарсфилд (Ж)"
+      ]
+    },
+    {
+      "name": "Velikova D.",
+      "country": null,
+      "aliases": [
+        "Velikova D. (Бол)",
+        "Βελίκοβα Ν. (Bου)",
+        "Велікова Д."
       ]
     },
     {
@@ -258491,6 +259383,15 @@
       ]
     },
     {
+      "name": "Wagner L./Worring La Torre A.",
+      "country": null,
+      "aliases": [
+        "Βάγκνερ Λ./Worring La Torre A.",
+        "Вагнер Л./Worring La Torre A.",
+        "Вагнер Л./Воррінг Ла Торре А."
+      ]
+    },
+    {
       "name": "Wagner W",
       "country": null,
       "aliases": [
@@ -259540,6 +260441,7 @@
       "name": "Washington Wizards",
       "country": null,
       "aliases": [
+        "WASHINGTON",
         "WASHINGTON WIZARDS",
         "Wasahington Wizards",
         "Wasahington Wizards, alapszakasz",
@@ -260077,6 +260979,15 @@
       ]
     },
     {
+      "name": "Weissenboeck J.",
+      "country": null,
+      "aliases": [
+        "Weissenboeck J. (Αυτ)",
+        "Weissenboeck J. (Авт)",
+        "Вайсенбек Ю."
+      ]
+    },
+    {
       "name": "Weissenfels",
       "country": null,
       "aliases": [
@@ -260590,7 +261501,8 @@
         "Вест Бромвіч",
         "Уест Бром",
         "Уест Бромич Албиън",
-        "ווסט ברומיץ"
+        "ווסט ברומיץ",
+        "צ'מפיונשיפף ווסט ברומיץ"
       ]
     },
     {
@@ -270674,6 +271586,23 @@
       ]
     },
     {
+      "name": "ATP - DOUBLES: Davis Cup - World Group (World)",
+      "slug": "atp-doubles-davis-cup-world-group-world",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ATP - DEBEL: Puchar Davisa - Grupa Światowa (Świat)",
+        "ATP - DUBLU: Davis Cup - World Group (Lume)",
+        "ATP - PÁROS: Davis Kupa - Világcsoport (Világ)",
+        "ATP - ÇİFT: Davis Cup - World Group (Dünya)",
+        "ATP - ČTYŘHRY: Davis Cup - Světová skupina (Svět)",
+        "ATP - ŠTVORHRY: Davis Cup - Svetová skupina (Svet)",
+        "ATP - ΔΙΠΛΑ: Ντέιβις Καπ - Παγκόσμιο Γκρουπ (Κόσμος)",
+        "ATP - ПАРНИЙ РОЗРЯД: Кубок Девіса - Світова група (Світ)",
+        "ATP - ПАРНЫЙ РАЗРЯД: Кубок Дэвиса - Мировая Группа (Мир)"
+      ]
+    },
+    {
       "name": "ATP - DOUBLES: Davis Cup - World Group (World) - Qualification",
       "slug": "atp-doubles-davis-cup-world-group-world-qualification",
       "sport": null,
@@ -271036,6 +271965,23 @@
         "ATP 250 Chengdu",
         "ATP 250 Chengdu Open",
         "Torneo de Chengdu"
+      ]
+    },
+    {
+      "name": "ATP - SINGLES: Davis Cup - World Group (World)",
+      "slug": "atp-singles-davis-cup-world-group-world",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ATP - DVOJHRY: Davis Cup - Svetová skupina (Svet)",
+        "ATP - DVOUHRY: Davis Cup - Světová skupina (Svět)",
+        "ATP - EGYÉNI: Davis Kupa - Világcsoport (Világ)",
+        "ATP - SIMPLU: Davis Cup - World Group (Lume)",
+        "ATP - SINGIEL: Puchar Davisa - Grupa Światowa (Świat)",
+        "ATP - TEK: Davis Cup - World Group (Dünya)",
+        "ATP - ΜΟΝΑ: Ντέιβις Καπ - Παγκόσμιο Γκρουπ (Κόσμος)",
+        "ATP - ОДИНОЧНИЙ РОЗРЯД: Кубок Девіса - Світова група (Світ)",
+        "ATP - ОДИНОЧНЫЙ РАЗРЯД: Кубок Дэвиса - Мировая Группа (Мир)"
       ]
     },
     {
@@ -280060,6 +281006,23 @@
       ]
     },
     {
+      "name": "CHALLENGER WOMEN - DOUBLES: Buenos Aires (Argentina), clay",
+      "slug": "challenger-women-doubles-buenos-aires-argentina-clay",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "CHALLENGER BAYANLAR - ÇİFT: Buenos Aires (Arjantin), toprak",
+        "CHALLENGER FEMININ - DUBLU: Buenos Aires (Argentina), zgură",
+        "CHALLENGER KOBIETY - DEBEL: Buenos Aires (Argentyna), ziemna",
+        "CHALLENGER NŐI - PÁROS: Buenos Aires (Argentína), salak",
+        "CHALLENGER ŽENY - ČTYŘHRY: Buenos Aires (Argentina), antuka",
+        "CHALLENGER ŽENY - ŠTVORHRY: Buenos Aires (Argentína), antuka",
+        "ΤΣΑΛΕΝΤΖΕΡ ΓΥΝΑΙΚΩΝ - ΔΙΠΛΑ: Μπουένος Άιρες (Αργεντινή), χώμα",
+        "ЧЕЛЛЕНДЖЕР ЖІНКИ - ПАРНИЙ РОЗРЯД: Буенос-Айрес (Аргентина), грунт",
+        "ЧЕЛЛЕНДЖЕР ЖЕНЩИНЫ - ПАРНЫЙ РАЗРЯД: Буэнос Айрес (Аргентина), грунт"
+      ]
+    },
+    {
       "name": "CHALLENGER WOMEN - DOUBLES: Cali (Colombia), clay",
       "slug": "challenger-women-doubles-cali-colombia-clay",
       "sport": "T",
@@ -281730,6 +282693,18 @@
         "ХОРВАТІЯ: Кубок Хорватії",
         "ХОРВАТИЯ: Кубок Хорватии",
         "ХЪРВАТИЯ: Купа на Хърватия"
+      ]
+    },
+    {
+      "name": "CROATIA: Croatian Cup Women",
+      "slug": "croatia-croatian-cup-women",
+      "sport": "B",
+      "country": null,
+      "aliases": [
+        "HIRVATİSTAN: Croatian Cup Women",
+        "HRVATSKA: Croatian Cup Women",
+        "ΚΡΟΑΤΙΑ: Κύπελλο Κροατίας Γυναίκες",
+        "ХОРВАТИЯ: Croatian Cup Women"
       ]
     },
     {
@@ -284773,6 +285748,7 @@
         "UEFA CHAMPIONS LEAGUE",
         "UEFA Champions League",
         "UEFA Champions League Football",
+        "UEFA Champions League Soccer",
         "UEFA LIGA ŠAMPIONA",
         "futbolli",
         "la Grande Soiree Ligue des Champions",
@@ -292477,6 +293453,7 @@
       "country": null,
       "aliases": [
         "ITF ERKEKLER - ÇİFT: M15 Sharm ElSheikh 19 (Mısır), sert",
+        "ITF FÉRFI - PÁROS: M15 Sharm El-Sheikh 19 (Egyiptom), kemény",
         "ITF FÉRFI - PÁROS: M15 Sharm ElSheikh 19 (Egyiptom), kemény",
         "ITF MASCULIN - DUBLU: M15 Sharm ElSheikh 19 (Egipt), suprafață dură",
         "ITF MUŽI - ČTYŘHRY: M15 Sharm ElSheikh 19 (Egypt), tvrdý povrch",
@@ -292978,7 +293955,9 @@
         "ITF FÉRFI - PÁROS: M25 Hradec Kralove (Csehország), kemény",
         "ITF MASCULIN - DUBLU: M25 Hradec Kralove (Republica Cehă), suprafață dură",
         "ITF MUŽI - ČTYŘHRY: M25 Hradec Kralove (Česko), tvrdý povrch",
+        "ITF MUŽI - ČTYŘHRY: M25 Hradec Králové (Česko), tvrdý povrch",
         "ITF MUŽI - ŠTVORHRY: M25 Hradec Kralove (Česko), tvrdý povrch",
+        "ITF MUŽI - ŠTVORHRY: M25 Hradec Králové (Česko), tvrdý povrch",
         "ITF MĘŻCZYŹNI - DEBEL: M25 Hradec Kralove (Czechy), twarda",
         "ITF ΑΝΔΡΕΣ - ΔΙΠΛΑ: M25 Hradec Kralove (Τσεχία), σκληρή",
         "ITF МУЖЧИНЫ - ПАРНЫЙ РАЗРЯД: M25 Hradec Kralove (Чехия), хард",
@@ -294847,6 +295826,23 @@
       ]
     },
     {
+      "name": "ITF MEN - SINGLES: M15 Sharm ElSheikh 19 (Egypt), hard",
+      "slug": "itf-men-singles-m15-sharm-elsheikh-19-egypt-hard",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ITF ERKEKLER - TEK: M15 Sharm ElSheikh 19 (Mısır), sert",
+        "ITF FÉRFI - EGYÉNI: M15 Sharm El-Sheikh 19 (Egyiptom), kemény",
+        "ITF MASCULIN - SIMPLU: M15 Sharm ElSheikh 19 (Egipt), suprafață dură",
+        "ITF MUŽI - DVOJHRY: M15 Sharm ElSheikh 19 (Egypt), tvrdý povrch",
+        "ITF MUŽI - DVOUHRY: M15 Sharm ElSheikh 19 (Egypt), tvrdý povrch",
+        "ITF MĘŻCZYŹNI - SINGIEL: M15 Sharm ElSheikh 19 (Egipt), twarda",
+        "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M15 Sharm ElSheikh 19 (Αίγυπτος), σκληρή",
+        "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M15 Sharm ElSheikh 19 (Египет), хард",
+        "ITF ЧОЛОВІКИ - ОДИНОЧНИЙ РОЗРЯД: M15 Sharm ElSheikh 19 (Єгипет), хард"
+      ]
+    },
+    {
       "name": "ITF MEN - SINGLES: M15 Shenzhen (China), hard",
       "slug": "itf-men-singles-m15-shenzhen-china-hard",
       "sport": "T",
@@ -295372,7 +296368,9 @@
         "ITF FÉRFI - EGYÉNI: M25 Hradec Kralove (Csehország), kemény",
         "ITF MASCULIN - SIMPLU: M25 Hradec Kralove (Republica Cehă), suprafață dură",
         "ITF MUŽI - DVOJHRY: M25 Hradec Kralove (Česko), tvrdý povrch",
+        "ITF MUŽI - DVOJHRY: M25 Hradec Králové (Česko), tvrdý povrch",
         "ITF MUŽI - DVOUHRY: M25 Hradec Kralove (Česko), tvrdý povrch",
+        "ITF MUŽI - DVOUHRY: M25 Hradec Králové (Česko), tvrdý povrch",
         "ITF MĘŻCZYŹNI - SINGIEL: M25 Hradec Kralove (Czechy), twarda",
         "ITF ΑΝΔΡΕΣ - ΜΟΝΑ: M25 Hradec Kralove (Τσεχία), σκληρή",
         "ITF МУЖЧИНЫ - ОДИНОЧНЫЙ РАЗРЯД: M25 Hradec Kralove (Чехия), хард",
@@ -296999,6 +297997,7 @@
         "ITF BAYANLAR - ÇİFT: W15 Sharm ElSheikh 21 (Mısır), sert",
         "ITF FEMININ - DUBLU: W15 Sharm ElSheikh 21 (Egipt), suprafață dură",
         "ITF KOBIETY - DEBEL: W15 Sharm ElSheikh 21 (Egipt), twarda",
+        "ITF NŐI - PÁROS: W15 Sharm El-Sheikh 21 (Egyiptom), kemény",
         "ITF NŐI - PÁROS: W15 Sharm ElSheikh 21 (Egyiptom), kemény",
         "ITF ŽENY - ČTYŘHRY: W15 Sharm ElSheikh 21 (Egypt), tvrdý povrch",
         "ITF ŽENY - ŠTVORHRY: W15 Sharm ElSheikh 21 (Egypt), tvrdý povrch",
@@ -299457,6 +300456,23 @@
         "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Sharm ElSheikh 20 (Αίγυπτος), σκληρή",
         "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 Sharm ElSheikh 20 (Єгипет), хард",
         "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 Sharm ElSheikh 20 (Египет), хард"
+      ]
+    },
+    {
+      "name": "ITF WOMEN - SINGLES: W15 Sharm ElSheikh 21 (Egypt), hard",
+      "slug": "itf-women-singles-w15-sharm-elsheikh-21-egypt-hard",
+      "sport": "T",
+      "country": null,
+      "aliases": [
+        "ITF BAYANLAR - TEK: W15 Sharm ElSheikh 21 (Mısır), sert",
+        "ITF FEMININ - SIMPLU: W15 Sharm ElSheikh 21 (Egipt), suprafață dură",
+        "ITF KOBIETY - SINGIEL: W15 Sharm ElSheikh 21 (Egipt), twarda",
+        "ITF NŐI - EGYÉNI: W15 Sharm ElSheikh 21 (Egyiptom), kemény",
+        "ITF ŽENY - DVOJHRY: W15 Sharm ElSheikh 21 (Egypt), tvrdý povrch",
+        "ITF ŽENY - DVOUHRY: W15 Sharm ElSheikh 21 (Egypt), tvrdý povrch",
+        "ITF ΓΥΝΑΙΚΕΣ - ΜΟΝΑ: W15 Sharm ElSheikh 21 (Αίγυπτος), σκληρή",
+        "ITF ЖІНКИ - ОДИНОЧНИЙ РОЗРЯД: W15 Sharm ElSheikh 21 (Єгипет), хард",
+        "ITF ЖЕНЩИНЫ - ОДИНОЧНЫЙ РАЗРЯД: W15 Sharm ElSheikh 21 (Египет), хард"
       ]
     },
     {
@@ -302808,6 +303824,33 @@
       ]
     },
     {
+      "name": "MEXICO: Liga MX U21 - Apertura - Play Offs",
+      "slug": "mexico-liga-mx-u21-apertura-play-offs",
+      "sport": "F",
+      "country": null,
+      "aliases": [
+        "MEKSIKO: Liga MX U21 - Apertura - Playoff",
+        "MEKSYK: Liga MX U21 - Apertura - Play Offy",
+        "MEKSİKA: Liga MX U21 - Apertura-Playofflar",
+        "MESSICO: Liga MX U21 - Apertura - Play Offs",
+        "MEXIC: Liga MX U21 - Apertura - Play off-uri",
+        "MEXICO: Liga MX U21 - Apertura - Play-offs",
+        "MEXICO: Liga MX U21 - Apertura – Play Offs",
+        "MEXIKO: Liga MX U21 - Apertura - Play Off",
+        "MEXIKO: Liga MX U21 - Apertura - Play off",
+        "MEXIKO: Liga MX U21 - Apertura - Playoffs",
+        "MEXIKO: Liga MX U21 - Apertura – Slutspel",
+        "MEXIKÓ: Liga MX U21 - Apertura - Play Off",
+        "MEXIQUE: Liga MX U21 - Ouverture - Phase Finale",
+        "MÉXICO: Liga MX U21 - Abertura - Playoffs",
+        "MÉXICO: Liga MX U21 - Apertura - Playoffs",
+        "ΜΕΞΙΚΟ: Λίγκα ΜΞ U21 - Απερτούρα - Πλέι Οφς",
+        "МЕКСИКА: Liga MX U21 - Апертура - плей-офф",
+        "МЕКСИКА: Ліга MX U21 - Апертура - плей-оф",
+        "МЕКСИКО: Лига МХ П21 - Апертура - Плейофи"
+      ]
+    },
+    {
       "name": "MEXICO: Liga MX Women - Apertura",
       "slug": "mexico-liga-mx-women-apertura",
       "sport": "F",
@@ -305239,6 +306282,7 @@
         "PERÚ: Liga 2 - Ascenso - Playoffs",
         "PÉROU: Liga 2 - Promotion - Phase Finale",
         "ΠΕΡΟΥ: Λίγκα 2 - Πλέι Οφς Προβιβασμού",
+        "ПЕРУ: Лига 2 - Повышение - плей-офф",
         "ПЕРУ: Лига 2 - Промоция - Плейофи",
         "ПЕРУ: Ліга 2 - Підвищення у класі - плей-оф"
       ]
@@ -313691,6 +314735,7 @@
         "WENEZUELA: Liga FUTVE - Cleasura - Finałowa",
         "ΒΕΝΕΖΟΥΕΛΑ: Λίγκα FUTVE - Κλαουζούρα - Τελικός",
         "ВЕНЕСУЕЛА: Ліга ФУТВЕ - Клаусура - фінал",
+        "ВЕНЕСУЭЛА: Liga FUTVE - Клаусура - финал",
         "ВЕНЕЦУЕЛА: Лига ФУТВЕ - Клаусура - Финал"
       ]
     },
@@ -324344,6 +325389,7 @@
     "Bani Yas": "F",
     "Baranovici": "F",
     "Barbados": "F",
+    "Barcelona B": "F",
     "Barcelona U19": "F",
     "Barcelona W": "F",
     "Bari": "F",
@@ -324410,6 +325456,7 @@
     "Beroe": "F",
     "Berrettini M.": "T",
     "Bertola R.": "T",
+    "Besiktas": "F",
     "Betis": "F",
     "Betis U19": "F",
     "Bezanija": "F",
@@ -324753,6 +325800,7 @@
     "Cyprus U21": "F",
     "Czarni Slupsk": "B",
     "Czarni Sosnowiec W": "F",
+    "Czech Republic": "B",
     "Czech Republic 3x3 W": "B",
     "Czech Republic U19": "F",
     "Czech Republic U21": "F",
@@ -325232,6 +326280,7 @@
     "Hapoel Afula": "F",
     "Hapoel Beer Sheva": "B",
     "Hapoel HaEmek": "B",
+    "Hapoel Haifa": "F",
     "Hapoel Holon": "B",
     "Hapoel Jerusalem": "F",
     "Hapoel Jerusalem W": "B",
@@ -325912,6 +326961,7 @@
     "MoraBanc Andorra": "B",
     "Moreirense": "F",
     "Moreirense U23": "F",
+    "Mornar Bar": "F",
     "Morocco": "F",
     "Morocco U17": "F",
     "Morocco U17 W": "F",
@@ -325935,7 +326985,7 @@
     "Muller A.": "T",
     "Munar J.": "T",
     "Mura": "F",
-    "Murcia": "B",
+    "Murcia": "F",
     "Musetti L.": "T",
     "NAC Breda": "F",
     "NE Megaridas": "B",
@@ -326792,6 +327842,7 @@
     "Teplice": "F",
     "Termalica B-B.": "F",
     "Ternana W": "F",
+    "Terrassa": "F",
     "Teuta": "F",
     "Texas": "B",
     "Texas A&M": "B",
@@ -327130,6 +328181,18 @@
   "dictionary_errors": [
     {
       "alias": "AC Sparta Praga",
+      "lang": "cs de pl",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "oneplay.cz, oneplaysport.cz, start.sportdigital.de",
+      "led_to": "Sparta Praha | Sparta Prague",
+      "truth": "Sparta Prague",
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "AC Sparta Praga",
       "lang": "cs pl",
       "class": "двусмысленно",
       "team": null,
@@ -327328,6 +328391,18 @@
       "source_domain": "alkass.net, diemaxtra.nova.bg, livesoccertv.com",
       "led_to": "Al Nassr | Al Nasr",
       "truth": "Al Nassr",
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "Al-Nassr",
+      "lang": "ar bg bs he hr ru sr",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "alkass.net, diemaxtra.nova.bg, ntvplus.tv",
+      "led_to": "Al Nassr | Al Nasr",
+      "truth": null,
       "note": "вид спорта F",
       "answered_by": "программа",
       "seen_with": []
@@ -327922,6 +328997,18 @@
     },
     {
       "alias": "E. Braunschweig",
+      "lang": "bs el hr ro sr",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "epg.cyta.com.cy, primaplay.ro, tvarenasport.ba",
+      "led_to": "Braunschweig | Hannover | Cottbus",
+      "truth": "Braunschweig",
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "E. Braunschweig",
       "lang": "bs hr sr",
       "class": "двусмысленно",
       "team": null,
@@ -328151,6 +329238,18 @@
     {
       "alias": "FC Barcelona",
       "lang": "bg bs hr pl ro sr tr",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "digisport.ro, maxsport.live, primaplay.ro",
+      "led_to": "Barcelona | Baskonia",
+      "truth": "Barcelona",
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "FC Barcelona",
+      "lang": "bg bs hr ro sr tr",
       "class": "двусмысленно",
       "team": null,
       "source_domain": "digisport.ro, maxsport.live, primaplay.ro",
@@ -328750,6 +329849,18 @@
     },
     {
       "alias": "Minnesota",
+      "lang": "bs es hr sr tr",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "movistarplus.es, sportklub.hr, ssport.tv",
+      "led_to": "Minnesota United | Minnesota Timberwolves",
+      "truth": "Minnesota Timberwolves",
+      "note": "вид спорта B",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "Minnesota",
       "lang": "bs he hr sr",
       "class": "двусмысленно",
       "team": null,
@@ -328911,6 +330022,18 @@
       "team": null,
       "source_domain": "digisport.ro, epg.cyta.com.cy, livesoccertv.com",
       "led_to": "Racing Santander | Racing Club",
+      "truth": "Racing Santander",
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "Racing",
+      "lang": "bs cs da el es fi hr nl no pl ro sq sr sv tr",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "allente.no, digisport.ro, epg.cyta.com.cy",
+      "led_to": "Racing Club | Racing Santander",
       "truth": "Racing Santander",
       "note": "вид спорта F",
       "answered_by": "программа",
@@ -329770,6 +330893,18 @@
     },
     {
       "alias": "Villarreal CF",
+      "lang": "bs cs da el es fi hr nl no pl ro sq sr sv tr",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "allente.no, epg.cyta.com.cy, ipko.tv",
+      "led_to": "Real Sociedad | Villarreal",
+      "truth": "Villarreal",
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "Villarreal CF",
       "lang": "bs cs da es fi hr nl no pl ro sq sr sv tr",
       "class": "двусмысленно",
       "team": null,
@@ -329980,6 +331115,30 @@
       "source_domain": "novasports.gr, sport5.co.il",
       "led_to": "Lyon-Villeurbanne | Valencia",
       "truth": "Lyon-Villeurbanne",
+      "note": "вид спорта B",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "ΔΙΓΕΝΗΣ ΜΟΡΦΟΥ",
+      "lang": "el",
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": "epg.cyta.com.cy",
+      "led_to": "Morphou | Digenis Akritas",
+      "truth": "Digenis Akritas",
+      "note": "вид спорта F",
+      "answered_by": "программа",
+      "seen_with": []
+    },
+    {
+      "alias": "Ερυθρός Αστέρας",
+      "lang": null,
+      "class": "двусмысленно",
+      "team": null,
+      "source_domain": null,
+      "led_to": "Red Star | Crvena Zvezda Meridianbet",
+      "truth": null,
       "note": "вид спорта B",
       "answered_by": "программа",
       "seen_with": []
@@ -330687,8 +331846,8 @@
       "class": "лишнее перед хозяевами",
       "team": null,
       "source_domain": "programetv.ro",
-      "led_to": "Cupa Davis Cehia - Canada",
-      "truth": "Cehia - Canada",
+      "led_to": "Cupa Davis Italia - Coreea de Nord",
+      "truth": "Italia - Coreea de Nord",
       "note": "срезано у пары, раз за сбор: 1",
       "answered_by": "программа",
       "seen_with": [
@@ -330955,8 +332114,8 @@
       "class": "лишнее перед хозяевами",
       "team": null,
       "source_domain": "ipko.tv",
-      "led_to": "Raiffeisen Liga e Pare Ferizaj - Prishtina e Re",
-      "truth": "Ferizaj - Prishtina e Re",
+      "led_to": "Raiffeisen Liga e Pare Ferizaj - Liria",
+      "truth": "Ferizaj - Liria",
       "note": "первая лига Косова со спонсором; сбор 15.11",
       "answered_by": "владелец 15.11",
       "seen_with": [
@@ -331268,8 +332427,8 @@
       "class": "лишнее после гостей",
       "team": null,
       "source_domain": "movistarplus.es",
-      "led_to": "Chequia - Canadá  Evento 1",
-      "truth": "Chequia - Canadá",
+      "led_to": "Italia - Corea Evento 1",
+      "truth": "Italia - Corea",
       "note": "срезано у пары, раз за сбор: 1",
       "answered_by": "программа",
       "seen_with": [
@@ -331277,6 +332436,20 @@
         "canadá",
         "corea",
         "españa"
+      ]
+    },
+    {
+      "alias": "Evento 3",
+      "lang": "es",
+      "class": "лишнее после гостей",
+      "team": null,
+      "source_domain": "movistarplus.es",
+      "led_to": "Chequia - Canadá  Evento 3",
+      "truth": "Chequia - Canadá",
+      "note": "срезано у пары, раз за сбор: 1",
+      "answered_by": "программа",
+      "seen_with": [
+        "canadá"
       ]
     },
     {
@@ -331291,6 +332464,34 @@
       "answered_by": "программа",
       "seen_with": [
         "bodrum"
+      ]
+    },
+    {
+      "alias": "FUTBOL KULÜBÜ",
+      "lang": "tr",
+      "class": "лишнее после гостей",
+      "team": null,
+      "source_domain": "trtspor.com.tr",
+      "led_to": "EMİNEVİM ÜMRANİYESPOR - MANİSA FUTBOL KULÜBÜ",
+      "truth": "EMİNEVİM ÜMRANİYESPOR - MANİSA",
+      "note": "срезано у пары, раз за сбор: 1",
+      "answered_by": "программа",
+      "seen_with": [
+        "mani̇sa"
+      ]
+    },
+    {
+      "alias": "Futbol Kulübü",
+      "lang": "sq",
+      "class": "лишнее после гостей",
+      "team": null,
+      "source_domain": "ipko.tv",
+      "led_to": "Eminevim Ümraniyespor - Manisa Futbol Kulübü",
+      "truth": "Eminevim Ümraniyespor - Manisa",
+      "note": "срезано у пары, раз за сбор: 1",
+      "answered_by": "программа",
+      "seen_with": [
+        "manisa"
       ]
     },
     {
@@ -331468,8 +332669,8 @@
       "class": "лишнее после гостей",
       "team": null,
       "source_domain": "mediaklikk.hu",
-      "led_to": "Csehország - Kanada negyeddöntő mérkőzés - Bologna",
-      "truth": "Csehország - Kanada",
+      "led_to": "Olaszország - Dél-Korea negyeddöntő mérkőzés - Bologna",
+      "truth": "Olaszország - Dél-Korea",
       "note": "срезано у пары, раз за сбор: 1",
       "answered_by": "программа",
       "seen_with": [
@@ -331901,7 +333102,14 @@
         "ATP"
       ],
       "words": [
-        "davis cup - world group"
+        "davis cup - svetová skupina",
+        "davis cup - světová skupina",
+        "davis cup - world group",
+        "davis kupa - világcsoport",
+        "puchar davisa - grupa światowa",
+        "ντέιβις καπ - παγκόσμιο γκρουπ",
+        "кубок девіса - світова група",
+        "кубок дэвиса - мировая группа"
       ]
     },
     "Davis Cup - World Group I": {
