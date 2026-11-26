@@ -33,6 +33,7 @@ from app import (broadcast, canon, channel_grid, daytime, db, dictionary,  # noq
 from app import fallback_read                               # noqa: E402
 from app import fallback_many                               # noqa: E402
 from app import channel_spelling                            # noqa: E402
+from app import played                                      # noqa: E402
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers import flashscore_mobi                     # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
@@ -757,6 +758,8 @@ def odd_minute_record(start: datetime, kickoff: datetime | None) -> bool:
         return False
     return True
 СНЯТО_СЫГРАН = "повтор по flashscore: матч уже сыгран"
+#: книга 180: матч сыгран больше 60 часов назад — помнит память сборов
+СНЯТО_СТАРЫЙ_ПОВТОР = "повтор: матч сыгран несколько дней назад"
 СНЯТО_ПОЗДНИЙ_ПОВТОР = "поздний повтор: пара была раньше у другого сайта"
 СНЯТО_МУЛЬТИКАСТ = "мультикаст: канал сайта показывает несколько игр разом"
 
@@ -1450,6 +1453,8 @@ def main() -> int:
               + ", ".join(f"{сайт} {n}" for сайт, n in
                           sorted(прошедшие.items(), key=lambda x: -x[1])[:8]))
     judge = Reference(reference_full)
+    # книга 180 (`app/played.py`): память сыгранных матчей прошлых сборов
+    память_сыгранных: dict = played.load(previous_payload())
     league_sports, pair_sports = leagues.sports_map(), leagues.pair_sports()
     by_rule: dict[int, int] = {}       # номер правила → сколько строк
     # книга 122: сколько строк какого сайта взяли пару из заголовка вместо
@@ -2086,10 +2091,19 @@ def main() -> int:
         командный, лига = (broadcast.team_show(заголовок, reference_full)
                            if broadcast.no_pair(r.home, r.away) else ("", ""))
         if командный:
-            r.home, r.away = командный, broadcast.SESSION
-            r.league = лига
+            # книга 178, К4: у эталона в этот час ровно одна встреча турнира
+            # — строка её и показывает: пара и лига из эталона, строка
+            # садится к матчу. Встречи нет (пары ещё не названы) — название
+            # турнира и служебная сторона
+            встреча = broadcast.team_tie(командный, r.start_kyiv, reference_full)
+            if встреча:
+                r.home, r.away = встреча.get("home") or "", встреча.get("away") or ""
+                r.league = встреча.get("league") or лига
+            else:
+                r.home, r.away = командный, broadcast.SESSION
+                r.league = лига
+                сведённые_строки.add(id(r))
             командных += 1
-            сведённые_строки.add(id(r))
         else:
             не_узнаны.add((domain, (r.program.title or "")[:70]))
     if сведено or командных or не_узнаны:
@@ -2127,6 +2141,19 @@ def main() -> int:
               + "".join(f"\n   • {g.start.strftime('%d.%m %H:%M')} {g.home} — "
                         f"{g.away} [{', '.join(g.channels)}] ← {_ref_text(матч)}"
                         for g, матч in повторы))
+
+    # книга 180: повтор матча, сыгранного больше 60 часов назад, — эталон
+    # этого сбора его уже не держит, помнит память сборов (`app/played.py`)
+    games, старые = played.drop_replays(games, память_сыгранных, judge)
+    for g, матч in старые:
+        for e in g.entries:
+            снято.append(removed_row(СНЯТО_СТАРЫЙ_ПОВТОР, e.source, e.payload,
+                                     f"память сборов: {_ref_text(матч)}"))
+    if старые:
+        print(f"повторы старше 60 часов сняты по памяти сборов: {len(старые)}"
+              + "".join(f"\n   • {g.start.strftime('%d.%m %H:%M')} {g.home} — "
+                        f"{g.away} [{', '.join(g.channels)}] ← {_ref_text(матч)}"
+                        for g, матч in старые))
 
     games, late = drop_late_repeats(games)
     for g, earlier in late:
@@ -2399,6 +2426,10 @@ def main() -> int:
     fallback_read.own_rows(запасное, parsed_counts)       # З6: сайт целиком без строк?
     payload[fallback_read.PAGES_KEY] = память_страниц
     payload[fallback_many.MANY_KEY] = память_многих             # книга 171, М2
+    # книга 180: записи эталона, подтвердившие игры этого сбора, — в память
+    # сыгранных матчей следующим сборам
+    played.remember(память_сыгранных, games, judge)
+    payload[played.KEY] = played.dump(память_сыгранных)
     payload[channel_spelling.KEY] = {сайт: пары for сайт, пары in написания.items() if пары}
     for строка_написания in channel_spelling.words(payload[channel_spelling.KEY]):
         print(f"написание канала отличается от списка: {строка_написания}")

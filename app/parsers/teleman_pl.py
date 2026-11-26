@@ -118,6 +118,9 @@ _PL_MONTHS = {"stycznia": 1, "lutego": 2, "marca": 3, "kwietnia": 4,
               "września": 9, "października": 10, "listopada": 11,
               "grudnia": 12}
 _DAY_CELL = re.compile(r"(\d{1,2})\s+(\w+)", re.U)
+#: книга 179: ночная строка — «noc sob./niedz., 28 na 29 listopada», «noc
+#: pon./wt., 30 listopada na 1 grudnia»: время после полуночи, день — ВТОРОЙ
+_NIGHT_CELL = re.compile(r"^noc\b.*?\bna\s+(\d{1,2})\s+(\w+)", re.U)
 
 
 def _cell_date(text: str, anchor: _date) -> _date | None:
@@ -126,9 +129,16 @@ def _cell_date(text: str, anchor: _date) -> _date | None:
     «сегодня» сайт считает по Варшаве, а якорь — день запуска обхода по
     часам GitHub (UTC). В 22:30 UTC в Варшаве уже завтра, и `dziś` от
     якоря сдвигал весь список на день назад. От якоря берём только год
-    (декабрь/январь на стыке — поправка) и слова без числа."""
+    (декабрь/январь на стыке — поправка) и слова без числа.
+
+    Книга 179: у ночной строки сайт пишет две даты — «ночь с 28 на 29
+    ноября, 0:30». Время после полуночи, день — второй (после «na»). Раньше
+    бралось первое «число + слово»: «28 na» не месяц — строка терялась
+    вовсе, а «30 listopada na 1 grudnia» читалась 30-м — на сутки раньше
+    (НБА Houston — Lakers на Eurosport 3 встал игрой на чужой день,
+    жалоба владельца 26.11)."""
     low = text.strip().lower()
-    m = _DAY_CELL.search(low)
+    m = _NIGHT_CELL.search(low) or _DAY_CELL.search(low)
     if m and m.group(2) in _PL_MONTHS:
         month = _PL_MONTHS[m.group(2)]
         year = anchor.year + (1 if month < anchor.month - 6 else

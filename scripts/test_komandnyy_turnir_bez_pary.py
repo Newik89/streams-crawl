@@ -6,8 +6,11 @@ r"""Книга 176 (22.11.2026): командный теннисный турн�
 #11636–#11639): каждый сайт зовёт показ по-своему, пары ещё нет, в эталоне
 полуфинала нет, а сведение по туру и городу (`broadcast.key`) командный
 турнир не берёт. Правила:
-  0. К0 (`broadcast.no_pair`): только строка без пары — показ матча («страна
-     — страна и слово стадии») остаётся парой, его сводит эталон;
+  0. К0 (`broadcast.no_pair`, переписано книгой 178): строка без пары —
+     служебная вторая сторона либо ни одна сторона не страна; показ матча
+     («страна — страна и слово стадии») остаётся парой, его сводит эталон;
+  0а. К4 (`broadcast.team_tie`, книга 178): у эталона в час показа ровно одна
+     встреча турнира — строка получает её пару и садится к матчу;
   1. К1–К3 (`broadcast.team_show`): название турнира ищется в заголовке, лиге
      и рубрике строки написаниями словаря лиг (`data/league_words.json`,
      книга 159) → строка получает имя «Davis Cup» и служебную сторону
@@ -106,9 +109,27 @@ print("1б. Только строка без пары (`broadcast.no_pair`, К0)
          [broadcast.no_pair("Polufinale 1", broadcast.SESSION), broadcast.no_pair("FINAL 8", "MEIA-FINAL")], [True, True])
 проверка("страна и страна со словом стадии (port.hu, четвертьфинал 26.11) — показ матча, не трогаем",
          broadcast.no_pair("Ausztria", "Spanyolország negyeddöntő"), False)
-проверка("игрок и слово стадии, пустые стороны — не строка турнира",
-         [broadcast.no_pair("Alcaraz C.", "Final"), broadcast.no_pair("", broadcast.SESSION), broadcast.no_pair("", "")],
+проверка("пустые стороны и пара без слов турнира — не строка турнира",
+         [broadcast.no_pair("", broadcast.SESSION), broadcast.no_pair("", ""), broadcast.no_pair("Alcaraz C.", "Tiafoe F.")],
          [False, False, False])
+# книга 178: живые строки 26.11, оставшиеся отдельными при первой записи К0
+проверка("книга 178: «Davis Cup — finále» (oneplay.cz), «Elődöntő — Bologna», «Döntő — Bologna» (port.hu) — пары нет",
+         [broadcast.no_pair("Davis Cup", "finále"), broadcast.no_pair("Davis Cup", "semifinále"),
+          broadcast.no_pair("Elődöntő", "Bologna"), broadcast.no_pair("Döntő", "Bologna")], [True] * 4)
+проверка("книга 178: страна на любой стороне — показ матча («Tchéquie — Canada», «Italija — polufinale»)",
+         [broadcast.no_pair("Tchéquie", "Canada"), broadcast.no_pair("Italija", "polufinale")], [False, False])
+
+print("1в. Встреча турнира у эталона в час показа (`broadcast.team_tie`, К4, книга 178)")
+ЧАС = datetime(2026, 11, 27, 17, 0)
+ВСТРЕЧА = {"sport": "T", "league": ЛИГА, "home": "Italy", "away": "Czech Republic", "start_kyiv": "2026-11-27T17:00"}
+проверка("одна встреча турнира в час показа — она",
+         broadcast.team_tie("Davis Cup", ЧАС - timedelta(minutes=30), ЭТАЛОН + [ВСТРЕЧА]), ВСТРЕЧА)
+проверка("встреч нет (пары ещё не названы), встреча дальше часа, другой турнир — None",
+         [broadcast.team_tie("Davis Cup", ЧАС, ЭТАЛОН),
+          broadcast.team_tie("Davis Cup", ЧАС + timedelta(hours=4), ЭТАЛОН + [ВСТРЕЧА]),
+          broadcast.team_tie("Billie Jean King Cup", ЧАС, ЭТАЛОН + [ВСТРЕЧА])], [None, None, None])
+проверка("две встречи турнира в один час — не гадаем",
+         broadcast.team_tie("Davis Cup", ЧАС, ЭТАЛОН + [ВСТРЕЧА, dict(ВСТРЕЧА, home="Spain", away="Germany")]), None)
 
 print("2. Место правила в разборе (`parse_live`)")
 код = inspect.getsource(parse_live)
@@ -118,6 +139,9 @@ print("2. Место правила в разборе (`parse_live`)")
          < блок.index("broadcast.team_show(заголовок, reference_full)"))
 проверка("детектор: командный турнир ищется только у строки без пары",
          "if broadcast.no_pair(r.home, r.away) else" in блок)
+проверка("детектор (книга 178): встреча эталона в час показа — строка получает её пару, иначе название турнира",
+         ["broadcast.team_tie(командный, r.start_kyiv, reference_full)" in блок,
+          'r.home, r.away = встреча.get("home") or "", встреча.get("away") or ""' in блок], [True, True])
 проверка("детектор: строка командного турнира получает название и служебную сторону",
          "r.home, r.away = командный, broadcast.SESSION" in блок)
 проверка("детектор: игра из сведённых строк уходит в итог с меткой",

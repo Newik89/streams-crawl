@@ -27,6 +27,7 @@ from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 
+from . import names
 from .live import MARKERS_FILE, _flatten, _pattern, greek_plain
 
 #: стадия дробью («1/4 Finale», «1/2 Finale B») и год турнира («TÓQUIO 2026»):
@@ -614,20 +615,55 @@ def _team_words(path: Path | None = None) -> tuple:
 
 
 def no_pair(home: str, away: str) -> bool:
-    """Книга 176, К0: пары в строке нет вовсе — вторая сторона служебная
-    (`SESSION`) либо ОБЕ стороны — слова турнира или стадии («FINAL 8» —
-    «MEIA-FINAL»). Одна сторона — страна или игрок («Ausztria» —
-    «Spanyolország negyeddöntő», port.hu) — это показ матча: его сводит с
-    матчем эталон, названием турнира такая строка не становится."""
-    if (away or "") == SESSION:
-        return bool((home or "").strip())
-    return _side(home or "") and _side(away or "")
+    """Книга 176, К0 (переписано книгой 178): пары в строке нет — вторая
+    сторона служебная (`SESSION`) либо ни одна сторона не страна, а хоть одна
+    — слово турнира или стадии. В командном теннисном турнире играют страны:
+    «Ausztria» — «Spanyolország negyeddöntő» (port.hu) — показ матча, его
+    сводит с матчем эталон. А «Davis Cup» — «finále» (oneplay.cz), «Elődöntő»
+    — «Bologna» (port.hu: полуфинал — город) — разрезанный по тире заголовок
+    без пары. Первая запись правила требовала, чтобы ОБЕ стороны были
+    словами турнира, и такие строки оставались отдельными (проверка вживую
+    23.11, жалоба владельца 26.11 на лишние игры)."""
+    home, away = home or "", away or ""
+    if away == SESSION:
+        return bool(home.strip())
+    if names.country_of(home) or names.country_of(away):
+        return False
+    return _side(home) or _side(away)
+
+
+#: книга 178, К4: встреча турнира начинается не дальше часа от показа
+TIE_NEAR = 60
+
+
+def team_tie(name: str, start: datetime | None, reference: list | None) -> dict | None:
+    """Книга 178, К4: запись эталона — встреча командного турнира `name`,
+    которую показывает строка без пары в `start` (наивное киевское время).
+    Пары полуфиналов эталон узнаёт за день-два до игры; с этого момента
+    строка без пары («Polufinale 1», «Davis Cup — semifinále») — показ этой
+    встречи: пара и лига берутся из эталона, и строка садится к матчу.
+    Правила: встреча того же турнира (`team_tournament` лиги), теннис, начало
+    не дальше `TIE_NEAR` минут от показа, и такая встреча в это время ОДНА
+    (две встречи в один час — не гадаем, строка остаётся строкой турнира)."""
+    if not name or start is None:
+        return None
+    near = []
+    for ref in reference or []:
+        if ref.get("sport") != "T" or team_tournament(ref.get("league") or "") != name:
+            continue
+        try:
+            kickoff = datetime.fromisoformat(ref.get("start_kyiv") or "")
+        except ValueError:
+            continue
+        if abs((kickoff - start.replace(tzinfo=None)).total_seconds()) <= TIE_NEAR * 60:
+            near.append(ref)
+    return near[0] if len(near) == 1 else None
 
 
 def team_show(text: str, reference: list | None = None) -> tuple[str, str]:
     """Книга 176: (название, лига) командного теннисного турнира, названного
-    в заголовке сайта; не назван — ("", ""). Правила (К0 — `no_pair` —
-    проверяет вызывающий: `parse_live`):
+    в заголовке сайта; не назван — ("", ""). Правила (К0 — `no_pair` — и
+    К4 — `team_tie` — проверяет вызывающий: `parse_live`):
       К1. название ищется написаниями словаря лиг (`_team_words`): «Cupa
           Davis», «TAÇA DAVIS», «Coupe Davis», «גביע דיוויס» → «Davis Cup»;
           и английским названием из лиг эталона («TEAMS - …: X»), которого в
