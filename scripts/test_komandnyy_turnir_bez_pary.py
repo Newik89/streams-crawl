@@ -43,6 +43,7 @@ os.environ["STREAMS_DB"] = str(TMP / "t.db")
 
 from app import broadcast, db, store  # noqa: E402
 import parse_live  # noqa: E402
+import proverka  # noqa: E402
 
 зелёных = красных = 0
 ДЕНЬ = (date.today() + timedelta(days=5)).isoformat()
@@ -130,6 +131,41 @@ print("1в. Встреча турнира у эталона в час показ
           broadcast.team_tie("Billie Jean King Cup", ЧАС, ЭТАЛОН + [ВСТРЕЧА])], [None, None, None])
 проверка("две встречи турнира в один час — не гадаем",
          broadcast.team_tie("Davis Cup", ЧАС, ЭТАЛОН + [ВСТРЕЧА, dict(ВСТРЕЧА, home="Spain", away="Germany")]), None)
+
+print("1г. Сравнение сборов понимает К4 (`proverka.row_host`, `rows_moved`, книга 178)")
+
+
+def запись(home, away, когда, строки, sport="T"):
+    return {"sport": sport, "league": "", "home": home, "away": away, "start_kyiv": когда, "guess": 0,
+            "entries": [{"source": сайт, "channel": канал, "start_kyiv": время, "raw_title": "", "url": ""}
+                        for сайт, канал, время in строки]}
+
+
+АРЕНА = ("tvarenasport.com", "Arena Tenis", "2026-11-27T17:00")
+СПОРТТВ = ("sporttv.pt", "SPORT.TV6", "2026-11-27T16:58")
+ЧТ2 = ("oneplay.cz", "ČT2", "2026-11-27T20:30")
+# вечерний сбор 26.11: старый код — строка турнира со всеми каналами и отдельная вторая строка ČT2;
+# новый — канал Arena Tenis при матче эталона, вторая строка ČT2 при строке турнира
+было = {"games": [запись("Davis Cup", "tournament", "2026-11-27T16:58", [СПОРТТВ, АРЕНА]),
+                  запись("Davis Cup", "semifinále", "2026-11-27T20:30", [ЧТ2]),
+                  запись("ATP Lyon", "tournament", "2026-11-27T12:00", [("teleman.pl", "Polsat Sport 2", "2026-11-27T12:00")])]}
+стало = {"games": [запись("Davis Cup", "tournament", "2026-11-27T16:58", [СПОРТТВ, ЧТ2]),
+                   запись("Italy", "Czech Republic", "2026-11-27T16:30", [АРЕНА]),
+                   запись("ATP Lyon", "tournament", "2026-11-27T12:00", [("teleman.pl", "Polsat Sport 2", "2026-11-27T12:00")])]}
+проверка("строка «канал, сайт, время» найдена при другой игре нового разбора",
+         (proverka.row_host(("Arena Tenis", "tvarenasport.com", "2026-11-27T17:00"), стало["games"]) or {}).get("home"), "Italy")
+проверка("то же время у другого канала или другое время у того же — не та строка",
+         [proverka.row_host(("Arena Tenis", "tvarenasport.com", "2026-11-27T19:00"), стало["games"]),
+          proverka.row_host(("Arena Sport 1", "tvarenasport.com", "2026-11-27T17:00"), стало["games"])], [None, None])
+проверка("все строки пропавшей теннисной игры при других играх — не пропажа; не теннис — правило молчит",
+         [bool(proverka.rows_moved(было["games"][1], стало["games"])),
+          proverka.rows_moved(dict(было["games"][1], sport="F"), стало["games"])], [True, []])
+проверка("сравнение сборов: канал перешёл к матчу эталона, вторая строка вошла в строку турнира — потерь нет",
+         proverka.compare(было, стало), [])
+без_строки = {"games": [запись("Davis Cup", "tournament", "2026-11-27T16:58", [СПОРТТВ]),
+                        запись("ATP Lyon", "tournament", "2026-11-27T12:00", [("teleman.pl", "Polsat Sport 2", "2026-11-27T12:00")])]}
+проверка("сравнение сборов: строки нет ни при одной игре — потеря канала и потеря игры, как раньше",
+         len(proverka.compare(было, без_строки)), 2)
 
 print("2. Место правила в разборе (`parse_live`)")
 код = inspect.getsource(parse_live)
