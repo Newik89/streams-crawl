@@ -231,6 +231,33 @@ class Reference:
                 [entry for entry, _start in self._entries])
         return self._tournaments
 
+    def replays(self, home: str, away: str, sport: str = "") -> list[tuple[dict, datetime]]:
+        """Книга 180 (`app/played.py`, П3): записи, с которыми пара сошлась
+        ЦЕЛИКОМ — `canon._pair_score` не ниже `canon.SURE`, с местными
+        написаниями, в любом порядке сторон, — без оглядки на время. `sport`
+        — вид спорта, который сайт назвал сам: запись другого вида не в счёт
+        (у клуба бывают и футбольная, и баскетбольная команды). Пусто — вид
+        спорта игры догадка, берётся у записи."""
+        if not self._entries or not home or not away:
+            return []
+        pool: set[int] = set()
+        for name in (home, away):
+            for word in _words(name, self._cache):
+                pool |= self._home.get(word, set())
+                pool |= self._away.get(word, set())
+        out = []
+        for number in sorted(pool):
+            entry, kickoff = self._entries[number]
+            letter = entry.get("sport") or "F"
+            if sport and letter != sport:
+                continue
+            straight = {"home": home, "away": away, "sport": letter}
+            swapped = {"home": away, "away": home, "sport": letter}
+            if max(canon._pair_score(straight, entry),
+                   canon._pair_score(swapped, entry)) >= canon.SURE:
+                out.append((entry, kickoff))
+        return out
+
     def may_know(self, home: str, away: str) -> bool:
         """Книга 133: стоит ли пробовать срезы слов у этой пары. Да, если
         хоть одно слово хозяев и хоть одно слово гостей есть среди слов

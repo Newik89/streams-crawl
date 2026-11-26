@@ -128,6 +128,33 @@ def _chans(g: dict) -> set:
             for e in g.get("entries") or []}
 
 
+def _rows(g: dict) -> set:
+    """Строки сайтов игры: (канал, сайт, время строки)."""
+    return {(e.get("channel") or "", kniga.bare(e.get("source") or ""), e.get("start_kyiv") or "")
+            for e in g.get("entries") or []}
+
+
+def row_host(row: tuple, games) -> dict | None:
+    """Книга 178: игра нового разбора, при которой стоит ТА ЖЕ строка сайта —
+    тот же канал того же сайта с тем же временем строки. Правило К4
+    (`broadcast.team_tie`) переводит строку турнира без пары к матчу эталона
+    («Davis Cup — tournament» 16:58 → «Italy — Czech Republic»), а вторая за
+    вечер строка канала входит в строку турнира и дальше `СДВИГ_Ч`
+    (oneplay.cz ČT2 20:30 → «Davis Cup — tournament» 17:00). Строка на
+    витрине, при другой игре, — это не пропажа. Спрашивается только для
+    тенниса: там строка турнира без пары и матч — один и тот же показ."""
+    return next((g for g in games if row in _rows(g)), None)
+
+
+def rows_moved(gone: dict, games) -> list[dict]:
+    """Книга 178: игры нового разбора, куда перешли ВСЕ строки пропавшей
+    теннисной игры (`row_host`); хоть одна строка не нашлась — пусто."""
+    if gone.get("sport") != "T" or not _rows(gone):
+        return []
+    hosts = [row_host(row, games) for row in sorted(_rows(gone))]
+    return hosts if all(h is not None for h in hosts) else []
+
+
 def _most_channels(old: set, new: set) -> bool:
     """Большинство каналов старой игры при новой — не меньше двух и не
     меньше половины. Имя игры сменилось, а один канал ушёл — это
@@ -317,6 +344,12 @@ def compare(old: dict, new: dict) -> list[str]:
             print(f"  ~ склеена: {kniga._show(a[k])} → {kniga._show(host)}")
             pairs.append((a[k], host))
             continue
+        # книга 178: все строки теннисной игры стоят при других играх нового
+        # разбора (строка турнира перешла к матчу эталона) — не пропажа
+        moved = rows_moved(a[k], list(b.values()))
+        if moved:
+            print(f"  ~ строки перешли: {kniga._show(a[k])} → {kniga._show(moved[0])}")
+            continue
         # пропала: потеря КАЖДОГО её канала, и каждый сайт объясняется сам —
         # случай про один сайт не оправдывает остальные
         bad = [(ch, site) for ch, site in sorted(_chans(a[k])) if not explained(a[k], site)]
@@ -338,6 +371,13 @@ def compare(old: dict, new: dict) -> list[str]:
             # могло быть мусорным (094) — спрашиваем книгу и по новым
             why = explained(was, site) or explained(now, site)
             apart = _moved_apart(ch, site, was, fresh)
+            # книга 178: та же строка сайта стоит при другой игре нового
+            # разбора (строка турнира перешла к матчу эталона) — теннис
+            host = None
+            if was.get("sport") == "T":
+                host = next((h for h in (row_host(row, [g for g in b.values() if g is not now])
+                                         for row in sorted(_rows(was)) if row[:2] == (ch, site))
+                             if h is not None), None)
             if why:
                 print(f"  − канал {ch}/{site} снят (случай {why}): {kniga._show(was)}")
             elif apart is not None:
@@ -346,6 +386,8 @@ def compare(old: dict, new: dict) -> list[str]:
                 # за окно склейки и отделился); дубль — не потеря, новая игра
                 # уже напечатана выше со знаком «+»
                 print(f"  ~ канал {ch}/{site} отделился в новую игру: {kniga._show(apart)}")
+            elif host is not None:
+                print(f"  ~ канал {ch}/{site} перешёл к игре: {kniga._show(host)}")
             else:
                 print(f"  ✗ ПРОПАЛ КАНАЛ {ch}/{site}: {kniga._show(was)}")
                 losses.append(f"пропал канал {ch}/{site} у {kniga._show(was)}")

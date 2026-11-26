@@ -6,8 +6,11 @@ r"""Книга 176 (22.11.2026): командный теннисный турн�
 #11636–#11639): каждый сайт зовёт показ по-своему, пары ещё нет, в эталоне
 полуфинала нет, а сведение по туру и городу (`broadcast.key`) командный
 турнир не берёт. Правила:
-  0. К0 (`broadcast.no_pair`): только строка без пары — показ матча («страна
-     — страна и слово стадии») остаётся парой, его сводит эталон;
+  0. К0 (`broadcast.no_pair`, переписано книгой 178): строка без пары —
+     служебная вторая сторона либо ни одна сторона не страна; показ матча
+     («страна — страна и слово стадии») остаётся парой, его сводит эталон;
+  0а. К4 (`broadcast.team_tie`, книга 178): у эталона в час показа ровно одна
+     встреча турнира — строка получает её пару и садится к матчу;
   1. К1–К3 (`broadcast.team_show`): название турнира ищется в заголовке, лиге
      и рубрике строки написаниями словаря лиг (`data/league_words.json`,
      книга 159) → строка получает имя «Davis Cup» и служебную сторону
@@ -40,6 +43,7 @@ os.environ["STREAMS_DB"] = str(TMP / "t.db")
 
 from app import broadcast, db, store  # noqa: E402
 import parse_live  # noqa: E402
+import proverka  # noqa: E402
 
 зелёных = красных = 0
 ДЕНЬ = (date.today() + timedelta(days=5)).isoformat()
@@ -106,9 +110,62 @@ print("1б. Только строка без пары (`broadcast.no_pair`, К0)
          [broadcast.no_pair("Polufinale 1", broadcast.SESSION), broadcast.no_pair("FINAL 8", "MEIA-FINAL")], [True, True])
 проверка("страна и страна со словом стадии (port.hu, четвертьфинал 26.11) — показ матча, не трогаем",
          broadcast.no_pair("Ausztria", "Spanyolország negyeddöntő"), False)
-проверка("игрок и слово стадии, пустые стороны — не строка турнира",
-         [broadcast.no_pair("Alcaraz C.", "Final"), broadcast.no_pair("", broadcast.SESSION), broadcast.no_pair("", "")],
+проверка("пустые стороны и пара без слов турнира — не строка турнира",
+         [broadcast.no_pair("", broadcast.SESSION), broadcast.no_pair("", ""), broadcast.no_pair("Alcaraz C.", "Tiafoe F.")],
          [False, False, False])
+# книга 178: живые строки 26.11, оставшиеся отдельными при первой записи К0
+проверка("книга 178: «Davis Cup — finále» (oneplay.cz), «Elődöntő — Bologna», «Döntő — Bologna» (port.hu) — пары нет",
+         [broadcast.no_pair("Davis Cup", "finále"), broadcast.no_pair("Davis Cup", "semifinále"),
+          broadcast.no_pair("Elődöntő", "Bologna"), broadcast.no_pair("Döntő", "Bologna")], [True] * 4)
+проверка("книга 178: страна на любой стороне — показ матча («Tchéquie — Canada», «Italija — polufinale»)",
+         [broadcast.no_pair("Tchéquie", "Canada"), broadcast.no_pair("Italija", "polufinale")], [False, False])
+
+print("1в. Встреча турнира у эталона в час показа (`broadcast.team_tie`, К4, книга 178)")
+ЧАС = datetime(2026, 11, 27, 17, 0)
+ВСТРЕЧА = {"sport": "T", "league": ЛИГА, "home": "Italy", "away": "Czech Republic", "start_kyiv": "2026-11-27T17:00"}
+проверка("одна встреча турнира в час показа — она",
+         broadcast.team_tie("Davis Cup", ЧАС - timedelta(minutes=30), ЭТАЛОН + [ВСТРЕЧА]), ВСТРЕЧА)
+проверка("встреч нет (пары ещё не названы), встреча дальше часа, другой турнир — None",
+         [broadcast.team_tie("Davis Cup", ЧАС, ЭТАЛОН),
+          broadcast.team_tie("Davis Cup", ЧАС + timedelta(hours=4), ЭТАЛОН + [ВСТРЕЧА]),
+          broadcast.team_tie("Billie Jean King Cup", ЧАС, ЭТАЛОН + [ВСТРЕЧА])], [None, None, None])
+проверка("две встречи турнира в один час — не гадаем",
+         broadcast.team_tie("Davis Cup", ЧАС, ЭТАЛОН + [ВСТРЕЧА, dict(ВСТРЕЧА, home="Spain", away="Germany")]), None)
+
+print("1г. Сравнение сборов понимает К4 (`proverka.row_host`, `rows_moved`, книга 178)")
+
+
+def запись(home, away, когда, строки, sport="T"):
+    return {"sport": sport, "league": "", "home": home, "away": away, "start_kyiv": когда, "guess": 0,
+            "entries": [{"source": сайт, "channel": канал, "start_kyiv": время, "raw_title": "", "url": ""}
+                        for сайт, канал, время in строки]}
+
+
+АРЕНА = ("tvarenasport.com", "Arena Tenis", "2026-11-27T17:00")
+СПОРТТВ = ("sporttv.pt", "SPORT.TV6", "2026-11-27T16:58")
+ЧТ2 = ("oneplay.cz", "ČT2", "2026-11-27T20:30")
+# вечерний сбор 26.11: старый код — строка турнира со всеми каналами и отдельная вторая строка ČT2;
+# новый — канал Arena Tenis при матче эталона, вторая строка ČT2 при строке турнира
+было = {"games": [запись("Davis Cup", "tournament", "2026-11-27T16:58", [СПОРТТВ, АРЕНА]),
+                  запись("Davis Cup", "semifinále", "2026-11-27T20:30", [ЧТ2]),
+                  запись("ATP Lyon", "tournament", "2026-11-27T12:00", [("teleman.pl", "Polsat Sport 2", "2026-11-27T12:00")])]}
+стало = {"games": [запись("Davis Cup", "tournament", "2026-11-27T16:58", [СПОРТТВ, ЧТ2]),
+                   запись("Italy", "Czech Republic", "2026-11-27T16:30", [АРЕНА]),
+                   запись("ATP Lyon", "tournament", "2026-11-27T12:00", [("teleman.pl", "Polsat Sport 2", "2026-11-27T12:00")])]}
+проверка("строка «канал, сайт, время» найдена при другой игре нового разбора",
+         (proverka.row_host(("Arena Tenis", "tvarenasport.com", "2026-11-27T17:00"), стало["games"]) or {}).get("home"), "Italy")
+проверка("то же время у другого канала или другое время у того же — не та строка",
+         [proverka.row_host(("Arena Tenis", "tvarenasport.com", "2026-11-27T19:00"), стало["games"]),
+          proverka.row_host(("Arena Sport 1", "tvarenasport.com", "2026-11-27T17:00"), стало["games"])], [None, None])
+проверка("все строки пропавшей теннисной игры при других играх — не пропажа; не теннис — правило молчит",
+         [bool(proverka.rows_moved(было["games"][1], стало["games"])),
+          proverka.rows_moved(dict(было["games"][1], sport="F"), стало["games"])], [True, []])
+проверка("сравнение сборов: канал перешёл к матчу эталона, вторая строка вошла в строку турнира — потерь нет",
+         proverka.compare(было, стало), [])
+без_строки = {"games": [запись("Davis Cup", "tournament", "2026-11-27T16:58", [СПОРТТВ]),
+                        запись("ATP Lyon", "tournament", "2026-11-27T12:00", [("teleman.pl", "Polsat Sport 2", "2026-11-27T12:00")])]}
+проверка("сравнение сборов: строки нет ни при одной игре — потеря канала и потеря игры, как раньше",
+         len(proverka.compare(было, без_строки)), 2)
 
 print("2. Место правила в разборе (`parse_live`)")
 код = inspect.getsource(parse_live)
@@ -118,6 +175,9 @@ print("2. Место правила в разборе (`parse_live`)")
          < блок.index("broadcast.team_show(заголовок, reference_full)"))
 проверка("детектор: командный турнир ищется только у строки без пары",
          "if broadcast.no_pair(r.home, r.away) else" in блок)
+проверка("детектор (книга 178): встреча эталона в час показа — строка получает её пару, иначе название турнира",
+         ["broadcast.team_tie(командный, r.start_kyiv, reference_full)" in блок,
+          'r.home, r.away = встреча.get("home") or "", встреча.get("away") or ""' in блок], [True, True])
 проверка("детектор: строка командного турнира получает название и служебную сторону",
          "r.home, r.away = командный, broadcast.SESSION" in блок)
 проверка("детектор: игра из сведённых строк уходит в итог с меткой",
