@@ -580,6 +580,10 @@ def team_tournament(league: str) -> str:
 #: метка игры в `results/games.json`: имя игры — сведённое название турнира
 #: (а не заголовок сайта); по ней заливка переименовывает прежнюю строку базы
 MERGED = "сведена"
+#: метка игры в `results/games.json` (книга 181): игра — встреча командного
+#: турнира с парой, значение — название турнира («Davis Cup»). По ней заливка
+#: делает прежнюю строку этого турнира без пары матчем (`store.tie_named`)
+TIE = "встреча_турнира"
 TEAM_FILE = MARKERS_FILE.parent / "league_words.json"
 #: раздел словаря лиг: командные турниры, которые эталон зовёт без «TEAMS»
 TEAM_KEY = "командный_теннис"
@@ -634,20 +638,53 @@ def no_pair(home: str, away: str) -> bool:
 
 #: книга 178, К4: встреча турнира начинается не дальше часа от показа
 TIE_NEAR = 60
+#: книга 181, К5: встреча командного турнира идёт не дольше стольких минут.
+#: Замер по сборам 18–27.11: поздние строки той же встречи стоят до 5 ч 45 мин
+#: от её начала (финал 29.11: 16:00 → 21:45; полуфинал 27.11: 17:00 → 22:30);
+#: в день двух встреч между их началами 7 часов (26.11: 11:00 и 18:00)
+TIE_LONG = 7 * 60
+#: книга 181, К5: «в эти сутки у турнира одна встреча» — столько минут в обе
+#: стороны от показа других встреч турнира быть не должно
+TIE_ALONE = 12 * 60
+
+
+def tie_key(ref: dict) -> str:
+    """Книга 181: ключ встречи эталона — её метка flashscore; у записи без
+    метки — пара имён."""
+    return ref.get("fs_id") or f"{ref.get('home') or ''} — {ref.get('away') or ''}"
+
+
+def tie_show(kickoff: datetime, start: datetime) -> bool:
+    """Книга 181: показ в `start` стоит в часы встречи, начавшейся в
+    `kickoff` (оба — наивное киевское время): не раньше `TIE_NEAR` минут до
+    её начала и не позже `TIE_LONG` минут после."""
+    gap = (start - kickoff).total_seconds() / 60
+    return -TIE_NEAR <= gap <= TIE_LONG
 
 
 def team_tie(name: str, start: datetime | None, reference: list | None) -> dict | None:
-    """Книга 178, К4: запись эталона — встреча командного турнира `name`,
+    """Книги 178 и 181: запись эталона — встреча командного турнира `name`,
     которую показывает строка без пары в `start` (наивное киевское время).
     Пары полуфиналов эталон узнаёт за день-два до игры; с этого момента
     строка без пары («Polufinale 1», «Davis Cup — semifinále») — показ этой
     встречи: пара и лига берутся из эталона, и строка садится к матчу.
-    Правила: встреча того же турнира (`team_tournament` лиги), теннис, начало
-    не дальше `TIE_NEAR` минут от показа, и такая встреча в это время ОДНА
-    (две встречи в один час — не гадаем, строка остаётся строкой турнира)."""
+    Встреча — того же турнира (`team_tournament` лиги), теннис. Правила:
+      К4. встреча начинается не дальше `TIE_NEAR` минут от показа, и такая
+          встреча в это время ОДНА (две встречи в один час — не гадаем,
+          строка остаётся строкой турнира);
+      К5. (книга 181) в час показа встреч нет — идёт встреча, начавшаяся
+          раньше: не дальше `TIE_LONG` минут до показа. Встречу сборных сайты
+          ставят несколькими строками (вторая игра, пара: «FINAL 8 -
+          MEIA-FINAL» 18:59 и 20:59 при встрече 17:00), и без этого правила
+          поздние строки вставали на витрине второй строкой «Davis Cup»
+          (#11568, проверка вживую 27.11). Встреча в эти сутки должна быть у
+          турнира ОДНА — других нет в `TIE_ALONE` минутах от показа: когда
+          встречи идут в разных городах разом (отборочный круг, три-четыре
+          в день), по времени не угадать, чью показывает сайт."""
     if not name or start is None:
         return None
-    near = []
+    start = start.replace(tzinfo=None)
+    near, running, around = {}, {}, set()
     for ref in reference or []:
         if ref.get("sport") != "T" or team_tournament(ref.get("league") or "") != name:
             continue
@@ -655,15 +692,24 @@ def team_tie(name: str, start: datetime | None, reference: list | None) -> dict 
             kickoff = datetime.fromisoformat(ref.get("start_kyiv") or "")
         except ValueError:
             continue
-        if abs((kickoff - start.replace(tzinfo=None)).total_seconds()) <= TIE_NEAR * 60:
-            near.append(ref)
-    return near[0] if len(near) == 1 else None
+        gap = (start - kickoff).total_seconds() / 60      # минут от начала встречи до показа
+        if abs(gap) <= TIE_ALONE:
+            around.add(tie_key(ref))
+        if abs(gap) <= TIE_NEAR:
+            near.setdefault(tie_key(ref), ref)
+        elif 0 < gap <= TIE_LONG:
+            running.setdefault(tie_key(ref), ref)
+    if near:                                                                  # К4
+        return next(iter(near.values())) if len(near) == 1 else None
+    if len(running) == 1 and len(around) == 1:                                # К5
+        return next(iter(running.values()))
+    return None
 
 
 def team_show(text: str, reference: list | None = None) -> tuple[str, str]:
     """Книга 176: (название, лига) командного теннисного турнира, названного
     в заголовке сайта; не назван — ("", ""). Правила (К0 — `no_pair` — и
-    К4 — `team_tie` — проверяет вызывающий: `parse_live`):
+    К4, К5 — `team_tie` — проверяет вызывающий: `parse_live`):
       К1. название ищется написаниями словаря лиг (`_team_words`): «Cupa
           Davis», «TAÇA DAVIS», «Coupe Davis», «גביע דיוויס» → «Davis Cup»;
           и английским названием из лиг эталона («TEAMS - …: X»), которого в

@@ -125,9 +125,9 @@ print("1в. Встреча турнира у эталона в час показ
 ВСТРЕЧА = {"sport": "T", "league": ЛИГА, "home": "Italy", "away": "Czech Republic", "start_kyiv": "2026-11-27T17:00"}
 проверка("одна встреча турнира в час показа — она",
          broadcast.team_tie("Davis Cup", ЧАС - timedelta(minutes=30), ЭТАЛОН + [ВСТРЕЧА]), ВСТРЕЧА)
-проверка("встреч нет (пары ещё не названы), встреча дальше часа, другой турнир — None",
+проверка("встреч нет (пары ещё не названы), показ за четыре часа до встречи, другой турнир — None",
          [broadcast.team_tie("Davis Cup", ЧАС, ЭТАЛОН),
-          broadcast.team_tie("Davis Cup", ЧАС + timedelta(hours=4), ЭТАЛОН + [ВСТРЕЧА]),
+          broadcast.team_tie("Davis Cup", ЧАС - timedelta(hours=4), ЭТАЛОН + [ВСТРЕЧА]),
           broadcast.team_tie("Billie Jean King Cup", ЧАС, ЭТАЛОН + [ВСТРЕЧА])], [None, None, None])
 проверка("две встречи турнира в один час — не гадаем",
          broadcast.team_tie("Davis Cup", ЧАС, ЭТАЛОН + [ВСТРЕЧА, dict(ВСТРЕЧА, home="Spain", away="Germany")]), None)

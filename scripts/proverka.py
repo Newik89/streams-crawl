@@ -34,7 +34,7 @@ import subprocess
 import sys
 import tempfile
 from concurrent.futures import ThreadPoolExecutor
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -42,6 +42,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import kniga  # noqa: E402
+from app import broadcast  # noqa: E402
 
 #: разбор полного сбора идёт 6–9 минут; дольше — завис
 РАЗБОР_ТАЙМАУТ_С = 40 * 60
@@ -153,6 +154,34 @@ def rows_moved(gone: dict, games) -> list[dict]:
         return []
     hosts = [row_host(row, games) for row in sorted(_rows(gone))]
     return hosts if all(h is not None for h in hosts) else []
+
+
+def tie_channel(ch: str, site: str, was: dict, games) -> dict | None:
+    """Книга 181: встреча командного турнира нового разбора, при которой
+    стоит канал `ch` сайта `site` строки этого турнира без пары `was`.
+    Поздние строки встречи (вторая игра, пара: «FINAL 8 - MEIA-FINAL» 18:59
+    и 20:59 при встрече 17:00) разбор сажает к матчу (`broadcast.team_tie`,
+    К5), а вторую строку того же канала у матча снимает
+    `one_row_per_channel` — канал на витрине остался, при матче. Правила:
+    `was` — теннис, строка турнира (`broadcast.SESSION`); игра нового
+    разбора несёт метку встречи ЭТОГО турнира (`broadcast.TIE`), канал сайта
+    у неё есть, и `was` начинается в её часы (`broadcast.tie_show`)."""
+    if was.get("sport") != "T" or was.get("away") != broadcast.SESSION:
+        return None
+    try:
+        start = datetime.fromisoformat(was.get("start_kyiv") or "")
+    except ValueError:
+        return None
+    for g in games:
+        if g.get(broadcast.TIE) != was.get("home") or (ch, site) not in _chans(g):
+            continue
+        try:
+            kickoff = datetime.fromisoformat(g.get("start_kyiv") or "")
+        except ValueError:
+            continue
+        if broadcast.tie_show(kickoff, start):
+            return g
+    return None
 
 
 def _most_channels(old: set, new: set) -> bool:
@@ -350,6 +379,13 @@ def compare(old: dict, new: dict) -> list[str]:
         if moved:
             print(f"  ~ строки перешли: {kniga._show(a[k])} → {kniga._show(moved[0])}")
             continue
+        # книга 181: все каналы пропавшей строки командного турнира стоят
+        # при его встрече (поздние строки встречи сели к матчу) — не пропажа
+        при_встрече = [tie_channel(ch, site, a[k], list(b.values()))
+                       for ch, site in sorted(_chans(a[k]))]
+        if при_встрече and all(g is not None for g in при_встрече):
+            print(f"  ~ каналы при встрече: {kniga._show(a[k])} → {kniga._show(при_встрече[0])}")
+            continue
         # пропала: потеря КАЖДОГО её канала, и каждый сайт объясняется сам —
         # случай про один сайт не оправдывает остальные
         bad = [(ch, site) for ch, site in sorted(_chans(a[k])) if not explained(a[k], site)]
@@ -378,6 +414,8 @@ def compare(old: dict, new: dict) -> list[str]:
                 host = next((h for h in (row_host(row, [g for g in b.values() if g is not now])
                                          for row in sorted(_rows(was)) if row[:2] == (ch, site))
                              if h is not None), None)
+            # книга 181: канал строки командного турнира стоит при его встрече
+            host = host or tie_channel(ch, site, was, [g for g in b.values() if g is not now])
             if why:
                 print(f"  − канал {ch}/{site} снят (случай {why}): {kniga._show(was)}")
             elif apart is not None:
