@@ -987,6 +987,12 @@ def main() -> int:
                  "locale": "en-GB", "url": u.strip(), "post": post,
                  "warmup": args.warmup}
                 for u in args.urls.split(",") if u.strip()]
+        # ПРОБА (ветка magentatv-proba, в main НЕ СЛИВАТЬ): адрес телегида MagentaTV в списке — знак
+        # взять задания этого сайта ИЗ ПЛАНА, как их взял бы настоящий сбор (тело запроса, окно)
+        if any(j["domain"] == "api.prod.sngtv.magentatv.de" for j in jobs):
+            свои = {"sources": [s for s in plan["sources"] if s["domain"] == "magentatv.de"]}
+            jobs = ([j for j in jobs if j["domain"] != "api.prod.sngtv.magentatv.de"]
+                    + list(targets(свои, 6, False)))
     elif args.date:
         only = {d.strip() for d in args.only.split(",") if d.strip()}
         jobs = list(targets(plan, 1, args.probe,
