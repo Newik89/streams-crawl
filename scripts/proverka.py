@@ -42,7 +42,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import kniga  # noqa: E402
-from app import broadcast  # noqa: E402
+from app import broadcast, live  # noqa: E402
 
 #: разбор полного сбора идёт 6–9 минут; дольше — завис
 РАЗБОР_ТАЙМАУТ_С = 40 * 60
@@ -184,6 +184,24 @@ def tie_channel(ch: str, site: str, was: dict, games) -> dict | None:
     return None
 
 
+_MARKERS: list = []
+
+
+def studio_start(game: dict) -> bool:
+    """Книга 182: начало игры нового разбора — это время её строки-студии
+    (в заголовке строки слово студии, `live.studio_cut`). Студию, внутри
+    которой идёт матч, разбор берёт показом матча (`pipeline.studio_inside`);
+    она начинается раньше матча, и игра, к которой она пришла, встаёт на её
+    время («Crna Gora U17 — Čile U17» 16:50 → «Montenegro U17 — Chile U17»
+    16:30: первой стала строка alkass.net «Mondial Studio 2 / Montenegro ×
+    Chile»). Игра при этом не переезжала."""
+    if not _MARKERS:
+        _MARKERS.append(live.load())
+    return any(e.get("start_kyiv") == game.get("start_kyiv")
+               and live.studio_cut(_MARKERS[0], e.get("raw_title") or "")
+               for e in game.get("entries") or [])
+
+
 def _most_channels(old: set, new: set) -> bool:
     """Большинство каналов старой игры при новой — не меньше двух и не
     меньше половины. Имя игры сменилось, а один канал ушёл — это
@@ -278,7 +296,10 @@ def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, 
     же сайта, сдвиг не дальше СДВИГ_Ч): игра не переезжала — у неё ушла
     ранняя строка (студия перед матчем, novasports.gr «Pre Game Show»
     19:30 у игры Арис — Ле-Ман; оставшаяся строка 19:55 стоит, где стояла).
-    Ошибку пояса так не спутать: при ней строки сайта меняют время."""
+    Ошибку пояса так не спутать: при ней строки сайта меняют время;
+    «студия» (книга 182) — ВСЕ каналы старой игры при новой, а новое начало
+    — время пришедшей к игре строки-студии, внутри которой идёт матч
+    (`studio_start`): игра не переезжала, у неё появилась ранняя строка."""
     when = kniga.kyiv(gone["start_kyiv"])
     # та же пара — или те же каналы: имя игры могло взяться у нового сайта
     # («Olympique de Marsella» у movistarplus вместо «Olympique Marseille»,
@@ -302,6 +323,11 @@ def twin(gone: dict, fresh: list[dict], refs: list[dict]) -> tuple[dict | None, 
                 and (e.get("channel") or "", kniga.bare(e.get("source") or "")) in _chans(g)
                 for e in gone.get("entries") or []):
             return g, "строка"
+        # «студия» (книга 182) — ВСЕ каналы старой игры при новой, а новое
+        # начало — время строки-студии, которая к игре пришла (`studio_start`)
+        if shift <= timedelta(hours=СДВИГ_Ч) and chans and chans <= _chans(g) \
+                and studio_start(g):
+            return g, "студия"
     return None, ""
 
 

@@ -1004,13 +1004,164 @@ def tournament_whole(program: Program, verdict: live.Verdict,
                         away=broadcast.SESSION)
 
 
+# ── книга 182: студия, внутри которой идёт матч ─────────────────────────────
+#: так `live.check` начинает причину отсева по стоп-слову заголовка
+STOP_IN_TITLE = "стоп-слово в заголовке: "
+#: пометка строки «студия с матчем внутри»: {"слово": слово студии из
+#: заголовка, "начало": начало матча по эталону, "матч": ключ матча эталона}
+STUDIO = "студия_с_матчем"
+#: С3: следующая передача канала начинается не раньше, чем через столько
+#: после начала матча. Замер по сборам 22–27.11: у передач перед матчем — от
+#: −12 до 0 минут, у студий alkass.net с матчем внутри — 150–180
+STUDIO_COVER = timedelta(minutes=90)
+
+
+def studio_word(reason: str, markers: live.Markers) -> str:
+    """Книга 182, С1: строку отсеяло стоп-слово заголовка, и это слово
+    класса «студия» (`Markers.studio`) — само слово; иначе пусто."""
+    if not (reason or "").startswith(STOP_IN_TITLE):
+        return ""
+    word = reason[len(STOP_IN_TITLE):]
+    return word if markers.found(markers.studio, word) else ""
+
+
+def studio_pair(program: Program, markers: live.Markers,
+                reference: Reference | None, start_kyiv: datetime | None,
+                league_category: str = ""):
+    """Книга 182, С2: пара из подписи передачи-студии, которую эталон
+    подтверждает как эфир. Правила:
+      П1. название студии из заголовка срезается (`live.studio_cut`); остатка
+          нет — None;
+      П2. в остатке нет другого стоп-слова, слова передачи до или после
+          матча, слова записи: остаток проходит `live.check` либо не проходит
+          лишь потому, что нет пометки эфира или пара не прочиталась
+          (`ASK_REFERENCE_REASONS`). «Studio før Liverpool - City» после
+          среза — «før Liverpool - City»: передача перед матчем, None;
+      П3. прошлый сезон в подписи — классика, None (`past_season`);
+      П4. пара читается ТОЛЬКО из остатка заголовка (`live.split_candidates`).
+          Поле пары разборщика не берём: в нём название студии слиплось с
+          командой («Mondial Studio 2 - Dominican», alkass.net). Описание не
+          берём: свободный текст;
+      П5. эталон подтверждает догадку как эфир ЦЕЛИКОМ — «пара» либо «метки
+          из эталона» (`Reference.confirm`: матч начинается от 15 минут до
+          показа до часа после него). «Одна сторона» не годится;
+      П6. все подтверждённые догадки — один и тот же матч, иначе None.
+    Возвращает (вердикт с парой в порядке эталона, ответ эталона) либо None.
+    Сама по себе пара строку не спасает — ещё С3 и С4 (`studio_inside`)."""
+    if reference is None or start_kyiv is None:
+        return None
+    rest = live.studio_cut(markers, program.title or "")                 # П1
+    if not rest:
+        return None
+    bare = Program(channel_raw=program.channel_raw, title=rest, start=program.start,
+                   description=program.description, league_raw=program.league_raw,
+                   sport_raw=program.sport_raw, live_raw=program.live_raw, match_raw=" ")
+    verdict = live.check(bare, markers)                                  # П2
+    if not verdict.ok and verdict.reason not in ASK_REFERENCE_REASONS:
+        return None
+    if past_season(" ".join(x for x in (program.title, program.league_raw) if x),
+                   start_kyiv):                                          # П3
+        return None
+    found: list[tuple[str, str, Confirmed]] = []
+    for pair in live.split_candidates(rest):                             # П4
+        pair = tidy_sides(*pair, markers, reference)
+        if pair is None:
+            continue
+        home = leagues.with_category(pair[0], league_category)
+        away = leagues.with_category(pair[1], league_category)
+        got = reference.confirm(home, away, start_kyiv)
+        if got is not None and got.how in ("пара", MARKS_HOW):           # П5
+            found.append((home, away, got))
+    if not found or len({_entry_id(got) for _h, _a, got in found}) != 1:  # П6
+        return None
+    home, away, got = found[0]
+    if got.swapped:
+        home, away = away, home
+    return (live.Verdict(True, "", live_marker=verdict.live_marker or REFERENCE_MARKER,
+                         home=home, away=away), got)
+
+
+def studio_inside(programs: list, rows: list, markers: live.Markers,
+                  reference: Reference | None, again) -> int:
+    """Книга 182 (жалоба владельца 27.11.2026, #11633 «почему нет канала Al
+    kass 1 ?»): студия, ВНУТРИ которой идёт матч, — показ матча.
+
+    alkass.net подписал трёхчасовой показ «Mondial Studio 2 / Algeria ×
+    Dominican»; отдельной строки матча у канала нет. Стоп-слово «Studio»
+    срезало строку раньше эталона, и за день так потерялись все четыре показа
+    чемпионата мира U17. Но студия перед матчем («Studio før Liverpool -
+    City», «Studio: Levante - Ath Bilbao») матчем быть не должна — поэтому
+    строка берётся, только когда выполнено ВСЁ:
+      С1. отсев — стоп-слово заголовка класса «студия» (`studio_word`);
+      С2. в подписи без названия студии есть пара, других стоп-слов нет, и
+          эталон подтверждает пару как эфир целиком (`studio_pair`);
+      С3. показ накрывает матч: следующая передача ЭТОГО канала на странице
+          начинается не раньше `STUDIO_COVER` после начала матча. Следующей
+          передачи на странице нет — конец показа неизвестен, не гадаем;
+      С4. своей строки этого матча на странице нет — ни на этом канале, ни на
+          другом: принятой строки, которую эталон подтверждает как тот же
+          матч. Есть — студия идёт вокруг матча, а не вместо него. Судим по
+          строкам ДО правила: один показ на двух каналах берётся на обоих;
+      С5. строка разбирается заново (`again` — `classify(studio=True)`) и
+          должна дойти до конца: вид спорта наш, время разобрано. Эфир —
+          угаданный (`live_guess`): дальше его проверяют те же фильтры
+          повторов, что и прочие угадайки.
+    Не подошла — строка остаётся отсевом, как была. `rows` правится на месте;
+    возвращает, сколько строк взято."""
+    if reference is None or markers.studio is None:
+        return 0
+    before = list(rows)                                                  # С4
+    taken = 0
+    for i, (program, row) in enumerate(zip(programs, before)):
+        if row.ok or row.start_kyiv is None \
+                or not studio_word(row.reason, markers):                 # С1
+            continue
+        extra = dict(program.extra or {})
+        new = again(program)                                             # С2, С5
+        mark = (program.extra or {}).get(STUDIO)
+        if new.ok and mark and _studio_covers(program, row, mark, programs, before) \
+                and not _own_row(row, mark["матч"], before, reference):  # С3, С4
+            rows[i] = new
+            taken += 1
+            continue
+        program.extra.clear()               # не подошла: пометки разбора — долой
+        program.extra.update(extra)
+    return taken
+
+
+def _studio_covers(program: Program, row: Row, mark: dict, programs: list,
+                   rows: list) -> bool:
+    """Книга 182, С3: следующая передача того же канала на странице начинается
+    не раньше `STUDIO_COVER` после начала матча."""
+    kickoff = datetime.fromisoformat(mark["начало"])
+    later = [r.start_kyiv.replace(tzinfo=None) for p, r in zip(programs, rows)
+             if r is not row and r.start_kyiv is not None
+             and p.channel_raw == program.channel_raw and r.start_kyiv > row.start_kyiv]
+    return bool(later) and min(later) - kickoff >= STUDIO_COVER
+
+
+def _own_row(row: Row, match: str, rows: list, reference: Reference) -> bool:
+    """Книга 182, С4: на странице есть другая принятая строка, которую эталон
+    подтверждает как тот же матч."""
+    for other in rows:
+        if other is row or not other.ok or other.start_kyiv is None \
+                or not other.home or not other.away:
+            continue
+        got = reference.confirm(other.home, other.away, other.start_kyiv)
+        if got is not None and _entry_id(got) == match:
+            return True
+    return False
+
+
 def classify(program: Program, markers: live.Markers, sports: sport.Sports,
              league_sports: dict[str, str] | None = None,
              pair_sports: dict[str, str] | None = None,
              reference: Reference | None = None,
              langs: frozenset | None = None,
-             guess_site: bool = False) -> Row:
-    """`langs` — языки сайта строки (`site_lang.of`, слово владельца 25.10,
+             guess_site: bool = False, studio: bool = False) -> Row:
+    """`studio` (книга 182) — строку-студию разбираем заново, разрешая паре
+    из подписи спасти её (`studio_inside`, С2 и С5); в обычном разборе — нет.
+    `langs` — языки сайта строки (`site_lang.of`, слово владельца 25.10,
     книга 084): служебные слова — пол, эфир, повтор, стоп-слова — ищутся
     только на языке сайта и общие. None — все языки, как раньше. Строку
     читал одолженный разбор (`extra["borrowed"]`) — его язык тоже: он пишет
@@ -1088,6 +1239,19 @@ def classify(program: Program, markers: live.Markers, sports: sport.Sports,
         rescued = ask_reference(
             program, verdict, reference, row.start_kyiv, row.league_category,
             stop=lambda words: markers.found(markers.stop_title, words), tidy=tidy)
+        if rescued is None and studio and studio_word(verdict.reason, markers):
+            # книга 182, С2: студия, внутри которой идёт матч, — пара из
+            # подписи без названия студии, подтверждённая эталоном целиком.
+            # Накрывает ли показ матч и нет ли у матча своей строки (С3, С4),
+            # решает `studio_inside` — у него вся страница
+            rescued = studio_pair(program, markers, reference, row.start_kyiv,
+                                  row.league_category)
+            if rescued is not None:
+                program.extra["live_guess"] = True
+                program.extra[STUDIO] = {
+                    "слово": studio_word(verdict.reason, markers),
+                    "начало": rescued[1].start.isoformat(timespec="minutes"),
+                    "матч": _entry_id(rescued[1])}
         if rescued is None:
             # книга 138: пары нет вовсе, а строка — теннисный турнир одним
             # куском («ATP FINALS 2026») — трансляция турнира без игроков
@@ -1311,6 +1475,12 @@ def run(programs, markers: live.Markers | None = None,
         pair_sports = leagues.pair_sports()
     # языки сайта — для словаря служебных слов (книга 084)
     langs = site_lang.of(domain) if domain else None
-    return [classify(p, markers, sports, league_sports, pair_sports, reference,
+    rows = [classify(p, markers, sports, league_sports, pair_sports, reference,
                      langs, guess_site)
             for p in programs]
+    # книга 182: студия, внутри которой идёт матч, — правило видит всю
+    # страницу (следующую передачу канала, свою строку матча)
+    studio_inside(programs, rows, markers, reference,
+                  lambda p: classify(p, markers, sports, league_sports, pair_sports,
+                                     reference, langs, guess_site, studio=True))
+    return rows
