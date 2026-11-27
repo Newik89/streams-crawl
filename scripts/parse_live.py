@@ -1020,6 +1020,72 @@ def unmark_now_flag(programs: list, extras: list[dict]) -> None:
 TIE_SPAN = timedelta(days=3)
 #: книга 149: ключ пометки «следующая игра встречи» в `extra[TOURNAMENT]`
 TIE_KEY = "встреча"
+#: книга 181: ключ пометки «показ встречи эталона» в `program.extra` строки:
+#: {"ключ": ключ встречи (`broadcast.tie_key`), "турнир": название турнира}
+SAME_TIE = "та_же_встреча"
+
+
+def same_tie(r, ключ: str, турнир: str, эталон: bool = False) -> None:
+    """Книга 181: пометить строку показом встречи эталона — ключ встречи и
+    название её турнира. `эталон` — эфир строки подтверждён эталоном
+    (следующая игра встречи, правило 5а `next_tie_games`): фильтры поздних
+    показов и записей её не судят — как трансляцию турнира (книга 138)."""
+    extra = _extra(r)
+    extra[SAME_TIE] = {"ключ": ключ, "турнир": турнир}
+    if эталон:
+        extra[pipeline.TOURNAMENT] = {**(extra.get(pipeline.TOURNAMENT) or {}), "эталон": True}
+
+
+def tie_mark(r) -> tuple[str, str]:
+    """Книга 181: (ключ встречи, название турнира) строки, помеченной
+    `same_tie`; не помечена — ("", "")."""
+    program = getattr(r, "program", None)
+    mark = (getattr(program, "extra", None) or {}).get(SAME_TIE) or {}
+    return mark.get("ключ") or "", mark.get("турнир") or ""
+
+
+def fold_ties(games: list) -> tuple[list, int]:
+    """Книга 181: строки одной встречи командного турнира — одна игра.
+
+    Встречу сборных (Кубок Дэвиса) сайты ставят несколькими строками —
+    первая игра, вторая, пара — и зовут кто парой стран на своём языке, кто
+    названием турнира. Строки, в которых разбор узнал показ одной встречи
+    эталона (`same_tie`: правила К4 и К5 `broadcast.team_tie`, правила 4 и
+    5а `next_tie_games`), должны лечь в одну игру и там, где склейка их не
+    свела: имена на языке, которого нет в справочнике стран («Italie —
+    Tchéquie», tvpassport.com 27.11 — отдельная игра рядом с матчем), или
+    показ дальше окна склейки от предыдущего. Правила:
+      1. ключ встречи — у строки (`tie_mark`); игра без таких строк не
+         трогается;
+      2. игры с одним ключом вливаются в самую раннюю из них
+         (`merge.absorb`): начало игры — её самая ранняя строка;
+      3. вторые строки того же канала потом снимает `one_row_per_channel`
+         (в журнал снятого), канал остаётся у игры один раз.
+    Возвращает (игры, сколько игр влито)."""
+    main: dict[str, object] = {}
+    out, folded = [], 0
+    for game in sorted(games, key=lambda g: g.start):
+        keys = sorted({tie_mark(e.payload)[0] for e in game.entries} - {""})   # 1
+        target = next((main[k] for k in keys if k in main), None)
+        if target is None:
+            out.append(game)
+            target = game
+        else:
+            merge.absorb(target, game)                                          # 2
+            folded += 1
+        for k in keys:
+            main.setdefault(k, target)
+    return out, folded
+
+
+def tie_field(game) -> dict:
+    """Книга 181: поле итога `broadcast.TIE` — название командного турнира,
+    встречу которого показывает игра (её строки помечены `same_tie`). Игра
+    без таких строк и строка турнира без пары поля не несут."""
+    турниры = sorted({tie_mark(e.payload)[1] for e in game.entries} - {""})
+    if len(турниры) != 1 or game.away == broadcast.SESSION:
+        return {}
+    return {broadcast.TIE: турниры[0]}
 
 
 def _tie_of(r, ties: list) -> dict | None:
@@ -1063,8 +1129,16 @@ def next_tie_games(found: list, reference_full: list) -> int:
          следующая игра встречи: строка становится трансляцией турнира
          (название турнира из эталона и служебная сторона
          `broadcast.SESSION`), лига — лига эталона, время — как у сайта;
+      5а. (книга 181, слово владельца 27.11) такой показ в часы самой
+         встречи по эталону (`broadcast.tie_show`: не позже `TIE_LONG` от её
+         начала) — та же встреча в тот же вечер: пара остаётся, строка
+         садится к матчу, а не второй строкой «Davis Cup» («Италия - Чехия»
+         21:00 у nova.bg при встрече 17:00). Строкой турнира (правило 5)
+         остаётся показ другого дня;
       6. показ позже без честной пометки сайта не трогаем: его судят
          фильтры повторов, как раньше.
+    Строки правил 4 и 5а, стоящие в часы встречи по эталону, помечаются её
+    показом (`same_tie`) — их сводит в одну игру `fold_ties`.
     Меняет строки `found` на месте, возвращает число строк по правилу 5."""
     ties = []
     for ref in reference_full or []:
@@ -1082,7 +1156,7 @@ def next_tie_games(found: list, reference_full: list) -> int:
                      # книга 165: пометки пола и возраста сборных у эталона («W»)
                      "метки": names.category(ref.get("home") or ""),
                      "страны": countries, "начало": start,
-                     "ключ": ref.get("fs_id") or f"{sorted(countries)}"})
+                     "ключ": broadcast.tie_key(ref)})
     if not ties:
         return 0
     shows: dict[str, list] = {}
@@ -1097,17 +1171,24 @@ def next_tie_games(found: list, reference_full: list) -> int:
     for rows in shows.values():
         first = min(r.start_kyiv for _d, r, _t in rows)                   # 3
         for domain, r, tie in rows:
-            if r.start_kyiv - first <= timedelta(minutes=merge.WINDOW_MINUTES):
+            # книга 181: показ стоит в часы самой встречи по эталону
+            идёт = broadcast.tie_show(tie["начало"], r.start_kyiv.replace(tzinfo=None))
+            своя = r.start_kyiv - first <= timedelta(minutes=merge.WINDOW_MINUTES)
+            if not своя and not honest_live(domain, r):
+                continue                                                  # 6
+            if своя or идёт:
                 # 4. Сама встреча. Книга 165: эталон её знает (хоть и ставит,
                 # бывает, на соседний день — тогда сверка по времени молчит):
-                # лига и пометки сборных («W») берутся из эталона уже здесь
+                # лига и пометки сборных («W») берутся из эталона уже здесь.
+                # 5а (книга 181). Следующая игра встречи в её же часы — та
+                # же встреча: пара остаётся, эфир подтверждён эталоном
                 r.league = tie["лига"]
                 if tie["метки"]:
                     r.home = leagues.with_category(r.home, tie["метки"])
                     r.away = leagues.with_category(r.away, tie["метки"])
+                if идёт:
+                    same_tie(r, tie["ключ"], tie["турнир"], эталон=not своя)
                 continue
-            if not honest_live(domain, r):
-                continue                                                  # 6
             r.home, r.away = tie["турнир"], broadcast.SESSION             # 5
             r.league = tie["лига"]
             r.program.extra[pipeline.TOURNAMENT] = {TIE_KEY: tie["ключ"],
@@ -2093,12 +2174,15 @@ def main() -> int:
         if командный:
             # книга 178, К4: у эталона в этот час ровно одна встреча турнира
             # — строка её и показывает: пара и лига из эталона, строка
-            # садится к матчу. Встречи нет (пары ещё не названы) — название
-            # турнира и служебная сторона
+            # садится к матчу. Книга 181, К5: встреча началась раньше и ещё
+            # идёт — строка показывает её следующую игру. Встречи нет (пары
+            # ещё не названы) — название турнира и служебная сторона
             встреча = broadcast.team_tie(командный, r.start_kyiv, reference_full)
             if встреча:
                 r.home, r.away = встреча.get("home") or "", встреча.get("away") or ""
                 r.league = встреча.get("league") or лига
+                # книга 181: строки одной встречи сойдутся в одну игру (`fold_ties`)
+                same_tie(r, broadcast.tie_key(встреча), командный)
             else:
                 r.home, r.away = командный, broadcast.SESSION
                 r.league = лига
@@ -2125,6 +2209,12 @@ def main() -> int:
                     sport=r.sport,
                     league=league_canon.get(r.league, r.league), payload=r)
         for domain, r in found])
+
+    # книга 181: строки одной встречи командного турнира — одна игра, и там,
+    # где склейка их не свела (имена не на том языке, показ дальше окна)
+    games, встреч_сведено = fold_ties(games)
+    if встреч_сведено:
+        print(f"встречи командных турниров: игр влито в игру своей встречи — {встреч_сведено}")
 
     games, повторы = drop_reference_repeats(games, reference_full)
     for g, матч in повторы:
@@ -2396,6 +2486,10 @@ def main() -> int:
                       if g.away == broadcast.SESSION
                       and any(id(e.payload) in сведённые_строки for e in g.entries)
                       else {}),
+                   # книга 181: игра — встреча командного турнира (его
+                   # название): заливка сделает прежнюю строку этого турнира
+                   # без пары матчем (`store.tie_named`)
+                   **tie_field(g),
                    # дозабор (Д7): пары имён и время выброшенных старых
                    # записей — заливка узнаёт по ним уже влитую игру
                    **redo.links_field(g),

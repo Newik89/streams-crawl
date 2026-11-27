@@ -278,11 +278,18 @@ def merge(entries: list[Entry],
         for twin in targets[1:]:
             if not _same_kind(target, twin):
                 continue
-            sample = target.sample
-            target.entries.extend(_aligned(e, sample) for e in twin.entries)
+            absorb(target, twin)
             games.remove(twin)
         target.entries.append(_aligned(entry, target.sample))
     return sorted(games, key=lambda g: g.start)
+
+
+def absorb(target: Game, twin: Game) -> None:
+    """Влить игру `twin` в игру `target`: строки `twin` разворачиваются под
+    порядок команд `target` (`_aligned`). Саму `twin` из списка игр убирает
+    вызывающий."""
+    sample = target.sample
+    target.entries.extend([_aligned(e, sample) for e in twin.entries])
 
 
 def _same_kind(a: Game, b: Game) -> bool:

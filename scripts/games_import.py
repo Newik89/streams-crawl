@@ -381,6 +381,8 @@ def main() -> int:
                  if stats.titles_gone else "")
               + (f", двойников строки турнира влито в неё: {stats.titles_folded}"
                  if stats.titles_folded else "")
+              + (f", прежних строк турнира влито во встречу: {stats.ties_folded}"
+                 if stats.ties_folded else "")
               + (f", игр-сирот (сайт перенёс на другой день) — отметок "
                  f"погашено: {stats.orphans_gone}"
                  if stats.orphans_gone else "")
