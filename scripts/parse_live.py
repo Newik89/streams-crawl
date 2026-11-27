@@ -1545,6 +1545,8 @@ def main() -> int:
     # слова, по чему): [раз, пример]}}; едет в итог сбора, сервер кладёт
     # подтверждённое эталоном в книгу знаний
     срезы: dict[str, dict] = {}
+    # книга 182: студии, внутри которых идёт матч, — взяты показом матча
+    студии: list[str] = []
     def _classify(domain: str, programs: list, guess_site: bool) -> list:
         return pipeline.run(programs, markers, sports, league_sports,
                             pair_sports, judge, domain=domain,
@@ -1591,6 +1593,9 @@ def main() -> int:
                 for куда, команда in zip(запись[2:], срез.get(pipeline.BESIDE) or ()):
                     if команда:
                         куда.add(" ".join(команда.casefold().split()))
+            if r.ok and (r.program.extra or {}).get(pipeline.STUDIO):
+                студии.append(f"{_bare_domain(domain)} {r.program.channel_raw} {r.when} "
+                              f"«{r.program.title}» → {r.home} - {r.away}")
             if r.sport_rule:
                 by_rule[r.sport_rule] = by_rule.get(r.sport_rule, 0) + 1
             if r.team_word:
@@ -1610,6 +1615,9 @@ def main() -> int:
                 # не футбол/баскет/теннис — не выбрасываем, а отдаём
                 # отдельным списком во вкладку «Other Sport» (владелец 03.10)
                 other_rows.append((domain, r))
+    if студии:
+        print("студия, внутри которой идёт матч, взята показом матча "
+              f"(книга 182): {len(студии)} — " + "; ".join(студии[:BESIDE_CAP]))
     if by_rule:
         print("вид спорта по правилам (номера — `sport.Sports.decide`): "
               + ", ".join(f"№{n} — {by_rule[n]}" for n in sorted(by_rule)))

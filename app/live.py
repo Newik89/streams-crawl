@@ -41,12 +41,15 @@ MARKERS_FILE = ROOT / "data" / "markers.json"
 # внутри названия (`Bodø/Glimt`, `Saint-Étienne`). Двоеточие разделителем не
 # считаем: через него сайты пишут не пару, а рубрику — `Piłka nożna: Liga
 # niemiecka` тогда сошло бы за матч. Одинокое `v` тоже не берём — чешское
-# `Fotbal v Evropě` дало бы ту же ложную пару.
-_SPLIT = re.compile(r"\s+(?:[-–—]|[xX]|[vV][sS]|[vV]\.|contra)\s+")
+# `Fotbal v Evropě` дало бы ту же ложную пару. Знак умножения «×» (книга 182,
+# alkass.net: «Algeria × Dominican») — та же буква «x», набранная знаком: его
+# знал только разборщик своего сайта, и подпись, которую он не разобрал,
+# общий читатель парой не видел.
+_SPLIT = re.compile(r"\s+(?:[-–—]|[xX×]|[vV][sS]|[vV]\.|contra)\s+")
 # явные матчевые разделители — тире среди них нет: у sporttv.pt тире отделяет
 # хвост стадии («BOCA JUNIORS X SÃO PAULO – QUARTOS DE FINAL 1ª MÃO»),
 # и общий сплит давал три части вместо пары (кейсы #766 #908, 04.09)
-_STRONG_SPLIT = re.compile(r"\s+(?:[xX]|[vV][sS]|[vV]\.|contra)\s+")
+_STRONG_SPLIT = re.compile(r"\s+(?:[xX×]|[vV][sS]|[vV]\.|contra)\s+")
 _DASH_TAIL = re.compile(r"\s+[-–—]\s+.*$", re.S)
 # хвост в скобках: `(se speciálním studiem)`
 _BRACKETS = re.compile(r"\s*[(\[].*?[)\]]\s*")
@@ -127,6 +130,10 @@ class Markers:
     stop_lead: re.Pattern | None = None
     #: имена со стоп-словом внутри (`keep_names`): вырезаются перед поиском
     keep: re.Pattern | None = None
+    #: книга 182: слова «студия» (`studio_show`) — стоп-слово, которое не
+    #: окончательно: передача-студия может накрывать сам матч (`studio_cut`,
+    #: `pipeline.studio_inside`). Языком сайта не делится: класс один
+    studio: re.Pattern | None = None
     #: сами слова по разделам — для словаря языка сайта (`for_langs`)
     words: dict = field(default_factory=dict, repr=False, compare=False)
     _by_langs: dict = field(default_factory=dict, repr=False, compare=False)
@@ -148,7 +155,8 @@ class Markers:
             got = Markers(live=pick("live"), not_live=pick("not_live"),
                           stop_title=pick("stop_title"),
                           stop_genre=pick("stop_genre"),
-                          stop_lead=pick("stop_lead"), keep=self.keep)
+                          stop_lead=pick("stop_lead"), keep=self.keep,
+                          studio=self.studio)
             self._by_langs[key] = got
         return got
 
@@ -180,6 +188,7 @@ def load(path: Path | None = None, override: dict | None = None) -> Markers:
                    stop_genre=_pattern(words["stop_genre"]),
                    stop_lead=_pattern(words["stop_lead"]),
                    keep=_pattern(_flatten(data.get("keep_names"))),
+                   studio=_pattern(_flatten(data.get("studio_show"))),
                    words=words)
 
 
@@ -649,6 +658,63 @@ def episode_code(text: str) -> str:
     """Код выпуска сериала в тексте («S5E0») или пусто."""
     m = _EPISODE_CODE.search(text or "")
     return m.group(0) if m else ""
+
+
+#: книга 182: границы рубрик в подписи — « / », « | », «: »
+_RUBRIC_EDGE = re.compile(r"\s+[/|]\s+|:\s+")
+#: книга 182: номер студии сразу за её словом — «Studio 2», «Studio №1»
+_STUDIO_NO = re.compile(r"\s*(?:№|#)?\s*\d{1,2}(?!\w)")
+
+
+def studio_cut(markers: Markers, text: str) -> str:
+    """Книга 182: подпись без названия передачи-студии — что осталось, то и
+    читается как пара («Mondial Studio 2 / Algeria × Dominican», alkass.net:
+    сайт подписал студией трёхчасовой показ, внутри которого идёт матч).
+    Правила:
+      Ч1. слова студии (`Markers.studio`, раздел `studio_show` файла
+          `data/markers.json`) в подписи нет — пусто: строка не про это.
+          Имена со словом студии внутри (`keep_names`: «Studio Zagreb»)
+          студией не считаются;
+      Ч2. подпись делится на части по границам рубрик: « / », « | », «: »;
+      Ч3. часть со словом студии БЕЗ разделителя пары — название передачи,
+          выбрасывается целиком («Mondial Studio 2», «Al-Mundial Studio 1»);
+      Ч4. в части с разделителем пары слово студии стоит ПЕРЕД парой —
+          срезается всё до него включительно и номер за ним («Studio 2
+          Španělsko - Česko» → «Španělsko - Česko»); стоит ПОСЛЕ пары —
+          срезается от него до конца («Arsenal - Chelsea Studio»);
+      Ч5. оставшиеся части склеиваются через «: » — рубрику перед парой
+          дальше отрезает обычное чтение (`split_candidates`, правило 2).
+    Решает ли остаток судьбу строки — не здесь: его читает и проверяет
+    `pipeline.studio_pair` (другие стоп-слова, эталон)."""
+    if not text or not markers.found(markers.studio, text):          # Ч1
+        return ""
+    parts, start = [], 0
+    for edge in _RUBRIC_EDGE.finditer(text):                         # Ч2
+        parts.append(text[start:edge.start()])
+        start = edge.end()
+    parts.append(text[start:])
+    kept = []
+    for part in parts:
+        plain = greek_plain(part)
+        if markers.keep is not None:
+            # имя из `keep_names` закрываем пробелами той же длины: место
+            # слова в части не должно съехать
+            plain = markers.keep.sub(lambda m: " " * len(m.group(0)), plain)
+        word = markers.studio.search(plain)
+        if word is None:
+            kept.append(part.strip())
+            continue
+        if _SPLIT.search(part) is None:                              # Ч3
+            continue
+        # Ч4: «перед парой» — после слова студии ещё есть разделитель пары
+        # («Fotbal - studio Jablonec - Lugano»: первый разделитель — рубрика)
+        if any(m.start() >= word.end() for m in _SPLIT.finditer(part)):
+            rest = part[word.end():]
+            number = _STUDIO_NO.match(rest)
+            kept.append((rest[number.end():] if number else rest).strip())
+        else:
+            kept.append(part[:word.start()].strip())
+    return ": ".join(p for p in kept if p).strip(_TRIM_EDGE)         # Ч5
 
 
 @dataclass
