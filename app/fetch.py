@@ -163,6 +163,38 @@ TOKEN_HOSTS = {
     },
 }
 
+#: Ручки, которые пускают только в ГОСТЕВОЙ СЕССИИ (книга 183, 28.11.2026): сайт
+#: открывает её любому посетителю своим первым запросом «входа» — без аккаунта и
+#: пароля. В ответ приходят куки и ключ сессии; дальше все запросы идут той же
+#: сессией (куки), а ключ едет заголовком. Правила:
+#:   Г1. Вход — один раз за обход на хост (`login` + тело `body` как JSON), ключ
+#:       берётся из поля `token` ответа и никуда не пишется.
+#:   Г2. Каждый запрос к хосту идёт сессией входа с заголовком `header: ключ`
+#:       и заголовками `headers`.
+#:   Г3. Ответ совпал с `expired` (сессия протухла — второй заход обхода идёт
+#:       через час) — входим заново и повторяем запрос ОДИН раз.
+#:   Г4. Вход не удался — запрос уходит без ключа: ручка ответит «войдите
+#:       заново», и в отчёте обхода видно, что сломался именно вход.
+#: `api.prod.sngtv.magentatv.de` — телегид немецкого MagentaTV (Telekom): вход
+#: `Authenticate` с `userType: 3` (гость), тело — как у открытого проекта
+#: iptv-org/epg (`sites/web.magentatv.de`); без сессии ручки отвечают
+#: `retcode -2 … please relogin EPG`.
+SESSION_HOSTS = {
+    "api.prod.sngtv.magentatv.de": {
+        "login": "https://api.prod.sngtv.magentatv.de/EPG/JSON/Authenticate"
+                 "?SID=firstup&T=Windows_chrome_118",
+        "body": {"terminalid": "00:00:00:00:00:00", "mac": "00:00:00:00:00:00",
+                 "terminaltype": "WEBTV", "utcEnable": 1, "timezone": "Etc/GMT0",
+                 "userType": 3, "terminalvendor": "Unknown"},
+        "token": "csrfToken",
+        "header": "X_CSRFToken",
+        "expired": r'"retcode"\s*:\s*"?-2\b',
+        "headers": {"Accept": "application/json, text/plain, */*",
+                    "Origin": "https://web.magentatv.de",
+                    "Referer": "https://web.magentatv.de/"},
+    },
+}
+
 #: Сайты, закрытые для дата-центров. `cosmotetv.gr` у владельца в браузере
 #: открывается и показывает всё расписание, а любому серверу — и раннеру
 #: GitHub, и нашему DigitalOcean — отвечает заглушкой Imperva. Капчу мы не
@@ -466,6 +498,25 @@ class Fetcher:
             self._tokens[host] = got
         return {**config["headers"], **self._tokens[host]}
 
+    def _guest_login(self, host: str, agent: str, verify: bool) -> None:
+        """Гостевой вход (`SESSION_HOSTS`, правило Г1): новая сессия хоста и её
+        ключ. Не удался — сессия остаётся без ключа (Г4)."""
+        import requests
+        config = SESSION_HOSTS[host]
+        keeper = requests.Session()
+        got: dict[str, str] = {}
+        try:
+            answer = keeper.post(config["login"], json=config["body"],
+                                 timeout=TIMEOUT, verify=verify,
+                                 headers={"User-Agent": agent, **config["headers"]})
+            key = answer.json().get(config["token"]) if answer.ok else ""
+            if key:
+                got = {config["header"]: str(key)}
+        except Exception:               # сеть или ответ входа сменился
+            pass
+        self._session[host] = keeper
+        self._tokens[host] = got
+
     def _wait(self, host: str) -> None:
         was = self._last.get(host)
         if was is not None:
@@ -515,6 +566,12 @@ class Fetcher:
                 cached.write_text(page.html, encoding="utf-8")
             return page
 
+        # гостевая сессия (`SESSION_HOSTS`, Г1): вход один раз за обход, с
+        # паузой перед первым запросом данных — как после разогрева
+        if host in SESSION_HOSTS and host not in self._tokens:
+            self._guest_login(host, agent, verify)
+            self._wait(host)
+
         # разогрев: открываем обычную страницу сайта той же сессией, чтобы
         # получить куки, и только потом просим данные
         keeper = self._session.get(host)
@@ -541,26 +598,49 @@ class Fetcher:
         if host in TOKEN_HOSTS:
             extra = {**self._token_headers(host, agent, verify), **(extra or {})}
 
-        try:
-            if post_json is not None:
-                # тело запроса — настоящий JSON, а не поля формы: так просит
-                # `fpf.watch.pixellot.tv` (данные Canal 11), и такие ручки
-                # обычно требуют ещё `Origin` и `Referer` своего сайта
-                answer = caller.post(url, json=post_json, timeout=TIMEOUT,
-                                     verify=verify,
-                                     headers={**headers(agent),
-                                              "Content-Type": "application/json",
-                                              **(extra or {})})
-            elif post:
-                answer = caller.post(url, data=post, timeout=TIMEOUT,
-                                     verify=verify,
-                                     headers={**headers(agent), "X-Requested-With":
-                                              "XMLHttpRequest", **(extra or {})})
-            else:
-                answer = caller.get(url, timeout=TIMEOUT, verify=verify,
-                                    headers={**headers(agent), **(extra or {})})
-        except Exception as exc:                      # сеть, таймаут, DNS
-            return Page(url, "", False, f"{type(exc).__name__}: {exc}")
+        guest = SESSION_HOSTS.get(host)
+        own = extra                       # заголовки самого задания — поверх всех
+        for attempt in (1, 2):
+            if guest:
+                # гостевая сессия (Г2): запрос идёт сессией входа, с её
+                # ключом и заголовками хоста
+                caller = self._session[host]
+                extra = {**guest["headers"], **self._tokens.get(host, {}),
+                         **(own or {})}
+            try:
+                if post_json is not None:
+                    # тело запроса — настоящий JSON, а не поля формы: так просит
+                    # `fpf.watch.pixellot.tv` (данные Canal 11), и такие ручки
+                    # обычно требуют ещё `Origin` и `Referer` своего сайта
+                    answer = caller.post(url, json=post_json, timeout=TIMEOUT,
+                                         verify=verify,
+                                         headers={**headers(agent),
+                                                  "Content-Type": "application/json",
+                                                  **(extra or {})})
+                elif post:
+                    answer = caller.post(url, data=post, timeout=TIMEOUT,
+                                         verify=verify,
+                                         headers={**headers(agent), "X-Requested-With":
+                                                  "XMLHttpRequest", **(extra or {})})
+                else:
+                    answer = caller.get(url, timeout=TIMEOUT, verify=verify,
+                                        headers={**headers(agent), **(extra or {})})
+            except Exception as exc:                      # сеть, таймаут, DNS
+                return Page(url, "", False, f"{type(exc).__name__}: {exc}")
+            # Г3: сессия протухла — входим заново и повторяем запрос один раз
+            if guest and attempt == 1 and answer.status_code == 200 \
+                    and re.search(guest["expired"], answer.text[:2000]):
+                self._wait(host)
+                self._guest_login(host, agent, verify)
+                self._wait(host)
+                continue
+            break
+        if guest and answer.status_code == 200 \
+                and re.search(guest["expired"], answer.text[:2000]):
+            # Г4: и после повторного входа ручка просит войти — это поломка
+            # входа, а не «пустое расписание»
+            return Page(url, "", False, "гостевой вход не удался",
+                        body=answer.text[:20000])
         if answer.status_code != 200:
             # тело ошибки сохраняем: по нему видно, кто закрыл — защита или
             # сам сайт. Без него в отчёте остаётся голое «HTTP 403».

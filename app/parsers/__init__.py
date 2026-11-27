@@ -223,6 +223,8 @@ def _load_all():
                    football_tv_ru,
                    hrt_hr, ipko_tv, kanal1sport_sk, kolla_tv,
                    maxsport_live,
+                   # 28.11: телегид MagentaTV — каналы MagentaSport 1–18 (книга 183)
+                   magentatv_de,
                    liveonsat_com, livesoccertv_com, mediaklikk_hu, mojtv_hr,
                    movistarplus_es, news_by, nova_bg, novasports_gr,
                    npo_nl, ntvplus_tv,

@@ -16,6 +16,7 @@
 
 Любая скобка, внутри которой только буквы Y, M, D и разделители, считается
 датой: `{YYYY}`, `{DD}`, `{YYYY-MM-DD}`, `{DD.MM.YYYY}`, `{MM/DD/YYYY}`.
+С хвостом `+N` — та же дата на N суток позже: `{YYYYMMDD+7}` (конец окна).
 `{UNIXDAY}` — начало суток в секундах (`cosmotetv.gr`), `{UNIXDAYEND}` —
 конец тех же суток (ручка EPG Magenta). `{KYIVOFF}` — смещение Киева на
 этот день, закодированное для адреса (`%2B0300` летом, `%2B0200` зимой):
@@ -37,6 +38,8 @@ from . import daytime
 
 _MARK = re.compile(r"\{([^{}]+)\}")
 _DATE_ONLY = re.compile(r"^[YMD][YMD\-./ :]*$")
+#: та же дата, сдвинутая на N суток вперёд: `{YYYYMMDD+7}`, `{YYYY-MM-DD+1}`
+_DATE_SHIFT = re.compile(r"^([YMD][YMD\-./ :]*)\+(\d{1,2})$")
 
 
 def _date_mark(mark: str, d: _date) -> str:
@@ -113,6 +116,12 @@ def resolve(url_pattern: str | None, base_url: str = "",
             return "/" + _WEEKDAY_EN[d.weekday()]
         if _DATE_ONLY.match(name):
             return _date_mark(name, d)
+        shifted = _DATE_SHIFT.match(name)
+        if shifted:
+            # дата со сдвигом вперёд, `{YYYYMMDD+7}` — конец окна в теле
+            # запроса: телегид MagentaTV отдаёт сетку канала от и до (книга 183)
+            return _date_mark(shifted.group(1),
+                              d + timedelta(days=int(shifted.group(2))))
         return marks.get(name, m.group(0))
 
     return _MARK.sub(sub, url_pattern)
