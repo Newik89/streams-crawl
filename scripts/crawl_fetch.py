@@ -987,6 +987,16 @@ def main() -> int:
                  "locale": "en-GB", "url": u.strip(), "post": post,
                  "warmup": args.warmup}
                 for u in args.urls.split(",") if u.strip()]
+        # ПРОБА (ветка proba-magentatv, в main НЕ СЛИВАТЬ): адрес телегида MagentaTV в списке — знак
+        # сделать гостевой вход и забрать сетку каналов «Sport 1–18» (scripts/proba_magentatv.py);
+        # сам адрес обычным запросом не ходим — без сессии он отвечает «relogin»
+        if any(j["domain"] == "api.prod.sngtv.magentatv.de" for j in jobs):
+            jobs = [j for j in jobs if j["domain"] != "api.prod.sngtv.magentatv.de"]
+            try:
+                import proba_magentatv
+                proba_magentatv.run(out)
+            except Exception as exc:                  # проба обход не роняет
+                print(f"проба телегида MagentaTV упала: {type(exc).__name__}: {exc}")
     elif args.date:
         only = {d.strip() for d in args.only.split(",") if d.strip()}
         jobs = list(targets(plan, 1, args.probe,
