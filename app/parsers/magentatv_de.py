@@ -94,14 +94,21 @@ def _sport(genres: str) -> list[str]:
 
 def _league(introduce: str, name: str, sports: list[str]) -> tuple[str, str]:
     """Р6: (турнир, вид спорта из описания). Описание — «<название>, [вид
-    спорта,] <турнир> [Spieltag N]»; куски делит «, »."""
-    text = " ".join(str(introduce or "").split())
-    if text.casefold().startswith(name.casefold()):
-        text = text[len(name):]
+    спорта,] <турнир> [Spieltag N]»; куски делит «, ».
+
+    Первый кусок — само название, и сайт пишет его в описании по-своему:
+    в заголовке «Fenerbahce Tarfin Istanbul - Roter Stern Meridianbet Belgrad»,
+    в описании «Fenerbahce Istanbul - Roter Stern Belgrad» (сбор 28.11) —
+    поэтому он отбрасывается не по совпадению букв, а по виду: то же название
+    или пара через « - ». Описание другого вида (свободный текст о передаче)
+    турнира не даёт вовсе."""
+    parts = [p.strip() for p in " ".join(str(introduce or "").split()).split(",")]
+    if parts[0].casefold() != name.casefold() and " - " not in parts[0]:
+        return "", ""
     known = {s.casefold() for s in sports} | {"fußball", "fussball", "basketball", "eishockey",
                                               "handball", "golf", "tennis", "volleyball"}
     league, sport = "", ""
-    for part in (p.strip() for p in text.split(",")):
+    for part in parts[1:]:
         if not part or _SEASON.match(part):
             continue
         if part.casefold() in known:

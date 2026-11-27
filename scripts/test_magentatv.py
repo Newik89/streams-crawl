@@ -122,6 +122,23 @@ print("Разбор ответа телегида: правила Р1–Р6")
          "турнир — первый кусок, стадия за ним не берётся",
          [(p.channel_raw, p.sport_raw, p.league_raw) for p in хоккей],
          [("Sport 4 - myTeamTV", "", "Hauptrunde"), ("Sport 2 - myTeamTV", "", "PENNY DEL")])
+ЕВРОЛИГА = {"id": "1", "name": "LIVE: Fenerbahce Tarfin Istanbul - Roter Stern Meridianbet Belgrad",
+            "introduce": "Fenerbahce Istanbul - Roter Stern Belgrad, 2026/2027, Hauptrunde Spieltag 15",
+            "channelid": "549", "starttime": "2026-12-03 17:30:00 UTC+00:00",
+            "endtime": "2026-12-03 20:00:00 UTC+00:00", "genres": "Basketball"}
+ХОККЕЙ_ЛЧ = {"id": "2", "name": "LIVE: Eisbären Berlin - Dynamo Pardubice",
+             "introduce": "Eisbären Berlin - Dynamo Pardubice, Champions Hockey League, Viertelfinale Spiel 1",
+             "channelid": "550", "starttime": "2026-12-02 17:45:00 UTC+00:00",
+             "endtime": "2026-12-02 20:30:00 UTC+00:00", "genres": "Sport"}
+евролига = magentatv_de.parse(ответ(ЕВРОЛИГА, ХОККЕЙ_ЛЧ, ОБЗОР | {"name": "Magazin", "channelid": "549"}),
+                              url=РУЧКА + "549")
+проверка("Р6: пара в описании написана иначе, чем в заголовке (сбор 28.11), — она не турнир; "
+         "пара строки — из заголовка",
+         (евролига[0].match_raw, евролига[0].league_raw, евролига[0].sport_raw),
+         ("Fenerbahce Tarfin Istanbul - Roter Stern Meridianbet Belgrad", "Hauptrunde", "Basketball"))
+проверка("Р6: турнир — первый кусок после названия («Champions Hockey League»), стадия за ним не берётся",
+         евролига[1].league_raw, "Champions Hockey League")
+проверка("Р6: описание — свободный текст о передаче: турнира нет", евролига[2].league_raw, "")
 проверка("канал не из списка владельца — пусто",
          magentatv_de.parse(ответ(ЛАТВИЯ), url=РУЧКА + "3686", channels={"Sport 1 - myTeamTV"}), [])
 проверка("ответ «войдите заново», пустая строка, не JSON — пусто, без падения",
