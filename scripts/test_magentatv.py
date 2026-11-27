@@ -11,6 +11,7 @@ import os
 import sys
 import tempfile
 import types
+import zipfile
 from datetime import date
 from pathlib import Path
 
@@ -21,10 +22,11 @@ sys.stdout.reconfigure(encoding="utf-8")
 TMP = Path(tempfile.mkdtemp(prefix="magentatv-test-"))
 os.environ["STREAMS_DB"] = str(TMP / "t.db")
 
-from app import (channel_page, crawl, db, dictionary, fetch, live, parsers, site_lang,  # noqa: E402
-                 sport, urls)
-from app.parsers import SITE_FLAG, SITE_LIVE, magentatv_de  # noqa: E402
+from app import (canon, channel_page, crawl, db, dictionary, fetch, live, parsers,  # noqa: E402
+                 site_lang, sport, urls)
+from app.parsers import SITE_FLAG, SITE_LIVE, flashscore_mobi, magentatv_de  # noqa: E402
 import add_magentatv  # noqa: E402
+import flashscore_locales  # noqa: E402
 import crawl_fetch  # noqa: E402
 import crawl_plan  # noqa: E402
 
@@ -303,9 +305,50 @@ print("Сайт вписан в списки программы")
           шаблоны["magentatv.de"]["page"], channel_page.is_machine(шаблоны["magentatv.de"]["page"], "magentatv.de")),
          (True, "https://web.magentatv.de/tv-guide", False))
 
-print("Заведение источника: правила 1–4")
+print("Немецкие имена баскетбольных команд: языковая версия эталона")
 db.init_db()
 conn = db.connect()
+немецкая = conn.execute(
+    "INSERT INTO sources (domain, name, base_url, country, timezone, role, access, url_pattern, needs_js, "
+    "selector_config, enabled, status) VALUES ('m.flashscore.de', 'Flashscore de', 'https://m.flashscore.de/', "
+    "'DE', 'UTC', 'schedule', 'open', 'https://m.flashscore.de/?d={DAYNUM}', 0, '{}', 1, 'ok')").lastrowid
+flashscore_locales._channels(conn, немецкая, "m.flashscore.de", "de")
+flashscore_locales._channels(conn, немецкая, "m.flashscore.de", "de")
+conn.commit()
+разделы = {r["raw_name"]: r["page_url"] for r in conn.execute(
+    "SELECT raw_name, page_url FROM source_channels WHERE source_id = ?", (немецкая,))}
+проверка("у немецкой версии эталона — футбол и баскетбол, по странице на раздел; повтор не двоит",
+         разделы, {"football": "https://m.flashscore.de/?d={DAYNUM}",
+                   "basketball": "https://m.flashscore.de/basketball/?d={DAYNUM}"})
+проверка("страница раздела читается как баскетбол; футбольная — как футбол",
+         (flashscore_mobi._sport_from_url(разделы["basketball"]), flashscore_mobi._sport_from_url(разделы["football"])),
+         ("Basketball", "Soccer"))
+with zipfile.ZipFile(ROOT / "kniga" / "slices" / "proba-565-magentatv.zip") as срез:
+    страница_эталона = срез.read("m.flashscore.de__basketball__d=6.html").decode("utf-8")
+эталон_de = flashscore_mobi.parse(страница_эталона, day=date(2026, 12, 3),
+                                  url="https://m.flashscore.de/basketball/?d=6")
+проверка("настоящая страница 03.12 (проба #566): матч Евролиги с немецким именем «Roter Stern Belgrad»",
+         [p.match_raw for p in эталон_de if "Roter Stern" in p.match_raw][:1], ["Fenerbahçe - Roter Stern Belgrad"])
+ЗАПИСЬ_ЭТАЛОНА = {"sport": "B", "home": "Fenerbahce", "away": "Crvena Zvezda Meridianbet",
+                  "league": "EUROPE: Euroleague", "fs_id": "I7Ilx7nR", "start_kyiv": "2026-12-03T19:45",
+                  "names": {"el": ["Φενερμπαχτσέ", "Ερυθρός Αστέρας"], "hr": ["Fenerbahce", "Crvena Zvezda Meridianbet"],
+                            "de": ["Fenerbahçe", "Roter Stern Belgrad"]}}
+ИГРА_ТЕЛЕГИДА = {"sport": "B", "league": "", "home": "Fenerbahce Tarfin Istanbul",
+                 "away": "Roter Stern Meridianbet Belgrad", "start_kyiv": "2026-12-03T19:30",
+                 "start_utc": "2026-12-03T17:30",
+                 "entries": [{"source": "magentatv.de", "channel": "Sport 3 - myTeamTV",
+                              "start_kyiv": "2026-12-03T19:30",
+                              "raw_title": "LIVE: Fenerbahce Tarfin Istanbul - Roter Stern Meridianbet Belgrad"}]}
+с_немецкими = canon.align([dict(ИГРА_ТЕЛЕГИДА)], [ЗАПИСЬ_ЭТАЛОНА], {})
+без_немецких = canon.align([dict(ИГРА_ТЕЛЕГИДА)], [{**ЗАПИСЬ_ЭТАЛОНА, "names": {
+    k: v for k, v in ЗАПИСЬ_ЭТАЛОНА["names"].items() if k != "de"}}], {})
+проверка("сверка сервера: с немецкими именами эталона игра телегида сходится с матчем Евролиги — двойника нет",
+         [(len(с_немецкими["sure"]), с_немецкими["sure"][0][1]["fs_id"] if с_немецкими["sure"] else None),
+          len(с_немецкими["missed"])], [(1, "I7Ilx7nR"), 0])
+проверка("без немецких имён та же игра с эталоном не сходилась (так было до книги 183) — вторая игра на витрине",
+         (len(без_немецких["sure"]), len(без_немецких["missed"])), (0, 1))
+
+print("Заведение источника: правила 1–4")
 греческий = dictionary.remember_channel(conn, "Magenta Sport 1", "Magenta Sport 1", "GR")
 сказано = add_magentatv.apply(conn)
 src = conn.execute("SELECT * FROM sources WHERE domain = 'magentatv.de'").fetchone()
