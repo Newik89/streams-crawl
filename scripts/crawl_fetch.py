@@ -65,6 +65,7 @@ from app import (crawl, daytime, fetch, protection, reader_chain, redo,   # noqa
                  site_move, timemarks, urls)
 from app.parsers import flashscore_mobi                            # noqa: E402
 from app import moved                                              # noqa: E402
+from app import etalon_prev                                        # noqa: E402
 
 PLAN = ROOT / "data" / "crawl_plan.json"
 
@@ -1173,6 +1174,11 @@ def main() -> int:
                "прогон": os.environ.get("GITHUB_RUN_ID", ""),
                "начат_киев": начат_киев, "пояса": пояс, "строки": report,
                "дозор": {d: memory.get(d, {}) for d in sorted(DAILY_PROBE)}}
+    # книга 184 (`app/etalon_prev.py`, З1): обход шёл по списку сайтов
+    # (`--only`) — по этому разделу разбор берёт эталон прошлого полного сбора
+    только = sorted({d.strip() for d in args.only.split(",") if d.strip()})
+    if только:
+        payload[etalon_prev.ONLY_KEY] = только
     if возврат:
         payload[site_move.SECTION] = возврат
     # третий заход (книга 116): какие сайты взяты читалкой, какие не взял

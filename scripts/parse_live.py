@@ -34,6 +34,7 @@ from app import fallback_read                               # noqa: E402
 from app import fallback_many                               # noqa: E402
 from app import channel_spelling                            # noqa: E402
 from app import played                                      # noqa: E402
+from app import etalon_prev                                 # noqa: E402
 from app.parsers import get as parser_for                   # noqa: E402
 from app.parsers import flashscore_mobi                     # noqa: E402
 from app.parsers.flashscore_mobi import LOCALES as FS_LOCALES  # noqa: E402
@@ -1298,7 +1299,15 @@ def main() -> int:
     ap.add_argument("--strict", action="store_true",
                     help="код 2, если игр подозрительно мало — для полного "
                          "обхода без фильтров (MIN_GAMES, DROP_SHARE)")
+    ap.add_argument("--previous", default=str(PREVIOUS),
+                    help="games.json прошлого полного сбора: память разбора и "
+                         "эталон для обхода одного сайта (книга 184); срез "
+                         "книги случаев несёт свой")
     args = ap.parse_args()
+    # итог прошлого полного сбора читается один раз — отсюда и память разбора
+    # (страницы, сыгранные матчи, счёт игр), и эталон для обхода одного сайта
+    прошлый_путь = Path(args.previous)
+    прошлый_итог = previous_payload(прошлый_путь)
 
     folder = Path(args.dir)
     report = folder / "report.json"
@@ -1353,12 +1362,12 @@ def main() -> int:
     # книга 125 (запасное чтение, `app/fallback_read.py`): память «какой канал
     # на какой странице» из прошлого сбора и счёт страниц, которые свой
     # разборщик не прочитал
-    память_страниц: dict = dict(previous_payload().get(fallback_read.PAGES_KEY) or {})
+    память_страниц: dict = dict(прошлый_итог.get(fallback_read.PAGES_KEY) or {})
     запасное: dict = {}
     # книга 171 (`app/fallback_many.py`): страницы с НЕСКОЛЬКИМИ каналами,
     # которые общий способ в тени читает так же, как свой разборщик (память
     # из прошлого сбора), и вердикты тени по страницам этого сбора
-    память_многих: dict = dict(previous_payload().get(fallback_many.MANY_KEY) or {})
+    память_многих: dict = dict(прошлый_итог.get(fallback_many.MANY_KEY) or {})
     тень_многих: dict = {}
     # книга 174 (`app/channel_spelling.py`, Н4): {сайт: {написание канала на
     # сайте: имя из списка владельца}} — детектор; канал такой строке находит
@@ -1511,6 +1520,28 @@ def main() -> int:
               f"матчей {len(settled)}; у {разошлись} страницы разошлись "
               f"во времени — оставлено одно (flashscore_mobi.settle)")
 
+    # Книга 184 (`app/etalon_prev.py`): обход по списку сайтов (`--only`)
+    # страниц эталона не качает — берёт эталон прошлого полного сбора
+    # (З1–З3). `край_эталона` — последний день, который занятый эталон
+    # покрывает целиком (З4); эталон свой — None
+    заём = etalon_prev.borrow(report_data, reference_full, прошлый_итог)
+    край_эталона = заём.edge
+    if заём.records:
+        reference_full = заём.records
+        reference += etalon_prev.football(заём.records)
+        print(f"эталон занят у прошлого полного сбора (собран {заём.mark['собрано']} "
+              f"UTC): записей {len(reference_full)}, целиком покрыты дни по "
+              f"{заём.mark['край']} — обход шёл по списку сайтов, своих страниц "
+              f"эталона в нём нет")
+    elif заём.why:
+        print(f"эталон у прошлого полного сбора не занят: {заём.why} — "
+              f"разбор идёт без эталона")
+
+    def _за_краем(day) -> bool:
+        # книга 184, З4: день позже края занятого эталона — правила «пары нет
+        # в эталоне — снять» строку этого дня не трогают
+        return etalon_prev.beyond(day, край_эталона)
+
     # Имена локалей — к записям эталона по fs_id (6е, A2). Без английской
     # записи местное имя не к чему привязать, такие (3–4 в день) пропадают.
     if locale_names:
@@ -1518,8 +1549,9 @@ def main() -> int:
         for ref in reference_full:
             extra_names = locale_names.get(ref.get("fs_id") or "")
             if extra_names:
-                ref["names"] = extra_names
-                ref["leagues"] = locale_leagues.get(ref["fs_id"], {})
+                # книга 184, З6: у занятой записи прежние языки остаются
+                etalon_prev.add_names(ref, extra_names,
+                                      locale_leagues.get(ref["fs_id"], {}))
                 attached += 1
         print(f"локали эталона: имена у {len(locale_names)} матчей, "
               f"приложены к {attached} записям эталона")
@@ -1535,7 +1567,7 @@ def main() -> int:
                           sorted(прошедшие.items(), key=lambda x: -x[1])[:8]))
     judge = Reference(reference_full)
     # книга 180 (`app/played.py`): память сыгранных матчей прошлых сборов
-    память_сыгранных: dict = played.load(previous_payload())
+    память_сыгранных: dict = played.load(прошлый_итог)
     league_sports, pair_sports = leagues.sports_map(), leagues.pair_sports()
     by_rule: dict[int, int] = {}       # номер правила → сколько строк
     # книга 122: сколько строк какого сайта взяли пару из заголовка вместо
@@ -1823,7 +1855,10 @@ def main() -> int:
     мимо = {id(r) for _d, r in мимо_сита}
     for domain, r in unsolved + мимо_сита:
         матч = played_before(r.home, r.away, "", r.start_kyiv, индекс_эталона)
-        if матч is None and contested_league(r, спорные):
+        # книга 184, З4: за краем занятого эталона «эталон этой пары не знает»
+        # ничего не значит — строка идёт дальше, как при бедном эталоне
+        if матч is None and contested_league(r, спорные) \
+                and not _за_краем(r.start_kyiv.date()):
             виды = contested_league(r, спорные)
             # прошедшую игру красной не показываем (сбор 12.11 принёс от
             # tring.al строки за 17.10) — она уходит в журнал снятого
@@ -1928,6 +1963,7 @@ def main() -> int:
         not guessed(domain, r)
         or r.sport != "F"
         or not (rich or top_league.search(f"{r.league} {r.program.league_raw}"))
+        or _за_краем(r.start_kyiv.date())             # книга 184, З4
         or _in_reference(r)),
         снято, СНЯТО_НЕТ_В_ЭТАЛОНЕ,
         "эфир угадан, а пары нет в эталоне в ±3 ч — запись")
@@ -1981,6 +2017,7 @@ def main() -> int:
         not guessed(domain, r)
         or r.sport not in ("B", "T")
         or not rich_bt.get(r.sport)
+        or _за_краем(r.start_kyiv.date())             # книга 184, З4
         or _in_reference_bt(r)),
         снято, СНЯТО_НЕТ_В_ЭТАЛОНЕ_БТ,
         "эфир угадан, а пары нет в эталоне в ±3 ч — запись")
@@ -2242,7 +2279,12 @@ def main() -> int:
 
     # книга 180: повтор матча, сыгранного больше 60 часов назад, — эталон
     # этого сбора его уже не держит, помнит память сборов (`app/played.py`)
-    games, старые = played.drop_replays(games, память_сыгранных, judge)
+    # книга 184, З4: игру позже края занятого эталона память не судит — её
+    # правило П2 ждёт подтверждения эталоном, а эталона на этот день нет
+    _судимые, старые = played.drop_replays(
+        [g for g in games if not _за_краем(g.start.date())], память_сыгранных, judge)
+    сняты_памятью = {id(g) for g, _матч in старые}
+    games = [g for g in games if id(g) not in сняты_памятью]
     for g, матч in старые:
         for e in g.entries:
             снято.append(removed_row(СНЯТО_СТАРЫЙ_ПОВТОР, e.source, e.payload,
@@ -2386,7 +2428,7 @@ def main() -> int:
     # Машиночитаемый двойник отчёта: его забирает `scripts/games_import.py`
     # и кладёт игры в базу для сайта (этап 4). Человеку — matches.md, коду — это.
     window = args.days or plan_days(Path(args.plan))
-    previous = previous_counts()
+    previous = previous_counts(прошлый_путь)
     verdict = (too_few(len(games), window, previous)
                if args.strict and not args.date else "")
     # Книга 114 (аудит 13.11): сторож эталона и запись «сайт просел на дату»
@@ -2397,7 +2439,7 @@ def main() -> int:
     # С: просадки сайтов по датам — пока только запись в games.json
     просадки: list[dict] = []
     if args.strict and not args.date and not redo_mode:
-        прошлый = previous_payload()
+        прошлый = прошлый_итог
         сегодня = daytime.today("Europe/Kyiv")
         эталон_плох = etalon_guard.etalon_error(etalon_guard.etalon_verdict(
             reference_full, прошлый.get("эталон") or [], сегодня))
@@ -2427,6 +2469,9 @@ def main() -> int:
                             else {**previous, str(window): len(games)}),
                "оценка": verdict,
                "эталон": reference_full,
+               # книга 184, З5: эталон не свой, а занят у прошлого полного
+               # сбора — когда тот собран, сколько записей, край
+               **({etalon_prev.KEY: заём.mark} if заём.records else {}),
                "разобрано": parsed_counts,
                # другой вид спорта — отдельным списком во вкладку «Other
                # Sport» админки (владелец 03.10)
@@ -2552,7 +2597,7 @@ def main() -> int:
               f"канал известен у {счёт['канал_известен']}")
     # книга 123: сторож «канал замолчал» судит только полный плановый сбор
     # (как сторож эталона выше); дозабор и скан даты счёт переносят как есть
-    молчат = silence_keys(payload, previous_payload(), parsed_counts,
+    молчат = silence_keys(payload, прошлый_итог, parsed_counts,
                           full=bool(args.strict and not args.date and not redo_mode))
     if молчат:
         print(f"каналы молчат (страницы читаются, игр нет): {len(молчат)}")

@@ -167,8 +167,9 @@ played.remember(память_прозвищ, [игра("Asvel", "Armani", "2026-
 print("4. Место правила в разборе (`parse_live`)")
 код = inspect.getsource(parse_live)
 проверка("детектор: память берётся из прошлого итога, правило стоит после повтора по эталону и до поздних повторов",
-         0 < код.index("played.load(previous_payload())") < код.index("drop_reference_repeats(games, reference_full)\n")
-         < код.index("played.drop_replays(games, память_сыгранных, judge)") < код.index("games, late = drop_late_repeats(games)"))
+         # книга 184: прошлый итог читается один раз (`прошлый_итог`), а память судит игры до края занятого эталона
+         0 < код.index("played.load(прошлый_итог)") < код.index("drop_reference_repeats(games, reference_full)\n")
+         < код.index("_судимые, старые = played.drop_replays(") < код.index("games, late = drop_late_repeats(games)"))
 проверка("детектор: снятое идёт в журнал своим именем, память уходит в итог сбора",
          ["removed_row(СНЯТО_СТАРЫЙ_ПОВТОР" in код, "payload[played.KEY] = played.dump(память_сыгранных)" in код,
           "played.remember(память_сыгранных, games, judge)" in код], [True, True, True])
