@@ -123,6 +123,40 @@ print("2. Повтор или нет (`replay_of`, П2–П5) — живые с�
                  "start_kyiv": "2026-11-26T21:45"}
 проверка("П5: новая встреча тех же команд стоит в эталоне на это время — не повтор",
          played.replay_of("TORINO", "NAPOLI", datetime(2026, 11, 26, 21, 45), сыгранные, Reference([НОВАЯ_ВСТРЕЧА])), None)
+# книга 185, П5а — живые записи сбора 27.11: память помнит игру 23.11 с русскими именами, а запись эталона о
+# новой встрече 29.11 несёт только греческие и хорватские; болгарское написание nova.bg узнаёт одна память
+ВАШИНГТОН_23 = {"sport": "B", "home": "Washington Wizards", "away": "Orlando Magic", "league": "USA: NBA",
+                "start_kyiv": "2026-11-23T02:00", "fs_id": "KIV5ZoA6",
+                "names": {"el": ["Ουάσιγκτον Γουίζαρντς", "Ορλάντο Μάτζικ"], "tr": ["Washington Wizards", "Orlando Magic"],
+                          "ru": ["Вашингтон Уизардс", "Орландо Мэджик"], "hr": ["Washington Wizards", "Orlando Magic"]}}
+ВАШИНГТОН_29 = {"sport": "B", "home": "Washington Wizards", "away": "Orlando Magic", "league": "USA: NBA",
+                "fs_id": "pGTi2ypA", "start_kyiv": "2026-11-29T00:00",
+                "names": {"el": ["Ουάσιγκτον Γουίζαρντς", "Ορλάντο Μάτζικ"], "hr": ["Washington Wizards", "Orlando Magic"]}}
+память_нба = Reference([ВАШИНГТОН_23])
+НОЧЬ_29 = datetime(2026, 11, 29, 0, 0)
+проверка("П5а, условие случая: эталон в болгарском написании пару не узнаёт, память — узнаёт",
+         (Reference([ВАШИНГТОН_29]).confirm("Вашингтон Уизърдс", "Орландо Меджик", НОЧЬ_29, "B"),
+          [e["fs_id"] for e, _k in память_нба.replays("Вашингтон Уизърдс", "Орландо Меджик", "B")]), (None, ["KIV5ZoA6"]))
+проверка("П5а: память узнала пару, эталон на это время знает встречу тех же команд — не повтор (nova.bg, 29.11 00:00)",
+         played.replay_of("Вашингтон Уизърдс", "Орландо Меджик", НОЧЬ_29, память_нба, Reference([ВАШИНГТОН_29]), "B"), None)
+проверка("П5а: то же, когда у новой встречи стороны наоборот",
+         played.replay_of("Вашингтон Уизърдс", "Орландо Меджик", НОЧЬ_29, память_нба,
+                          Reference([dict(ВАШИНГТОН_29, home="Orlando Magic", away="Washington Wizards", names={})]), "B"), None)
+проверка("П5а: эталон новой встречи на это время не знает — повтор, как раньше",
+         [(played.replay_of("Вашингтон Уизърдс", "Орландо Меджик", НОЧЬ_29, память_нба, ref, "B") or {}).get("fs_id")
+          for ref in (пустой, Reference([dict(ВАШИНГТОН_29, start_kyiv="2026-12-01T02:00")]))], ["KIV5ZoA6", "KIV5ZoA6"])
+class ПамятьБезИмён:
+    """Память, чья запись не несёт имён сторон (битая запись посева)."""
+    def __len__(self):
+        return 1
+
+    def replays(self, *_a):
+        return [({"fs_id": "bez-imen"}, datetime(2026, 11, 23, 2, 0))]
+
+
+проверка("П5а: у записи памяти нет имён сторон — не падаем, повтор как раньше",
+         (played.replay_of("Команда А", "Команда Б", НОЧЬ_29, ПамятьБезИмён(), Reference([ВАШИНГТОН_29]), "B")
+          or {}).get("fs_id"), "bez-imen")
 проверка("П4: трансляция турнира без пары и неназванный соперник — не судим",
          [played.replay_of("Napoli", broadcast.SESSION, datetime(2026, 11, 26, 21, 45), сыгранные, пустой),
           played.replay_of("Napoli", "TBC", datetime(2026, 11, 26, 21, 45), сыгранные, пустой)], [None, None])
@@ -167,8 +201,9 @@ played.remember(память_прозвищ, [игра("Asvel", "Armani", "2026-
 print("4. Место правила в разборе (`parse_live`)")
 код = inspect.getsource(parse_live)
 проверка("детектор: память берётся из прошлого итога, правило стоит после повтора по эталону и до поздних повторов",
-         0 < код.index("played.load(previous_payload())") < код.index("drop_reference_repeats(games, reference_full)\n")
-         < код.index("played.drop_replays(games, память_сыгранных, judge)") < код.index("games, late = drop_late_repeats(games)"))
+         # книга 184: прошлый итог читается один раз (`прошлый_итог`), а память судит игры до края занятого эталона
+         0 < код.index("played.load(прошлый_итог)") < код.index("drop_reference_repeats(games, reference_full)\n")
+         < код.index("_судимые, старые = played.drop_replays(") < код.index("games, late = drop_late_repeats(games)"))
 проверка("детектор: снятое идёт в журнал своим именем, память уходит в итог сбора",
          ["removed_row(СНЯТО_СТАРЫЙ_ПОВТОР" in код, "payload[played.KEY] = played.dump(память_сыгранных)" in код,
           "played.remember(память_сыгранных, games, judge)" in код], [True, True, True])

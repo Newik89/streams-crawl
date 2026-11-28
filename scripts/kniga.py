@@ -156,12 +156,30 @@ def slice_meta(name: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
 
 
+#: книга 184: итог прошлого полного сбора внутри среза — память разбора и
+#: эталон для обхода одного сайта; без него разбор среза читает
+#: `results/games.json` репозитория, как раньше
+ПРОШЛЫЙ = "previous.json"
+#: что из итога прошлого сбора разбору не нужно — в срез не кладём (вес)
+ПРОШЛЫЙ_ЛИШНЕЕ = ("games", "снято", "на_разбор", "другие_виды", "обрезка",
+                  "без_эталона", "просадки")
+
+
 def cut(folder: Path, name: str, domains: list[str], days: list[str],
-        clock: str, what: str) -> Path:
+        clock: str, what: str, previous: Path | None = None,
+        only: list[str] | None = None) -> Path:
     """Срез из папки артефакта (`github_run.py fetch --run N`): строки отчёта
     выбранных сайтов + эталон flashscore всех языков, только за выбранные
-    дни (строки без дня — целиком), страницы — в zip рядом с описанием."""
+    дни (строки без дня — целиком), страницы — в zip рядом с описанием.
+    Книга 184: `previous` — games.json прошлого полного сбора, кладётся в
+    срез файлом `ПРОШЛЫЙ` (без игр и журналов); `only` — сбор шёл обходом
+    по списку сайтов (`--only`): раздел «только» дописывается в отчёт среза
+    (обходы до книги 184 его не писали), страницы справочников эталона в
+    срез не добираются — так срезом одного сайта становятся и страницы,
+    взятые из полного сбора."""
     report = json.loads((folder / "report.json").read_text(encoding="utf-8"))
+    if only:
+        report["только"] = sorted(only)
     want = {bare(d) for d in domains}
     # страница «сегодня» у многих сайтов держит и дни вперёд (digisport.ro —
     # всю неделю одной страницей) и помечена днём сбора: у выбранных сайтов
@@ -170,7 +188,9 @@ def cut(folder: Path, name: str, domains: list[str], days: list[str],
     keep = []
     for row in report["строки"]:
         b = bare(row["domain"])
-        if b not in want and not any(e in b for e in ЭТАЛОН):
+        # книга 184: обход по списку сайтов страниц эталона не качает — срез
+        # такого обхода справочники сам не добирает (только названные сайты)
+        if b not in want and (only or not any(e in b for e in ЭТАЛОН)):
             continue
         if days and row.get("day") and row["day"] not in days \
                 and not (b in want and row["day"] == сбор):
@@ -184,6 +204,11 @@ def cut(folder: Path, name: str, domains: list[str], days: list[str],
         for row in keep:
             if row.get("файл") and (folder / row["файл"]).exists():
                 z.write(folder / row["файл"], row["файл"])
+        if previous:
+            прошлый = json.loads(Path(previous).read_text(encoding="utf-8"))
+            z.writestr(ПРОШЛЫЙ, json.dumps(
+                {k: v for k, v in прошлый.items() if k not in ПРОШЛЫЙ_ЛИШНЕЕ},
+                ensure_ascii=False))
     window = 6
     try:
         window = int(json.loads((folder / "games.json").read_text(
@@ -210,6 +235,10 @@ def frozen_parse(folder: str, clock_utc: str, window: int, out: str) -> int:
         tzinfo=timezone.utc)
     sys.argv = ["parse_live.py", "--dir", folder, "--days", str(window),
                 "--md", str(Path(out) / "matches.md")]
+    # книга 184: срез несёт итог прошлого полного сбора — разбор берёт его,
+    # а не `results/games.json` репозитория (тот меняется каждый сбор)
+    if (Path(folder) / ПРОШЛЫЙ).exists():
+        sys.argv += ["--previous", str(Path(folder) / ПРОШЛЫЙ)]
     with time_machine.travel(moment, tick=False):
         return parse_live.main()
 
@@ -474,6 +503,12 @@ def main() -> int:
     ap.add_argument("--days", default="", help="дни среза через запятую (ГГГГ-ММ-ДД)")
     ap.add_argument("--clock", help="момент сбора по UTC «ГГГГ-ММ-ДД ЧЧ:ММ»")
     ap.add_argument("--what", default="", help="откуда срез: «сбор #249, 13.10»")
+    ap.add_argument("--previous", default="",
+                    help="games.json прошлого полного сбора — положить в срез "
+                         "(память разбора и эталон для обхода одного сайта)")
+    ap.add_argument("--only", default="",
+                    help="сбор шёл обходом по списку сайтов (через запятую) — "
+                         "дописать в отчёт среза раздел «только»")
     ap.add_argument("--_parse", help=argparse.SUPPRESS)
     ap.add_argument("--window", type=int, default=6, help=argparse.SUPPRESS)
     ap.add_argument("--out", help=argparse.SUPPRESS)
@@ -486,7 +521,9 @@ def main() -> int:
             print("для --cut нужны --name, --domains и --clock")
             return 1
         cut(Path(args.cut), args.name, args.domains.split(","),
-            [d for d in args.days.split(",") if d], args.clock, args.what)
+            [d for d in args.days.split(",") if d], args.clock, args.what,
+            previous=Path(args.previous) if args.previous else None,
+            only=[d.strip() for d in args.only.split(",") if d.strip()])
         return 0
     if args.list:
         for case in load_cases():
