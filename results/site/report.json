@@ -1,8 +1,8 @@
 {
- "когда": "2026-11-27",
- "режим": "полный обход, окно 6 суток",
- "прогон": "45937851807",
- "начат_киев": "2026-11-27",
+ "когда": "2026-11-28",
+ "режим": "полный обход, окно 2 суток",
+ "прогон": "46090778100",
+ "начат_киев": "2026-11-28",
  "пояса": {
   "allente.no": "Europe/Oslo",
   "aspor.com.tr": "Europe/Istanbul",
@@ -112,198 +112,603 @@
   "tv.dir.bg": "Europe/Sofia",
   "canpl.ca": "UTC",
   "azamtvmax.com": "UTC",
-  "yallakora.com": "Africa/Cairo"
+  "yallakora.com": "Africa/Cairo",
+  "magentatv.de": "Europe/Berlin"
  },
  "строки": [
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 1",
+   "domain": "magentatv.de",
+   "channel": "Sport 1 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=556&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=550",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "550",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 172857,
+   "байт": 12152,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=556_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=550__post-71386a40.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 10",
+   "domain": "magentatv.de",
+   "channel": "Sport 10 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1075&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=624",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "624",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 146145,
+   "байт": 12162,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1075_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=624__post-a64da592.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 2",
+   "domain": "magentatv.de",
+   "channel": "Sport 11 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=923&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=625",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "625",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 131284,
+   "байт": 11876,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=923_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=625__post-6c5e27f1.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 3",
+   "domain": "magentatv.de",
+   "channel": "Sport 12 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=924&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=627",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "627",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 145951,
+   "байт": 11876,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=924_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=627__post-78fe8a7a.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 4",
+   "domain": "magentatv.de",
+   "channel": "Sport 13 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=928&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=629",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "629",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 203497,
+   "байт": 11876,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=928_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=629__post-b3b69fef.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 5",
+   "domain": "magentatv.de",
+   "channel": "Sport 14 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=728&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=628",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "628",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 135803,
+   "байт": 11876,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=728_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=628__post-b36a936c.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 6",
+   "domain": "magentatv.de",
+   "channel": "Sport 15 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=927&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=367",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "367",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 159721,
+   "байт": 11876,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=927_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=367__post-f1e1006f.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 7",
+   "domain": "magentatv.de",
+   "channel": "Sport 16 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1072&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=366",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "366",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 170989,
+   "байт": 11876,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1072_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=366__post-cb8cbb60.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 8",
+   "domain": "magentatv.de",
+   "channel": "Sport 17 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1073&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=369",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "369",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 189360,
+   "байт": 11876,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1073_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=369__post-13df41ee.html"
   },
   {
-   "domain": "sportklub.hr",
-   "channel": "Sport Klub 9",
+   "domain": "magentatv.de",
+   "channel": "Sport 18 - myTeamTV",
    "day_links": false,
-   "day": "2026-11-27",
+   "day": "2026-11-28",
    "locale": "en-GB",
-   "url": "https://api-web.ug-be.cdn.united.cloud/v1/public/events/epg?cid=1074&fromTime=1795737600000&toTime=1796342399999&communityIdentifier=sk_hr&languageId=181",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=3686",
    "browser": false,
    "post": null,
    "warmup": "",
-   "post_json": null,
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "3686",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
    "headers": null,
    "итог": "расписание есть",
    "почему": "",
-   "байт": 170933,
+   "байт": 12320,
    "меток времени": 0,
    "чем": "requests",
-   "файл": "api-web.ug-be.cdn.united.cloud__v1_public_events_epg_cid=1074_fromTime=1795737600000_toTime=1796342399999_communityIdentifier=sk_hr_languageId=181.html"
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=3686__post-a5557454.html"
+  },
+  {
+   "domain": "magentatv.de",
+   "channel": "Sport 2 - myTeamTV",
+   "day_links": false,
+   "day": "2026-11-28",
+   "locale": "en-GB",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=548",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "548",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 12119,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=548__post-de878fa5.html"
+  },
+  {
+   "domain": "magentatv.de",
+   "channel": "Sport 3 - myTeamTV",
+   "day_links": false,
+   "day": "2026-11-28",
+   "locale": "en-GB",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=549",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "549",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 12089,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=549__post-227b19b4.html"
+  },
+  {
+   "domain": "magentatv.de",
+   "channel": "Sport 4 - myTeamTV",
+   "day_links": false,
+   "day": "2026-11-28",
+   "locale": "en-GB",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=648",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "648",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 12074,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=648__post-9064970f.html"
+  },
+  {
+   "domain": "magentatv.de",
+   "channel": "Sport 5 - myTeamTV",
+   "day_links": false,
+   "day": "2026-11-28",
+   "locale": "en-GB",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=645",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "645",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 12098,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=645__post-4559ea26.html"
+  },
+  {
+   "domain": "magentatv.de",
+   "channel": "Sport 6 - myTeamTV",
+   "day_links": false,
+   "day": "2026-11-28",
+   "locale": "en-GB",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=647",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "647",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 12068,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=647__post-047bfdc0.html"
+  },
+  {
+   "domain": "magentatv.de",
+   "channel": "Sport 7 - myTeamTV",
+   "day_links": false,
+   "day": "2026-11-28",
+   "locale": "en-GB",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=646",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "646",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 12302,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=646__post-dd740b2b.html"
+  },
+  {
+   "domain": "magentatv.de",
+   "channel": "Sport 8 - myTeamTV",
+   "day_links": false,
+   "day": "2026-11-28",
+   "locale": "en-GB",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=623",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "623",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 12245,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=623__post-9c2868ec.html"
+  },
+  {
+   "domain": "magentatv.de",
+   "channel": "Sport 9 - myTeamTV",
+   "day_links": false,
+   "day": "2026-11-28",
+   "locale": "en-GB",
+   "url": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=626",
+   "browser": false,
+   "post": null,
+   "warmup": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "20261128000000",
+    "endtime": "20261205000000",
+    "channelid": "626",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "итог": "расписание есть",
+   "почему": "",
+   "байт": 11928,
+   "меток времени": 0,
+   "чем": "requests",
+   "файл": "api.prod.sngtv.magentatv.de__EPG_JSON_PlayBillList_channel_id=626__post-68cf12cb.html"
   }
  ],
  "дозор": {
