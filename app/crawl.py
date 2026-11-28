@@ -109,6 +109,9 @@ CHANNEL_GRID_DOMAINS = {"programetv.ro", "poverkhnost.tv",
                         # Sport Klub: ручка United Cloud на канал, окно на
                         # неделю одним запросом ({UNIXMSDAY}–{UNIXMSWEEK})
                         "sportklub.hr",
+                        # телегид MagentaTV (книга 183): ручка на канал, окно
+                        # задаётся в теле запроса — неделя одним запросом
+                        "magentatv.de",
                         # Sportdigital: /tvprogramm/<код> держит 21 день
                         # канала одной страницей (свой парсер, 28.09)
                         "start.sportdigital.de"}

@@ -38,7 +38,13 @@ DEEP = {"el", "hu", "bg", "hr"}    # 7 дней; остальные — 1
 #: Αστέρας). Раздел у каждой локали зовётся по-своему — обкатка №212:
 #: /basketball/ у tr и hr отдал 404
 BASKET = {"el": "basketball", "tr": "basketbol", "ru": "basketball",
-          "hr": "kosarka"}
+          "hr": "kosarka",
+          # 28.11 (книга 183): телегид MagentaTV пишет баскетбол по-немецки —
+          # «Roter Stern Meridianbet Belgrad», «Armani Olimpia Mailand»; без
+          # немецких имён эталона матч Евролиги Fenerbahce — Crvena Zvezda
+          # лёг бы второй игрой. Проба #566: раздел у m.flashscore.de зовётся
+          # /basketball/, имена — «Fenerbahçe - Roter Stern Belgrad»
+          "de": "basketball"}
 #: теннис — у языков, чьи сайты пишут игроков по-своему (teleman:
 #: «Miedwiediew», sport5 ивритом через мост): словарь учит написания по
 #: fs_id, как у футбола. Проба 01.10: все 9 страниц отдали 200–390 меток

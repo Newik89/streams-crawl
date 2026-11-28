@@ -93,7 +93,7 @@ SITE_LANGS: dict[str, tuple[str, ...]] = {
     # немецкоязычные
     "m.flashscore.de": ("de",), "rtl.de": ("de",), "start.sportdigital.de": ("de",),
     "tv.sport1.de": ("de",), "tv.orf.at": ("de",), "tvheute.at": ("de",),
-    "srf.ch": ("de",),
+    "srf.ch": ("de",), "magentatv.de": ("de",),
     # Испания, Франция, Италия, Нидерланды, Польша
     "m.flashscore.es": ("es",), "movistarplus.es": ("es",),
     "m.flashscore.fr": ("fr",), "programme-tv.net": ("fr",),

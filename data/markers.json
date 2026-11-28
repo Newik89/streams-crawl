@@ -490,7 +490,22 @@
     "hockey sobre hielo",
     "хокей на лед",
     "hokeje",
-    "hokejového"
+    "hokejového",
+    "penny del",
+    "adler mannheim",
+    "augsburger panther",
+    "eisbären berlin",
+    "pinguins bremerhaven",
+    "löwen frankfurt",
+    "ehc red bull münchen",
+    "erc ingolstadt",
+    "iserlohn roosters",
+    "kölner haie",
+    "krefeld pinguine",
+    "nürnberg ice tigers",
+    "schwenninger wild wings",
+    "straubing tigers",
+    "grizzlys wolfsburg"
    ],
    "волейбол": [
     "lentopallo",
@@ -1999,6 +2014,9 @@
    "жабылу салтанаты",
    "марапаттау рәсімі",
    "марапаттау"
+  ],
+  "сводная трансляция нескольких матчей разом («конференция») — не матч (книга 183, проба 28.11.2026: телегид MagentaTV «LIVE: 3. Liga - Konferenz» с пометкой эфира встала игрой «3. Liga — Konferenz»; у хоккея то же — «LIVE: PENNY DEL - Konferenz». Замер по сборам 26–27.11.2026 на всех сайтах: в других языках таких строк среди игр нет, а основа «konferenc / конференц» стоит в названии Лиги конференций — поэтому слово только немецкое, и ищется только у немецких сайтов (word_langs.json); немецкие сайты лигу пишут «Conference League»)": [
+   "konferenz"
   ]
  },
  "stop_lead": {

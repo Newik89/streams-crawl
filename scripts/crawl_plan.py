@@ -194,6 +194,11 @@ PILOTS = ["nova.bg", "tv.nova.cz", "teleman.pl", "sporttv.pt", "tvarenasport.com
           # (warmup_url) и POST на канал и день (post_fields), btv.bg
           # закрыт Cloudflare
           "tv.dir.bg",
+          # 28.11 (слово владельца: «почему нет информации с немецких Magenta
+          # Sport 10, 11 – 18»; книга 183): телегид MagentaTV, каналы «Sport
+          # 1–18 - myTeamTV» = MagentaSport 1–18; гостевая сессия
+          # (app/fetch.py SESSION_HOSTS), запрос на канал, окно — неделя
+          "magentatv.de",
           ]
 # СПРАВОЧНИКИ, не источники: liveonsat.com (решение 01.09) и
 # sporteventz.com (решение 02.09) в ежедневный обход не входят. Оба —
