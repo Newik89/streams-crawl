@@ -160,7 +160,8 @@ with tempfile.TemporaryDirectory(prefix="etalon-prev-") as tmp:
     артефакт.mkdir()
     (артефакт / "a.html").write_text("<html></html>", encoding="utf-8")
     (артефакт / "report.json").write_text(json.dumps(
-        {"режим": "полный обход", "строки": [{"domain": "site.test", "файл": "a.html", "day": ""}]},
+        {"режим": "полный обход", "строки": [{"domain": "site.test", "файл": "a.html", "day": ""},
+                                             {"domain": "www.flashscore.mobi", "файл": "a.html", "day": ""}]},
         ensure_ascii=False), encoding="utf-8")
     (tmp / "prev.json").write_text(json.dumps(
         {**ПРОШЛЫЙ, "games": [{"home": "A"}], "снято": [1], "сыгранные": [ЭТАЛОН[1]]}, ensure_ascii=False),
@@ -180,10 +181,14 @@ with tempfile.TemporaryDirectory(prefix="etalon-prev-") as tmp:
     проверка("в срезе лежит прошлый сбор: эталон, память и метка — есть, игр и журналов — нет",
              (kniga.ПРОШЛЫЙ in имена, sorted(прошлый_среза)), (True, ["окно", "собрано", "сыгранные", "эталон"]))
     проверка("отчёт среза помечен обходом по списку сайтов", отчёт_среза.get(etalon_prev.ONLY_KEY), ["site.test"])
+    проверка("срез обхода по списку сайтов страниц эталона не добирает — в нём только названные сайты",
+             [r["domain"] for r in отчёт_среза["строки"]], ["site.test"])
     with zipfile.ZipFile(tmp / "slices" / "bez.zip") as z:
-        проверка("срез без этих ключей — как раньше: ни прошлого сбора, ни пометки",
-                 (kniga.ПРОШЛЫЙ in z.namelist(),
-                  etalon_prev.ONLY_KEY in json.loads(z.read("report.json").decode("utf-8"))), (False, False))
+        отчёт_без = json.loads(z.read("report.json").decode("utf-8"))
+        проверка("срез без этих ключей — как раньше: ни прошлого сбора, ни пометки, эталон добирается сам",
+                 (kniga.ПРОШЛЫЙ in z.namelist(), etalon_prev.ONLY_KEY in отчёт_без,
+                  [r["domain"] for r in отчёт_без["строки"]]),
+                 (False, False, ["site.test", "www.flashscore.mobi"]))
 
 print("6. Сквозной разбор живого среза: край занятого эталона (З4)")
 СРЕЗ = "sbor-569-sportklub-odin"

@@ -174,7 +174,9 @@ def cut(folder: Path, name: str, domains: list[str], days: list[str],
     Книга 184: `previous` — games.json прошлого полного сбора, кладётся в
     срез файлом `ПРОШЛЫЙ` (без игр и журналов); `only` — сбор шёл обходом
     по списку сайтов (`--only`): раздел «только» дописывается в отчёт среза
-    (обходы до книги 184 его не писали)."""
+    (обходы до книги 184 его не писали), страницы справочников эталона в
+    срез не добираются — так срезом одного сайта становятся и страницы,
+    взятые из полного сбора."""
     report = json.loads((folder / "report.json").read_text(encoding="utf-8"))
     if only:
         report["только"] = sorted(only)
@@ -186,7 +188,9 @@ def cut(folder: Path, name: str, domains: list[str], days: list[str],
     keep = []
     for row in report["строки"]:
         b = bare(row["domain"])
-        if b not in want and not any(e in b for e in ЭТАЛОН):
+        # книга 184: обход по списку сайтов страниц эталона не качает — срез
+        # такого обхода справочники сам не добирает (только названные сайты)
+        if b not in want and (only or not any(e in b for e in ЭТАЛОН)):
             continue
         if days and row.get("day") and row["day"] not in days \
                 and not (b in want and row["day"] == сбор):
