@@ -4530,6 +4530,7 @@
    "grid": false,
    "marks": {},
    "include": [
+    "basketball",
     "football"
    ],
    "parser": "",
@@ -4549,6 +4550,10 @@
    "headers": null,
    "base_url": "https://m.flashscore.de/",
    "channels": [
+    {
+     "name": "basketball",
+     "pattern": "https://m.flashscore.de/basketball/?d={DAYNUM}"
+    },
     {
      "name": "football",
      "pattern": "https://m.flashscore.de/?d={DAYNUM}"
@@ -5199,6 +5204,136 @@
     {
      "name": "",
      "pattern": "https://www.yallakora.com/match-center?date={MM/DD/YYYY}"
+    }
+   ]
+  },
+  {
+   "domain": "magentatv.de",
+   "timezone": "Europe/Berlin",
+   "grid": false,
+   "marks": {},
+   "include": [
+    "Sport 1 - myTeamTV",
+    "Sport 10 - myTeamTV",
+    "Sport 11 - myTeamTV",
+    "Sport 12 - myTeamTV",
+    "Sport 13 - myTeamTV",
+    "Sport 14 - myTeamTV",
+    "Sport 15 - myTeamTV",
+    "Sport 16 - myTeamTV",
+    "Sport 17 - myTeamTV",
+    "Sport 18 - myTeamTV",
+    "Sport 2 - myTeamTV",
+    "Sport 3 - myTeamTV",
+    "Sport 4 - myTeamTV",
+    "Sport 5 - myTeamTV",
+    "Sport 6 - myTeamTV",
+    "Sport 7 - myTeamTV",
+    "Sport 8 - myTeamTV",
+    "Sport 9 - myTeamTV"
+   ],
+   "parser": "",
+   "browser": false,
+   "days_inline": true,
+   "day_links": false,
+   "pages_per_day": 0,
+   "day_channels": [],
+   "days_ahead": 0,
+   "max_days": 0,
+   "manual_only": false,
+   "by_server": false,
+   "channel_days": {},
+   "post_fields": null,
+   "warmup_url": "",
+   "post_json": {
+    "count": -1,
+    "isFillProgram": 1,
+    "offset": 0,
+    "type": 2,
+    "begintime": "{YYYYMMDD}000000",
+    "endtime": "{YYYYMMDD+7}000000",
+    "channelid": "{channel_id}",
+    "properties": [
+     {
+      "include": "endtime,genres,id,name,starttime,channelid,introduce,subName",
+      "name": "playbill"
+     }
+    ]
+   },
+   "headers": null,
+   "base_url": "https://web.magentatv.de/tv-guide",
+   "channels": [
+    {
+     "name": "Sport 1 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=550"
+    },
+    {
+     "name": "Sport 10 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=624"
+    },
+    {
+     "name": "Sport 11 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=625"
+    },
+    {
+     "name": "Sport 12 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=627"
+    },
+    {
+     "name": "Sport 13 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=629"
+    },
+    {
+     "name": "Sport 14 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=628"
+    },
+    {
+     "name": "Sport 15 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=367"
+    },
+    {
+     "name": "Sport 16 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=366"
+    },
+    {
+     "name": "Sport 17 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=369"
+    },
+    {
+     "name": "Sport 18 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=3686"
+    },
+    {
+     "name": "Sport 2 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=548"
+    },
+    {
+     "name": "Sport 3 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=549"
+    },
+    {
+     "name": "Sport 4 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=648"
+    },
+    {
+     "name": "Sport 5 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=645"
+    },
+    {
+     "name": "Sport 6 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=647"
+    },
+    {
+     "name": "Sport 7 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=646"
+    },
+    {
+     "name": "Sport 8 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=623"
+    },
+    {
+     "name": "Sport 9 - myTeamTV",
+     "pattern": "https://api.prod.sngtv.magentatv.de/EPG/JSON/PlayBillList?channel_id=626"
     }
    ]
   }
